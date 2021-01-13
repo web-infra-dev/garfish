@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": ".",
+    "outDir": "dist",
+    "module": "ES2015",
+    "target": "es5",
+    "sourceMap": false,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "allowJs": true,
+    "paths": {
+      "@garfish/*": ["packages/core/*/src"]
+    }
+  },
+  "include": [
+      "packages/core/*/src",
+      "packages/core/*/__tests__",
+      "packages/core/global.d.ts"
+  ]
+}

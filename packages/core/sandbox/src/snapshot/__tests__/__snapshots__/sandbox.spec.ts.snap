@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test sandbox  dom sandbox 1`] = `
+NodeList [
+  <style>
+    body{color: 'yellow';}
+  </style>,
+]
+`;
+
+exports[`test sandbox  dom sandbox 2`] = `
+Object {
+  "age": "8",
+  "name": "bytedance",
+  "some": "test delete",
+}
+`;

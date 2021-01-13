@@ -1,0 +1,37 @@
+{
+  "name": "@garfish/core",
+  "version": "5.2.2",
+  "description": "garfish module.",
+  "keywords": [
+    "garfish",
+    "gar"
+  ],
+  "author": "bytedance",
+  "homepage": "http://garfish.bytedance.com",
+  "license": "MIT",
+  "main": "index.js",
+  "module": "dist/garfish.esm-bundler.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:bytedance/Garfish.git"
+  },
+  "scripts": {},
+  "types": "dist/garfish.d.ts",
+  "buildOptions": {
+    "name": "Garfish",
+    "devTemplate": "complete",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "umd"
+    ]
+  },
+  "dependencies": {
+    "@garfish/router": "^5.2.1",
+    "@garfish/sandbox": "^5.2.2",
+    "events": "^3.2.0",
+    "himalaya": "^1.1.0",
+    "unfetch": "^4.2.0"
+  }
+}

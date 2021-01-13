@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test sandbox  dom sandbox 1`] = `
+<head>
+  <style>
+    body{color: "yellow";}
+  </style>
+</head>
+`;
+
+exports[`test sandbox  dom sandbox 2`] = `
+<head>
+  <style>
+    body{color: "yellow";}
+  </style>
+</head>
+`;
+
+exports[`test sandbox  dom sandbox 3`] = `
+<head>
+  <style>
+    div{background: "red";}
+  </style>
+  <link
+    href="www.baidu.com"
+  />
+</head>
+`;

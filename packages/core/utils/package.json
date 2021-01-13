@@ -1,0 +1,31 @@
+{
+  "name": "@garfish/utils",
+  "version": "5.2.1",
+  "private": true,
+  "description": "shared module.",
+  "keywords": [
+    "garfish",
+    "shared"
+  ],
+  "author": "bytedance",
+  "homepage": "http://garfish.bytedance.com",
+  "license": "MIT",
+  "main": "index.js",
+  "module": "dist/shared.esm-bundler.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:bytedance/Garfish.git"
+  },
+  "scripts": {},
+  "types": "dist/shared.d.ts",
+  "buildOptions": {
+    "name": "Shared",
+    "devTemplate": "module",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "umd"
+    ]
+  }
+}

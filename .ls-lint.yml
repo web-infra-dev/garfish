@@ -1,0 +1,21 @@
+ls:
+  packages/*/{src,__tests__}:
+    .js: camelCase
+    .ts: camelCase
+    .d.ts: camelCase
+    .spec.ts: camelCase | PascalCase
+
+  deprecated-byted/*/{src,__tests__}:
+    .js: camelCase
+    .ts: camelCase
+    .d.ts: camelCase
+    .spec.ts: camelCase | PascalCase
+
+  example:
+    .js: camelCase
+    .ts: camelCase
+    .d.ts: camelCase
+    .spec.ts: camelCase | PascalCase
+
+  scripts:
+    .js: camelCase

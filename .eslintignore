@@ -1,0 +1,4 @@
+**/dev/*
+**/dist/*
+api-extractor.json
+packages/core/*/index.js

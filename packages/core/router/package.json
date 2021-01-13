@@ -1,0 +1,30 @@
+{
+  "name": "@garfish/router",
+  "version": "5.2.1",
+  "description": "garfish-router module.",
+  "keywords": [
+    "garfish",
+    "router"
+  ],
+  "author": "bytedance",
+  "homepage": "http://garfish.bytedance.com",
+  "license": "MIT",
+  "main": "index.js",
+  "module": "dist/router.esm-bundler.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:bytedance/Garfish.git"
+  },
+  "scripts": {},
+  "types": "dist/router.d.ts",
+  "buildOptions": {
+    "name": "GarfishRouter",
+    "devTemplate": "module",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "umd"
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "@garfish/sandbox",
+  "version": "5.2.2",
+  "description": "garfish-sandbox module.",
+  "keywords": [
+    "garfish",
+    "garfish-sandbox"
+  ],
+  "author": "bytedance",
+  "homepage": "http://garfish.bytedance.com",
+  "license": "MIT",
+  "main": "index.js",
+  "module": "dist/sandbox.esm-bundler.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:bytedance/Garfish.git"
+  },
+  "scripts": {},
+  "types": "dist/sandbox.d.ts",
+  "buildOptions": {
+    "name": "GarfishSandbox",
+    "devTemplate": "module",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "umd"
+    ]
+  }
+}
