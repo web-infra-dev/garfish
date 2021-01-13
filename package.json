@@ -19,6 +19,12 @@
     "format:js": "prettier --write --parser typescript \\\"scripts/*.js\\\"",
     "format": "prettier --write --parser typescript \\\"packages/**/*.ts?(x)\\\""
   },
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/core/*"
+    ]
+  },
   "husky": {
     "hooks": {
       "pre-commit": "ls-lint && lint-staged",
