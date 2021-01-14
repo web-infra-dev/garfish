@@ -197,8 +197,6 @@ export class Sandbox {
 
     this.callHook('onInvokeBefore', [this, refs]);
 
-    console.log(refs.code);
-
     if (openSandBox) {
       new Function('window', `with(window) {${refs.code}\n}\n${sourceURL}`)(
         refs.context,
