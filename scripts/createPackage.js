@@ -156,7 +156,7 @@ function writeToPkgJson(is, write) {
   } else if (is('author')) {
     write('Bytedance');
   } else if (is('license')) {
-    write('MIT');
+    write('Apache-2.0');
   } else if (is('entry point')) {
     if (type === 'tool') {
       write('dist/index.js');
