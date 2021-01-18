@@ -1,6 +1,6 @@
 {
   "name": "@garfish/sandbox",
-  "version": "5.2.2",
+  "version": "0.0.1",
   "description": "garfish-sandbox module.",
   "keywords": [
     "garfish",
@@ -8,7 +8,7 @@
   ],
   "author": "bytedance",
   "homepage": "http://garfish.bytedance.com",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "main": "index.js",
   "module": "dist/sandbox.esm-bundler.js",
   "repository": {

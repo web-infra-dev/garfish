@@ -1,6 +1,6 @@
 {
   "name": "garfish",
-  "version": "5.0.0",
+  "version": "0.0.1",
   "description": "a powerful micro front-end framework",
   "scripts": {
     "dev:garfish": "yarn run build garfish -f=esm-bundler -w -e",
@@ -41,7 +41,7 @@
     ]
   },
   "author": "bytedance",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@babel/plugin-transform-regenerator": "^7.12.1",
     "@babel/preset-typescript": "^7.12.7",
