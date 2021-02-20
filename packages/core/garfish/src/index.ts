@@ -17,10 +17,8 @@ declare global {
 function addInternalPlugin(context: Garfish) {
   context.on(BEFORE_BOOTSTRAP, (options: Garfish['options']) => {
     if (!options) return;
-    const { appID, disableStatistics, disablePreloadApp } = options;
-
     // 预加载资源
-    if (!disablePreloadApp) {
+    if (!options.disablePreloadApp) {
       context.use(preloadApp);
     }
   });
