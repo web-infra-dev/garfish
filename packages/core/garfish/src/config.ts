@@ -41,13 +41,11 @@ export interface SandboxConfig {
   modules?: Record<string, (sandbox: Sandbox) => OverridesData>;
 }
 export interface Config {
-  appID?: string;
   basename?: string;
   apps: Array<AppInfo>;
   sandbox?: SandboxConfig;
   autoRefreshApp?: boolean;
   props?: Record<string, any>;
-  disableStatistics?: boolean;
   disablePreloadApp?: boolean;
   protectVariable?: Array<PropertyKey>;
   insulationVariable?: Array<PropertyKey>;
@@ -98,7 +96,6 @@ const defaultOptions: Options = {
   protectVariable: [],
   insulationVariable: [],
   autoRefreshApp: true,
-  disableStatistics: false,
   disablePreloadApp: false,
   domGetter: () => null,
   beforeLoad: () => {},

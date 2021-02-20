@@ -17,10 +17,8 @@ declare global {
 function addInternalPlugin(context: Garfish) {
   context.on(BEFORE_BOOTSTRAP, (options: Garfish['options']) => {
     if (!options) return;
-    const { appID, disableStatistics, disablePreloadApp } = options;
-
     // 预加载资源
-    if (!disablePreloadApp) {
+    if (!options.disablePreloadApp) {
       context.use(preloadApp);
     }
   });
@@ -63,7 +61,7 @@ function fixHMR(context: Garfish) {
   });
 }
 
-// 初始化 Garfish，当前环境只允许一个实例存在（导出去是给测试用的）
+// 初始化 Garfish，当前环境只允许一个实例存在（export 出去是给测试用的）
 export function createContext() {
   let fresh = false;
   const context = new Garfish();
@@ -74,7 +72,9 @@ export function createContext() {
         const next = () => {
           fresh = true;
           if (__DEV__) {
-            warn(`"Window.${namespace}" will be overwritten by "@byted/gar".`);
+            warn(
+              `"Window.${namespace}" will be overwritten by "@garfish/core".`,
+            );
           }
         };
         const desc = Object.getOwnPropertyDescriptor(window, namespace);
@@ -100,7 +100,6 @@ export function createContext() {
   // 全局标识符
   set('__GAR__', true);
   set('__GARFISH__', true);
-  set('__PROWER_BY_GAR__', true);
 
   if (fresh) {
     // 兼容旧的 api

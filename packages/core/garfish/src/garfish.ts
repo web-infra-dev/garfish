@@ -9,8 +9,8 @@ import { startRouter } from './router';
 import { __GARFISH_FLAG__ } from './utils';
 import { setRanking, loadAppResource } from './preloadApp';
 import {
-  Options,
   Hooks,
+  Options,
   AppInfo,
   LoadAppOptions,
   getDefaultOptions,
