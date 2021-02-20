@@ -17,7 +17,6 @@ describe('Garfish config', () => {
       protectVariable: [],
       insulationVariable: [],
       autoRefreshApp: true,
-      disableStatistics: false,
       disablePreloadApp: false,
     });
 
