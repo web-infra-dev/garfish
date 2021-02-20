@@ -24,8 +24,10 @@ export class PatchInterval {
     };
   }
 
-  public deactivate() {
-    this.intervals.forEach((id) => window.clearInterval(id));
+  public deactivate(_clearEffects?: boolean) {
+    if (_clearEffects) {
+      this.intervals.forEach((id) => window.clearInterval(id));
+    }
     window.setInterval = rawInterval;
     window.clearInterval = rawClearInterval;
   }

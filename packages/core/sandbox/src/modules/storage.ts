@@ -1,5 +1,5 @@
-import { getPrefix } from '../utils';
 import { Sandbox } from '../context';
+import { GAR_NAMESPACE_PREFIX } from '../symbolTypes';
 
 // 自定义的Storage类
 export class CusStorage {
@@ -10,7 +10,7 @@ export class CusStorage {
   constructor(namespace: string, rawStorage: Storage) {
     this.rawStorage = rawStorage;
     this.namespace = namespace;
-    this.prefix = getPrefix(namespace);
+    this.prefix = `${GAR_NAMESPACE_PREFIX}${namespace}__`;
   }
 
   // 劫持length
@@ -52,7 +52,6 @@ export class CusStorage {
 export function localStorageOverride(sandbox: Sandbox) {
   const namespace = sandbox.options.namespace;
   return {
-    recover: () => {},
     override: {
       localStorage: new CusStorage(namespace, localStorage),
       sessionStorage: new CusStorage(namespace, sessionStorage),

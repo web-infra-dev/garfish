@@ -5,7 +5,7 @@ import {
   RouterConfig,
   setRouterConfig,
   RouterInfo,
-  __GAR_ROUTER_UPDATE_FLAG__,
+  __GARFISH_ROUTER_UPDATE_FLAG__,
 } from './config';
 
 export const normalAgent = () => {
@@ -187,7 +187,7 @@ export const linkTo = async ({
   const curState = window.history.state || {};
   if (
     eventType !== 'popstate' &&
-    ((needToActive.length === 0 && curState[__GAR_ROUTER_UPDATE_FLAG__]) ||
+    ((needToActive.length === 0 && curState[__GARFISH_ROUTER_UPDATE_FLAG__]) ||
       autoRefreshApp)
   ) {
     callCapturedEventListeners(eventType);

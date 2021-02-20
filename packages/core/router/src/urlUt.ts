@@ -1,5 +1,12 @@
 import { AppInfo } from './config';
 
+export function formatQuery(query: { [props: string]: string } = {}) {
+  const qs = Object.keys(query)
+    .map((key) => `${key}=${query[key]}`)
+    .join('&');
+  return qs ? '?' + qs : '';
+}
+
 export function parseQuery(query = '') {
   const res: { [props: string]: string[] } = {};
   if (query) {
@@ -12,6 +19,18 @@ export function parseQuery(query = '') {
       });
   }
   return res;
+}
+
+/**
+ * 解析出子应用的根路由,取得app1
+ * 解析内容：
+ *    /basename/app1/about、basename/app1、basename/app1/、/app1/、/app1/about、app1/
+ *    #/app1、/#/app1/、/#/app1/detail/、/#/app1/detail
+ * @param path
+ */
+export function parsePath(path: string) {
+  const matches = path.match(new RegExp('^/([^/]+)')) || [];
+  return `/${matches[1] || ''}`;
 }
 
 export function find(arr: Array<Function>, func: Function) {

@@ -1,14 +1,29 @@
 /* eslint-disable no-restricted-syntax */
-import { def, warn } from '@garfish/utils';
+import { def, warn, hasOwn } from '@garfish/utils';
 import { Garfish } from './garfish';
+import { preloadApp } from './preloadApp';
 import { __GARFISH_FLAG__ } from './utils';
-import { BOOTSTRAP } from './eventFlags';
+import { BOOTSTRAP, BEFORE_BOOTSTRAP } from './eventTypes';
 
 declare global {
   interface Window {
     Garfish: Garfish;
     __GARFISH__: boolean;
+    __PROWER_BY_GAR__: boolean;
   }
+}
+
+// 添加内置插件
+function addInternalPlugin(context: Garfish) {
+  context.on(BEFORE_BOOTSTRAP, (options: Garfish['options']) => {
+    if (!options) return;
+    const { appID, disableStatistics, disablePreloadApp } = options;
+
+    // 预加载资源
+    if (!disablePreloadApp) {
+      context.use(preloadApp);
+    }
+  });
 }
 
 // 主应用 hmr 导致的子应用渲染失败的问题
@@ -48,24 +63,26 @@ function fixHMR(context: Garfish) {
   });
 }
 
-// 初始化 Garfish，当前环境只允许一个实例存在
-function createContext() {
+// 初始化 Garfish，当前环境只允许一个实例存在（导出去是给测试用的）
+export function createContext() {
   let fresh = false;
-  const context = new Garfish({} as any);
+  const context = new Garfish();
 
   const set = (namespace: string, val: boolean | Garfish = context) => {
-    if (namespace in window) {
+    if (hasOwn(window, namespace)) {
       if (!(window[namespace] && window[namespace].flag === __GARFISH_FLAG__)) {
         const next = () => {
           fresh = true;
-          warn(`"Window.${namespace}" will be overwritten by "@garfish/core".`);
+          if (__DEV__) {
+            warn(`"Window.${namespace}" will be overwritten by "@byted/gar".`);
+          }
         };
         const desc = Object.getOwnPropertyDescriptor(window, namespace);
         if (desc) {
           if (desc.configurable) {
             def(window, namespace, val);
             next();
-          } else if (desc.enumerable) {
+          } else if (desc.writable) {
             window[namespace] = val;
             next();
           }
@@ -83,9 +100,11 @@ function createContext() {
   // 全局标识符
   set('__GAR__', true);
   set('__GARFISH__', true);
+  set('__PROWER_BY_GAR__', true);
 
   if (fresh) {
     // 兼容旧的 api
+    addInternalPlugin(context);
 
     if (__DEV__) {
       fixHMR(context);

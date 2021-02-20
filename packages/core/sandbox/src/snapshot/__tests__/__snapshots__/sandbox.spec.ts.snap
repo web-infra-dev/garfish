@@ -10,8 +10,8 @@ NodeList [
 
 exports[`test sandbox  dom sandbox 2`] = `
 Object {
-  "age": "8",
-  "name": "bytedance",
+  "age": "24",
+  "name": "zhoushaw",
   "some": "test delete",
 }
 `;

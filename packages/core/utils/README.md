@@ -5,7 +5,7 @@
 ## Usage
 
 ```
-import shared from '@garfish/garafish-utils';
+import shared from '@garfish/garfish-utils';
 
 // TODO: DEMONSTRATE API
 ```

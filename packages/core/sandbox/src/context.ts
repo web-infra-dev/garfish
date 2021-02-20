@@ -1,17 +1,13 @@
-/* eslint-disable indent */
 import {
   warn,
   assert,
   hasOwn,
   makeMap,
+  isObject,
   rawWindow,
-  rawObjectKeys,
+  evalWithEnv,
+  emitSandboxHook,
 } from '@garfish/utils';
-import { documentOverride } from './modules/document';
-import { XMLHttpRequestOverride } from './modules/xhr';
-import { localStorageOverride } from './modules/storage';
-import { listenerOverride } from './modules/eventListener';
-import { timeoutOverride, intervalOverride } from './modules/timer';
 import {
   Hooks,
   Module,
@@ -25,16 +21,25 @@ import {
   initHooks,
   isEsMethod,
   initContainer,
-  addMoudleFlag,
+  verifyDescriptor,
   createFakeObject,
-  parentModuleIndex,
+  addFakeWindowType,
+  setDocCurrentScript,
 } from './utils';
+import { histroyOverride } from './modules/histroy';
+import { documentOverride } from './modules/document';
+import { XMLHttpRequestOverride } from './modules/xhr';
+import { localStorageOverride } from './modules/storage';
+import { listenerOverride } from './modules/eventListener';
+import { timeoutOverride, intervalOverride } from './modules/timer';
+import { __windowBind__, __garfishGlobal__ } from './symbolTypes';
 
 let sandboxId = 0;
 const defaultModules: Record<string, Module> = {
+  history: histroyOverride,
+  timeout: timeoutOverride,
   document: documentOverride,
   listener: listenerOverride,
-  timeout: timeoutOverride,
   interval: intervalOverride,
   localStorage: localStorageOverride,
   XMLHttpRequest: __DEV__ ? XMLHttpRequestOverride : null,
@@ -47,27 +52,26 @@ export class Sandbox {
   public context?: FakeWindow;
   public options: SandboxOptions;
   public recovers: Array<() => void> = [];
-  public globalStack: Array<FakeWindow> = [Sandbox.getGlobalObject()];
   public overrideContext: {
     recovers: Array<() => void>;
     overrides: Record<PropertyKey, any>;
     createds: Array<OverridesData['created']>;
   } = {
-    overrides: {},
     recovers: [],
     createds: [],
+    overrides: {},
   };
 
   private isProtectVariable: (p: PropertyKey) => boolean;
   private isInsulationVariable: (P: PropertyKey) => boolean;
 
   constructor(opts: SandboxOptions) {
-    assert(opts && typeof opts === 'object', 'Miss options.');
+    assert(isObject(opts), 'Miss options.');
 
     if (!opts.modules) opts.modules = {};
     if (!('useStrict' in opts)) opts.useStrict = true;
-    if (!('proxyBody' in opts)) opts.proxyBody = true;
-    if (!('openSandBox' in opts)) opts.openSandBox = true;
+    if (!('openSandBox' in opts)) opts.openSandbox = true;
+    if (!('strictIsolation' in opts)) opts.strictIsolation = true;
 
     initHooks(opts);
     initContainer(opts);
@@ -75,48 +79,76 @@ export class Sandbox {
     this.isInsulationVariable = makeMap(opts.insulationVariable?.() || []);
 
     this.options = opts;
-    // new 一个沙箱的时候，默认启动
-    this.start();
+    this.start(); // 默认启动沙箱
   }
 
-  createContext() {
+  callHook(name: keyof Hooks, args = []) {
+    return emitSandboxHook(this.options.hooks, name, args);
+  }
+
+  createContext(moduleKeys?: Array<string>) {
     assert(!this.closed, 'Sandbox is closed.');
-    const fakeWindow = createFakeObject(rawWindow, this.isInsulationVariable);
+    const fakeWindow = createFakeObject(
+      rawWindow,
+      this.isInsulationVariable,
+      makeMap(moduleKeys || []),
+    );
 
     const baseHandlers = {
-      get: (target: FakeWindow, p: PropertyKey) => {
+      get: (target: FakeWindow, p: PropertyKey, receiver: any) => {
         let value;
         const overrides = this.overrideContext.overrides;
 
         if (this.isProtectVariable(p)) {
-          value = rawWindow[p];
+          // receiver 不要传，否则会造成 this 指向不对
+          value = Reflect.get(rawWindow, p);
         } else if (this.isInsulationVariable(p)) {
-          value = target[p as any];
+          value = Reflect.get(target, p, receiver);
         } else {
-          if (hasOwn(target, p)) {
-            value = target[p as any];
-          } else {
-            value = rawWindow[p];
-          }
+          value = hasOwn(target, p)
+            ? Reflect.get(target, p, receiver)
+            : Reflect.get(rawWindow, p);
         }
 
         if (
           isEsMethod(p) ||
-          overrides[p as any] ||
+          hasOwn(overrides, p) ||
           typeof value !== 'function'
         ) {
           return value;
         }
-        return bind(value, rawWindow);
+
+        // TODO: 即使不能很完美的解决，也应该缩小范围
+        // `window.a = function b() {};`
+        // `window.a === b; true;`
+        const newValue = hasOwn(value, __windowBind__)
+          ? value[__windowBind__]
+          : bind(value, rawWindow);
+        const verifyResult = verifyDescriptor(target, p, newValue);
+
+        if (verifyResult > 0) {
+          if (verifyResult === 1) return value;
+          if (verifyResult === 2) return undefined;
+        }
+
+        value[__windowBind__] = newValue;
+        return newValue;
       },
 
-      set: (target: FakeWindow, p: PropertyKey, value: unknown) => {
-        if (this.isProtectVariable(p)) {
-          rawWindow[p] = value;
-        } else {
-          target[p as any] = value;
-        }
-        return true;
+      set: (target: FakeWindow, p: PropertyKey, value: any, receiver?: any) => {
+        return this.isProtectVariable(p)
+          ? Reflect.set(rawWindow, p, value)
+          : Reflect.set(target, p, value, receiver);
+      },
+
+      defineProperty: (
+        target: FakeWindow,
+        p: PropertyKey,
+        descriptor: PropertyDescriptor,
+      ) => {
+        return this.isProtectVariable(p)
+          ? Reflect.defineProperty(rawWindow, p, descriptor)
+          : Reflect.defineProperty(target, p, descriptor);
       },
 
       deleteProperty: (target: FakeWindow, p: PropertyKey) => {
@@ -133,7 +165,7 @@ export class Sandbox {
 
     const parentHandlers = {
       ...baseHandlers,
-      has: (target: FakeWindow, p: PropertyKey) => {
+      has: (_: FakeWindow, p: PropertyKey) => {
         return this.isProtectVariable(p) ? false : true;
       },
     };
@@ -146,12 +178,18 @@ export class Sandbox {
     proxy.window = subProxy;
     proxy.globalThis = subProxy;
     proxy.unstable_sandbox = this;
-    proxy.top = rawWindow.top === rawWindow ? subProxy : rawWindow.top;
-    proxy.parent = rawWindow.parent === rawWindow ? subProxy : rawWindow.top;
 
-    addMoudleFlag(proxy, rawWindow);
+    // prettier-ignore
+    proxy.top = rawWindow.top === rawWindow
+      ? subProxy
+      : rawWindow.top;
 
-    this.globalStack.push(proxy);
+    // prettier-ignore
+    proxy.parent = rawWindow.parent === rawWindow
+      ? subProxy
+      : rawWindow.top;
+
+    addFakeWindowType(proxy, rawWindow);
     this.callHook('onCreateContext', [this]);
 
     return proxy;
@@ -163,22 +201,22 @@ export class Sandbox {
     const overrides = {};
     const recovers = [];
     const createds = [];
-    const { modules, openSandBox } = this.options;
+    const { modules, openSandbox } = this.options;
     const needLoadModules = {
-      ...(openSandBox ? defaultModules : {}),
+      ...(openSandbox ? defaultModules : {}),
       ...modules,
     };
 
-    for (const key of rawObjectKeys(needLoadModules)) {
+    for (const key of Object.keys(needLoadModules)) {
       const module = needLoadModules[key];
       if (typeof module === 'function') {
         const { recover, override, created } = module(this);
         if (recover) recovers.push(recover);
         if (created) createds.push(created);
         if (override) {
-          for (const orkey in override) {
-            // 这会覆盖已经存在的 override
-            overrides[orkey] = override[orkey];
+          // 后面的会覆盖前面的变量
+          for (const key in override) {
+            overrides[key] = override[key];
           }
         }
       }
@@ -186,50 +224,42 @@ export class Sandbox {
     return { recovers, createds, overrides };
   }
 
-  execScript(code: string, sourceurl?: string, _?: boolean) {
+  execScript(code: string, url = '', async?: boolean) {
     assert(!this.closed, 'Sandbox is closed');
-    const { openSandBox } = this.options;
-    const sourceURL = sourceurl ? `//@ sourceURL=${sourceurl}` : '';
-    const refs = {
-      code,
-      context: this.context,
-    };
+    const context = this.context;
+    const refs = { url, code, context };
 
     this.callHook('onInvokeBefore', [this, refs]);
+    const revertCurrentScript = setDocCurrentScript(this, code, url, async);
 
-    if (openSandBox) {
-      new Function('window', `with(window) {${refs.code}\n}\n${sourceURL}`)(
-        refs.context,
-      );
-    } else {
-      const outerOverrides = this.overrideContext.overrides;
-      const params = Object.keys(outerOverrides).join(',');
-
-      new Function(
-        'unstable_sandbox',
-        `{${params}}`,
-        `(function() {${refs.code}\n})();\n${sourceURL}`,
-      )(this, outerOverrides);
-    }
-
-    this.callHook('onInvokeAfter', [this]);
-  }
-
-  callHook(hook: keyof Hooks, args: Array<any> = []) {
-    const handlers = this.options.hooks![hook];
-    if (handlers) {
-      if (typeof handlers === 'function') {
-        return [(handlers as any).apply(null, args as any)];
-      } else if (Array.isArray(handlers)) {
-        if (handlers.length === 0) {
-          return false;
-        }
-        return (handlers as any).map((fn: Function) =>
-          fn.apply(null, args),
-        ) as Array<any>;
+    try {
+      if (this.options.openSandbox) {
+        evalWithEnv(`with(window) {${refs.code}\n}`, url, {
+          window: refs.context,
+        });
+      } else {
+        const outerOverrides = this.overrideContext.overrides;
+        evalWithEnv(`with(window) {${refs.code}\n}`, url, {
+          ...outerOverrides,
+          window: refs.context,
+          unstable_sandbox: this,
+        });
       }
+    } catch (e) {
+      // 触发 window.onerror
+      const source = url || this.options.baseUrl;
+      const message = e instanceof Error ? e.message : String(e);
+
+      if (typeof refs.context.onerror === 'function') {
+        const fn =
+          (refs.context.onerror as any)._native || refs.context.onerror;
+        fn.call(window, message, source, null, null, e);
+      }
+      throw e;
     }
-    return false;
+
+    revertCurrentScript();
+    this.callHook('onInvokeAfter', [this, refs]);
   }
 
   clearEffects() {
@@ -244,17 +274,18 @@ export class Sandbox {
     }
   }
 
-  // start 实际上就重置 context
   start() {
     this.closed = false;
     this.callHook('onstart', [this]);
-    this.context = this.createContext();
     this.overrideContext = this.getOverrides();
-    this.recovers = this.overrideContext.recovers;
+
+    const { createds, overrides, recovers } = this.overrideContext;
+
+    this.recovers = recovers;
+    this.context = this.createContext(Object.keys(overrides));
 
     // 覆盖全部的访问变量
     if (this.context) {
-      const { createds, overrides } = this.overrideContext;
       if (overrides) {
         for (const key in overrides) {
           this.context[key] = overrides[key];
@@ -270,8 +301,7 @@ export class Sandbox {
     if (!this.closed) {
       this.clearEffects();
       this.closed = true;
-      this.globalStack.pop();
-      (this.context as any) = null;
+      this.context = null;
       this.callHook('onclose', [this]);
     }
   }
@@ -285,7 +315,7 @@ export class Sandbox {
   static getGlobalObject() {
     let module = window;
     while (isModule(module)) {
-      module = (module as any)[parentModuleIndex];
+      module = module[__garfishGlobal__];
     }
     return module;
   }

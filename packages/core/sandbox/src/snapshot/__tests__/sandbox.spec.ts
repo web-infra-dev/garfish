@@ -7,12 +7,12 @@ describe('test sandbox ', () => {
     `;
 
     const obj = {
-      name: 'bytedance',
-      age: '8',
+      name: 'zhoushaw',
+      age: '24',
       some: 'test delete',
     };
 
-    const sb = new SnapshotSandbox('app1', obj);
+    const sb = new SnapshotSandbox('app1', [], obj);
 
     const st = document.createElement('style');
     st.style.cssText = 'background: red;';

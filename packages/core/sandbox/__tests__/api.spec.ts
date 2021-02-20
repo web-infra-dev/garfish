@@ -1,4 +1,4 @@
-import Sandbox from '../src';
+import Sandbox from '../src/index';
 
 // 测试所有公开的 api
 // 形参数量和类型，返回值，一些边界情况
@@ -25,13 +25,11 @@ describe('Apis', () => {
   it('close', () => {
     const spy = jest.spyOn(sandbox, 'clearEffects');
     expect(sandbox.closed).toBe(false);
-    expect(sandbox.globalStack.length).toBe(2);
     expect(sandbox.context && typeof sandbox.context === 'object').toBe(true);
     expect(sandbox.close.length).toBe(0);
     expect(sandbox.close()).toBe(undefined);
     expect(sandbox.closed).toBe(true);
     expect(sandbox.context).toBe(null);
-    expect(sandbox.globalStack.length).toBe(1);
     // close 应该调用 clearEffects
     expect(spy).toHaveBeenCalled();
   });
@@ -49,7 +47,7 @@ describe('Apis', () => {
 
   it('createContext', () => {
     const context = sandbox.createContext();
-    expect(sandbox.createContext.length).toBe(0);
+    expect(sandbox.createContext.length).toBe(1);
     expect(typeof context).toBe('object');
     sandbox.close();
     expect(sandbox.createContext.bind(sandbox)).toThrow(/Garfish warning/);
@@ -57,7 +55,6 @@ describe('Apis', () => {
 
   it('getOverrides', () => {
     const res = sandbox.getOverrides();
-    expect(sandbox.createContext.length).toBe(0);
     expect(typeof res).toBe('object');
     expect(Array.isArray(res.recovers)).toBe(true);
     expect(typeof res.overrides).toBe('object');
@@ -69,7 +66,7 @@ describe('Apis', () => {
     const m = Sandbox.getGlobalObject();
     expect(m).toBe(window);
     expect(Sandbox.getGlobalObject.length).toBe(0);
-    expect(sandbox.context[Symbol.for('__garModule__') as any]).toBe(m);
+    expect(sandbox.context[Symbol.for('garfish.globalObject') as any]).toBe(m);
   });
 
   it('isBaseGlobal', () => {

@@ -1,34 +1,33 @@
-import { transformUrl, rawXMLHttpRequest } from '@garfish/utils';
+import { transformUrl } from '@garfish/utils';
 import { Sandbox } from '../context';
 
-// 处理 hmr ho-update.json 跨域需要代理的问题
+// 处理热更新时 ho-update.json 跨域需要代理的问题
 export function XMLHttpRequestOverride(sandbox: Sandbox) {
+  let override;
   const baseUrl = sandbox.options.baseUrl;
+
+  if (typeof baseUrl === 'string') {
+    override = function () {
+      const result = new XMLHttpRequest();
+      const nativeOpenMethod = result.open;
+
+      result.open = function () {
+        const path = arguments[1];
+        const isHotJson =
+          typeof path === 'string' && path.endsWith('hot-update.json');
+
+        if (isHotJson && arguments[0]?.toLowerCase() === 'get') {
+          arguments[1] = transformUrl(baseUrl, path);
+        }
+        return nativeOpenMethod.apply(this, arguments);
+      };
+      return result;
+    };
+  }
+
   return {
-    recover: () => {},
     override: {
-      XMLHttpRequest: baseUrl
-        ? function () {
-            const res = new rawXMLHttpRequest();
-            const nativeOpen = res.open;
-
-            res.open = function () {
-              const path = arguments[1];
-              const method = arguments[0]?.toLowerCase();
-
-              // hot-update.js 已经在动态 js 那儿处理了
-              if (
-                method === 'get' &&
-                typeof path === 'string' &&
-                path.endsWith('hot-update.json')
-              ) {
-                arguments[1] = transformUrl(baseUrl, path);
-              }
-              return nativeOpen.apply(this, arguments);
-            };
-            return res;
-          }
-        : rawXMLHttpRequest,
+      XMLHttpRequest: override || XMLHttpRequest,
     },
   };
 }

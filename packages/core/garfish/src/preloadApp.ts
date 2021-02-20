@@ -1,13 +1,18 @@
-import { warn, isCssLink, transformUrl } from '@garfish/utils';
-import { AppInfo } from './config';
-import { Garfish } from './garfish';
-import { REGISTER_APP } from './eventFlags';
+import {
+  warn,
+  isCssLink,
+  transformUrl,
+  callTestCallback,
+} from '@garfish/utils';
 import {
   Loader,
   JsResource,
   HtmlResource,
   isOverCapacity,
 } from './module/loader';
+import { AppInfo } from './config';
+import { Garfish } from './garfish';
+import { REGISTER_APP } from './eventTypes';
 
 let currentSize = 0;
 const storageKey = '__garfishPreloadApp__';
@@ -19,19 +24,22 @@ const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/
 const isSlowNetwork = () =>
   (navigator as any).connection
     ? (navigator as any).connection.saveData ||
-      /([23])g/.test((navigator as any).connection.effectiveType)
+      /(2|3)g/.test((navigator as any).connection.effectiveType)
     : false;
 
-const requestIdleCallback =
-  (window as any).requestIdleCallback || window.requestAnimationFrame;
+export const requestIdleCallback = __TEST__
+  ? window.setTimeout // jest 里面 requestIdleCallback 有点问题
+  : (window as any).requestIdleCallback ||
+    window.requestAnimationFrame ||
+    window.setTimeout;
 
 // 使用队列，避免干扰正常的请求
-const requestQueue = {
+export const requestQueue = {
   fx: [],
   init: true,
   lock: false,
 
-  add(fn: AnyFunction) {
+  add(fn: (...args: any) => any) {
     this.fx.push(fn);
     if (this.init) {
       this.lock = false;
@@ -58,7 +66,11 @@ const requestQueue = {
 };
 
 // 检测大小，捕获错误，避免预加载解析错误导致首屏白屏
-function safeLoad(loader: Loader, url: string, callback?: AnyFunction) {
+function safeLoad(
+  loader: Loader,
+  url: string,
+  callback?: (...args: any) => any,
+) {
   requestQueue.add((next) => {
     const throwWarn = (e) => {
       next();
@@ -86,15 +98,17 @@ function safeLoad(loader: Loader, url: string, callback?: AnyFunction) {
       });
     } else if (__DEV__) {
       warn(
-        `Resource caching capacity of more than "${(
-          currentSize / 1024
-        ).toFixed()}kb".`,
+        'Resource caching capacity of more than ' +
+          `"${(currentSize / 1024 / 1024).toFixed()}M".`,
       );
     }
   });
 }
 
 export function loadAppResource(loader: Loader, info: AppInfo) {
+  if (__TEST__) {
+    callTestCallback(loadAppResource, info);
+  }
   safeLoad(loader, info.entry, (resManager) => {
     requestIdleCallback(() => {
       if (resManager.type === 'html') {
@@ -149,27 +163,30 @@ export function setRanking(appName: string) {
   }
 }
 
+const loadedMap = Object.create(null); // 全局缓存，只加载一遍就够了
 export function preloadApp(context: Garfish) {
   if (isMobile) return;
   context.on(REGISTER_APP, (appInfos: Record<string, AppInfo>) => {
     // 延时预加载，预留给首屏渲染的的时间
-    setTimeout(() => {
-      if (isSlowNetwork()) return;
-      const loadedMap = Object.create(null);
-      const ranking = getRanking();
+    setTimeout(
+      () => {
+        if (isSlowNetwork()) return;
+        const ranking = getRanking();
 
-      for (const { appName } of ranking) {
-        if (appInfos[appName]) {
-          loadedMap[appName] = true;
-          loadAppResource(context.loader, appInfos[appName]);
+        for (const { appName } of ranking) {
+          if (appInfos[appName]) {
+            loadedMap[appName] = true;
+            loadAppResource(context.loader, appInfos[appName]);
+          }
         }
-      }
 
-      for (const key in appInfos) {
-        if (!loadedMap[key]) {
-          loadAppResource(context.loader, appInfos[key]);
+        for (const key in appInfos) {
+          if (!loadedMap[key]) {
+            loadAppResource(context.loader, appInfos[key]);
+          }
         }
-      }
-    }, 5000);
+      },
+      __TEST__ ? 0 : 5000,
+    );
   });
 }

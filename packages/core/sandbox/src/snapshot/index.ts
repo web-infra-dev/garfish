@@ -1,5 +1,6 @@
 import { PatchEvent } from './patchers/event';
 import { PatchStyle } from './patchers/style';
+import { PatchHistory } from './patchers/history';
 import { PatchInterval } from './patchers/interval';
 import { PatchGlobalVal } from './patchers/variable';
 import { PatchWebpackJsonp } from './patchers/webpackjsonp';
@@ -12,10 +13,10 @@ export class SnapshotSandbox {
 
   constructor(
     public name: string,
+    public protectVariable: Array<PropertyKey> = [],
     public targetToProtect: Window | Object = typeof window !== 'undefined'
       ? window
       : globalThis,
-    public protectVariable: Array<string> = [],
     private isInBrowser: Boolean = typeof window === 'undefined' ? false : true,
   ) {
     this.name = name;
@@ -27,8 +28,9 @@ export class SnapshotSandbox {
       this.patchList = [
         ...this.patchList,
         new PatchStyle(),
-        new PatchInterval(),
         new PatchEvent(),
+        new PatchHistory(),
+        new PatchInterval(),
         new PatchWebpackJsonp(),
       ];
     }
@@ -50,10 +52,10 @@ export class SnapshotSandbox {
 
   // 1.恢复沙盒启动期间变量变更的变量，记录变更记录
   // 2.恢复沙盒启动期间删除的变量，记录变更记录
-  public deactivate() {
+  public deactivate(clearEffects: boolean = true) {
     if (!this.isRunning) return; // 最后销毁全局变量守护
     [...this.patchList].reverse().forEach((patch) => {
-      patch.deactivate();
+      patch.deactivate(clearEffects);
     });
     this.isRunning = false;
   }
