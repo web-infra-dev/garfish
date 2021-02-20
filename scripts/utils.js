@@ -12,9 +12,6 @@ const allTargets = (exports.allTargets = fs
       return false;
     }
 
-    // if (require(`../packages/core/${f}/package.json`).private) {
-    //   return false;
-    // }
     return true;
   }));
 
@@ -53,7 +50,7 @@ exports.matchPkgName = function (pkgName) {
 exports.getDeps = function (code) {
   let res;
   const deps = [];
-  const reg = exports.matchPkgName('@byted\\/.*');
+  const reg = exports.matchPkgName('@garfish\\/.*');
 
   while ((res = reg.exec(code))) {
     const idx = res[3] ? 3 : 1;

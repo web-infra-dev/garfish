@@ -14,23 +14,20 @@ export interface SandboxOptions {
   hooks?: Hooks;
   baseUrl?: string;
   namespace: string;
-  proxyBody?: boolean;
+  strictIsolation?: boolean;
   useStrict?: boolean;
-  openSandBox?: boolean;
+  openSandbox?: boolean;
   modules?: Record<string, Module>;
   disabled?: Record<string, boolean>;
-  el?: () => Element;
+  el?: () => Element | ShadowRoot;
   protectVariable?: () => Array<PropertyKey>;
   insulationVariable?: () => Array<PropertyKey>;
 }
 
 interface InvokeBeforeRefs {
+  url: string;
   code: string;
-  params: Array<string>;
-  global: FakeWindow;
-  onerror: Function | onerror;
-  recovers: OverridesData['override'];
-  overrides: OverridesData['recover'];
+  context: FakeWindow;
 }
 
 // hooks
@@ -39,7 +36,7 @@ type onstart = (sandbox: Sandbox) => void;
 type onerror = (err: Error | string) => void;
 type onClearEffect = (sandbox: Sandbox) => void;
 type onCreateContext = (sandbox: Sandbox) => void;
-type onInvokeAfter = (sandbox: Sandbox) => void;
+type onInvokeAfter = (sandbox: Sandbox, refs: InvokeBeforeRefs) => void;
 type onInvokeBefore = (sandbox: Sandbox, refs: InvokeBeforeRefs) => void;
 type onAppendNode = (
   sandbox: Sandbox,

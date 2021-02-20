@@ -1,13 +1,13 @@
 export * from './sandbox';
-import { makeMap, rawObject, rawObjectDefineProperty } from '@garfish/utils';
+import {
+  isObject,
+  makeMap,
+  rawObject,
+  rawObjectDefineProperty,
+} from '@garfish/utils';
+import { __proxyNode__ } from '../symbolTypes';
 
-export const PROXY_NODE = Symbol('PROXY_NODE');
-
-export const GAR_NAMESPACE_PREFIX = '__Garfish__';
-
-export const getPrefix = (key: string) => `${GAR_NAMESPACE_PREFIX}${key}__`;
-
-// es 的函数不需要修正 this 和处理 elm 参数, dom, bom 相关 api 需要
+// es 的函数不需要修正 this 和处理 elm 参数
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object
 export const isEsMethod = makeMap([
   // Function properties of the global object
@@ -68,7 +68,7 @@ export const isEsMethod = makeMap([
 export const handlerParams = function (args: IArguments | Array<any>) {
   args = Array.isArray(args) ? args : Array.from(args);
   return args.map((v) => {
-    return v && v[PROXY_NODE] ? v[PROXY_NODE] : v;
+    return v && v[__proxyNode__] ? v[__proxyNode__] : v;
   });
 };
 
@@ -106,22 +106,23 @@ export function bind(fn, context: any) {
     return this instanceof bound ? new fn(...args) : fn.apply(context, args);
   }
 
-  // 记录原来的函数，测试的时候可能需要
+  // 记录原来的函数
   bound._native = fn;
   transferProps(fn, bound);
 
   if (fn.prototype) {
     // `Function.prototype` doesn't have a prototype property
-    fNOP.prototype = fn.prototype;
+    fNOP.prototype = fn.prototype; // 这里应该要 copy 属性和方法才对
   }
   bound.prototype = new fNOP();
 
   // 经过包装后，需要修正 instanceof 操作
   if (Symbol.hasInstance) {
     rawObjectDefineProperty(bound, Symbol.hasInstance, {
+      configurable: true,
       value(instance) {
         const op = fn.prototype;
-        return op && (typeof op === 'object' || typeof op === 'function')
+        return isObject(op) || typeof op === 'function'
           ? instance instanceof fn
           : false;
       },

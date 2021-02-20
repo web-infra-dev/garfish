@@ -6,7 +6,7 @@
   + 打包介绍
   + 调试流程
 
-garfish 仓库使用 learn 和一些额外的构建脚本共同处理，这意味着，learn 的命令也都是可以用的
+Garfish 仓库使用 learn 和一些额外的构建脚本共同处理，这意味着，learn 的命令也都是可以用的
 ## 开发设置
 如果你想参与 Garfish 的开发或贡献代码，确保你安装以下依赖和插件（vscode 插件）
   + 确保你的 node 为 **，npm 版本为 **
@@ -15,7 +15,7 @@ garfish 仓库使用 learn 和一些额外的构建脚本共同处理，这意�
 
 克隆完本仓库后
 ```shell
-  $ npm install # 安装依赖
+  $ npm run setup # 安装依赖
 ```
 
 ## 项目结构
@@ -41,6 +41,7 @@ garfish 仓库使用 learn 和一些额外的构建脚本共同处理，这意�
     - `createPackage.js`: 生成新的子包模板工程
     - `utils.js`: 一些工具函数
     - `verifyCommit.js`: commit 信息的校验
+    - `jestTest.js`: 启动单元测试以及测试服务器
 
 ## 打包介绍
 ### Core

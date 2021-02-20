@@ -2,7 +2,7 @@ import { hasOwn } from '@garfish/utils';
 export class PatchGlobalVal {
   public snapshotOriginal: any = {};
   private snapshotMutated: any = {};
-  private whiteList: Array<string> = [
+  private whiteList: Array<PropertyKey> = [
     'location',
     'addEventListener',
     'removeEventListener',
@@ -13,7 +13,7 @@ export class PatchGlobalVal {
     public targetToProtect: any = typeof window !== 'undefined'
       ? window
       : globalThis,
-    public protectVariable: Array<string> = [],
+    public protectVariable: Array<PropertyKey> = [],
   ) {
     this.targetToProtect = targetToProtect;
     this.protectVariable = protectVariable;
@@ -25,6 +25,10 @@ export class PatchGlobalVal {
     // 跳过不遍历的变量
     for (const i in this.targetToProtect) {
       if (this.whiteList.indexOf(i) !== -1) {
+        continue;
+      }
+      const prop = Object.getOwnPropertyDescriptor(this.targetToProtect, i);
+      if (!prop || !prop.writable) {
         continue;
       }
       if (hasOwn(this.targetToProtect, i)) {

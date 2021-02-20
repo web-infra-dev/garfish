@@ -2,7 +2,7 @@
 type FileType = ReturnType<typeof parseContentType>;
 
 export function parseContentType(input: string) {
-  input = input.trim();
+  input = input?.trim();
   if (!input) return null;
 
   let idx = 0;

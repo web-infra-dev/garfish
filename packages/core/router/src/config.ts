@@ -24,7 +24,7 @@ export interface CurrentRouterInfo extends RouterInfo {
   matched: Array<AppInfo>;
 }
 
-export const __GAR_ROUTER_UPDATE_FLAG__ = '__GAR_ROUTER_UPDATE_FLAG__';
+export const __GARFISH_ROUTER_UPDATE_FLAG__ = '__GARFISH_ROUTER_UPDATE_FLAG__';
 
 export interface Options {
   basename?: string;

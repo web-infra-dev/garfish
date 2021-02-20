@@ -102,7 +102,7 @@ describe('Hooks', () => {
       expect(onInvokeBefore.mock.calls[0].length).toBe(2);
       expect(onInvokeBefore.mock.calls[0][0] === sandbox).toBe(true);
       const refs = onInvokeBefore.mock.calls[0][1];
-      const args = ['code', 'context'];
+      const args = ['url', 'code', 'context'];
       expect(Object.keys(refs).length).toBe(args.length);
       args.forEach((key) => {
         expect(key in refs).toBe(true);
@@ -122,7 +122,7 @@ describe('Hooks', () => {
       sandbox.execScript('');
       sandbox.execScript('');
       expect(onInvokeAfter.mock.calls.length).toBe(2);
-      expect(onInvokeAfter.mock.calls[0].length).toBe(1);
+      expect(onInvokeAfter.mock.calls[0].length).toBe(2);
       expect(onInvokeAfter.mock.calls[0][0] === sandbox).toBe(true);
     };
     run(true);

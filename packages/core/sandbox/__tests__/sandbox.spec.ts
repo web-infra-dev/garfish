@@ -13,7 +13,7 @@ describe('Sandbox', () => {
       const sandbox = unstable_sandbox;
       const Sandbox = sandbox.constructor;
       const nativeWindow = Sandbox.getGlobalObject();
-      const parentWindow = sandbox.context[Symbol.for('__garModule__')];
+      const parentWindow = sandbox.context[Symbol.for('garfish.globalObject')];
       ${code}
     `;
   };

@@ -1,5 +1,6 @@
-import { noop, createKey } from '@garfish/utils';
 import { listenRouterAndReDirect } from '@garfish/router';
+import { noop, createKey, callTestCallback } from '@garfish/utils';
+import { App } from './module/app';
 import { AppInfo } from './config';
 import { Garfish } from './garfish';
 
@@ -22,25 +23,20 @@ export function startRouter(context: Garfish) {
       cache,
       basename: rootPath,
     });
-
-    context.apps[name] = app;
-
-    unmounts[name] = () => {
-      if (app) {
-        if (app.mounted && cache) {
-          app.hide();
-        } else {
-          app.unmount();
-        }
-      }
+    const call = (app: App, isRender: boolean) => {
+      if (!app) return;
+      const isDes = cache && app.mounted;
+      const fn = isRender
+        ? app[isDes ? 'show' : 'mount']
+        : app[isDes ? 'hide' : 'unmount'];
+      return fn.call(app);
     };
 
-    if (app && currentApp === activeApp) {
-      if (app.mounted && cache) {
-        app.show();
-      } else {
-        await app.mount();
-      }
+    context.apps[name] = app;
+    unmounts[name] = () => call(app, false);
+
+    if (currentApp === activeApp) {
+      await call(app, true);
     }
   }
 
@@ -54,7 +50,7 @@ export function startRouter(context: Garfish) {
     delete context.apps[name];
   }
 
-  listenRouterAndReDirect({
+  const listenOptions = {
     active,
     deactive,
     autoRefreshApp,
@@ -63,5 +59,10 @@ export function startRouter(context: Garfish) {
     apps: apps.filter(
       (app) => app.activeWhen !== null && app.activeWhen !== undefined,
     ) as Array<Required<AppInfo>>,
-  });
+  };
+
+  if (__TEST__) {
+    callTestCallback(startRouter, context, listenOptions);
+  }
+  listenRouterAndReDirect(listenOptions);
 }

@@ -1,8 +1,8 @@
-# `gar-sandbox`
+# `sandbox`
 本 sandbox 能够支持多实例，并且能够支持沙箱嵌套的能力
 
 ## debug
-`$ yarn dev garfish-sandbox -o`
+`$ yarn dev sandbox -o`
 
 ## 设计理念
 在浏览器端的沙箱，是提供一套独立的 js 运行时换，包括但是不限于 `js runtime`、`dom`、`bom` 等。实质上，沙箱隔离的是副作用，而且浏览器时时刻刻无处不在的与用户进行交互，也就是说，副作用无处不在。因此，想要完全隔绝，除了 iframe，都是不现实的，这样就有了取舍，也就可以把副作用的处理抽象成一个独立的概念来进行管理

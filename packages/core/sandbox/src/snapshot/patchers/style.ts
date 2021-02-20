@@ -1,5 +1,17 @@
 import { Interceptor, Snapshot, SnapshotDiff } from './interceptor';
 
+interface EffectCt {
+  src: string;
+  outerHTML: string;
+  content: string;
+}
+
+interface EffectMap {
+  style: Array<EffectCt>;
+  script: Array<EffectCt>;
+  other: Array<EffectCt>;
+}
+
 export class PatchStyle {
   public headInterceptor: Interceptor;
   private domSnapshotBefore!: Snapshot;
@@ -28,5 +40,26 @@ export class PatchStyle {
       this.domSnapshotMutated.created,
       this.domSnapshotMutated.removed,
     );
+  }
+
+  private formateCtx(arrDoms: Array<HTMLElement>) {
+    const effectMap: EffectMap = {
+      style: [],
+      script: [],
+      other: [],
+    };
+
+    arrDoms.forEach((dom) => {
+      let type: 'other' | 'style' | 'script' = 'other';
+      if (/css/.test((dom as any).type)) type = 'style';
+      if (/javascript/.test((dom as any).type)) type = 'script';
+      effectMap[type].push({
+        src: (dom as any).src,
+        outerHTML: dom.outerHTML,
+        content: dom.innerText,
+      });
+    });
+
+    return effectMap;
   }
 }

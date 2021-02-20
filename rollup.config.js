@@ -71,7 +71,7 @@ function createReplacePlugin(
   isBrowserESMBuild,
 ) {
   return replace({
-    _TEST__: false,
+    __TEST__: false,
     __VERSION__: `"${pkg.version}"`,
     __BROWSER__: !!(isUmdBuild || isBrowserESMBuild),
     __DEV__: isBundlerESMBuild

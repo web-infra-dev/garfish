@@ -7,17 +7,19 @@ import {
   rawObject,
   rawDocument,
   rawObserver,
+  findTarget,
   transformCssUrl,
   createStyleNode,
   parseContentType,
 } from '@garfish/utils';
 import { Sandbox } from '../context';
-import { rootElm, toResolveUrl } from '../utils/sandbox';
 import { handlerParams } from './index';
+import { __domWrapper__ } from '../symbolTypes';
+import { rootElm, toResolveUrl } from './sandbox';
 
-const wrapperFlag = Symbol.for('GarfishWrapperFunction');
-
+const rawElementMethods = Object.create(null);
 const isResourceNode = makeMap(['a', 'img', 'link', 'script']);
+const isInsertMethod = makeMap(['insertBefore', 'insertAdjacentElement']);
 
 const mountElementMethods = [
   'append',
@@ -26,27 +28,29 @@ const mountElementMethods = [
   'insertAdjacentElement',
 ];
 
-const rawElementMethods = {};
-
 // 创建 js 注释节点
 function createScriptComment(src: string, code: string) {
   src = src ? `src="${src}" ` : '';
   return rawDocument.createComment(
-    `<script ${src}Garfish dynamic>${code}</script>`,
+    `<script ${src}execute by garfish(dynamic)>${code}</script>`,
   );
 }
 
 function createLinkComment(href: string) {
   href = href ? `href="${href}" ` : '';
-  return rawDocument.createComment(`<link ${href}Garfish dynamic></link>`);
+  return rawDocument.createComment(
+    `<link ${href}execute by garfish(dynamic)></link>`,
+  );
 }
 
 function dispatchEvent(el: Element, type: string) {
-  const event = new Event(type);
-  // @ts-ignore
-  event.garfish = true;
-  rawObject.defineProperty(event, 'target', { value: el });
-  el.dispatchEvent(event);
+  // 放到下个宏任务中，以保证当前的同步脚本执行完
+  setTimeout(() => {
+    const event: Event & { garfish?: boolean } = new Event(type);
+    event.garfish = true;
+    rawObject.defineProperty(event, 'target', { value: el });
+    el.dispatchEvent(event);
+  });
 }
 
 function processResponse(res: Response) {
@@ -56,7 +60,7 @@ function processResponse(res: Response) {
   return res.text();
 }
 
-function addSynamicLink(el: HTMLLinkElement, callback: (code: string) => void) {
+function addDynamicLink(el: HTMLLinkElement, callback: (code: string) => void) {
   const { href, type } = el;
 
   if (!type || isCss(parseContentType(type))) {
@@ -86,6 +90,7 @@ function addDynamicScript(sandbox: Sandbox, el: HTMLScriptElement) {
 
   if (!type || isJs(parseContentType(type))) {
     const namespace = sandbox.options.namespace || '';
+
     // src 优先级更高
     if (src) {
       fetch(src)
@@ -117,16 +122,16 @@ function addDynamicScript(sandbox: Sandbox, el: HTMLScriptElement) {
   return createScriptComment(src, code);
 }
 
-const makeElInjector = (cur: Function, method: string) => {
+const makeElInjector = (current: Function, method: string) => {
   return function () {
     const el = method === 'insertAdjacentElement' ? arguments[1] : arguments[0];
 
     // 过滤 css 中的相对路径
     if (this?.tagName?.toLowerCase() === 'style') {
-      const baseUrl = this.GARFISH_SANDBOX?.options.baseUrl;
+      const baseUrl = el.GARFISH_SANDBOX?.options.baseUrl;
       if (baseUrl) {
-        el.textContent = transformCssUrl(baseUrl, el.textContent);
-        return cur.apply(this, arguments);
+        this.textContent = transformCssUrl(baseUrl, el.textContent);
+        return current.apply(this, arguments);
       }
     }
 
@@ -135,6 +140,7 @@ const makeElInjector = (cur: Function, method: string) => {
 
       if (sandbox) {
         let newNode;
+        const baseUrl = sandbox.options.baseUrl;
         const rootEl = rootElm(sandbox);
         const append = rawElementMethods['appendChild'];
         const tag = el.tagName && el.tagName.toLowerCase();
@@ -143,7 +149,6 @@ const makeElInjector = (cur: Function, method: string) => {
         if (isResourceNode(tag)) {
           const src = el.getAttribute('src');
           const href = el.getAttribute('href');
-
           if (src) {
             el.src = toResolveUrl(sandbox, src);
           } else if (href) {
@@ -153,11 +158,13 @@ const makeElInjector = (cur: Function, method: string) => {
 
         if (tag === 'style') {
           newNode = el;
+          if (baseUrl)
+            newNode.textContent = transformCssUrl(baseUrl, el.textContent);
         } else if (tag === 'script') {
           newNode = addDynamicScript(sandbox, el);
         } else if (tag === 'link') {
-          if (el.rel === 'stylesheet') {
-            newNode = addSynamicLink(el, (code) => {
+          if (el.rel === 'stylesheet' && el.href) {
+            newNode = addDynamicLink(el, (code) => {
               // link 标签转为 style 标签，修正 url
               code = transformCssUrl(el.href, code);
               append.call(rootEl, createStyleNode(code));
@@ -166,8 +173,7 @@ const makeElInjector = (cur: Function, method: string) => {
             newNode = el;
           }
         } else if (__DEV__) {
-          // 沙箱内部创建的 iframe, window 都用当前沙箱的代理 window
-          // 处理 react-hot-loader 利用 iframe 热更新的问题
+          // 沙箱内部创建的 iframe 标签上的 window 都用当前沙箱的代理 window
           if (tag === 'iframe' && typeof el.onload === 'function') {
             def(el, 'contentWindow', sandbox.context);
             def(el, 'contentDocument', sandbox.context.document);
@@ -175,32 +181,52 @@ const makeElInjector = (cur: Function, method: string) => {
         }
 
         sandbox.callHook('onAppendNode', [sandbox, rootEl, newNode, tag]);
+
         if (newNode) {
-          // 为insertBefore、insertAdjacentElement方法时，添加到容器内，不需要进行再次改写
+          // 如果是 insertBefore、insertAdjacentElement 方法
+          // 添加到容器内时不需要进行再次改写
           if (
-            (method === 'insertBefore' || method === 'insertAdjacentElement') &&
-            rootEl.contains(this)
+            isInsertMethod(method) &&
+            rootEl.contains(this) &&
+            arguments[1]?.parentNode === this
           ) {
-            return cur.apply(this, arguments);
+            return current.apply(this, arguments);
           }
+
+          if (tag === 'style' || tag === 'link') {
+            return append.call(
+              findTarget(rootEl, ['head', 'div[__GarfishMockHead__]']),
+              newNode,
+            );
+          }
+
+          if (tag === 'script') {
+            return append.call(
+              findTarget(rootEl, ['body', 'div[__GarfishMockBody__]']),
+              newNode,
+            );
+          }
+
           return append.call(rootEl, newNode);
         }
       }
     }
-    return cur.apply(this, arguments);
+    return current.apply(this, arguments);
   };
 };
 
 // 初始化
 if (typeof window.Element === 'function') {
   for (const method of mountElementMethods) {
-    const cur = window.Element.prototype[method];
-    if (!cur[wrapperFlag]) {
-      rawElementMethods[method] = cur;
-      const wrapper = makeElInjector(cur, method);
-      wrapper[wrapperFlag] = true;
-      window.Element.prototype[method] = wrapper;
+    const nativeMethod = window.Element.prototype[method];
+    if (typeof nativeMethod !== 'function' || nativeMethod[__domWrapper__]) {
+      continue;
     }
+
+    rawElementMethods[method] = nativeMethod;
+    const wrapper = makeElInjector(nativeMethod, method);
+    wrapper[__domWrapper__] = true;
+    window.Element.prototype[method] = wrapper;
   }
 }
 

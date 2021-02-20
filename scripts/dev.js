@@ -104,7 +104,7 @@ async function run() {
   if (buildOptions.devTemplate === 'module') {
     devServer(pkgDevDir, buildProcess);
   } else {
-    await sleep(1000);
+    await sleep(2000);
     multipleServer(pkgDevDir, buildProcess);
   }
 }

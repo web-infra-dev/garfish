@@ -2,7 +2,7 @@
 // 内部私有的属性将不会测试，为未来的优化和修改留出空间
 // 正反测试，后续特别稳定了再补
 
-import Sandbox from '../src';
+import Sandbox from '../src/index';
 import { Hooks } from '../src/types';
 
 describe('Init', () => {
@@ -73,6 +73,8 @@ describe('Init', () => {
     expect(typeof subGlobal).toBe('object');
     expect(Sandbox.isBaseGlobal(subGlobal)).toBe(false);
     expect(Sandbox.isBaseGlobal(baseGlobal)).toBe(true);
-    expect(baseGlobal).toBe(subGlobal[Symbol.for('__garModule__') as any]);
+    expect(baseGlobal).toBe(
+      subGlobal[Symbol.for('garfish.globalObject') as any],
+    );
   });
 });

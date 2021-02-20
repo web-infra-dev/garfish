@@ -1,5 +1,5 @@
-import SandBox from '@garfish/sandbox';
-import { error } from '@garfish/utils';
+import Sandbox from '@garfish/sandbox';
+import { deepMerge, error } from '@garfish/utils';
 
 export interface AppInfo {
   name: string;
@@ -19,12 +19,12 @@ interface LoaderResult {
 export declare type LifeCycleFn = (
   appInfo: AppInfo,
   path: string,
-) => Promise<any> | void;
+) => Promise<void> | void;
 
 export interface OverridesData {
   recover?: () => void;
   override?: Record<string, any>;
-  created?: (context: SandBox['context']) => void;
+  created?: (context: Sandbox['context']) => void;
 }
 
 export interface Provider {
@@ -33,14 +33,14 @@ export interface Provider {
 }
 
 export interface SandboxConfig {
-  open: boolean;
-  snapshot: boolean;
-  useStrict: boolean;
-  proxyBody: boolean;
-  modules?: Record<string, (sandbox: SandBox) => OverridesData>;
+  open?: boolean;
+  snapshot?: boolean;
+  useStrict?: boolean;
+  strictIsolation?: boolean;
+  hooks?: Sandbox['options']['hooks'];
+  modules?: Record<string, (sandbox: Sandbox) => OverridesData>;
 }
-
-export interface Options {
+export interface Config {
   appID?: string;
   basename?: string;
   apps: Array<AppInfo>;
@@ -52,38 +52,48 @@ export interface Options {
   protectVariable?: Array<PropertyKey>;
   insulationVariable?: Array<PropertyKey>;
   domGetter: (() => Element | null | Promise<Element | null>) | string;
+}
+
+export interface Hooks {
   beforeEval?: LifeCycleFn;
   afterEval?: LifeCycleFn;
   beforeMount?: LifeCycleFn;
   afterMount?: LifeCycleFn;
   beforeUnmount?: LifeCycleFn;
   afterUnmount?: LifeCycleFn;
-  errorLoadApp?: (err: Error, appInfo: AppInfo) => void;
-  errorMountApp?: (err: Error, appInfo: AppInfo) => void;
-  errorUnmountApp?: (err: Error, appInfo: AppInfo) => void;
-  beforeLoad?: (appInfo: AppInfo) => Promise<any> | void;
-  onNotMatchRouter?: (path: string) => Promise<any> | void;
+  beforeLoad?: (
+    appInfo: AppInfo,
+    opts: LoadAppOptions,
+  ) => Promise<void | false> | void | false;
+  afterLoad?: (appInfo: AppInfo, opts: LoadAppOptions) => Promise<void> | void;
+  onNotMatchRouter?: (path: string) => Promise<void> | void;
+  errorLoadApp?: (err: Error | string, appInfo: AppInfo) => void;
+  errorMountApp?: (err: Error | string, appInfo: AppInfo) => void;
+  errorUnmountApp?: (err: Error | string, appInfo: AppInfo) => void;
   customLoader?: (
     provider: Provider,
     appInfo: AppInfo,
     path: string,
-  ) => Promise<LoaderResult | any> | void;
+  ) => Promise<LoaderResult | void> | LoaderResult | void;
 }
+
+export type Options = Config & Hooks;
 
 export type LoadAppOptions = Partial<Options> & {
   data?: any;
   cache?: boolean; // 是否缓存
 };
 
-export const DefaultOptions: Options = {
+const defaultOptions: Options = {
   apps: [],
   basename: '',
   sandbox: {
     open: true,
+    hooks: {},
     modules: {},
     snapshot: false,
     useStrict: true,
-    proxyBody: false,
+    strictIsolation: false,
   },
   protectVariable: [],
   insulationVariable: [],
@@ -92,6 +102,7 @@ export const DefaultOptions: Options = {
   disablePreloadApp: false,
   domGetter: () => null,
   beforeLoad: () => {},
+  afterLoad: () => {},
   beforeEval: () => {},
   afterEval: () => {},
   beforeMount: () => {},
@@ -103,3 +114,5 @@ export const DefaultOptions: Options = {
   errorUnmountApp: (err) => error(err),
   onNotMatchRouter: () => {},
 };
+
+export const getDefaultOptions = () => deepMerge({}, defaultOptions);

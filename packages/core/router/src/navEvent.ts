@@ -1,4 +1,4 @@
-import { RouterConfig, __GAR_ROUTER_UPDATE_FLAG__ } from './config';
+import { RouterConfig, __GARFISH_ROUTER_UPDATE_FLAG__ } from './config';
 
 function createPopStateEvent(state: any, originalMethodName: string) {
   let evt;
@@ -45,7 +45,7 @@ export const push = ({
   query?: { [key: string]: string };
 }) => {
   const url = handlerParams(path, query!);
-  history.pushState({ [__GAR_ROUTER_UPDATE_FLAG__]: true }, '', url);
+  history.pushState({ [__GARFISH_ROUTER_UPDATE_FLAG__]: true }, '', url);
 };
 
 export const replace = ({
@@ -56,5 +56,5 @@ export const replace = ({
   query?: { [key: string]: string };
 }) => {
   const url = handlerParams(path, query!);
-  history.replaceState({ [__GAR_ROUTER_UPDATE_FLAG__]: true }, '', url);
+  history.replaceState({ [__GARFISH_ROUTER_UPDATE_FLAG__]: true }, '', url);
 };
