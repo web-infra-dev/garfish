@@ -26,3 +26,7 @@ test.js
 **/yarn-debug.log*
 **/yarn-error.log*
 lerna-debug.log
+
+
+# lock files
+package-lock.json
