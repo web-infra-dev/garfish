@@ -16,7 +16,7 @@ console.log(
   ),
 );
 
-const packagesDir = path.resolve(__dirname, 'packages/core');
+const packagesDir = path.resolve(__dirname, 'packages/runtime');
 const packageDir = path.resolve(packagesDir, process.env.TARGET);
 const name = path.basename(packageDir);
 const resolve = (p) => (path.isAbsolute(p) ? p : path.resolve(packageDir, p));

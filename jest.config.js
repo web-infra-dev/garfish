@@ -19,9 +19,9 @@ module.exports = {
   ],
   transform: { '\\.js$': ['babel-jest'], '\\.ts$': 'ts-jest' },
   rootDir: __dirname,
-  testMatch: ['<rootDir>/packages/core/**/__tests__/**/*spec.[jt]s?(x)'],
+  testMatch: ['<rootDir>/packages/runtime/**/__tests__/**/*spec.[jt]s?(x)'],
   testPathIgnorePatterns: ['/node_modules/', '/dev/'],
   moduleNameMapper: {
-    '@garfish/(.*)': '<rootDir>packages/core/$1/src',
+    '@garfish/(.*)': '<rootDir>packages/runtime/$1/src',
   },
 };

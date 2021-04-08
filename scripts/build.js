@@ -43,7 +43,7 @@ async function run() {
 }
 
 async function build(target) {
-  const pkgDir = path.resolve(`packages/core/${target}`);
+  const pkgDir = path.resolve(`packages/runtime/${target}`);
   const pkg = require(`${pkgDir}/package.json`);
 
   if (pkg.private) {
@@ -84,7 +84,9 @@ function getPrivateDeps(dotDTs) {
   const deps = getDeps(code);
   return allTargets
     .map((target) => {
-      const pkg = require(path.resolve(`packages/core/${target}/package.json`));
+      const pkg = require(path.resolve(
+        `packages/runtime/${target}/package.json`,
+      ));
       return pkg.private
         ? deps.find((v) => {
             if (v.pkgName === pkg.name) {
@@ -115,13 +117,13 @@ function mergePrivateTypes(
 
   // 复用 config，打包依赖的私有包
   config.mainEntryPointFilePath = mainEntryPointFilePath.replace(
-    `dist/packages/core/${target}/`,
-    `dist/packages/core/${dirName}/`,
+    `dist/packages/runtime/${target}/`,
+    `dist/packages/runtime/${dirName}/`,
   );
 
   config.publicTrimmedFilePath = publicTrimmedFilePath.replace(
-    `core/${baseRoot}/dist/${target}.d.ts`,
-    `core/${baseRoot}/dist/${dirName}.d.ts`,
+    `runtime/${baseRoot}/dist/${target}.d.ts`,
+    `runtime/${baseRoot}/dist/${dirName}.d.ts`,
   );
 
   // 替换包的引用方式

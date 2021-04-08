@@ -21,7 +21,7 @@ const clear = args.clear || args.c;
 const noCheck = args.nocheck || args.n;
 const formats = args.formats || args.f || 'esm-browser';
 
-const pkgDir = path.resolve(`packages/core/${target}`);
+const pkgDir = path.resolve(`packages/runtime/${target}`);
 const pkg = require(path.resolve(pkgDir, './package.json'));
 
 const devTemplate = `
@@ -219,7 +219,6 @@ async function multipleServer(pkgDevDir, buildProcess) {
         return;
       }
 
-      console.log(chalk.red.bold(str));
       if (buildProcess) {
         buildProcess.kill('SIGKILL');
       }

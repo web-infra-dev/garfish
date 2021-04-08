@@ -5,7 +5,8 @@
     "publish": {
       "ignoreChanges": [
         "ignored-file",
-        "*.md"
+        "*.md",
+        "packages/tools/*"
       ],
       "message": "chore(release): publish"
     },
@@ -18,6 +19,7 @@
     }
   },
   "packages": [
-    "packages/core/*"
+    "packages/runtime/*",
+    "packages/tools/*"
   ]
 }

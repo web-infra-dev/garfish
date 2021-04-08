@@ -1,0 +1,41 @@
+{
+  "name": "@garfish/core",
+  "version": "0.0.2",
+  "description": "core module.",
+  "keywords": [
+    "garfish",
+    "core",
+    "micro front-end"
+  ],
+  "author": "zhouxiao<codingzx@gmail.com>",
+  "homepage": "https://github.com/bytedance/garfish",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "module": "dist/core.esm-bundler.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "scripts": {},
+  "types": "dist/core.d.ts",
+  "buildOptions": {
+    "name": "Core",
+    "devTemplate": "complete",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "umd"
+    ]
+  },
+  "dependencies": {
+    "inversify": "^5.0.5",
+    "reflect-metadata": "^0.1.13"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}

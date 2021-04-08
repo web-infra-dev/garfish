@@ -1,0 +1,37 @@
+{
+  "name": "@garfish/loader",
+  "version": "0.0.2",
+  "description": "loader module.",
+  "keywords": [
+    "garfish",
+    "loader"
+  ],
+  "author": "chentao.arthur <chentao.arthur@bytedance.com>",
+  "homepage": "http://garfish.bytedance.com",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "module": "dist/loader.esm-bundler.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "scripts": {},
+  "types": "dist/loader.d.ts",
+  "buildOptions": {
+    "name": "Loader",
+    "devTemplate": "module",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "umd"
+    ]
+  },
+  "dependencies": {},
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}

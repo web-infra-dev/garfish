@@ -7,6 +7,6 @@ module.exports = {
   },
   browser: 'chromium',
   browserContext: 'default',
-  testMatch: ['<rootDir>/packages/core/**/__tests__/**/*spec.[jt]s?(x)'],
+  testMatch: ['<rootDir>/packages/runtime/**/__tests__/**/*spec.[jt]s?(x)'],
   testPathIgnorePatterns: ['/node_modules/', '/dev/'],
 };

@@ -8,6 +8,7 @@ es/
 .vscode
 .rts2_cache/
 temp/
+core_
 
 # Editor directories and files
 .idea

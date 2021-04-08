@@ -1,0 +1,37 @@
+{
+  "name": "@garfish/utils",
+  "version": "0.0.2",
+  "description": "utils module.",
+  "keywords": [
+    "garfish",
+    "utils"
+  ],
+  "author": "zhouxiao <codingzx@gmail.com>",
+  "homepage": "https://github.com/bytedance/garfish",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "module": "dist/utils.esm-bundler.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "scripts": {},
+  "types": "dist/utils.d.ts",
+  "buildOptions": {
+    "name": "Utils",
+    "devTemplate": "module",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "umd"
+    ]
+  },
+  "dependencies": {},
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}

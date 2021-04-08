@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Main project</title>
+  <style>
+    b { cursor: pointer; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mobx/5.15.7/mobx.umd.js"></script>
+</head>
+<body>
+  <div id="MainApp">
+    <div>
+      <h1 align="center">Main project</h1>
+      <h2 align="center">
+        <b id="vueBtn">vue</b>
+        <b id="reactBtn">react</b>
+      </h2>
+    </div>
+    <div id="submoduleByRouter"></div>
+    <div id="submoduleByCunstom"></div>
+  </div>
+  <script>
+    // function load() {
+    //   const iframe = document.createElement('iframe');
+    //   iframe.style.display = 'none';
+    //   document.body.appendChild(iframe);
+
+    //   const fakeWindow = {
+    //     tt: 1,
+    //   }
+
+    //   Object.defineProperty(iframe.contentWindow, 'window', {
+    //     get: () => fakeWindow,
+    //   })
+
+    //   const js = iframe.contentDocument.createElement('script');
+    //   js.textContent = `
+    //     console.log(window.window)
+    //     // with(window.parent.fakeWindow) {
+    //     //   import('./esm.js').then(m => {
+    //     //     console.log(m)
+    //     //     console.log(window.a)
+    //     //   });
+    //     // }
+    //   `
+    //   iframe.contentDocument.body.appendChild(js)
+    //   window.w = iframe
+    // }
+    // load();
+  </script>
+</body>
+</html>

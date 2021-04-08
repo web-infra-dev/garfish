@@ -17,7 +17,7 @@ module.exports = {
     'no-restricted-globals': ['error', ...NodeGlobals],
     // forbidden to use export default
     'no-restricted-syntax': [
-      'error',
+      0,
       {
         selector: 'ExportDefaultDeclaration',
         message: 'Forbidden to use export default.',

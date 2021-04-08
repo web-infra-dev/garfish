@@ -1,0 +1,37 @@
+{
+  "name": "@garfish/garfish-vm-sandbox",
+  "version": "0.0.2",
+  "description": "vm-sandbox module.",
+  "keywords": [
+    "garfish",
+    "vm-sandbox"
+  ],
+  "author": "zhouxiao.shaw <codingzx@gmail.com>",
+  "homepage": "https://github.com/bytedance/garfish",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "module": "dist/vm-sandbox.esm-bundler.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "scripts": {},
+  "types": "dist/vm-sandbox.d.ts",
+  "buildOptions": {
+    "name": "VmSandbox",
+    "devTemplate": "module",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "umd"
+    ]
+  },
+  "dependencies": {},
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}

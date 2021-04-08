@@ -13,12 +13,12 @@
     "declaration": true,
     "allowJs": true,
     "paths": {
-      "@garfish/*": ["packages/core/*/src"]
+      "@garfish/*": ["packages/runtime/*/src"]
     }
   },
   "include": [
-      "packages/core/*/src",
-      "packages/core/*/__tests__",
-      "packages/core/global.d.ts"
+    "packages/runtime/*/src",
+    "packages/runtime/*/__tests__",
+    "packages/runtime/global.d.ts"
   ]
 }
