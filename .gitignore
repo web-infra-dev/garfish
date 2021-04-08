@@ -30,3 +30,6 @@ lerna-debug.log
 
 # lock files
 package-lock.json
+yarn.lock
+**/yarn.lock
+**/package-lock.json
