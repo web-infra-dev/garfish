@@ -33,7 +33,7 @@ export interface SandboxConfig {
 export interface Config {
   appID?: string;
   basename?: string;
-  apps: Array<AppInfo>;
+  apps?: Array<AppInfo>;
   sandbox?: SandboxConfig;
   autoRefreshApp?: boolean;
   props?: Record<string, any>;
@@ -41,7 +41,7 @@ export interface Config {
   disablePreloadApp?: boolean;
   protectVariable?: Array<PropertyKey>;
   insulationVariable?: Array<PropertyKey>;
-  domGetter: (() => Element | null | Promise<Element | null>) | string;
+  domGetter?: (() => Element | null | Promise<Element | null>) | string;
 }
 
 export interface Hooks {

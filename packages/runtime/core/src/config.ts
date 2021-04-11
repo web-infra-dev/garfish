@@ -1,11 +1,10 @@
 import { Options } from './type';
-import { deepMerge } from '@garfish/utils';
+import { deepMerge, error } from '@garfish/utils';
 
 const defaultOptions: Options = {
   apps: [],
   basename: '',
   sandbox: {
-    open: true,
     snapshot: false,
     useStrict: true,
     strictIsolation: false,
