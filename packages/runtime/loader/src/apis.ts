@@ -1,8 +1,13 @@
-import { Hooks } from '@garfish/hooks';
-import { error, assert, parseContentType } from '@garfish/shared';
+import fetch from 'isomorphic-unfetch';
+import { error, assert, parseContentType } from '@garfish/utils';
 
 let cumulativeSize = 0;
 const overCapacity = (s) => s > 1024 * 1024 * 30;
+
+class Hooks {
+  add(_) {}
+  run(_, __) {}
+}
 
 // loader 的定位是加载器
 // 需要负责资源的加载，缓存和错误处理
@@ -18,6 +23,8 @@ export class Loader {
 
   load(id: string) {
     assert(id, 'Miss load url');
+    assert(typeof id === 'string', 'load url must be an string');
+
     if (this.loadingBox[id]) return this.loadingBox[id];
     if (this.cacheBox[id]) return Promise.resolve(this.cacheBox[id]);
 

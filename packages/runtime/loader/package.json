@@ -30,7 +30,9 @@
       "umd"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "isomorphic-unfetch": "3.1.0"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   }
