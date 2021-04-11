@@ -56,7 +56,6 @@ export class Garfish {
     this.setOptions(options);
     hooks.lifecycle.bootstrap.call(this, this.options);
 
-    hooks.lifecycle.beforeLoad.promise({ name: '', entry: '' }, '');
     this.running = true;
   }
 
@@ -86,7 +85,8 @@ export class Garfish {
     return this;
   }
 
-  loadApp(name: string, _opts?: LoadAppOptions) {
+  async loadApp(name: string, _opts?: LoadAppOptions) {
+    await hooks.lifecycle.beforeLoadApp.promise({ name: '', entry: '' }, '');
     const appInfo = this.appInfos[name];
     assert(appInfo?.entry, `Can't load unexpected module "${name}".`);
 
@@ -142,5 +142,6 @@ export class Garfish {
     //   this.loading[name] = asyncLoadProcess();
     // }
     // return this.loading[name];
+    await hooks.lifecycle.loadApp.promise({ name: '', entry: '' }, '');
   }
 }

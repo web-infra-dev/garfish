@@ -11,14 +11,14 @@ GarfishInstance.run({});
 function envModifyPlugin(): Plugin {
   return {
     name: 'envModify',
-    beforeLoad(context, _config) {
+    beforeLoadApp(context, _config) {
       // config.appID = 'appA';
       // return config
       (context as any).loadApp = 'woshi';
       return new Promise((resolve) => {
         setTimeout(() => {
           console.log('过来envModify 插件了');
-          resolve();
+          resolve(false);
         }, 3000);
       });
     },
@@ -28,7 +28,7 @@ function envModifyPlugin(): Plugin {
 function addAppPlugin(): Plugin {
   return {
     name: 'bb',
-    beforeLoad(context, _config) {
+    beforeLoadApp(context, _config) {
       // config.appID = 'appA';
       // return config
       (context as any).loadApp = 'woshi';

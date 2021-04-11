@@ -33,7 +33,8 @@ export interface Lifecycle {
   bootstrap: SyncHook<BootStrapArgs, void>;
   beforeRegisterApp: SyncHook<[Garfish, AppInfo | Array<AppInfo>], void>;
   registerApp: SyncHook<[Garfish, AppInfo | Array<AppInfo>], void>;
-  beforeLoad: AsyncSeriesBailHook<[AppInfo, string], void | boolean>; // 根据返回值决定是否继续执行后续代码
+  beforeLoadApp: AsyncSeriesBailHook<[AppInfo, string], void | boolean>; // 根据返回值决定是否继续执行后续代码
+  loadApp: AsyncSeriesBailHook<[AppInfo, string], void | boolean>; // 根据返回值决定是否继续执行后续代码
 }
 
 export type Plugin = { name: string } & PickParam<Partial<Lifecycle>>;
@@ -48,7 +49,8 @@ export class Hooks {
       bootstrap: new SyncHook(['context', 'options']),
       beforeRegisterApp: new SyncHook(['context', 'appInfos']),
       registerApp: new SyncHook(['context', 'appInfos']),
-      beforeLoad: new AsyncSeriesBailHook(['context', 'appInfo']),
+      beforeLoadApp: new AsyncSeriesBailHook(['context', 'appInfo']),
+      loadApp: new AsyncSeriesBailHook(['context', 'appInfo']),
     };
   }
 
