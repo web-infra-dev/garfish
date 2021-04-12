@@ -87,6 +87,7 @@ export class Garfish {
     return this;
   }
 
+  // TODO: 1. loader增加preload权重 2.
   async loadApp(name: string, opts?: LoadAppOptions) {
     const appInfo = this.appInfos[name];
     assert(appInfo?.entry, `Can't load unexpected module "${name}".`);
@@ -122,9 +123,7 @@ export class Garfish {
         } catch (e) {
           __DEV__ && warn(e);
           hooks.lifecycle.errorLoadApp.call(this, appInfo, opts, e);
-          return null;
         } finally {
-          // setRanking(name);
           this.loading[name] = null;
         }
       }

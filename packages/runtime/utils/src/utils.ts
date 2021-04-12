@@ -106,12 +106,12 @@ export function evalWithEnv(code: string, params: Record<string, any>) {
   const keys = Object.keys(params);
   // 不可使用随机值，否则无法作为常量字符串复用
   const randomValKey = '__garfish__exec_temporary__';
-  const vals = keys.map((k) => `window.${randomValKey}.${k}`);
+  const vales = keys.map((k) => `window.${randomValKey}.${k}`);
   try {
     rawWindow[randomValKey] = params;
     const evalInfo = [
       `;(function(${keys.join(',')}){`,
-      `\n}).call(${vals[0]},${vals.join(',')});`,
+      `\n}).call(${vales[0]},${vales.join(',')});`,
     ];
     const internalizeString = internFunc(evalInfo[0] + code + evalInfo[1]);
     // (0, eval) 这个表达式会让 eval 在全局作用域下执行

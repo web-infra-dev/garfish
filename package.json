@@ -20,7 +20,7 @@
     "test": "node scripts/jestTest.js",
     "test:cover": "node scripts/jestTest.js --coverage",
     "ls-lint": "ls-lint",
-    "lint": "eslint --ext .ts packages/*/src/**",
+    "lint": "eslint --ext .ts packages/*/*/src/**",
     "reset-gittag": "git tag -l | xargs git tag -d && git fetch --prune",
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
     "format:js": "prettier --write --parser typescript \"(packages|scripts)/**/*.js\""
