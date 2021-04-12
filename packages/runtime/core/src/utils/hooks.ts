@@ -5,7 +5,7 @@ import {
   AsyncSeriesHook,
 } from '@garfish/hooks';
 import { Garfish } from '../instance/context';
-import { Options, AppInfo } from '../type';
+import { Options, AppInfo, LoadAppOptions } from '../type';
 
 export function keys<O>(o: O) {
   return Object.keys(o) as (keyof O)[];
@@ -28,13 +28,21 @@ type PickParam<T> = {
 };
 
 export interface Lifecycle {
+  beforeInitialize: SyncHook<BootStrapArgs, void>;
   initialize: SyncHook<BootStrapArgs, void>;
   beforeBootstrap: SyncHook<BootStrapArgs, void>;
   bootstrap: SyncHook<BootStrapArgs, void>;
   beforeRegisterApp: SyncHook<[Garfish, AppInfo | Array<AppInfo>], void>;
   registerApp: SyncHook<[Garfish, AppInfo | Array<AppInfo>], void>;
-  beforeLoadApp: AsyncSeriesBailHook<[AppInfo, string], void | boolean>; // 根据返回值决定是否继续执行后续代码
-  loadApp: AsyncSeriesBailHook<[AppInfo, string], void | boolean>; // 根据返回值决定是否继续执行后续代码
+  beforeLoad: AsyncSeriesBailHook<
+    [Garfish, AppInfo, LoadAppOptions],
+    void | boolean
+  >; // 根据返回值决定是否继续执行后续代码
+  afterLoad: AsyncSeriesBailHook<
+    [Garfish, AppInfo, LoadAppOptions],
+    void | boolean
+  >;
+  errorLoadApp: SyncHook<[Garfish, AppInfo, LoadAppOptions, Error], void>;
 }
 
 export type Plugin = { name: string } & PickParam<Partial<Lifecycle>>;
@@ -44,13 +52,15 @@ export class Hooks {
 
   constructor() {
     this.lifecycle = {
+      beforeInitialize: new SyncHook(['context', 'options']),
       initialize: new SyncHook(['context', 'options']),
       beforeBootstrap: new SyncHook(['context', 'options']),
       bootstrap: new SyncHook(['context', 'options']),
       beforeRegisterApp: new SyncHook(['context', 'appInfos']),
       registerApp: new SyncHook(['context', 'appInfos']),
-      beforeLoadApp: new AsyncSeriesBailHook(['context', 'appInfo']),
-      loadApp: new AsyncSeriesBailHook(['context', 'appInfo']),
+      beforeLoad: new AsyncSeriesBailHook(['context', 'appInfo', 'options']),
+      afterLoad: new AsyncSeriesBailHook(['context', 'appInfo', 'options']),
+      errorLoadApp: new SyncHook(['context', 'appInfo', 'options', 'error']),
     };
   }
 

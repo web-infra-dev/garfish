@@ -17,10 +17,13 @@ export class Garfish {
   public externals: Record<string, any> = {};
   public appInfos: Record<string, AppInfo> = {};
   public activeApps: Array<any> = [];
+  private cacheApps: Record<string, any> = {};
   private loading: Record<string, Promise<any> | null> = {};
   public plugins: [];
+  public loader: any;
 
   constructor(options?: Options) {
+    hooks.lifecycle.beforeInitialize.call(this, this.options);
     // init Garfish instance
     this.setOptions(options);
     hooks.lifecycle.initialize.call(this, this.options);
@@ -55,7 +58,6 @@ export class Garfish {
 
     this.setOptions(options);
     hooks.lifecycle.bootstrap.call(this, this.options);
-
     this.running = true;
   }
 
@@ -85,63 +87,54 @@ export class Garfish {
     return this;
   }
 
-  async loadApp(name: string, _opts?: LoadAppOptions) {
-    await hooks.lifecycle.beforeLoadApp.promise({ name: '', entry: '' }, '');
+  async loadApp(name: string, opts?: LoadAppOptions) {
     const appInfo = this.appInfos[name];
     assert(appInfo?.entry, `Can't load unexpected module "${name}".`);
 
-    // 复制一份 option 出来
-    // opts = isObject(opts)
-    //   ? deepMerge(this.options, opts)
-    //   : deepMerge(this.options, {});
+    // deep copy option
+    opts = isObject(opts)
+      ? deepMerge(this.options, opts)
+      : deepMerge(this.options, {});
 
-    // const dispatchEndHook = (app) => {
-    //   // this.emit(END_LOAD_APP, app);
-    //   // return this.callHooks('afterLoad', opts, [appInfo, opts]);
-    // };
+    const asyncLoadProcess = async () => {
+      let result = null;
 
-    // const asyncLoadProcess = async () => {
-    // 如果返回 false 需要阻止加载
-    // const noBlockLoading = await this.callHooks('beforeLoad', opts, [
-    //   appInfo,
-    //   opts,
-    // ]);
+      // 返回非undefined类型数据直接终止， hooks约定
+      const stopLoad = await hooks.lifecycle.beforeLoad.promise(
+        this,
+        appInfo,
+        opts,
+      );
+      if (stopLoad !== undefined) {
+        warn(`Load ${name} application is terminated by beforeLoad`);
+        return null;
+      }
 
-    // if (noBlockLoading) {
-    //   if (noBlockLoading() === false) {
-    //     return null;
-    //   }
-    // }
+      const cacheApp = this.cacheApps[name];
 
-    // this.emit(BEFORE_LOAD_APP, appInfo, opts);
-    //   const cacheApp = this.cacheApps[name];
+      if (opts.cache && cacheApp) {
+        result = cacheApp;
+      } else {
+        try {
+          const app = await this.loader.loadApp(appInfo, opts);
+          this.cacheApps[name] = app;
+          result = app;
+        } catch (e) {
+          __DEV__ && warn(e);
+          hooks.lifecycle.errorLoadApp.call(this, appInfo, opts, e);
+          return null;
+        } finally {
+          // setRanking(name);
+          this.loading[name] = null;
+        }
+      }
+      await hooks.lifecycle.afterLoad.promise(this, appInfo, opts);
+      return result;
+    };
 
-    //   if (opts.cache && cacheApp) {
-    //     await dispatchEndHook(cacheApp);
-    //     return cacheApp;
-    //   } else {
-    //     this.emit(START_LOAD_APP, appInfo);
-    //     try {
-    //       const app = await this.loader.loadApp(appInfo, opts);
-    //       this.cacheApps[name] = app;
-    //       await dispatchEndHook(app);
-    //       return app;
-    //     } catch (e) {
-    //       __DEV__ && warn(e);
-    //       this.emit(LOAD_APP_ERROR, e);
-    //       this.callHooks('errorLoadApp', opts, [e, appInfo]);
-    //     } finally {
-    //       setRanking(name);
-    //       this.loading[name] = null;
-    //     }
-    //     return null;
-    //   }
-    // };
-
-    // if (!opts.cache || !this.loading[name]) {
-    //   this.loading[name] = asyncLoadProcess();
-    // }
-    // return this.loading[name];
-    await hooks.lifecycle.loadApp.promise({ name: '', entry: '' }, '');
+    if (!opts.cache || !this.loading[name]) {
+      this.loading[name] = asyncLoadProcess();
+    }
+    return this.loading[name];
   }
 }
