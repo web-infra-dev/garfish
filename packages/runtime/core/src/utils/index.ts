@@ -19,6 +19,15 @@ import {
 } from '@garfish/utils';
 import { Options } from '../type';
 
+// 将不规范的语法转换为合规的语法
+// 1M 的文本大约耗时：chrome 30ms, safari: 25ms, firefox: 25ms
+export function transformCode(code: string) {
+  const transformNode = document.createElement('html');
+  transformNode.innerHTML = code;
+  return transformNode.innerHTML;
+}
+
+
 // 保证在严格隔离模式下，shadow dom 中的弹窗、浮层等依赖 body 的样式工作正常
 function asyncNodeAttribute(from: Element, to: Element) {
   const MutationObserver = rawWindow.MutationObserver;

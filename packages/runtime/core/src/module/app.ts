@@ -25,6 +25,7 @@ import {
 } from '@garfish/utils';
 import { hooks } from '../utils/hooks';
 import { createAppContainer, getRenderNode } from '../utils';
+import { HtmlResource } from './htmlResource';
 
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 
@@ -58,19 +59,22 @@ export class App {
   private mounting: boolean = false;
   private unmounting: boolean = false;
   public provider: Provider | Promise<Provider>;
-  private entryResManager: any;
+  private entryResManager: HtmlResource;
   public htmlNode: HTMLElement | ShadowRoot;
   private resources?: ResourceModules;
+  public isHtmlMode: boolean;
 
   constructor(
     appInfo: AppInfo,
-    options: LoadAppOptions,
+    entryResManager: HtmlResource,
     resources: ResourceModules,
+    isHtmlMode: boolean
   ) {
     this.appInfo = appInfo;
-    this.options = options;
     this.name = appInfo.name;
     this.resources = resources;
+    this.entryResManager = entryResManager;
+    this.isHtmlMode = isHtmlMode;
     this.cjsModules = {
       exports: {},
       module: this.cjsModules,
@@ -222,124 +226,123 @@ export class App {
     this.appContainer = appContainer;
     this.addContainer(); // 先 append 到文档流中，再递归创建 html 中的内容或者执行脚本
 
-    entryResManager.renderElements(
-      {
-        meta: () => null,
+    // entryResManager.renderElements(
+    //   {
+    //     meta: () => null,
 
-        a: (vnode) => {
-          toResolveUrl(vnode, 'href', baseUrl);
-          return createElement(vnode);
-        },
+    //     a: (vnode) => {
+    //       toResolveUrl(vnode, 'href', baseUrl);
+    //       return createElement(vnode);
+    //     },
 
-        img: (vnode) => {
-          toResolveUrl(vnode, 'src', baseUrl);
-          return createElement(vnode);
-        },
+    //     img: (vnode) => {
+    //       toResolveUrl(vnode, 'src', baseUrl);
+    //       return createElement(vnode);
+    //     },
 
-        // body 和 head 这样处理是为了兼容旧版本
-        body: (vnode) => {
-          if (!options.sandbox.strictIsolation) {
-            vnode.tagName = 'div';
-            vnode.attributes.push({
-              key: '__GarfishMockBody__',
-              value: null,
-            });
-            return createElement(vnode);
-          } else {
-            return createElement(vnode);
-          }
-        },
+    //     // body 和 head 这样处理是为了兼容旧版本
+    //     body: (vnode) => {
+    //       if (!options.sandbox.strictIsolation) {
+    //         vnode.tagName = 'div';
+    //         vnode.attributes.push({
+    //           key: '__GarfishMockBody__',
+    //           value: null,
+    //         });
+    //         return createElement(vnode);
+    //       } else {
+    //         return createElement(vnode);
+    //       }
+    //     },
 
-        head: (vnode) => {
-          if (!options.sandbox.strictIsolation) {
-            vnode.tagName = 'div';
-            vnode.attributes.push({
-              key: '__GarfishMockHead__',
-              value: null,
-            });
-            return createElement(vnode);
-          } else {
-            return createElement(vnode);
-          }
-        },
+    //     head: (vnode) => {
+    //       if (!options.sandbox.strictIsolation) {
+    //         vnode.tagName = 'div';
+    //         vnode.attributes.push({
+    //           key: '__GarfishMockHead__',
+    //           value: null,
+    //         });
+    //         return createElement(vnode);
+    //       } else {
+    //         return createElement(vnode);
+    //       }
+    //     },
 
-        script: (vnode) => {
-          const type = findProp(vnode, 'type');
-          const mimeType = type?.value;
-          if (mimeType) {
-            if (mimeType === 'module') return null;
-            if (!isJs(parseContentType(mimeType))) {
-              return createElement(vnode);
-            }
-          }
+    //     script: (vnode) => {
+    //       const type = findProp(vnode, 'type');
+    //       const mimeType = type?.value;
+    //       if (mimeType) {
+    //         if (mimeType === 'module') return null;
+    //         if (!isJs(parseContentType(mimeType))) {
+    //           return createElement(vnode);
+    //         }
+    //       }
 
-          const resource = this.resources.js.find((manager) => {
-            if (!(manager as AsyncResource).async) {
-              if (vnode.key) {
-                return vnode.key === (manager as any).key;
-              }
-            }
-            return false;
-          });
+    //       const resource = this.resources.js.find((manager) => {
+    //         if (!(manager as AsyncResource).async) {
+    //           if (vnode.key) {
+    //             return vnode.key === (manager as any).key;
+    //           }
+    //         }
+    //         return false;
+    //       });
 
-          if (resource) {
-            const { code, url } = (resource as any).opts;
-            this.execScript(code, {}, url, {
-              async: false,
-              noEntry: !!findProp(vnode, 'no-entry'),
-            });
-          } else if (__DEV__) {
-            const async = findProp(vnode, 'async');
-            if (!async) {
-              const nodeStr = JSON.stringify(vnode, null, 2);
-              warn(`The current js node cannot be found.\n\n ${nodeStr}`);
-            }
-          }
-          return createScriptNode(vnode);
-        },
+    //       if (resource) {
+    //         const { code, url } = (resource as any).opts;
+    //         this.execScript(code, {}, url, {
+    //           async: false,
+    //           noEntry: !!findProp(vnode, 'no-entry'),
+    //         });
+    //       } else if (__DEV__) {
+    //         const async = findProp(vnode, 'async');
+    //         if (!async) {
+    //           const nodeStr = JSON.stringify(vnode, null, 2);
+    //           warn(`The current js node cannot be found.\n\n ${nodeStr}`);
+    //         }
+    //       }
+    //       return createScriptNode(vnode);
+    //     },
 
-        style: (vnode) => {
-          const text = vnode.children[0] as VText;
-          if (text) {
-            text.content = transformCssUrl(baseUrl, text.content);
-          }
-          return createElement(vnode);
-        },
+    //     style: (vnode) => {
+    //       const text = vnode.children[0] as VText;
+    //       if (text) {
+    //         text.content = transformCssUrl(baseUrl, text.content);
+    //       }
+    //       return createElement(vnode);
+    //     },
 
-        link: (vnode) => {
-          if (isCssLink(vnode)) {
-            const href = findProp(vnode, 'href');
-            const resource = this.resources.link.find(
-              ({ opts }) => opts.url === href?.value,
-            );
-            if (!resource) {
-              return createElement(vnode);
-            }
+    //     link: (vnode) => {
+    //       if (isCssLink(vnode)) {
+    //         const href = findProp(vnode, 'href');
+    //         const resource = this.resources.link.find(
+    //           ({ opts }) => opts.url === href?.value,
+    //         );
+    //         if (!resource) {
+    //           return createElement(vnode);
+    //         }
 
-            const { url, code } = resource.opts;
-            const content = __DEV__
-              ? `\n/*${createLinkNode(vnode)}*/\n${code}`
-              : code;
+    //         const { url, code } = resource.opts;
+    //         const content = __DEV__
+    //           ? `\n/*${createLinkNode(vnode)}*/\n${code}`
+    //           : code;
 
-            if (resource.type !== 'css') {
-              warn(`The current resource type does not match. "${url}"`);
-              return null;
-            }
-            return createStyleNode(content);
-          }
-          return isPrefetchJsLink(vnode)
-            ? createScriptNode(vnode)
-            : createElement(vnode);
-        },
-      },
-      htmlNode,
-    );
+    //         if (resource.type !== 'css') {
+    //           warn(`The current resource type does not match. "${url}"`);
+    //           return null;
+    //         }
+    //         return createStyleNode(content);
+    //       }
+    //       return isPrefetchJsLink(vnode)
+    //         ? createScriptNode(vnode)
+    //         : createElement(vnode);
+    //     },
+    //   },
+    //   htmlNode,
+    // );
   }
 
   private async checkAndGetAppResult() {
     const {
       options,
-      context,
       appInfo,
       rootElement,
       cjsModules,
@@ -375,21 +378,21 @@ export class App {
     }
 
     // 如果有 customLoader，把 provide 交由用户自行处理
-    const hookRes = await context.callHooks('customLoader', options, [
-      provider,
-      appInfo,
-      basename,
-    ]);
+    // const hookRes = await context.callHooks('customLoader', options, [
+    //   provider,
+    //   appInfo,
+    //   basename,
+    // ]);
 
-    if (hookRes) {
-      const { mount, unmount } = hookRes() || ({} as any);
-      if (typeof mount === 'function' && typeof unmount === 'function') {
-        mount._custom = true;
-        unmount._custom = true;
-        provider.render = mount;
-        provider.destroy = unmount;
-      }
-    }
+    // if (hookRes) {
+    //   const { mount, unmount } = hookRes() || ({} as any);
+    //   if (typeof mount === 'function' && typeof unmount === 'function') {
+    //     mount._custom = true;
+    //     unmount._custom = true;
+    //     provider.render = mount;
+    //     provider.destroy = unmount;
+    //   }
+    // }
 
     assert(provider, `"provider" is "${typeof provider}".`);
     assert('render' in provider, '"render" is required in provider.');
