@@ -56,13 +56,13 @@ const GarfishInstance = new Garfish();
 // }
 
 async function use () {
-  GarfishInstance.loadApp({
+  let app = await GarfishInstance.loadApp({
     name: 'vue',
+    cache: false,
     entry: 'http://localhost:3000' ,
     domGetter: '#submoduleByCunstom'
-  }).then((app)=>{
-    console.log(app);
   })
+  console.log(app);
 }
 
 use();

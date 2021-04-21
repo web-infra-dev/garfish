@@ -17,7 +17,7 @@ import {
   VText,
   warn,
 } from '@garfish/utils';
-import { Options } from '../type';
+import { DomGetter, Options } from '../type';
 
 // 将不规范的语法转换为合规的语法
 // 1M 的文本大约耗时：chrome 30ms, safari: 25ms, firefox: 25ms
@@ -66,7 +66,7 @@ export function createAppContainer(name: string) {
   };
 }
 
-export function getRenderNode(domGetter: Options['domGetter']) {
+export function getRenderNode(domGetter: DomGetter): Element {
   assert(domGetter, `Invalid domGetter:\n ${domGetter}`);
 
   // prettier-ignore

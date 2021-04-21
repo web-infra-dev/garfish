@@ -1,7 +1,7 @@
 import { Garfish } from './instance/context';
 import { Plugin } from './utils/hooks';
 
-type DomGetter = (() => Element | null | Promise<Element | null>) | string;
+export type DomGetter = Element | (() => Element | null) | string;
 
 export interface AppInfo {
   name: string;

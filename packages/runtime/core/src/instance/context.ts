@@ -11,6 +11,7 @@ import {
   hasOwn,
 } from '@garfish/utils';
 import { Loader } from '../module/loader';
+import { getRenderNode } from '../utils';
 
 export class Garfish {
   public version = __VERSION__;
@@ -115,6 +116,7 @@ export class Garfish {
     if (!appInfo) {
       appInfo = { cache: true, ...opts };
     }
+    appInfo.domGetter = getRenderNode(appInfo.domGetter)
 
     const asyncLoadProcess = async () => {
       //  Return not undefined type data directly to end loading
