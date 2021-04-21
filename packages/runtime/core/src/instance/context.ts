@@ -135,7 +135,6 @@ export class Garfish {
         try {
           // @ts-ignore
           result = await this.loader.loadApp(appInfo);
-          console.log('feeeeeee', result)
           this.cacheApps[appName] = result;
         } catch (e) {
           __DEV__ && error(e);
