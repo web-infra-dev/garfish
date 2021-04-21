@@ -6,7 +6,7 @@ Garfish.usePlugin(envModifyPlugin);
 Garfish.usePlugin(addAppPlugin);
 const GarfishInstance = new Garfish();
 
-GarfishInstance.run({});
+GarfishInstance.run();
 
 function envModifyPlugin(): Plugin {
   return {
