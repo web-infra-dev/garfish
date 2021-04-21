@@ -37,8 +37,8 @@ export interface Lifecycle {
   beforeLoad: AsyncSeriesBailHook<[Garfish, AppInfo], void | boolean>; // 根据返回值决定是否继续执行后续代码
   afterLoad: AsyncSeriesBailHook<[Garfish, AppInfo], void | boolean>;
   errorLoadApp: SyncHook<[Garfish, AppInfo, Error], void>;
-  beforeEval: AsyncSeriesBailHook<[any, AppInfo], void | boolean>;
-  afterEval: AsyncSeriesBailHook<[any, AppInfo], void | boolean>;
+  beforeEval: SyncHook<[any, AppInfo], void | boolean>;
+  afterEval: SyncHook<[any, AppInfo], void | boolean>;
 }
 
 export type Plugin = { name: string } & PickParam<Partial<Lifecycle>>;
@@ -57,8 +57,8 @@ export class Hooks {
       beforeLoad: new AsyncSeriesBailHook(['context', 'appInfo']),
       afterLoad: new AsyncSeriesBailHook(['context', 'appInfo']),
       errorLoadApp: new SyncHook(['context', 'appInfo', 'error']),
-      beforeEval: new AsyncSeriesBailHook(['context', 'appInfo']),
-      afterEval: new AsyncSeriesBailHook(['context', 'appInfo']),
+      beforeEval: new SyncHook(['context', 'appInfo']),
+      afterEval: new SyncHook(['context', 'appInfo']),
     };
   }
 

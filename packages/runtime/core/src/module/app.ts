@@ -141,17 +141,13 @@ export class App {
     this.active = true;
     this.mounting = true;
 
-    // 如果可以进行渲染，先将容器加到页面中
+    // 先将容器加到页面中
     this.addContainer();
 
     // mount执行的情况可能在compile之后，在之前的版本中存在先把代码编译拿到编译结果然后运行的情况
-    await this.cjsCompile();
-    if (!this.stopMountAndClearEffect()) return null;
+    this.cjsCompile();
 
     // 在编译的时候就设置好 provider
-    if (this.stopMountAndClearEffect()) return null;
-    this.provider = this.checkAndGetAppResult();
-
     const provider = await this.getProvider();
     if (this.stopMountAndClearEffect()) return null;
     this.callRender(provider);
@@ -178,9 +174,8 @@ export class App {
   }
 
   // 会执行子模块提供的js资源，最终拿到导出的内容
-  async cjsCompile() {
-    await hooks.lifecycle.beforeEval.promise('', this.appInfo);
-    if (this.stopMountAndClearEffect()) return;
+  cjsCompile() {
+    hooks.lifecycle.beforeEval.promise('', this.appInfo);
 
     // 如果不希望使用 cjs 导出，不是入口时可以不传递module、require、
     const Env = false
@@ -188,7 +183,7 @@ export class App {
       : this.cjsModules;
     this.execScript('console.log()', Env);
 
-    await hooks.lifecycle.afterEval.promise('', this.appInfo);
+    hooks.lifecycle.afterEval.promise('', this.appInfo);
   }
 
   // 创建容器节点并添加在文档流中
