@@ -14,6 +14,13 @@ export interface VNode {
   attributes: Array<Record<string, string | null>>;
 }
 
+export const toResolveUrl = (vnode: VNode, urlKey: string, baseUrl: string) => {
+  const src = findProp(vnode, urlKey);
+  if (src) {
+    src.value = transformUrl(baseUrl, src.value);
+  }
+};
+
 const xChar = 120; // x
 const colonChar = 58; // :
 const ns = 'http://www.w3.org/2000/svg';

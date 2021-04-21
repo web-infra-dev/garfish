@@ -1,8 +1,15 @@
+import { Garfish } from './instance/context';
+import { Plugin } from './utils/hooks';
+
+type DomGetter = (() => Element | null | Promise<Element | null>) | string;
+
 export interface AppInfo {
   name: string;
   entry: string;
-  cache?: boolean;
+  basename?: string;
+  cache?: boolean; // Whether the cache
   props?: Record<string, any>;
+  domGetter?: DomGetter;
   activeWhen?: string | ((path: string) => boolean); // 手动加载，可不填写路由
   active?: (appInfo: AppInfo, rootPath: string) => void;
   deactive?: (appInfo: AppInfo, rootPath: string) => void;
@@ -30,18 +37,24 @@ export interface SandboxConfig {
   strictIsolation?: boolean;
 }
 
+export interface Provider {
+  destroy: ({ dom: HTMLElement }) => void;
+  render: ({ dom: HTMLElement, basename: string }) => void;
+}
+
 export interface Config {
   appID?: string;
   basename?: string;
   apps?: Array<AppInfo>;
   sandbox?: SandboxConfig;
+  plugins?: Array<() => Plugin>;
   autoRefreshApp?: boolean;
   props?: Record<string, any>;
   disableStatistics?: boolean;
   disablePreloadApp?: boolean;
   protectVariable?: Array<PropertyKey>;
   insulationVariable?: Array<PropertyKey>;
-  domGetter?: (() => Element | null | Promise<Element | null>) | string;
+  domGetter?: DomGetter;
 }
 
 export interface Hooks {
@@ -69,7 +82,7 @@ export interface Hooks {
 
 export type Options = Config & Hooks;
 
-export type LoadAppOptions = Partial<Options> & {
-  data?: any;
-  cache?: boolean; // 是否缓存
+export type LoadAppOptions = Pick<AppInfo, keyof AppInfo> & {
+  entry?: string;
+  domGetter: DomGetter;
 };

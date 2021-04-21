@@ -34,15 +34,11 @@ export interface Lifecycle {
   bootstrap: SyncHook<BootStrapArgs, void>;
   beforeRegisterApp: SyncHook<[Garfish, AppInfo | Array<AppInfo>], void>;
   registerApp: SyncHook<[Garfish, AppInfo | Array<AppInfo>], void>;
-  beforeLoad: AsyncSeriesBailHook<
-    [Garfish, AppInfo, LoadAppOptions],
-    void | boolean
-  >; // 根据返回值决定是否继续执行后续代码
-  afterLoad: AsyncSeriesBailHook<
-    [Garfish, AppInfo, LoadAppOptions],
-    void | boolean
-  >;
-  errorLoadApp: SyncHook<[Garfish, AppInfo, LoadAppOptions, Error], void>;
+  beforeLoad: AsyncSeriesBailHook<[Garfish, AppInfo], void | boolean>; // 根据返回值决定是否继续执行后续代码
+  afterLoad: AsyncSeriesBailHook<[Garfish, AppInfo], void | boolean>;
+  errorLoadApp: SyncHook<[Garfish, AppInfo, Error], void>;
+  beforeEval: AsyncSeriesBailHook<[any, AppInfo], void | boolean>;
+  afterEval: AsyncSeriesBailHook<[any, AppInfo], void | boolean>;
 }
 
 export type Plugin = { name: string } & PickParam<Partial<Lifecycle>>;
@@ -58,9 +54,11 @@ export class Hooks {
       bootstrap: new SyncHook(['context', 'options']),
       beforeRegisterApp: new SyncHook(['context', 'appInfos']),
       registerApp: new SyncHook(['context', 'appInfos']),
-      beforeLoad: new AsyncSeriesBailHook(['context', 'appInfo', 'options']),
-      afterLoad: new AsyncSeriesBailHook(['context', 'appInfo', 'options']),
-      errorLoadApp: new SyncHook(['context', 'appInfo', 'options', 'error']),
+      beforeLoad: new AsyncSeriesBailHook(['context', 'appInfo']),
+      afterLoad: new AsyncSeriesBailHook(['context', 'appInfo']),
+      errorLoadApp: new SyncHook(['context', 'appInfo', 'error']),
+      beforeEval: new AsyncSeriesBailHook(['context', 'appInfo']),
+      afterEval: new AsyncSeriesBailHook(['context', 'appInfo']),
     };
   }
 

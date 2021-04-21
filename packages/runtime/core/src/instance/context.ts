@@ -8,6 +8,7 @@ import {
   warn,
   error,
   validURL,
+  hasOwn,
 } from '@garfish/utils';
 
 export class Garfish {
@@ -23,8 +24,13 @@ export class Garfish {
   public loader: any;
 
   constructor(options?: Options) {
+    // register plugins
+    options?.plugins.forEach((pluginCb) => {
+      Garfish.usePlugin(pluginCb);
+    });
+
     hooks.lifecycle.beforeInitialize.call(this, this.options);
-    // init Garfish instance
+    // init Garfish options
     this.setOptions(options);
     hooks.lifecycle.initialize.call(this, this.options);
   }
@@ -43,6 +49,12 @@ export class Garfish {
     assert(!this.running, 'Garfish is running, can`t set options');
     if (isObject(options)) {
       this.options = deepMerge(this.options, options);
+      // register apps
+      this.registerApp(options.apps || []);
+      // Index object can't deep copy otherwise unable to communicate
+      if (hasOwn(options, 'props')) {
+        this.options.props = options.props;
+      }
     }
     return this;
   }
@@ -53,12 +65,12 @@ export class Garfish {
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
       return this;
     }
-
     hooks.lifecycle.beforeBootstrap.call(this, this.options);
 
     this.setOptions(options);
-    hooks.lifecycle.bootstrap.call(this, this.options);
     this.running = true;
+
+    hooks.lifecycle.bootstrap.call(this, this.options);
   }
 
   public registerApp(list: AppInfo | Array<AppInfo>) {
@@ -87,53 +99,54 @@ export class Garfish {
     return this;
   }
 
-  // TODO: 1. loader增加preload权重 2.
-  async loadApp(name: string, opts?: LoadAppOptions) {
-    const appInfo = this.appInfos[name];
-    assert(appInfo?.entry, `Can't load unexpected module "${name}".`);
+  // // TODO: 1. loader增加preload权重 2.
+  async loadApp(opts: AppInfo) {
+    let appInfo = this.appInfos[opts.name];
+    const appName = opts.name;
 
-    // deep copy option
-    opts = isObject(opts)
-      ? deepMerge(this.options, opts)
-      : deepMerge(this.options, {});
+    // Does not support does not have remote resources and no registered application
+    assert(
+      !appInfo && !opts.entry,
+      `Can't load unexpected module "${appName}". Please provide the entry parameters or registered in advance of the app`,
+    );
+
+    // Pretreatment parameters, and the default cache
+    if (!appInfo) {
+      appInfo = { cache: true, ...opts };
+    }
 
     const asyncLoadProcess = async () => {
-      let result = null;
-
-      // 返回非undefined类型数据直接终止， hooks约定
-      const stopLoad = await hooks.lifecycle.beforeLoad.promise(
-        this,
-        appInfo,
-        opts,
-      );
+      //  Return not undefined type data directly to end loading
+      const stopLoad = await hooks.lifecycle.beforeLoad.promise(this, appInfo);
       if (stopLoad !== undefined) {
-        warn(`Load ${name} application is terminated by beforeLoad`);
+        warn(`Load ${appName} application is terminated by beforeLoad`);
         return null;
       }
 
-      const cacheApp = this.cacheApps[name];
+      // Existing cache caching logic
+      let result = null;
+      const cacheApp = this.cacheApps[appName];
 
       if (opts.cache && cacheApp) {
         result = cacheApp;
       } else {
         try {
-          const app = await this.loader.loadApp(appInfo, opts);
-          this.cacheApps[name] = app;
-          result = app;
+          result = await this.loader.loadApp(appInfo, opts);
+          this.cacheApps[appName] = result;
         } catch (e) {
           __DEV__ && warn(e);
-          hooks.lifecycle.errorLoadApp.call(this, appInfo, opts, e);
+          hooks.lifecycle.errorLoadApp.call(this, appInfo, e);
         } finally {
-          this.loading[name] = null;
+          this.loading[appName] = null;
         }
       }
-      await hooks.lifecycle.afterLoad.promise(this, appInfo, opts);
+      await hooks.lifecycle.afterLoad.promise(this, appInfo);
       return result;
     };
 
-    if (!opts.cache || !this.loading[name]) {
-      this.loading[name] = asyncLoadProcess();
+    if (!opts.cache || !this.loading[appName]) {
+      this.loading[appName] = asyncLoadProcess();
     }
-    return this.loading[name];
+    return this.loading[appName];
   }
 }
