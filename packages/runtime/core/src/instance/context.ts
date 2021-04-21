@@ -10,6 +10,7 @@ import {
   validURL,
   hasOwn,
 } from '@garfish/utils';
+import { Loader } from '../module/loader';
 
 export class Garfish {
   public version = __VERSION__;
@@ -21,7 +22,7 @@ export class Garfish {
   private cacheApps: Record<string, any> = {};
   private loading: Record<string, Promise<any> | null> = {};
   public plugins: [];
-  public loader: any;
+  public loader = new Loader();
 
   constructor(options?: Options) {
     // register plugins
@@ -100,13 +101,13 @@ export class Garfish {
   }
 
   // // TODO: 1. loader增加preload权重 2.
-  async loadApp(opts: AppInfo) {
+  public async loadApp(opts: LoadAppOptions) {
     let appInfo = this.appInfos[opts.name];
     const appName = opts.name;
 
     // Does not support does not have remote resources and no registered application
     assert(
-      !appInfo && !opts.entry,
+      !(!appInfo && !opts.entry),
       `Can't load unexpected module "${appName}". Please provide the entry parameters or registered in advance of the app`,
     );
 
@@ -126,15 +127,16 @@ export class Garfish {
       // Existing cache caching logic
       let result = null;
       const cacheApp = this.cacheApps[appName];
-
       if (opts.cache && cacheApp) {
         result = cacheApp;
       } else {
         try {
-          result = await this.loader.loadApp(appInfo, opts);
+          // @ts-ignore
+          result = await this.loader.loadApp(appInfo);
+          console.log('feeeeeee', result)
           this.cacheApps[appName] = result;
         } catch (e) {
-          __DEV__ && warn(e);
+          __DEV__ && error(e);
           hooks.lifecycle.errorLoadApp.call(this, appInfo, e);
         } finally {
           this.loading[appName] = null;

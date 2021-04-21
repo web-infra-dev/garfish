@@ -1,5 +1,5 @@
-import { Hooks } from '@garfish/hooks';
-import { error, assert, parseContentType } from '@garfish/shared';
+// import { Hooks } from '@garfish/hooks';
+import { error, assert, parseContentType } from '@garfish/utils';
 
 let cumulativeSize = 0;
 const overCapacity = (s) => s > 1024 * 1024 * 30;
@@ -7,14 +7,14 @@ const overCapacity = (s) => s > 1024 * 1024 * 30;
 // loader 的定位是加载器
 // 需要负责资源的加载，缓存和错误处理
 export class Loader {
-  private plugins = new Hooks();
+  // private plugins = new Hooks();
   private cacheBox = Object.create(null);
   private loadingBox = Object.create(null);
   public requestConfig: RequestInit | ((id: string) => RequestInit) = {};
 
-  use(plugin: () => any) {
-    this.plugins.add(plugin);
-  }
+  // use(plugin: () => any) {
+  //   this.plugins.add(plugin);
+  // }
 
   load(id: string) {
     assert(id, 'Miss load url');
@@ -40,18 +40,18 @@ export class Loader {
         const blob = new Blob([code]);
         const size = Number(blob.size);
         const type = res.headers.get('content-type');
-        const result = this.plugins.run(code, {
-          size,
-          url: res.url,
-          mimeType: parseContentType(type),
-        });
+        // const result = this.plugins.run(code, {
+        //   size,
+        //   url: res.url,
+        //   mimeType: parseContentType(type),
+        // });
 
         this.loadingBox[id] = null;
         cumulativeSize += isNaN(size) ? 0 : size;
-        if (!overCapacity(cumulativeSize)) {
-          this.cacheBox[id] = result;
-        }
-        return result;
+        // if (!overCapacity(cumulativeSize)) {
+        //   this.cacheBox[id] = result;
+        // }
+        // return result;
       });
     return this.loadingBox[id];
   }

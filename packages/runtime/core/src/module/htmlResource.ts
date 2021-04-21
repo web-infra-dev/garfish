@@ -1,5 +1,6 @@
 import { createElement, createTextNode, isComment, isVNode, isVText, rawAppendChild, VNode, VText } from "@garfish/utils";
 import { transformCode } from "../utils";
+import { parse } from 'himalaya';
 
 export interface HtmlResourceOpts {
   url: string;
@@ -95,7 +96,3 @@ export class HtmlResource {
     return els;
   }
 }
-function parse(arg0: string): VNode[] {
-  throw new Error("Function not implemented.");
-}
-

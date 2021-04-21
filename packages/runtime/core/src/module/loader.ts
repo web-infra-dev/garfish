@@ -205,7 +205,6 @@ export class Loader {
           this.forceCaches.add(url);
           resManager = new HtmlResource({ url, code, size: 0 });
         }
-
         return this.createApp(
           appInfo,
           // @ts-ignore
