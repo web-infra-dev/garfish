@@ -14,8 +14,7 @@ import {
 } from '@garfish/utils';
 import { App, ResourceModules } from './app';
 import { AppInfo } from '../type';
-import { HtmlResource } from './htmlResource'
-import { CssResource, JsResource } from './source';
+import { CssResource, JsResource, HtmlResource } from './source';
 
 let currentSize = 0;
 

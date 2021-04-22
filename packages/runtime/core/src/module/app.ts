@@ -26,7 +26,7 @@ import {
 import { hooks } from '../utils/hooks';
 import { createAppContainer, getRenderNode } from '../utils';
 import { renderContainer } from './htmlRender'
-import { HtmlResource } from './htmlResource';
+import { HtmlResource } from './source';
 
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 

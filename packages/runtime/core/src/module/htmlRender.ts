@@ -16,7 +16,7 @@ import {
   warn,
 } from '@garfish/utils';
 import { ResourceModules } from './app';
-import { HtmlResource } from './htmlResource';
+import { HtmlResource } from './source';
 
 export function renderContainer(
   entryResManager: HtmlResource,
