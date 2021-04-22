@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 
-console.log(
-  window.HTMLIFrameElement._native ===
-    window.Gar.getGlobalObject().HTMLIFrameElement,
-  'HTMLIFrameElement',
-);
+// console.log(
+//   window.HTMLIFrameElement._native ===
+//     window.Gar.getGlobalObject().HTMLIFrameElement,
+//   'HTMLIFrameElement',
+// );
 console.log(document.head instanceof window.HTMLIFrameElement, 'document.head');
 console.dir(window.HTMLIFrameElement._native);
 
@@ -100,10 +100,10 @@ setTimeout(() => {
   console.log(document instanceof Document); // true
   console.log(doc instanceof Document); // true
   console.log(doc.__proto__ === Document.prototype); // false, 一个代理，一个是基对象
-  console.log(
-    window.Gar.getGlobalObject().document.createElement !==
-      Document.prototype.createElement,
-  ); // true
+  // console.log(
+  //   window.Gar.getGlobalObject().document.createElement !==
+  //     Document.prototype.createElement,
+  // ); // true
   console.log(doc.body, document.body); // null,  body
   doc.a = 1;
   document.b = 2;

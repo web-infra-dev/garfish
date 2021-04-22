@@ -71,19 +71,24 @@ export class Loader {
           if (res.opts.attributes?.length === 0) {
             res.opts.attributes = attributes;
           }
+          if (async) {
+            res.async = true;
+          }
           vnode.key = res.key;
+
           return res;
         };
 
         // 转换为绝对路径
         src = transformUrl(baseUrl, src);
 
-        if (async) {
-          const content = () => this.load(src).then(setAttr);
-          requestList.push({ async, content });
-        } else {
-          requestList.push(this.load(src).then(setAttr));
-        }
+        // if (async) {
+        //   const content = () => this.load(src).then(setAttr);
+        //   requestList.push({ async, content });
+        // } else {
+        //   requestList.push(this.load(src).then(setAttr));
+        // }
+        requestList.push(this.load(src).then(setAttr));
       } else if (children.length > 0) {
         const code = (children[0] as VText).content;
         const res = new JsResource({

@@ -62,7 +62,7 @@ async function use () {
     entry: 'http://localhost:3000' ,
     domGetter: '#submoduleByCunstom'
   })
-  console.log(app);
+  console.log(await app.mount());
 }
 
 use();

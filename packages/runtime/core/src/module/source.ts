@@ -15,6 +15,7 @@ export interface CssResourceOpts {
 
 export class JsResource {
   type = 'js';
+  async = false;
   key = createKey();
   opts: JsResourceOpts;
   constructor(opts: JsResourceOpts) {
