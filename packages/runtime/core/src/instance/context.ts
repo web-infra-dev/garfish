@@ -28,7 +28,7 @@ export class Garfish {
   constructor(options?: Options) {
     // register plugins
     options?.plugins.forEach((pluginCb) => {
-      Garfish.usePlugin(pluginCb);
+      Garfish.usePlugin(pluginCb, this);
     });
 
     hooks.lifecycle.beforeInitialize.call(this, this.options);
@@ -37,14 +37,14 @@ export class Garfish {
     hooks.lifecycle.initialize.call(this, this.options);
   }
 
-  static usePlugin(plugin: () => Plugin, ...args: Array<any>) {
+  static usePlugin(plugin: () => Plugin, context: Garfish, ...args: Array<any>) {
     assert(typeof plugin === 'function', 'Plugin must be a function.');
     if ((plugin as any)._registered) {
       __DEV__ && warn('Please do not register the plugin repeatedly.');
       return this;
     }
     (plugin as any)._registered = true;
-    return hooks.usePlugins(plugin.apply(null, args));
+    return hooks.usePlugins(plugin.apply(null, [context, ...args]));
   }
 
   public setOptions(options: Partial<Options>) {

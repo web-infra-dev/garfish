@@ -144,18 +144,25 @@ export class App {
 
     this.active = true;
     this.mounting = true;
+    try {
+      // add container and compile js with cjs
+      this.cjsCompileAndRenderContainer();
 
-    // add container and compile js with cjs
-    this.cjsCompileAndRenderContainer();
+      // Good provider is set at compile time
+      const provider = await this.checkAndGetProvider();
 
-    // Good provider is set at compile time
-    const provider = await this.checkAndGetProvider();
+      // Existing asynchronous functions need to decide whether the application has been unloaded
+      if (!this.stopMountAndClearEffect()) return false;
+      this.callRender(provider);
 
-    // Existing asynchronous functions need to decide whether the application has been unloaded
-    if (!this.stopMountAndClearEffect()) return false;
-    this.callRender(provider);
+      hooks.lifecycle.afterMount.call('', this.appInfo);
 
-    hooks.lifecycle.afterMount.call('', this.appInfo);
+    } catch(err) {
+      removeElement(this.appContainer);
+      hooks.lifecycle.errorMount.call('',this.appInfo,err);
+    } finally {
+      this.mounting = false;
+    }
   }
 
   async unmount() {

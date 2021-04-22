@@ -41,6 +41,7 @@ export interface Lifecycle {
   afterEval: SyncHook<[any, AppInfo,string, Record<string, any>,string, { async?: boolean; noEntry?: boolean }], void>;
   beforeMount: SyncHook<[any, AppInfo], void>;
   afterMount: SyncHook<[any, AppInfo], void>;
+  errorMount: SyncHook<[any, AppInfo, Error], void>;
   beforeUnMount: SyncHook<[any, AppInfo], void>;
   afterUnMount: SyncHook<[any, AppInfo], void>;
   errorExecCode: SyncHook<[any, AppInfo, Error], void>;
@@ -66,6 +67,7 @@ export class Hooks {
       afterEval: new SyncHook(['context', 'appInfo', 'code', 'env','sourceUrl','options']),
       beforeMount: new SyncHook(['context', 'appInfo']),
       afterMount: new SyncHook(['context', 'appInfo']),
+      errorMount: new SyncHook(['context', 'appInfo', 'error']),
       beforeUnMount: new SyncHook(['context', 'appInfo']),
       afterUnMount: new SyncHook(['context', 'appInfo']),
       errorExecCode: new SyncHook(['context', 'appInfo', 'error']),

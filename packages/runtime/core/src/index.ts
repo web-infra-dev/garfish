@@ -1,5 +1,6 @@
 import { Plugin } from './utils/hooks';
 import { Garfish } from './instance/context';
+import { assert, warn } from '@garfish/utils/src';
 export { Plugin, Lifecycle } from './utils/hooks';
 
 // Garfish.usePlugin(envModifyPlugin);
@@ -24,36 +25,46 @@ const GarfishInstance = new Garfish();
 //   };
 // }
 
-// function addAppPlugin(): Plugin {
-//   return {
-//     name: 'bb',
-//     initialize(context) {
-//       console.log(context);
-//     },
-//     beforeLoad(context, _config) {
-//       // config.appID = 'appA';
-//       // return config
-//       (context as any).loadApp = 'woshi';
-//       return new Promise((resolve) => {
-//         setTimeout(() => {
-//           console.log('过来bb 插件了');
-//           resolve();
-//         }, 1000);
-//       });
-//     },
-//     // beforeBootstrap(_con, config){
-//     //   config.apps= [
-//     //     ...config.apps,
-//     //     {
-//     //       name: 'appA',
-//     //       entry: 'https://baidu.com'
-//     //     }
-//     //   ]
-//     //   console.log(config);
-//     //   return config;
-//     // }
-//   };
+
+
+// declare class Garfish {
+//   public setExternal: (nameOrExtObj: string | Record<string, any>, value?: any) => void
 // }
+
+function addCjsExternalPlugin( Garfish: Garfish ): Plugin {
+  function setExternal(nameOrExtObj: string | Record<string, any>, value?: any) {
+    assert(nameOrExtObj, 'Invalid parameter.');
+    if (typeof nameOrExtObj === 'object') {
+      for (const key in nameOrExtObj) {
+        if (this.externals[key]) {
+          __DEV__ && warn(`The "${key}" will be overwritten in external.`);
+        }
+        this.externals[key] = nameOrExtObj[key];
+      }
+    } else {
+      this.externals[nameOrExtObj] = value;
+    }
+    return this;
+  }
+
+  return {
+    name: 'bb',
+    initialize() {
+      // Garfish.setExternal = setExternal;
+    },
+    beforeLoad(context, _config) {
+      // config.appID = 'appA';
+      // return config
+      (context as any).loadApp = 'woshi';
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.log('过来bb 插件了');
+          resolve();
+        }, 1000);
+      });
+    }
+  };
+}
 
 declare global {
   interface Window {
