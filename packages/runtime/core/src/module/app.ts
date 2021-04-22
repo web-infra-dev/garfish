@@ -58,7 +58,7 @@ export class App {
   public appContainer: HTMLElement;
   private mounting: boolean = false;
   private unmounting: boolean = false;
-  public provider: Provider | Promise<Provider>;
+  public provider: Provider;
   private entryResManager: HtmlResource;
   public htmlNode: HTMLElement | ShadowRoot;
   private resources: ResourceModules;
@@ -87,12 +87,6 @@ export class App {
     return findTarget(this.htmlNode, ['body', 'div[__GarfishMockBody__]']);
   }
 
-  // TODO: 需要抽象不同的打包规范，获取导出内容抽象化
-  // 获取导出内容
-  getProvider() {
-    return Promise.resolve(this.provider);
-  }
-
   // TODO: 增加执行代码编译过程失败Hook
   execScript(
     code: string,
@@ -101,7 +95,13 @@ export class App {
     options?: { async?: boolean; noEntry?: boolean },
   ) {
     const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
-    // const { noEntry, async } = options;
+
+    // execEnv
+    if (!env) {
+      env = options?.noEntry
+      ? { [__GARFISH_EXPORTS__]: this.customExports }
+      : this.cjsModules;
+    }
 
     try {
       evalWithEnv(`;${code}\n${sourceUrl}`, env);
@@ -111,13 +111,7 @@ export class App {
     }
   }
 
-  // 应用挂载流程：
-  // 「active」为true表明应用正在渲染中或者应用激活状态，为false表明正在销毁或者销毁完成（由于应用渲染和销毁都为异步事件，在渲染过程中执行到异步后可能会出现在异步的过程中同步的把应用销毁的情况，所以每次异步任务结束后需要判断能否继续渲染）
-  // 「mounting」判断应用如果处于挂载过程中，终止（应用挂载为异步任务，避免重复挂载的情况出现）
-  // 「mounted」如果应用已经处于渲染完成，(阻止继续渲染)重新进行渲染(废弃：需要将应用销毁后渲染，由于销毁时一个异步任务，所以销毁后将状态设置为可以继续渲染，不过再继续渲染时需要判断是否满足可以渲染的条件，列如是否在渲染中，是否已经渲染完成这两种情况不可以继续执行)
-  //  编译执行代码过程中遇到异步任务需要终止,需要判断是否满足继续执行的条件
-  //  「noCompile」参数用于判断子模块是否需要编译，可能会出现已经提前编译过的情况，已经拿到导出内容
-  async mount() {
+  private canMount (){
     // If you are not in mount mount
     if (this.mounting) {
       __DEV__ && warn(`The ${this.appInfo.name} app mounting.`);
@@ -139,6 +133,18 @@ export class App {
       return false;
     }
 
+    return true;
+  }
+
+  // 应用挂载流程：
+  // 「active」为true表明应用正在渲染中或者应用激活状态，为false表明正在销毁或者销毁完成（由于应用渲染和销毁都为异步事件，在渲染过程中执行到异步后可能会出现在异步的过程中同步的把应用销毁的情况，所以每次异步任务结束后需要判断能否继续渲染）
+  // 「mounting」判断应用如果处于挂载过程中，终止（应用挂载为异步任务，避免重复挂载的情况出现）
+  // 「mounted」如果应用已经处于渲染完成，(阻止继续渲染)重新进行渲染(废弃：需要将应用销毁后渲染，由于销毁时一个异步任务，所以销毁后将状态设置为可以继续渲染，不过再继续渲染时需要判断是否满足可以渲染的条件，列如是否在渲染中，是否已经渲染完成这两种情况不可以继续执行)
+  //  编译执行代码过程中遇到异步任务需要终止,需要判断是否满足继续执行的条件
+  //  「noCompile」参数用于判断子模块是否需要编译，可能会出现已经提前编译过的情况，已经拿到导出内容
+  async mount() {
+    if (!this.canMount()) return;
+
     this.active = true;
     this.mounting = true;
 
@@ -146,12 +152,24 @@ export class App {
     this.cjsCompileAndRenderContainer();
 
     // Good provider is set at compile time
-    const provider = await this.getProvider();
-    if (this.stopMountAndClearEffect()) return null;
+    const provider = await this.checkAndGetProvider();
+
+    // Existing asynchronous functions need to decide whether the application has been unloaded
+    if (!this.stopMountAndClearEffect()) return false;
     this.callRender(provider);
   }
 
-  async unmount() {}
+  async unmount() {
+    this.active = false;
+    if (this.unmounting) {
+      __DEV__ && warn(`The ${this.name} app unmounting.`);
+      return false;
+    }
+
+    this.callDestroy(this.provider);
+    this.unmounting = false;
+    return true;
+  }
 
   // private assertContinueMount () {
   // }
@@ -187,7 +205,6 @@ export class App {
 
   }
 
-
   // 调用 render 对两种不同的沙箱做兼容处理
   private callRender(provider: Provider) {
     const { appInfo, rootElement } = this;
@@ -198,9 +215,10 @@ export class App {
   }
 
   // Call to destroy do compatible with two different sandbox
-  private callDestroy(provider: Provider, _isUnmount?: boolean) {
+  private callDestroy(provider: Provider) {
     const { rootElement, appContainer } = this;
     provider.destroy({ dom: rootElement });
+    removeElement(appContainer);
   }
 
   // Create a container node and add in the document flow
@@ -213,6 +231,7 @@ export class App {
     const { appInfo, entryResManager, resources } = this;
     const baseUrl = entryResManager.opts.url;
     const { htmlNode, appContainer } = createAppContainer(appInfo.name);
+    const strictIsolation = false;
 
     // Transformation relative path
     this.htmlNode = htmlNode;
@@ -220,17 +239,120 @@ export class App {
 
     // To append to the document flow, recursive again create the contents of the HTML or execute the script
     this.addContainer();
-    renderContainer(entryResManager, baseUrl, htmlNode, false , resources, this.execScript);
-  }
 
+    entryResManager.renderElements(
+      {
+        meta: () => null,
+        a: (vnode) => {
+          toResolveUrl(vnode, 'href', baseUrl);
+          return createElement(vnode);
+        },
+        img: (vnode) => {
+          toResolveUrl(vnode, 'src', baseUrl);
+          return createElement(vnode);
+        },
+        // body 和 head 这样处理是为了兼容旧版本
+        body: (vnode) => {
+          if (!strictIsolation) {
+            vnode.tagName = 'div';
+            vnode.attributes.push({
+              key: '__GarfishMockBody__',
+              value: null,
+            });
+            return createElement(vnode);
+          } else {
+            return createElement(vnode);
+          }
+        },
+        head: (vnode) => {
+          if (!strictIsolation) {
+            vnode.tagName = 'div';
+            vnode.attributes.push({
+              key: '__GarfishMockHead__',
+              value: null,
+            });
+            return createElement(vnode);
+          } else {
+            return createElement(vnode);
+          }
+        },
+        script: (vnode) => {
+          const type = findProp(vnode, 'type');
+          const mimeType = type?.value;
+          if (mimeType) {
+            if (mimeType === 'module') return null;
+            if (!isJs(parseContentType(mimeType))) {
+              return createElement(vnode);
+            }
+          }
+
+          const resource = resources.js.find((manager) => {
+            if (!(manager as any).async) {
+              if (vnode.key) {
+                return vnode.key === (manager as any).key;
+              }
+            }
+            return false;
+          });
+
+          if (resource) {
+            const { code, url } = (resource as any).opts;
+            this.execScript(code, null, url, {
+              async: false,
+              noEntry: !!findProp(vnode, 'no-entry'),
+            });
+          } else if (__DEV__) {
+            const async = findProp(vnode, 'async');
+            if (!async) {
+              const nodeStr = JSON.stringify(vnode, null, 2);
+              warn(`The current js node cannot be found.\n\n ${nodeStr}`);
+            }
+          }
+          return createScriptNode(vnode);
+        },
+
+        style: (vnode) => {
+          const text = vnode.children[0] as VText;
+          if (text) {
+            text.content = transformCssUrl(baseUrl, text.content);
+          }
+          return createElement(vnode);
+        },
+
+        link: (vnode) => {
+          if (isCssLink(vnode)) {
+            const href = findProp(vnode, 'href');
+            const resource = resources.link.find(
+              ({ opts }) => opts.url === href?.value,
+            );
+            if (!resource) {
+              return createElement(vnode);
+            }
+
+            const { url, code } = resource.opts;
+            const content = __DEV__
+              ? `\n/*${createLinkNode(vnode)}*/\n${code}`
+              : code;
+
+            if (resource.type !== 'css') {
+              warn(`The current resource type does not match. "${url}"`);
+              return null;
+            }
+            return createStyleNode(content);
+          }
+          return isPrefetchJsLink(vnode)
+            ? createScriptNode(vnode)
+            : createElement(vnode);
+        },
+      },
+      htmlNode,
+    );
+  }
 
   private execAsyncScript () {
     let { resources } = this;
-    // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require,
-    const Env = false
-      ? { [__GARFISH_EXPORTS__]: this.customExports }
-      : this.cjsModules;
-    this.execScript('console.log()', Env);
+    // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
+    // this.execScript('console.log()');
 
 
     for (const manager of resources.js) {
@@ -238,7 +360,7 @@ export class App {
     }
   }
 
-  private async checkAndGetAppResult() {
+  private async checkAndGetProvider() {
     const {
       appInfo,
       rootElement,

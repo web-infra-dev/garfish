@@ -55,6 +55,16 @@ const GarfishInstance = new Garfish();
 //   };
 // }
 
+declare global {
+  interface Window {
+    Garfish: Garfish;
+    __GARFISH__: boolean;
+  }
+}
+
+window.__GARFISH__ = true;
+
+
 async function use () {
   let app = await GarfishInstance.loadApp({
     name: 'vue',
@@ -63,6 +73,10 @@ async function use () {
     domGetter: '#submoduleByCunstom'
   })
   console.log(await app.mount());
+
+  setTimeout(()=>{
+    app.unmount();
+  },4000)
 }
 
 use();

@@ -83,7 +83,7 @@ export function renderContainer(
 
         if (resource) {
           const { code, url } = (resource as any).opts;
-          execScript(code, {}, url, {
+          execScript(code, null, url, {
             async: false,
             noEntry: !!findProp(vnode, 'no-entry'),
           });

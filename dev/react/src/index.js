@@ -50,8 +50,8 @@ export const provider = (opts) => {
   console.log(opts, 'opts');
   return {
     render,
-    destroy({ dom }) {
-      ReactDOM.unmountComponentAtNode(dom.querySelector('#root'));
+    destroy() {
+      ReactDOM.unmountComponentAtNode(opts.dom.querySelector('#root'));
     },
   };
 };
