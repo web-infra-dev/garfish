@@ -41,18 +41,18 @@ export interface ResourceModules {
 }
 
 /**
- * App 实例具备的能力
- * 1. 提供静态资源、html结构、css、js
- * 2. 可以提取js中cjs或者通过作用域__GARFISH_EXPORTS__命名空间拿到子应用导出的provider
- * 3. 通过execCode传入环境变量例如cjs规范的module、require、exports来实现external共享
- * 4. 触发渲染：子应用相关节点放置文档流中，依次执行子应用的脚本、最终执行子应用提供的render函数，完成子应用独立运行时的执行操作
- * 5. 触发销毁：执行子应用的destroy函数，并将子应用的节点从文档流中移除
+ * Have the ability to App instance
+ * 1. Provide static resource, the structure of the HTML, CSS, js
+ * 2. Can be extracted in the js CJS through scope __GARFISH_EXPORTS__ namespace or get child application provider is deduced
+ * 3. Through execCode incoming environment variables such as CJS specification of the module, the require, exports to realize external sharing
+ * 4. Trigger rendering：Application related nodes placed in the document flow, which in turn perform application scripts, final render function, perform the son application provides complete application independent runtime execution
+ * 5. Trigger the destruction：Perform the destroy function of child application, and applies the child node is removed from the document flow
  */
 export class App {
   public name: string;
   public appInfo: AppInfo;
   public cjsModules: Record<string, any>;
-  public customExports: Record<string, any> = {}; // 如果不希望使用 cjs 导出，可以用这个
+  public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
   private active = false;
   public mounted = false;
   public appContainer: HTMLElement;
@@ -94,6 +94,7 @@ export class App {
     url?: string,
     options?: { async?: boolean; noEntry?: boolean },
   ) {
+    hooks.lifecycle.beforeEval.call('',this.appInfo, code, env, url, options);
     const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
 
     // execEnv
@@ -106,9 +107,10 @@ export class App {
     try {
       evalWithEnv(`;${code}\n${sourceUrl}`, env);
     } catch (e) {
-      // this.context.emit(ERROR_COMPILE_APP, this, e);
+      hooks.lifecycle.errorExecCode.call('',this.appInfo,e);
       throw e;
     }
+    hooks.lifecycle.afterEval.call('',this.appInfo, code, env, url, options);
   }
 
   private canMount (){
@@ -136,14 +138,9 @@ export class App {
     return true;
   }
 
-  // 应用挂载流程：
-  // 「active」为true表明应用正在渲染中或者应用激活状态，为false表明正在销毁或者销毁完成（由于应用渲染和销毁都为异步事件，在渲染过程中执行到异步后可能会出现在异步的过程中同步的把应用销毁的情况，所以每次异步任务结束后需要判断能否继续渲染）
-  // 「mounting」判断应用如果处于挂载过程中，终止（应用挂载为异步任务，避免重复挂载的情况出现）
-  // 「mounted」如果应用已经处于渲染完成，(阻止继续渲染)重新进行渲染(废弃：需要将应用销毁后渲染，由于销毁时一个异步任务，所以销毁后将状态设置为可以继续渲染，不过再继续渲染时需要判断是否满足可以渲染的条件，列如是否在渲染中，是否已经渲染完成这两种情况不可以继续执行)
-  //  编译执行代码过程中遇到异步任务需要终止,需要判断是否满足继续执行的条件
-  //  「noCompile」参数用于判断子模块是否需要编译，可能会出现已经提前编译过的情况，已经拿到导出内容
   async mount() {
     if (!this.canMount()) return;
+    hooks.lifecycle.beforeMount.call('', this.appInfo);
 
     this.active = true;
     this.mounting = true;
@@ -157,6 +154,8 @@ export class App {
     // Existing asynchronous functions need to decide whether the application has been unloaded
     if (!this.stopMountAndClearEffect()) return false;
     this.callRender(provider);
+
+    hooks.lifecycle.afterMount.call('', this.appInfo);
   }
 
   async unmount() {
@@ -165,9 +164,12 @@ export class App {
       __DEV__ && warn(`The ${this.name} app unmounting.`);
       return false;
     }
+    hooks.lifecycle.beforeUnMount.call('', this.appInfo);
 
     this.callDestroy(this.provider);
     this.unmounting = false;
+
+    hooks.lifecycle.afterUnMount.call('', this.appInfo);
     return true;
   }
 
@@ -188,18 +190,10 @@ export class App {
 
   // Performs js resources provided by the module, finally get the content of the export
   public cjsCompileAndRenderContainer() {
-    hooks.lifecycle.beforeEval.call('', this.appInfo);
-
     // Render the application node
     this.renderHtml();
     //Execute asynchronous script
     this.execAsyncScript();
-
-    hooks.lifecycle.afterEval.call('', this.appInfo);
-  }
-
-  public cjsCompile () {
-
   }
 
   // 调用 render 对两种不同的沙箱做兼容处理

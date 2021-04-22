@@ -74,9 +74,9 @@ async function use () {
   })
   console.log(await app.mount());
 
-  setTimeout(()=>{
-    app.unmount();
-  },4000)
+  // setTimeout(()=>{
+  //   app.unmount();
+  // },4000)
 }
 
 use();
