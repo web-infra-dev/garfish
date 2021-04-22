@@ -171,9 +171,6 @@ export class App {
     return true;
   }
 
-  // private assertContinueMount () {
-  // }
-
   // If asynchronous task encountered in the rendering process, such as triggering the beforeEval before executing code, after the asynchronous task, you need to determine whether the application has been destroyed or in the end state
   // If in the end state will need to perform the side effects of removing rendering process, adding a mount point to a document, for example, execute code of the environmental effects, and rendering the state in the end
   private stopMountAndClearEffect() {
@@ -182,7 +179,7 @@ export class App {
         warn(`The app "${this.name}" rendering process has been blocked.`);
       }
       this.mounting = false;
-      // 将已经 append 到文档流上的容器删掉
+      // Will have been added to the document flow on the container
       if (this.appContainer) removeElement(this.appContainer);
       return false;
     }
@@ -191,14 +188,14 @@ export class App {
 
   // Performs js resources provided by the module, finally get the content of the export
   public cjsCompileAndRenderContainer() {
-    hooks.lifecycle.beforeEval.promise('', this.appInfo);
+    hooks.lifecycle.beforeEval.call('', this.appInfo);
 
     // Render the application node
     this.renderHtml();
     //Execute asynchronous script
     this.execAsyncScript();
 
-    hooks.lifecycle.afterEval.promise('', this.appInfo);
+    hooks.lifecycle.afterEval.call('', this.appInfo);
   }
 
   public cjsCompile () {
@@ -222,8 +219,8 @@ export class App {
   }
 
   // Create a container node and add in the document flow
+  // domGetter Have been dealing with
   private addContainer() {
-    // domGetter Have been dealing with
     rawAppendChild.call(this.appInfo.domGetter, this.appContainer);
   }
 
