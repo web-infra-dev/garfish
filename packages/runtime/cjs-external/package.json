@@ -1,0 +1,37 @@
+{
+  "name": "@garfish/garfish-cjs-external",
+  "version": "0.0.2",
+  "description": "cjs-external module.",
+  "keywords": [
+    "garfish",
+    "cjs-external"
+  ],
+  "author": "zhoushaw <codingzx@gmail.com>",
+  "homepage": "https://github.com/bytedance/garfish",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "module": "dist/cjs-external.esm-bundler.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "scripts": {},
+  "types": "dist/cjs-external.d.ts",
+  "buildOptions": {
+    "name": "CjsExternal",
+    "devTemplate": "module",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "umd"
+    ]
+  },
+  "dependencies": {},
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}

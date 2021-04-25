@@ -2,7 +2,7 @@ import { Plugin } from './utils/hooks';
 import { Garfish } from './instance/context';
 import { assert, warn } from '@garfish/utils/src';
 export { Plugin, Lifecycle } from './utils/hooks';
-import BrowserVm from '@garfish/browser-vm';
+import CjsExternal from '@garfish/cjs-external';
 
 declare global {
   interface Window {
@@ -13,7 +13,7 @@ declare global {
 window.__GARFISH__ = true;
 
 const GarfishInstance = new Garfish({
-  plugins: [BrowserVm]
+  plugins: [CjsExternal]
 });
 
 
@@ -34,6 +34,5 @@ async function use () {
 use();
 
 GarfishInstance.run();
-
 
 export default Garfish;
