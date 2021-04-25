@@ -47,7 +47,7 @@ export interface Config {
   basename?: string;
   apps?: Array<AppInfo>;
   sandbox?: SandboxConfig;
-  plugins?: Array<() => Plugin>;
+  plugins?: Array<(context: Garfish) => Plugin>;
   autoRefreshApp?: boolean;
   props?: Record<string, any>;
   disableStatistics?: boolean;

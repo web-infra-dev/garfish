@@ -13,6 +13,7 @@ import {
 import { Loader } from '../module/loader';
 import { getRenderNode } from '../utils';
 
+
 export class Garfish {
   public version = __VERSION__;
   private running = false;
@@ -22,13 +23,13 @@ export class Garfish {
   public activeApps: Array<any> = [];
   private cacheApps: Record<string, any> = {};
   private loading: Record<string, Promise<any> | null> = {};
-  public plugins: [];
+  public plugins: Array<(context: Garfish) => Plugin> = [];
   public loader = new Loader();
 
   constructor(options?: Options) {
     // register plugins
     options?.plugins.forEach((pluginCb) => {
-      Garfish.usePlugin(pluginCb, this);
+      this.usePlugin(pluginCb, this);
     });
 
     hooks.lifecycle.beforeInitialize.call(this, this.options);
@@ -37,14 +38,14 @@ export class Garfish {
     hooks.lifecycle.initialize.call(this, this.options);
   }
 
-  static usePlugin(plugin: () => Plugin, context: Garfish, ...args: Array<any>) {
+  public usePlugin(plugin: (context: Garfish) => Plugin, context: Garfish, ...args: Array<any>) {
     assert(typeof plugin === 'function', 'Plugin must be a function.');
     if ((plugin as any)._registered) {
       __DEV__ && warn('Please do not register the plugin repeatedly.');
       return this;
     }
     (plugin as any)._registered = true;
-    return hooks.usePlugins(plugin.apply(null, [context, ...args]));
+    return hooks.usePlugins(plugin.apply(this, [context, ...args]));
   }
 
   public setOptions(options: Partial<Options>) {
