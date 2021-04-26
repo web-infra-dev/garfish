@@ -1,4 +1,4 @@
-import { hooks, Plugin } from '../utils/hooks';
+import { Plugin, Hooks, hooks } from '../utils/hooks';
 import { getDefaultOptions } from '../config';
 import { Options, AppInfo, LoadAppOptions } from '../type';
 import {
@@ -25,6 +25,7 @@ export class Garfish {
   private loading: Record<string, Promise<any> | null> = {};
   public plugins: Array<(context: Garfish) => Plugin> = [];
   public loader = new Loader();
+  // public hooks = new Hooks();
 
   constructor(options?: Options) {
     // register plugins

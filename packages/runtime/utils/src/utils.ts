@@ -144,6 +144,13 @@ export function remove<T>(list: Array<T> | Set<T>, el: T) {
   }
 }
 
+export function mixins(...list) {
+  return function (target) {
+    Object.assign(target.prototype, ...list)
+  }
+}
+
+
 // 有些测试 jest.mock 不好测，可用这个工具方法
 export function callTestCallback(obj: any, ...args: any[]) {
   if (__TEST__) {

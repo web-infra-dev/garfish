@@ -11,10 +11,12 @@ import {
   findProp,
   transformUrl,
   parseContentType,
+  mixins,
 } from '@garfish/utils';
 import { App, ResourceModules } from './app';
 import { AppInfo } from '../type';
 import { CssResource, JsResource, HtmlResource } from './source';
+import { Garfish } from '../instance/context'
 
 let currentSize = 0;
 
@@ -22,6 +24,7 @@ let currentSize = 0;
 export function isOverCapacity(size: number) {
   return size > 1024 * 1024 * 30; // 30M
 }
+
 
 export class Loader {
   private forceCaches: Set<string>;

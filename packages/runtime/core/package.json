@@ -32,7 +32,6 @@
     ]
   },
   "dependencies": {
-    "@garfish/hooks": "^0.0.1",
     "himalaya": "^1.1.0",
     "inversify": "^5.0.5",
     "reflect-metadata": "^0.1.13"

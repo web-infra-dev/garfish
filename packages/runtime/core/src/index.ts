@@ -24,11 +24,16 @@ async function use () {
     entry: 'http://localhost:3000' ,
     domGetter: '#submoduleByCunstom'
   })
-  console.log(await app.mount());
 
-  // setTimeout(()=>{
-  //   app.unmount();
-  // },4000)
+  let vueDom = document.querySelector('#vueBtn');
+  vueDom.addEventListener('click', async ()=>{
+    await app.unmount();
+  });
+
+  let dom = document.querySelector('#reactBtn');
+  dom.addEventListener('click', async ()=>{
+    await app.mount();
+  });
 }
 
 use();
