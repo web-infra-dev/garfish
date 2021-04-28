@@ -4,8 +4,8 @@ import {
   AsyncParallelBailHook,
   AsyncSeriesHook,
 } from '@garfish/hooks';
+import { injectable } from 'inversify';
 import { Garfish } from '../instance/context';
-import { injectable } from '../ioc/container';
 import { Options, AppInfo, LoadAppOptions } from '../type';
 
 export function keys<O>(o: O) {

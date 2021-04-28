@@ -1,5 +1,5 @@
 import { Garfish } from './instance/context';
-import { Plugin } from './utils/hooks';
+import { Plugin } from './plugin/hooks';
 
 export type DomGetter = Element | (() => Element | null) | string;
 

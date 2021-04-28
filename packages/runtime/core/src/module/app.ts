@@ -23,9 +23,9 @@ import {
   VText,
   warn,
 } from '@garfish/utils';
-import { hooks } from '../utils/hooks';
+import { hooks } from '../plugin/hooks';
 import { createAppContainer, getRenderNode } from '../utils';
-import { renderContainer } from './htmlRender'
+import { renderContainer } from './htmlRender';
 import { HtmlResource } from './source';
 
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
@@ -68,7 +68,7 @@ export class App {
     appInfo: AppInfo,
     entryResManager: HtmlResource,
     resources: ResourceModules,
-    isHtmlMode: boolean
+    isHtmlMode: boolean,
   ) {
     this.appInfo = appInfo;
     this.name = appInfo.name;
@@ -94,26 +94,26 @@ export class App {
     url?: string,
     options?: { async?: boolean; noEntry?: boolean },
   ) {
-    hooks.lifecycle.beforeEval.call('',this.appInfo, code, env, url, options);
+    hooks.lifecycle.beforeEval.call('', this.appInfo, code, env, url, options);
     const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
 
     // execEnv
     if (!env) {
       env = options?.noEntry
-      ? { [__GARFISH_EXPORTS__]: this.customExports }
-      : this.cjsModules;
+        ? { [__GARFISH_EXPORTS__]: this.customExports }
+        : this.cjsModules;
     }
 
     try {
       evalWithEnv(`;${code}\n${sourceUrl}`, env);
     } catch (e) {
-      hooks.lifecycle.errorExecCode.call('',this.appInfo,e);
+      hooks.lifecycle.errorExecCode.call('', this.appInfo, e);
       throw e;
     }
-    hooks.lifecycle.afterEval.call('',this.appInfo, code, env, url, options);
+    hooks.lifecycle.afterEval.call('', this.appInfo, code, env, url, options);
   }
 
-  private canMount (){
+  private canMount() {
     // If you are not in mount mount
     if (this.mounting) {
       __DEV__ && warn(`The ${this.appInfo.name} app mounting.`);
@@ -156,10 +156,9 @@ export class App {
       this.callRender(provider);
 
       hooks.lifecycle.afterMount.call('', this.appInfo);
-
-    } catch(err) {
+    } catch (err) {
       removeElement(this.appContainer);
-      hooks.lifecycle.errorMount.call('',this.appInfo,err);
+      hooks.lifecycle.errorMount.call('', this.appInfo, err);
     } finally {
       this.mounting = false;
     }
@@ -347,11 +346,10 @@ export class App {
     );
   }
 
-  private execAsyncScript () {
-    let { resources } = this;
+  private execAsyncScript() {
+    const { resources } = this;
     // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
     // this.execScript('console.log()');
-
 
     for (const manager of resources.js) {
       console.log(manager);
@@ -359,12 +357,7 @@ export class App {
   }
 
   private async checkAndGetProvider() {
-    const {
-      appInfo,
-      rootElement,
-      cjsModules,
-      customExports,
-    } = this;
+    const { appInfo, rootElement, cjsModules, customExports } = this;
     const { props, basename } = appInfo;
     let provider = (cjsModules.exports && cjsModules.exports.provider) as
       | Provider

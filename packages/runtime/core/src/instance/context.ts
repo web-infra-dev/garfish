@@ -1,4 +1,4 @@
-import { Plugin, Hooks, hooks } from '../utils/hooks';
+import { Plugin, Hooks, hooks } from '../plugin/hooks';
 import { getDefaultOptions } from '../config';
 import { Options, AppInfo, LoadAppOptions } from '../type';
 import {
@@ -12,7 +12,6 @@ import {
 } from '@garfish/utils';
 import { Loader } from '../module/loader';
 import { getRenderNode } from '../utils';
-
 
 export class Garfish {
   public version = __VERSION__;
@@ -39,7 +38,11 @@ export class Garfish {
     hooks.lifecycle.initialize.call(this, this.options);
   }
 
-  public usePlugin(plugin: (context: Garfish) => Plugin, context: Garfish, ...args: Array<any>) {
+  public usePlugin(
+    plugin: (context: Garfish) => Plugin,
+    context: Garfish,
+    ...args: Array<any>
+  ) {
     assert(typeof plugin === 'function', 'Plugin must be a function.');
     if ((plugin as any)._registered) {
       __DEV__ && warn('Please do not register the plugin repeatedly.');
@@ -118,7 +121,7 @@ export class Garfish {
     if (!appInfo) {
       appInfo = { cache: true, ...opts };
     }
-    appInfo.domGetter = getRenderNode(appInfo.domGetter)
+    appInfo.domGetter = getRenderNode(appInfo.domGetter);
 
     const asyncLoadProcess = async () => {
       //  Return not undefined type data directly to end loading

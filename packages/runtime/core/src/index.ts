@@ -1,8 +1,7 @@
 import 'reflect-metadata';
-import { Plugin } from './utils/hooks';
 import { Garfish } from './instance/context';
 import { assert, warn } from '@garfish/utils';
-export { Plugin, Lifecycle } from './utils/hooks';
+export { Plugin, Lifecycle } from './plugin/hooks';
 import CjsExternal from '@garfish/cjs-external';
 
 declare global {
@@ -37,6 +36,7 @@ async function use() {
 
 use();
 
+console.log(GarfishInstance);
 // GarfishInstance.run();
 
 export default Garfish;
