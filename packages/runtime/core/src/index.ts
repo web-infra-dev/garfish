@@ -3,13 +3,15 @@ import { Garfish } from './instance/context';
 import { assert, warn } from '@garfish/utils';
 export { Plugin, Lifecycle } from './plugin/hooks';
 import CjsExternal from '@garfish/cjs-external';
+import { container, TYPES } from './ioc/container';
+import { Hooks } from './plugin/hooks';
+import Hook from 'packages/runtime/hooks/src/Hook';
+import { Loader } from './module/loader';
 
-declare global {
-  interface Window {
-    Garfish: Garfish;
-    __GARFISH__: boolean;
-  }
-}
+container.bind<Garfish>(TYPES.Garfish).toConstructor(Garfish);
+container.bind<Hooks>(TYPES.Hooks).to(Hooks);
+container.bind<Loader>(TYPES.Loader).to(Loader);
+
 window.__GARFISH__ = true;
 
 const GarfishInstance = new Garfish({

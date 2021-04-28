@@ -16,7 +16,8 @@ import {
 import { App, ResourceModules } from './app';
 import { AppInfo } from '../type';
 import { CssResource, JsResource, HtmlResource } from './source';
-import { Garfish } from '../instance/context'
+import { Garfish } from '../instance/context';
+import { injectable } from 'inversify';
 
 let currentSize = 0;
 
@@ -25,7 +26,7 @@ export function isOverCapacity(size: number) {
   return size > 1024 * 1024 * 30; // 30M
 }
 
-
+@injectable()
 export class Loader {
   private forceCaches: Set<string>;
   private caches: Record<string, HtmlResource | CssResource | JsResource>;
@@ -129,12 +130,7 @@ export class Loader {
     isHtmlMode: boolean,
   ) {
     const run = (resources: ResourceModules) => {
-      const app = new App(
-        appInfo,
-        manager,
-        resources,
-        isHtmlMode,
-      );
+      const app = new App(appInfo, manager, resources, isHtmlMode);
       return app;
     };
 

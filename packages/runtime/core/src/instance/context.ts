@@ -12,7 +12,10 @@ import {
 } from '@garfish/utils';
 import { Loader } from '../module/loader';
 import { getRenderNode } from '../utils';
+import { injectable } from 'inversify';
+import { lazyInject, TYPES } from '../ioc/container';
 
+@injectable()
 export class Garfish {
   public version = __VERSION__;
   private running = false;
@@ -23,8 +26,12 @@ export class Garfish {
   private cacheApps: Record<string, any> = {};
   private loading: Record<string, Promise<any> | null> = {};
   public plugins: Array<(context: Garfish) => Plugin> = [];
-  public loader = new Loader();
-  // public hooks = new Hooks();
+
+  @lazyInject(TYPES.Loader)
+  public loader: Loader;
+
+  @lazyInject(TYPES.Hooks)
+  public hooks: Hooks;
 
   constructor(options?: Options) {
     // register plugins

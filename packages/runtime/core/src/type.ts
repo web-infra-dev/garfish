@@ -3,6 +3,13 @@ import { Plugin } from './plugin/hooks';
 
 export type DomGetter = Element | (() => Element | null) | string;
 
+declare global {
+  interface Window {
+    Garfish: Garfish;
+    __GARFISH__: boolean;
+  }
+}
+
 export interface AppInfo {
   name: string;
   entry: string;
