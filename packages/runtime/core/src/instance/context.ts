@@ -12,8 +12,20 @@ import {
 } from '@garfish/utils';
 import { Loader } from '../module/loader';
 import { getRenderNode } from '../utils';
-import { injectable } from 'inversify';
+// import { injectable } from 'inversify';
 import { lazyInject, TYPES } from '../ioc/container';
+
+function injectable() {
+  return function (target: any) {
+    if (Reflect.hasOwnMetadata('inversify:paramtypes', target)) {
+      throw new Error('Cannot apply @injectable decorator multiple times.');
+    }
+
+    const types = Reflect.getMetadata('design:returntype', target) || [];
+    Reflect.defineMetadata('inversify:paramtypes', types, target);
+    return target;
+  };
+}
 
 @injectable()
 export class Garfish {
@@ -27,11 +39,11 @@ export class Garfish {
   private loading: Record<string, Promise<any> | null> = {};
   public plugins: Array<(context: Garfish) => Plugin> = [];
 
-  @lazyInject(TYPES.Loader)
-  public loader: Loader;
+  // @lazyInject(TYPES.Loader)
+  // public loader: Loader;
 
-  @lazyInject(TYPES.Hooks)
-  public hooks: Hooks;
+  // @lazyInject(TYPES.Hooks)
+  // public hooks: Hooks;
 
   constructor(options?: Options) {
     // register plugins

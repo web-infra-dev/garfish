@@ -18,6 +18,8 @@ import { AppInfo } from '../type';
 import { CssResource, JsResource, HtmlResource } from './source';
 import { Garfish } from '../instance/context';
 import { injectable } from 'inversify';
+import { lazyInject, TYPES } from '../ioc/container';
+import { Hooks } from '../plugin/hooks';
 
 let currentSize = 0;
 
@@ -37,6 +39,9 @@ export class Loader {
 
   // 允许自定义配置
   public requestConfig: RequestInit | ((url: string) => RequestInit) = {};
+
+  @lazyInject(TYPES.Hooks)
+  public hooks: Hooks;
 
   constructor() {
     this.forceCaches = new Set();

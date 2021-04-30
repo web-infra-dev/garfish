@@ -2,7 +2,7 @@ import getDecorators from 'inversify-inject-decorators';
 import { Container, tagged, named } from 'inversify';
 // import { Garfish } from "../instance/context";
 
-export const container = new Container();
+export const container = new Container({ defaultScope: 'Request' });
 const decorators = getDecorators(container, true);
 export const lazyInject = decorators.lazyInject;
 

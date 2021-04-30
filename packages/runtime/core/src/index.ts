@@ -8,9 +8,9 @@ import { Hooks } from './plugin/hooks';
 import Hook from 'packages/runtime/hooks/src/Hook';
 import { Loader } from './module/loader';
 
-container.bind<Garfish>(TYPES.Garfish).toConstructor(Garfish);
-container.bind<Hooks>(TYPES.Hooks).to(Hooks);
-container.bind<Loader>(TYPES.Loader).to(Loader);
+// container.bind<Garfish>(TYPES.Garfish).toConstructor(Garfish);
+// container.bind<Hooks>(TYPES.Hooks).to(Hooks).inRequestScope();
+// container.bind<Loader>(TYPES.Loader).to(Loader).inRequestScope();
 
 window.__GARFISH__ = true;
 
@@ -35,6 +35,7 @@ async function use() {
     await app.unmount();
   });
 }
+window.Garfish = GarfishInstance;
 
 use();
 
