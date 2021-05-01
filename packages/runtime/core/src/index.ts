@@ -1,16 +1,15 @@
 import 'reflect-metadata';
 import { Garfish } from './instance/context';
 import { assert, warn } from '@garfish/utils';
-export { Plugin, Lifecycle } from './plugin/hooks';
+export { Plugin } from './plugin/hooks';
 import CjsExternal from '@garfish/cjs-external';
 import { container, TYPES } from './ioc/container';
 import { Hooks } from './plugin/hooks';
-import Hook from 'packages/runtime/hooks/src/Hook';
 import { Loader } from './module/loader';
+import { interfaces } from './interface/index';
 
-// container.bind<Garfish>(TYPES.Garfish).toConstructor(Garfish);
-// container.bind<Hooks>(TYPES.Hooks).to(Hooks).inRequestScope();
-// container.bind<Loader>(TYPES.Loader).to(Loader).inRequestScope();
+container.bind<Hooks>(TYPES.Hooks).to(Hooks).inRequestScope();
+container.bind<Loader>(TYPES.Loader).to(Loader).inRequestScope();
 
 window.__GARFISH__ = true;
 
@@ -40,6 +39,5 @@ window.Garfish = GarfishInstance;
 use();
 
 console.log(GarfishInstance);
-// GarfishInstance.run();
 
 export default Garfish;

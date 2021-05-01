@@ -6,6 +6,7 @@ import {
 } from '@garfish/hooks';
 import { injectable } from 'inversify';
 import { Garfish } from '../instance/context';
+import { interfaces } from '../interface';
 import { Options, AppInfo, LoadAppOptions } from '../type';
 
 export function keys<O>(o: O) {
@@ -28,51 +29,13 @@ type PickParam<T> = {
   [k in keyof T]: ConstructorParameters<T[k]>;
 };
 
-export interface Lifecycle {
-  beforeInitialize: SyncHook<BootStrapArgs, void>;
-  initialize: SyncHook<BootStrapArgs, void>;
-  beforeBootstrap: SyncHook<BootStrapArgs, void>;
-  bootstrap: SyncHook<BootStrapArgs, void>;
-  beforeRegisterApp: SyncHook<[Garfish, AppInfo | Array<AppInfo>], void>;
-  registerApp: SyncHook<[Garfish, AppInfo | Array<AppInfo>], void>;
-  beforeLoad: AsyncSeriesBailHook<[Garfish, AppInfo], void | boolean>; // 根据返回值决定是否继续执行后续代码
-  afterLoad: AsyncSeriesBailHook<[Garfish, AppInfo], void | boolean>;
-  errorLoadApp: SyncHook<[Garfish, AppInfo, Error], void>;
-  beforeEval: SyncHook<
-    [
-      any,
-      AppInfo,
-      string,
-      Record<string, any>,
-      string,
-      { async?: boolean; noEntry?: boolean },
-    ],
-    void
-  >;
-  afterEval: SyncHook<
-    [
-      any,
-      AppInfo,
-      string,
-      Record<string, any>,
-      string,
-      { async?: boolean; noEntry?: boolean },
-    ],
-    void
-  >;
-  beforeMount: SyncHook<[any, AppInfo], void>;
-  afterMount: SyncHook<[any, AppInfo], void>;
-  errorMount: SyncHook<[any, AppInfo, Error], void>;
-  beforeUnMount: SyncHook<[any, AppInfo], void>;
-  afterUnMount: SyncHook<[any, AppInfo], void>;
-  errorExecCode: SyncHook<[any, AppInfo, Error], void>;
-}
-
-export type Plugin = { name: string } & PickParam<Partial<Lifecycle>>;
+export type Plugin = { name: string } & PickParam<
+  Partial<interfaces.Lifecycle>
+>;
 
 @injectable()
-export class Hooks {
-  public lifecycle: Lifecycle;
+export class Hooks implements interfaces.Hooks {
+  public lifecycle: interfaces.Lifecycle;
 
   constructor() {
     this.lifecycle = {

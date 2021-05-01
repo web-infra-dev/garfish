@@ -20,6 +20,7 @@ import { Garfish } from '../instance/context';
 import { injectable } from 'inversify';
 import { lazyInject, TYPES } from '../ioc/container';
 import { Hooks } from '../plugin/hooks';
+import { interfaces } from '../interface';
 
 let currentSize = 0;
 
@@ -29,7 +30,7 @@ export function isOverCapacity(size: number) {
 }
 
 @injectable()
-export class Loader {
+export class Loader implements interfaces.Loader {
   private forceCaches: Set<string>;
   private caches: Record<string, HtmlResource | CssResource | JsResource>;
   private loadings: Record<

@@ -64,29 +64,6 @@ export interface Config {
   domGetter?: DomGetter;
 }
 
-export interface Hooks {
-  beforeEval?: LifeCycleFn;
-  afterEval?: LifeCycleFn;
-  beforeMount?: LifeCycleFn;
-  afterMount?: LifeCycleFn;
-  beforeUnmount?: LifeCycleFn;
-  afterUnmount?: LifeCycleFn;
-  beforeLoad?: (
-    appInfo: AppInfo,
-    opts: LoadAppOptions,
-  ) => Promise<void | false> | void | false;
-  afterLoad?: (appInfo: AppInfo, opts: LoadAppOptions) => Promise<void> | void;
-  onNotMatchRouter?: (path: string) => Promise<void> | void;
-  errorLoadApp?: (err: Error | string, appInfo: AppInfo) => void;
-  errorMountApp?: (err: Error | string, appInfo: AppInfo) => void;
-  errorUnmountApp?: (err: Error | string, appInfo: AppInfo) => void;
-  customLoader?: (
-    provider: Provider,
-    appInfo: AppInfo,
-    path: string,
-  ) => Promise<LoaderResult | void> | LoaderResult | void;
-}
-
 export type Options = Config & Hooks;
 
 export type LoadAppOptions = Pick<AppInfo, keyof AppInfo> & {

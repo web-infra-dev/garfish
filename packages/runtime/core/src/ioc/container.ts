@@ -1,6 +1,5 @@
 import getDecorators from 'inversify-inject-decorators';
-import { Container, tagged, named } from 'inversify';
-// import { Garfish } from "../instance/context";
+import { Container, tagged, named, injectable } from 'inversify';
 
 export const container = new Container({ defaultScope: 'Request' });
 const decorators = getDecorators(container, true);
@@ -8,6 +7,9 @@ export const lazyInject = decorators.lazyInject;
 
 export const TYPES = { Loader: 'Loader', Hooks: 'Hooks', Garfish: 'Garfish' };
 
+export { injectable } from 'inversify';
+
+// container.bind<Garfish>(TYPES.Garfish).toConstructor(Garfish);
 // container.bind<Garfish>(TYPES.Garfish).toConstructor(Garfish);
 
 // export function injectable (){
