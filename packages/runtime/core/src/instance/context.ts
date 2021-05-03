@@ -1,6 +1,5 @@
-import { Plugin, Hooks } from '../plugin/hooks';
+import { Hooks } from '../plugin/hooks';
 import { getDefaultOptions } from '../config';
-import { Options, AppInfo, LoadAppOptions } from '../type';
 import {
   assert,
   isObject,
@@ -13,6 +12,7 @@ import {
 import { lazyInject, TYPES, injectable } from '../ioc/container';
 import { App } from '../module/app';
 import { Loader } from '../module/loader';
+import { interfaces } from '../interface';
 
 @injectable()
 export class Garfish {
@@ -20,11 +20,11 @@ export class Garfish {
   private running = false;
   public options = getDefaultOptions();
   public externals: Record<string, any> = {};
-  public appInfos: Record<string, AppInfo> = {};
+  public appInfos: Record<string, interfaces.AppInfo> = {};
   public activeApps: Array<any> = [];
   private cacheApps: Record<string, App> = {};
   private loading: Record<string, Promise<any> | null> = {};
-  public plugins: Array<(context: Garfish) => Plugin> = [];
+  public plugins: Array<(context: Garfish) => interfaces.Plugin> = [];
 
   @lazyInject(TYPES.Loader)
   public loader: Loader;
@@ -32,7 +32,7 @@ export class Garfish {
   @lazyInject(TYPES.Hooks)
   public hooks: Hooks;
 
-  constructor(options?: Options) {
+  constructor(options?: interfaces.Options) {
     // register plugins
     options?.plugins.forEach((pluginCb) => {
       this.usePlugin(pluginCb, this);
@@ -45,7 +45,7 @@ export class Garfish {
   }
 
   public usePlugin(
-    plugin: (context: Garfish) => Plugin,
+    plugin: (context: Garfish) => interfaces.Plugin,
     context: Garfish,
     ...args: Array<any>
   ) {
@@ -58,7 +58,7 @@ export class Garfish {
     return this.hooks.usePlugins(plugin.apply(this, [context, ...args]));
   }
 
-  public setOptions(options: Partial<Options>) {
+  public setOptions(options: Partial<interfaces.Options>) {
     assert(!this.running, 'Garfish is running, can`t set options');
     if (isObject(options)) {
       this.options = deepMerge(this.options, options);
@@ -72,7 +72,7 @@ export class Garfish {
     return this;
   }
 
-  public async run(options?: Options) {
+  public async run(options?: interfaces.Options) {
     if (this.running) {
       __DEV__ &&
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
@@ -86,7 +86,7 @@ export class Garfish {
     this.hooks.lifecycle.bootstrap.call(this.options);
   }
 
-  public registerApp(list: AppInfo | Array<AppInfo>) {
+  public registerApp(list: interfaces.AppInfo | Array<interfaces.AppInfo>) {
     this.hooks.lifecycle.beforeRegisterApp.call(list);
 
     const adds = {};
@@ -113,7 +113,7 @@ export class Garfish {
   }
 
   // // TODO: 1. loader增加preload权重 2.
-  public async loadApp(opts: LoadAppOptions): Promise<App> {
+  public async loadApp(opts: interfaces.LoadAppOptions): Promise<App> {
     let appInfo = this.appInfos[opts.name];
     const appName = opts.name;
 

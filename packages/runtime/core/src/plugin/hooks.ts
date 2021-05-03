@@ -7,31 +7,10 @@ import {
 import { injectable } from 'inversify';
 import { Garfish } from '../instance/context';
 import { interfaces } from '../interface';
-import { Options, AppInfo, LoadAppOptions } from '../type';
 
 export function keys<O>(o: O) {
   return Object.keys(o) as (keyof O)[];
 }
-
-type BootStrapArgs = [Garfish, Options];
-
-type ConstructorParameters<T> = T extends SyncHook<any, any>
-  ? T extends { tap: (options: any, fn: (...args: infer P) => infer R) => any }
-    ? (...args: P) => R
-    : never
-  : T extends {
-      tapPromise: (options: any, fn: (...args: infer A) => infer AR) => any;
-    }
-  ? (...args: A) => AR
-  : never;
-
-type PickParam<T> = {
-  [k in keyof T]: ConstructorParameters<T[k]>;
-};
-
-export type Plugin = { name: string } & PickParam<
-  Partial<interfaces.Lifecycle>
->;
 
 @injectable()
 export class Hooks {

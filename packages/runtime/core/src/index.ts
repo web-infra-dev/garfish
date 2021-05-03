@@ -40,4 +40,4 @@ console.log(GarfishInstance);
 
 export default Garfish;
 
-export { Plugin } from './plugin/hooks';
+export { interfaces } from './interface';

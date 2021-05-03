@@ -1,4 +1,3 @@
-import { AppInfo, LoadAppOptions, Provider } from '../type';
 import {
   assert,
   createElement,
@@ -40,7 +39,7 @@ const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
  */
 export class App {
   public name: string;
-  public appInfo: AppInfo;
+  public appInfo: interfaces.AppInfo;
   public cjsModules: Record<string, any>;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
   private active = false;
@@ -48,14 +47,14 @@ export class App {
   public appContainer: HTMLElement;
   private mounting: boolean = false;
   private unmounting: boolean = false;
-  public provider: Provider;
+  public provider: interfaces.Provider;
   private entryResManager: HtmlResource;
   public htmlNode: HTMLElement | ShadowRoot;
   private resources: interfaces.ResourceModules;
   public isHtmlMode: boolean;
 
   constructor(
-    appInfo: AppInfo,
+    appInfo: interfaces.AppInfo,
     entryResManager: HtmlResource,
     resources: interfaces.ResourceModules,
     isHtmlMode: boolean,
@@ -201,7 +200,7 @@ export class App {
   }
 
   // 调用 render 对两种不同的沙箱做兼容处理
-  private callRender(provider: Provider) {
+  private callRender(provider: interfaces.Provider) {
     const { appInfo, rootElement } = this;
     provider.render({
       dom: rootElement,
@@ -210,7 +209,7 @@ export class App {
   }
 
   // Call to destroy do compatible with two different sandbox
-  private callDestroy(provider: Provider) {
+  private callDestroy(provider: interfaces.Provider) {
     const { rootElement, appContainer } = this;
     provider.destroy({ dom: rootElement });
     removeElement(appContainer);
@@ -348,8 +347,8 @@ export class App {
     const { appInfo, rootElement, cjsModules, customExports } = this;
     const { props, basename } = appInfo;
     let provider = (cjsModules.exports && cjsModules.exports.provider) as
-      | Provider
-      | ((...args: any[]) => Provider);
+      | interfaces.Provider
+      | ((...args: any[]) => interfaces.Provider);
 
     // The custom of the provider
     if (!provider) {

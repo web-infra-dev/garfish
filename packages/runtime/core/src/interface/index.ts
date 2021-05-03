@@ -9,6 +9,20 @@ import {
 import { Garfish } from '../instance/context';
 import { App } from '../module/app';
 
+declare global {
+  interface Window {
+    Garfish: Garfish;
+    __GARFISH__: boolean;
+  }
+}
+
+declare global {
+  interface Window {
+    Garfish: Garfish;
+    __GARFISH__: boolean;
+  }
+}
+
 export namespace interfaces {
   export type DomGetter = Element | (() => Element | null) | string;
 
@@ -21,6 +35,35 @@ export namespace interfaces {
     appInfo: AppInfo,
     path: string,
   ) => Promise<void> | void;
+
+  export interface Provider {
+    destroy: ({ dom: HTMLElement }) => void;
+    render: ({ dom: HTMLElement, basename: string }) => void;
+  }
+
+  export interface SandboxConfig {
+    open?: boolean;
+    snapshot?: boolean;
+    useStrict?: boolean;
+    strictIsolation?: boolean;
+  }
+
+  export interface Provider {
+    destroy: ({ dom: HTMLElement }) => void;
+    render: ({ dom: HTMLElement, basename: string }) => void;
+  }
+
+  export interface AppInfo {
+    name: string;
+    entry: string;
+    basename?: string;
+    cache?: boolean; // Whether the cache
+    props?: Record<string, any>;
+    domGetter?: DomGetter;
+    activeWhen?: string | ((path: string) => boolean); // 手动加载，可不填写路由
+    active?: (appInfo: AppInfo, rootPath: string) => void;
+    deactive?: (appInfo: AppInfo, rootPath: string) => void;
+  }
 
   export interface Provider {
     destroy: ({ dom: HTMLElement }) => void;
@@ -80,7 +123,7 @@ export namespace interfaces {
     ) => Promise<LoaderResult | void> | LoaderResult | void;
   }
 
-  export type Options = Config & Hooks;
+  export type Options = Config & HooksLifecycle;
 
   export type LoadAppOptions = Pick<AppInfo, keyof AppInfo> & {
     entry?: string;
@@ -168,6 +211,26 @@ export namespace interfaces {
     afterUnMount: SyncHook<[AppInfo], void>;
     errorExecCode: SyncHook<[AppInfo, Error], void>;
   }
+
+  type ConstructorParameters<T> = T extends SyncHook<any, any>
+    ? T extends {
+        tap: (options: any, fn: (...args: infer P) => infer R) => any;
+      }
+      ? (...args: P) => R
+      : never
+    : T extends {
+        tapPromise: (options: any, fn: (...args: infer A) => infer AR) => any;
+      }
+    ? (...args: A) => AR
+    : never;
+
+  type PickParam<T> = {
+    [k in keyof T]: ConstructorParameters<T[k]>;
+  };
+
+  export type Plugin = { name: string } & PickParam<
+    Partial<interfaces.Lifecycle>
+  >;
 
   export interface Hooks {
     lifecycle: Lifecycle;

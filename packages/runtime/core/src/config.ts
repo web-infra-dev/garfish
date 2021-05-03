@@ -1,7 +1,7 @@
-import { Options } from './type';
 import { deepMerge, error } from '@garfish/utils';
+import { interfaces } from './interface';
 
-const defaultOptions: Options = {
+const defaultOptions: interfaces.Options = {
   apps: [],
   basename: '',
   // sandbox: {

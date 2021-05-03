@@ -11,7 +11,6 @@ import {
   transformUrl,
   parseContentType,
 } from '@garfish/utils';
-import { AppInfo } from '../type';
 import { CssResource, JsResource, HtmlResource } from './source';
 import { injectable } from 'inversify';
 import { lazyInject, TYPES } from '../ioc/container';
@@ -185,7 +184,7 @@ export class Loader {
   }
 
   // load app
-  loadAppSources(appInfo: AppInfo): Promise<interfaces.AppSources> {
+  loadAppSources(appInfo: interfaces.AppInfo): Promise<interfaces.AppSources> {
     assert(appInfo?.entry, 'Miss appInfo or appInfo.entry');
     const resolveEntry = transformUrl(location.href, appInfo.entry);
     return this.load(resolveEntry).then(

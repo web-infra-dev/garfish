@@ -1,4 +1,4 @@
-import Garfish, { Plugin } from '@garfish/core';
+import Garfish, { interfaces } from '@garfish/core';
 import { assert, warn } from '@garfish/utils';
 
 declare module '@garfish/core' {
@@ -11,7 +11,9 @@ declare module '@garfish/core' {
   }
 }
 
-export default function addCjsExternalPlugin(Garfish: Garfish): Plugin {
+export default function addCjsExternalPlugin(
+  Garfish: Garfish,
+): interfaces.Plugin {
   Garfish.setExternal = setExternal;
 
   function setExternal(

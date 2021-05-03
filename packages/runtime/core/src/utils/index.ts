@@ -17,7 +17,7 @@ import {
   VText,
   warn,
 } from '@garfish/utils';
-import { DomGetter, Options } from '../type';
+import { interfaces } from '../interface';
 
 // 将不规范的语法转换为合规的语法
 // 1M 的文本大约耗时：chrome 30ms, safari: 25ms, firefox: 25ms
@@ -26,7 +26,6 @@ export function transformCode(code: string) {
   transformNode.innerHTML = code;
   return transformNode.innerHTML;
 }
-
 
 // 保证在严格隔离模式下，shadow dom 中的弹窗、浮层等依赖 body 的样式工作正常
 function asyncNodeAttribute(from: Element, to: Element) {
@@ -66,7 +65,7 @@ export function createAppContainer(name: string) {
   };
 }
 
-export function getRenderNode(domGetter: DomGetter): Element {
+export function getRenderNode(domGetter: interfaces.DomGetter): Element {
   assert(domGetter, `Invalid domGetter:\n ${domGetter}`);
 
   // prettier-ignore

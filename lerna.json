@@ -20,6 +20,7 @@
   },
   "packages": [
     "packages/runtime/**",
+    "packages/runtime/plugins/**",
     "packages/tools/**"
   ]
 }
