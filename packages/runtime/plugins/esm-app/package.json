@@ -1,0 +1,37 @@
+{
+  "name": "@garfish/garfish-esm-app",
+  "version": "0.0.2",
+  "description": "esm-app module.",
+  "keywords": [
+    "garfish",
+    "esm-app"
+  ],
+  "author": "zhoushaw <codingzx@gmail.com>",
+  "homepage": "https://github.com/bytedance/garfish",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "module": "dist/esm-app.esm-bundler.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "scripts": {},
+  "types": "dist/esm-app.d.ts",
+  "buildOptions": {
+    "name": "EsmApp",
+    "devTemplate": "module",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "umd"
+    ]
+  },
+  "dependencies": {},
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}
