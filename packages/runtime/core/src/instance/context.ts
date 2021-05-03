@@ -11,7 +11,6 @@ import {
   hasOwn,
 } from '@garfish/utils';
 import { lazyInject, TYPES, injectable } from '../ioc/container';
-import { interfaces } from '../interface';
 import { App } from '../module/app';
 import { Loader } from '../module/loader';
 
@@ -130,11 +129,14 @@ export class Garfish {
     }
 
     const asyncLoadProcess = async () => {
+      let AppConstructor = App;
       //  Return not undefined type data directly to end loading
       const stopLoad = await this.hooks.lifecycle.beforeLoad.promise(appInfo);
-      if (stopLoad !== undefined) {
+      if (stopLoad === false) {
         warn(`Load ${appName} application is terminated by beforeLoad`);
         return null;
+      } else if (typeof stopLoad === 'function') {
+        AppConstructor = stopLoad;
       }
 
       // Existing cache caching logic
@@ -150,6 +152,7 @@ export class Garfish {
             resources,
           } = await this.loader.loadAppSources(appInfo);
           result = new App(appInfo, manager, resources, isHtmlMode);
+
           this.cacheApps[appName] = result;
         } catch (e) {
           __DEV__ && error(e);
@@ -158,7 +161,7 @@ export class Garfish {
           this.loading[appName] = null;
         }
       }
-      this.hooks.lifecycle.afterLoad.call(appInfo, result as App);
+      this.hooks.lifecycle.afterLoad.call(appInfo, result);
       return result;
     };
 

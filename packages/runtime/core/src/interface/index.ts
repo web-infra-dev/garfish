@@ -124,6 +124,13 @@ export namespace interfaces {
 
   export type BootStrapArgs = [Garfish, Options];
 
+  type AppConstructor = new (
+    appInfo: AppInfo,
+    entryResManager: HtmlResource,
+    resources: interfaces.ResourceModules,
+    isHtmlMode: boolean,
+  ) => any;
+
   export interface Lifecycle {
     beforeInitialize: SyncHook<Options, void>;
     initialize: SyncHook<Options, void>;
@@ -131,8 +138,8 @@ export namespace interfaces {
     bootstrap: SyncHook<Options, void>;
     beforeRegisterApp: SyncHook<[AppInfo | Array<AppInfo>], void>;
     registerApp: SyncHook<[AppInfo | Array<AppInfo>], void>;
-    beforeLoad: AsyncSeriesBailHook<AppInfo, void | boolean>; // 根据返回值决定是否继续执行后续代码
-    afterLoad: SyncHook<[AppInfo, App], void | boolean>;
+    beforeLoad: AsyncSeriesBailHook<AppInfo, boolean | void | AppConstructor>; // 根据返回值决定是否继续执行后续代码 or return a constructor
+    afterLoad: SyncHook<[AppInfo, App | void], void | boolean>;
     errorLoadApp: SyncHook<[AppInfo, Error], void>;
     beforeEval: SyncHook<
       [
