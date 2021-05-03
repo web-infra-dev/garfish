@@ -88,9 +88,7 @@ export class App {
     hooks.lifecycle.beforeEval.call(this.appInfo, code, env, url, options);
     const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
 
-    env = options?.noEntry
-      ? { [__GARFISH_EXPORTS__]: this.customExports }
-      : this.cjsModules;
+    env = this.getExecScriptEnv(options?.noEntry);
 
     try {
       evalWithEnv(`;${code}\n${sourceUrl}`, env);
@@ -99,6 +97,12 @@ export class App {
       throw e;
     }
     hooks.lifecycle.afterEval.call(this.appInfo, code, env, url, options);
+  }
+
+  getExecScriptEnv(noEntry: boolean) {
+    return noEntry
+      ? { [__GARFISH_EXPORTS__]: this.customExports }
+      : this.cjsModules;
   }
 
   private canMount() {
