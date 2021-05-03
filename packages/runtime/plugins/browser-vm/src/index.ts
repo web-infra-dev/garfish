@@ -1,18 +1,23 @@
-
-import Garfish, { Plugin } from '@garfish/core'
+import Garfish, { Plugin } from '@garfish/core';
 import { assert, warn } from '@garfish/utils';
 
 declare module '@garfish/core' {
   export default interface Garfish {
-    setExternal: (nameOrExtObj: string | Record<string, any>, value?: any)=> void;
-    externals: Record<string, any>
+    setExternal: (
+      nameOrExtObj: string | Record<string, any>,
+      value?: any,
+    ) => void;
+    externals: Record<string, any>;
   }
 }
 
-export default function addCjsExternalPlugin( Garfish: Garfish ): Plugin {
+export default function addCjsExternalPlugin(Garfish: Garfish): Plugin {
   Garfish.setExternal = setExternal;
-  console.log(Garfish)
-  function setExternal(nameOrExtObj: string | Record<string, any>, value?: any) {
+  console.log(Garfish);
+  function setExternal(
+    nameOrExtObj: string | Record<string, any>,
+    value?: any,
+  ) {
     assert(nameOrExtObj, 'Invalid parameter.');
     if (typeof nameOrExtObj === 'object') {
       for (const key in nameOrExtObj) {
