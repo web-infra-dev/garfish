@@ -36,17 +36,5 @@ export default function addCjsExternalPlugin(Garfish: Garfish): Plugin {
     beforeEval(appInfo, code, env) {
       env.require = (name) => Garfish.externals[name];
     },
-    // initialize() {
-    //   // Garfish.fe = setExternal;
-    // },
-    // beforeLoad(context, _config) {
-    //   (context as any).loadApp = 'woshi';
-    //   return new Promise((resolve) => {
-    //     setTimeout(() => {
-    //       console.log('过来bb 插件了');
-    //       resolve();
-    //     }, 1000);
-    //   });
-    // }
   };
 }
