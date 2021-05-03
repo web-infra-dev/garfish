@@ -1,4 +1,3 @@
-import { parse } from 'himalaya';
 import {
   warn,
   error,
@@ -11,12 +10,10 @@ import {
   findProp,
   transformUrl,
   parseContentType,
-  mixins,
 } from '@garfish/utils';
 import { App, ResourceModules } from './app';
 import { AppInfo } from '../type';
 import { CssResource, JsResource, HtmlResource } from './source';
-import { Garfish } from '../instance/context';
 import { injectable } from 'inversify';
 import { lazyInject, TYPES } from '../ioc/container';
 import { Hooks } from '../plugin/hooks';
@@ -202,25 +199,29 @@ export class Loader implements interfaces.Loader {
   loadApp(appInfo: AppInfo): Promise<App> {
     assert(appInfo?.entry, 'Miss appInfo or appInfo.entry');
     const resolveEntry = transformUrl(location.href, appInfo.entry);
+    return this.hooks.lifecycle.beforeLoad
+      .promise(appInfo)
+      .then((canContinue) => {
+        if (!canContinue) return;
+        return this.load(resolveEntry).then(
+          (resManager: HtmlResource | JsResource) => {
+            const isHtmlMode = resManager.type === 'html';
 
-    return this.load(resolveEntry).then(
-      (resManager: HtmlResource | JsResource) => {
-        const isHtmlMode = resManager.type === 'html';
-
-        if (!isHtmlMode) {
-          // HtmlResource 会自动补充 head、body
-          const url = resManager.opts.url;
-          const code = `<script src="${url}"></script>`;
-          this.forceCaches.add(url);
-          resManager = new HtmlResource({ url, code, size: 0 });
-        }
-        return this.createApp(
-          appInfo,
-          // @ts-ignore
-          resManager,
-          isHtmlMode,
+            if (!isHtmlMode) {
+              // HtmlResource 会自动补充 head、body
+              const url = resManager.opts.url;
+              const code = `<script src="${url}"></script>`;
+              this.forceCaches.add(url);
+              resManager = new HtmlResource({ url, code, size: 0 });
+            }
+            return this.createApp(
+              appInfo,
+              // @ts-ignore
+              resManager,
+              isHtmlMode,
+            );
+          },
         );
-      },
-    );
+      });
   }
 }

@@ -1,12 +1,9 @@
 import 'reflect-metadata';
 import { Garfish } from './instance/context';
-import { assert, warn } from '@garfish/utils';
-export { Plugin } from './plugin/hooks';
 import CjsExternal from '@garfish/cjs-external';
 import { container, TYPES } from './ioc/container';
 import { Hooks } from './plugin/hooks';
 import { Loader } from './module/loader';
-import { interfaces } from './interface/index';
 
 container.bind<Hooks>(TYPES.Hooks).to(Hooks).inRequestScope();
 container.bind<Loader>(TYPES.Loader).to(Loader).inRequestScope();
@@ -16,6 +13,8 @@ window.__GARFISH__ = true;
 const GarfishInstance = new Garfish({
   plugins: [CjsExternal],
 });
+
+window.Garfish = GarfishInstance;
 
 async function use() {
   const app = await GarfishInstance.loadApp({
@@ -34,10 +33,11 @@ async function use() {
     await app.unmount();
   });
 }
-window.Garfish = GarfishInstance;
 
 use();
 
 console.log(GarfishInstance);
 
 export default Garfish;
+
+export { Plugin } from './plugin/hooks';

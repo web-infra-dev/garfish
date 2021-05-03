@@ -39,17 +39,16 @@ export class Hooks implements interfaces.Hooks {
 
   constructor() {
     this.lifecycle = {
-      beforeInitialize: new SyncHook(['context', 'options']),
-      initialize: new SyncHook(['context', 'options']),
-      beforeBootstrap: new SyncHook(['context', 'options']),
-      bootstrap: new SyncHook(['context', 'options']),
-      beforeRegisterApp: new SyncHook(['context', 'appInfos']),
-      registerApp: new SyncHook(['context', 'appInfos']),
-      beforeLoad: new AsyncSeriesBailHook(['context', 'appInfo']),
-      afterLoad: new AsyncSeriesBailHook(['context', 'appInfo']),
-      errorLoadApp: new SyncHook(['context', 'appInfo', 'error']),
+      beforeInitialize: new SyncHook(['options']),
+      initialize: new SyncHook(['options']),
+      beforeBootstrap: new SyncHook(['options']),
+      bootstrap: new SyncHook(['options']),
+      beforeRegisterApp: new SyncHook(['appInfos']),
+      registerApp: new SyncHook(['appInfos']),
+      beforeLoad: new AsyncSeriesBailHook(['appInfo']),
+      afterLoad: new AsyncSeriesBailHook(['appInfo']),
+      errorLoadApp: new SyncHook(['appInfo', 'error']),
       beforeEval: new SyncHook([
-        'context',
         'appInfo',
         'code',
         'env',
@@ -57,19 +56,18 @@ export class Hooks implements interfaces.Hooks {
         'options',
       ]),
       afterEval: new SyncHook([
-        'context',
         'appInfo',
         'code',
         'env',
         'sourceUrl',
         'options',
       ]),
-      beforeMount: new SyncHook(['context', 'appInfo']),
-      afterMount: new SyncHook(['context', 'appInfo']),
-      errorMount: new SyncHook(['context', 'appInfo', 'error']),
-      beforeUnMount: new SyncHook(['context', 'appInfo']),
-      afterUnMount: new SyncHook(['context', 'appInfo']),
-      errorExecCode: new SyncHook(['context', 'appInfo', 'error']),
+      beforeMount: new SyncHook(['appInfo']),
+      afterMount: new SyncHook(['appInfo']),
+      errorMount: new SyncHook(['appInfo', 'error']),
+      beforeUnMount: new SyncHook(['appInfo']),
+      afterUnMount: new SyncHook(['appInfo']),
+      errorExecCode: new SyncHook(['appInfo', 'error']),
     };
   }
 

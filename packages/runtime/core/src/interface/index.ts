@@ -107,18 +107,17 @@ export namespace interfaces {
   export type BootStrapArgs = [Garfish, Options];
 
   export interface Lifecycle {
-    beforeInitialize: SyncHook<BootStrapArgs, void>;
-    initialize: SyncHook<BootStrapArgs, void>;
-    beforeBootstrap: SyncHook<BootStrapArgs, void>;
-    bootstrap: SyncHook<BootStrapArgs, void>;
-    beforeRegisterApp: SyncHook<[Garfish, AppInfo | Array<AppInfo>], void>;
-    registerApp: SyncHook<[Garfish, AppInfo | Array<AppInfo>], void>;
-    beforeLoad: AsyncSeriesBailHook<[Garfish, AppInfo], void | boolean>; // 根据返回值决定是否继续执行后续代码
-    afterLoad: AsyncSeriesBailHook<[Garfish, AppInfo], void | boolean>;
-    errorLoadApp: SyncHook<[Garfish, AppInfo, Error], void>;
+    beforeInitialize: SyncHook<Options, void>;
+    initialize: SyncHook<Options, void>;
+    beforeBootstrap: SyncHook<Options, void>;
+    bootstrap: SyncHook<Options, void>;
+    beforeRegisterApp: SyncHook<[AppInfo | Array<AppInfo>], void>;
+    registerApp: SyncHook<[AppInfo | Array<AppInfo>], void>;
+    beforeLoad: AsyncSeriesBailHook<AppInfo, void | boolean>; // 根据返回值决定是否继续执行后续代码
+    afterLoad: AsyncSeriesBailHook<AppInfo, void | boolean>;
+    errorLoadApp: SyncHook<[AppInfo, Error], void>;
     beforeEval: SyncHook<
       [
-        any,
         AppInfo,
         string,
         Record<string, any>,
@@ -129,7 +128,6 @@ export namespace interfaces {
     >;
     afterEval: SyncHook<
       [
-        any,
         AppInfo,
         string,
         Record<string, any>,
@@ -138,12 +136,12 @@ export namespace interfaces {
       ],
       void
     >;
-    beforeMount: SyncHook<[any, AppInfo], void>;
-    afterMount: SyncHook<[any, AppInfo], void>;
-    errorMount: SyncHook<[any, AppInfo, Error], void>;
-    beforeUnMount: SyncHook<[any, AppInfo], void>;
-    afterUnMount: SyncHook<[any, AppInfo], void>;
-    errorExecCode: SyncHook<[any, AppInfo, Error], void>;
+    beforeMount: SyncHook<[AppInfo], void>;
+    afterMount: SyncHook<[AppInfo], void>;
+    errorMount: SyncHook<[AppInfo, Error], void>;
+    beforeUnMount: SyncHook<[AppInfo], void>;
+    afterUnMount: SyncHook<[AppInfo], void>;
+    errorExecCode: SyncHook<[AppInfo, Error], void>;
   }
 
   export interface Hooks {

@@ -24,8 +24,7 @@ import {
   warn,
 } from '@garfish/utils';
 import { hooks } from '../plugin/hooks';
-import { createAppContainer, getRenderNode } from '../utils';
-import { renderContainer } from './htmlRender';
+import { createAppContainer } from '../utils';
 import { HtmlResource } from './source';
 
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
@@ -87,14 +86,13 @@ export class App {
     return findTarget(this.htmlNode, ['body', 'div[__GarfishMockBody__]']);
   }
 
-  // TODO: 增加执行代码编译过程失败Hook
   execScript(
     code: string,
     env?: Record<string, any>,
     url?: string,
     options?: { async?: boolean; noEntry?: boolean },
   ) {
-    hooks.lifecycle.beforeEval.call('', this.appInfo, code, env, url, options);
+    hooks.lifecycle.beforeEval.call(this.appInfo, code, env, url, options);
     const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
 
     // execEnv
@@ -107,10 +105,10 @@ export class App {
     try {
       evalWithEnv(`;${code}\n${sourceUrl}`, env);
     } catch (e) {
-      hooks.lifecycle.errorExecCode.call('', this.appInfo, e);
+      hooks.lifecycle.errorExecCode.call(this.appInfo, e);
       throw e;
     }
-    hooks.lifecycle.afterEval.call('', this.appInfo, code, env, url, options);
+    hooks.lifecycle.afterEval.call(this.appInfo, code, env, url, options);
   }
 
   private canMount() {
@@ -140,7 +138,7 @@ export class App {
 
   async mount() {
     if (!this.canMount()) return;
-    hooks.lifecycle.beforeMount.call('', this.appInfo);
+    hooks.lifecycle.beforeMount.call(this.appInfo);
 
     this.active = true;
     this.mounting = true;
@@ -155,27 +153,27 @@ export class App {
       if (!this.stopMountAndClearEffect()) return false;
       this.callRender(provider);
 
-      hooks.lifecycle.afterMount.call('', this.appInfo);
+      hooks.lifecycle.afterMount.call(this.appInfo);
     } catch (err) {
       removeElement(this.appContainer);
-      hooks.lifecycle.errorMount.call('', this.appInfo, err);
+      hooks.lifecycle.errorMount.call(this.appInfo, err);
     } finally {
       this.mounting = false;
     }
   }
 
-  async unmount() {
+  unmount() {
     this.active = false;
     if (this.unmounting) {
       __DEV__ && warn(`The ${this.name} app unmounting.`);
       return false;
     }
-    hooks.lifecycle.beforeUnMount.call('', this.appInfo);
+    hooks.lifecycle.beforeUnMount.call(this.appInfo);
 
     this.callDestroy(this.provider);
     this.unmounting = false;
 
-    hooks.lifecycle.afterUnMount.call('', this.appInfo);
+    hooks.lifecycle.afterUnMount.call(this.appInfo);
     return true;
   }
 
@@ -196,10 +194,16 @@ export class App {
 
   // Performs js resources provided by the module, finally get the content of the export
   public cjsCompileAndRenderContainer() {
+    const { resources } = this;
+
     // Render the application node
     this.renderHtml();
     //Execute asynchronous script
-    this.execAsyncScript();
+
+    // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
+    for (const manager of resources.js) {
+      console.log(manager);
+    }
   }
 
   // 调用 render 对两种不同的沙箱做兼容处理
@@ -320,7 +324,7 @@ export class App {
           if (isCssLink(vnode)) {
             const href = findProp(vnode, 'href');
             const resource = resources.link.find(
-              ({ opts }) => opts.url === href?.value,
+              ({ opts }) => opts.url === transformUrl(baseUrl, href.value),
             );
             if (!resource) {
               return createElement(vnode);
@@ -344,16 +348,6 @@ export class App {
       },
       htmlNode,
     );
-  }
-
-  private execAsyncScript() {
-    const { resources } = this;
-    // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
-    // this.execScript('console.log()');
-
-    for (const manager of resources.js) {
-      console.log(manager);
-    }
   }
 
   private async checkAndGetProvider() {

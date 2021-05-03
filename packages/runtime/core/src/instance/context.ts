@@ -39,10 +39,10 @@ export class Garfish {
       this.usePlugin(pluginCb, this);
     });
 
-    hooks.lifecycle.beforeInitialize.call(this, this.options);
+    hooks.lifecycle.beforeInitialize.call(this.options);
     // init Garfish options
     this.setOptions(options);
-    hooks.lifecycle.initialize.call(this, this.options);
+    hooks.lifecycle.initialize.call(this.options);
   }
 
   public usePlugin(
@@ -79,16 +79,16 @@ export class Garfish {
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
       return this;
     }
-    hooks.lifecycle.beforeBootstrap.call(this, this.options);
+    hooks.lifecycle.beforeBootstrap.call(this.options);
 
     this.setOptions(options);
     this.running = true;
 
-    hooks.lifecycle.bootstrap.call(this, this.options);
+    hooks.lifecycle.bootstrap.call(this.options);
   }
 
   public registerApp(list: AppInfo | Array<AppInfo>) {
-    hooks.lifecycle.beforeRegisterApp.call(this, list);
+    hooks.lifecycle.beforeRegisterApp.call(list);
 
     const adds = {};
     if (!Array.isArray(list)) {
@@ -109,7 +109,7 @@ export class Garfish {
       }
     }
 
-    hooks.lifecycle.registerApp.call(this, list);
+    hooks.lifecycle.registerApp.call(list);
     return this;
   }
 
@@ -132,7 +132,7 @@ export class Garfish {
 
     const asyncLoadProcess = async () => {
       //  Return not undefined type data directly to end loading
-      const stopLoad = await hooks.lifecycle.beforeLoad.promise(this, appInfo);
+      const stopLoad = await hooks.lifecycle.beforeLoad.promise(appInfo);
       if (stopLoad !== undefined) {
         warn(`Load ${appName} application is terminated by beforeLoad`);
         return null;
@@ -150,12 +150,12 @@ export class Garfish {
           this.cacheApps[appName] = result;
         } catch (e) {
           __DEV__ && error(e);
-          hooks.lifecycle.errorLoadApp.call(this, appInfo, e);
+          hooks.lifecycle.errorLoadApp.call(appInfo, e);
         } finally {
           this.loading[appName] = null;
         }
       }
-      await hooks.lifecycle.afterLoad.promise(this, appInfo);
+      await hooks.lifecycle.afterLoad.promise(appInfo);
       return result;
     };
 
