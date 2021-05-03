@@ -1,4 +1,5 @@
 // import Sandbox from '@garfish/sandbox';
+import { Sandbox } from 'packages/runtime/plugins/browser-vm/src/sandbox';
 import { rawWindow } from './raw';
 
 export const noop = () => {};
@@ -131,6 +132,23 @@ export function toBoolean(val: any) {
   return val === 'false' ? false : Boolean(val);
 }
 
+// 调用沙箱的钩子，统一快照和 vm
+export function emitSandboxHook(
+  hooks: Sandbox['options']['hooks'],
+  name: keyof Sandbox['options']['hooks'],
+  args: Array<any>,
+) {
+  const fns: any = hooks?.[name];
+  if (fns) {
+    if (typeof fns === 'function') {
+      return [fns.apply(null, args)];
+    } else if (Array.isArray(fns)) {
+      return fns.length === 0 ? false : fns.map((fn) => fn.apply(null, args));
+    }
+  }
+  return false;
+}
+
 export function remove<T>(list: Array<T> | Set<T>, el: T) {
   if (Array.isArray(list)) {
     const i = list.indexOf(el);
@@ -146,10 +164,9 @@ export function remove<T>(list: Array<T> | Set<T>, el: T) {
 
 export function mixins(...list) {
   return function (target) {
-    Object.assign(target.prototype, ...list)
-  }
+    Object.assign(target.prototype, ...list);
+  };
 }
-
 
 // 有些测试 jest.mock 不好测，可用这个工具方法
 export function callTestCallback(obj: any, ...args: any[]) {

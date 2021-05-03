@@ -81,19 +81,16 @@ export class App {
 
   execScript(
     code: string,
-    env?: Record<string, any>,
+    env: Record<string, any>,
     url?: string,
     options?: { async?: boolean; noEntry?: boolean },
   ) {
     hooks.lifecycle.beforeEval.call(this.appInfo, code, env, url, options);
     const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
 
-    // execEnv
-    if (!env) {
-      env = options?.noEntry
-        ? { [__GARFISH_EXPORTS__]: this.customExports }
-        : this.cjsModules;
-    }
+    env = options?.noEntry
+      ? { [__GARFISH_EXPORTS__]: this.customExports }
+      : this.cjsModules;
 
     try {
       evalWithEnv(`;${code}\n${sourceUrl}`, env);
@@ -291,7 +288,7 @@ export class App {
 
           if (resource) {
             const { code, url } = (resource as any).opts;
-            this.execScript(code, null, url, {
+            this.execScript(code, {}, url, {
               async: false,
               noEntry: !!findProp(vnode, 'no-entry'),
             });

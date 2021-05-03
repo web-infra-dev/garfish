@@ -1,5 +1,6 @@
 import Garfish, { interfaces } from '@garfish/core';
 import { assert, warn } from '@garfish/utils';
+import { Sandbox } from './sandbox';
 
 // declare module '@garfish/core' {
 //   export default interface Garfish {
@@ -13,18 +14,17 @@ import { assert, warn } from '@garfish/utils';
 
 export default function BrowserVm(_Garfish: Garfish): interfaces.Plugin {
   return {
-    name: 'bb',
-    initialize() {
-      // Garfish.fe = setExternal;
+    name: 'browser-vm',
+    afterLoad(appInfo, appInstance) {
+      if (appInstance) {
+        const sandbox = new Sandbox({
+          namespace: appInfo.name,
+          // modules: appInstance.cjsModules
+        });
+        appInstance.execScript = (code, env, url, _options) => {
+          sandbox.execScript(code, url);
+        };
+      }
     },
-    // beforeLoad(context, _config) {
-    //   (context as any).loadApp = 'woshi';
-    //   return new Promise((resolve) => {
-    //     setTimeout(() => {
-    //       console.log('过来bb 插件了');
-    //       resolve();
-    //     }, 1000);
-    //   });
-    // }
   };
 }
