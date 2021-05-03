@@ -1,4 +1,4 @@
-import { Plugin, Hooks, hooks } from '../plugin/hooks';
+import { Plugin, Hooks } from '../plugin/hooks';
 import { getDefaultOptions } from '../config';
 import { Options, AppInfo, LoadAppOptions } from '../type';
 import {
@@ -39,10 +39,10 @@ export class Garfish {
       this.usePlugin(pluginCb, this);
     });
 
-    hooks.lifecycle.beforeInitialize.call(this.options);
+    this.hooks.lifecycle.beforeInitialize.call(this.options);
     // init Garfish options
     this.setOptions(options);
-    hooks.lifecycle.initialize.call(this.options);
+    this.hooks.lifecycle.initialize.call(this.options);
   }
 
   public usePlugin(
@@ -56,7 +56,7 @@ export class Garfish {
       return this;
     }
     (plugin as any)._registered = true;
-    return hooks.usePlugins(plugin.apply(this, [context, ...args]));
+    return this.hooks.usePlugins(plugin.apply(this, [context, ...args]));
   }
 
   public setOptions(options: Partial<Options>) {
@@ -79,16 +79,16 @@ export class Garfish {
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
       return this;
     }
-    hooks.lifecycle.beforeBootstrap.call(this.options);
+    this.hooks.lifecycle.beforeBootstrap.call(this.options);
 
     this.setOptions(options);
     this.running = true;
 
-    hooks.lifecycle.bootstrap.call(this.options);
+    this.hooks.lifecycle.bootstrap.call(this.options);
   }
 
   public registerApp(list: AppInfo | Array<AppInfo>) {
-    hooks.lifecycle.beforeRegisterApp.call(list);
+    this.hooks.lifecycle.beforeRegisterApp.call(list);
 
     const adds = {};
     if (!Array.isArray(list)) {
@@ -109,7 +109,7 @@ export class Garfish {
       }
     }
 
-    hooks.lifecycle.registerApp.call(list);
+    this.hooks.lifecycle.registerApp.call(list);
     return this;
   }
 
@@ -132,7 +132,7 @@ export class Garfish {
 
     const asyncLoadProcess = async () => {
       //  Return not undefined type data directly to end loading
-      const stopLoad = await hooks.lifecycle.beforeLoad.promise(appInfo);
+      const stopLoad = await this.hooks.lifecycle.beforeLoad.promise(appInfo);
       if (stopLoad !== undefined) {
         warn(`Load ${appName} application is terminated by beforeLoad`);
         return null;
@@ -145,17 +145,16 @@ export class Garfish {
         result = cacheApp;
       } else {
         try {
-          // @ts-ignore
           result = await this.loader.loadApp(appInfo);
           this.cacheApps[appName] = result;
         } catch (e) {
           __DEV__ && error(e);
-          hooks.lifecycle.errorLoadApp.call(appInfo, e);
+          this.hooks.lifecycle.errorLoadApp.call(appInfo, e);
         } finally {
           this.loading[appName] = null;
         }
       }
-      await hooks.lifecycle.afterLoad.promise(appInfo);
+      await this.hooks.lifecycle.afterLoad.promise(appInfo);
       return result;
     };
 

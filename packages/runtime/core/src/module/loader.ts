@@ -77,23 +77,13 @@ export class Loader implements interfaces.Loader {
           if (res.opts.attributes?.length === 0) {
             res.opts.attributes = attributes;
           }
-          if (async) {
-            res.async = true;
-          }
+          if (async) res.async = true;
           vnode.key = res.key;
-
           return res;
         };
 
         // 转换为绝对路径
         src = transformUrl(baseUrl, src);
-
-        // if (async) {
-        //   const content = () => this.load(src).then(setAttr);
-        //   requestList.push({ async, content });
-        // } else {
-        //   requestList.push(this.load(src).then(setAttr));
-        // }
         requestList.push(this.load(src).then(setAttr));
       } else if (children.length > 0) {
         const code = (children[0] as VText).content;
@@ -199,29 +189,24 @@ export class Loader implements interfaces.Loader {
   loadApp(appInfo: AppInfo): Promise<App> {
     assert(appInfo?.entry, 'Miss appInfo or appInfo.entry');
     const resolveEntry = transformUrl(location.href, appInfo.entry);
-    return this.hooks.lifecycle.beforeLoad
-      .promise(appInfo)
-      .then((canContinue) => {
-        if (!canContinue) return;
-        return this.load(resolveEntry).then(
-          (resManager: HtmlResource | JsResource) => {
-            const isHtmlMode = resManager.type === 'html';
+    return this.load(resolveEntry).then(
+      (resManager: HtmlResource | JsResource) => {
+        const isHtmlMode = resManager.type === 'html';
 
-            if (!isHtmlMode) {
-              // HtmlResource 会自动补充 head、body
-              const url = resManager.opts.url;
-              const code = `<script src="${url}"></script>`;
-              this.forceCaches.add(url);
-              resManager = new HtmlResource({ url, code, size: 0 });
-            }
-            return this.createApp(
-              appInfo,
-              // @ts-ignore
-              resManager,
-              isHtmlMode,
-            );
-          },
+        if (!isHtmlMode) {
+          // HtmlResource 会自动补充 head、body
+          const url = resManager.opts.url;
+          const code = `<script src="${url}"></script>`;
+          this.forceCaches.add(url);
+          resManager = new HtmlResource({ url, code, size: 0 });
+        }
+        return this.createApp(
+          appInfo,
+          // @ts-ignore
+          resManager,
+          isHtmlMode,
         );
-      });
+      },
+    );
   }
 }

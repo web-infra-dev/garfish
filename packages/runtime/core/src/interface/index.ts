@@ -7,6 +7,7 @@ import {
   AsyncSeriesHook,
 } from '@garfish/hooks';
 import { Garfish } from '../instance/context';
+import { App } from '../module/app';
 
 export namespace interfaces {
   export type DomGetter = Element | (() => Element | null) | string;
@@ -99,6 +100,7 @@ export namespace interfaces {
   }
 
   export interface Loader {
+    loadApp(appInfo: AppInfo): Promise<App>;
     // takeJsResources: (manager: HtmlResource) => void;
     // takeLinkResources: (manager: HtmlResource) => void;
     // createApp(appInfo: AppInfo, manager: HtmlResource, isHtmlMode: boolean): Promise<any>
