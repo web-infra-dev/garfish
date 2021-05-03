@@ -34,7 +34,7 @@ export type Plugin = { name: string } & PickParam<
 >;
 
 @injectable()
-export class Hooks implements interfaces.Hooks {
+export class Hooks {
   public lifecycle: interfaces.Lifecycle;
 
   constructor() {
@@ -46,7 +46,7 @@ export class Hooks implements interfaces.Hooks {
       beforeRegisterApp: new SyncHook(['appInfos']),
       registerApp: new SyncHook(['appInfos']),
       beforeLoad: new AsyncSeriesBailHook(['appInfo']),
-      afterLoad: new AsyncSeriesBailHook(['appInfo']),
+      afterLoad: new SyncHook(['appInfo', 'appInstance']),
       errorLoadApp: new SyncHook(['appInfo', 'error']),
       beforeEval: new SyncHook([
         'appInfo',

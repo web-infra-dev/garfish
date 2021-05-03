@@ -10,10 +10,10 @@ import {
   validURL,
   hasOwn,
 } from '@garfish/utils';
-import { Loader } from '../module/loader';
-import { getRenderNode } from '../utils';
 import { lazyInject, TYPES, injectable } from '../ioc/container';
 import { interfaces } from '../interface';
+import { App } from '../module/app';
+import { Loader } from '../module/loader';
 
 @injectable()
 export class Garfish {
@@ -23,15 +23,15 @@ export class Garfish {
   public externals: Record<string, any> = {};
   public appInfos: Record<string, AppInfo> = {};
   public activeApps: Array<any> = [];
-  private cacheApps: Record<string, any> = {};
+  private cacheApps: Record<string, App> = {};
   private loading: Record<string, Promise<any> | null> = {};
   public plugins: Array<(context: Garfish) => Plugin> = [];
 
   @lazyInject(TYPES.Loader)
-  public loader: interfaces.Loader;
+  public loader: Loader;
 
   @lazyInject(TYPES.Hooks)
-  public hooks: interfaces.Hooks;
+  public hooks: Hooks;
 
   constructor(options?: Options) {
     // register plugins
@@ -114,7 +114,7 @@ export class Garfish {
   }
 
   // // TODO: 1. loader增加preload权重 2.
-  public async loadApp(opts: LoadAppOptions) {
+  public async loadApp(opts: LoadAppOptions): Promise<App> {
     let appInfo = this.appInfos[opts.name];
     const appName = opts.name;
 
@@ -128,7 +128,6 @@ export class Garfish {
     if (!appInfo) {
       appInfo = { cache: true, ...opts };
     }
-    appInfo.domGetter = getRenderNode(appInfo.domGetter);
 
     const asyncLoadProcess = async () => {
       //  Return not undefined type data directly to end loading
@@ -145,7 +144,12 @@ export class Garfish {
         result = cacheApp;
       } else {
         try {
-          result = await this.loader.loadApp(appInfo);
+          const {
+            manager,
+            isHtmlMode,
+            resources,
+          } = await this.loader.loadAppSources(appInfo);
+          result = new App(appInfo, manager, resources, isHtmlMode);
           this.cacheApps[appName] = result;
         } catch (e) {
           __DEV__ && error(e);
@@ -154,7 +158,7 @@ export class Garfish {
           this.loading[appName] = null;
         }
       }
-      await this.hooks.lifecycle.afterLoad.promise(appInfo);
+      this.hooks.lifecycle.afterLoad.call(appInfo, result as App);
       return result;
     };
 

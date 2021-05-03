@@ -24,20 +24,11 @@ import {
   warn,
 } from '@garfish/utils';
 import { hooks } from '../plugin/hooks';
-import { createAppContainer } from '../utils';
+import { createAppContainer, getRenderNode } from '../utils';
 import { HtmlResource } from './source';
+import { interfaces } from '../interface';
 
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
-
-type AsyncResource = {
-  async: boolean;
-  content: () => Promise<any>;
-};
-
-export interface ResourceModules {
-  link: Array<any>;
-  js: Array<any | AsyncResource>;
-}
 
 /**
  * Have the ability to App instance
@@ -60,15 +51,18 @@ export class App {
   public provider: Provider;
   private entryResManager: HtmlResource;
   public htmlNode: HTMLElement | ShadowRoot;
-  private resources: ResourceModules;
+  private resources: interfaces.ResourceModules;
   public isHtmlMode: boolean;
 
   constructor(
     appInfo: AppInfo,
     entryResManager: HtmlResource,
-    resources: ResourceModules,
+    resources: interfaces.ResourceModules,
     isHtmlMode: boolean,
   ) {
+    // get container dom
+    appInfo.domGetter = getRenderNode(appInfo.domGetter);
+
     this.appInfo = appInfo;
     this.name = appInfo.name;
 

@@ -87,6 +87,16 @@ export namespace interfaces {
     domGetter: DomGetter;
   };
 
+  type AsyncResource = {
+    async: boolean;
+    content: () => Promise<any>;
+  };
+
+  export interface ResourceModules {
+    link: Array<any>;
+    js: Array<any | AsyncResource>;
+  }
+
   export interface AppInfo {
     name: string;
     entry: string;
@@ -99,8 +109,14 @@ export namespace interfaces {
     deactive?: (appInfo: AppInfo, rootPath: string) => void;
   }
 
+  export interface AppSources {
+    manager: HtmlResource;
+    resources: ResourceModules;
+    isHtmlMode: boolean;
+  }
+
   export interface Loader {
-    loadApp(appInfo: AppInfo): Promise<App>;
+    loadAppSources(appInfo: AppInfo): Promise<AppSources>;
     // takeJsResources: (manager: HtmlResource) => void;
     // takeLinkResources: (manager: HtmlResource) => void;
     // createApp(appInfo: AppInfo, manager: HtmlResource, isHtmlMode: boolean): Promise<any>
@@ -116,7 +132,7 @@ export namespace interfaces {
     beforeRegisterApp: SyncHook<[AppInfo | Array<AppInfo>], void>;
     registerApp: SyncHook<[AppInfo | Array<AppInfo>], void>;
     beforeLoad: AsyncSeriesBailHook<AppInfo, void | boolean>; // 根据返回值决定是否继续执行后续代码
-    afterLoad: AsyncSeriesBailHook<AppInfo, void | boolean>;
+    afterLoad: SyncHook<[AppInfo, App], void | boolean>;
     errorLoadApp: SyncHook<[AppInfo, Error], void>;
     beforeEval: SyncHook<
       [

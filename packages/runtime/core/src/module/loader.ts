@@ -11,7 +11,6 @@ import {
   transformUrl,
   parseContentType,
 } from '@garfish/utils';
-import { App, ResourceModules } from './app';
 import { AppInfo } from '../type';
 import { CssResource, JsResource, HtmlResource } from './source';
 import { injectable } from 'inversify';
@@ -27,7 +26,7 @@ export function isOverCapacity(size: number) {
 }
 
 @injectable()
-export class Loader implements interfaces.Loader {
+export class Loader {
   private forceCaches: Set<string>;
   private caches: Record<string, HtmlResource | CssResource | JsResource>;
   private loadings: Record<
@@ -117,14 +116,14 @@ export class Loader implements interfaces.Loader {
     return requestList;
   }
 
-  private createApp(
-    appInfo: AppInfo,
-    manager: HtmlResource,
-    isHtmlMode: boolean,
-  ) {
-    const run = (resources: ResourceModules) => {
-      const app = new App(appInfo, manager, resources, isHtmlMode);
-      return app;
+  private loadAllSources(manager: HtmlResource, isHtmlMode: boolean) {
+    const run = (resources: interfaces.ResourceModules) => {
+      // const app = new App(appInfo, manager, resources, isHtmlMode);
+      return {
+        manager,
+        resources,
+        isHtmlMode,
+      };
     };
 
     // 如果是 html, 就需要加载用到的资源
@@ -186,7 +185,7 @@ export class Loader implements interfaces.Loader {
   }
 
   // load app
-  loadApp(appInfo: AppInfo): Promise<App> {
+  loadAppSources(appInfo: AppInfo): Promise<interfaces.AppSources> {
     assert(appInfo?.entry, 'Miss appInfo or appInfo.entry');
     const resolveEntry = transformUrl(location.href, appInfo.entry);
     return this.load(resolveEntry).then(
@@ -200,8 +199,7 @@ export class Loader implements interfaces.Loader {
           this.forceCaches.add(url);
           resManager = new HtmlResource({ url, code, size: 0 });
         }
-        return this.createApp(
-          appInfo,
+        return this.loadAllSources(
           // @ts-ignore
           resManager,
           isHtmlMode,
