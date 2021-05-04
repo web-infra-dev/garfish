@@ -22,7 +22,7 @@ import {
   VText,
   warn,
 } from '@garfish/utils';
-import { hooks } from '../plugin/hooks';
+import { hooks } from '../hooks';
 import { createAppContainer, getRenderNode } from '../utils';
 import { HtmlResource } from './source';
 import { interfaces } from '../interface';
@@ -89,10 +89,10 @@ export class App {
     url?: string,
     options?: { async?: boolean; noEntry?: boolean },
   ) {
+    env = this.getExecScriptEnv(options?.noEntry);
+
     hooks.lifecycle.beforeEval.call(this.appInfo, code, env, url, options);
     const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
-
-    env = this.getExecScriptEnv(options?.noEntry);
 
     try {
       evalWithEnv(`;${code}\n${sourceUrl}`, env);
@@ -136,7 +136,7 @@ export class App {
 
   async mount() {
     if (!this.canMount()) return;
-    hooks.lifecycle.beforeMount.call(this.appInfo);
+    hooks.lifecycle.beforeMount.call(this.appInfo, this);
 
     this.active = true;
     this.mounting = true;
@@ -151,7 +151,7 @@ export class App {
       if (!this.stopMountAndClearEffect()) return false;
       this.callRender(provider);
 
-      hooks.lifecycle.afterMount.call(this.appInfo);
+      hooks.lifecycle.afterMount.call(this.appInfo, this);
     } catch (err) {
       removeElement(this.appContainer);
       hooks.lifecycle.errorMount.call(this.appInfo, err);

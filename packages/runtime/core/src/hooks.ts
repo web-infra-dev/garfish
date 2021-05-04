@@ -4,7 +4,7 @@ import {
   AsyncParallelBailHook,
   AsyncSeriesHook,
 } from '@garfish/hooks';
-import { interfaces } from '../interface';
+import { interfaces } from './interface';
 
 export function keys<O>(o: O) {
   return Object.keys(o) as (keyof O)[];
@@ -38,8 +38,8 @@ export class Hooks {
         'sourceUrl',
         'options',
       ]),
-      beforeMount: new SyncHook(['appInfo']),
-      afterMount: new SyncHook(['appInfo']),
+      beforeMount: new SyncHook(['appInfo', 'appInstance']),
+      afterMount: new SyncHook(['appInfo', 'appInstance']),
       errorMount: new SyncHook(['appInfo', 'error']),
       beforeUnMount: new SyncHook(['appInfo']),
       afterUnMount: new SyncHook(['appInfo']),

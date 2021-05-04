@@ -1,4 +1,4 @@
-import { Hooks } from '../plugin/hooks';
+import { Hooks } from '../hooks';
 import { getDefaultOptions } from '../config';
 import {
   assert,
