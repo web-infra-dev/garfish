@@ -150,7 +150,13 @@ export class Garfish {
             isHtmlMode,
             resources,
           } = await this.loader.loadAppSources(appInfo);
-          result = new App(this, appInfo, manager, resources, isHtmlMode);
+          result = new AppConstructor(
+            this,
+            appInfo,
+            manager,
+            resources,
+            isHtmlMode,
+          );
 
           this.cacheApps[appName] = result;
         } catch (e) {
