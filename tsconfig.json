@@ -6,7 +6,6 @@
     "module": "ESNext",
     "target": "es5",
     "lib": ["es6","dom"],
-    "types": ["reflect-metadata"],
     "sourceMap": false,
     "moduleResolution": "node",
     "esModuleInterop": true,

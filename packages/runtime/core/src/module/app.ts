@@ -26,6 +26,7 @@ import { hooks } from '../plugin/hooks';
 import { createAppContainer, getRenderNode } from '../utils';
 import { HtmlResource } from './source';
 import { interfaces } from '../interface';
+import { Garfish } from '../instance/context';
 
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 
@@ -52,13 +53,16 @@ export class App {
   public htmlNode: HTMLElement | ShadowRoot;
   private resources: interfaces.ResourceModules;
   public isHtmlMode: boolean;
+  private context: Garfish;
 
   constructor(
+    context: Garfish,
     appInfo: interfaces.AppInfo,
     entryResManager: HtmlResource,
     resources: interfaces.ResourceModules,
     isHtmlMode: boolean,
   ) {
+    this.context = context;
     // get container dom
     appInfo.domGetter = getRenderNode(appInfo.domGetter);
 

@@ -4,15 +4,12 @@ import {
   AsyncParallelBailHook,
   AsyncSeriesHook,
 } from '@garfish/hooks';
-import { injectable } from 'inversify';
-import { Garfish } from '../instance/context';
 import { interfaces } from '../interface';
 
 export function keys<O>(o: O) {
   return Object.keys(o) as (keyof O)[];
 }
 
-@injectable()
 export class Hooks {
   public lifecycle: interfaces.Lifecycle;
 

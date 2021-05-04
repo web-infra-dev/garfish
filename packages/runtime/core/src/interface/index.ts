@@ -168,6 +168,7 @@ export namespace interfaces {
   export type BootStrapArgs = [Garfish, Options];
 
   type AppConstructor = new (
+    context: Garfish,
     appInfo: AppInfo,
     entryResManager: HtmlResource,
     resources: interfaces.ResourceModules,

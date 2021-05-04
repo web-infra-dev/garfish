@@ -1,18 +1,11 @@
-import 'reflect-metadata';
 import { Garfish } from './instance/context';
 import CjsExternal from '@garfish/cjs-external';
 import BrowserVm from '@garfish/browser-vm';
-import { container, TYPES } from './ioc/container';
-import { Hooks } from './plugin/hooks';
-import { Loader } from './module/loader';
-
-container.bind<Hooks>(TYPES.Hooks).to(Hooks).inRequestScope();
-container.bind<Loader>(TYPES.Loader).to(Loader).inRequestScope();
 
 window.__GARFISH__ = true;
 
 const GarfishInstance = new Garfish({
-  plugins: [CjsExternal, BrowserVm],
+  plugins: [CjsExternal],
 });
 
 window.Garfish = GarfishInstance;

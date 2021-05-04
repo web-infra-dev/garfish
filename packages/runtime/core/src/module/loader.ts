@@ -12,9 +12,6 @@ import {
   parseContentType,
 } from '@garfish/utils';
 import { CssResource, JsResource, HtmlResource } from './source';
-import { injectable } from 'inversify';
-import { lazyInject, TYPES } from '../ioc/container';
-import { Hooks } from '../plugin/hooks';
 import { interfaces } from '../interface';
 
 let currentSize = 0;
@@ -24,7 +21,6 @@ export function isOverCapacity(size: number) {
   return size > 1024 * 1024 * 30; // 30M
 }
 
-@injectable()
 export class Loader {
   private forceCaches: Set<string>;
   private caches: Record<string, HtmlResource | CssResource | JsResource>;
@@ -35,9 +31,6 @@ export class Loader {
 
   // 允许自定义配置
   public requestConfig: RequestInit | ((url: string) => RequestInit) = {};
-
-  @lazyInject(TYPES.Hooks)
-  public hooks: Hooks;
 
   constructor() {
     this.forceCaches = new Set();

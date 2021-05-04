@@ -9,12 +9,10 @@ import {
   validURL,
   hasOwn,
 } from '@garfish/utils';
-import { lazyInject, TYPES, injectable } from '../ioc/container';
 import { App } from '../module/app';
 import { Loader } from '../module/loader';
 import { interfaces } from '../interface';
 
-@injectable()
 export class Garfish {
   public version = __VERSION__;
   private running = false;
@@ -26,13 +24,14 @@ export class Garfish {
   private loading: Record<string, Promise<any> | null> = {};
   public plugins: Array<(context: Garfish) => interfaces.Plugin> = [];
 
-  @lazyInject(TYPES.Loader)
   public loader: Loader;
 
-  @lazyInject(TYPES.Hooks)
   public hooks: Hooks;
 
   constructor(options?: interfaces.Options) {
+    this.hooks = new Hooks();
+    this.loader = new Loader();
+
     // register plugins
     options?.plugins.forEach((pluginCb) => {
       this.usePlugin(pluginCb, this);
@@ -151,7 +150,7 @@ export class Garfish {
             isHtmlMode,
             resources,
           } = await this.loader.loadAppSources(appInfo);
-          result = new App(appInfo, manager, resources, isHtmlMode);
+          result = new App(this, appInfo, manager, resources, isHtmlMode);
 
           this.cacheApps[appName] = result;
         } catch (e) {
