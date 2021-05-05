@@ -4,7 +4,7 @@ module.exports = {
   webpack(config, env) {
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
-    config.devtool = 'eval-source-map';
+    // config.devtool = 'eval-source-map';
     config.mode = 'production';
     config.plugins.push(
       new webpack.BannerPlugin({
