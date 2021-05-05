@@ -36,7 +36,6 @@ import { localStorageOverride } from './modules/storage';
 import { listenerOverride } from './modules/eventListener';
 import { timeoutOverride, intervalOverride } from './modules/timer';
 import { __windowBind__, __garfishGlobal__ } from './symbolTypes';
-import './utils/handleNode';
 
 let sandboxId = 0;
 const defaultModules: Record<string, Module> = {
@@ -278,20 +277,16 @@ export class Sandbox {
     return { recovers, createds, overrides, prepares };
   }
 
-  execScript(code: string, url = '', options?: ExecScriptOptions) {
+  execScript(code: string, env = {}, url = '', options?: ExecScriptOptions) {
     assert(!this.closed, 'Sandbox is closed');
     // 执行代码前初始环境时调用
     const { prepares } = this.overrideContext;
     if (prepares) prepares.forEach((fn) => fn());
 
-    const { async, noEntry } = options || {};
+    const { async } = options || {};
     const context = this.context;
     const refs = { url, code, context };
 
-    if (noEntry) {
-      delete refs.context.exports;
-      delete refs.context.module;
-    }
     this.callHook('onInvokeBefore', [this, refs]);
     const revertCurrentScript = setDocCurrentScript(this, code, url, async);
 
@@ -301,32 +296,32 @@ export class Sandbox {
       if (this.options.openSandbox) {
         evalWithEnv(code, {
           window: refs.context,
+          ...this.overrideContext.overrides,
+          unstable_sandbox: this,
+          ...env,
         });
       } else {
         evalWithEnv(code, {
           ...this.overrideContext.overrides,
           unstable_sandbox: this,
+          ...env,
         });
       }
     } catch (e) {
       // 触发 window.onerror
-      const source = url || this.options.baseUrl;
-      const message = e instanceof Error ? e.message : String(e);
+      // const source = url || this.options.baseUrl;
+      // const message = e instanceof Error ? e.message : String(e);
 
-      if (typeof refs.context.onerror === 'function') {
-        // @ts-ignore
-        const fn = refs.context.onerror._native || refs.context.onerror;
-        fn.call(window, message, source, null, null, e);
-      }
+      // if (typeof refs.context.onerror === 'function') {
+      //   // @ts-ignore
+      //   const fn = refs.context.onerror._native || refs.context.onerror;
+      //   fn.call(window, message, source, null, null, e);
+      // }
       throw e;
     }
 
     revertCurrentScript();
     this.callHook('onInvokeAfter', [this, refs]);
-    if (noEntry) {
-      refs.context.module = this.overrideContext.overrides.module;
-      refs.context.exports = context.module.exports;
-    }
   }
 
   clearEffects() {

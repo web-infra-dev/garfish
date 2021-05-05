@@ -54,6 +54,7 @@ export class App {
   private resources: interfaces.ResourceModules;
   public isHtmlMode: boolean;
   private context: Garfish;
+  public strictIsolation = false;
 
   constructor(
     context: Garfish,
@@ -230,7 +231,6 @@ export class App {
     const { appInfo, entryResManager, resources } = this;
     const baseUrl = entryResManager.opts.url;
     const { htmlNode, appContainer } = createAppContainer(appInfo.name);
-    const strictIsolation = false;
 
     // Transformation relative path
     this.htmlNode = htmlNode;
@@ -252,7 +252,7 @@ export class App {
         },
         // body 和 head 这样处理是为了兼容旧版本
         body: (vnode) => {
-          if (!strictIsolation) {
+          if (!this.strictIsolation) {
             vnode.tagName = 'div';
             vnode.attributes.push({
               key: '__GarfishMockBody__',
@@ -264,7 +264,7 @@ export class App {
           }
         },
         head: (vnode) => {
-          if (!strictIsolation) {
+          if (!this.strictIsolation) {
             vnode.tagName = 'div';
             vnode.attributes.push({
               key: '__GarfishMockHead__',

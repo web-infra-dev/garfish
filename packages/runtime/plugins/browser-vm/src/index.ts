@@ -1,6 +1,7 @@
 import Garfish, { interfaces } from '@garfish/core';
 import { assert, warn } from '@garfish/utils';
 import { Sandbox } from './sandbox';
+import './utils/handleNode';
 
 export default function BrowserVm(_Garfish: Garfish): interfaces.Plugin {
   return {
@@ -9,18 +10,28 @@ export default function BrowserVm(_Garfish: Garfish): interfaces.Plugin {
       if (appInstance) {
         // existing
         if ((appInstance as any).sandbox) return;
+        const cjsModule = appInstance.getExecScriptEnv(false);
 
         const sandbox = new Sandbox({
           namespace: appInfo.name,
+          el: () => appInstance.htmlNode,
+          openSandbox: true,
+          strictIsolation: appInstance.strictIsolation,
+          modules: {
+            cjsModule: () => {
+              return {
+                override: {
+                  ...cjsModule,
+                },
+              };
+            },
+          },
         });
+
         (appInstance as any).sandbox = sandbox;
 
         appInstance.execScript = (code, env, url, options) => {
-          sandbox.overrideContext.overrides = {
-            ...sandbox.overrideContext.overrides,
-            ...appInstance.getExecScriptEnv(options?.noEntry),
-          };
-          sandbox.execScript(code, url);
+          sandbox.execScript(code, env, url, options);
         };
       }
     },

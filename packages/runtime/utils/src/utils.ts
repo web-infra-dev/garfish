@@ -117,6 +117,8 @@ export function evalWithEnv(code: string, params: Record<string, any>) {
     const internalizeString = internFunc(evalInfo[0] + code + evalInfo[1]);
     // (0, eval) 这个表达式会让 eval 在全局作用域下执行
     (0, eval)(internalizeString);
+  } catch (e) {
+    throw e;
   } finally {
     delete rawWindow[randomValKey];
   }

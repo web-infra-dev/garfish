@@ -5,7 +5,7 @@ import BrowserVm from '@garfish/browser-vm';
 window.__GARFISH__ = true;
 
 const GarfishInstance = new Garfish({
-  plugins: [CjsExternal],
+  plugins: [CjsExternal, BrowserVm],
 });
 
 window.Garfish = GarfishInstance;

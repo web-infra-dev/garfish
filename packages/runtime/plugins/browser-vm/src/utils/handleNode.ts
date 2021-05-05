@@ -127,11 +127,11 @@ function addDynamicScript(
         })
         .then((code) => {
           if (code) {
-            sandbox.execScript(code, src, { noEntry: true });
+            sandbox.execScript(code, {}, src, { noEntry: true });
           }
         });
     } else if (code) {
-      sandbox.execScript(code, `${namespace}_dynamic_script`, {
+      sandbox.execScript(code, {}, `${namespace}_dynamic_script`, {
         noEntry: true,
       });
     }
