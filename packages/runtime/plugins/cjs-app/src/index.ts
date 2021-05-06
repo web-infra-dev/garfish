@@ -70,11 +70,7 @@ export default function cjsApp(Garfish: Garfish): interfaces.Plugin {
         ResourceModules,
         isHtmlModule,
       );
-      instance.cjsModules = {
-        require: (name) => Garfish.externals[name],
-        exports: {},
-        module: instance.cjsModules,
-      };
+      instance.cjsModules.require = (name) => Garfish.externals[name];
       return Promise.resolve(instance);
     },
   };

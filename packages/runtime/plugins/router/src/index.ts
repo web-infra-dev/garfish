@@ -23,7 +23,9 @@ export default function Router(Garfish: Garfish): interfaces.Plugin {
 
         const call = (app: interfaces.App, isRender: boolean) => {
           if (!app) return;
-          const isDes = cache && app.mounted;
+          // const isDes = cache && app.mounted;
+          const isDes = false;
+          debugger;
           const fn = isRender
             ? app[isDes ? 'show' : 'mount']
             : app[isDes ? 'hide' : 'unmount'];
