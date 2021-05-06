@@ -1,4 +1,4 @@
-import { hasOwn } from '@byted/garfish-utils';
+import { hasOwn } from '@garfish/utils';
 export class PatchGlobalVal {
   public snapshotOriginal: any = {};
   private snapshotMutated: any = {};
