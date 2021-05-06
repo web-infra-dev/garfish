@@ -20,5 +20,14 @@ export default function BrowserSnapshot(_Garfish: Garfish): interfaces.Plugin {
         appInstance.snapshotSandbox = sandbox;
       }
     },
+    beforeMount(appInfo, appInstance) {
+      // existing
+      if (appInstance.snapshotSandbox) return;
+      appInstance.snapshotSandbox.activate();
+    },
+    afterUnMount(appInfo, appInstance) {
+      if (appInstance.snapshotSandbox) return;
+      appInstance.snapshotSandbox.deactivate();
+    },
   };
 }

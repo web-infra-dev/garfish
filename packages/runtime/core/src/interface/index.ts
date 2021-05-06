@@ -213,11 +213,11 @@ export namespace interfaces {
       ],
       void
     >;
-    beforeMount: SyncHook<[AppInfo, any], void>;
-    afterMount: SyncHook<[AppInfo, any], void>;
+    beforeMount: SyncHook<[AppInfo, interfaces.App], void>;
+    afterMount: SyncHook<[AppInfo, interfaces.App], void>;
     errorMount: SyncHook<[AppInfo, Error], void>;
-    beforeUnMount: SyncHook<[AppInfo], void>;
-    afterUnMount: SyncHook<[AppInfo], void>;
+    beforeUnMount: SyncHook<[AppInfo, interfaces.App], void>;
+    afterUnMount: SyncHook<[AppInfo, interfaces.App], void>;
     errorExecCode: SyncHook<[AppInfo, Error], void>;
   }
 

@@ -177,12 +177,12 @@ export class App {
       __DEV__ && warn(`The ${this.name} app unmounting.`);
       return false;
     }
-    this.context.hooks.lifecycle.beforeUnMount.call(this.appInfo);
+    this.context.hooks.lifecycle.beforeUnMount.call(this.appInfo, this);
 
     this.callDestroy(this.provider);
     this.unmounting = false;
 
-    this.context.hooks.lifecycle.afterUnMount.call(this.appInfo);
+    this.context.hooks.lifecycle.afterUnMount.call(this.appInfo, this);
     return true;
   }
 
