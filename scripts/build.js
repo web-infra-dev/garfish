@@ -74,7 +74,7 @@ async function build(target) {
   );
 
   // Merge .d.ts
-  if (mergeTypes && pkg.types) {
+  if (mergeTypes && pkg.types && !pkgDir.includes('hooks')) {
     mergeBuildTypes(pkgDir, target);
   }
 }
