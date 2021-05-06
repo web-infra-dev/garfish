@@ -139,6 +139,11 @@ export class Garfish {
         AppConstructor = stopLoad;
       }
 
+      if (!AppConstructor) {
+        error(`Must provider ${appName} application constructor`);
+        return null;
+      }
+
       // Existing cache caching logic
       let result = null;
       const cacheApp = this.cacheApps[appName];
