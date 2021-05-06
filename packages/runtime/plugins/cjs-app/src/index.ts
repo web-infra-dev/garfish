@@ -72,6 +72,11 @@ export default function addCjsExternalPlugin(
         ResourceModules,
         isHtmlModule,
       );
+      instance.cjsModules = {
+        require: (name) => Garfish.externals[name],
+        exports: {},
+        module: instance.cjsModules,
+      };
       return Promise.resolve(instance);
     },
   };
