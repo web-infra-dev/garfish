@@ -1,5 +1,6 @@
 import Garfish, { interfaces } from '@garfish/core';
 import { assert, warn } from '@garfish/utils';
+import { App } from './app';
 
 declare module '@garfish/core' {
   export default interface Garfish {
@@ -34,7 +35,7 @@ export default function addCjsExternalPlugin(
   }
 
   return {
-    name: 'bb',
+    name: 'cjs-app',
     beforeEval(appInfo, code, env) {
       env.require = (name) => Garfish.externals[name];
     },

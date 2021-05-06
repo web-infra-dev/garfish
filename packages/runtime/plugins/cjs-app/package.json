@@ -1,7 +1,7 @@
 {
-  "name": "@garfish/garfish-cjs-external",
+  "name": "@garfish/cjs-app",
   "version": "0.0.2",
-  "description": "cjs-external module.",
+  "description": "cjs-app module.",
   "keywords": [
     "garfish",
     "cjs-external"

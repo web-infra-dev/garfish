@@ -1,11 +1,11 @@
 import { Garfish } from './instance/context';
-import CjsExternal from '@garfish/cjs-external';
+import CjsApp from '@garfish/cjs-app';
 import BrowserVm from '@garfish/browser-vm';
 
 window.__GARFISH__ = true;
 
 const GarfishInstance = new Garfish({
-  plugins: [CjsExternal, BrowserVm],
+  plugins: [CjsApp, BrowserVm],
 });
 
 window.Garfish = GarfishInstance;

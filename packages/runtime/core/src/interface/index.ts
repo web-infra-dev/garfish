@@ -1,5 +1,5 @@
 import { VText, VNode } from '@garfish/utils';
-import { HtmlResource } from '../module/source';
+import { HtmlResource as HtmlResourceInterfaces } from '../module/source';
 import {
   SyncHook,
   AsyncSeriesBailHook,
@@ -123,6 +123,8 @@ export namespace interfaces {
     ) => Promise<LoaderResult | void> | LoaderResult | void;
   }
 
+  export type HtmlResource = HtmlResourceInterfaces;
+
   export type Options = Config & HooksLifecycle;
 
   export type LoadAppOptions = Pick<AppInfo, keyof AppInfo> & {
@@ -205,8 +207,8 @@ export namespace interfaces {
       ],
       void
     >;
-    beforeMount: SyncHook<[AppInfo, App], void>;
-    afterMount: SyncHook<[AppInfo, App], void>;
+    beforeMount: SyncHook<[AppInfo, any], void>;
+    afterMount: SyncHook<[AppInfo, any], void>;
     errorMount: SyncHook<[AppInfo, Error], void>;
     beforeUnMount: SyncHook<[AppInfo], void>;
     afterUnMount: SyncHook<[AppInfo], void>;

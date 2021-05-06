@@ -24,9 +24,7 @@ import {
   createAppContainer,
   getRenderNode,
 } from '@garfish/utils';
-import { hooks } from '../hooks';
-import { interfaces } from '../interface';
-import { Garfish } from '../instance/context';
+import Garfish, { interfaces } from '@garfish/core';
 
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 
@@ -92,16 +90,28 @@ export class App {
   ) {
     env = this.getExecScriptEnv(options?.noEntry);
 
-    hooks.lifecycle.beforeEval.call(this.appInfo, code, env, url, options);
+    this.context.hooks.lifecycle.beforeEval.call(
+      this.appInfo,
+      code,
+      env,
+      url,
+      options,
+    );
     const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
 
     try {
       evalWithEnv(`;${code}\n${sourceUrl}`, env);
     } catch (e) {
-      hooks.lifecycle.errorExecCode.call(this.appInfo, e);
+      this.context.hooks.lifecycle.errorExecCode.call(this.appInfo, e);
       throw e;
     }
-    hooks.lifecycle.afterEval.call(this.appInfo, code, env, url, options);
+    this.context.hooks.lifecycle.afterEval.call(
+      this.appInfo,
+      code,
+      env,
+      url,
+      options,
+    );
   }
 
   getExecScriptEnv(noEntry: boolean) {
@@ -137,7 +147,7 @@ export class App {
 
   async mount() {
     if (!this.canMount()) return;
-    hooks.lifecycle.beforeMount.call(this.appInfo, this);
+    this.context.hooks.lifecycle.beforeMount.call(this.appInfo, this);
 
     this.active = true;
     this.mounting = true;
@@ -152,10 +162,10 @@ export class App {
       if (!this.stopMountAndClearEffect()) return false;
       this.callRender(provider);
 
-      hooks.lifecycle.afterMount.call(this.appInfo, this);
+      this.context.hooks.lifecycle.afterMount.call(this.appInfo, this);
     } catch (err) {
       removeElement(this.appContainer);
-      hooks.lifecycle.errorMount.call(this.appInfo, err);
+      this.context.hooks.lifecycle.errorMount.call(this.appInfo, err);
     } finally {
       this.mounting = false;
     }
@@ -167,12 +177,12 @@ export class App {
       __DEV__ && warn(`The ${this.name} app unmounting.`);
       return false;
     }
-    hooks.lifecycle.beforeUnMount.call(this.appInfo);
+    this.context.hooks.lifecycle.beforeUnMount.call(this.appInfo);
 
     this.callDestroy(this.provider);
     this.unmounting = false;
 
-    hooks.lifecycle.afterUnMount.call(this.appInfo);
+    this.context.hooks.lifecycle.afterUnMount.call(this.appInfo);
     return true;
   }
 
