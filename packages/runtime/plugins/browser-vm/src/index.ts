@@ -3,13 +3,21 @@ import { assert, warn } from '@garfish/utils';
 import { Sandbox } from './sandbox';
 import './utils/handleNode';
 
+declare module '@garfish/core' {
+  export namespace interfaces {
+    export interface App {
+      vmSandbox?: Sandbox;
+    }
+  }
+}
+
 export default function BrowserVm(_Garfish: Garfish): interfaces.Plugin {
   return {
     name: 'browser-vm',
     afterLoad(appInfo, appInstance) {
       if (appInstance) {
         // existing
-        if ((appInstance as any).sandbox) return;
+        if (appInstance.vmSandbox) return;
         const cjsModule = appInstance.getExecScriptEnv(false);
 
         const sandbox = new Sandbox({
@@ -28,7 +36,7 @@ export default function BrowserVm(_Garfish: Garfish): interfaces.Plugin {
           },
         });
 
-        (appInstance as any).sandbox = sandbox;
+        appInstance.vmSandbox = sandbox;
 
         appInstance.execScript = (code, env, url, options) => {
           sandbox.execScript(code, env, url, options);
