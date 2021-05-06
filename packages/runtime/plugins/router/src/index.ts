@@ -1,8 +1,8 @@
 import Garfish, { interfaces } from '@garfish/core';
 import { assert, warn } from '@garfish/utils';
 
-export default function esmApp(_Garfish: Garfish): interfaces.Plugin {
+export default function Router(_Garfish: Garfish): interfaces.Plugin {
   return {
-    name: 'esm-app',
+    name: 'router',
   };
 }
