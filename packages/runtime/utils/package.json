@@ -1,6 +1,6 @@
 {
   "name": "@garfish/utils",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "utils module.",
   "keywords": [
     "garfish",
@@ -30,7 +30,6 @@
       "umd"
     ]
   },
-  "dependencies": {},
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   }
