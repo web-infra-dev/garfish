@@ -19,6 +19,7 @@ const GarfishInstance = new Garfish({
 
 window.__GARFISH__ = true;
 window.Garfish = GarfishInstance;
+GarfishInstance.run();
 
 async function use() {
   // const app = await GarfishInstance.loadApp({
@@ -42,7 +43,6 @@ async function use() {
 }
 
 use();
-
 console.log(GarfishInstance);
 
 export default Garfish;

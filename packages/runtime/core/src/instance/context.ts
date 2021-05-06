@@ -17,7 +17,7 @@ export class Garfish {
   private running = false;
   public options = getDefaultOptions();
   public appInfos: Record<string, interfaces.AppInfo> = {};
-  public activeApps: Array<any> = [];
+  public activeApps: Record<string, interfaces.App> = {};
   private cacheApps: Record<string, interfaces.App> = {};
   private loading: Record<string, Promise<any> | null> = {};
   public plugins: Array<(context: Garfish) => interfaces.Plugin> = [];
@@ -122,6 +122,8 @@ export class Garfish {
       `Can't load unexpected module "${appName}". Please provide the entry parameters or registered in advance of the app`,
     );
 
+    if (appInfo && !appInfo.domGetter)
+      appInfo.domGetter = this.options.domGetter;
     // Pretreatment parameters, and the default cache
     if (!appInfo) {
       appInfo = { cache: true, ...opts };

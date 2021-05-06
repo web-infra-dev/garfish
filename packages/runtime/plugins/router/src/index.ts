@@ -2,7 +2,7 @@ import Garfish, { interfaces } from '@garfish/core';
 import { assert, createKey, warn } from '@garfish/utils';
 import { listenRouterAndReDirect } from './router';
 
-export default function Router(_Garfish: Garfish): interfaces.Plugin {
+export default function Router(Garfish: Garfish): interfaces.Plugin {
   return {
     name: 'router',
     bootstrap(options) {
@@ -15,10 +15,10 @@ export default function Router(_Garfish: Garfish): interfaces.Plugin {
         if (active) return active(appInfo, rootPath);
 
         const currentApp = (activeApp = createKey());
-        const app = await (Garfish as any).loadApp({
+        const app = await Garfish.loadApp({
           name: appInfo.name,
           entry: appInfo.entry,
-          domGetter: options.domGetter,
+          domGetter: appInfo.domGetter,
         });
 
         const call = (app: interfaces.App, isRender: boolean) => {
@@ -30,7 +30,7 @@ export default function Router(_Garfish: Garfish): interfaces.Plugin {
           return fn.call(app);
         };
 
-        (Garfish as any).apps[name] = app;
+        Garfish.activeApps[name] = app;
         unmounts[name] = () => call(app, false);
 
         if (currentApp === activeApp) {
@@ -45,7 +45,7 @@ export default function Router(_Garfish: Garfish): interfaces.Plugin {
 
         const unmount = unmounts[name];
         unmount && unmount();
-        delete (Garfish as any).apps[name];
+        delete Garfish.activeApps[name];
       }
 
       const listenOptions = {
