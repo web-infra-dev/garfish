@@ -1,6 +1,6 @@
 {
   "name": "garfish",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "private": true,
   "workspaces": [
     "packages/runtime/*",
@@ -15,7 +15,7 @@
     "build:all": "node scripts/build.js -m -e",
     "reset": "lerna clean --yes && rm -rf node_modules",
     "setup": "npm run reset && npm install && lerna bootstrap --hoist",
-    "prepublishOnly": "npm run test && npm run build:all && npm run changelog",
+    "prepublishOnly": "npm run build:all",
     "changelog": "node scripts/changelog.js",
     "test": "node scripts/jestTest.js",
     "test:cover": "node scripts/jestTest.js --coverage",

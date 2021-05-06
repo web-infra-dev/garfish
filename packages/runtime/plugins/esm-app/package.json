@@ -1,5 +1,5 @@
 {
-  "name": "@garfish/garfish-esm-app",
+  "name": "@garfish/esm-app",
   "version": "0.0.3",
   "description": "esm-app module.",
   "keywords": [
@@ -32,5 +32,6 @@
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
-  }
+  },
+  "gitHead": "891c22bcbebe2badeb570860fd87e5fc0eb81445"
 }
