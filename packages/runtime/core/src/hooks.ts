@@ -23,6 +23,13 @@ export class Hooks {
       registerApp: new SyncHook(['appInfos']),
       beforeLoad: new AsyncSeriesBailHook(['appInfo']),
       afterLoad: new SyncHook(['appInfo', 'appInstance']),
+      initializeApp: new AsyncSeriesBailHook([
+        'context',
+        'appInfo',
+        'entryResManager',
+        'resources',
+        'isHtmlMode',
+      ]),
       errorLoadApp: new SyncHook(['appInfo', 'error']),
       beforeEval: new SyncHook([
         'appInfo',

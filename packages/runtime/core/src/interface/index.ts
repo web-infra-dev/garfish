@@ -187,6 +187,10 @@ export namespace interfaces {
     beforeRegisterApp: SyncHook<[AppInfo | Array<AppInfo>], void>;
     registerApp: SyncHook<[AppInfo | Array<AppInfo>], void>;
     beforeLoad: AsyncSeriesBailHook<AppInfo, boolean | void | AppConstructor>; // 根据返回值决定是否继续执行后续代码 or return a constructor
+    initializeApp: AsyncSeriesBailHook<
+      [Garfish, AppInfo, HtmlResource, interfaces.ResourceModules, boolean],
+      App
+    >;
     afterLoad: SyncHook<[AppInfo, App | void], void | boolean>;
     errorLoadApp: SyncHook<[AppInfo, Error], void>;
     beforeEval: SyncHook<

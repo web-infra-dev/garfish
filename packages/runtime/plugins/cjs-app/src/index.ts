@@ -18,17 +18,11 @@ declare module '@garfish/core' {
       appInfo: AppInfo;
       cjsModules: Record<string, any>;
       customExports: Record<string, any>; // If you don't want to use the CJS export, can use this
-      active: boolean;
       mounted: boolean;
       appContainer: HTMLElement;
-      mounting: boolean;
-      unmounting: boolean;
       provider: Provider;
-      entryResManager: HtmlResource;
       htmlNode: HTMLElement | ShadowRoot;
-      resources: ResourceModules;
       isHtmlMode: boolean;
-      context: Garfish;
       strictIsolation: boolean;
       mount(): Promise<boolean>;
       unmount(): boolean;
@@ -70,8 +64,15 @@ export default function addCjsExternalPlugin(
 
   return {
     name: 'cjs-app',
-    beforeLoad(_appInfo) {
-      return Promise.resolve(App);
+    initializeApp(context, appInfo, resource, ResourceModules, isHtmlModule) {
+      const instance = new App(
+        context,
+        appInfo,
+        resource,
+        ResourceModules,
+        isHtmlModule,
+      );
+      return Promise.resolve(instance);
     },
   };
 }

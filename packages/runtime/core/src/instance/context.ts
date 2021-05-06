@@ -129,18 +129,11 @@ export class Garfish {
     }
 
     const asyncLoadProcess = async () => {
-      let AppConstructor = null;
+      // let AppConstructor = null;
       //  Return not undefined type data directly to end loading
       const stopLoad = await this.hooks.lifecycle.beforeLoad.promise(appInfo);
       if (stopLoad === false) {
         warn(`Load ${appName} application is terminated by beforeLoad`);
-        return null;
-      } else if (typeof stopLoad === 'function') {
-        AppConstructor = stopLoad;
-      }
-
-      if (!AppConstructor) {
-        error(`Must provider ${appName} application constructor`);
         return null;
       }
 
@@ -156,14 +149,17 @@ export class Garfish {
             isHtmlMode,
             resources,
           } = await this.loader.loadAppSources(appInfo);
-          result = new AppConstructor(
+          result = await this.hooks.lifecycle.initializeApp.promise(
             this,
             appInfo,
             manager,
             resources,
             isHtmlMode,
           );
-
+          if (!result) {
+            error(`Must provider ${appName} application instance`);
+            return null;
+          }
           this.cacheApps[appName] = result;
         } catch (e) {
           __DEV__ && error(e);
