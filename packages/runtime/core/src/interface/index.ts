@@ -7,7 +7,7 @@ import {
   AsyncSeriesHook,
 } from '@garfish/hooks';
 import { Garfish } from '../instance/context';
-import { App } from '../module/app';
+// import { App } from '../module/app';
 
 declare global {
   interface Window {
@@ -35,6 +35,37 @@ export namespace interfaces {
     appInfo: AppInfo,
     path: string,
   ) => Promise<void> | void;
+
+  export interface App {
+    name: string;
+    appInfo: AppInfo;
+    cjsModules: Record<string, any>;
+    customExports: Record<string, any>; // If you don't want to use the CJS export, can use this
+    active: boolean;
+    mounted: boolean;
+    appContainer: HTMLElement;
+    mounting: boolean;
+    unmounting: boolean;
+    provider: Provider;
+    entryResManager: HtmlResource;
+    htmlNode: HTMLElement | ShadowRoot;
+    resources: ResourceModules;
+    isHtmlMode: boolean;
+    context: Garfish;
+    strictIsolation: boolean;
+    mount(): Promise<boolean>;
+    unmount(): boolean;
+    getExecScriptEnv(noEntry: boolean): Record<string, any>;
+    execScript(
+      code: string,
+      env: Record<string, any>,
+      url?: string,
+      options?: {
+        async?: boolean;
+        noEntry?: boolean;
+      },
+    ): void;
+  }
 
   export interface Provider {
     destroy: ({ dom: HTMLElement }) => void;

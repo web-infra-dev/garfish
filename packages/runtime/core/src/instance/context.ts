@@ -9,7 +9,6 @@ import {
   validURL,
   hasOwn,
 } from '@garfish/utils';
-import { App } from '../module/app';
 import { Loader } from '../module/loader';
 import { interfaces } from '../interface';
 
@@ -20,7 +19,7 @@ export class Garfish {
   public externals: Record<string, any> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
   public activeApps: Array<any> = [];
-  private cacheApps: Record<string, App> = {};
+  private cacheApps: Record<string, interfaces.App> = {};
   private loading: Record<string, Promise<any> | null> = {};
   public plugins: Array<(context: Garfish) => interfaces.Plugin> = [];
 
@@ -112,7 +111,9 @@ export class Garfish {
   }
 
   // // TODO: 1. loader增加preload权重 2.
-  public async loadApp(opts: interfaces.LoadAppOptions): Promise<App> {
+  public async loadApp(
+    opts: interfaces.LoadAppOptions,
+  ): Promise<interfaces.App> {
     let appInfo = this.appInfos[opts.name];
     const appName = opts.name;
 
@@ -128,7 +129,7 @@ export class Garfish {
     }
 
     const asyncLoadProcess = async () => {
-      let AppConstructor = App;
+      let AppConstructor = null;
       //  Return not undefined type data directly to end loading
       const stopLoad = await this.hooks.lifecycle.beforeLoad.promise(appInfo);
       if (stopLoad === false) {

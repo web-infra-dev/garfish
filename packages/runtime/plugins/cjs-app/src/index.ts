@@ -36,8 +36,8 @@ export default function addCjsExternalPlugin(
 
   return {
     name: 'cjs-app',
-    beforeEval(appInfo, code, env) {
-      env.require = (name) => Garfish.externals[name];
+    beforeLoad(_appInfo) {
+      return Promise.resolve(App);
     },
   };
 }
