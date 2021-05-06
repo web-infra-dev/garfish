@@ -1,16 +1,16 @@
 {
-  "name": "@garfish/cjs-app",
+  "name": "@garfish/browser-vm",
   "version": "0.0.5",
-  "description": "cjs-app module.",
+  "description": "vm-sandbox module.",
   "keywords": [
     "garfish",
-    "cjs-external"
+    "vm-sandbox"
   ],
-  "author": "zhoushaw <codingzx@gmail.com>",
+  "author": "zhouxiao.shaw <codingzx@gmail.com>",
   "homepage": "https://github.com/bytedance/garfish",
   "license": "Apache-2.0",
   "main": "index.js",
-  "module": "dist/cjs-external.esm-bundler.js",
+  "module": "dist/vm-sandbox.esm-bundler.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
@@ -19,9 +19,9 @@
     "url": "https://github.com/bytedance/garfish/issues"
   },
   "scripts": {},
-  "types": "dist/cjs-external.d.ts",
+  "types": "dist/vm-sandbox.d.ts",
   "buildOptions": {
-    "name": "CjsExternal",
+    "name": "VmSandbox",
     "devTemplate": "module",
     "formats": [
       "esm-bundler",
@@ -33,5 +33,5 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
-  "gitHead": "155413284f291b0d6aeefdfa8a34013c72ea2f49"
+  "gitHead": "91af14f557ef98d664f52fc31d8986b4ae5e2f9c"
 }

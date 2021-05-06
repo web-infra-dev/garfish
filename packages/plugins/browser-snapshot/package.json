@@ -1,16 +1,16 @@
 {
-  "name": "@garfish/router",
+  "name": "@garfish/browser-snapshot",
   "version": "0.0.5",
-  "description": "router module.",
+  "description": "sp-sandbox module.",
   "keywords": [
     "garfish",
-    "router"
+    "sp-sandbox"
   ],
   "author": "zhouxiao <codingzx@gmail.com>",
   "homepage": "http://garfish.bytedance.com",
   "license": "Apache-2.0",
   "main": "index.js",
-  "module": "dist/router.esm-bundler.js",
+  "module": "dist/sp-sandbox.esm-bundler.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
@@ -19,7 +19,7 @@
     "url": "https://github.com/bytedance/garfish/issues"
   },
   "scripts": {},
-  "types": "dist/router.d.ts",
+  "types": "dist/sp-sandbox.d.ts",
   "buildOptions": {
     "name": "SpSandbox",
     "devTemplate": "module",
@@ -33,5 +33,5 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
-  "gitHead": "155413284f291b0d6aeefdfa8a34013c72ea2f49"
+  "gitHead": "91af14f557ef98d664f52fc31d8986b4ae5e2f9c"
 }

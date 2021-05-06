@@ -19,11 +19,8 @@
     }
   },
   "packages": [
-    "packages/runtime/core",
-    "packages/runtime/loader",
-    "packages/runtime/hooks",
-    "packages/runtime/utils",
-    "packages/runtime/plugins/**",
+    "packages/runtime/**",
+    "packages/plugins/**",
     "packages/tools/**"
   ]
 }
