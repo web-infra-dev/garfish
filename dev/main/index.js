@@ -1,6 +1,5 @@
 import VueRouter from 'vue-router';
 import Garfish from './dist/core.esm-browser.js';
-import Gar from './dist/core.esm-browser.js';
 // import store from './store';
 // import { observable, autorun } from 'mobx';
 
