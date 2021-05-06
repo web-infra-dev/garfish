@@ -1,5 +1,5 @@
 // import Sandbox from '@garfish/sandbox';
-import { Sandbox } from 'packages/plugins/browser-vm/src/sandbox';
+import { Sandbox } from 'packages/runtime/browser-vm/src/sandbox';
 import { rawWindow } from './raw';
 
 export const noop = () => {};
