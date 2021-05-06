@@ -1,19 +1,29 @@
 const fs = require('fs');
 const chalk = require('chalk');
+let runtimeTargets = fs.readdirSync('packages/runtime').filter((f) => {
+  if (!fs.statSync(`packages/runtime/${f}`).isDirectory()) {
+    return false;
+  }
 
-const allTargets = (exports.allTargets = fs
-  .readdirSync('packages/runtime')
-  .filter((f) => {
-    if (!fs.statSync(`packages/runtime/${f}`).isDirectory()) {
-      return false;
-    }
+  if (!fs.existsSync(`packages/runtime/${f}/package.json`)) {
+    return false;
+  }
 
-    if (!fs.existsSync(`packages/runtime/${f}/package.json`)) {
-      return false;
-    }
+  return true;
+});
+let pluginsTargets = fs.readdirSync('packages/plugins').filter((f) => {
+  if (!fs.statSync(`packages/plugins/${f}`).isDirectory()) {
+    return false;
+  }
 
-    return true;
-  }));
+  if (!fs.existsSync(`packages/plugins/${f}/package.json`)) {
+    return false;
+  }
+
+  return true;
+});
+
+const allTargets = (exports.allTargets = pluginsTargets.concat(runtimeTargets));
 
 exports.clearConsole = function clearConsole(title) {
   console.clear();
