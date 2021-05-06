@@ -18,7 +18,7 @@ export default function Router(Garfish: Garfish): interfaces.Plugin {
         const app = await Garfish.loadApp({
           name: appInfo.name,
           entry: appInfo.entry,
-          domGetter: appInfo.domGetter,
+          domGetter: appInfo.domGetter || options.domGetter,
         });
 
         const call = (app: interfaces.App, isRender: boolean) => {

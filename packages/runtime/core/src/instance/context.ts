@@ -122,11 +122,15 @@ export class Garfish {
       `Can't load unexpected module "${appName}". Please provide the entry parameters or registered in advance of the app`,
     );
 
-    if (appInfo && !appInfo.domGetter)
-      appInfo.domGetter = this.options.domGetter;
     // Pretreatment parameters, and the default cache
     if (!appInfo) {
       appInfo = { cache: true, ...opts };
+    } else {
+      appInfo = {
+        cache: true,
+        ...opts,
+        ...appInfo,
+      };
     }
 
     const asyncLoadProcess = async () => {
