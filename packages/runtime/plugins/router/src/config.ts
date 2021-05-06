@@ -1,10 +1,4 @@
-export interface AppInfo {
-  name: string;
-  activeWhen: string | ((path: string) => boolean);
-  entry: string;
-  [prop: string]: any;
-  // loader: () => Promise<any>;
-}
+import { interfaces } from '@garfish/core';
 
 export type RouterHook = (
   to: CurrentRouterInfo,
@@ -21,7 +15,7 @@ export interface RouterInfo {
 }
 
 export interface CurrentRouterInfo extends RouterInfo {
-  matched: Array<AppInfo>;
+  matched: Array<interfaces.AppInfo>;
 }
 
 export const __GARFISH_ROUTER_UPDATE_FLAG__ = '__GARFISH_ROUTER_UPDATE_FLAG__';
@@ -30,12 +24,12 @@ export interface Options {
   basename?: string;
   current?: CurrentRouterInfo;
   autoRefreshApp?: boolean;
-  apps: Array<AppInfo>;
+  apps: Array<interfaces.AppInfo>;
   beforeEach?: RouterHook;
   afterEach?: RouterHook;
   routerChange?: (url: string) => void;
-  active: (appInfo: AppInfo, rootPath: string) => Promise<void>;
-  deactive: (appInfo: AppInfo, rootPath: string) => Promise<void>;
+  active: (appInfo: interfaces.AppInfo, rootPath: string) => Promise<void>;
+  deactive: (appInfo: interfaces.AppInfo, rootPath: string) => Promise<void>;
   notMatch?: (path: string) => void;
 }
 

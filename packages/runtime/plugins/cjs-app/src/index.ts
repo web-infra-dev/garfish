@@ -40,7 +40,7 @@ declare module '@garfish/core' {
   }
 }
 
-export default function cjsApp(Garfish: Garfish): interfaces.Plugin {
+export default function cjsApp(Garfish: interfaces.Garfish): interfaces.Plugin {
   Garfish.setExternal = setExternal;
 
   function setExternal(

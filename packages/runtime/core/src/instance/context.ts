@@ -16,7 +16,6 @@ export class Garfish {
   public version = __VERSION__;
   private running = false;
   public options = getDefaultOptions();
-  public externals: Record<string, any> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
   public activeApps: Array<any> = [];
   private cacheApps: Record<string, interfaces.App> = {};

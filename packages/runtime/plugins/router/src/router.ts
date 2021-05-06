@@ -1,13 +1,14 @@
+import { interfaces } from '@garfish/core';
 import { listen } from './agentRouter';
 import {
   setRouterConfig,
   RouterConfig,
   set as RouterSet,
   Options,
-  AppInfo,
   RouterHook,
   RouterChange,
 } from './config';
+
 import { push, replace } from './navEvent';
 
 export { push, replace } from './navEvent';
@@ -24,7 +25,7 @@ export const routerChange = (hook: RouterChange) => {
   RouterSet('routerChange', hook);
 };
 
-export const registerRouter = (Apps: Array<AppInfo>) => {
+export const registerRouter = (Apps: Array<interfaces.AppInfo>) => {
   const unregisterApps = Apps.filter(
     (app) => !RouterConfig.apps.some((item) => app.name === item.name),
   );
