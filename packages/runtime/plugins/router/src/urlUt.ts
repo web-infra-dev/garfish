@@ -1,4 +1,4 @@
-import { AppInfo } from './config';
+import { interfaces } from '@garfish/core';
 
 export function formatQuery(query: { [props: string]: string } = {}) {
   const qs = Object.keys(query)
@@ -43,7 +43,7 @@ export function find(arr: Array<Function>, func: Function) {
   return null;
 }
 
-export function getAppRootPath(basename, path, appInfo: AppInfo) {
+export function getAppRootPath(basename, path, appInfo: interfaces.AppInfo) {
   let appRootPath = basename === '/' ? '' : basename;
   if (typeof appInfo.activeWhen === 'string') {
     appRootPath += appInfo.activeWhen;
