@@ -96,8 +96,8 @@ export class Garfish {
         __DEV__ && warn(`The "${info.name}" app is already registered.`);
       } else {
         assert(
-          !validURL(info.entry),
-          `${info.name} application entry is not url`,
+          !info.entry,
+          `${info.name} application entry is not url: ${info.entry}`,
         );
         adds[info.name] = info;
         this.appInfos[info.name] = info;
