@@ -31,6 +31,10 @@
   "browser": {
     "util": "./lib/util-browser.js"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
   "scripts": {
     "test": "jest",
     "travis": "yarn pretty-lint && jest --coverage && codecov",
