@@ -43,7 +43,6 @@ export class Garfish {
 
   public usePlugin(
     plugin: (context: Garfish) => interfaces.Plugin,
-    context: Garfish,
     ...args: Array<any>
   ) {
     assert(typeof plugin === 'function', 'Plugin must be a function.');
@@ -52,7 +51,7 @@ export class Garfish {
       return this;
     }
     (plugin as any)._registered = true;
-    return this.hooks.usePlugins(plugin.apply(this, [context, ...args]));
+    return this.hooks.usePlugins(plugin.apply(this, [this, ...args]));
   }
 
   public setOptions(options: Partial<interfaces.Options>) {

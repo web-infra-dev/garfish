@@ -40,38 +40,40 @@ declare module '@garfish/core' {
   }
 }
 
-export default function cjsApp(Garfish: Garfish): interfaces.Plugin {
-  Garfish.setExternal = setExternal;
+export default function cjsApp() {
+  return function (Garfish: Garfish): interfaces.Plugin {
+    Garfish.setExternal = setExternal;
 
-  function setExternal(
-    nameOrExtObj: string | Record<string, any>,
-    value?: any,
-  ) {
-    assert(nameOrExtObj, 'Invalid parameter.');
-    if (typeof nameOrExtObj === 'object') {
-      for (const key in nameOrExtObj) {
-        if (Garfish.externals[key]) {
-          __DEV__ && warn(`The "${key}" will be overwritten in external.`);
+    function setExternal(
+      nameOrExtObj: string | Record<string, any>,
+      value?: any,
+    ) {
+      assert(nameOrExtObj, 'Invalid parameter.');
+      if (typeof nameOrExtObj === 'object') {
+        for (const key in nameOrExtObj) {
+          if (Garfish.externals[key]) {
+            __DEV__ && warn(`The "${key}" will be overwritten in external.`);
+          }
+          Garfish.externals[key] = nameOrExtObj[key];
         }
-        Garfish.externals[key] = nameOrExtObj[key];
+      } else {
+        Garfish.externals[nameOrExtObj] = value;
       }
-    } else {
-      Garfish.externals[nameOrExtObj] = value;
     }
-  }
 
-  return {
-    name: 'cjs-app',
-    initializeApp(context, appInfo, resource, ResourceModules, isHtmlModule) {
-      const instance = new App(
-        context,
-        appInfo,
-        resource,
-        ResourceModules,
-        isHtmlModule,
-      );
-      instance.cjsModules.require = (name) => Garfish.externals[name];
-      return Promise.resolve(instance);
-    },
+    return {
+      name: 'cjs-app',
+      initializeApp(context, appInfo, resource, ResourceModules, isHtmlModule) {
+        const instance = new App(
+          context,
+          appInfo,
+          resource,
+          ResourceModules,
+          isHtmlModule,
+        );
+        instance.cjsModules.require = (name) => Garfish.externals[name];
+        return Promise.resolve(instance);
+      },
+    };
   };
 }

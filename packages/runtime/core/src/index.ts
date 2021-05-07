@@ -14,7 +14,7 @@ const GarfishInstance = new Garfish({
     },
   ],
   domGetter: '#submoduleByCunstom',
-  plugins: [CjsAppPlugin, BrowserVmPlugin, RouterPlugin],
+  plugins: [CjsAppPlugin(), BrowserVmPlugin(), RouterPlugin()],
 });
 
 window.__GARFISH__ = true;
