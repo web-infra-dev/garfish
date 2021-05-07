@@ -38,21 +38,11 @@ export namespace interfaces {
 
   export interface App {}
 
-  export interface Provider {
-    destroy: ({ dom: HTMLElement }) => void;
-    render: ({ dom: HTMLElement, basename: string }) => void;
-  }
-
   export interface SandboxConfig {
     open?: boolean;
     snapshot?: boolean;
     useStrict?: boolean;
     strictIsolation?: boolean;
-  }
-
-  export interface Provider {
-    destroy: ({ dom: HTMLElement }) => void;
-    render: ({ dom: HTMLElement, basename: string }) => void;
   }
 
   export interface AppInfo {
@@ -62,14 +52,6 @@ export namespace interfaces {
     cache?: boolean; // Whether the cache
     props?: Record<string, any>;
     domGetter?: DomGetter;
-    activeWhen?: string | ((path: string) => boolean); // 手动加载，可不填写路由
-    active?: (appInfo: AppInfo, rootPath: string) => void;
-    deactive?: (appInfo: AppInfo, rootPath: string) => void;
-  }
-
-  export interface Provider {
-    destroy: ({ dom: HTMLElement }) => void;
-    render: ({ dom: HTMLElement, basename: string }) => void;
   }
 
   export interface SandboxConfig {
@@ -90,7 +72,6 @@ export namespace interfaces {
     apps?: Array<AppInfo>;
     sandbox?: SandboxConfig;
     plugins?: Array<(context: Garfish) => Plugin>;
-    autoRefreshApp?: boolean;
     props?: Record<string, any>;
     disableStatistics?: boolean;
     disablePreloadApp?: boolean;
@@ -114,7 +95,6 @@ export namespace interfaces {
       appInfo: AppInfo,
       opts: LoadAppOptions,
     ) => Promise<void> | void;
-    onNotMatchRouter?: (path: string) => Promise<void> | void;
     errorLoadApp?: (err: Error | string, appInfo: AppInfo) => void;
     errorMountApp?: (err: Error | string, appInfo: AppInfo) => void;
     errorUnmountApp?: (err: Error | string, appInfo: AppInfo) => void;

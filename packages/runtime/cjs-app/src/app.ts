@@ -28,6 +28,11 @@ import Garfish, { interfaces } from '@garfish/core';
 
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 
+export interface Provider {
+  destroy: ({ dom: HTMLElement }) => void;
+  render: ({ dom: HTMLElement, basename: string }) => void;
+}
+
 /**
  * Have the ability to App instance
  * 1. Provide static resource, the structure of the HTML, CSS, js
@@ -46,7 +51,7 @@ export class App {
   public appContainer: HTMLElement;
   private mounting: boolean = false;
   private unmounting: boolean = false;
-  public provider: interfaces.Provider;
+  public provider: Provider;
   private entryResManager: interfaces.HtmlResource;
   public htmlNode: HTMLElement | ShadowRoot;
   private resources: interfaces.ResourceModules;

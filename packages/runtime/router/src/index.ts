@@ -2,14 +2,30 @@ import Garfish, { interfaces } from '@garfish/core';
 import { assert, createKey, warn } from '@garfish/utils';
 import { listenRouterAndReDirect } from './context';
 
-export default function Router() {
+interface Options {
+  autoRefreshApp?: boolean;
+  onNotMatchRouter?: (path: string) => Promise<void> | void;
+}
+
+declare module '@garfish/core' {
+  export namespace interfaces {
+    export interface AppInfo {
+      activeWhen?: string | ((path: string) => boolean); // 手动加载，可不填写路由
+      active?: (appInfo: AppInfo, rootPath: string) => void;
+      deactive?: (appInfo: AppInfo, rootPath: string) => void;
+    }
+  }
+}
+
+export default function Router(args?: Options) {
   return function (Garfish: Garfish): interfaces.Plugin {
     return {
       name: 'router',
       bootstrap(options) {
         let activeApp = null;
         const unmounts: Record<string, Function> = {};
-        const { apps, basename, autoRefreshApp, onNotMatchRouter } = options;
+        const { apps, basename } = options;
+        const { autoRefreshApp, onNotMatchRouter } = args;
 
         async function active(appInfo: interfaces.AppInfo, rootPath: string) {
           const { name, cache, active } = appInfo;
@@ -52,11 +68,11 @@ export default function Router() {
         }
 
         const listenOptions = {
+          basename,
           active,
           deactive,
           autoRefreshApp,
           notMatch: onNotMatchRouter,
-          basename,
           apps: apps.filter(
             (app) => app.activeWhen !== null && app.activeWhen !== undefined,
           ) as Array<Required<interfaces.AppInfo>>,
