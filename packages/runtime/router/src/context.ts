@@ -62,7 +62,40 @@ export const listenRouterAndReDirect = ({
   listen();
 };
 
-const Router = {
+export interface RouterInterface {
+  push: ({
+    path,
+    query,
+  }: {
+    path: string;
+    query?: {
+      [key: string]: string;
+    };
+  }) => void;
+  replace: ({
+    path,
+    query,
+  }: {
+    path: string;
+    query?: {
+      [key: string]: string;
+    };
+  }) => void;
+  beforeEach: (hook: RouterHook) => void;
+  afterEach: (hook: RouterHook) => void;
+  registerRouter: (Apps: Array<interfaces.AppInfo>) => void;
+  routerChange: (hook: RouterChange) => void;
+  listenRouterAndReDirect: ({
+    apps,
+    basename,
+    autoRefreshApp,
+    active,
+    deactive,
+    notMatch,
+  }: Options) => void;
+}
+
+const Router: RouterInterface = {
   push,
   replace,
   beforeEach,

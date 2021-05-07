@@ -1,6 +1,6 @@
 import Garfish, { interfaces } from '@garfish/core';
 import { assert, createKey, warn } from '@garfish/utils';
-import { listenRouterAndReDirect } from './context';
+import router, { listenRouterAndReDirect, RouterInterface } from './context';
 
 interface Options {
   autoRefreshApp?: boolean;
@@ -8,6 +8,10 @@ interface Options {
 }
 
 declare module '@garfish/core' {
+  export default interface Garfish {
+    router: RouterInterface;
+  }
+
   export namespace interfaces {
     export interface AppInfo {
       activeWhen?: string | ((path: string) => boolean); // 手动加载，可不填写路由
@@ -19,6 +23,7 @@ declare module '@garfish/core' {
 
 export default function Router(args?: Options) {
   return function (Garfish: Garfish): interfaces.Plugin {
+    Garfish.router = router;
     return {
       name: 'router',
       bootstrap(options) {
