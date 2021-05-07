@@ -1,16 +1,16 @@
 {
   "name": "@garfish/browser-snapshot",
   "version": "0.0.6",
-  "description": "sp-sandbox module.",
+  "description": "browser-snapshot module.",
   "keywords": [
     "garfish",
-    "sp-sandbox"
+    "browser-snapshot"
   ],
   "author": "zhouxiao <codingzx@gmail.com>",
   "homepage": "http://garfish.bytedance.com",
   "license": "Apache-2.0",
   "main": "index.js",
-  "module": "dist/sp-sandbox.esm-bundler.js",
+  "module": "dist/browser-snapshot.esm-bundler.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
@@ -19,7 +19,7 @@
     "url": "https://github.com/bytedance/garfish/issues"
   },
   "scripts": {},
-  "types": "dist/sp-sandbox.d.ts",
+  "types": "dist/browser-snapshot.d.ts",
   "buildOptions": {
     "name": "SpSandbox",
     "devTemplate": "module",

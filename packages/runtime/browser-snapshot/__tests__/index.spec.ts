@@ -1,5 +1,5 @@
 import toolApp from '../src/index';
 
-describe('sp-sandbox', () => {
+describe('browser-snapshot', () => {
   it('needs tests');
 });

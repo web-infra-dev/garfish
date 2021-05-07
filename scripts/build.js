@@ -184,9 +184,9 @@ async function mergeBuildTypes(pkgDir, target) {
     ) {
       // 如果当前包内有额外的全局 .d.ts，可以手动拼接到后面
       console.log(chalk.green.bold('API Extractor completed successfully.\n'));
-      await fs.remove(`${pkgDir}/dist/packages`);
-      await fs.remove('dist');
-      await fs.remove('temp');
+      // await fs.remove(`${pkgDir}/dist/packages`);
+      // await fs.remove('dist');
+      // await fs.remove('temp');
     }
   } else {
     console.log(

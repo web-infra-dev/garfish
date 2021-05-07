@@ -1,5 +1,5 @@
 import toolApp from '../src/index';
 
-describe('sp-sandbox', () => {
+describe('router', () => {
   it('needs tests');
 });
