@@ -47,7 +47,7 @@ export default function Router(args?: Options) {
             if (!app) return;
             // const isDes = cache && app.mounted;
             const isDes = false;
-            debugger;
+
             const fn = isRender
               ? app[isDes ? 'show' : 'mount']
               : app[isDes ? 'hide' : 'unmount'];
