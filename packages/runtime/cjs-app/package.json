@@ -4,13 +4,13 @@
   "description": "cjs-app module.",
   "keywords": [
     "garfish",
-    "cjs-external"
+    "cjs-app"
   ],
   "author": "zhoushaw <codingzx@gmail.com>",
   "homepage": "https://github.com/bytedance/garfish",
   "license": "Apache-2.0",
   "main": "index.js",
-  "module": "dist/cjs-external.esm-bundler.js",
+  "module": "dist/cjs-app.esm-bundler.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
@@ -19,7 +19,7 @@
     "url": "https://github.com/bytedance/garfish/issues"
   },
   "scripts": {},
-  "types": "dist/cjs-external.d.ts",
+  "types": "dist/index.d.ts",
   "buildOptions": {
     "name": "CjsExternal",
     "devTemplate": "module",

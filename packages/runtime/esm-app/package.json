@@ -19,7 +19,7 @@
     "url": "https://github.com/bytedance/garfish/issues"
   },
   "scripts": {},
-  "types": "dist/esm-app.d.ts",
+  "types": "dist/index.d.ts",
   "buildOptions": {
     "name": "EsmApp",
     "devTemplate": "module",

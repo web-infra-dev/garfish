@@ -19,7 +19,7 @@
     "url": "https://github.com/bytedance/garfish/issues"
   },
   "scripts": {},
-  "types": "dist/vm-sandbox.d.ts",
+  "types": "dist/index.d.ts",
   "buildOptions": {
     "name": "VmSandbox",
     "devTemplate": "module",

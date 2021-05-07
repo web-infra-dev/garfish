@@ -19,7 +19,7 @@
     "url": "https://github.com/bytedance/garfish/issues"
   },
   "scripts": {},
-  "types": "dist/browser-snapshot.d.ts",
+  "types": "dist/index.d.ts",
   "buildOptions": {
     "name": "SpSandbox",
     "devTemplate": "module",

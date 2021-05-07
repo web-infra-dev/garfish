@@ -20,7 +20,7 @@
     "url": "https://github.com/bytedance/garfish/issues"
   },
   "scripts": {},
-  "types": "dist/core.d.ts",
+  "types": "dist/index.d.ts",
   "buildOptions": {
     "name": "Core",
     "devTemplate": "complete",

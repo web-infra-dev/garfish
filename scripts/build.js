@@ -79,10 +79,10 @@ async function build(target) {
       path.resolve(pkgDir, `dist/packages/runtime/${target}/src`),
       path.resolve(pkgDir, `dist/`),
     );
-    fs.moveSync(
-      path.resolve(pkgDir, `dist/index.d.ts`),
-      path.resolve(pkgDir, `dist/${target}.d.ts`),
-    );
+    // fs.moveSync(
+    //   path.resolve(pkgDir, `dist/index.d.ts`),
+    //   path.resolve(pkgDir, `dist/${target}.d.ts`),
+    // );
     await fs.remove(`${pkgDir}/dist/packages`);
     await fs.remove('dist');
     await fs.remove('temp');
