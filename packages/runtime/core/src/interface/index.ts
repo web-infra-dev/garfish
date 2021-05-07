@@ -217,7 +217,7 @@ export namespace interfaces {
     [k in keyof T]: ConstructorParameters<T[k]>;
   };
 
-  export type Plugin = { name: string } & PickParam<
+  export type Plugin = { name: string; version?: string } & PickParam<
     Partial<interfaces.Lifecycle>
   >;
 

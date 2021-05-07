@@ -63,6 +63,7 @@ export default function cjsApp() {
 
     return {
       name: 'cjs-app',
+      version: __VERSION__,
       initializeApp(context, appInfo, resource, ResourceModules, isHtmlModule) {
         const instance = new App(
           context,
