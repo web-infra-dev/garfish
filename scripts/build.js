@@ -73,10 +73,24 @@ async function build(target) {
     { stdio: 'inherit' },
   );
 
-  // Merge .d.ts
-  if (mergeTypes && pkg.types && !pkgDir.includes('hooks')) {
-    mergeBuildTypes(pkgDir, target);
+  // copy .d.ts
+  if (!pkgDir.includes('hooks')) {
+    fs.copySync(
+      path.resolve(pkgDir, `dist/packages/runtime/${target}/src`),
+      path.resolve(pkgDir, `dist/`),
+    );
+    fs.moveSync(
+      path.resolve(pkgDir, `dist/index.d.ts`),
+      path.resolve(pkgDir, `dist/${target}.d.ts`),
+    );
+    await fs.remove(`${pkgDir}/dist/packages`);
+    await fs.remove('dist');
+    await fs.remove('temp');
   }
+  // Merge .d.ts
+  // if (mergeTypes && pkg.types && !pkgDir.includes('hooks')) {
+  //   mergeBuildTypes(pkgDir, target);
+  // }
 }
 
 function getPrivateDeps(dotDTs) {
@@ -183,10 +197,12 @@ async function mergeBuildTypes(pkgDir, target) {
       )
     ) {
       // 如果当前包内有额外的全局 .d.ts，可以手动拼接到后面
+      if (extractorConfig.globalEntryPointFilePath) {
+      }
       console.log(chalk.green.bold('API Extractor completed successfully.\n'));
-      // await fs.remove(`${pkgDir}/dist/packages`);
-      // await fs.remove('dist');
-      // await fs.remove('temp');
+      await fs.remove(`${pkgDir}/dist/packages`);
+      await fs.remove('dist');
+      await fs.remove('temp');
     }
   } else {
     console.log(

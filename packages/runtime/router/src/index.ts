@@ -1,6 +1,6 @@
 import Garfish, { interfaces } from '@garfish/core';
 import { assert, createKey, warn } from '@garfish/utils';
-import { listenRouterAndReDirect } from './router';
+import { listenRouterAndReDirect } from './context';
 
 export default function Router(Garfish: Garfish): interfaces.Plugin {
   return {
