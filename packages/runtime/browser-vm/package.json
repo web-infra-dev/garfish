@@ -10,7 +10,7 @@
   "homepage": "https://github.com/bytedance/garfish",
   "license": "Apache-2.0",
   "main": "index.js",
-  "module": "dist/vm-sandbox.esm-bundler.js",
+  "module": "dist/browser-vm.esm-bundler.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
