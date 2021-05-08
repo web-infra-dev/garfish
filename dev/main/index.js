@@ -30,6 +30,29 @@ window.Garfish = GarfishInstance;
 
 GarfishInstance.run();
 
+let useRouterMode = false;
+document.getElementById('vueBtn').onclick = async () => {
+  if (useRouterMode) {
+    history.pushState({}, 'vue', '/vue'); // 通过路由的方式加载
+  } else {
+    prevApp = await GarfishInstance.loadApp({
+      name: 'vue',
+      domGetter: '#submoduleByCunstom',
+    }); // 或者手动加载
+  }
+};
+
+document.getElementById('reactBtn').onclick = async () => {
+  if (useRouterMode) {
+    history.pushState({}, 'react', '/react');
+  } else {
+    prevApp = await loadApp({
+      name: 'react',
+      domGetter: '#submoduleByCunstom',
+    });
+  }
+};
+
 // import store from './store';
 // import { observable, autorun } from 'mobx';
 // // Gar.setExternal('vue-router', VueRouter);

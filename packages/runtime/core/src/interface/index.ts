@@ -109,7 +109,7 @@ export namespace interfaces {
 
   export type Options = Config & HooksLifecycle;
 
-  export type LoadAppOptions = Pick<AppInfo, keyof AppInfo> & {
+  export type LoadAppOptions = Pick<AppInfo, Exclude<keyof AppInfo, 'name'>> & {
     entry?: string;
     domGetter: DomGetter;
   };

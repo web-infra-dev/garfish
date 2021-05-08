@@ -112,20 +112,20 @@ export class Garfish {
 
   // // TODO: 1. loader增加preload权重 2.
   public async loadApp(
+    name: string,
     opts: interfaces.LoadAppOptions,
   ): Promise<interfaces.App> {
-    let appInfo = this.appInfos[opts.name];
-    const appName = opts.name;
+    let appInfo = this.appInfos[name];
 
     // Does not support does not have remote resources and no registered application
     assert(
       !(!appInfo && !opts.entry),
-      `Can't load unexpected module "${appName}". Please provide the entry parameters or registered in advance of the app`,
+      `Can't load unexpected module "${name}". Please provide the entry parameters or registered in advance of the app`,
     );
 
     // Pretreatment parameters, and the default cache
     if (!appInfo) {
-      appInfo = { cache: true, ...opts };
+      appInfo = { name, cache: true, ...opts };
     } else {
       appInfo = {
         cache: true,
@@ -139,13 +139,13 @@ export class Garfish {
       //  Return not undefined type data directly to end loading
       const stopLoad = await this.hooks.lifecycle.beforeLoad.promise(appInfo);
       if (stopLoad === false) {
-        warn(`Load ${appName} application is terminated by beforeLoad`);
+        warn(`Load ${name} application is terminated by beforeLoad`);
         return null;
       }
 
       // Existing cache caching logic
       let result = null;
-      const cacheApp = this.cacheApps[appName];
+      const cacheApp = this.cacheApps[name];
       if (opts.cache && cacheApp) {
         result = cacheApp;
       } else {
@@ -163,24 +163,24 @@ export class Garfish {
             isHtmlMode,
           );
           if (!result) {
-            error(`Must provider ${appName} application instance`);
+            error(`Must provider ${name} application instance`);
             return null;
           }
-          this.cacheApps[appName] = result;
+          this.cacheApps[name] = result;
         } catch (e) {
           __DEV__ && error(e);
           this.hooks.lifecycle.errorLoadApp.call(appInfo, e);
         } finally {
-          this.loading[appName] = null;
+          this.loading[name] = null;
         }
       }
       this.hooks.lifecycle.afterLoad.call(appInfo, result);
       return result;
     };
 
-    if (!opts.cache || !this.loading[appName]) {
-      this.loading[appName] = asyncLoadProcess();
+    if (!opts.cache || !this.loading[name]) {
+      this.loading[name] = asyncLoadProcess();
     }
-    return this.loading[appName];
+    return this.loading[name];
   }
 }

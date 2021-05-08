@@ -9,7 +9,10 @@ declare module '@garfish/core' {
       value?: any,
     ) => void;
     externals: Record<string, any>;
-    loadApp(opts: interfaces.LoadAppOptions): Promise<interfaces.App>;
+    loadApp(
+      name: string,
+      opts: interfaces.LoadAppOptions,
+    ): Promise<interfaces.App>;
   }
 
   export namespace interfaces {

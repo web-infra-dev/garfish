@@ -39,8 +39,7 @@ export default function Router(args?: Options) {
           if (active) return active(appInfo, rootPath);
 
           const currentApp = (activeApp = createKey());
-          const app = await Garfish.loadApp({
-            name: appInfo.name,
+          const app = await Garfish.loadApp(appInfo.name, {
             entry: appInfo.entry,
             domGetter: appInfo.domGetter || options.domGetter,
           });
