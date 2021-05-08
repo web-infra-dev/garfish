@@ -1,8 +1,8 @@
 import VueRouter from 'vue-router';
 import Garfish from '@garfish/core';
 import GarfishCjsApp from '@garfish/cjs-app';
-import GarfishRouter from '@garfish/router';
-import GarfishVm from '@garfish/browser-vm';
+// import GarfishRouter from '@garfish/router';
+// import GarfishVm from '@garfish/browser-vm';
 
 let GarfishInstance = new Garfish({
   basename: '/gar_master',
@@ -23,10 +23,14 @@ let GarfishInstance = new Garfish({
       entry: 'http://localhost:9090',
     },
   ],
-  plugins: [GarfishCjsApp(), GarfishRouter(), GarfishVm()],
+  plugins: [
+    GarfishCjsApp(),
+    // GarfishRouter(),
+    // GarfishVm()
+  ],
 });
 
-window.Garfish = GarfishInstance;
+// window.Garfish = GarfishInstance;
 
 GarfishInstance.run();
 
@@ -35,10 +39,11 @@ document.getElementById('vueBtn').onclick = async () => {
   if (useRouterMode) {
     history.pushState({}, 'vue', '/vue'); // 通过路由的方式加载
   } else {
-    prevApp = await GarfishInstance.loadApp({
+    let prevApp = await GarfishInstance.loadApp({
       name: 'vue',
       domGetter: '#submoduleByCunstom',
     }); // 或者手动加载
+    await prevApp.mount();
   }
 };
 
@@ -46,7 +51,7 @@ document.getElementById('reactBtn').onclick = async () => {
   if (useRouterMode) {
     history.pushState({}, 'react', '/react');
   } else {
-    prevApp = await loadApp({
+    let prevApp = await GarfishInstance.loadApp({
       name: 'react',
       domGetter: '#submoduleByCunstom',
     });

@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    main: './index.js',
+    main: './index.ts',
   },
   output: {
     path: path.join(__dirname, 'dist'),
@@ -34,24 +34,10 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js(x)?$/,
+        test: /\.ts(x)?$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env'],
-            plugins: [
-              '@babel/plugin-transform-react-jsx',
-              [
-                '@babel/plugin-transform-runtime',
-                {
-                  regenerator: true,
-                },
-              ],
-              '@babel/plugin-proposal-class-properties',
-              ['@babel/plugin-proposal-decorators', { legacy: true }],
-            ],
-          },
+          loader: 'ts-loader',
         },
       },
       {
