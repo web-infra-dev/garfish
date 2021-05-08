@@ -32,7 +32,6 @@ let GarfishInstance = new Garfish({
 
 declare global {
   interface Window {
-    Garfish: Garfish;
     __GARFISH__: boolean;
   }
 }

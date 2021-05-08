@@ -12,5 +12,8 @@
     "emitDecoratorMetadata": true,
     "declaration": true,
     "allowJs": true
-  }
+  },
+  "include": [
+    "./"
+  ]
 }
