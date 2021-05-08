@@ -9,7 +9,7 @@
   "description": "a powerful micro front-end framework",
   "scripts": {
     "dev": "node scripts/dev.js",
-    "dev:core": "yarn dev core && yarn build:watch",
+    "dev:core": "yarn dev core",
     "pkg": "node scripts/createPackage.js",
     "build": "node scripts/build.js",
     "build:all": "node scripts/build.js -m -e",

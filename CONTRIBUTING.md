@@ -89,8 +89,9 @@ tools 的包使用 tsc 来打包，`npm run build:tool` 打包所有 tool 下面
 子包如果需要有调试模板工程的能力，需要在当前子包的 `package.json` 中的 `buildOptions` 中指定 `devTemplate` 字段
 
 ```shell
-  # 调试 Garfish 这个子包
-  $ yarn dev garfish
+  # 调试 所有子包
+  $ yarn build:watch
+  $ yarn dev core
 ```
 
 然后整个 core 里面的子包，源码的改动都会实时同步打包到 `/dev/main/dist` 下。
