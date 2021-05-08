@@ -78,20 +78,6 @@ async function build(target) {
     { stdio: 'inherit' },
   );
 
-  // copy .d.ts
-  if (!pkgDir.includes('hooks')) {
-    fs.copySync(
-      path.resolve(pkgDir, `dist/packages/runtime/${target}/src`),
-      path.resolve(pkgDir, `dist/`),
-    );
-    // fs.moveSync(
-    //   path.resolve(pkgDir, `dist/index.d.ts`),
-    //   path.resolve(pkgDir, `dist/${target}.d.ts`),
-    // );
-    await fs.remove(`${pkgDir}/dist/packages`);
-    await fs.remove('dist');
-    await fs.remove('temp');
-  }
   // Merge .d.ts
   // if (mergeTypes && pkg.types && !pkgDir.includes('hooks')) {
   //   mergeBuildTypes(pkgDir, target);

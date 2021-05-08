@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
 import json from '@rollup/plugin-json';
@@ -113,6 +113,38 @@ function allExternal() {
   return [...base, ...deps];
 }
 
+function extractTsDeclare() {
+  let outputoptions;
+  let pkgDir = '';
+  let pkgName = '';
+  return {
+    name: 'garfish-extractTsDeclare',
+    options(op) {
+      outputoptions = op;
+      pkgDir = op.input.replace('/src/index.ts', '');
+      let splitPkg = pkgDir.split('/');
+      pkgName = splitPkg[splitPkg.length - 1];
+    },
+    async buildEnd(...args) {
+      if (!pkgName) return;
+
+      let tsTypeDir = path.resolve(
+        pkgDir,
+        `dist/packages/runtime/${pkgName}/src`,
+      );
+      if (!fs.existsSync(tsTypeDir)) return;
+
+      fs.copySync(
+        path.resolve(pkgDir, `dist/packages/runtime/${pkgName}/src`),
+        path.resolve(pkgDir, `dist/`),
+      );
+      await fs.remove(path.resolve(pkgDir, `dist/packages`));
+      await fs.remove(path.resolve(pkgDir, `dist/dist`));
+      await fs.remove(path.resolve(pkgDir, `temp`));
+    },
+  };
+}
+
 function createConfig(format, output, plugins = []) {
   if (!output) {
     console.log(require('chalk').yellow(`invalid format: "${format}"`));
@@ -168,6 +200,7 @@ function createConfig(format, output, plugins = []) {
         namedExports: false,
       }),
       tsPlugin,
+      extractTsDeclare(),
       createReplacePlugin(
         isProductionBuild,
         isUmdBuild,
