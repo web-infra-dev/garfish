@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import { assert } from '@garfish/shared';
+import { assert } from '@garfish/utils';
 
 // https://github.com/node-fetch/node-fetch
 const createRequest = (url: string, opts: RequestInit) => {

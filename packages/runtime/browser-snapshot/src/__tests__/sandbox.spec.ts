@@ -1,4 +1,4 @@
-import { SnapshotSandbox } from '../index';
+import { SnapshotSandbox } from '../sandbox';
 
 describe('test sandbox ', () => {
   it('dom sandbox', () => {

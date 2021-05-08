@@ -32,15 +32,14 @@ let GarfishInstance = new Garfish({
 
 // window.Garfish = GarfishInstance;
 
-GarfishInstance.run();
+GarfishInstance.run({});
 
 let useRouterMode = false;
 document.getElementById('vueBtn').onclick = async () => {
   if (useRouterMode) {
     history.pushState({}, 'vue', '/vue'); // 通过路由的方式加载
   } else {
-    let prevApp = await GarfishInstance.loadApp({
-      name: 'vue',
+    let prevApp = await GarfishInstance.loadApp('vue', {
       domGetter: '#submoduleByCunstom',
     }); // 或者手动加载
     await prevApp.mount();
@@ -51,8 +50,7 @@ document.getElementById('reactBtn').onclick = async () => {
   if (useRouterMode) {
     history.pushState({}, 'react', '/react');
   } else {
-    let prevApp = await GarfishInstance.loadApp({
-      name: 'react',
+    let prevApp = await GarfishInstance.loadApp('react', {
       domGetter: '#submoduleByCunstom',
     });
   }

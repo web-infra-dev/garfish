@@ -1,4 +1,4 @@
-import { Sandbox } from './context';
+import { Sandbox } from './sandbox';
 
 export type FakeWindow = Window & Record<PropertyKey, any>;
 
