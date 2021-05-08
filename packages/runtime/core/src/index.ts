@@ -1,5 +1,7 @@
 import { Garfish } from './instance/context';
 
+window.__GARFISH__ = true;
+
 export default Garfish;
 
 export { interfaces } from './interface';
@@ -22,7 +24,6 @@ export { interfaces } from './interface';
 //   plugins: [CjsAppPlugin(), BrowserVmPlugin(), RouterPlugin()],
 // });
 
-// window.__GARFISH__ = true;
 // window.Garfish = GarfishInstance;
 // GarfishInstance.run();
 

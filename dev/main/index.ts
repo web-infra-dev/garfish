@@ -30,12 +30,6 @@ let GarfishInstance = new Garfish({
   ],
 });
 
-declare global {
-  interface Window {
-    __GARFISH__: boolean;
-  }
-}
-
 window.Garfish = GarfishInstance;
 
 GarfishInstance.run({});
@@ -46,9 +40,10 @@ document.getElementById('vueBtn').onclick = async () => {
     history.pushState({}, 'vue', '/vue'); // 通过路由的方式加载
   } else {
     let prevApp = await GarfishInstance.loadApp('vue', {
-      entry: '',
+      entry: 'http://localhost:3000',
       domGetter: '#submoduleByCunstom',
     }); // 或者手动加载
+    console.log(prevApp);
     await prevApp.mount();
   }
 };

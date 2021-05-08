@@ -158,6 +158,7 @@ export class App {
     this.mounting = true;
     try {
       // add container and compile js with cjs
+      debugger;
       this.cjsCompileAndRenderContainer();
 
       // Good provider is set at compile time

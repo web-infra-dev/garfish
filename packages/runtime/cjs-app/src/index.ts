@@ -46,6 +46,7 @@ declare module '@garfish/core' {
 export default function cjsApp() {
   return function (Garfish: Garfish): interfaces.Plugin {
     Garfish.setExternal = setExternal;
+    Garfish.externals = {};
 
     function setExternal(
       nameOrExtObj: string | Record<string, any>,
@@ -75,7 +76,8 @@ export default function cjsApp() {
           ResourceModules,
           isHtmlModule,
         );
-        instance.cjsModules.require = (name) => Garfish.externals[name];
+        instance.cjsModules.require = (name) =>
+          Garfish.externals && Garfish.externals[name];
         return Promise.resolve(instance);
       },
     };
