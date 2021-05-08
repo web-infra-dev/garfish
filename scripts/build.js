@@ -31,7 +31,12 @@ run();
 async function run() {
   const buildAll = async (targets) => {
     for (const target of targets) {
-      await build(target);
+      // watch mode can't await
+      if (watch) {
+        build(target);
+      } else {
+        await build(target);
+      }
     }
   };
 

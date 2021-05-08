@@ -4,7 +4,7 @@
   "description": "main template",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server"
+    "start": "node linkdeps.js && webpack-dev-server"
   },
   "author": "Bytedance",
   "license": "MIT",
@@ -26,6 +26,11 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1",
+    "@garfish/browser-snapshot": "0.0.8-alpha.5",
+    "@garfish/browser-vm": "0.0.8-alpha.5",
+    "@garfish/cjs-app": "0.0.8-alpha.5",
+    "@garfish/core": "0.0.8-alpha.5",
+    "@garfish/router": "0.0.8-alpha.5",
     "mobx": "^6.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

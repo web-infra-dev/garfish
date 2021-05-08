@@ -22,7 +22,7 @@ export { interfaces } from './interface';
 //   plugins: [CjsAppPlugin(), BrowserVmPlugin(), RouterPlugin()],
 // });
 
-// window.__GARFISH__ = true;
+window.__GARFISH__ = true;
 // window.Garfish = GarfishInstance;
 // GarfishInstance.run();
 

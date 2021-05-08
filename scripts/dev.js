@@ -112,6 +112,7 @@ async function run() {
 async function eachApps(pkgDevDir, fn) {
   for (const f of fs.readdirSync(pkgDevDir)) {
     const cwd = path.resolve(pkgDevDir, f);
+
     if (
       fs.statSync(cwd).isDirectory() &&
       fs.existsSync(path.resolve(cwd, './package.json'))
