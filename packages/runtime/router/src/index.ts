@@ -30,7 +30,8 @@ export default function Router(args?: Options) {
         let activeApp = null;
         const unmounts: Record<string, Function> = {};
         const { apps, basename } = options;
-        const { autoRefreshApp, onNotMatchRouter } = args;
+        const { autoRefreshApp = true, onNotMatchRouter = () => null } =
+          args || {};
 
         async function active(appInfo: interfaces.AppInfo, rootPath: string) {
           const { name, cache, active } = appInfo;
