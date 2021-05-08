@@ -125,22 +125,23 @@ function extractTsDeclare() {
       let splitPkg = pkgDir.split('/');
       pkgName = splitPkg[splitPkg.length - 1];
     },
-    async buildEnd(...args) {
+    async buildEnd() {
       if (!pkgName) return;
 
       let tsTypeDir = path.resolve(
         pkgDir,
         `dist/packages/runtime/${pkgName}/src`,
       );
+
       if (!fs.existsSync(tsTypeDir)) return;
 
       fs.copySync(
-        path.resolve(pkgDir, `dist/packages/runtime/${pkgName}/src`),
+        path.resolve(pkgDir, tsTypeDir),
         path.resolve(pkgDir, `dist/`),
       );
-      await fs.remove(path.resolve(pkgDir, `dist/packages`));
-      await fs.remove(path.resolve(pkgDir, `dist/dist`));
-      await fs.remove(path.resolve(pkgDir, `temp`));
+      fs.remove(path.resolve(pkgDir, `dist/packages`));
+      fs.remove(path.resolve(pkgDir, `dist/dist`));
+      fs.remove(path.resolve(pkgDir, `temp`));
     },
   };
 }
@@ -200,7 +201,6 @@ function createConfig(format, output, plugins = []) {
         namedExports: false,
       }),
       tsPlugin,
-      extractTsDeclare(),
       createReplacePlugin(
         isProductionBuild,
         isUmdBuild,
@@ -209,6 +209,7 @@ function createConfig(format, output, plugins = []) {
       ),
       ...nodePlugins,
       ...plugins,
+      extractTsDeclare(),
     ],
     treeshake: { moduleSideEffects: true },
     // 可以裸跑在浏览器里面的或者指定了不需要 external 的都需要把依赖打进去

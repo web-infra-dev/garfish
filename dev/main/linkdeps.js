@@ -7,6 +7,7 @@ const { exec } = require('child_process');
   '@garfish/browser-vm',
   '@garfish/core',
   '@garfish/loader',
+  '@garfish/cjs-app',
 ].forEach((item) => {
   console.log(`link ${item}`);
   exec(`yarn link ${item}`, (error, stdout, stderr) => {

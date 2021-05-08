@@ -37,7 +37,7 @@ declare global {
   }
 }
 
-window.Garfish = Garfish;
+window.Garfish = GarfishInstance;
 
 GarfishInstance.run({});
 
