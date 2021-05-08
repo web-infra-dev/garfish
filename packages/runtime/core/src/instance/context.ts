@@ -20,7 +20,7 @@ export class Garfish {
   public activeApps: Record<string, interfaces.App> = {};
   private cacheApps: Record<string, interfaces.App> = {};
   private loading: Record<string, Promise<any> | null> = {};
-  public plugins: Array<(context: Garfish) => interfaces.Plugin> = [];
+  public plugins: Array<interfaces.Plugin> = [];
 
   public loader: Loader;
 
@@ -51,7 +51,9 @@ export class Garfish {
       return this;
     }
     (plugin as any)._registered = true;
-    return this.hooks.usePlugins(plugin.apply(this, [this, ...args]));
+    const res = plugin.apply(this, [this, ...args]);
+    this.plugins.push(res);
+    return this.hooks.usePlugins(res);
   }
 
   public setOptions(options: Partial<interfaces.Options>) {

@@ -12,6 +12,7 @@ declare module '@garfish/core' {
 export default function BrowserSnapshot(_Garfish: Garfish): interfaces.Plugin {
   return {
     name: 'browser-vm',
+    version: __VERSION__,
     afterLoad(appInfo, appInstance) {
       if (appInstance) {
         // existing

@@ -4,17 +4,6 @@ import GarfishCjsApp from '@garfish/cjs-app';
 import GarfishRouter from '@garfish/router';
 import GarfishVm from '@garfish/browser-vm';
 
-// import store from './store';
-// import { observable, autorun } from 'mobx';
-// // Gar.setExternal('vue-router', VueRouter);
-// Gar.router.beforeEach((to, from, next) => {
-//   next();
-// });
-
-// Gar.router.afterEach((to, from, next) => {
-//   next();
-// });
-
 let GarfishInstance = new Garfish({
   basename: '/gar_master',
   domGetter: '#submoduleByRouter',
@@ -37,7 +26,21 @@ let GarfishInstance = new Garfish({
   plugins: [GarfishCjsApp(), GarfishRouter(), GarfishVm()],
 });
 
+window.Garfish = GarfishInstance;
+
 GarfishInstance.run();
+
+// import store from './store';
+// import { observable, autorun } from 'mobx';
+// // Gar.setExternal('vue-router', VueRouter);
+// Gar.router.beforeEach((to, from, next) => {
+//   next();
+// });
+
+// Gar.router.afterEach((to, from, next) => {
+//   next();
+// });
+
 // function iframeMountActive(appInfo) {
 //   const iframe = document.createElement('iframe');
 //   iframe.src = appInfo.entry + location.search;

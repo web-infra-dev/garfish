@@ -26,6 +26,7 @@ export default function Router(args?: Options) {
     Garfish.router = router;
     return {
       name: 'router',
+      version: __VERSION__,
       bootstrap(options) {
         let activeApp = null;
         const unmounts: Record<string, Function> = {};

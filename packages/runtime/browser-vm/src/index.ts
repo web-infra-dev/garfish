@@ -15,6 +15,7 @@ export default function BrowserVm() {
   return function (_Garfish: Garfish): interfaces.Plugin {
     return {
       name: 'browser-vm',
+      version: __VERSION__,
       afterLoad(appInfo, appInstance) {
         if (appInstance) {
           // existing
