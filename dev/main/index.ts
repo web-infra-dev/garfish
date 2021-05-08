@@ -46,6 +46,7 @@ document.getElementById('vueBtn').onclick = async () => {
     history.pushState({}, 'vue', '/vue'); // 通过路由的方式加载
   } else {
     let prevApp = await GarfishInstance.loadApp('vue', {
+      entry: '',
       domGetter: '#submoduleByCunstom',
     }); // 或者手动加载
     await prevApp.mount();
@@ -57,6 +58,7 @@ document.getElementById('reactBtn').onclick = async () => {
     history.pushState({}, 'react', '/react');
   } else {
     let prevApp = await GarfishInstance.loadApp('react', {
+      entry: '',
       domGetter: '#submoduleByCunstom',
     });
   }
