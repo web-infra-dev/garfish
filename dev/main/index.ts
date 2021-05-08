@@ -4,7 +4,7 @@ import GarfishCjsApp from '@garfish/cjs-app';
 // import GarfishRouter from '@garfish/router';
 // import GarfishVm from '@garfish/browser-vm';
 
-let GarfishInstance: Garfish = new Garfish({
+let GarfishInstance = new Garfish({
   basename: '/gar_master',
   domGetter: '#submoduleByRouter',
   apps: [
