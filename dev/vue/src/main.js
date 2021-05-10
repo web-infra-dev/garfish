@@ -19,7 +19,7 @@ setTimeout(() => {
 
 // window.chen = 1212;
 // window.tao = 2;
-console.log(VueRouter === window.Gar.externals['vue-router']);
+// console.log(VueRouter === window.Gar.externals['vue-router']);
 window.a = function a() {
   console.log('a');
 };
@@ -82,17 +82,29 @@ if (!window.__GARFISH__) {
   render({});
 } else {
   console.log(window.module, 'module');
-  window.__GARFISH_EXPORTS__.provider = function () {
-    return {
-      render,
-      destroy() {
-        vm.$destroy();
-        vm.$el.parentNode && vm.$el.parentNode.removeChild(vm.$el);
-      },
-    };
+  // eslint-disable-next-line
+  // __GARFISH_EXPORTS__.provider = function () {
+  //   return {
+  //     render,
+  //     destroy() {
+  //       vm.$destroy();
+  //       vm.$el.parentNode && vm.$el.parentNode.removeChild(vm.$el);
+  //     },
+  //   };
+  // };
+  // console.log(window.module.exports);
+  // console.log(window.module);
+}
+
+// console.log()
+export function provider() {
+  return {
+    render,
+    destroy() {
+      vm.$destroy();
+      vm.$el.parentNode && vm.$el.parentNode.removeChild(vm.$el);
+    },
   };
-  console.log(window.module.exports);
-  console.log(window.module);
 }
 
 let a = document.body;

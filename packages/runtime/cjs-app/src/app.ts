@@ -158,7 +158,6 @@ export class App {
     this.mounting = true;
     try {
       // add container and compile js with cjs
-      debugger;
       this.cjsCompileAndRenderContainer();
 
       // Good provider is set at compile time
@@ -172,6 +171,7 @@ export class App {
     } catch (err) {
       removeElement(this.appContainer);
       this.context.hooks.lifecycle.errorMount.call(this.appInfo, err);
+      throw err;
     } finally {
       this.mounting = false;
     }

@@ -14,13 +14,14 @@ module.exports = {
 
   publicPath: 'http://localhost:9090',
   configureWebpack: (config) => {
-    // config.output.libraryTarget = 'commonjs';
+    config.output.libraryTarget = 'commonjs';
     config.output.globalObject = 'window';
     config.devtool = 'source-map';
     config.mode = 'production';
 
     config.plugins = [
       ...config.plugins,
+      new webpack.BannerPlugin('garfish'),
       // new GarfishPlugin({
       //   webpackInstance: webpack,
       //   appId: 'vue_app',
