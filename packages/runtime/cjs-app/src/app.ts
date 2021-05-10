@@ -337,9 +337,10 @@ export class App {
         link: (vnode) => {
           if (isCssLink(vnode)) {
             const href = findProp(vnode, 'href');
-            const resource = resources.link.find(
-              ({ opts }) => opts.url === transformUrl(baseUrl, href.value),
-            );
+            const resource = this.resources.link.find(({ opts }) => {
+              if (!href) return false;
+              return opts.url === transformUrl(baseUrl, href.value);
+            });
             if (!resource) {
               return createElement(vnode);
             }

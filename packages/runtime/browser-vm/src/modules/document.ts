@@ -17,6 +17,7 @@ import {
   verifyDescriptor,
   verifySetDescriptor,
   macroTaskProxyDocument,
+  microTaskHtmlProxyDocument,
 } from '../utils';
 
 const queryFunctions = makeMap([
@@ -31,9 +32,12 @@ const queryFunctions = makeMap([
 export const documentOverride = (sandbox: Sandbox) => {
   const fakeDocument = createFakeObject(rawDocument);
   const strictIsolation = sandbox.options.strictIsolation;
-
+  // eslint-disable-next-line
+  let proxyDocument;
   const fakeDocumentProto = new Proxy(fakeDocument, {
     get(target: any, p: PropertyKey, receiver?: any) {
+      microTaskHtmlProxyDocument(proxyDocument);
+
       const rootEl = rootElm(sandbox);
       const value = hasOwn(target, p)
         ? Reflect.get(target, p, receiver)
@@ -44,7 +48,11 @@ export const documentOverride = (sandbox: Sandbox) => {
           return function (tagName, options) {
             const el = value.call(rawDocument, tagName, options);
             if (isObject(el)) {
-              el.GARFISH_SANDBOX = sandbox;
+              Object.defineProperty(el, 'GARFISH_SANDBOX', {
+                configurable: true,
+                enumerable: false,
+                value: sandbox,
+              });
             }
             return el;
           };
@@ -125,7 +133,7 @@ export const documentOverride = (sandbox: Sandbox) => {
     });
   }
 
-  const proxyDocument = new Proxy(
+  proxyDocument = new Proxy(
     Object.create(fakeDocumentProto, {
       // 内置的一些属性
       currentScript: {

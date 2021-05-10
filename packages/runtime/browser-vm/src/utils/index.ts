@@ -5,6 +5,7 @@ import {
   rawObject,
   rawDocument,
   rawObjectDefineProperty,
+  nextTick,
 } from '@garfish/utils';
 import { __proxyNode__ } from '../symbolTypes';
 
@@ -136,4 +137,28 @@ export function macroTaskProxyDocument(el, proxyDocument) {
     get: defineFn,
     configurable: true,
   });
+}
+
+export function microTaskHtmlProxyDocument(proxyDocument) {
+  // 将html的父节点变为代理document
+  // 在微任务时替换成原生节点
+  const html = rawDocument.children[0];
+  if (html && html.parentNode !== proxyDocument) {
+    rawObjectDefineProperty(html, 'parentNode', {
+      value: proxyDocument,
+      configurable: true,
+    });
+
+    if (setting) {
+      setting = false;
+      // 不可使用微任务，Element中出现将经过节点后的任务放置了nextTick中
+      nextTick(() => {
+        setting = true;
+        rawObjectDefineProperty(html, 'parentNode', {
+          value: rawDocument,
+          configurable: true,
+        });
+      });
+    }
+  }
 }

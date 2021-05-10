@@ -124,6 +124,10 @@ export function evalWithEnv(code: string, params: Record<string, any>) {
   }
 }
 
+export function nextTick(cb: () => void): void {
+  Promise.resolve().then(cb);
+}
+
 export function assert(condition: any, msg?: string | Error) {
   if (!condition) {
     error(msg || 'unknow reason');
