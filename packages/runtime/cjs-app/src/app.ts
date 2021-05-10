@@ -52,7 +52,7 @@ export class App {
   private mounting: boolean = false;
   private unmounting: boolean = false;
   public provider: Provider;
-  private entryResManager: interfaces.HtmlResource;
+  public entryResManager: interfaces.HtmlResource;
   public htmlNode: HTMLElement | ShadowRoot;
   private resources: interfaces.ResourceModules;
   public isHtmlMode: boolean;

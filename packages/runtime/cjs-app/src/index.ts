@@ -19,6 +19,7 @@ declare module '@garfish/core' {
     export interface App {
       name: string;
       appInfo: AppInfo;
+      entryResManager: interfaces.HtmlResource;
       cjsModules: Record<string, any>;
       customExports: Record<string, any>; // If you don't want to use the CJS export, can use this
       mounted: boolean;
