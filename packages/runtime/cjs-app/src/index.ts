@@ -44,7 +44,19 @@ declare module '@garfish/core' {
   }
 }
 
-export default function cjsApp() {
+export type CustomerLoader = (
+  provider: interfaces.Provider,
+  appInfo: interfaces.AppInfo,
+  path: string,
+) => Promise<interfaces.LoaderResult | void> | interfaces.LoaderResult | void;
+
+interface Options {
+  customLoader?: CustomerLoader;
+}
+
+export default function cjsApp(
+  options: Options = { customLoader: () => null },
+) {
   return function (Garfish: Garfish): interfaces.Plugin {
     Garfish.setExternal = setExternal;
     Garfish.externals = {};
@@ -76,6 +88,7 @@ export default function cjsApp() {
           resource,
           ResourceModules,
           isHtmlModule,
+          options.customLoader,
         );
         instance.cjsModules.require = (name) =>
           Garfish.externals && Garfish.externals[name];

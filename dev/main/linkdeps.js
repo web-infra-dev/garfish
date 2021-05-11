@@ -15,7 +15,7 @@ const { exec } = require('child_process');
       console.error(`执行的错误: ${error}`);
       return;
     }
-    console.log(`stdout: ${stdout}`);
-    console.error(`stderr: ${stderr}`);
+    stdout && console.log(`stdout: ${stdout}`);
+    stderr && console.error(`stderr: ${stderr}`);
   });
 });

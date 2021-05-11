@@ -53,8 +53,9 @@ const audio = new Audio();
 console.log(audio instanceof Audio);
 let vm;
 const render = ({ dom, basename = '/' }) => {
+  console.log('##########3', basename);
   const router = new VueRouter({
-    mode: 'hash',
+    mode: 'history',
     base: basename,
     router,
     routes: [
@@ -126,6 +127,6 @@ console.log('Node', Node);
 var d = document.createElement('div');
 console.log(d instanceof Text, 'Text');
 
-var b;
-window.a = b = function b() {};
-console.log(window.a === b, 111);
+// var b;
+// window.a = b = function b() {};
+// console.log(window.a === b, 111);

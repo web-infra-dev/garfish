@@ -25,6 +25,7 @@ import {
   getRenderNode,
 } from '@garfish/utils';
 import Garfish, { interfaces } from '@garfish/core';
+import { CustomerLoader } from '.';
 
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 
@@ -58,6 +59,7 @@ export class App {
   public isHtmlMode: boolean;
   private context: Garfish;
   public strictIsolation = false;
+  public customLoader: CustomerLoader;
 
   constructor(
     context: Garfish,
@@ -65,6 +67,7 @@ export class App {
     entryResManager: interfaces.HtmlResource,
     resources: interfaces.ResourceModules,
     isHtmlMode: boolean,
+    customLoader: CustomerLoader,
   ) {
     this.context = context;
     // get container dom
@@ -81,6 +84,7 @@ export class App {
       module: this.cjsModules,
       require: (_key: string) => null,
     };
+    this.customLoader = customLoader;
   }
 
   get rootElement() {
@@ -397,21 +401,17 @@ export class App {
     }
 
     // 如果有 customLoader，把 provide 交由用户自行处理
-    // const hookRes = await context.callHooks('customLoader', options, [
-    //   provider,
-    //   appInfo,
-    //   basename,
-    // ]);
+    const hookRes = await this.customLoader(provider, appInfo, basename);
 
-    // if (hookRes) {
-    //   const { mount, unmount } = hookRes() || ({} as any);
-    //   if (typeof mount === 'function' && typeof unmount === 'function') {
-    //     mount._custom = true;
-    //     unmount._custom = true;
-    //     provider.render = mount;
-    //     provider.destroy = unmount;
-    //   }
-    // }
+    if (hookRes) {
+      const { mount, unmount } = hookRes || ({} as any);
+      if (typeof mount === 'function' && typeof unmount === 'function') {
+        mount._custom = true;
+        unmount._custom = true;
+        provider.render = mount;
+        provider.destroy = unmount;
+      }
+    }
 
     assert(provider, `"provider" is "${typeof provider}".`);
     assert('render' in provider, '"render" is required in provider.');

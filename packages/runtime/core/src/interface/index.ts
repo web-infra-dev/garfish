@@ -98,11 +98,11 @@ export namespace interfaces {
     errorLoadApp?: (err: Error | string, appInfo: AppInfo) => void;
     errorMountApp?: (err: Error | string, appInfo: AppInfo) => void;
     errorUnmountApp?: (err: Error | string, appInfo: AppInfo) => void;
-    customLoader?: (
-      provider: Provider,
-      appInfo: AppInfo,
-      path: string,
-    ) => Promise<LoaderResult | void> | LoaderResult | void;
+    // customLoader?: (
+    //   provider: Provider,
+    //   appInfo: AppInfo,
+    //   path: string,
+    // ) => Promise<LoaderResult | void> | LoaderResult | void;
   }
 
   export type HtmlResource = HtmlResourceInterfaces;

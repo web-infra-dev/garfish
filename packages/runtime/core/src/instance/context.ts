@@ -110,7 +110,6 @@ export class Garfish {
     return this;
   }
 
-  // // TODO: 1. loader增加preload权重 2.
   public async loadApp(
     name: string,
     opts: interfaces.LoadAppOptions,
