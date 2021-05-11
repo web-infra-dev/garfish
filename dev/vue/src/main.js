@@ -98,9 +98,9 @@ if (!window.__GARFISH__) {
 }
 
 // console.log()
-export function provider() {
+export function provider({ basename, dom }) {
   return {
-    render,
+    render: () => render({ basename, dom }),
     destroy() {
       vm.$destroy();
       vm.$el.parentNode && vm.$el.parentNode.removeChild(vm.$el);

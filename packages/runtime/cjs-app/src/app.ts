@@ -372,6 +372,7 @@ export class App {
   private async checkAndGetProvider() {
     const { appInfo, rootElement, cjsModules, customExports } = this;
     const { props, basename } = appInfo;
+
     let provider = (cjsModules.exports && cjsModules.exports.provider) as
       | interfaces.Provider
       | ((...args: any[]) => interfaces.Provider);

@@ -40,18 +40,15 @@ export default function Router(args?: Options) {
 
           const currentApp = (activeApp = createKey());
           const app = await Garfish.loadApp(appInfo.name, {
+            basename: rootPath,
             entry: appInfo.entry,
             domGetter: appInfo.domGetter || options.domGetter,
           });
 
           const call = (app: interfaces.App, isRender: boolean) => {
             if (!app) return;
-            // const isDes = cache && app.mounted;
-            const isDes = false;
 
-            const fn = isRender
-              ? app[isDes ? 'show' : 'mount']
-              : app[isDes ? 'hide' : 'unmount'];
+            const fn = isRender ? app.mount : app.unmount;
             return fn.call(app);
           };
 
