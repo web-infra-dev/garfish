@@ -9,26 +9,28 @@ declare module '@garfish/core' {
   }
 }
 
-export default function BrowserSnapshot(_Garfish: Garfish): interfaces.Plugin {
-  return {
-    name: 'browser-vm',
-    version: __VERSION__,
-    afterLoad(appInfo, appInstance) {
-      if (appInstance) {
+export default function BrowserSnapshot() {
+  return function (_Garfish: Garfish): interfaces.Plugin {
+    return {
+      name: 'browser-snapshot',
+      version: __VERSION__,
+      afterLoad(appInfo, appInstance) {
+        if (appInstance) {
+          // existing
+          if (appInstance.snapshotSandbox) return;
+          const sandbox = new SnapshotSandbox(appInfo.name);
+          appInstance.snapshotSandbox = sandbox;
+        }
+      },
+      beforeMount(appInfo, appInstance) {
         // existing
         if (appInstance.snapshotSandbox) return;
-        const sandbox = new SnapshotSandbox(appInfo.name);
-        appInstance.snapshotSandbox = sandbox;
-      }
-    },
-    beforeMount(appInfo, appInstance) {
-      // existing
-      if (appInstance.snapshotSandbox) return;
-      appInstance.snapshotSandbox.activate();
-    },
-    afterUnMount(appInfo, appInstance) {
-      if (appInstance.snapshotSandbox) return;
-      appInstance.snapshotSandbox.deactivate();
-    },
+        appInstance.snapshotSandbox.activate();
+      },
+      afterUnMount(appInfo, appInstance) {
+        if (appInstance.snapshotSandbox) return;
+        appInstance.snapshotSandbox.deactivate();
+      },
+    };
   };
 }
