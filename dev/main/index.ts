@@ -1,4 +1,3 @@
-import VueRouter from 'vue-router';
 import Garfish from '@garfish/core';
 import GarfishCjsApp from '@garfish/cjs-app';
 import GarfishRouter from '@garfish/router';
