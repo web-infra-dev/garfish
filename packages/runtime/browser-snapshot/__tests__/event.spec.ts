@@ -2,14 +2,17 @@ import { PatchEvent } from '../src/patchers/event';
 
 describe('test sandbox ', () => {
   it('dom sandbox', () => {
-    // const bindFn = ()=>{console.log('bindFn')};
-    // const evn = new PatchEvent();
-    // evn.activate();
+    const event = new Event('flag-event');
+    const evn = new PatchEvent();
 
-    // document.body.addEventListener('click',bindFn);
-    // evn.deactivate();
-    // console.log(document.body.click);
+    evn.activate();
 
-    expect(1).toBe(1);
+    let flag = null;
+    window.addEventListener('flag-event', () => (flag = true));
+
+    evn.deactivate(true);
+
+    window.dispatchEvent(event);
+    expect(flag).toBe(null);
   });
 });

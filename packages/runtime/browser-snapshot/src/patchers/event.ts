@@ -6,6 +6,12 @@ export class PatchEvent {
   constructor() {}
 
   public activate() {
+    this.listenerMap.forEach((listeners, type) =>
+      [...listeners].forEach((listener) =>
+        window.addEventListener(type, listener),
+      ),
+    );
+
     if (!rawAddEventListener || !rawRemoveEventListener) {
       rawAddEventListener = window.addEventListener;
       rawRemoveEventListener = window.removeEventListener;
@@ -37,14 +43,13 @@ export class PatchEvent {
     };
   }
 
-  public deactivate(_clearEffects?: boolean) {
-    if (_clearEffects) {
-      this.listenerMap.forEach((listeners, type) =>
-        [...listeners].forEach((listener) =>
-          window.removeEventListener(type, listener),
-        ),
-      );
-    }
+  public deactivate() {
+    this.listenerMap.forEach((listeners, type) =>
+      [...listeners].forEach((listener) =>
+        window.removeEventListener(type, listener),
+      ),
+    );
+
     // event，在window原型链上，将window上覆盖的代理事件删除即可
     // delete window.removeEventListener;
     // delete window.addEventListener;
