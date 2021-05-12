@@ -24,11 +24,11 @@ export default function BrowserSnapshot() {
       },
       beforeMount(appInfo, appInstance) {
         // existing
-        if (appInstance.snapshotSandbox) return;
+        if (!appInstance.snapshotSandbox) return;
         appInstance.snapshotSandbox.activate();
       },
       afterUnMount(appInfo, appInstance) {
-        if (appInstance.snapshotSandbox) return;
+        if (!appInstance.snapshotSandbox) return;
         appInstance.snapshotSandbox.deactivate();
       },
     };

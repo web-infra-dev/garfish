@@ -34,7 +34,6 @@ export class SnapshotSandbox {
         new PatchWebpackJsonp(),
       ];
     }
-    this.activate();
   }
 
   //  1.触发生命周期钩子，willActivate（将要激活）
@@ -42,10 +41,10 @@ export class SnapshotSandbox {
   //  3.将当前window对象属性进行缓存
   //  4.获取style节点，进行缓存
   //  5.恢复沙盒运行期间产生的副作用
-  public activate(isInit = false) {
+  public activate() {
     if (this.isRunning) return;
     this.patchList.forEach((patch) => {
-      patch.activate(isInit);
+      patch.activate();
     });
     this.isRunning = true;
   }

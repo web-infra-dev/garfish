@@ -9,13 +9,9 @@ export class PatchWebpackJsonp {
 
   currentWebpackJsonp?: any[];
 
-  public activate(isInit: boolean) {
+  public activate() {
     this.preWebpackJsonp = window.webpackJsonp;
-    if (isInit) {
-      window.webpackJsonp = undefined;
-    } else {
-      window.webpackJsonp = this.currentWebpackJsonp;
-    }
+    window.webpackJsonp = this.currentWebpackJsonp;
   }
 
   public deactivate() {
