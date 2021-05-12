@@ -1,7 +1,7 @@
 import { hasOwn } from '@garfish/utils';
 export class PatchGlobalVal {
-  public snapshotOriginal: any = {};
-  private snapshotMutated: any = {};
+  public snapshotOriginal = new Map();
+  private snapshotMutated: any = new Map();
   private whiteList: Array<PropertyKey> = [
     'location',
     'addEventListener',
@@ -22,7 +22,8 @@ export class PatchGlobalVal {
   }
 
   protected safeIterator(fn: Function) {
-    // 跳过不遍历的变量
+    // Skip the variables not traverse
+    // Do not include a symbol
     for (const i in this.targetToProtect) {
       if (this.whiteList.indexOf(i) !== -1) {
         continue;
@@ -37,14 +38,14 @@ export class PatchGlobalVal {
     }
   }
 
-  // 1.触发生命周期钩子，willActivate（将要激活）
-  // 2.将当前组的其他沙盒disable，并触发switch生命周期
-  // 3.将当前window对象属性进行缓存
-  // 4.恢复沙盒运行期间产生的副作用
+  // 1.Trigger hooks, life cycle willActivate enabled (going to)
+  // 2.Will disable the current group of other box, and triggers the switch life cycle
+  // 3.The current window object properties for caching
+  // 4.Restore the sandbox side effects during operation
   public activate() {
-    // 记录全局环境、恢复之前副作用变量
+    // Recorded before the global environment, restore side effects of a variable
     this.safeIterator((i: string) => {
-      this.snapshotOriginal[i] = this.targetToProtect[i] as any;
+      this.snapshotOriginal.set(i, this.targetToProtect[i]);
     });
 
     Object.keys(this.snapshotMutated).forEach((mutateKey) => {
@@ -52,33 +53,33 @@ export class PatchGlobalVal {
     });
   }
 
-  // 1.恢复沙盒启动期间变量变更的变量，记录变更记录
-  // 2.恢复沙盒启动期间删除的变量，记录变更记录
+  // 1.Restore the sandbox during startup variables change, record the change record
+  // 2.Restore the sandbox during startup to delete variables, record the change record
   public deactivate() {
     const deleteMap: any = {};
     const updateMap: any = {};
     const addMap: any = {};
 
-    // 恢复沙盒运行前window属性环境，并将差异值进行缓存
+    // Restore the sandbox before running Windows properties of environment, and difference value for caching
     this.safeIterator((normalKey: string) => {
       if (
-        this.snapshotOriginal[normalKey] !==
+        this.snapshotOriginal.get(normalKey) !==
         (this.targetToProtect[normalKey] as any)
       ) {
         this.snapshotMutated[normalKey] = this.targetToProtect[normalKey]; // deleted key will be defined as undefined on
-        this.targetToProtect[normalKey] = this.snapshotOriginal[normalKey]; // || this.targetToProtect[i]
+        this.targetToProtect[normalKey] = this.snapshotOriginal.get(normalKey); // || this.targetToProtect[i]
 
-        // 收集删除、修改的变量
+        // Collection of delete, modify variables
         if (this.targetToProtect[normalKey] === undefined) {
           addMap[normalKey] = this.snapshotMutated[normalKey];
         } else {
           updateMap[normalKey] = this.snapshotMutated[normalKey];
         }
       }
-      delete this.snapshotOriginal[normalKey];
+      this.snapshotOriginal.delete(normalKey);
     });
 
-    Object.keys(this.snapshotOriginal).forEach((deleteKey) => {
+    this.snapshotOriginal.forEach((deleteKey) => {
       this.snapshotMutated[deleteKey] = this.targetToProtect[deleteKey];
       this.targetToProtect[deleteKey] = this.snapshotOriginal[deleteKey];
       deleteMap[deleteKey] = this.targetToProtect[deleteKey];
