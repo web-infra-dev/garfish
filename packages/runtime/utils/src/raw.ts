@@ -15,7 +15,8 @@ export const rawAddEventListener = window.addEventListener;
 export const rawRemoveEventListener = window.removeEventListener;
 
 export const rawMutationObserver = window.MutationObserver;
-export const rawObserver = rawMutationObserver.prototype.observe;
+export const rawObserver =
+  rawMutationObserver && rawMutationObserver.prototype.observe;
 
 export const rawAppendChild = HTMLElement.prototype.appendChild;
 export const rawRemoveChild = HTMLElement.prototype.removeChild;
