@@ -31,11 +31,9 @@ describe('snapshot sandbox window', () => {
     expect(obj).toMatchSnapshot();
   });
 
-  it('test window Variable to add', () => {
+  it('Add a variable test', () => {
     const PatchGlobal = new PatchGlobalVal(window);
 
-    const idFor = Symbol.for('id');
-    const id = Symbol('id');
     const fn = function a() {};
     const ar = [];
     const ob = { name: 'obj' };
@@ -50,8 +48,7 @@ describe('snapshot sandbox window', () => {
     window.bl = true;
     window.nl = null;
     (window as any)[1] = 1234;
-    (window as any)[idFor] = ob;
-    (window as any)[id] = ob;
+    window.ob = ob;
 
     // Remove the side effects
     PatchGlobal.deactivate();
@@ -63,8 +60,7 @@ describe('snapshot sandbox window', () => {
     expect(window.bl).toBe(undefined);
     expect(window.nl).toBe(undefined);
     expect(window[1]).toBe(undefined);
-    expect((window as any)[idFor]).toBe(undefined);
-    expect((window as any)[id]).toBe(undefined);
+    expect(window.ob).toBe(undefined);
 
     // restore side effects
     PatchGlobal.activate();
@@ -72,11 +68,61 @@ describe('snapshot sandbox window', () => {
     expect(window.fn).toBe(fn);
     expect(window.nm).toBe(123);
     expect(window.st).toBe('string');
-    expect(window.ar).toBe('string');
+    expect(window.ar).toBe(ar);
     expect(window.bl).toBe(true);
     expect(window.nl).toBe(null);
     expect(window[1]).toBe(1234);
-    expect((window as any)[idFor]).toBe(ob);
-    expect((window as any)[id]).toBe(ob);
+    expect(window.ob).toBe(ob);
+  });
+
+  it('Test to delete variables', () => {
+    const PatchGlobal = new PatchGlobalVal(window);
+    const fn = function a() {};
+    const ar = [];
+    const ob = { name: 'obj' };
+    window.fn = fn;
+    window.nm = 123;
+    window.st = 'string';
+    window.ar = ar;
+    window.bl = true;
+    window.nl = null;
+    (window as any)[1] = 1234;
+    window.ob = ob;
+
+    // snapshot
+    PatchGlobal.activate();
+
+    delete window.fn;
+    delete window.nm;
+    delete window.st;
+    delete window.ar;
+    delete window.bl;
+    delete window.nl;
+    delete (window as any)[1];
+    delete window.ob;
+
+    // Remove the side effects
+    PatchGlobal.deactivate();
+
+    expect(window.fn).toBe(fn);
+    expect(window.nm).toBe(123);
+    expect(window.st).toBe('string');
+    expect(window.ar).toBe(ar);
+    expect(window.bl).toBe(true);
+    expect(window.nl).toBe(null);
+    expect(window[1]).toBe(1234);
+    expect(window.ob).toBe(ob);
+
+    // restore side effects
+    PatchGlobal.activate();
+
+    expect(window.fn).toBe(undefined);
+    expect(window.nm).toBe(undefined);
+    expect(window.st).toBe(undefined);
+    expect(window.ar).toBe(undefined);
+    expect(window.bl).toBe(undefined);
+    expect(window.nl).toBe(undefined);
+    expect(window[1]).toBe(undefined);
+    expect(window.ob).toBe(undefined);
   });
 });

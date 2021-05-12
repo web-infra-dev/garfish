@@ -48,8 +48,8 @@ export class PatchGlobalVal {
       this.snapshotOriginal.set(i, this.targetToProtect[i]);
     });
 
-    Object.keys(this.snapshotMutated).forEach((mutateKey) => {
-      this.targetToProtect[mutateKey] = this.snapshotMutated[mutateKey] as any;
+    this.snapshotMutated.forEach((val, mutateKey) => {
+      this.targetToProtect[mutateKey] = this.snapshotMutated.get(mutateKey);
     });
   }
 
@@ -66,26 +66,26 @@ export class PatchGlobalVal {
         this.snapshotOriginal.get(normalKey) !==
         (this.targetToProtect[normalKey] as any)
       ) {
-        this.snapshotMutated[normalKey] = this.targetToProtect[normalKey]; // deleted key will be defined as undefined on
+        this.snapshotMutated.set(normalKey, this.targetToProtect[normalKey]); // deleted key will be defined as undefined on
         this.targetToProtect[normalKey] = this.snapshotOriginal.get(normalKey); // || this.targetToProtect[i]
 
         // Collection of delete, modify variables
         if (this.targetToProtect[normalKey] === undefined) {
-          addMap[normalKey] = this.snapshotMutated[normalKey];
+          addMap[normalKey] = this.snapshotMutated.get(normalKey);
         } else {
-          updateMap[normalKey] = this.snapshotMutated[normalKey];
+          updateMap[normalKey] = this.snapshotMutated.get(normalKey);
         }
       }
       this.snapshotOriginal.delete(normalKey);
     });
 
-    this.snapshotOriginal.forEach((deleteKey) => {
-      this.snapshotMutated[deleteKey] = this.targetToProtect[deleteKey];
-      this.targetToProtect[deleteKey] = this.snapshotOriginal[deleteKey];
+    this.snapshotOriginal.forEach((val, deleteKey) => {
+      this.snapshotMutated.set(deleteKey, this.targetToProtect[deleteKey]);
+      this.targetToProtect[deleteKey] = this.snapshotOriginal.get(deleteKey);
       deleteMap[deleteKey] = this.targetToProtect[deleteKey];
     });
 
-    // 提供给开发者，让其了解清除了哪些副作用变量
+    // For developers, let them know clear what side effects of a variable
     // channel.emit('sandbox-variable', {
     //   update: updateMap,
     //   removed: deleteMap,
