@@ -10,7 +10,7 @@ describe('test sandbox ', () => {
     let flag = null;
     window.addEventListener('flag-event', () => (flag = true));
 
-    evn.deactivate(true);
+    evn.deactivate();
 
     window.dispatchEvent(event);
     expect(flag).toBe(null);
