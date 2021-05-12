@@ -124,18 +124,6 @@ export namespace interfaces {
     js: Array<any | AsyncResource>;
   }
 
-  export interface AppInfo {
-    name: string;
-    entry: string;
-    basename?: string;
-    cache?: boolean; // Whether the cache
-    props?: Record<string, any>;
-    domGetter?: DomGetter;
-    activeWhen?: string | ((path: string) => boolean); // 手动加载，可不填写路由
-    active?: (appInfo: AppInfo, rootPath: string) => void;
-    deactive?: (appInfo: AppInfo, rootPath: string) => void;
-  }
-
   export interface AppSources {
     manager: HtmlResource;
     resources: ResourceModules;
