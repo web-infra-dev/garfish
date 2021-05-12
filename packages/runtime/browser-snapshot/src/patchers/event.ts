@@ -6,6 +6,7 @@ export class PatchEvent {
   constructor() {}
 
   public activate() {
+    // restore pre event
     this.listenerMap.forEach((listeners, type) =>
       [...listeners].forEach((listener) =>
         window.addEventListener(type, listener),
