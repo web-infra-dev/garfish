@@ -115,7 +115,7 @@ export function evalWithEnv(code: string, params: Record<string, any>) {
       `\n}).call(${vales[0]},${vales.join(',')});`,
     ];
     const internalizeString = internFunc(evalInfo[0] + code + evalInfo[1]);
-    // (0, eval) 这个表达式会让 eval 在全局作用域下执行
+    // (0, eval) This expression makes the eval under the global scope
     (0, eval)(internalizeString);
   } catch (e) {
     throw e;

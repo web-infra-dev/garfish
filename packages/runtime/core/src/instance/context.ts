@@ -11,6 +11,7 @@ import {
 } from '@garfish/utils';
 import { Loader } from '../module/loader';
 import { interfaces } from '../interface';
+import { App } from '../module/app';
 
 export class Garfish {
   public version = __VERSION__;
@@ -154,17 +155,14 @@ export class Garfish {
             isHtmlMode,
             resources,
           } = await this.loader.loadAppSources(appInfo);
-          result = await this.hooks.lifecycle.initializeApp.promise(
+          result = new App(
             this,
             appInfo,
             manager,
             resources,
             isHtmlMode,
+            this.options.customLoader,
           );
-          if (!result) {
-            error(`Must provider ${name} application instance`);
-            return null;
-          }
           this.cacheApps[name] = result;
         } catch (e) {
           __DEV__ && error(e);
