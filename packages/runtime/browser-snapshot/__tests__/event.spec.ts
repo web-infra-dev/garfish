@@ -4,15 +4,18 @@ describe('test sandbox ', () => {
   it('dom sandbox', () => {
     const event = new Event('flag-event');
     const evn = new PatchEvent();
+    let flag1 = null;
+    window.addEventListener('flag-event', () => (flag1 = 'flag1'));
 
     evn.activate();
 
-    let flag = null;
-    window.addEventListener('flag-event', () => (flag = true));
+    let flag2 = null;
+    window.addEventListener('flag-event', () => (flag2 = 'flag2'));
 
     evn.deactivate();
 
     window.dispatchEvent(event);
-    expect(flag).toBe(null);
+    expect(flag1).toBe('flag1');
+    expect(flag2).toBe(null);
   });
 });
