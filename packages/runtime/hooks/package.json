@@ -9,7 +9,6 @@
     "type": "git",
     "url": "http://github.com/webpack/tapable.git"
   },
-  "private": true,
   "devDependencies": {
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
