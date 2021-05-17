@@ -12,8 +12,9 @@ import {
 import { Loader } from '../module/loader';
 import { interfaces } from '../interface';
 import { App } from '../module/app';
+import { RouterInterface } from 'packages/runtime/router/src/context';
 
-export class Garfish {
+export class Garfish implements interfaces.Garfish {
   public version = __VERSION__;
   private running = false;
   public options = getDefaultOptions();
@@ -22,10 +23,14 @@ export class Garfish {
   private cacheApps: Record<string, interfaces.App> = {};
   private loading: Record<string, Promise<any> | null> = {};
   public plugins: Array<interfaces.Plugin> = [];
-
+  // static defaultPlugins: Array<(context: Garfish) => interfaces.Plugin> = [];
   public loader: Loader;
 
   public hooks: Hooks;
+
+  // static addPlugin (plugin: (context: interfaces.Garfish) => interfaces.Plugin) {
+  //   Garfish.defaultPlugins.push(plugin);
+  // }
 
   constructor(options?: interfaces.Options) {
     this.hooks = new Hooks();
@@ -41,6 +46,7 @@ export class Garfish {
     this.setOptions(options);
     this.hooks.lifecycle.initialize.call(this.options);
   }
+  router: RouterInterface;
 
   private usePlugin(
     plugin: (context: Garfish) => interfaces.Plugin,

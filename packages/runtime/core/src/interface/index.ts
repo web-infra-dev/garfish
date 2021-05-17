@@ -69,6 +69,10 @@ export namespace interfaces {
     plugins: Array<interfaces.Plugin>;
     loader: Loader;
     hooks: Hooks;
+    loadApp(
+      name: string,
+      opts: interfaces.LoadAppOptions,
+    ): Promise<interfaces.App>;
   }
 
   export interface Provider {
