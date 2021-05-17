@@ -147,6 +147,32 @@ export namespace interfaces {
     isHtmlMode: boolean,
   ) => any;
 
+  export interface App {
+    name: string;
+    appInfo: AppInfo;
+    entryResManager: interfaces.HtmlResource;
+    cjsModules: Record<string, any>;
+    customExports: Record<string, any>; // If you don't want to use the CJS export, can use this
+    mounted: boolean;
+    appContainer: HTMLElement;
+    provider: Provider;
+    htmlNode: HTMLElement | ShadowRoot;
+    isHtmlMode: boolean;
+    strictIsolation: boolean;
+    mount(): Promise<boolean>;
+    unmount(): boolean;
+    getExecScriptEnv(noEntry: boolean): Record<string, any>;
+    execScript(
+      code: string,
+      env: Record<string, any>,
+      url?: string,
+      options?: {
+        async?: boolean;
+        noEntry?: boolean;
+      },
+    ): void;
+  }
+
   export interface Lifecycle {
     beforeInitialize: SyncHook<Options, void>;
     initialize: SyncHook<Options, void>;

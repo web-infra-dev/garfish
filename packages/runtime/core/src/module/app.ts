@@ -415,7 +415,9 @@ export class App {
     }
 
     // 如果有 customLoader，把 provide 交由用户自行处理
-    const hookRes = await this.customLoader(provider, appInfo, basename);
+    const hookRes =
+      (await this.customLoader) &&
+      this.customLoader(provider, appInfo, basename);
 
     if (hookRes) {
       const { mount, unmount } = hookRes || ({} as any);
