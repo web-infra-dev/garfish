@@ -18,6 +18,7 @@
   "bugs": {
     "url": "https://github.com/bytedance/garfish/issues"
   },
+  "private": true,
   "scripts": {},
   "types": "dist/index.d.ts",
   "buildOptions": {

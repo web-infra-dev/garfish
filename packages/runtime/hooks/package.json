@@ -27,7 +27,8 @@
     "tapable.d.ts"
   ],
   "main": "./src/index.js",
-  "types": "./tapable.d.ts",
+  "module": "./src/index.js",
+  "types": "./src/index.d.ts",
   "browser": {
     "util": "./lib/util-browser.js"
   },
