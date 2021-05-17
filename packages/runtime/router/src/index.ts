@@ -9,9 +9,9 @@ interface Options {
 
 declare module '@garfish/core' {
   export namespace interfaces {
-    export interface Garfish {
-      router: RouterInterface;
-    }
+    // export interface Garfish {
+    //   router: RouterInterface;
+    // }
     export interface AppInfo {
       activeWhen?: string | ((path: string) => boolean); // 手动加载，可不填写路由
       active?: (appInfo: AppInfo, rootPath: string) => void;
@@ -22,7 +22,7 @@ declare module '@garfish/core' {
 
 export default function Router(args?: Options) {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
-    Garfish.router = router;
+    // Garfish.router = router;
     return {
       name: 'router',
       version: __VERSION__,

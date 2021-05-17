@@ -12,7 +12,6 @@ import {
 import { Loader } from '../module/loader';
 import { interfaces } from '../interface';
 import { App } from '../module/app';
-import { RouterInterface } from 'packages/runtime/router/src/context';
 
 export class Garfish implements interfaces.Garfish {
   public version = __VERSION__;
@@ -46,7 +45,6 @@ export class Garfish implements interfaces.Garfish {
     this.setOptions(options);
     this.hooks.lifecycle.initialize.call(this.options);
   }
-  router: RouterInterface;
 
   private usePlugin(
     plugin: (context: Garfish) => interfaces.Plugin,
