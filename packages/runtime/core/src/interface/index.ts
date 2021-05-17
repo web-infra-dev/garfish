@@ -50,6 +50,7 @@ export namespace interfaces {
     entry: string;
     basename?: string;
     cache?: boolean; // Whether the cache
+    activeWhen?: string | ((path: string) => boolean);
     props?: Record<string, any>;
     domGetter?: DomGetter;
   }

@@ -8,10 +8,20 @@ interface Options {
 }
 
 declare module '@garfish/core' {
+  export default interface Garfish {
+    router: RouterInterface;
+  }
+
   export namespace interfaces {
-    // export interface Garfish {
-    //   router: RouterInterface;
-    // }
+    export interface Garfish {
+      router: RouterInterface;
+    }
+
+    export interface Config {
+      autoRefreshApp?: boolean;
+      onNotMatchRouter?: (path: string) => Promise<void> | void;
+    }
+
     export interface AppInfo {
       activeWhen?: string | ((path: string) => boolean); // 手动加载，可不填写路由
       active?: (appInfo: AppInfo, rootPath: string) => void;
@@ -20,9 +30,9 @@ declare module '@garfish/core' {
   }
 }
 
-export default function Router(args?: Options) {
+export default function Router(_args?: Options) {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
-    // Garfish.router = router;
+    Garfish.router = router;
     return {
       name: 'router',
       version: __VERSION__,
@@ -30,8 +40,10 @@ export default function Router(args?: Options) {
         let activeApp = null;
         const unmounts: Record<string, Function> = {};
         const { apps, basename } = options;
-        const { autoRefreshApp = true, onNotMatchRouter = () => null } =
-          args || {};
+        const {
+          autoRefreshApp = true,
+          onNotMatchRouter = () => null,
+        } = Garfish.options;
 
         async function active(appInfo: interfaces.AppInfo, rootPath: string) {
           const { name, cache, active } = appInfo;
@@ -69,15 +81,19 @@ export default function Router(args?: Options) {
           delete Garfish.activeApps[name];
         }
 
+        const appList = apps.filter(
+          (app) => app.activeWhen !== null && app.activeWhen !== undefined,
+        ) as Array<Required<interfaces.AppInfo>>;
+
+        if (appList.length === 0) return;
+
         const listenOptions = {
           basename,
           active,
           deactive,
           autoRefreshApp,
           notMatch: onNotMatchRouter,
-          apps: apps.filter(
-            (app) => app.activeWhen !== null && app.activeWhen !== undefined,
-          ) as Array<Required<interfaces.AppInfo>>,
+          apps: appList,
         };
 
         listenRouterAndReDirect(listenOptions);

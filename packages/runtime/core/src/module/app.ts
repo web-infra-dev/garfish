@@ -24,7 +24,8 @@ import {
   createAppContainer,
   getRenderNode,
 } from '@garfish/utils';
-import Garfish, { interfaces } from '@garfish/core';
+import { Garfish } from '../instance/context';
+import { interfaces } from '../interface';
 
 export type CustomerLoader = (
   provider: interfaces.Provider,

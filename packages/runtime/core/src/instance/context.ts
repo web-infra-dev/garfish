@@ -12,6 +12,9 @@ import {
 import { Loader } from '../module/loader';
 import { interfaces } from '../interface';
 import { App } from '../module/app';
+import GarfishRouter from '@garfish/router';
+import GarfishBrowserVm from '@garfish/browser-vm';
+import GarfishBrowserSnapshot from '@garfish/browser-snapshot';
 
 export class Garfish implements interfaces.Garfish {
   public version = __VERSION__;
@@ -22,14 +25,8 @@ export class Garfish implements interfaces.Garfish {
   private cacheApps: Record<string, interfaces.App> = {};
   private loading: Record<string, Promise<any> | null> = {};
   public plugins: Array<interfaces.Plugin> = [];
-  // static defaultPlugins: Array<(context: Garfish) => interfaces.Plugin> = [];
   public loader: Loader;
-
   public hooks: Hooks;
-
-  // static addPlugin (plugin: (context: interfaces.Garfish) => interfaces.Plugin) {
-  //   Garfish.defaultPlugins.push(plugin);
-  // }
 
   constructor(options?: interfaces.Options) {
     this.hooks = new Hooks();
@@ -40,10 +37,36 @@ export class Garfish implements interfaces.Garfish {
       this.usePlugin(pluginCb, this);
     });
 
+    this.injectDefaultPlugin();
+
     this.hooks.lifecycle.beforeInitialize.call(this.options);
     // init Garfish options
     this.setOptions(options);
     this.hooks.lifecycle.initialize.call(this.options);
+  }
+
+  private injectDefaultPlugin() {
+    const defaultPlugin = [GarfishRouter()];
+
+    if (this.options.sandbox) {
+      if (this.options.sandbox.open === true) {
+        if (this.options.sandbox.snapshot) {
+          defaultPlugin.push(GarfishBrowserSnapshot());
+        } else {
+          defaultPlugin.push(
+            window.Proxy ? GarfishBrowserVm() : GarfishBrowserSnapshot(),
+          );
+        }
+      }
+    } else {
+      defaultPlugin.push(
+        window.Proxy ? GarfishBrowserVm() : GarfishBrowserSnapshot(),
+      );
+    }
+
+    defaultPlugin.forEach((pluginCb) => {
+      this.usePlugin(pluginCb, this);
+    });
   }
 
   private usePlugin(

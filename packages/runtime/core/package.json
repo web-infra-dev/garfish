@@ -33,7 +33,10 @@
   },
   "dependencies": {
     "himalaya": "^1.1.0",
-    "@garfish/hooks": "^0.0.8-alpha.5"
+    "@garfish/hooks": "^0.0.8-alpha.5",
+    "@garfish/router": "^0.0.8-alpha.2",
+    "@garfish/browser-vm": "^0.0.8-alpha.2",
+    "@garfish/browser-snapshot": "^0.0.8-alpha.2"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

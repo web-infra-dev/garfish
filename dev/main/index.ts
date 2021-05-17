@@ -1,6 +1,6 @@
 import Garfish from '@garfish/core';
 // import GarfishCjsApp from '@garfish/cjs-app';
-import GarfishRouter from '@garfish/router';
+// import GarfishRouter from '@garfish/router';
 // import GarfishVm from '@garfish/browser-vm';
 // import GarfishSnapshot from '@garfish/browser-snapshot';
 
@@ -25,13 +25,13 @@ let GarfishInstance = new Garfish({
   ],
   plugins: [
     // GarfishCjsApp(),
-    GarfishRouter(),
+    // GarfishRouter(),
     // GarfishSnapshot(),
     // GarfishVm(),
   ],
 });
 
-window.Garfish = GarfishInstance;
+// window.Garfish = GarfishInstance;
 
 GarfishInstance.run({});
 
