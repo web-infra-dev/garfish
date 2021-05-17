@@ -4,14 +4,14 @@ import { interfaces } from './interface';
 const defaultOptions: interfaces.Options = {
   apps: [],
   basename: '',
-  // sandbox: {
-  //   snapshot: false,
-  //   useStrict: true,
-  //   strictIsolation: false,
-  // },
-  // protectVariable: [],
-  // insulationVariable: [],
-  // autoRefreshApp: true,
+  sandbox: {
+    snapshot: false,
+    useStrict: true,
+    strictIsolation: false,
+  },
+  protectVariable: [],
+  insulationVariable: [],
+  autoRefreshApp: true,
   // disableStatistics: false,
   // disablePreloadApp: false,
   // domGetter: () => null,

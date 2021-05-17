@@ -5,6 +5,11 @@ import './utils/handleNode';
 
 declare module '@garfish/core' {
   export namespace interfaces {
+    export interface Config {
+      protectVariable?: PropertyKey[];
+      insulationVariable?: PropertyKey[];
+    }
+
     export interface App {
       vmSandbox?: Sandbox;
     }
@@ -12,7 +17,7 @@ declare module '@garfish/core' {
 }
 
 export default function BrowserVm() {
-  return function (_Garfish: Garfish): interfaces.Plugin {
+  return function (Garfish: Garfish): interfaces.Plugin {
     return {
       name: 'browser-vm',
       version: __VERSION__,
@@ -22,11 +27,24 @@ export default function BrowserVm() {
           if (appInstance.vmSandbox) return;
           const cjsModule = appInstance.getExecScriptEnv(false);
 
+          // webpack
+          const webpackAttrs: PropertyKey[] = [
+            'onerror',
+            'webpackjsonp',
+            '__REACT_ERROR_OVERLAY_GLOBAL_HOOK__',
+          ];
+          if (__DEV__) {
+            webpackAttrs.push('webpackHotUpdate');
+          }
+
           const sandbox = new Sandbox({
             namespace: appInfo.name,
             el: () => appInstance.htmlNode,
             openSandbox: true,
             strictIsolation: appInstance.strictIsolation,
+            protectVariable: () => Garfish.options.protectVariable || [],
+            insulationVariable: () =>
+              webpackAttrs.concat(Garfish.options?.insulationVariable || []),
             modules: {
               cjsModule: () => {
                 return {

@@ -90,8 +90,6 @@ export namespace interfaces {
     props?: Record<string, any>;
     disableStatistics?: boolean;
     disablePreloadApp?: boolean;
-    protectVariable?: Array<PropertyKey>;
-    insulationVariable?: Array<PropertyKey>;
     domGetter?: DomGetter;
   }
 
