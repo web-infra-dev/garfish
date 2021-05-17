@@ -1,8 +1,4 @@
 import Garfish from '@garfish/core';
-// import GarfishCjsApp from '@garfish/cjs-app';
-// import GarfishRouter from '@garfish/router';
-// import GarfishVm from '@garfish/browser-vm';
-// import GarfishSnapshot from '@garfish/browser-snapshot';
 
 let GarfishInstance = new Garfish({
   basename: '/garfish_master',
@@ -23,17 +19,12 @@ let GarfishInstance = new Garfish({
       entry: 'http://localhost:9090',
     },
   ],
-  plugins: [
-    // GarfishCjsApp(),
-    // GarfishRouter(),
-    // GarfishSnapshot(),
-    // GarfishVm(),
-  ],
+  plugins: [],
 });
 
-// window.Garfish = GarfishInstance;
+window.Garfish = GarfishInstance;
 
-GarfishInstance.run({});
+GarfishInstance.run();
 
 let useRouterMode = true;
 document.getElementById('vueBtn').onclick = async () => {
