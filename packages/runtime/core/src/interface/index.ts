@@ -61,6 +61,16 @@ export namespace interfaces {
     strictIsolation?: boolean;
   }
 
+  export interface Garfish {
+    version: string;
+    options: Options;
+    appInfos: Record<string, interfaces.AppInfo>;
+    activeApps: Record<string, interfaces.App>;
+    plugins: Array<interfaces.Plugin>;
+    loader: Loader;
+    hooks: Hooks;
+  }
+
   export interface Provider {
     destroy: ({ dom: HTMLElement }) => void;
     render: ({ dom: HTMLElement, basename: string }) => void;

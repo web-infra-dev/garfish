@@ -42,7 +42,7 @@ export class Garfish {
     this.hooks.lifecycle.initialize.call(this.options);
   }
 
-  public usePlugin(
+  private usePlugin(
     plugin: (context: Garfish) => interfaces.Plugin,
     ...args: Array<any>
   ) {
