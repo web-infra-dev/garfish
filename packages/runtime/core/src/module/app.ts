@@ -173,7 +173,7 @@ export class App {
     this.mounting = true;
     try {
       // add container and compile js with cjs
-      this.cjsCompileAndRenderContainer();
+      this.compileAndRenderContainer();
 
       // Good provider is set at compile time
       const provider = await this.checkAndGetProvider();
@@ -223,7 +223,8 @@ export class App {
   }
 
   // Performs js resources provided by the module, finally get the content of the export
-  public cjsCompileAndRenderContainer() {
+  public compileAndRenderContainer() {
+    // Tag to the global environment, in order to calculate the code to run during which export content increased
     const mark = markAndDerived();
     mark.markExport(window);
 
@@ -242,13 +243,14 @@ export class App {
       }
     }
 
+    // Access to the content of export in the global environment
     const exports = mark.getExport(window);
     if (exports) {
       this.customExports = exports;
     }
   }
 
-  // 调用 render 对两种不同的沙箱做兼容处理
+  // Calls to render do compatible with two different sandbox
   private callRender(provider: interfaces.Provider) {
     const { appInfo, rootElement } = this;
     provider.render({
@@ -424,7 +426,7 @@ export class App {
       );
     }
 
-    // 如果有 customLoader，把 provide 交由用户自行处理
+    // If you have customLoader, the dojo.provide by user
     const hookRes =
       (await this.customLoader) &&
       this.customLoader(provider, appInfo, basename);

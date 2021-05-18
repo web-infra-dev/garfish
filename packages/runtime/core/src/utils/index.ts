@@ -5,6 +5,7 @@ import {
   createLinkNode,
   createScriptNode,
   createStyleNode,
+  exportTag,
   findProp,
   isCssLink,
   isJs,
@@ -79,8 +80,6 @@ function asyncNodeAttribute(from: Element, to: Element) {
 //   assert(tnode, `Invalid domGetter: ${domGetter}`);
 //   return tnode;
 // }
-
-export const exportTag = '-[garfish-export]';
 
 function findArray(arr, p) {
   for (let i = 0; i < arr.length; i++) {

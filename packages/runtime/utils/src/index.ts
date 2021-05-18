@@ -3,3 +3,4 @@ export * from './utils';
 export * from './domApis';
 export * from './mimeType';
 export * from './container';
+export * from './webpack';
