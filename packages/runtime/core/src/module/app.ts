@@ -409,7 +409,7 @@ export class App {
       | ((...args: any[]) => interfaces.Provider);
 
     // The custom of the provider
-    if (!provider) {
+    if (customExports.provider) {
       provider = customExports.provider;
     }
 
