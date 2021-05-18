@@ -224,22 +224,27 @@ export class App {
 
   // Performs js resources provided by the module, finally get the content of the export
   public compileAndRenderContainer() {
+    const { resources } = this;
+
     // Tag to the global environment, in order to calculate the code to run during which export content increased
     const mark = markAndDerived();
     mark.markExport(window);
 
-    const { resources } = this;
     // Render the application node
-    this.renderHtml();
-    //Execute asynchronous script
-
     // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
+    this.renderHtml();
+
+    //Execute asynchronous script
     for (const manager of resources.js) {
-      console.log(manager);
       if (manager.async) {
-        this.execScript(manager.opts.code, {}, manager.opts.url, {
-          async: false,
-        });
+        // Asynchronous script does not block the rendering process
+        try {
+          this.execScript(manager.opts.code, {}, manager.opts.url, {
+            async: false,
+          });
+        } catch (err) {
+          console.error(err);
+        }
       }
     }
 

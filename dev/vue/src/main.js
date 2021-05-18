@@ -116,11 +116,11 @@ ob.observe(document, { attributes: true });
 console.log(a);
 
 setTimeout(() => {
-  let dom = document.querySelector('#app');
-  let before = dom.querySelector('#app');
-  let style1 = document.createElement('style');
-  style1.setAttribute('id', 'style1');
-  dom.insertBefore(style1, before);
+  // let dom = document.querySelector('#app');
+  // let before = dom.querySelector('#app');
+  // let style1 = document.createElement('style');
+  // style1.setAttribute('id', 'style1');
+  // dom.insertBefore(style1, before);
 }, 1000);
 
 console.log('Node', Node);
