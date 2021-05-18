@@ -300,7 +300,7 @@ export class App {
           toResolveUrl(vnode, 'src', baseUrl);
           return createElement(vnode);
         },
-        // body 和 head 这样处理是为了兼容旧版本
+        // The body and head this kind of treatment is to compatible with the old version
         body: (vnode) => {
           if (!this.strictIsolation) {
             vnode.tagName = 'div';
@@ -329,7 +329,8 @@ export class App {
           const type = findProp(vnode, 'type');
           const mimeType = type?.value;
           if (mimeType) {
-            if (mimeType === 'module') return null;
+            // Esmodule cannot use eval and new Function to execute the code
+            if (mimeType === 'module') return createElement(vnode);
             if (!isJs(parseContentType(mimeType))) {
               return createElement(vnode);
             }

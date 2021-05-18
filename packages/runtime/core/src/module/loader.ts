@@ -46,14 +46,14 @@ export class Loader {
     for (const vnode of vnodes) {
       const { children, attributes } = vnode;
       // 过滤 esm, 暂不支持 esm
-      const type = findProp(vnode, 'type');
-      if (type?.value === 'module') {
-        if (__DEV__) {
-          const src = findProp(vnode, 'src');
-          warn(`"esm" module script is not supported. ${src?.value || ''}`);
-        }
-        continue;
-      }
+      // const type = findProp(vnode, 'type');
+      // if (type?.value === 'module') {
+      //   if (__DEV__) {
+      //     const src = findProp(vnode, 'src');
+      //     warn(`"esm" module script is not supported. ${src?.value || ''}`);
+      //   }
+      //   continue;
+      // }
 
       // 指定了 src 属性的 script 元素标签内不应该再有嵌入的脚本
       let src, async;
