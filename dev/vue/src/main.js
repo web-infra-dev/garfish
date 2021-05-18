@@ -71,7 +71,7 @@ const render = ({ dom, basename = '/' }) => {
     render: (h) => h(App),
   }).$mount();
   (dom || document).querySelector('#app').appendChild(vm.$el);
-  console.log('#######', dom.querySelector('#app'));
+  // console.log('#######', dom.querySelector('#app'));
   document.addEventListener('resize', () => console.log(1));
   window.addEventListener('resize', () => console.log(2));
 };

@@ -14,7 +14,9 @@ module.exports = {
 
   publicPath: 'http://localhost:9090',
   configureWebpack: (config) => {
-    config.output.libraryTarget = 'commonjs';
+    // config.output.library = `vue-[garfish-export]`
+    config.output.library = `vue-[garfish-export]`;
+    config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
     config.devtool = 'source-map';
     config.mode = 'production';

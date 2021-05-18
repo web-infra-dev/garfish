@@ -26,6 +26,7 @@ import {
 } from '@garfish/utils';
 import { Garfish } from '../instance/context';
 import { interfaces } from '../interface';
+import { markAndDerived } from '../utils';
 
 export type CustomerLoader = (
   provider: interfaces.Provider,
@@ -53,7 +54,7 @@ export class App {
   public appInfo: interfaces.AppInfo;
   public cjsModules: Record<string, any>;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
-  public esModule: boolean = false;
+  public esModule: boolean = true;
   private active = false;
   public mounted = false;
   public appContainer: HTMLElement;
@@ -223,8 +224,10 @@ export class App {
 
   // Performs js resources provided by the module, finally get the content of the export
   public cjsCompileAndRenderContainer() {
-    const { resources } = this;
+    const mark = markAndDerived();
+    mark.markExport(window);
 
+    const { resources } = this;
     // Render the application node
     this.renderHtml();
     //Execute asynchronous script
@@ -232,6 +235,16 @@ export class App {
     // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
     for (const manager of resources.js) {
       console.log(manager);
+      if (manager.async) {
+        this.execScript(manager.opts.code, {}, manager.opts.url, {
+          async: false,
+        });
+      }
+    }
+
+    const exports = mark.getExport(window);
+    if (exports) {
+      this.customExports = exports;
     }
   }
 
@@ -386,10 +399,6 @@ export class App {
     let provider = (cjsModules.exports && cjsModules.exports.provider) as
       | interfaces.Provider
       | ((...args: any[]) => interfaces.Provider);
-
-    // global exports
-    if (window[this.appInfo.name]) {
-    }
 
     // The custom of the provider
     if (!provider) {

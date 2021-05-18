@@ -19,6 +19,9 @@ let GarfishInstance = new Garfish({
       entry: 'http://localhost:9090',
     },
   ],
+  sandbox: {
+    open: false,
+  },
   plugins: [],
 });
 
