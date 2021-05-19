@@ -27,12 +27,13 @@ export default {
   name: 'App',
   methods: {
     open1() {
-      const h = this.$createElement;
+      // const h = this.$createElement;
 
-      this.$notify({
-        title: '标题名称',
-        message: h('i', { style: 'color: teal'}, '这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案')
-      });
+      throw new Error('vue sub app error')
+      // this.$notify({
+      //   title: '标题名称',
+      //   message: h('i', { style: 'color: teal'}, '这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案这是提示文案')
+      // });
     }
   },
   components: {

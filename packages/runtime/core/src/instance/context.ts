@@ -37,7 +37,7 @@ export class Garfish implements interfaces.Garfish {
       this.usePlugin(pluginCb, this);
     });
 
-    this.injectDefaultPlugin();
+    this.injectDefaultPlugin(options);
 
     this.hooks.lifecycle.beforeInitialize.call(this.options);
     // init Garfish options
@@ -45,12 +45,11 @@ export class Garfish implements interfaces.Garfish {
     this.hooks.lifecycle.initialize.call(this.options);
   }
 
-  private injectDefaultPlugin() {
+  private injectDefaultPlugin(options?: interfaces.Options) {
     const defaultPlugin = [GarfishRouter()];
-
-    if (this.options.sandbox) {
-      if (this.options.sandbox.open === true) {
-        if (this.options.sandbox.snapshot) {
+    if (options?.sandbox) {
+      if (options?.sandbox.open === true) {
+        if (options?.sandbox.snapshot) {
           defaultPlugin.push(GarfishBrowserSnapshot());
         } else {
           defaultPlugin.push(
@@ -182,6 +181,12 @@ export class Garfish implements interfaces.Garfish {
             isHtmlMode,
             resources,
           } = await this.loader.loadAppSources(appInfo);
+          this.hooks.lifecycle.processResource.call(
+            appInfo,
+            manager,
+            resources,
+          );
+
           result = new App(
             this,
             appInfo,

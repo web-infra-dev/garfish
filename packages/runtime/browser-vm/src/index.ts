@@ -1,5 +1,11 @@
 import Garfish, { interfaces } from '@garfish/core';
-import { assert, warn } from '@garfish/utils';
+import {
+  assert,
+  findProp,
+  sourceListTags,
+  transformUrl,
+  warn,
+} from '@garfish/utils';
 import { Sandbox } from './sandbox';
 import './utils/handleNode';
 
@@ -18,9 +24,24 @@ declare module '@garfish/core' {
 
 export default function BrowserVm() {
   return function (Garfish: Garfish): interfaces.Plugin {
+    const appSourceList = new Map();
+
     return {
       name: 'browser-vm',
       version: __VERSION__,
+      // Get all the application resources of static address, used to distinguish whether the error is derived from the application
+      processResource(appInfo, manager, _resource) {
+        const sourceList = [];
+        sourceListTags.forEach((tag) => {
+          manager.getVNodesByTagName(tag).forEach((node) => {
+            const url = findProp(node, 'href') || findProp(node, 'src');
+            if (url && url.value) {
+              sourceList.push(transformUrl(manager.opts.url, url.value));
+            }
+          });
+        });
+        appSourceList.set(appInfo.name, sourceList);
+      },
       afterLoad(appInfo, appInstance) {
         if (appInstance) {
           // existing
@@ -43,6 +64,7 @@ export default function BrowserVm() {
             openSandbox: true,
             strictIsolation: appInstance.strictIsolation,
             protectVariable: () => Garfish.options.protectVariable || [],
+            sourceList: appSourceList.get(appInfo.name),
             insulationVariable: () =>
               webpackAttrs.concat(Garfish.options?.insulationVariable || []),
             modules: {
@@ -57,6 +79,7 @@ export default function BrowserVm() {
           });
 
           appInstance.vmSandbox = sandbox;
+          appInstance.global = sandbox.context;
 
           appInstance.execScript = (code, env, url, options) => {
             sandbox.execScript(code, env, url, options);

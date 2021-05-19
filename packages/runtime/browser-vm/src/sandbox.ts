@@ -80,6 +80,7 @@ export class Sandbox {
     if (!('openSandbox' in opts)) opts.openSandbox = true;
     if (!('requestConfig' in opts)) opts.requestConfig = {};
     if (!('strictIsolation' in opts)) opts.strictIsolation = true;
+    if (!('sourceList' in opts)) opts.sourceList = null;
 
     initHooks(opts);
     initContainer(opts);

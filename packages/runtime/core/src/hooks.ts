@@ -23,6 +23,7 @@ export class Hooks {
       registerApp: new SyncHook(['appInfos']),
       beforeLoad: new AsyncSeriesBailHook(['appInfo']),
       afterLoad: new SyncHook(['appInfo', 'appInstance']),
+      processResource: new SyncHook(['appInfo', 'manager', 'resources']),
       initializeApp: new AsyncSeriesBailHook([
         'context',
         'appInfo',

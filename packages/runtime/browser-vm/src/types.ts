@@ -17,6 +17,7 @@ export interface SandboxOptions {
   namespace: string;
   strictIsolation?: boolean;
   useStrict?: boolean;
+  sourceList?: Array<string> | null; // Used to identify the source of the error from the current application, ensure that monitoring can effectively distinguish the source of the current application
   openSandbox?: boolean;
   modules?: Record<string, Module>;
   disabled?: Record<string, boolean>;

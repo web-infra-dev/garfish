@@ -1,9 +1,10 @@
+import { computeErrorUrl, filterAndWrapEventListener } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 
 type Opts = boolean | AddEventListenerOptions;
 type Listener = EventListenerOrEventListenerObject;
 
-export function listenerOverride() {
+export function listenerOverride(sandbox: Sandbox) {
   const listeners = new Map<string, Listener[]>();
   const rawAddEventListener = window.addEventListener;
   const rawRemoveEventListener = window.removeEventListener;
@@ -11,8 +12,15 @@ export function listenerOverride() {
   function addListener(type: string, listener: Listener, options?: Opts) {
     const curListeners = listeners.get(type) || [];
     listeners.set(type, [...curListeners, listener]);
-    // this 已经被修正过
-    rawAddEventListener.call(this, type, listener, options);
+    const sourceList = sandbox.options.sourceList;
+
+    // This has been revised
+    rawAddEventListener.call(
+      this,
+      type,
+      filterAndWrapEventListener(type, listener, sourceList),
+      options,
+    );
   }
 
   function removeListener(

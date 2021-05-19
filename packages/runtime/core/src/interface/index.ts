@@ -169,6 +169,7 @@ export namespace interfaces {
     mounted: boolean;
     appContainer: HTMLElement;
     provider: Provider;
+    global: any;
     htmlNode: HTMLElement | ShadowRoot;
     isHtmlMode: boolean;
     strictIsolation: boolean;
@@ -199,6 +200,10 @@ export namespace interfaces {
       App
     >;
     afterLoad: SyncHook<[AppInfo, App | void], void | boolean>;
+    processResource: SyncHook<
+      [AppInfo, HtmlResource, interfaces.ResourceModules],
+      void | boolean
+    >;
     errorLoadApp: SyncHook<[AppInfo, Error], void>;
     beforeEval: SyncHook<
       [

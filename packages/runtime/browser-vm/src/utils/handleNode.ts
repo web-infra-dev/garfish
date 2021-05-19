@@ -111,9 +111,17 @@ function addDynamicScript(
   if (!type || isJs(parseContentType(type))) {
     const namespace = sandbox.options.namespace || '';
 
-    // src 优先级更高
+    // The SRC higher priority
     if (src) {
       const requestConfig = filterRequestConfig(src, config);
+
+      // Save all the application resources required for the address
+      if (
+        sandbox.options.sourceList &&
+        !sandbox.options.sourceList.find((item) => src === item)
+      ) {
+        sandbox.options.sourceList.push(src);
+      }
 
       fetch(src, requestConfig)
         .then(processResponse)

@@ -68,6 +68,7 @@ export class App {
   private context: Garfish;
   public strictIsolation = false;
   public customLoader: CustomerLoader;
+  public global: any = window;
 
   constructor(
     context: Garfish,
@@ -228,7 +229,7 @@ export class App {
 
     // Tag to the global environment, in order to calculate the code to run during which export content increased
     const mark = markAndDerived();
-    mark.markExport(window);
+    mark.markExport(this.global);
 
     // Render the application node
     // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
@@ -249,7 +250,7 @@ export class App {
     }
 
     // Access to the content of export in the global environment
-    const exports = mark.getExport(window);
+    const exports = mark.getExport(this.global);
     if (exports) {
       this.customExports = exports;
     }
@@ -292,11 +293,15 @@ export class App {
     entryResManager.renderElements(
       {
         meta: () => null,
-        a: (vnode) => {
-          toResolveUrl(vnode, 'href', baseUrl);
+        img: (vnode) => {
+          toResolveUrl(vnode, 'src', baseUrl);
           return createElement(vnode);
         },
-        img: (vnode) => {
+        video: (vnode) => {
+          toResolveUrl(vnode, 'src', baseUrl);
+          return createElement(vnode);
+        },
+        audio: (vnode) => {
           toResolveUrl(vnode, 'src', baseUrl);
           return createElement(vnode);
         },

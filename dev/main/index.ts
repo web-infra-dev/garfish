@@ -20,12 +20,14 @@ let GarfishInstance = new Garfish({
     },
   ],
   sandbox: {
-    open: false,
+    open: true,
+    snapshot: false,
   },
   plugins: [],
 });
 
-window.Garfish = GarfishInstance;
+// window.Garfish = GarfishInstance;
+console.log(GarfishInstance);
 
 GarfishInstance.run();
 
@@ -44,12 +46,16 @@ document.getElementById('vueBtn').onclick = async () => {
 };
 
 document.getElementById('reactBtn').onclick = async () => {
-  if (useRouterMode) {
-    history.pushState({}, 'react', '/garfish_master/react');
-  } else {
-    let prevApp = await GarfishInstance.loadApp('react', {
-      entry: '',
-      domGetter: '#submoduleByCunstom',
-    });
-  }
+  // if (useRouterMode) {
+  //   history.pushState({}, 'react', '/garfish_master/react');
+  // } else {
+  //   let prevApp = await GarfishInstance.loadApp('react', {
+  //     entry: '',
+  //     domGetter: '#submoduleByCunstom',
+  //   });
+  // }
 };
+
+setTimeout(() => {
+  throw new Error('main error');
+}, 3000);

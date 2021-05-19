@@ -12,15 +12,26 @@
         background-color: #5692ce;
       }
     </style>
-    <div id='subVue'></div>
-
+    <script>
+      window.addEventListener('unhandledrejection', event => {
+        event.promise.catch((e)=>{
+        if (e instanceof Error) {
+          console.log(e);
+        }
+      })
+        console.log('unhandledrejection:', event); // 捕获后自定义处理
+      }, true);
+      window.addEventListener('error', event => {
+        console.log('vue app get error:', event); // 捕获后自定义处理
+      }, true);
+    </script>
     <script type="module">
       import a from 'http://localhost:9090/module.js';
     </script>
     <!-- <title><%= htmlWebpackPlugin.options.title %></title> -->
   </head>
   <script>
-    console.log(document.getElementById('subVue'), document.head, 'document.head');
+    // console.log(document.getElementById('subVue'), document.head, 'document.head');
   </script>
   <body>
     <noscript>
@@ -28,7 +39,8 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
-
+    <img src="xxx" />
+    <video src="1xxx" ></video>
     <div>
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
         <g fill="none" fill-rule="evenodd">
@@ -39,17 +51,17 @@
     </div>
   </body>
   <script>
-    console.log('test', document.currentScript);
-    setTimeout(() => {
-      console.log('test2', document.currentScript);
-    })
-    b = 2;
-    window.onload = function(e) {
-      console.log('onload', e);
-    }
-    window.onerror = function (...args) {
-    console.log('onerror', ...args);
-  }
+    // console.log('test', document.currentScript);
+    // setTimeout(() => {
+    //   console.log('test2', document.currentScript);
+    // })
+    // b = 2;
+    // window.onload = function(e) {
+    //   console.log('onload', e);
+    // }
+  //   window.onerror = function (...args) {
+  //   console.log('vue app get error：', ...args);
+  // }
   </script>
-  <script src="<%= BASE_URL %>async.js" async></script>
+  <!-- <script src="<%= BASE_URL %>xxxasync.js" async></script> -->
 </html>

@@ -80,7 +80,7 @@ export class Loader {
         const code = (children[0] as VText).content;
         const res = new JsResource({
           code,
-          url: null,
+          url: baseUrl,
           size: null,
           attributes,
         });

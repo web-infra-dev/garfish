@@ -8,35 +8,35 @@ import Test from './components/test.vue';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
-setTimeout(() => {
-  let cur = document.querySelector('#app');
-  console.log('^^^^^^^^^^^^^', cur, document);
-  while (cur !== document && cur) {
-    cur = cur && cur.parentNode;
-    console.log(cur);
-  }
-}, 3000);
+// setTimeout(() => {
+//   let cur = document.querySelector('#app');
+//   console.log('^^^^^^^^^^^^^', cur, document);
+//   while (cur !== document && cur) {
+//     cur = cur && cur.parentNode;
+//     console.log(cur);
+//   }
+// }, 3000);
 
-// window.chen = 1212;
-// window.tao = 2;
-// console.log(VueRouter === window.Gar.externals['vue-router']);
-window.a = function a() {
-  console.log('a');
-};
-const fn = window.a;
-window.a.tt = 1;
-console.log(window.a.tt, 'tttt');
-console.log(window.a === fn);
+// // window.chen = 1212;
+// // window.tao = 2;
+// // console.log(VueRouter === window.Gar.externals['vue-router']);
+// window.a = function a() {
+//   console.log('a');
+// };
+// const fn = window.a;
+// window.a.tt = 1;
+// console.log(window.a.tt, 'tttt');
+// console.log(window.a === fn);
 
-Object.defineProperty(window, 'chen', { value: 1212 });
-Object.defineProperty(window, 'tao', { value: 2 });
-console.log('chen', window.chen, window.tao);
-// delete window.chen;
-Object.defineProperty(document, 'cookie', { value: 121, configurable: true });
+// Object.defineProperty(window, 'chen', { value: 1212 });
+// Object.defineProperty(window, 'tao', { value: 2 });
+// console.log('chen', window.chen, window.tao);
+// // delete window.chen;
+// Object.defineProperty(document, 'cookie', { value: 121, configurable: true });
 
-console.log(window.chen);
-console.log(document.currentScript);
-console.dir(Symbol);
+// console.log(window.chen);
+// console.log(document.currentScript);
+// console.dir(Symbol);
 Vue.use(ElementUI);
 Vue.use(VueRouter);
 // 查看父应用注入的 external 模块
@@ -49,11 +49,11 @@ Vue.config.productionTip = false;
 //   }).then(app => app.mount())
 // }, 1000)
 
-const audio = new Audio();
-console.log(audio instanceof Audio);
+// const audio = new Audio();
+// console.log(audio instanceof Audio);
 let vm;
 const render = ({ dom, basename = '/' }) => {
-  console.log('##########3', basename);
+  // console.log('##########3', basename);
   const router = new VueRouter({
     mode: 'history',
     base: basename,
@@ -72,17 +72,17 @@ const render = ({ dom, basename = '/' }) => {
   }).$mount();
   (dom || document).querySelector('#app').appendChild(vm.$el);
   // console.log('#######', dom.querySelector('#app'));
-  document.addEventListener('resize', () => console.log(1));
-  window.addEventListener('resize', () => console.log(2));
+  // document.addEventListener('resize', () => console.log(1));
+  // window.addEventListener('resize', () => console.log(2));
 };
 
-console.log(document.body.contains(document.querySelector('#app')));
+// console.log(document.body.contains(document.querySelector('#app')));
 
 // 这能够让子应用独立运行起来
 if (!window.__GARFISH__) {
   render({});
 } else {
-  console.log(window.module, 'module');
+  // console.log(window.module, 'module');
   // eslint-disable-next-line
   // __GARFISH_EXPORTS__.provider = function () {
   //   return {
@@ -108,12 +108,12 @@ export function provider({ basename, dom }) {
   };
 }
 
-let a = document.body;
-let ob = new MutationObserver(() => {
-  console.log('变动');
-});
-ob.observe(document, { attributes: true });
-console.log(a);
+// let a = document.body;
+// let ob = new MutationObserver(() => {
+//   console.log('变动');
+// });
+// ob.observe(document, { attributes: true });
+// console.log(a);
 
 setTimeout(() => {
   // let dom = document.querySelector('#app');
@@ -123,10 +123,14 @@ setTimeout(() => {
   // dom.insertBefore(style1, before);
 }, 1000);
 
-console.log('Node', Node);
-var d = document.createElement('div');
-console.log(d instanceof Text, 'Text');
+// console.log('Node', Node);
+// var d = document.createElement('div');
+// console.log(d instanceof Text, 'Text');
 
 // var b;
 // window.a = b = function b() {};
 // console.log(window.a === b, 111);
+
+setTimeout(() => {
+  throw new Error('vue app error');
+}, 3000);
