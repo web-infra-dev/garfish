@@ -1,4 +1,4 @@
-import GarfishInstance from '@garfish/core';
+import GarfishInstance, { Garfish } from '@garfish/core';
 
 GarfishInstance.run({
   basename: '/garfish_master',
@@ -30,8 +30,7 @@ GarfishInstance.run({
   },
 });
 
-// window.Garfish = GarfishInstance;
-console.log(GarfishInstance);
+console.log(window.Garfish);
 
 let useRouterMode = true;
 document.getElementById('vueBtn').onclick = async () => {

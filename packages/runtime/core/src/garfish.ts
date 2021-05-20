@@ -23,7 +23,7 @@ export class Garfish implements interfaces.Garfish {
   public options = getDefaultOptions();
   public appInfos: Record<string, interfaces.AppInfo> = {};
   public activeApps: Record<string, interfaces.App> = {};
-  private cacheApps: Record<string, interfaces.App> = {};
+  public cacheApps: Record<string, interfaces.App> = {};
   private loading: Record<string, Promise<any> | null> = {};
   public plugins: Array<interfaces.Plugin> = [];
   public loader: Loader;

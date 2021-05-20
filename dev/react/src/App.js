@@ -5,13 +5,13 @@ import { Modal, Button } from 'antd';
 import 'antd/dist/antd.css';
 
 let cur = document.querySelector('#root');
-setTimeout(() => {
-  console.log('^^^^^^^^^^^^^', cur, document);
-  while (cur !== document && cur) {
-    cur = cur && cur.parentNode;
-    console.log(cur);
-  }
-}, 3000);
+// setTimeout(() => {
+//   console.log('^^^^^^^^^^^^^', cur, document);
+//   while (cur !== document && cur) {
+//     cur = cur && cur.parentNode;
+//     console.log(cur);
+//   }
+// }, 3000);
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);

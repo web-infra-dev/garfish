@@ -8,35 +8,35 @@ import App from './App';
 //     window.Gar.getGlobalObject().HTMLIFrameElement,
 //   'HTMLIFrameElement',
 // );
-console.log(document.head instanceof window.HTMLIFrameElement, 'document.head');
-console.dir(window.HTMLIFrameElement._native);
+// console.log(document.head instanceof window.HTMLIFrameElement, 'document.head');
+// console.dir(window.HTMLIFrameElement._native);
 
-// 动态插入节点
-setTimeout(() => {
-  const script = document.createElement('script');
-  // script.innerHTML = 'console.log("window", window)';
-  script.src =
-    'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.3.0/lodash.js';
-  script.onload = function (e) {
-    console.log(e);
-    console.log(script);
-  };
-  script.onerror = function (e) {
-    console.log(e);
-  };
-  document.body.appendChild(script);
-}, 2000);
+// // 动态插入节点
+// setTimeout(() => {
+//   const script = document.createElement('script');
+//   // script.innerHTML = 'console.log("window", window)';
+//   script.src =
+//     'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.3.0/lodash.js';
+//   script.onload = function (e) {
+//     console.log(e);
+//     console.log(script);
+//   };
+//   script.onerror = function (e) {
+//     console.log(e);
+//   };
+//   document.body.appendChild(script);
+// }, 2000);
 
-const a = document.createElement('div');
-a.innerHTML = 'taotaotest';
-a.id = 'tt';
-console.log(document.body, a);
-document.body.appendChild(a);
+// const a = document.createElement('div');
+// a.innerHTML = 'taotaotest';
+// a.id = 'tt';
+// console.log(document.body, a);
+// document.body.appendChild(a);
 
-const aa = document.body.querySelector('#tt');
-document.body.removeChild(aa);
+// const aa = document.body.querySelector('#tt');
+// document.body.removeChild(aa);
 
-console.log(new ArrayBuffer(11));
+// console.log(new ArrayBuffer(11));
 const render = ({ dom }) => {
   ReactDOM.render(
     <React.StrictMode>
@@ -64,54 +64,54 @@ if (!window.__GARFISH__) {
 } else {
 }
 
-let st = document.createElement('style');
-console.log(document.head.appendChild(st));
+// let st = document.createElement('style');
+// console.log(document.head.appendChild(st));
 
-let st1 = document.createElement('style');
-console.log(document.activeElement.appendChild(st1));
-let st2 = document.createElement('style');
-console.log(document.body.appendChild(st2));
-// document.cookie = 'fdsfs';
-console.log(document.cookie, 'document.cookie');
+// let st1 = document.createElement('style');
+// console.log(document.activeElement.appendChild(st1));
+// let st2 = document.createElement('style');
+// console.log(document.body.appendChild(st2));
+// // document.cookie = 'fdsfs';
+// console.log(document.cookie, 'document.cookie');
 
-const config = { attributes: true, childList: true, subtree: true };
-let ob = new MutationObserver(() => {
-  console.log('change');
-});
+// const config = { attributes: true, childList: true, subtree: true };
+// let ob = new MutationObserver(() => {
+//   console.log('change');
+// });
 
-ob.observe(document.body, config);
+// ob.observe(document.body, config);
 
-window.onload = function (e) {
-  console.log(this, 'window.onload');
-};
+// window.onload = function (e) {
+//   console.log(this, 'window.onload');
+// };
 
-setTimeout(() => {
-  const ns = [];
-  console.log(Document);
-  const en = Document.prototype.createElement;
-  Document.prototype.createElement = function () {
-    ns.push(1);
-    return en.apply(this, arguments);
-  };
-  document.createElement('div');
-  console.log(ns); // [1]
+// setTimeout(() => {
+//   const ns = [];
+//   console.log(Document);
+//   const en = Document.prototype.createElement;
+//   Document.prototype.createElement = function () {
+//     ns.push(1);
+//     return en.apply(this, arguments);
+//   };
+//   document.createElement('div');
+//   console.log(ns); // [1]
 
-  const doc = new Document();
-  console.log(document instanceof Document); // true
-  console.log(doc instanceof Document); // true
-  console.log(doc.__proto__ === Document.prototype); // false, 一个代理，一个是基对象
-  // console.log(
-  //   window.Gar.getGlobalObject().document.createElement !==
-  //     Document.prototype.createElement,
-  // ); // true
-  console.log(doc.body, document.body); // null,  body
-  doc.a = 1;
-  document.b = 2;
-  console.log(document.a === undefined, doc.a === 1); // true, true
-  console.log(document.b === 2, doc.b === undefined); // true, true
-}, 2000);
+//   const doc = new Document();
+//   console.log(document instanceof Document); // true
+//   console.log(doc instanceof Document); // true
+//   console.log(doc.__proto__ === Document.prototype); // false, 一个代理，一个是基对象
+//   // console.log(
+//   //   window.Gar.getGlobalObject().document.createElement !==
+//   //     Document.prototype.createElement,
+//   // ); // true
+//   console.log(doc.body, document.body); // null,  body
+//   doc.a = 1;
+//   document.b = 2;
+//   console.log(document.a === undefined, doc.a === 1); // true, true
+//   console.log(document.b === 2, doc.b === undefined); // true, true
+// }, 2000);
 
-History.prototype.a = 1;
-console.log(window.history instanceof History); // true
-console.log(window.history.a === 1); // true
-console.log(Object.getPrototypeOf(window.history) === History.prototype); // true
+// History.prototype.a = 1;
+// console.log(window.history instanceof History); // true
+// console.log(window.history.a === 1); // true
+// console.log(Object.getPrototypeOf(window.history) === History.prototype); // true
