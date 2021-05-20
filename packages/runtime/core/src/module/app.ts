@@ -23,6 +23,7 @@ import {
   warn,
   createAppContainer,
   getRenderNode,
+  sourceListTags,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
@@ -69,6 +70,7 @@ export class App {
   public strictIsolation = false;
   public customLoader: CustomerLoader;
   public global: any = window;
+  public sourceList: Array<string> = [];
 
   constructor(
     context: Garfish,
@@ -94,6 +96,17 @@ export class App {
       require: (_key: string) => null,
     };
     this.customLoader = customLoader;
+
+    sourceListTags.forEach((tag) => {
+      entryResManager.getVNodesByTagName(tag).forEach((node) => {
+        const url = findProp(node, 'href') || findProp(node, 'src');
+        if (url && url.value) {
+          this.sourceList.push(
+            transformUrl(entryResManager.opts.url, url.value),
+          );
+        }
+      });
+    });
   }
 
   get rootElement() {

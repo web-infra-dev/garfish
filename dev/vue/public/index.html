@@ -16,10 +16,12 @@
       window.addEventListener('unhandledrejection', event => {
         event.promise.catch((e)=>{
         if (e instanceof Error) {
+          console.log('vue app get error:', event); // 捕获后自定义处理
+        }else {
           console.log(e);
         }
       })
-        console.log('unhandledrejection:', event); // 捕获后自定义处理
+        console.log('vue app get error:', event);
       }, true);
       window.addEventListener('error', event => {
         console.log('vue app get error:', event); // 捕获后自定义处理

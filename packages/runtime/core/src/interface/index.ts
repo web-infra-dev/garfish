@@ -192,6 +192,7 @@ export namespace interfaces {
     htmlNode: HTMLElement | ShadowRoot;
     isHtmlMode: boolean;
     strictIsolation: boolean;
+    sourceList: Array<string>;
     mount(): Promise<boolean>;
     unmount(): boolean;
     getExecScriptEnv(noEntry: boolean): Record<string, any>;

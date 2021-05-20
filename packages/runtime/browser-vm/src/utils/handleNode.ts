@@ -115,14 +115,6 @@ function addDynamicScript(
     if (src) {
       const requestConfig = filterRequestConfig(src, config);
 
-      // Save all the application resources required for the address
-      if (
-        sandbox.options.sourceList &&
-        !sandbox.options.sourceList.find((item) => src === item)
-      ) {
-        sandbox.options.sourceList.push(src);
-      }
-
       fetch(src, requestConfig)
         .then(processResponse)
         .then((code) => {
@@ -212,7 +204,7 @@ const makeElInjector = (current: Function, method: string) => {
           }
         }
 
-        sandbox.callHook('onAppendNode', [sandbox, rootEl, newNode, tag]);
+        sandbox.callHook('onAppendNode', [sandbox, rootEl, newNode, tag, el]);
 
         if (newNode) {
           // 如果是 insertBefore、insertAdjacentElement 方法

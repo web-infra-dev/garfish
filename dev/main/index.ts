@@ -56,6 +56,6 @@ document.getElementById('reactBtn').onclick = async () => {
   // }
 };
 
-setTimeout(() => {
-  throw new Error('main error');
-}, 3000);
+// setTimeout(() => {
+//   throw new Error('main error');
+// }, 3000);

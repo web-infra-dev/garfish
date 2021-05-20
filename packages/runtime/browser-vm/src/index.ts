@@ -3,6 +3,7 @@ import {
   assert,
   findProp,
   sourceListTags,
+  sourceNode,
   transformUrl,
   warn,
 } from '@garfish/utils';
@@ -24,24 +25,22 @@ declare module '@garfish/core' {
 
 export default function BrowserVm() {
   return function (Garfish: Garfish): interfaces.Plugin {
-    const appSourceList = new Map();
-
     return {
       name: 'browser-vm',
       version: __VERSION__,
       // Get all the application resources of static address, used to distinguish whether the error is derived from the application
-      processResource(appInfo, manager, _resource) {
-        const sourceList = [];
-        sourceListTags.forEach((tag) => {
-          manager.getVNodesByTagName(tag).forEach((node) => {
-            const url = findProp(node, 'href') || findProp(node, 'src');
-            if (url && url.value) {
-              sourceList.push(transformUrl(manager.opts.url, url.value));
-            }
-          });
-        });
-        appSourceList.set(appInfo.name, sourceList);
-      },
+      // processResource(appInfo, manager, _resource) {
+      //   const sourceList = [];
+      //   sourceListTags.forEach((tag) => {
+      //     manager.getVNodesByTagName(tag).forEach((node) => {
+      //       const url = findProp(node, 'href') || findProp(node, 'src');
+      //       if (url && url.value) {
+      //         sourceList.push(transformUrl(manager.opts.url, url.value));
+      //       }
+      //     });
+      //   });
+      //   appSourceList.set(appInfo.name, sourceList);
+      // },
       afterLoad(appInfo, appInstance) {
         if (appInstance) {
           // existing
@@ -64,7 +63,6 @@ export default function BrowserVm() {
             openSandbox: true,
             strictIsolation: appInstance.strictIsolation,
             protectVariable: () => Garfish.options.protectVariable || [],
-            sourceList: appSourceList.get(appInfo.name),
             insulationVariable: () =>
               webpackAttrs.concat(Garfish.options?.insulationVariable || []),
             modules: {
@@ -74,6 +72,14 @@ export default function BrowserVm() {
                     ...cjsModule,
                   },
                 };
+              },
+            },
+            hooks: {
+              onAppendNode(sandbox, rootEl, el, tag, oldEl) {
+                if (sourceNode(tag)) {
+                  const url = (oldEl as any)?.src || (oldEl as any)?.href;
+                  url && appInstance.sourceList.push(url);
+                }
               },
             },
           });
@@ -89,3 +95,5 @@ export default function BrowserVm() {
     };
   };
 }
+
+export { Sandbox } from './sandbox';

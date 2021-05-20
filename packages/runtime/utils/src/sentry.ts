@@ -139,7 +139,14 @@ export function computeStackTraceFromStackProp(ex: any): StackTrace | null {
   };
 }
 
-export const sourceListTags = ['link', 'img', 'script', 'video', 'audio'];
+export const sourceListTags = [
+  'link',
+  'img',
+  'script',
+  'video',
+  'audio',
+  'style',
+];
 export const sourceNode = makeMap(sourceListTags);
 
 // Calculate the error object file within the address
@@ -176,7 +183,10 @@ export function filterAndWrapEventListener(
         const res = sourceList.find((item) => {
           return item.indexOf(computeErrorUrl(e)) !== -1;
         });
-        res && listener(e);
+        if (res) {
+          e.stopPropagation();
+          listener(e);
+        }
       } else {
         listener(e);
       }
