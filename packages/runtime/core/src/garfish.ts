@@ -42,8 +42,6 @@ export class Garfish implements interfaces.Garfish {
     // init Garfish options
     this.setOptions(options);
 
-    this.injectDefaultPlugin(options);
-
     // register plugins
     options?.plugins.forEach((pluginCb) => {
       this.usePlugin(pluginCb, this);

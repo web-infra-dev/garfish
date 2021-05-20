@@ -3,6 +3,10 @@ import GarfishInstance from '@garfish/core';
 GarfishInstance.run({
   basename: '/garfish_master',
   domGetter: '#submoduleByRouter',
+  sandbox: {
+    open: true,
+    snapshot: true,
+  },
   apps: [
     {
       name: 'react',
@@ -19,10 +23,6 @@ GarfishInstance.run({
       entry: 'http://localhost:9090',
     },
   ],
-  sandbox: {
-    open: true,
-    snapshot: true,
-  },
   plugins: [],
   async beforeLoad(appInfo) {
     console.log('开始加载了', appInfo);
