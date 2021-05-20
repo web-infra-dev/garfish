@@ -21,7 +21,7 @@ let GarfishInstance = new Garfish({
   ],
   sandbox: {
     open: true,
-    snapshot: false,
+    snapshot: true,
   },
   plugins: [],
 });

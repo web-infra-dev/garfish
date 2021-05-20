@@ -7,6 +7,7 @@ import {
   rawWindow,
   evalWithEnv,
   emitSandboxHook,
+  setDocCurrentScript,
 } from '@garfish/utils';
 import {
   Hooks,
@@ -27,7 +28,7 @@ import {
   verifySetDescriptor,
   createFakeObject,
   addFakeWindowType,
-  setDocCurrentScript,
+  // setDocCurrentScript,
 } from './utils';
 import { historyOverride } from './modules/history';
 import { documentOverride } from './modules/document';
@@ -288,7 +289,13 @@ export class Sandbox {
     const refs = { url, code, context };
 
     this.callHook('onInvokeBefore', [this, refs]);
-    const revertCurrentScript = setDocCurrentScript(this, code, url, async);
+    const revertCurrentScript = setDocCurrentScript(
+      this.context.document,
+      code,
+      false,
+      url,
+      async,
+    );
 
     try {
       const sourceUrl = url ? `//# sourceURL=${url}\n` : '';

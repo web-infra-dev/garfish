@@ -24,6 +24,7 @@ import {
   createAppContainer,
   getRenderNode,
   sourceListTags,
+  setDocCurrentScript,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
@@ -119,6 +120,13 @@ export class App {
     url?: string,
     options?: { async?: boolean; noEntry?: boolean },
   ) {
+    const revertCurrentScript = setDocCurrentScript(
+      this.global.document,
+      code,
+      true,
+      url,
+      options.async,
+    );
     env = this.getExecScriptEnv(options?.noEntry) || {};
 
     this.context.hooks.lifecycle.beforeEval.call(
@@ -136,6 +144,8 @@ export class App {
       this.context.hooks.lifecycle.errorExecCode.call(this.appInfo, e);
       throw e;
     }
+    revertCurrentScript();
+
     this.context.hooks.lifecycle.afterEval.call(
       this.appInfo,
       code,

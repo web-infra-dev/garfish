@@ -147,42 +147,42 @@ export function createFakeObject(
   return fakeObject as any;
 }
 
-type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+// type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 // 设置 document.currentScript 属性
 // 由于暂时不支持 esm 模块的脚本，所以 import.meta 不需要做处理
-export function setDocCurrentScript(
-  sandbox: Sandbox,
-  code: string,
-  url?: string,
-  async?: boolean,
-) {
-  const proxyDocument: Writeable<Document> = sandbox.context.document;
-  if (!proxyDocument) return noop;
-  const el = rawDocument.createElement('script');
+// export function setDocCurrentScript(
+//   sandbox: Sandbox,
+//   code: string,
+//   url?: string,
+//   async?: boolean,
+// ) {
+//   const proxyDocument: Writeable<Document> = sandbox.context.document;
+//   if (!proxyDocument) return noop;
+//   const el = rawDocument.createElement('script');
 
-  if (async) {
-    el.setAttribute('async', 'true');
-  }
+//   if (async) {
+//     el.setAttribute('async', 'true');
+//   }
 
-  if (url) {
-    el.setAttribute('src', url);
-  } else if (code) {
-    el.textContent = code;
-  }
+//   if (url) {
+//     el.setAttribute('src', url);
+//   } else if (code) {
+//     el.textContent = code;
+//   }
 
-  const set = (val) => {
-    try {
-      proxyDocument.currentScript = val;
-    } catch (e) {
-      if (__DEV__) {
-        warn(e);
-      }
-    }
-  };
+//   const set = (val) => {
+//     try {
+//       proxyDocument.currentScript = val;
+//     } catch (e) {
+//       if (__DEV__) {
+//         warn(e);
+//       }
+//     }
+//   };
 
-  set(el);
-  return () => set(null);
-}
+//   set(el);
+//   return () => set(null);
+// }
 
 export function isDataDescriptor(desc?: PropertyDescriptor) {
   if (desc === undefined) return false;

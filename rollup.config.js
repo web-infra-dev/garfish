@@ -147,7 +147,7 @@ function extractTsDeclare() {
           fs.remove(path.resolve(pkgDir, `dist/dist`));
           fs.remove(path.resolve(pkgDir, `temp`));
         }
-      }, 3000);
+      }, 1000);
     },
   };
 }
