@@ -15,6 +15,7 @@ import { App } from './module/app';
 import GarfishRouter from '@garfish/router';
 import GarfishBrowserVm from '@garfish/browser-vm';
 import GarfishBrowserSnapshot from '@garfish/browser-snapshot';
+import GarfishCjsExternal from '@garfish/cjs-external';
 import GarfishPreloadPlugin from './plugins/preload';
 import GarfishHMRPlugin from './plugins/fixHMR';
 import GarfishOptionsLife from './plugins/lifecycle';
@@ -50,6 +51,7 @@ export class Garfish implements interfaces.Garfish {
 
   private injectDefaultPlugin(options?: interfaces.Options) {
     const defaultPlugin = [
+      GarfishCjsExternal(),
       GarfishRouter(),
       GarfishHMRPlugin(),
       GarfishOptionsLife(),
