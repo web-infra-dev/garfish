@@ -1,1 +1,1 @@
-export const exportTag = '-[garfish-exports]';
+export const exportTag = '-garfish-exports';

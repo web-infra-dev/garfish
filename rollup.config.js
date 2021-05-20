@@ -125,7 +125,7 @@ function extractTsDeclare() {
       let splitPkg = pkgDir.split('/');
       pkgName = splitPkg[splitPkg.length - 1];
     },
-    renderChunk() {
+    generateBundle() {
       if (!pkgName) return;
 
       let tsTypeDir = path.resolve(

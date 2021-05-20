@@ -25,6 +25,7 @@ import {
   getRenderNode,
   sourceListTags,
   setDocCurrentScript,
+  exportTag,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
@@ -56,7 +57,7 @@ export class App {
   public appInfo: interfaces.AppInfo;
   public cjsModules: Record<string, any>;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
-  public esModule: boolean = true;
+  public esModule: boolean = false;
   private active = false;
   public display = false;
   public mounted = false;
@@ -296,6 +297,7 @@ export class App {
         try {
           this.execScript(manager.opts.code, {}, manager.opts.url, {
             async: false,
+            noEntry: true,
           });
         } catch (err) {
           console.error(err);
@@ -462,12 +464,25 @@ export class App {
   private async checkAndGetProvider() {
     const { appInfo, rootElement, cjsModules, customExports } = this;
     const { props, basename } = appInfo;
+    let provider:
+      | ((...args: any[]) => interfaces.Provider)
+      | interfaces.Provider = null;
 
-    let provider = (cjsModules.exports && cjsModules.exports.provider) as
-      | interfaces.Provider
-      | ((...args: any[]) => interfaces.Provider);
+    // cjs exports
+    if (cjsModules.exports) {
+      // Is not set in the configuration of webpack library option
+      if (cjsModules.exports.provider) provider = cjsModules.exports.provider;
 
-    // The custom of the provider
+      // Set the library parameters not available by default exports
+      const keys = Object.keys(cjsModules.exports);
+      const libraryKey = keys.find((key) => key.indexOf(exportTag) !== -1);
+      if (libraryKey) {
+        const exportProvider = cjsModules?.exports[libraryKey]?.provider;
+        provider = exportProvider;
+      }
+    }
+
+    // Custom export prior to export by default
     if (customExports.provider) {
       provider = customExports.provider;
     }

@@ -46,14 +46,14 @@ document.getElementById('vueBtn').onclick = async () => {
 };
 
 document.getElementById('reactBtn').onclick = async () => {
-  // if (useRouterMode) {
-  //   history.pushState({}, 'react', '/garfish_master/react');
-  // } else {
-  //   let prevApp = await GarfishInstance.loadApp('react', {
-  //     entry: '',
-  //     domGetter: '#submoduleByCunstom',
-  //   });
-  // }
+  if (useRouterMode) {
+    history.pushState({}, 'react', '/garfish_master/react');
+  } else {
+    let prevApp = await GarfishInstance.loadApp('react', {
+      entry: '',
+      domGetter: '#submoduleByCunstom',
+    });
+  }
 };
 
 // setTimeout(() => {

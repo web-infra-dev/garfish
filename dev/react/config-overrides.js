@@ -2,6 +2,7 @@ const webpack = require('webpack');
 
 module.exports = {
   webpack(config, env) {
+    config.output.library = `react-garfish-exports`;
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
     // config.devtool = 'eval-source-map';
