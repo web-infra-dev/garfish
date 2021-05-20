@@ -15,7 +15,7 @@ export class Hooks {
 
   constructor() {
     this.lifecycle = {
-      beforeInitialize: new SyncHook(['options']),
+      // beforeInitialize: new SyncHook(['options']),
       initialize: new SyncHook(['options']),
       beforeBootstrap: new SyncHook(['options']),
       bootstrap: new SyncHook(['options']),

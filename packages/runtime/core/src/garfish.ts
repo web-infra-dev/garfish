@@ -35,8 +35,6 @@ export class Garfish implements interfaces.Garfish {
     this.hooks = new Hooks();
     this.loader = new Loader();
 
-    this.hooks.lifecycle.beforeInitialize.call(this.options);
-
     // init Garfish options
     this.setOptions(options);
 

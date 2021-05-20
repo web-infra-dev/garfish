@@ -208,7 +208,7 @@ export namespace interfaces {
   }
 
   export interface Lifecycle {
-    beforeInitialize: SyncHook<Options, void>;
+    // beforeInitialize: SyncHook<Options, void>;
     initialize: SyncHook<Options, void>;
     beforeBootstrap: SyncHook<Options, void>;
     bootstrap: SyncHook<Options, void>;
