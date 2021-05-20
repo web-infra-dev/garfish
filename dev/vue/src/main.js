@@ -135,4 +135,4 @@ setTimeout(() => {
   throw new Error('vue app error');
 }, 3000);
 
-console.log(document.currentScript);
+// console.log(document.currentScript);

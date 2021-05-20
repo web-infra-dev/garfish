@@ -58,8 +58,10 @@ export default function Router(_args?: Options) {
 
           const call = (app: interfaces.App, isRender: boolean) => {
             if (!app) return;
-
-            const fn = isRender ? app.mount : app.unmount;
+            const isDes = cache && app.mounted;
+            const fn = isRender
+              ? app[isDes ? 'show' : 'mount']
+              : app[isDes ? 'hide' : 'unmount'];
             return fn.call(app);
           };
 

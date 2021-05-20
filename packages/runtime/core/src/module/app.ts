@@ -58,6 +58,7 @@ export class App {
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
   public esModule: boolean = true;
   private active = false;
+  public display = false;
   public mounted = false;
   public appContainer: HTMLElement;
   private mounting: boolean = false;
@@ -189,6 +190,35 @@ export class App {
     return true;
   }
 
+  show() {
+    this.active = true;
+    const { display, mounted, provider } = this;
+    if (display) return false;
+    if (!mounted) {
+      __DEV__ && warn('Need to call the "app.mount()" method first.');
+      return false;
+    }
+
+    this.addContainer();
+    this.callRender(provider as Provider);
+    this.display = true;
+    return true;
+  }
+
+  hide() {
+    this.active = false;
+    const { display, mounted, provider } = this;
+    if (!display) return false;
+    if (!mounted) {
+      __DEV__ && warn('Need to call the "app.mount()" method first.');
+      return false;
+    }
+
+    this.callDestroy(provider as Provider);
+    this.display = false;
+    return true;
+  }
+
   async mount() {
     if (!this.canMount()) return;
     this.context.hooks.lifecycle.beforeMount.call(this.appInfo, this);
@@ -205,7 +235,7 @@ export class App {
       // Existing asynchronous functions need to decide whether the application has been unloaded
       if (!this.stopMountAndClearEffect()) return false;
       this.callRender(provider);
-
+      this.display = true;
       this.context.hooks.lifecycle.afterMount.call(this.appInfo, this);
     } catch (err) {
       removeElement(this.appContainer);
@@ -225,6 +255,7 @@ export class App {
     this.context.hooks.lifecycle.beforeUnMount.call(this.appInfo, this);
 
     this.callDestroy(this.provider);
+    this.display = false;
     this.unmounting = false;
 
     this.context.hooks.lifecycle.afterUnMount.call(this.appInfo, this);
