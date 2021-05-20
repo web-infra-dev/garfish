@@ -17,6 +17,7 @@ import GarfishBrowserVm from '@garfish/browser-vm';
 import GarfishBrowserSnapshot from '@garfish/browser-snapshot';
 import GarfishPreloadPlugin from './plugins/preload';
 import GarfishHMRPlugin from './plugins/fixHMR';
+import GarfishOptionsLife from './plugins/lifecycle';
 
 export class Garfish implements interfaces.Garfish {
   public version = __VERSION__;
@@ -34,6 +35,11 @@ export class Garfish implements interfaces.Garfish {
     this.hooks = new Hooks();
     this.loader = new Loader();
 
+    this.hooks.lifecycle.beforeInitialize.call(this.options);
+
+    // init Garfish options
+    this.setOptions(options);
+
     this.injectDefaultPlugin(options);
 
     // register plugins
@@ -41,14 +47,15 @@ export class Garfish implements interfaces.Garfish {
       this.usePlugin(pluginCb, this);
     });
 
-    this.hooks.lifecycle.beforeInitialize.call(this.options);
-    // init Garfish options
-    this.setOptions(options);
     this.hooks.lifecycle.initialize.call(this.options);
   }
 
   private injectDefaultPlugin(options?: interfaces.Options) {
-    const defaultPlugin = [GarfishRouter(), GarfishHMRPlugin()];
+    const defaultPlugin = [
+      GarfishRouter(),
+      GarfishHMRPlugin(),
+      GarfishOptionsLife(),
+    ];
     // Preload plugin
     if (!options.disablePreloadApp) defaultPlugin.push(GarfishPreloadPlugin());
 

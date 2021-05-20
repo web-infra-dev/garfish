@@ -24,6 +24,10 @@ let GarfishInstance = new Garfish({
     snapshot: true,
   },
   plugins: [],
+  async beforeLoad(appInfo) {
+    console.log('开始加载了', appInfo);
+    // return Promise.resolve();
+  },
 });
 
 // window.Garfish = GarfishInstance;

@@ -6,7 +6,7 @@ export default function fixHMR() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     return {
       name: 'fix-hmr',
-      // version: __VERSION__,
+      version: __VERSION__,
       bootstrap() {
         if (hasInit) return;
         hasInit = true;
