@@ -1,12 +1,17 @@
 import { VText, VNode } from '@garfish/utils';
-import { HtmlResource as HtmlResourceInterfaces } from '../module/source';
+import {
+  CssResource,
+  HtmlResource as HtmlResourceInterfaces,
+  JsResource,
+} from '../module/source';
 import {
   SyncHook,
   AsyncSeriesBailHook,
   AsyncParallelBailHook,
   AsyncSeriesHook,
 } from '@garfish/hooks';
-import { Garfish } from '../instance/context';
+import { Garfish } from '../garfish';
+import { Loader } from '../module/loader';
 // import { App } from '../module/app';
 
 declare global {
@@ -143,12 +148,26 @@ export namespace interfaces {
     isHtmlMode: boolean;
   }
 
-  export interface Loader {
-    loadAppSources(appInfo: AppInfo): Promise<AppSources>;
-    // takeJsResources: (manager: HtmlResource) => void;
-    // takeLinkResources: (manager: HtmlResource) => void;
-    // createApp(appInfo: AppInfo, manager: HtmlResource, isHtmlMode: boolean): Promise<any>
-  }
+  // export interface Loader {
+  //   forceCaches: Set<string>;
+  //   caches: Record<string, HtmlResource | CssResource | JsResource>;
+  //   loadings: Record<
+  //     string,
+  //     Promise<HtmlResource | CssResource | JsResource>
+  //   >;
+  //   requestConfig: RequestInit | ((url: string) => RequestInit);
+  //   takeJsResources(manager: HtmlResource): any[]
+  //   loadAppSources(appInfo: AppInfo): Promise<AppSources>;
+  //   // takeLinkResources(manager: HtmlResource): any[]
+  //   // createApp(appInfo: AppInfo, manager: HtmlResource, isHtmlMode: boolean): Promise<any>
+  //   // loadAllSources(manager: HtmlResource, isHtmlMode: boolean): Promise<{
+  //   //   manager: HtmlResource;
+  //   //   resources: interfaces.ResourceModules;
+  //   //   isHtmlMode: boolean;
+  //   // }>
+  //   // load(url: string, config?: RequestInit): Promise<HtmlResource | CssResource | JsResource>
+  //   // loadAppSources(appInfo: interfaces.AppInfo): Promise<interfaces.AppSources>
+  // }
 
   export type BootStrapArgs = [Garfish, Options];
 
@@ -193,7 +212,7 @@ export namespace interfaces {
     beforeBootstrap: SyncHook<Options, void>;
     bootstrap: SyncHook<Options, void>;
     beforeRegisterApp: SyncHook<[AppInfo | Array<AppInfo>], void>;
-    registerApp: SyncHook<[AppInfo | Array<AppInfo>], void>;
+    registerApp: SyncHook<[AppInfo | Record<string, interfaces.AppInfo>], void>;
     beforeLoad: AsyncSeriesBailHook<AppInfo, boolean | void | AppConstructor>; // 根据返回值决定是否继续执行后续代码 or return a constructor
     initializeApp: AsyncSeriesBailHook<
       [Garfish, AppInfo, HtmlResource, interfaces.ResourceModules, boolean],

@@ -1,5 +1,5 @@
-import { Hooks } from '../hooks';
-import { getDefaultOptions } from '../config';
+import { Hooks } from './hooks';
+import { getDefaultOptions } from './config';
 import {
   assert,
   isObject,
@@ -9,12 +9,13 @@ import {
   validURL,
   hasOwn,
 } from '@garfish/utils';
-import { Loader } from '../module/loader';
-import { interfaces } from '../interface';
-import { App } from '../module/app';
+import { Loader } from './module/loader';
+import { interfaces } from './interface';
+import { App } from './module/app';
 import GarfishRouter from '@garfish/router';
 import GarfishBrowserVm from '@garfish/browser-vm';
 import GarfishBrowserSnapshot from '@garfish/browser-snapshot';
+import GarfishPreloadPlugin from './plugins/preload';
 
 export class Garfish implements interfaces.Garfish {
   public version = __VERSION__;
@@ -28,16 +29,16 @@ export class Garfish implements interfaces.Garfish {
   public loader: Loader;
   public hooks: Hooks;
 
-  constructor(options?: interfaces.Options) {
+  constructor(options: interfaces.Options) {
     this.hooks = new Hooks();
     this.loader = new Loader();
+
+    this.injectDefaultPlugin(options);
 
     // register plugins
     options?.plugins.forEach((pluginCb) => {
       this.usePlugin(pluginCb, this);
     });
-
-    this.injectDefaultPlugin(options);
 
     this.hooks.lifecycle.beforeInitialize.call(this.options);
     // init Garfish options
@@ -47,20 +48,26 @@ export class Garfish implements interfaces.Garfish {
 
   private injectDefaultPlugin(options?: interfaces.Options) {
     const defaultPlugin = [GarfishRouter()];
-    if (options?.sandbox) {
-      if (options?.sandbox.open === true) {
-        if (options?.sandbox.snapshot) {
-          defaultPlugin.push(GarfishBrowserSnapshot());
-        } else {
-          defaultPlugin.push(
-            window.Proxy ? GarfishBrowserVm() : GarfishBrowserSnapshot(),
+    // Preload plugin
+    if (!options.disablePreloadApp) defaultPlugin.push(GarfishPreloadPlugin());
+
+    // The open set to false, just said to close the sandbox
+    const noSandbox = options.sandbox?.open === false;
+    const useBrowserVm = options?.sandbox?.snapshot === false;
+
+    // Add the sandbox plug-in
+    if (!noSandbox) {
+      // The current environment without setting the proxy and the use of vm sandbox to open it
+      if (window.Proxy && useBrowserVm) {
+        defaultPlugin.push(GarfishBrowserVm());
+      } else {
+        if (!window.Proxy && useBrowserVm) {
+          warn(
+            'Due to the current environment without the proxy, does not support the vm sandbox, if to maintain its normal operation in the current environment, please pass the sandbox snapshot parameter switch to the sandbox',
           );
         }
+        defaultPlugin.push(GarfishBrowserSnapshot());
       }
-    } else {
-      defaultPlugin.push(
-        window.Proxy ? GarfishBrowserVm() : GarfishBrowserSnapshot(),
-      );
     }
 
     defaultPlugin.forEach((pluginCb) => {
@@ -133,7 +140,7 @@ export class Garfish implements interfaces.Garfish {
       }
     }
 
-    this.hooks.lifecycle.registerApp.call(list);
+    this.hooks.lifecycle.registerApp.call(this.appInfos);
     return this;
   }
 

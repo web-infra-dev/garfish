@@ -3,28 +3,6 @@
 exports[`snapshot sandbox window test normal obj 1`] = `
 Object {
   "a": undefined,
-  "add delete val": undefined,
-  "nObj": Object {
-    "name": "hello",
-  },
-  "update": "update value",
-}
-`;
-
-exports[`snapshot sandbox window test normal obj 2`] = `
-Object {
-  "a": "hello",
-  "add delete val": undefined,
-  "nObj": Object {
-    "name": "hello",
-  },
-  "update": "new value",
-}
-`;
-
-exports[`test sandbox window test normal obj 1`] = `
-Object {
-  "a": undefined,
   "nObj": Object {
     "name": "hello",
   },
@@ -33,7 +11,7 @@ Object {
 }
 `;
 
-exports[`test sandbox window test normal obj 2`] = `
+exports[`snapshot sandbox window test normal obj 2`] = `
 Object {
   "a": "hello",
   "nObj": Object {

@@ -13,7 +13,7 @@ const defaultOptions: interfaces.Options = {
   insulationVariable: [],
   autoRefreshApp: true,
   // disableStatistics: false,
-  // disablePreloadApp: false,
+  disablePreloadApp: false,
   // domGetter: () => null,
   // beforeLoad: () => {},
   // afterLoad: () => {},

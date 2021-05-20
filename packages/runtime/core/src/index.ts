@@ -1,4 +1,4 @@
-import { Garfish } from './instance/context';
+import { Garfish } from './garfish';
 
 window.__GARFISH__ = true;
 

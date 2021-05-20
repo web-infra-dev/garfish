@@ -24,7 +24,7 @@ import {
   createAppContainer,
   getRenderNode,
 } from '@garfish/utils';
-import { Garfish } from '../instance/context';
+import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
 import { markAndDerived } from '../utils';
 
