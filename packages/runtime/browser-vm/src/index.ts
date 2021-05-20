@@ -1,4 +1,4 @@
-import Garfish, { interfaces } from '@garfish/core';
+import { interfaces } from '@garfish/core';
 import {
   assert,
   findProp,
@@ -24,7 +24,7 @@ declare module '@garfish/core' {
 }
 
 export default function BrowserVm() {
-  return function (Garfish: Garfish): interfaces.Plugin {
+  return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     return {
       name: 'browser-vm',
       version: __VERSION__,

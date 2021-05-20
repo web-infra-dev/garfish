@@ -12,13 +12,10 @@ import {
 import { Loader } from './module/loader';
 import { interfaces } from './interface';
 import { App } from './module/app';
-import GarfishRouter from '@garfish/router';
 import GarfishBrowserVm from '@garfish/browser-vm';
 import GarfishBrowserSnapshot from '@garfish/browser-snapshot';
-import GarfishCjsExternal from '@garfish/cjs-external';
 import GarfishPreloadPlugin from './plugins/preload';
-import GarfishHMRPlugin from './plugins/fixHMR';
-import GarfishOptionsLife from './plugins/lifecycle';
+import { RouterInterface } from 'packages/runtime/router/src/context';
 
 export class Garfish implements interfaces.Garfish {
   public version = __VERSION__;
@@ -31,6 +28,12 @@ export class Garfish implements interfaces.Garfish {
   public plugins: Array<interfaces.Plugin> = [];
   public loader: Loader;
   public hooks: Hooks;
+  router: RouterInterface;
+  setExternal: (
+    nameOrExtObj: string | Record<string, any>,
+    value?: any,
+  ) => void;
+  externals: Record<string, any>;
 
   constructor(options: interfaces.Options) {
     this.hooks = new Hooks();
@@ -50,12 +53,7 @@ export class Garfish implements interfaces.Garfish {
   }
 
   private injectDefaultPlugin(options?: interfaces.Options) {
-    const defaultPlugin = [
-      GarfishCjsExternal(),
-      GarfishRouter(),
-      GarfishHMRPlugin(),
-      GarfishOptionsLife(),
-    ];
+    const defaultPlugin = [];
     // Preload plugin
     if (!options.disablePreloadApp) defaultPlugin.push(GarfishPreloadPlugin());
 
@@ -121,6 +119,13 @@ export class Garfish implements interfaces.Garfish {
     this.hooks.lifecycle.beforeBootstrap.call(this.options);
 
     this.setOptions(options);
+
+    // register plugins
+    options?.plugins.forEach((pluginCb) => {
+      this.usePlugin(pluginCb, this);
+    });
+
+    this.injectDefaultPlugin(options);
     this.running = true;
 
     this.hooks.lifecycle.bootstrap.call(this.options);

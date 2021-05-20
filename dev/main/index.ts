@@ -1,6 +1,6 @@
-import Garfish from '@garfish/core';
+import GarfishInstance from '@garfish/core';
 
-let GarfishInstance = new Garfish({
+GarfishInstance.run({
   basename: '/garfish_master',
   domGetter: '#submoduleByRouter',
   apps: [
@@ -32,8 +32,6 @@ let GarfishInstance = new Garfish({
 
 // window.Garfish = GarfishInstance;
 console.log(GarfishInstance);
-
-GarfishInstance.run();
 
 let useRouterMode = true;
 document.getElementById('vueBtn').onclick = async () => {
