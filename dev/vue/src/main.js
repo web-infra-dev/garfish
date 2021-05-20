@@ -132,7 +132,7 @@ setTimeout(() => {
 // console.log(window.a === b, 111);
 
 setTimeout(() => {
-  throw new Error('vue app error');
+  // throw new Error('vue app error');
 }, 3000);
 
 // console.log(document.currentScript);
