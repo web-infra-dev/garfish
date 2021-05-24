@@ -8,6 +8,7 @@ import {
   error,
   validURL,
   hasOwn,
+  def,
 } from '@garfish/utils';
 import { Loader } from './module/loader';
 import { interfaces } from './interface';
@@ -16,10 +17,12 @@ import GarfishBrowserVm from '@garfish/browser-vm';
 import GarfishBrowserSnapshot from '@garfish/browser-snapshot';
 import GarfishPreloadPlugin from './plugins/preload';
 import { RouterInterface } from 'packages/runtime/router/src/context';
+import { __GARFISH_FLAG__ } from './utils/tool';
 
 export class Garfish implements interfaces.Garfish {
   public version = __VERSION__;
   private running = false;
+  public flag = __GARFISH_FLAG__; // A unique identifier
   public options = getDefaultOptions();
   public appInfos: Record<string, interfaces.AppInfo> = {};
   public activeApps: Record<string, interfaces.App> = {};
@@ -28,6 +31,8 @@ export class Garfish implements interfaces.Garfish {
   public plugins: Array<interfaces.Plugin> = [];
   public loader: Loader;
   public hooks: Hooks;
+  public subInstances: Record<string, Garfish> = {};
+
   router: RouterInterface;
   setExternal: (
     nameOrExtObj: string | Record<string, any>,
@@ -50,7 +55,7 @@ export class Garfish implements interfaces.Garfish {
     this.hooks.lifecycle.initialize.call(this.options);
   }
 
-  private injectDefaultPlugin(options?: interfaces.Options) {
+  private injectOptionalPlugin(options?: interfaces.Options) {
     const defaultPlugin = [];
     // Preload plugin
     if (!options.disablePreloadApp) defaultPlugin.push(GarfishPreloadPlugin());
@@ -114,6 +119,12 @@ export class Garfish implements interfaces.Garfish {
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
       return this;
     }
+
+    // Nested scene add logo
+    if (options.nested) {
+      def(window, '__GARFISH__PARENT__', true);
+    }
+
     this.hooks.lifecycle.beforeBootstrap.call(this.options);
 
     this.setOptions(options);
@@ -123,7 +134,7 @@ export class Garfish implements interfaces.Garfish {
       this.usePlugin(pluginCb, this);
     });
 
-    this.injectDefaultPlugin(options);
+    this.injectOptionalPlugin(options);
     this.running = true;
 
     this.hooks.lifecycle.bootstrap.call(this.options);

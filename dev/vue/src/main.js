@@ -78,26 +78,13 @@ const render = ({ dom, basename = '/' }) => {
 
 // console.log(document.body.contains(document.querySelector('#app')));
 
+debugger;
+
 // 这能够让子应用独立运行起来
-if (!window.__GARFISH__) {
+if (!window.__GARFISH__PARENT__) {
   render({});
-} else {
-  // console.log(window.module, 'module');
-  // eslint-disable-next-line
-  // __GARFISH_EXPORTS__.provider = function () {
-  //   return {
-  //     render,
-  //     destroy() {
-  //       vm.$destroy();
-  //       vm.$el.parentNode && vm.$el.parentNode.removeChild(vm.$el);
-  //     },
-  //   };
-  // };
-  // console.log(window.module.exports);
-  // console.log(window.module);
 }
 
-// console.log()
 export function provider({ basename, dom }) {
   return {
     render: () => render({ basename, dom }),
@@ -115,13 +102,13 @@ export function provider({ basename, dom }) {
 // ob.observe(document, { attributes: true });
 // console.log(a);
 
-setTimeout(() => {
-  // let dom = document.querySelector('#app');
-  // let before = dom.querySelector('#app');
-  // let style1 = document.createElement('style');
-  // style1.setAttribute('id', 'style1');
-  // dom.insertBefore(style1, before);
-}, 1000);
+// setTimeout(() => {
+//   // let dom = document.querySelector('#app');
+//   // let before = dom.querySelector('#app');
+//   // let style1 = document.createElement('style');
+//   // style1.setAttribute('id', 'style1');
+//   // dom.insertBefore(style1, before);
+// }, 1000);
 
 // console.log('Node', Node);
 // var d = document.createElement('div');
@@ -131,8 +118,8 @@ setTimeout(() => {
 // window.a = b = function b() {};
 // console.log(window.a === b, 111);
 
-setTimeout(() => {
-  // throw new Error('vue app error');
-}, 3000);
+// setTimeout(() => {
+//   // throw new Error('vue app error');
+// }, 3000);
 
 // console.log(document.currentScript);

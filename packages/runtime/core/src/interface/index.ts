@@ -96,6 +96,7 @@ export namespace interfaces {
     disableStatistics?: boolean;
     disablePreloadApp?: boolean;
     domGetter?: DomGetter;
+    nested?: boolean;
   }
 
   export interface HooksLifecycle {

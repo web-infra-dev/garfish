@@ -1,4 +1,4 @@
-import GarfishInstance, { Garfish } from '@garfish/core';
+import GarfishInstance from '@garfish/core';
 
 GarfishInstance.run({
   basename: '/garfish_master',
@@ -57,6 +57,7 @@ document.getElementById('reactBtn').onclick = async () => {
   }
 };
 
+export function provider() {}
 // setTimeout(() => {
 //   throw new Error('main error');
 // }, 3000);
