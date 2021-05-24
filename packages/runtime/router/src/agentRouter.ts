@@ -16,6 +16,7 @@ export const normalAgent = () => {
   // Support nested scene
   const addRouterListener = function () {
     window.addEventListener(__GARFISH_BEFORE_ROUTER_EVENT__, function (env) {
+      RouterConfig.routerChange && RouterConfig.routerChange(location.pathname);
       linkTo((env as any).detail);
     });
   };
@@ -55,19 +56,6 @@ export const normalAgent = () => {
               },
             }),
           );
-          // linkTo({
-          //   toRouterInfo: {
-          //     fullPath: urlAfter,
-          //     query: parseQuery(location.search),
-          //     path: getPath(RouterConfig.basename!, urlAfter),
-          //   },
-          //   fromRouterInfo: {
-          //     fullPath: urlBefore,
-          //     query: parseQuery(location.search),
-          //     path: getPath(RouterConfig.basename!, urlBefore),
-          //   },
-          //   eventType: type,
-          // });
         }
         // window.dispatchEvent(e);
         return res;
@@ -81,7 +69,6 @@ export const normalAgent = () => {
     window.addEventListener(
       'popstate',
       function () {
-        // RouterConfig.routerChange && RouterConfig.routerChange(location.pathname);
         window.dispatchEvent(
           new CustomEvent(__GARFISH_BEFORE_ROUTER_EVENT__, {
             detail: {
@@ -99,19 +86,6 @@ export const normalAgent = () => {
             },
           }),
         );
-        // linkTo({
-        //   toRouterInfo: {
-        //     fullPath: location.pathname,
-        //     query: parseQuery(location.search),
-        //     path: getPath(RouterConfig.basename!, location.pathname),
-        //   },
-        //   fromRouterInfo: {
-        //     fullPath: RouterConfig.current!.fullPath,
-        //     path: RouterConfig.current!.path,
-        //     query: RouterConfig.current!.query,
-        //   },
-        //   eventType: 'popstate',
-        // });
       },
       false,
     );

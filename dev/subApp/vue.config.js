@@ -11,6 +11,10 @@ module.exports = {
       'Access-Control-Allow-Headers': '*',
     },
     historyApiFallback: true,
+    overlay: {
+      warnings: false,
+      errors: false,
+    },
   },
 
   publicPath: 'http://localhost:9090',
