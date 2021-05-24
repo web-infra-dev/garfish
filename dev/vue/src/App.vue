@@ -1,8 +1,6 @@
 <template>
   <div id="app">
-    <div>
-      sub app
-    </div>
+    <div>content</div>
   </div>
 </template>
 
@@ -10,7 +8,12 @@
 
 export default {
   name: 'App',
-  methods: {},
+  props: ['basename'],
+  methods: {
+    loadApp () {
+      window.Garfish.router.push({ path: '/vueApp', basename: this.basename })
+    }
+  },
   components: {
   }
 }

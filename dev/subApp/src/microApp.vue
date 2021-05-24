@@ -15,27 +15,27 @@ export default {
     if (isInit) return;
     isInit = true;
     // Can only be run once
-    GarfishInstance.run({
-      basename: this.basename || '/',
-      domGetter: ()=> this.$refs.vueApp,
-      sandbox: {
-        open: true,
-        snapshot: true,
-      },
-      apps: [
-        {
-          name: 'vueApp',
-          activeWhen: '/vueApp',
-          cache: true,
-          entry: 'http://localhost:8000',
-        },
-      ],
-      plugins: [],
-      async beforeLoad(appInfo) {
-        console.log('开始加载了', appInfo);
-        // return Promise.resolve();
-      },
-    });
+    // GarfishInstance.run({
+    //   basename: this.basename || '/',
+    //   domGetter: ()=> this.$refs.vueApp,
+    //   sandbox: {
+    //     open: true,
+    //     snapshot: true,
+    //   },
+    //   apps: [
+    //     {
+    //       name: 'vueApp',
+    //       activeWhen: '/vueApp',
+    //       cache: true,
+    //       entry: 'http://localhost:8000',
+    //     },
+    //   ],
+    //   plugins: [],
+    //   async beforeLoad(appInfo) {
+    //     console.log('开始加载了', appInfo);
+    //     // return Promise.resolve();
+    //   },
+    // });
   },
   components: {
   }

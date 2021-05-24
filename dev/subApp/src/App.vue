@@ -34,7 +34,7 @@ export default {
   props: ['basename'],
   methods: {
     loadApp () {
-      window.Garfish.router.push({ path: '/vueApp', })
+      window.Garfish.router.push({ path: '/vueApp', basename: this.basename })
     }
   },
   components: {

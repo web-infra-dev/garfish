@@ -96,7 +96,7 @@ export class App {
     this.cjsModules = {
       exports: {},
       module: this.cjsModules,
-      require: (_key: string) => null,
+      require: (_key: string) => context.externals[_key],
     };
     this.customLoader = customLoader;
 

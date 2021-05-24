@@ -10,11 +10,13 @@ module.exports = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': '*',
     },
+    historyApiFallback: true,
   },
 
   publicPath: 'http://localhost:8000',
   configureWebpack: (config) => {
     config.output.library = `sub-app-garfish-exports`;
+    config.output.jsonpFunction = `sub-app-jsonp`;
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
     config.devtool = 'source-map';

@@ -7,6 +7,7 @@ GarfishInstance.run({
     open: true,
     snapshot: true,
   },
+  nested: true,
   apps: [
     {
       name: 'react',

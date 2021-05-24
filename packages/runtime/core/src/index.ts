@@ -1,6 +1,5 @@
 import { Garfish } from './garfish';
 import GarfishRouter from '@garfish/router';
-import GarfishCjsExternal from '@garfish/cjs-external';
 import GarfishHMRPlugin from './plugins/fixHMR';
 import GarfishOptionsLife from './plugins/lifecycle';
 import { def, hasOwn, warn } from '@garfish/utils';
@@ -10,12 +9,7 @@ import { __GARFISH_FLAG__ } from './utils/tool';
 export function createContext() {
   let fresh = false;
   const GarfishInstance = new Garfish({
-    plugins: [
-      GarfishCjsExternal(),
-      GarfishRouter(),
-      GarfishHMRPlugin(),
-      GarfishOptionsLife(),
-    ],
+    plugins: [GarfishRouter(), GarfishHMRPlugin(), GarfishOptionsLife()],
   });
 
   type globalValue = boolean | Garfish | Record<string, unknown>;

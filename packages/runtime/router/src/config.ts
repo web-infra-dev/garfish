@@ -18,7 +18,12 @@ export interface CurrentRouterInfo extends RouterInfo {
   matched: Array<interfaces.AppInfo>;
 }
 
+// Don't change the logo, in order to avoid inconsistent version leads to failure
 export const __GARFISH_ROUTER_UPDATE_FLAG__ = '__GARFISH_ROUTER_UPDATE_FLAG__';
+
+export const __GARFISH_ROUTER_FLAG__ = '__GARFISH_ROUTER_FLAG__';
+
+export const __GARFISH_BEFORE_ROUTER_EVENT__ = 'garfish:before-routing-event';
 
 export interface Options {
   basename?: string;

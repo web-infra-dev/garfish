@@ -27,6 +27,7 @@ const defaultOptions: interfaces.Options = {
     useStrict: true,
     strictIsolation: false,
   },
+  nested: false,
   protectVariable: [],
   insulationVariable: [],
   autoRefreshApp: true,

@@ -1,81 +1,124 @@
 import { parseQuery, getAppRootPath } from './urlUt';
 import { callCapturedEventListeners } from './navEvent';
-import { asyncForEach, toMiddleWare, getPath } from './utils';
+import { asyncForEach, toMiddleWare, getPath, createEvent } from './utils';
 import {
   RouterConfig,
   setRouterConfig,
   RouterInfo,
   __GARFISH_ROUTER_UPDATE_FLAG__,
+  __GARFISH_ROUTER_FLAG__,
+  __GARFISH_BEFORE_ROUTER_EVENT__,
 } from './config';
+import CustomEvent from './customEvent';
 
 export const normalAgent = () => {
-  // 侦听pushState及replaceState，调用linkTo、处理、侦听回退
-  // 重写history api方法，在调用时触发事件
-  const rewrite = function (type: keyof History) {
-    const hapi = history[type];
-    return function () {
-      const urlBefore = window.location.pathname + window.location.hash;
-      const res = hapi.apply(this as any, arguments);
-      const urlAfter = window.location.pathname + window.location.hash;
-
-      // 兼容ie
-      let e;
-      if (
-        navigator.userAgent.indexOf('MSIE') !== -1 ||
-        navigator.appVersion.indexOf('Trident/') > 0
-      ) {
-        e = document.createEvent('UIEvents');
-        e.initUIEvent(type.toLowerCase(), true, false, window, 0);
-      } else {
-        e = new Event(type.toLowerCase());
-      }
-
-      (e as any).arguments = arguments;
-      if (urlBefore !== urlAfter) {
-        RouterConfig.routerChange && RouterConfig.routerChange(urlAfter);
-        linkTo({
-          toRouterInfo: {
-            fullPath: urlAfter,
-            query: parseQuery(location.search),
-            path: getPath(RouterConfig.basename!, urlAfter),
-          },
-          fromRouterInfo: {
-            fullPath: urlBefore,
-            query: parseQuery(location.search),
-            path: getPath(RouterConfig.basename!, urlBefore),
-          },
-          eventType: type,
-        });
-      }
-      window.dispatchEvent(e);
-      return res;
-    };
+  // By identifying whether have finished listening, if finished listening, listening to the routing changes do not need to hijack the original event
+  // Support nested scene
+  const addRouterListener = function () {
+    window.addEventListener(__GARFISH_BEFORE_ROUTER_EVENT__, function (env) {
+      linkTo((env as any).detail);
+    });
   };
 
-  history.pushState = rewrite('pushState');
-  history.replaceState = rewrite('replaceState');
+  if (!window[__GARFISH_ROUTER_FLAG__]) {
+    // Listen for pushState and replaceState, call linkTo, processing, listen back
+    // Rewrite the history API method, triggering events in the call
 
-  // 在收集子应用路由前，子应用间前进后退路由更新子应用
-  window.addEventListener(
-    'popstate',
-    function () {
-      RouterConfig.routerChange && RouterConfig.routerChange(location.pathname);
-      linkTo({
-        toRouterInfo: {
-          fullPath: location.pathname,
-          query: parseQuery(location.search),
-          path: getPath(RouterConfig.basename!, location.pathname),
-        },
-        fromRouterInfo: {
-          fullPath: RouterConfig.current!.fullPath,
-          path: RouterConfig.current!.path,
-          query: RouterConfig.current!.query,
-        },
-        eventType: 'popstate',
-      });
-    },
-    false,
-  );
+    const rewrite = function (type: keyof History) {
+      const hapi = history[type];
+      return function () {
+        const urlBefore = window.location.pathname + window.location.hash;
+        const stateBefore = history.state?.state;
+        const res = hapi.apply(this as any, arguments);
+        const urlAfter = window.location.pathname + window.location.hash;
+        const stateAfter = history.state?.state;
+
+        const e = createEvent(type);
+        (e as any).arguments = arguments;
+
+        if (urlBefore !== urlAfter || stateBefore !== stateAfter) {
+          // RouterConfig.routerChange && RouterConfig.routerChange(urlAfter);
+          window.dispatchEvent(
+            new CustomEvent(__GARFISH_BEFORE_ROUTER_EVENT__, {
+              detail: {
+                toRouterInfo: {
+                  fullPath: urlAfter,
+                  query: parseQuery(location.search),
+                  path: getPath(RouterConfig.basename!, urlAfter),
+                },
+                fromRouterInfo: {
+                  fullPath: urlBefore,
+                  query: parseQuery(location.search),
+                  path: getPath(RouterConfig.basename!, urlBefore),
+                },
+                eventType: type,
+              },
+            }),
+          );
+          // linkTo({
+          //   toRouterInfo: {
+          //     fullPath: urlAfter,
+          //     query: parseQuery(location.search),
+          //     path: getPath(RouterConfig.basename!, urlAfter),
+          //   },
+          //   fromRouterInfo: {
+          //     fullPath: urlBefore,
+          //     query: parseQuery(location.search),
+          //     path: getPath(RouterConfig.basename!, urlBefore),
+          //   },
+          //   eventType: type,
+          // });
+        }
+        // window.dispatchEvent(e);
+        return res;
+      };
+    };
+
+    history.pushState = rewrite('pushState');
+    history.replaceState = rewrite('replaceState');
+
+    // Before the collection application sub routing, forward backward routing updates between child application
+    window.addEventListener(
+      'popstate',
+      function () {
+        // RouterConfig.routerChange && RouterConfig.routerChange(location.pathname);
+        window.dispatchEvent(
+          new CustomEvent(__GARFISH_BEFORE_ROUTER_EVENT__, {
+            detail: {
+              toRouterInfo: {
+                fullPath: location.pathname,
+                query: parseQuery(location.search),
+                path: getPath(RouterConfig.basename!, location.pathname),
+              },
+              fromRouterInfo: {
+                fullPath: RouterConfig.current!.fullPath,
+                path: RouterConfig.current!.path,
+                query: RouterConfig.current!.query,
+              },
+              eventType: 'popstate',
+            },
+          }),
+        );
+        // linkTo({
+        //   toRouterInfo: {
+        //     fullPath: location.pathname,
+        //     query: parseQuery(location.search),
+        //     path: getPath(RouterConfig.basename!, location.pathname),
+        //   },
+        //   fromRouterInfo: {
+        //     fullPath: RouterConfig.current!.fullPath,
+        //     path: RouterConfig.current!.path,
+        //     query: RouterConfig.current!.query,
+        //   },
+        //   eventType: 'popstate',
+        // });
+      },
+      false,
+    );
+
+    window[__GARFISH_ROUTER_FLAG__] = true;
+  }
+  addRouterListener();
 };
 
 // Overloading to specify the routing

@@ -10,12 +10,13 @@ module.exports = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': '*',
     },
+    historyApiFallback: true,
   },
 
   publicPath: 'http://localhost:9090',
   configureWebpack: (config) => {
-    config.output.library = `vue-garfish-exports`;
-    config.output.jsonpFunction = `vue-jsonp`;
+    config.output.library = `sub-app-garfish-exports`;
+    config.output.jsonpFunction = `sub-app-jsonp`;
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
     config.devtool = 'source-map';

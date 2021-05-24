@@ -31,14 +31,10 @@ export class Garfish implements interfaces.Garfish {
   public plugins: Array<interfaces.Plugin> = [];
   public loader: Loader;
   public hooks: Hooks;
-  public subInstances: Record<string, Garfish> = {};
+  public subInstances: Array<Garfish> = [];
+  public externals: Record<string, any> = {};
 
   router: RouterInterface;
-  setExternal: (
-    nameOrExtObj: string | Record<string, any>,
-    value?: any,
-  ) => void;
-  externals: Record<string, any>;
 
   constructor(options: interfaces.Options) {
     this.hooks = new Hooks();
@@ -240,5 +236,19 @@ export class Garfish implements interfaces.Garfish {
       this.loading[name] = asyncLoadProcess();
     }
     return this.loading[name];
+  }
+
+  public setExternal(nameOrExtObj: string | Record<string, any>, value?: any) {
+    assert(nameOrExtObj, 'Invalid parameter.');
+    if (typeof nameOrExtObj === 'object') {
+      for (const key in nameOrExtObj) {
+        if (this.externals[key]) {
+          __DEV__ && warn(`The "${key}" will be overwritten in external.`);
+        }
+        this.externals[key] = nameOrExtObj[key];
+      }
+    } else {
+      this.externals[nameOrExtObj] = value;
+    }
   }
 }

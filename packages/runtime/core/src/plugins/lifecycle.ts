@@ -4,7 +4,7 @@ import { interfaces } from '../interface';
 export default function OptionsLife() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     const plugin = {
-      name: 'fix-hmr',
+      name: 'default-life',
       version: __VERSION__,
     };
     lifecycle.forEach((life) => {

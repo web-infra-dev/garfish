@@ -68,7 +68,7 @@ const render = ({ dom, basename = '/' }) => {
   vm = new Vue({
     store,
     router,
-    render: (h) => h(App),
+    render: (h) => h(App, { props: { basename } }),
   }).$mount();
   (dom || document).querySelector('#app').appendChild(vm.$el);
   // console.log('#######', dom.querySelector('#app'));

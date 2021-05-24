@@ -33,3 +33,18 @@ export function getPath(basename: string, pathname?: string) {
     );
   }
 }
+
+export function createEvent(type) {
+  let e;
+  // Compatible with ie
+  if (
+    navigator.userAgent.indexOf('MSIE') !== -1 ||
+    navigator.appVersion.indexOf('Trident/') > 0
+  ) {
+    e = document.createEvent('UIEvents');
+    e.initUIEvent(type.toLowerCase(), true, false, window, 0);
+  } else {
+    e = new Event(type.toLowerCase());
+  }
+  return e;
+}
