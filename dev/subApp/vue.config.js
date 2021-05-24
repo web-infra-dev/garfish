@@ -5,16 +5,17 @@ const webpack = require('webpack');
 module.exports = {
   devServer: {
     open: false,
-    port: '8000',
+    port: '9090',
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': '*',
     },
   },
 
-  publicPath: 'http://localhost:8000',
+  publicPath: 'http://localhost:9090',
   configureWebpack: (config) => {
-    config.output.library = `sub-app-garfish-exports`;
+    config.output.library = `vue-garfish-exports`;
+    config.output.jsonpFunction = `vue-jsonp`;
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
     config.devtool = 'source-map';

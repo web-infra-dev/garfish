@@ -23,6 +23,7 @@ export const callCapturedEventListeners = (type: keyof History) => {
 const handlerParams = function (
   path: string,
   query: { [key: string]: string },
+  basename?: string,
 ): string {
   if (!path || typeof path !== 'string') return '';
   let url = path;
@@ -33,7 +34,7 @@ const handlerParams = function (
       .join('&');
     url += qs ? '?' + qs : '';
   }
-  if (RouterConfig.basename !== '/') url = RouterConfig.basename + url;
+  if (basename !== '/') url = basename + url;
   if (url[0] !== '/') url = '/' + url;
   return url;
 };
@@ -41,15 +42,19 @@ const handlerParams = function (
 export const push = ({
   path,
   query,
+  basename,
 }: {
   path: string;
   query?: { [key: string]: string };
+  basename?: string;
 }) => {
+  if (!basename) basename = RouterConfig.basename;
+
   let url = null;
   if (validURL(path)) {
     url = /(^https?:)|(^\/\/)/.test(path) ? path : `//${path}`;
   } else {
-    url = handlerParams(path, query!);
+    url = handlerParams(path, query!, basename);
   }
   // 不保留之前history.state的状态会导致vue3依赖state的情况无法正常渲染页面
   history.pushState(
@@ -62,15 +67,19 @@ export const push = ({
 export const replace = ({
   path,
   query,
+  basename,
 }: {
   path: string;
   query?: { [key: string]: string };
+  basename?: string;
 }) => {
+  if (!basename) basename = RouterConfig.basename;
+
   let url = null;
   if (validURL(path)) {
     url = /^(https?:)(\/\/)/.test(path) ? path : `//${path}`;
   } else {
-    url = handlerParams(path, query!);
+    url = handlerParams(path, query!, basename);
   }
   history.replaceState(
     { [__GARFISH_ROUTER_UPDATE_FLAG__]: true, ...history.state },

@@ -29,15 +29,15 @@ module.exports = {
         properties: 'never',
       },
     ],
-    indent: [
-      'error',
-      2,
-      {
-        MemberExpression: 1,
-        VariableDeclarator: 2,
-        offsetTernaryExpressions: true,
-      },
-    ],
+    // indent: [
+    //   'error',
+    //   2,
+    //   {
+    //     MemberExpression: 1,
+    //     VariableDeclarator: 2,
+    //     offsetTernaryExpressions: true,
+    //   },
+    // ],
     semi: [0, 'never'],
     eqeqeq: [2, 'allow-null'],
     quotes: ['error', 'single'],

@@ -14,9 +14,9 @@ export default {
   mounted () {
     if (isInit) return;
     isInit = true;
-
+    // Can only be run once
     GarfishInstance.run({
-      basename: this.basename || '',
+      basename: this.basename || '/',
       domGetter: ()=> this.$refs.vueApp,
       sandbox: {
         open: true,
