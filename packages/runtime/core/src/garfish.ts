@@ -9,15 +9,15 @@ import {
   validURL,
   hasOwn,
   def,
+  __GARFISH_FLAG__,
 } from '@garfish/utils';
 import { Loader } from './module/loader';
 import { interfaces } from './interface';
 import { App } from './module/app';
-import GarfishBrowserVm from '@garfish/browser-vm';
-import GarfishBrowserSnapshot from '@garfish/browser-snapshot';
-import GarfishPreloadPlugin from './plugins/preload';
 import { RouterInterface } from 'packages/runtime/router/src/context';
-import { __GARFISH_FLAG__ } from './utils/tool';
+import GarfishHMRPlugin from './plugins/fixHMR';
+import GarfishOptionsLife from './plugins/lifecycle';
+import GarfishPreloadPlugin from './plugins/preload';
 
 export class Garfish implements interfaces.Garfish {
   public version = __VERSION__;
@@ -52,28 +52,28 @@ export class Garfish implements interfaces.Garfish {
   }
 
   private injectOptionalPlugin(options?: interfaces.Options) {
-    const defaultPlugin = [];
+    const defaultPlugin = [GarfishHMRPlugin(), GarfishOptionsLife()];
     // Preload plugin
     if (!options.disablePreloadApp) defaultPlugin.push(GarfishPreloadPlugin());
 
-    // The open set to false, just said to close the sandbox
-    const noSandbox = options.sandbox?.open === false;
-    const useBrowserVm = options?.sandbox?.snapshot === false;
+    // // The open set to false, just said to close the sandbox
+    // const noSandbox = options.sandbox?.open === false;
+    // const useBrowserVm = options?.sandbox?.snapshot === false;
 
-    // Add the sandbox plug-in
-    if (!noSandbox) {
-      // The current environment without setting the proxy and the use of vm sandbox to open it
-      if (window.Proxy && useBrowserVm) {
-        defaultPlugin.push(GarfishBrowserVm());
-      } else {
-        if (!window.Proxy && useBrowserVm) {
-          warn(
-            'Due to the current environment without the proxy, does not support the vm sandbox, if to maintain its normal operation in the current environment, please pass the sandbox snapshot parameter switch to the sandbox',
-          );
-        }
-        defaultPlugin.push(GarfishBrowserSnapshot());
-      }
-    }
+    // // Add the sandbox plug-in
+    // if (!noSandbox) {
+    //   // The current environment without setting the proxy and the use of vm sandbox to open it
+    //   if (window.Proxy && useBrowserVm) {
+    //     defaultPlugin.push(GarfishBrowserVm());
+    //   } else {
+    //     if (!window.Proxy && useBrowserVm) {
+    //       warn(
+    //         'Due to the current environment without the proxy, does not support the vm sandbox, if to maintain its normal operation in the current environment, please pass the sandbox snapshot parameter switch to the sandbox',
+    //       );
+    //     }
+    //     defaultPlugin.push(GarfishBrowserSnapshot());
+    //   }
+    // }
 
     defaultPlugin.forEach((pluginCb) => {
       this.usePlugin(pluginCb, this);

@@ -1,17 +1,16 @@
 {
-  "name": "@garfish/core",
+  "name": "@garfish/framework",
   "version": "0.0.8-alpha.7",
-  "description": "core module.",
+  "description": "garfish module.",
   "keywords": [
     "garfish",
-    "core",
-    "micro front-end"
+    "garfish"
   ],
-  "author": "zhouxiao<codingzx@gmail.com>",
+  "author": "zhoushaw <codingzx@gmail.com>",
   "homepage": "https://github.com/bytedance/garfish",
   "license": "Apache-2.0",
-  "main": "src/index.ts",
-  "module": "dist/core.esm-bundler.js",
+  "main": "index.js",
+  "module": "dist/garfish.esm-bundler.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
@@ -20,10 +19,10 @@
     "url": "https://github.com/bytedance/garfish/issues"
   },
   "scripts": {},
-  "types": "dist/index.d.ts",
+  "types": "dist/garfish.d.ts",
   "buildOptions": {
-    "name": "Core",
-    "devTemplate": "complete",
+    "name": "Garfish",
+    "devTemplate": "module",
     "formats": [
       "esm-bundler",
       "esm-browser",
@@ -32,12 +31,12 @@
     ]
   },
   "dependencies": {
-    "himalaya": "^1.1.0",
-    "@garfish/hooks": "^0.0.8-alpha.5"
+    "@garfish/core": "^0.0.8-alpha.5",
+    "@garfish/router": "^0.0.8-alpha.2",
+    "@garfish/browser-vm": "^0.0.8-alpha.2",
+    "@garfish/browser-snapshot": "^0.0.8-alpha.2"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org",
-    "access": "public"
-  },
-  "gitHead": "9dd3445fab40001ecefcf4959c5123b8b4894a27"
+    "registry": "https://registry.npmjs.org"
+  }
 }

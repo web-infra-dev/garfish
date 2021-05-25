@@ -1,4 +1,4 @@
-import GarfishInstance from '@garfish/core';
+import GarfishInstance from '@garfish/framework';
 
 GarfishInstance.run({
   basename: '/garfish_master',
