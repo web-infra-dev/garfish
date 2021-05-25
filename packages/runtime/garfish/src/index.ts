@@ -4,6 +4,15 @@ import GarfishBrowserVm from '@garfish/browser-vm';
 import GarfishBrowserSnapshot from '@garfish/browser-snapshot';
 import { def, hasOwn, warn, __GARFISH_FLAG__ } from '@garfish/utils';
 
+declare global {
+  interface Window {
+    Garfish: Garfish;
+    Gar: Garfish;
+    __GARFISH__: boolean;
+    __GAR__: boolean;
+  }
+}
+
 // Initialize the Garfish, currently existing environment to allow only one instance (export to is for test)
 export function createContext() {
   let fresh = false;
