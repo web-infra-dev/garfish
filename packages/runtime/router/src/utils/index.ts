@@ -1,4 +1,4 @@
-import { RouterHook } from './config';
+import { RouterHook } from '../config';
 
 export async function asyncForEach<T>(
   arr: T[],

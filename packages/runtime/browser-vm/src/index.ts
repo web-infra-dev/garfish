@@ -33,10 +33,6 @@ declare module '@garfish/core' {
   }
 }
 
-interface Options {
-  open: false;
-}
-
 export default function BrowserVm() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     let openVm = false;
@@ -125,3 +121,4 @@ export default function BrowserVm() {
 }
 
 export { Sandbox } from './sandbox';
+export { Hooks } from './types';

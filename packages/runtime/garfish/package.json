@@ -19,7 +19,7 @@
     "url": "https://github.com/bytedance/garfish/issues"
   },
   "scripts": {},
-  "types": "dist/garfish.d.ts",
+  "types": "dist/index.d.ts",
   "buildOptions": {
     "name": "Garfish",
     "devTemplate": "module",

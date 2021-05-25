@@ -29,12 +29,12 @@ export namespace interfaces {
 
   export interface App {}
 
-  // export interface SandboxConfig {
-  //   open?: boolean;
-  //   snapshot?: boolean;
-  //   useStrict?: boolean;
-  //   strictIsolation?: boolean;
-  // }
+  export interface SandboxConfig {
+    open?: boolean;
+    snapshot?: boolean;
+    useStrict?: boolean;
+    strictIsolation?: boolean;
+  }
 
   export interface AppInfo {
     name: string;
@@ -76,7 +76,7 @@ export namespace interfaces {
     appID?: string;
     basename?: string;
     apps?: Array<AppInfo>;
-    // sandbox?: SandboxConfig;
+    sandbox?: SandboxConfig;
     plugins?: Array<(context: Garfish) => Plugin>;
     props?: Record<string, any>;
     disableStatistics?: boolean;

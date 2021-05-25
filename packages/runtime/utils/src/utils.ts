@@ -1,5 +1,5 @@
 // import Sandbox from '@garfish/sandbox';
-import { Sandbox } from 'packages/runtime/browser-vm/src/sandbox';
+import { Hooks } from '@garfish/browser-vm';
 import { rawWindow } from './raw';
 
 export const noop = () => {};
@@ -140,8 +140,8 @@ export function toBoolean(val: any) {
 
 // 调用沙箱的钩子，统一快照和 vm
 export function emitSandboxHook(
-  hooks: Sandbox['options']['hooks'],
-  name: keyof Sandbox['options']['hooks'],
+  hooks: Hooks,
+  name: keyof Hooks,
   args: Array<any>,
 ) {
   const fns: any = hooks?.[name];

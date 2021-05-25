@@ -1,5 +1,5 @@
 import { validURL } from '@garfish/utils';
-import { RouterConfig, __GARFISH_ROUTER_UPDATE_FLAG__ } from './config';
+import { RouterConfig, __GARFISH_ROUTER_UPDATE_FLAG__ } from '../config';
 
 function createPopStateEvent(state: any, originalMethodName: string) {
   let evt;

@@ -1,19 +1,47 @@
 <template>
   <div id="app">
+      <el-button plain @click="loadApp">
+        加载子应用
+      </el-button>
     <div ref="vueApp" id="vueApp"></div>
   </div>
 </template>
 
 <script>
+import GarfishInstance from '@garfish/framework';
 
-import GarfishInstance from '@garfish/core';
-let isInit = false;
+let hasInit = false;
 export default {
   name: 'App',
   props: ['basename'],
+  methods: {
+    async loadApp () {
+      console.log(GarfishInstance);
+      // let app = await GarfishInstance.loadApp('vueApp',{
+      //   entry: 'http://localhost:8000',
+      //   basename: this.basename,
+      //   domGetter: ()=> this.$refs.vueApp
+      // });
+      // await app.mount();
+      // console.log(app);
+      Garfish.router.push({ path: '/vueApp', basename: this.basename })
+      // console.log(this.basename, GarfishInstance);
+    }
+  },
   mounted () {
-    if (isInit) return;
-    isInit = true;
+    if (hasInit) return;
+    hasInit = true;
+    if (__GARFISH__PARENT__) {
+      GarfishInstance.registerApp([
+        {
+          entry: 'http://localhost:8000',
+          basename: '/garfish_master/vue',
+          activeWhen: '/vueApp',
+          name: 'vueApp',
+          domGetter: ()=> this.$refs.vueApp
+        }
+      ]);
+    }
     // Can only be run once
     // GarfishInstance.run({
     //   basename: this.basename || '/',

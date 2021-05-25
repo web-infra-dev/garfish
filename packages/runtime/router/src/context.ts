@@ -9,9 +9,9 @@ import {
   RouterChange,
 } from './config';
 
-import { push, replace } from './navEvent';
+import { push, replace } from './utils/navEvent';
 
-export { push, replace } from './navEvent';
+export { push, replace } from './utils/navEvent';
 
 export const beforeEach = (hook: RouterHook) => {
   RouterSet('beforeEach', hook);

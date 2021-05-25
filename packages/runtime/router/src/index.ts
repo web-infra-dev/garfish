@@ -26,6 +26,7 @@ declare module '@garfish/core' {
       activeWhen?: string | ((path: string) => boolean); // 手动加载，可不填写路由
       active?: (appInfo: AppInfo, rootPath: string) => void;
       deactive?: (appInfo: AppInfo, rootPath: string) => void;
+      basename?: string;
     }
   }
 }
