@@ -14,20 +14,6 @@ import { Garfish } from '../garfish';
 import { Loader } from '../module/loader';
 // import { App } from '../module/app';
 
-declare global {
-  interface Window {
-    Garfish: Garfish;
-    __GARFISH__: boolean;
-  }
-}
-
-declare global {
-  interface Window {
-    Garfish: Garfish;
-    __GARFISH__: boolean;
-  }
-}
-
 export namespace interfaces {
   export type DomGetter = Element | (() => Element | null) | string;
 
@@ -43,12 +29,12 @@ export namespace interfaces {
 
   export interface App {}
 
-  export interface SandboxConfig {
-    open?: boolean;
-    snapshot?: boolean;
-    useStrict?: boolean;
-    strictIsolation?: boolean;
-  }
+  // export interface SandboxConfig {
+  //   open?: boolean;
+  //   snapshot?: boolean;
+  //   useStrict?: boolean;
+  //   strictIsolation?: boolean;
+  // }
 
   export interface AppInfo {
     name: string;
@@ -60,12 +46,12 @@ export namespace interfaces {
     domGetter?: DomGetter;
   }
 
-  export interface SandboxConfig {
-    open?: boolean;
-    snapshot?: boolean;
-    useStrict?: boolean;
-    strictIsolation?: boolean;
-  }
+  // export interface SandboxConfig {
+  //   open?: boolean;
+  //   snapshot?: boolean;
+  //   useStrict?: boolean;
+  //   strictIsolation?: boolean;
+  // }
 
   export interface Garfish {
     version: string;
@@ -90,7 +76,7 @@ export namespace interfaces {
     appID?: string;
     basename?: string;
     apps?: Array<AppInfo>;
-    sandbox?: SandboxConfig;
+    // sandbox?: SandboxConfig;
     plugins?: Array<(context: Garfish) => Plugin>;
     props?: Record<string, any>;
     disableStatistics?: boolean;
@@ -270,9 +256,10 @@ export namespace interfaces {
     [k in keyof T]: ConstructorParameters<T[k]>;
   };
 
-  export type Plugin = { name: string; version?: string } & PickParam<
-    Partial<interfaces.Lifecycle>
-  >;
+  export interface Plugin extends PickParam<Partial<interfaces.Lifecycle>> {
+    name: string;
+    version?: string;
+  }
 
   export interface Hooks {
     lifecycle: Lifecycle;

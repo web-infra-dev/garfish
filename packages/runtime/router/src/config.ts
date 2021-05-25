@@ -12,6 +12,7 @@ export interface RouterInfo {
   fullPath: string;
   path: string;
   query: Object;
+  state: Object;
 }
 
 export interface CurrentRouterInfo extends RouterInfo {
@@ -45,6 +46,7 @@ export const RouterConfig: Options = {
     path: '/',
     matched: [],
     query: {},
+    state: {},
   },
   apps: [],
   beforeEach: (to, from, next) => next(),

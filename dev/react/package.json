@@ -19,6 +19,9 @@
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "eslintConfig": {
     "extends": "react-app"
   },

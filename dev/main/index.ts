@@ -5,7 +5,7 @@ GarfishInstance.run({
   domGetter: '#submoduleByRouter',
   sandbox: {
     open: true,
-    snapshot: true,
+    snapshot: false,
   },
   nested: true,
   apps: [
@@ -31,7 +31,7 @@ GarfishInstance.run({
   },
 });
 
-console.log(window.Garfish);
+console.log(GarfishInstance);
 
 let useRouterMode = true;
 document.getElementById('vueBtn').onclick = async () => {

@@ -10,24 +10,50 @@ import {
 import { Sandbox } from './sandbox';
 import './utils/handleNode';
 
+export interface SandboxConfig {
+  open?: boolean;
+  snapshot?: boolean;
+  useStrict?: boolean;
+  strictIsolation?: boolean;
+}
+
 declare module '@garfish/core' {
   export namespace interfaces {
     export interface Config {
       protectVariable?: PropertyKey[];
       insulationVariable?: PropertyKey[];
+      sandbox?: SandboxConfig;
     }
-
     export interface App {
       vmSandbox?: Sandbox;
+    }
+    export interface Plugin {
+      openVm?: boolean;
     }
   }
 }
 
+interface Options {
+  open: false;
+}
+
 export default function BrowserVm() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
-    return {
+    let openVm = false;
+    const options = {
       name: 'browser-vm',
       version: __VERSION__,
+      openVm: true,
+      bootstrap() {
+        if (Garfish?.options?.sandbox === false) options.openVm = false;
+        if (Garfish?.options?.sandbox) {
+          // Support for instance configuration, to ensure that old versions compatible
+          const noSandbox = Garfish?.options?.sandbox?.open === false;
+          const useBrowserVm = Garfish?.options?.sandbox?.snapshot === false;
+          openVm = !noSandbox && window.Proxy && useBrowserVm;
+          options.openVm = openVm;
+        }
+      },
       // Get all the application resources of static address, used to distinguish whether the error is derived from the application
       // processResource(appInfo, manager, _resource) {
       //   const sourceList = [];
@@ -42,6 +68,7 @@ export default function BrowserVm() {
       //   appSourceList.set(appInfo.name, sourceList);
       // },
       afterLoad(appInfo, appInstance) {
+        if (!openVm) return;
         if (appInstance) {
           // existing
           if (appInstance.vmSandbox) return;
@@ -93,6 +120,7 @@ export default function BrowserVm() {
         }
       },
     };
+    return options;
   };
 }
 

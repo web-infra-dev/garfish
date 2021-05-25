@@ -29,10 +29,10 @@ export const normalAgent = () => {
       const hapi = history[type];
       return function () {
         const urlBefore = window.location.pathname + window.location.hash;
-        const stateBefore = history.state?.state;
+        const stateBefore = history?.state;
         const res = hapi.apply(this as any, arguments);
         const urlAfter = window.location.pathname + window.location.hash;
-        const stateAfter = history.state?.state;
+        const stateAfter = history?.state;
 
         const e = createEvent(type);
         (e as any).arguments = arguments;
@@ -46,11 +46,13 @@ export const normalAgent = () => {
                   fullPath: urlAfter,
                   query: parseQuery(location.search),
                   path: getPath(RouterConfig.basename!, urlAfter),
+                  state: stateBefore,
                 },
                 fromRouterInfo: {
                   fullPath: urlBefore,
                   query: parseQuery(location.search),
                   path: getPath(RouterConfig.basename!, urlBefore),
+                  state: stateAfter,
                 },
                 eventType: type,
               },
@@ -182,6 +184,7 @@ export const linkTo = async ({
         fullPath: basename + '/',
         matched: [],
         query: {},
+        state: {},
       },
     });
     await toMiddleWare(to, from, afterEach!);
@@ -193,6 +196,7 @@ export const linkTo = async ({
       path: getPath(RouterConfig.basename!),
       fullPath: location.pathname,
       matched: activeApps,
+      state: history.state,
       query: parseQuery(location.search),
     },
   });
@@ -205,7 +209,7 @@ export const linkTo = async ({
   if (
     eventType !== 'popstate' &&
     ((needToActive.length === 0 && curState[__GARFISH_ROUTER_UPDATE_FLAG__]) ||
-      autoRefreshApp)
+      (needToActive.length === 0 && autoRefreshApp))
   ) {
     callCapturedEventListeners(eventType);
   }
@@ -228,11 +232,13 @@ export const listen = () => {
       fullPath: location.pathname,
       path: getPath(RouterConfig.basename!),
       query: parseQuery(location.search),
+      state: history.state,
     },
     fromRouterInfo: {
       fullPath: '/',
       path: '/',
       query: {},
+      state: {},
     },
     eventType: 'pushState',
   });

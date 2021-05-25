@@ -25,6 +25,9 @@
     "@garfish/framework": "0.0.8",
     "webpack-dev-server": "^3.9.0"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "dependencies": {
     "@babel/runtime": "^7.12.1",
     "loader-utils": "^2.0.0",
