@@ -22,7 +22,7 @@
     "style-loader": "^1.0.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
-    "@garfish/framework": "0.0.8-alpha.5",
+    "@garfish/framework": "0.0.8",
     "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
