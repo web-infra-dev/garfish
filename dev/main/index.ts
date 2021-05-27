@@ -4,8 +4,7 @@ GarfishInstance.run({
   basename: '/garfish_master',
   domGetter: '#submoduleByRouter',
   sandbox: {
-    open: true,
-    snapshot: false,
+    // snapshot: true,
   },
   nested: true,
   apps: [

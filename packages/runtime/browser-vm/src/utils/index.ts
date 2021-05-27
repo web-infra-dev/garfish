@@ -10,19 +10,25 @@ import {
 import { __proxyNode__ } from '../symbolTypes';
 
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object
-export const isEsMethod = makeMap(
-  // Function properties of the global object
-  (
-    'eval,isFinite,isNaN,parseFloat,parseInt' +
-    // URL handling functions
-    'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,encodeURI,encodeURIComponent' +
-    // Constructor properties of the global object
-    'Array,ArrayBuffer,BigInt,BigInt64Array,BigUint64Array,Boolean,DataView,Date,Error,EvalError,' +
-    'FinalizationRegistry,Float32Array,Float64Array,Function,Int8Array,Int16Array,Int32Array,Map,Number' +
-    'Object,Promise,Proxy,RangeError,ReferenceError,RegExp,Set,SharedArrayBuffer,String,Symbol,SyntaxError' +
-    'TypeError,Uint8Array,Uint8ClampedArray,Uint16Array,Uint32Array,URIError,WeakMap,WeakRef,WeakSet'
-  ).split(','),
-);
+const esNames = // Function properties of the global object
+(
+  'eval,isFinite,isNaN,parseFloat,parseInt' +
+  // URL handling functions
+  'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent' +
+  // Constructor properties of the global object
+  'Array,ArrayBuffer,BigInt,BigInt64Array,BigUint64Array,Boolean,DataView,Date,Error,EvalError,' +
+  'FinalizationRegistry,Float32Array,Float64Array,Function,Int8Array,Int16Array,Int32Array,Map,Number' +
+  'Object,Promise,Proxy,RangeError,ReferenceError,RegExp,Set,SharedArrayBuffer,String,Symbol,SyntaxError' +
+  'TypeError,Uint8Array,Uint8ClampedArray,Uint16Array,Uint32Array,URIError,WeakMap,WeakRef,WeakSet' +
+  //  Other Properties of the Global Object
+  'Atomics,JSON,Math,Reflect'
+).split(',');
+
+export const isEsMethod = makeMap(esNames);
+
+// Need to optimize, avoid from the with
+// Can't filter document, eval keywords, such as document in handling parentNode useful
+export const optimizeMethods = [...esNames].filter((v) => v !== 'eval');
 
 export function isConstructor(fn: () => void | FunctionConstructor) {
   const fp = fn.prototype;

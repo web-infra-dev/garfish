@@ -12,7 +12,6 @@ import {
 
 // Inspection application is activated
 const hasActive = (activeWhen: any, path: string) => {
-  debugger;
   if (typeof activeWhen === 'string') {
     if (activeWhen[0] !== '/') activeWhen = `/${activeWhen}`;
     const activeWhenArr = activeWhen.split('/');

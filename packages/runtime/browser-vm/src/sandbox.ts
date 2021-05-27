@@ -8,6 +8,7 @@ import {
   evalWithEnv,
   emitSandboxHook,
   setDocCurrentScript,
+  supportLetStatement,
 } from '@garfish/utils';
 import {
   Hooks,
@@ -28,6 +29,7 @@ import {
   verifySetDescriptor,
   createFakeObject,
   addFakeWindowType,
+  optimizeMethods,
   // setDocCurrentScript,
 } from './utils';
 import { historyOverride } from './modules/history';
@@ -50,11 +52,13 @@ const defaultModules: Record<string, Module> = {
 };
 
 export class Sandbox {
+  public type = 'vm';
   public closed = true;
   public id = sandboxId++;
   public version = __VERSION__;
   public context?: FakeWindow;
   public options: SandboxOptions;
+  private attachedCode = ''; // To optimize the with statement
   public recovers: Array<() => void> = [];
   public overrideContext: {
     recovers: Array<() => void>;
@@ -176,8 +180,19 @@ export class Sandbox {
           return Reflect.set(rawWindow, p, value);
         } else {
           const success = Reflect.set(target, p, value, receiver);
-          if (this.initComplete && success) {
-            this.isExternalGlobalVariable.add(p);
+          if (success) {
+            if (this.initComplete) {
+              this.isExternalGlobalVariable.add(p);
+            }
+            // Update need optimization variables
+            if (this.context) {
+              const { $optimizeMethods, $optimizeUpdateStack } = this.context;
+              if (Array.isArray($optimizeMethods)) {
+                if ($optimizeMethods.indexOf(p) > -1) {
+                  $optimizeUpdateStack.forEach((fn) => fn(p, value));
+                }
+              }
+            }
           }
           return success;
         }
@@ -299,8 +314,10 @@ export class Sandbox {
 
     try {
       const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
-      const code = `with(window) {;${refs.code}\n${sourceUrl}}`;
       if (this.options.openSandbox) {
+        const code = `with(window) {;${
+          this.attachedCode + refs.code
+        }\n${sourceUrl}}`;
         evalWithEnv(code, {
           window: refs.context,
           ...this.overrideContext.overrides,
@@ -308,6 +325,7 @@ export class Sandbox {
           ...env,
         });
       } else {
+        const code = `with(window) {;${refs.code}\n${sourceUrl}}`;
         evalWithEnv(code, {
           ...this.overrideContext.overrides,
           unstable_sandbox: this,
@@ -329,6 +347,29 @@ export class Sandbox {
 
     revertCurrentScript();
     this.callHook('onInvokeAfter', [this, refs]);
+  }
+
+  optimizeGlobalMethod() {
+    assert(!this.closed, 'Sandbox is closed');
+    let code = '';
+    const { context } = this;
+    const methods = optimizeMethods.filter((p) => {
+      return (
+        p && !this.isProtectVariable(p) && hasOwn(context, p) // 如果当前环境不存在该方法，则不用管
+      );
+    });
+
+    if (methods.length > 0) {
+      code = methods.reduce((prevCode, method) => {
+        // 只能用 let, 如果用 var，声明提前的特性会造成去 with 里面取，造成递归死循环
+        return `${prevCode} let ${method} = window.${method};`;
+      }, code);
+      // 用于 `window.x = xx` 更新后，同步更新变量
+      context.$optimizeMethods = methods;
+      context.$optimizeUpdateStack = [];
+      code += '$optimizeUpdateStack.push(function(key,val){eval(key+"=val")});';
+    }
+    return code;
   }
 
   clearEffects() {
@@ -364,6 +405,9 @@ export class Sandbox {
         createds.forEach((fn) => fn(this.context));
       }
     }
+    if (supportLetStatement) {
+      this.attachedCode = this.optimizeGlobalMethod();
+    }
     this.initComplete = true;
   }
 
@@ -373,6 +417,7 @@ export class Sandbox {
       this.initComplete = false;
       this.closed = true;
       this.context = null;
+      this.attachedCode = '';
       this.callHook('onclose', [this]);
     }
   }

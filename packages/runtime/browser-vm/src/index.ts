@@ -2,13 +2,14 @@ import { interfaces } from '@garfish/core';
 import {
   assert,
   findProp,
+  rawWindow,
   sourceListTags,
   sourceNode,
   transformUrl,
   warn,
 } from '@garfish/utils';
 import { Sandbox } from './sandbox';
-import { BrowserConfig, SandboxConfig } from './types';
+import { BrowserConfig } from './types';
 import './utils/handleNode';
 
 declare module '@garfish/core' {
@@ -18,6 +19,7 @@ declare module '@garfish/core' {
       insulationVariable?: PropertyKey[];
       sandbox?: SandboxConfig;
     }
+
     export interface App {
       vmSandbox?: Sandbox;
     }
@@ -27,10 +29,10 @@ declare module '@garfish/core' {
   }
 }
 
-export default function BrowserVm(op?: BrowserConfig) {
+export default function BrowserVm() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     // Use the default Garfish instance attributes
-    const config: BrowserConfig = op || { open: true };
+    const config: BrowserConfig = { open: true };
     const options = {
       name: 'browser-vm',
       version: __VERSION__,
@@ -41,7 +43,9 @@ export default function BrowserVm(op?: BrowserConfig) {
         if (sandboxConfig === false) config.open = false;
         if (sandboxConfig) {
           config.open =
-            sandboxConfig?.open && sandboxConfig?.snapshot === false;
+            rawWindow.Proxy &&
+            sandboxConfig?.open &&
+            sandboxConfig?.snapshot === false;
           config.protectVariable = Garfish?.options?.protectVariable || [];
           config.insulationVariable =
             Garfish?.options?.insulationVariable || [];

@@ -82,6 +82,15 @@ export function error(error: string | Error) {
   });
 }
 
+export const supportLetStatement = (() => {
+  try {
+    new Function('let a = 1;');
+    return true;
+  } catch (e) {
+    return false;
+  }
+})();
+
 // 将字符串被设置为对象属性名时，会被尝试改造为常量化版本，避免浏览器重复产生缓存
 export function internFunc(internalizeString) {
   //  暂时不考虑Hash-collision，https://en.wikipedia.org/wiki/Collision_(computer_science)。v8貌似在16383长度时会发生hash-collision，经过测试后发现正常
