@@ -63,3 +63,23 @@ export interface Hooks {
   onInvokeBefore?: onInvokeBefore | Array<onInvokeBefore>;
   onCreateContext?: onCreateContext | Array<onCreateContext>;
 }
+
+export interface OverridesData {
+  recover?: () => void;
+  override?: Record<string, any>;
+  created?: (context: Sandbox['context']) => void;
+}
+
+export interface SandboxConfig {
+  open?: boolean;
+  snapshot?: boolean;
+  useStrict?: boolean;
+  strictIsolation?: boolean;
+  hooks?: Hooks;
+  modules?: Record<string, (sandbox: Sandbox) => OverridesData>;
+}
+
+export interface BrowserConfig extends SandboxConfig {
+  protectVariable?: PropertyKey[];
+  insulationVariable?: PropertyKey[];
+}

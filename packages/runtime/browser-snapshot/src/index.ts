@@ -26,30 +26,37 @@ declare module '@garfish/core' {
   }
 }
 
-export default function BrowserSnapshot() {
+interface BrowserConfig {
+  open?: boolean;
+  protectVariable?: PropertyKey[];
+}
+
+export default function BrowserSnapshot(op?: BrowserConfig) {
   return function (Garfish: Garfish): interfaces.Plugin {
-    let openBrowser = false;
+    const config: BrowserConfig = op || { open: true };
+
     const options = {
       name: 'browser-snapshot',
       version: __VERSION__,
       openBrowser: false,
       bootstrap() {
-        if (Garfish?.options?.sandbox === false) options.openBrowser = false;
-        if (Garfish?.options?.sandbox) {
-          // Support for instance configuration, to ensure that old versions compatible
-          const noSandbox = Garfish?.options?.sandbox?.open === false;
-          const useBrowserSandbox =
-            Garfish?.options?.sandbox?.snapshot === true;
-          openBrowser = !noSandbox && useBrowserSandbox;
-          options.openBrowser = openBrowser;
+        const sandboxConfig = Garfish?.options?.sandbox;
+        if (sandboxConfig === false) config.open = false;
+        if (sandboxConfig) {
+          config.open = sandboxConfig?.open && sandboxConfig?.snapshot === true;
+          config.protectVariable = Garfish?.options?.protectVariable || [];
         }
+        options.openBrowser = config.open;
       },
       afterLoad(appInfo, appInstance) {
-        if (!openBrowser) return;
+        if (!config.open) return;
         if (appInstance) {
           // existing
           if (appInstance.snapshotSandbox) return;
-          const sandbox = new SnapshotSandbox(appInfo.name);
+          const sandbox = new SnapshotSandbox(
+            appInfo.name,
+            config.protectVariable,
+          );
           appInstance.snapshotSandbox = sandbox;
         }
       },

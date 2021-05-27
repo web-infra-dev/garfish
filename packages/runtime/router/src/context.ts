@@ -93,6 +93,7 @@ export interface RouterInterface {
     deactive,
     notMatch,
   }: Options) => void;
+  routerConfig: Options;
 }
 
 const Router: RouterInterface = {
@@ -103,6 +104,7 @@ const Router: RouterInterface = {
   registerRouter,
   routerChange,
   listenRouterAndReDirect,
+  routerConfig: RouterConfig,
 };
 
 //eslint-disable-next-line

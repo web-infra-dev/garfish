@@ -8,14 +8,8 @@ import {
   warn,
 } from '@garfish/utils';
 import { Sandbox } from './sandbox';
+import { BrowserConfig, SandboxConfig } from './types';
 import './utils/handleNode';
-
-export interface SandboxConfig {
-  open?: boolean;
-  snapshot?: boolean;
-  useStrict?: boolean;
-  strictIsolation?: boolean;
-}
 
 declare module '@garfish/core' {
   export namespace interfaces {
@@ -33,22 +27,26 @@ declare module '@garfish/core' {
   }
 }
 
-export default function BrowserVm() {
+export default function BrowserVm(op?: BrowserConfig) {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
-    let openVm = false;
+    // Use the default Garfish instance attributes
+    const config: BrowserConfig = op || { open: true };
     const options = {
       name: 'browser-vm',
       version: __VERSION__,
       openVm: true,
       bootstrap() {
-        if (Garfish?.options?.sandbox === false) options.openVm = false;
-        if (Garfish?.options?.sandbox) {
-          // Support for instance configuration, to ensure that old versions compatible
-          const noSandbox = Garfish?.options?.sandbox?.open === false;
-          const useBrowserVm = Garfish?.options?.sandbox?.snapshot === false;
-          openVm = !noSandbox && window.Proxy && useBrowserVm;
-          options.openVm = openVm;
+        // Support for instance configuration, to ensure that old versions compatible
+        const sandboxConfig = Garfish?.options?.sandbox;
+        if (sandboxConfig === false) config.open = false;
+        if (sandboxConfig) {
+          config.open =
+            sandboxConfig?.open && sandboxConfig?.snapshot === false;
+          config.protectVariable = Garfish?.options?.protectVariable || [];
+          config.insulationVariable =
+            Garfish?.options?.insulationVariable || [];
         }
+        options.openVm = config.open;
       },
       // Get all the application resources of static address, used to distinguish whether the error is derived from the application
       // processResource(appInfo, manager, _resource) {
@@ -64,7 +62,8 @@ export default function BrowserVm() {
       //   appSourceList.set(appInfo.name, sourceList);
       // },
       afterLoad(appInfo, appInstance) {
-        if (!openVm) return;
+        if (!config.open) return;
+
         if (appInstance) {
           // existing
           if (appInstance.vmSandbox) return;
@@ -85,9 +84,9 @@ export default function BrowserVm() {
             el: () => appInstance.htmlNode,
             openSandbox: true,
             strictIsolation: appInstance.strictIsolation,
-            protectVariable: () => Garfish.options.protectVariable || [],
+            protectVariable: () => config.protectVariable || [],
             insulationVariable: () =>
-              webpackAttrs.concat(Garfish.options?.insulationVariable || []),
+              webpackAttrs.concat(config?.insulationVariable || []),
             modules: {
               cjsModule: () => {
                 return {
