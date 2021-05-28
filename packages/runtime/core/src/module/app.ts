@@ -283,8 +283,8 @@ export class App {
     const { resources } = this;
 
     // Tag to the global environment, in order to calculate the code to run during which export content increased
-    const mark = markAndDerived();
-    mark.markExport(this.global);
+    // const mark = markAndDerived();
+    // mark.markExport(this.global);
 
     // Render the application node
     // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
@@ -306,10 +306,10 @@ export class App {
     }
 
     // Access to the content of export in the global environment
-    const exports = mark.getExport(this.global);
-    if (exports) {
-      this.customExports = exports;
-    }
+    // const exports = mark.getExport(this.global);
+    // if (exports) {
+    //   this.customExports = exports;
+    // }
   }
 
   // Calls to render do compatible with two different sandbox
@@ -474,12 +474,12 @@ export class App {
       if (cjsModules.exports.provider) provider = cjsModules.exports.provider;
 
       // Set the library parameters not available by default exports
-      const keys = Object.keys(cjsModules.exports);
-      const libraryKey = keys.find((key) => key.indexOf(exportTag) !== -1);
-      if (libraryKey) {
-        const exportProvider = cjsModules?.exports[libraryKey]?.provider;
-        provider = exportProvider;
-      }
+      // const keys = Object.keys(cjsModules.exports);
+      // const libraryKey = keys.find((key) => key.indexOf(exportTag) !== -1);
+      // if (libraryKey) {
+      //   const exportProvider = cjsModules?.exports[libraryKey]?.provider;
+      //   provider = exportProvider;
+      // }
     }
 
     // Custom export prior to export by default
