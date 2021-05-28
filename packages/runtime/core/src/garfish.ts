@@ -14,7 +14,6 @@ import {
 import { Loader } from './module/loader';
 import { interfaces } from './interface';
 import { App } from './module/app';
-import { RouterInterface } from 'packages/runtime/router/src/context';
 import GarfishHMRPlugin from './plugins/fixHMR';
 import GarfishOptionsLife from './plugins/lifecycle';
 import GarfishPreloadPlugin from './plugins/preload';
@@ -33,8 +32,6 @@ export class Garfish implements interfaces.Garfish {
   public hooks: Hooks;
   public subInstances: Array<Garfish> = [];
   public externals: Record<string, any> = {};
-
-  router: RouterInterface;
 
   constructor(options: interfaces.Options) {
     this.hooks = new Hooks();

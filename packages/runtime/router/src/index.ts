@@ -8,7 +8,7 @@ interface Options {
 }
 
 declare module '@garfish/core' {
-  export default interface Garfish {
+  export interface Garfish {
     router: RouterInterface;
   }
 
