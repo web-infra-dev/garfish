@@ -45,6 +45,7 @@ describe('Init', () => {
       'start',
       'close',
       'reset',
+      'optimizeGlobalMethod',
       'callHook',
       'execScript',
       'getOverrides',

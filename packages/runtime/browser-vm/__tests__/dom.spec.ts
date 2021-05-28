@@ -1,4 +1,4 @@
-import { Sandbox } from '../src/sandbox';
+import { Sandbox } from '../src/index';
 
 // Garfish使用Proxy对dom进行了劫持, 同时对调用dom的函数做了劫持, 修正dom节点的类型
 // 对调用dom的相关方法进行测试
