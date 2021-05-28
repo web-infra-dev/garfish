@@ -16,7 +16,7 @@
     "build:watch": "lerna exec -- yarn link && node scripts/build.js -m -e  -f=esm-bundler -w",
     "reset": "lerna clean --yes && rm -rf node_modules",
     "setup": "npm run reset && npm install && lerna bootstrap --hoist",
-    "prepublishOnly": "npm run test && npm run build:all",
+    "prepublishOnly": "npm run test && npm run build:all && npm run changelog",
     "changelog": "node scripts/changelog.js",
     "test": "node scripts/jestTest.js",
     "test:cover": "node scripts/jestTest.js --coverage",
@@ -24,7 +24,8 @@
     "lint": "eslint --ext .ts packages/*/*/src/**",
     "reset-gittag": "git tag -l | xargs git tag -d && git fetch --prune",
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
-    "format:js": "prettier --write --parser typescript \"(packages|scripts)/**/*.js\""
+    "format:js": "prettier --write --parser typescript \"(packages|scripts)/**/*.js\"",
+    "format:md": "prettier --write \"**/*.md\""
   },
   "husky": {
     "hooks": {
@@ -39,6 +40,9 @@
     "*.ts?(x)": [
       "eslint --fix",
       "prettier --parser=typescript --write"
+    ],
+    "*.md": [
+      "prettier --write"
     ]
   },
   "publishConfig": {
