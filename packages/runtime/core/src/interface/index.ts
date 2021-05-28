@@ -29,13 +29,6 @@ export namespace interfaces {
 
   export interface App {}
 
-  export interface SandboxConfig {
-    open?: boolean;
-    snapshot?: boolean;
-    useStrict?: boolean;
-    strictIsolation?: boolean;
-  }
-
   export interface AppInfo {
     name: string;
     entry: string;
@@ -70,6 +63,13 @@ export namespace interfaces {
   export interface Provider {
     destroy: ({ dom: HTMLElement }) => void;
     render: ({ dom: HTMLElement, basename: string }) => void;
+  }
+
+  export interface SandboxConfig {
+    open?: boolean;
+    snapshot?: boolean;
+    useStrict?: boolean;
+    strictIsolation?: boolean;
   }
 
   export interface Config {

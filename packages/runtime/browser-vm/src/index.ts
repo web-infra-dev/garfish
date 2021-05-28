@@ -9,11 +9,22 @@ import {
   warn,
 } from '@garfish/utils';
 import { Sandbox } from './sandbox';
-import { BrowserConfig } from './types';
+import { BrowserConfig, Hooks as TypeHooks } from './types';
 import './utils/handleNode';
+
+export interface OverridesData {
+  recover?: () => void;
+  override?: Record<string, any>;
+  created?: (context: Sandbox['context']) => void;
+}
 
 declare module '@garfish/core' {
   export namespace interfaces {
+    export interface SandboxConfig {
+      hooks?: TypeHooks;
+      modules?: Record<string, (sandbox: Sandbox) => OverridesData>;
+    }
+
     export interface Config {
       protectVariable?: PropertyKey[];
       insulationVariable?: PropertyKey[];
@@ -32,7 +43,7 @@ declare module '@garfish/core' {
 export default function BrowserVm() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     // Use the default Garfish instance attributes
-    const config: BrowserConfig = { open: true };
+    let config: BrowserConfig = { open: true };
     const options = {
       name: 'browser-vm',
       version: __VERSION__,
@@ -42,13 +53,16 @@ export default function BrowserVm() {
         const sandboxConfig = Garfish?.options?.sandbox;
         if (sandboxConfig === false) config.open = false;
         if (sandboxConfig) {
-          config.open =
-            rawWindow.Proxy &&
-            sandboxConfig?.open &&
-            sandboxConfig?.snapshot === false;
-          config.protectVariable = Garfish?.options?.protectVariable || [];
-          config.insulationVariable =
-            Garfish?.options?.insulationVariable || [];
+          config = {
+            open:
+              rawWindow.Proxy &&
+              sandboxConfig?.open &&
+              sandboxConfig?.snapshot === false,
+            protectVariable: Garfish?.options?.protectVariable || [],
+            insulationVariable: Garfish?.options?.insulationVariable || [],
+            modules: sandboxConfig.modules || {},
+            hooks: sandboxConfig.hooks || {},
+          };
         }
         options.openVm = config.open;
       },
