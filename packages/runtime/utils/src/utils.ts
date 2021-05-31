@@ -327,3 +327,8 @@ export function deepMerge<K, T>(o: K, n: T, dp?: boolean) {
 
   return mergeObject(o, n) as K & T;
 }
+
+export function getType(val) {
+  const type = Object.prototype.toString.call(val);
+  return type.slice(1, type.length - 8).toLowerCase();
+}

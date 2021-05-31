@@ -31,6 +31,7 @@ export default {
   mounted () {
     if (hasInit) return;
     hasInit = true;
+
     if (__GARFISH__PARENT__) {
       GarfishInstance.registerApp([
         {

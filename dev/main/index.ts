@@ -32,7 +32,7 @@ GarfishInstance.run({
 
 console.log(GarfishInstance);
 
-let useRouterMode = true;
+const useRouterMode = true;
 document.getElementById('vueBtn').onclick = async () => {
   if (useRouterMode) {
     history.pushState({}, 'vue', '/garfish_master/vue'); // use router to load app

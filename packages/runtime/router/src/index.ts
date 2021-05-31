@@ -1,6 +1,10 @@
 import { interfaces } from '@garfish/core';
 import { assert, createKey, warn } from '@garfish/utils';
-import router, { listenRouterAndReDirect, RouterInterface } from './context';
+import router, {
+  listenRouterAndReDirect,
+  RouterInterface,
+  initRedirect,
+} from './context';
 
 interface Options {
   autoRefreshApp?: boolean;
@@ -100,6 +104,18 @@ export default function Router(_args?: Options) {
         };
 
         listenRouterAndReDirect(listenOptions);
+      },
+      registerApp(appInfos) {
+        // Has been running after adding routing to trigger the redirection
+        if (!Garfish.running) return;
+
+        const appList = Object.keys(appInfos).map((key) => {
+          return appInfos[key];
+        });
+        router.registerRouter(appList);
+
+        // After completion of the registration application, trigger application mount
+        initRedirect();
       },
     };
   };

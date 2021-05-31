@@ -1,4 +1,5 @@
 import { interfaces } from '@garfish/core';
+import { getType } from '@garfish/utils';
 import { listen } from './agentRouter';
 import {
   setRouterConfig,
@@ -83,7 +84,9 @@ export interface RouterInterface {
   }) => void;
   beforeEach: (hook: RouterHook) => void;
   afterEach: (hook: RouterHook) => void;
-  registerRouter: (Apps: Array<interfaces.AppInfo>) => void;
+  registerRouter: (
+    Apps: interfaces.AppInfo | Array<interfaces.AppInfo>,
+  ) => void;
   routerChange: (hook: RouterChange) => void;
   listenRouterAndReDirect: ({
     apps,
@@ -106,6 +109,8 @@ const Router: RouterInterface = {
   listenRouterAndReDirect,
   routerConfig: RouterConfig,
 };
+
+export { initRedirect } from './agentRouter';
 
 //eslint-disable-next-line
 export default Router;

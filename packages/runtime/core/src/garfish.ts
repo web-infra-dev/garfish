@@ -20,7 +20,7 @@ import GarfishPreloadPlugin from './plugins/preload';
 
 export class Garfish implements interfaces.Garfish {
   public version = __VERSION__;
-  private running = false;
+  public running = false;
   public flag = __GARFISH_FLAG__; // A unique identifier
   public options = getDefaultOptions();
   public appInfos: Record<string, interfaces.AppInfo> = {};

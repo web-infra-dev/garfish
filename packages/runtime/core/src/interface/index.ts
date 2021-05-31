@@ -47,6 +47,7 @@ export namespace interfaces {
   // }
 
   export interface Garfish {
+    running: boolean;
     version: string;
     options: Options;
     appInfos: Record<string, interfaces.AppInfo>;
@@ -200,7 +201,7 @@ export namespace interfaces {
     beforeBootstrap: SyncHook<Options, void>;
     bootstrap: SyncHook<Options, void>;
     beforeRegisterApp: SyncHook<[AppInfo | Array<AppInfo>], void>;
-    registerApp: SyncHook<[AppInfo | Record<string, interfaces.AppInfo>], void>;
+    registerApp: SyncHook<[Record<string, interfaces.AppInfo>], void>;
     beforeLoad: AsyncSeriesBailHook<AppInfo, boolean | void | AppConstructor>; // 根据返回值决定是否继续执行后续代码 or return a constructor
     initializeApp: AsyncSeriesBailHook<
       [Garfish, AppInfo, HtmlResource, interfaces.ResourceModules, boolean],

@@ -98,8 +98,7 @@ export const normalAgent = () => {
   addRouterListener();
 };
 
-export const listen = () => {
-  normalAgent();
+export const initRedirect = () => {
   linkTo({
     toRouterInfo: {
       fullPath: location.pathname,
@@ -115,4 +114,9 @@ export const listen = () => {
     },
     eventType: 'pushState',
   });
+};
+
+export const listen = () => {
+  normalAgent();
+  initRedirect();
 };

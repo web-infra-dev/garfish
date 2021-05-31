@@ -19,7 +19,7 @@ module.exports = {
 
   publicPath: 'http://localhost:9090',
   configureWebpack: (config) => {
-    config.output.library = `sub-app-garfish-exports`;
+    // config.output.library = `sub-app-garfish-exports`;
     config.output.jsonpFunction = `sub-app-jsonp`;
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
