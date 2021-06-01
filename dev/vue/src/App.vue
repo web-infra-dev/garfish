@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="grandson">
     <div>sub app content</div>
   </div>
 </template>

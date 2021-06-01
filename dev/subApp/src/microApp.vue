@@ -32,17 +32,20 @@ export default {
     if (hasInit) return;
     hasInit = true;
 
-    if (__GARFISH__PARENT__) {
-      GarfishInstance.registerApp([
-        {
-          entry: 'http://localhost:8000',
-          basename: '/garfish_master/vue',
-          activeWhen: '/vueApp',
-          name: 'vueApp',
-          domGetter: ()=> this.$refs.vueApp
-        }
-      ]);
+    GarfishInstance.registerApp([
+      {
+        name: 'vueApp',
+        entry: 'http://localhost:8000',
+        basename: '/garfish_master/vue',
+        activeWhen: '/vueApp',
+        domGetter: ()=> document.querySelector('#vueApp')
+      }
+    ]);
+
+    if (!GarfishInstance.running) {
+      GarfishInstance.run();
     }
+
     // Can only be run once
     // GarfishInstance.run({
     //   basename: this.basename || '/',

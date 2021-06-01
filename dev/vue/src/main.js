@@ -53,6 +53,8 @@ Vue.config.productionTip = false;
 // console.log(audio instanceof Audio);
 let vm;
 const render = ({ dom, basename = '/' }) => {
+  console.log('be here', dom);
+  if (!dom) return;
   // console.log('##########3', basename);
   const router = new VueRouter({
     mode: 'history',

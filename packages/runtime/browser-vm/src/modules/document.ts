@@ -16,7 +16,6 @@ import {
   createFakeObject,
   verifyDescriptor,
   verifySetDescriptor,
-  macroTaskProxyDocument,
   microTaskHtmlProxyDocument,
 } from '../utils';
 
@@ -185,12 +184,6 @@ export const documentOverride = (sandbox: Sandbox) => {
   );
 
   return {
-    // 在执行代码前，做预准备
-    prepare() {
-      // 获取节点之后，解决节点向上获取parentNode逃逸问题
-      const rootEl = rootElm(sandbox);
-      macroTaskProxyDocument(rootEl, proxyDocument);
-    },
     override: {
       Document: fakeDocumentCtor,
       document: proxyDocument,

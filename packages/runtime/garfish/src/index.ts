@@ -2,7 +2,7 @@ import { Garfish } from '@garfish/core';
 import GarfishRouter from '@garfish/router';
 import GarfishBrowserVm from '@garfish/browser-vm';
 import GarfishBrowserSnapshot from '@garfish/browser-snapshot';
-import { def, hasOwn, warn, __GARFISH_FLAG__ } from '@garfish/utils';
+import { def, hasOwn, inBrowser, warn, __GARFISH_FLAG__ } from '@garfish/utils';
 
 declare global {
   interface Window {
@@ -16,6 +16,10 @@ declare global {
 // Initialize the Garfish, currently existing environment to allow only one instance (export to is for test)
 export function createContext() {
   let fresh = false;
+  // Existing garfish instance, direct return
+  if (inBrowser() && window['__GARFISH__'] && window['Garfish'])
+    return window['Garfish'];
+
   const GarfishInstance = new Garfish({
     plugins: [GarfishRouter(), GarfishBrowserVm(), GarfishBrowserSnapshot()],
   });
@@ -55,12 +59,14 @@ export function createContext() {
     }
   };
 
-  set('Gar');
-  set('Garfish');
+  if (inBrowser()) {
+    set('Gar');
+    set('Garfish');
 
-  // 全局标识符
-  set('__GAR__', true);
-  set('__GARFISH__', true);
+    // 全局标识符
+    set('__GAR__', true);
+    set('__GARFISH__', true);
+  }
 
   if (fresh) {
     if (__DEV__) {
@@ -71,7 +77,7 @@ export function createContext() {
       }
     }
   }
-  return window['Garfish'];
+  return GarfishInstance;
 }
 
 export { interfaces } from '@garfish/core';

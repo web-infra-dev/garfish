@@ -6,9 +6,7 @@ import {
   deepMerge,
   warn,
   error,
-  validURL,
   hasOwn,
-  def,
   __GARFISH_FLAG__,
 } from '@garfish/utils';
 import { Loader } from './module/loader';
@@ -111,11 +109,6 @@ export class Garfish implements interfaces.Garfish {
       __DEV__ &&
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
       return this;
-    }
-
-    // Nested scene add logo
-    if (options.nested) {
-      def(window, '__GARFISH__PARENT__', true);
     }
 
     this.hooks.lifecycle.beforeBootstrap.call(this.options);

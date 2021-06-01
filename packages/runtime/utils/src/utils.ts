@@ -332,3 +332,7 @@ export function getType(val) {
   const type = Object.prototype.toString.call(val);
   return type.slice(1, type.length - 8).toLowerCase();
 }
+
+export function inBrowser() {
+  return typeof window !== 'undefined';
+}

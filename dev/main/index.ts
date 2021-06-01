@@ -6,7 +6,6 @@ GarfishInstance.run({
   sandbox: {
     // snapshot: true,
   },
-  nested: true,
   apps: [
     {
       name: 'react',

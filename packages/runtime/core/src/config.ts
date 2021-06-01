@@ -30,7 +30,6 @@ const defaultOptions: interfaces.Options = {
   },
   protectVariable: [],
   insulationVariable: [],
-  nested: false,
   autoRefreshApp: true,
   disableStatistics: false,
   disablePreloadApp: false,
