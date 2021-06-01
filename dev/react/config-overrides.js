@@ -6,6 +6,7 @@ module.exports = {
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
     // config.devtool = 'eval-source-map';
+    config.output.publicPath = 'http://localhost:3000';
     config.mode = 'production';
     config.plugins.push(
       new webpack.BannerPlugin({

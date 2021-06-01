@@ -9,6 +9,7 @@ import {
   emitSandboxHook,
   setDocCurrentScript,
   supportLetStatement,
+  createKey,
 } from '@garfish/utils';
 import {
   Hooks,
@@ -39,6 +40,7 @@ import { localStorageOverride } from './modules/storage';
 import { listenerOverride } from './modules/eventListener';
 import { timeoutOverride, intervalOverride } from './modules/timer';
 import { __windowBind__, __garfishGlobal__ } from './symbolTypes';
+import { setSandbox } from './global';
 
 let sandboxId = 0;
 const defaultModules: Record<string, Module> = {
@@ -54,7 +56,7 @@ const defaultModules: Record<string, Module> = {
 export class Sandbox {
   public type = 'vm';
   public closed = true;
-  public id = sandboxId++;
+  public id = `${createKey()}_${sandboxId++}`;
   public version = __VERSION__;
   public context?: FakeWindow;
   public options: SandboxOptions;
@@ -92,7 +94,9 @@ export class Sandbox {
     this.isInsulationVariable = makeMap(opts.insulationVariable?.() || []);
 
     this.options = opts;
-    this.start(); // 默认启动沙箱
+    this.start(); // The default startup sandbox
+    // Store the sandbox instance
+    setSandbox(this.id, this);
   }
 
   callHook(name: keyof Hooks, args = []) {
@@ -419,6 +423,7 @@ export class Sandbox {
       this.context = null;
       this.attachedCode = '';
       this.callHook('onclose', [this]);
+      setSandbox(this.id, null);
     }
   }
 

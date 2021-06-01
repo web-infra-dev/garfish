@@ -3,17 +3,11 @@ import GarfishInstance from '@garfish/framework';
 GarfishInstance.run({
   basename: '/garfish_master',
   domGetter: '#submoduleByRouter',
-  sandbox: {
-    // snapshot: true,
-  },
   apps: [
     {
       name: 'react',
       activeWhen: '/react',
       entry: 'http://localhost:3000',
-      props: {
-        a: 1,
-      },
     },
     {
       name: 'vue',

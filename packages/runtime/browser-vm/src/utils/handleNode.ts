@@ -16,6 +16,7 @@ import { Sandbox } from '../sandbox';
 import { handlerParams } from './index';
 import { __domWrapper__ } from '../symbolTypes';
 import { rootElm, toResolveUrl } from './sandbox';
+import { getSandbox } from '../global';
 
 const rawElementMethods = Object.create(null);
 const isResourceNode = makeMap(['a', 'img', 'link', 'script']);
@@ -160,7 +161,8 @@ const makeElInjector = (current: Function, method: string) => {
     }
 
     if (el) {
-      const sandbox = el.GARFISH_SANDBOX as Sandbox;
+      const sandboxID = el.GARFISH_SANDBOX_ID as string;
+      const sandbox = getSandbox(sandboxID);
 
       if (sandbox) {
         let newNode;

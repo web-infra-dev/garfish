@@ -1,3 +1,4 @@
+import Garfish from '@garfish/framework';
 import Vue from 'vue';
 import App from './App.vue';
 import store from './store';
@@ -53,7 +54,6 @@ Vue.config.productionTip = false;
 // console.log(audio instanceof Audio);
 let vm;
 const render = ({ dom, basename = '/' }) => {
-  // console.log('##########3', basename);
   const router = new VueRouter({
     mode: 'history',
     base: basename,
@@ -78,8 +78,8 @@ const render = ({ dom, basename = '/' }) => {
 
 // console.log(document.body.contains(document.querySelector('#app')));
 
-// 这能够让子应用独立运行起来
-if (!window.__GARFISH__PARENT__) {
+// 没有运行表明，没有主应用执行 run，可以执行不在微前端环境下的渲染
+if (!window.Garfish.running) {
   render({});
 }
 

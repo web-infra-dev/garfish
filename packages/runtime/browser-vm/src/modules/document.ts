@@ -47,10 +47,10 @@ export const documentOverride = (sandbox: Sandbox) => {
           return function (tagName, options) {
             const el = value.call(rawDocument, tagName, options);
             if (isObject(el)) {
-              Object.defineProperty(el, 'GARFISH_SANDBOX', {
+              Object.defineProperty(el, 'GARFISH_SANDBOX_ID', {
                 configurable: true,
                 enumerable: false,
-                value: sandbox,
+                value: sandbox.id,
               });
             }
             return el;
