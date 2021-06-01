@@ -3,6 +3,9 @@
       <el-button plain @click="loadApp">
         加载子应用
       </el-button>
+      <el-button plain @click="loadAppReact">
+        加载 React 子应用
+      </el-button>
     <div ref="vueApp" id="vueApp"></div>
   </div>
 </template>
@@ -26,6 +29,18 @@ export default {
       // console.log(app);
       Garfish.router.push({ path: '/vueApp', basename: this.basename })
       // console.log(this.basename, GarfishInstance);
+    },
+    async loadAppReact () {
+      console.log(GarfishInstance);
+      // let app = await GarfishInstance.loadApp('vueApp',{
+      //   entry: 'http://localhost:8000',
+      //   basename: this.basename,
+      //   domGetter: ()=> this.$refs.vueApp
+      // });
+      // await app.mount();
+      // console.log(app);
+      Garfish.router.push({ path: '/reactApp', basename: this.basename })
+      // console.log(this.basename, GarfishInstance);
     }
   },
   mounted () {
@@ -38,6 +53,13 @@ export default {
         entry: 'http://localhost:8000',
         basename: '/garfish_master/vue',
         activeWhen: '/vueApp',
+        domGetter: ()=> document.querySelector('#vueApp')
+      },
+      {
+        name: 'reactApp',
+        entry: 'http://localhost:3000',
+        basename: '/garfish_master/vue',
+        activeWhen: '/reactApp',
         domGetter: ()=> document.querySelector('#vueApp')
       }
     ]);
