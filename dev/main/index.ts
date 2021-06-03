@@ -7,6 +7,7 @@ GarfishInstance.run({
     {
       name: 'react',
       activeWhen: '/react',
+      cache: true,
       entry: 'http://localhost:3000',
     },
     {

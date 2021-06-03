@@ -8,6 +8,7 @@ import {
   rawDocumentCtor,
   rawObjectDefineProperty,
 } from '@garfish/utils';
+import { setElementSandbox } from '../global';
 import { Sandbox } from '../sandbox';
 import { __proxyNode__, __documentBind__ } from '../symbolTypes';
 import {
@@ -46,13 +47,7 @@ export const documentOverride = (sandbox: Sandbox) => {
         if (p === 'createElement') {
           return function (tagName, options) {
             const el = value.call(rawDocument, tagName, options);
-            if (isObject(el)) {
-              Object.defineProperty(el, 'GARFISH_SANDBOX_ID', {
-                configurable: true,
-                enumerable: false,
-                value: sandbox.id,
-              });
-            }
+            if (isObject(el)) setElementSandbox(el, sandbox);
             return el;
           };
         }

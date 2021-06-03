@@ -237,6 +237,7 @@ export class App {
       if (!this.stopMountAndClearEffect()) return false;
       this.callRender(provider);
       this.display = true;
+      this.mounted = true;
       this.context.hooks.lifecycle.afterMount.call(this.appInfo, this);
     } catch (err) {
       removeElement(this.appContainer);
@@ -258,6 +259,7 @@ export class App {
     this.callDestroy(this.provider);
     this.display = false;
     this.unmounting = false;
+    this.mounted = false;
 
     this.context.hooks.lifecycle.afterUnMount.call(this.appInfo, this);
     return true;

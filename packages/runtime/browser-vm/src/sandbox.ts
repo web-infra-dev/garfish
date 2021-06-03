@@ -40,7 +40,6 @@ import { localStorageOverride } from './modules/storage';
 import { listenerOverride } from './modules/eventListener';
 import { timeoutOverride, intervalOverride } from './modules/timer';
 import { __windowBind__, __garfishGlobal__ } from './symbolTypes';
-import { setSandbox } from './global';
 
 let sandboxId = 0;
 const defaultModules: Record<string, Module> = {
@@ -95,8 +94,6 @@ export class Sandbox {
 
     this.options = opts;
     this.start(); // The default startup sandbox
-    // Store the sandbox instance
-    setSandbox(this.id, this);
   }
 
   callHook(name: keyof Hooks, args = []) {
@@ -423,7 +420,6 @@ export class Sandbox {
       this.context = null;
       this.attachedCode = '';
       this.callHook('onclose', [this]);
-      setSandbox(this.id, null);
     }
   }
 
