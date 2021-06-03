@@ -12,6 +12,7 @@ import {
 } from '@garfish/hooks';
 import { Garfish } from '../garfish';
 import { Loader } from '../module/loader';
+import { EventEmitter } from 'events';
 // import { App } from '../module/app';
 
 export namespace interfaces {
@@ -53,6 +54,7 @@ export namespace interfaces {
     appInfos: Record<string, interfaces.AppInfo>;
     activeApps: Record<string, interfaces.App>;
     plugins: Array<interfaces.Plugin>;
+    channel: EventEmitter;
     loader: Loader;
     hooks: Hooks;
     loadApp(

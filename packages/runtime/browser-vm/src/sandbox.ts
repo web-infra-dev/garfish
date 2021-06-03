@@ -82,7 +82,7 @@ export class Sandbox {
     assert(isObject(opts), 'Miss options.');
 
     if (!opts.modules) opts.modules = {};
-    if (!('useStrict' in opts)) opts.useStrict = true;
+    if (!('useStrict' in opts)) opts.useStrict = false;
     if (!('openSandbox' in opts)) opts.openSandbox = true;
     if (!('requestConfig' in opts)) opts.requestConfig = {};
     if (!('strictIsolation' in opts)) opts.strictIsolation = true;
@@ -315,10 +315,12 @@ export class Sandbox {
 
     try {
       const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
+      let code = `${refs.code}\n${sourceUrl}`;
+      code = !this.options.useStrict
+        ? `with(window) {;${this.attachedCode + code}}`
+        : code;
+
       if (this.options.openSandbox) {
-        const code = `with(window) {;${
-          this.attachedCode + refs.code
-        }\n${sourceUrl}}`;
         evalWithEnv(code, {
           window: refs.context,
           ...this.overrideContext.overrides,
@@ -326,9 +328,7 @@ export class Sandbox {
           ...env,
         });
       } else {
-        const code = `with(window) {;${refs.code}\n${sourceUrl}}`;
         evalWithEnv(code, {
-          ...this.overrideContext.overrides,
           unstable_sandbox: this,
           ...env,
         });

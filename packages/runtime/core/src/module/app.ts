@@ -27,6 +27,7 @@ import {
   setDocCurrentScript,
   exportTag,
 } from '@garfish/utils';
+import { nodeFetch } from 'packages/runtime/loader/src/fetch/nodeFetch';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
 import { markAndDerived } from '../utils';
@@ -97,6 +98,7 @@ export class App {
       exports: {},
       module: this.cjsModules,
       require: (_key: string) => context.externals[_key],
+      [__GARFISH_EXPORTS__]: this.customExports,
     };
     this.customLoader = customLoader;
 
@@ -159,11 +161,11 @@ export class App {
 
   getExecScriptEnv(noEntry: boolean) {
     // The legacy of commonJS function support
-    return this.esModule
-      ? {}
-      : noEntry
-      ? { [__GARFISH_EXPORTS__]: this.customExports }
-      : this.cjsModules;
+    if (this.esModule) return {};
+
+    if (noEntry) return { [__GARFISH_EXPORTS__]: this.customExports };
+
+    return this.cjsModules;
   }
 
   private canMount() {

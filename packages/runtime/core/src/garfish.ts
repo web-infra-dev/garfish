@@ -15,12 +15,14 @@ import { App } from './module/app';
 import GarfishHMRPlugin from './plugins/fixHMR';
 import GarfishOptionsLife from './plugins/lifecycle';
 import GarfishPreloadPlugin from './plugins/preload';
+import { EventEmitter } from 'events';
 
 export class Garfish implements interfaces.Garfish {
   public version = __VERSION__;
   public running = false;
   public flag = __GARFISH_FLAG__; // A unique identifier
   public options = getDefaultOptions();
+  public channel = new EventEmitter();
   public appInfos: Record<string, interfaces.AppInfo> = {};
   public activeApps: Record<string, interfaces.App> = {};
   public cacheApps: Record<string, interfaces.App> = {};

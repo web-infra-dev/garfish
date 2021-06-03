@@ -11,6 +11,7 @@
 </template>
 
 <script>
+// 嵌套场景中
 import GarfishInstance from '@garfish/framework';
 
 let hasInit = false;
@@ -47,25 +48,44 @@ export default {
     if (hasInit) return;
     hasInit = true;
 
-    GarfishInstance.registerApp([
-      {
-        name: 'vueApp',
-        entry: 'http://localhost:8000',
-        basename: '/garfish_master/vue',
-        activeWhen: '/vueApp',
-        domGetter: ()=> document.querySelector('#vueApp')
-      },
-      {
-        name: 'reactApp',
-        entry: 'http://localhost:3000',
-        basename: '/garfish_master/vue',
-        activeWhen: '/reactApp',
-        domGetter: ()=> document.querySelector('#vueApp')
-      }
-    ]);
-
-    if (!GarfishInstance.running) {
-      GarfishInstance.run();
+    console.log(`window.__GARFISH_PARENT__`, window.__GARFISH_PARENT__);
+    if (window.__GARFISH_PARENT__) {
+      GarfishInstance.registerApp([
+        {
+          name: 'vueApp',
+          entry: 'http://localhost:8000',
+          basename: '/garfish_master/vue',
+          activeWhen: '/vueApp',
+          domGetter: ()=> document.querySelector('#vueApp')
+        },
+        {
+          name: 'reactApp',
+          entry: 'http://localhost:3000',
+          basename: '/garfish_master/vue',
+          activeWhen: '/reactApp',
+          domGetter: ()=> document.querySelector('#vueApp')
+        }
+      ]);
+    } else {
+      // GarfishInstance.run({
+      //   basename: '/garfish_master/vue',
+      //   apps: [
+      //     {
+      //       name: 'vueApp',
+      //       entry: 'http://localhost:8000',
+      //       basename: '/garfish_master/vue',
+      //       activeWhen: '/vueApp',
+      //       domGetter: ()=> document.querySelector('#vueApp')
+      //     },
+      //     {
+      //       name: 'reactApp',
+      //       entry: 'http://localhost:3000',
+      //       basename: '/garfish_master/vue',
+      //       activeWhen: '/reactApp',
+      //       domGetter: ()=> document.querySelector('#vueApp')
+      //     }
+      //   ]
+      // });
     }
 
     // Can only be run once

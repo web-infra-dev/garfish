@@ -1,5 +1,7 @@
 import GarfishInstance from '@garfish/framework';
 
+(window as any).__GARFISH_PARENT__ = true;
+
 GarfishInstance.run({
   basename: '/garfish_master',
   domGetter: '#submoduleByRouter',
@@ -14,7 +16,7 @@ GarfishInstance.run({
       name: 'vue',
       activeWhen: '/vue',
       cache: true,
-      entry: 'http://localhost:9090',
+      entry: 'http://localhost:9000',
     },
   ],
   plugins: [],
