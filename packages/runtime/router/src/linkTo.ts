@@ -125,8 +125,6 @@ export const linkTo = async ({
     },
   });
 
-  console.log(needToActive);
-
   // Within the application routing jump, by collecting the routing function for processing.
   // Filtering gar-router popstate hijacking of the router
   // In the switch back and forth in the application is provided through routing push method would trigger application updates

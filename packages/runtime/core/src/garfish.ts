@@ -77,7 +77,7 @@ export class Garfish implements interfaces.Garfish {
     });
   }
 
-  private usePlugin(
+  public usePlugin(
     plugin: (context: Garfish) => interfaces.Plugin,
     ...args: Array<any>
   ) {
@@ -118,7 +118,7 @@ export class Garfish implements interfaces.Garfish {
     this.setOptions(options);
 
     // register plugins
-    options?.plugins.forEach((pluginCb) => {
+    options?.plugins?.forEach((pluginCb) => {
       this.usePlugin(pluginCb, this);
     });
 
@@ -172,8 +172,8 @@ export class Garfish implements interfaces.Garfish {
     } else {
       appInfo = {
         cache: true,
-        ...opts,
         ...appInfo,
+        ...opts,
       };
     }
 

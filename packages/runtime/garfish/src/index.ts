@@ -14,7 +14,7 @@ declare global {
 }
 
 // Initialize the Garfish, currently existing environment to allow only one instance (export to is for test)
-export function createContext() {
+export function createContext(): Garfish {
   let fresh = false;
   // Existing garfish instance, direct return
   if (inBrowser() && window['__GARFISH__'] && window['Garfish'])

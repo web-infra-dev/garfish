@@ -48,6 +48,8 @@ export namespace interfaces {
   // }
 
   export interface Garfish {
+    flag: symbol;
+    cacheApps: Record<string, interfaces.App>;
     running: boolean;
     version: string;
     options: Options;

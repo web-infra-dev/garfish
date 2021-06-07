@@ -19,11 +19,16 @@ GarfishInstance.run({
       entry: 'http://localhost:9000',
     },
   ],
-  plugins: [],
+  sandbox: {
+    open: true,
+    snapshot: true,
+  },
   async beforeLoad(appInfo) {
     console.log('开始加载了', appInfo);
-    // return Promise.resolve();
   },
+  // beforeMount (appInfo) {
+  //   console.log('开始渲染', appInfo);
+  // }
 });
 
 console.log(GarfishInstance);
@@ -53,7 +58,6 @@ document.getElementById('reactBtn').onclick = async () => {
   }
 };
 
-export function provider() {}
 // setTimeout(() => {
 //   throw new Error('main error');
 // }, 3000);
