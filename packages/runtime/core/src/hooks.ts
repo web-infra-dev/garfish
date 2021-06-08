@@ -4,6 +4,7 @@ import {
   AsyncParallelBailHook,
   AsyncSeriesHook,
 } from '@garfish/hooks';
+import { warn } from '@garfish/utils';
 import { interfaces } from './interface';
 
 export function keys<O>(o: O) {
@@ -55,9 +56,14 @@ export class Hooks {
     };
   }
 
-  public usePlugins(plugin: Plugin) {
+  public usePlugins(plugin: interfaces.Plugin) {
     const lifecycleKeys = keys(this.lifecycle);
     const pluginName = plugin.name;
+
+    if (typeof plugin !== 'object')
+      __DEV__ && warn('Plug-in must return object type');
+    if (pluginName) __DEV__ && warn('Plug-in must provide a name');
+
     lifecycleKeys.forEach((key) => {
       const pluginLife = plugin[key];
       if (!pluginLife) return;

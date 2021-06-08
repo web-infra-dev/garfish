@@ -25,7 +25,7 @@ const defaultOptions: interfaces.Options = {
   sandbox: {
     open: true,
     snapshot: false,
-    useStrict: true,
+    useStrict: false,
     strictIsolation: false,
   },
   protectVariable: [],

@@ -14,7 +14,7 @@ declare global {
 }
 
 // Initialize the Garfish, currently existing environment to allow only one instance (export to is for test)
-export function createContext() {
+export function createContext(): Garfish {
   let fresh = false;
   // Existing garfish instance, direct return
   if (inBrowser() && window['__GARFISH__'] && window['Garfish'])
@@ -46,12 +46,6 @@ export function createContext() {
             next();
           }
         }
-      } else if (
-        window[namespace] &&
-        window[namespace].flag === __GARFISH_FLAG__
-      ) {
-        // Nested scene
-        window[namespace].subInstances.push(GarfishInstance);
       }
     } else {
       fresh = true;
@@ -60,11 +54,9 @@ export function createContext() {
   };
 
   if (inBrowser()) {
-    set('Gar');
     set('Garfish');
 
     // 全局标识符
-    set('__GAR__', true);
     set('__GARFISH__', true);
   }
 

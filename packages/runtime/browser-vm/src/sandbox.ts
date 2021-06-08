@@ -40,7 +40,6 @@ import { localStorageOverride } from './modules/storage';
 import { listenerOverride } from './modules/eventListener';
 import { timeoutOverride, intervalOverride } from './modules/timer';
 import { __windowBind__, __garfishGlobal__ } from './symbolTypes';
-import { setSandbox } from './global';
 
 let sandboxId = 0;
 const defaultModules: Record<string, Module> = {
@@ -56,7 +55,7 @@ const defaultModules: Record<string, Module> = {
 export class Sandbox {
   public type = 'vm';
   public closed = true;
-  public id = `${createKey()}_${sandboxId++}`;
+  public id = `${sandboxId++}`;
   public version = __VERSION__;
   public context?: FakeWindow;
   public options: SandboxOptions;
@@ -83,7 +82,7 @@ export class Sandbox {
     assert(isObject(opts), 'Miss options.');
 
     if (!opts.modules) opts.modules = {};
-    if (!('useStrict' in opts)) opts.useStrict = true;
+    if (!('useStrict' in opts)) opts.useStrict = false;
     if (!('openSandbox' in opts)) opts.openSandbox = true;
     if (!('requestConfig' in opts)) opts.requestConfig = {};
     if (!('strictIsolation' in opts)) opts.strictIsolation = true;
@@ -95,8 +94,6 @@ export class Sandbox {
 
     this.options = opts;
     this.start(); // The default startup sandbox
-    // Store the sandbox instance
-    setSandbox(this.id, this);
   }
 
   callHook(name: keyof Hooks, args = []) {
@@ -318,10 +315,12 @@ export class Sandbox {
 
     try {
       const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
+      let code = `${refs.code}\n${sourceUrl}`;
+      code = !this.options.useStrict
+        ? `with(window) {;${this.attachedCode + code}}`
+        : code;
+
       if (this.options.openSandbox) {
-        const code = `with(window) {;${
-          this.attachedCode + refs.code
-        }\n${sourceUrl}}`;
         evalWithEnv(code, {
           window: refs.context,
           ...this.overrideContext.overrides,
@@ -329,23 +328,21 @@ export class Sandbox {
           ...env,
         });
       } else {
-        const code = `with(window) {;${refs.code}\n${sourceUrl}}`;
         evalWithEnv(code, {
-          ...this.overrideContext.overrides,
           unstable_sandbox: this,
           ...env,
         });
       }
     } catch (e) {
       // 触发 window.onerror
-      // const source = url || this.options.baseUrl;
-      // const message = e instanceof Error ? e.message : String(e);
+      const source = url || this.options.baseUrl;
+      const message = e instanceof Error ? e.message : String(e);
 
-      // if (typeof refs.context.onerror === 'function') {
-      //   // @ts-ignore
-      //   const fn = refs.context.onerror._native || refs.context.onerror;
-      //   fn.call(window, message, source, null, null, e);
-      // }
+      if (typeof refs.context.onerror === 'function') {
+        // @ts-ignore
+        const fn = refs.context.onerror._native || refs.context.onerror;
+        fn.call(window, message, source, null, null, e);
+      }
       throw e;
     }
 
@@ -423,7 +420,6 @@ export class Sandbox {
       this.context = null;
       this.attachedCode = '';
       this.callHook('onclose', [this]);
-      setSandbox(this.id, null);
     }
   }
 

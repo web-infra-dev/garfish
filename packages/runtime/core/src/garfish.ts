@@ -1,5 +1,4 @@
-import { Hooks } from './hooks';
-import { getDefaultOptions } from './config';
+import { EventEmitter } from 'events';
 import {
   assert,
   isObject,
@@ -9,6 +8,8 @@ import {
   hasOwn,
   __GARFISH_FLAG__,
 } from '@garfish/utils';
+import { getDefaultOptions, lifecycle } from './config';
+import { Hooks } from './hooks';
 import { Loader } from './module/loader';
 import { interfaces } from './interface';
 import { App } from './module/app';
@@ -22,6 +23,7 @@ export class Garfish implements interfaces.Garfish {
   public running = false;
   public flag = __GARFISH_FLAG__; // A unique identifier
   public options = getDefaultOptions();
+  public channel = new EventEmitter();
   public appInfos: Record<string, interfaces.AppInfo> = {};
   public activeApps: Record<string, interfaces.App> = {};
   public cacheApps: Record<string, interfaces.App> = {};
@@ -30,7 +32,6 @@ export class Garfish implements interfaces.Garfish {
   public plugins: Array<interfaces.Plugin> = [];
   public loader: Loader;
   public hooks: Hooks;
-  public subInstances: Array<Garfish> = [];
   public externals: Record<string, any> = {};
 
   constructor(options: interfaces.Options) {
@@ -77,7 +78,7 @@ export class Garfish implements interfaces.Garfish {
     });
   }
 
-  private usePlugin(
+  public usePlugin(
     plugin: (context: Garfish) => interfaces.Plugin,
     ...args: Array<any>
   ) {
@@ -110,6 +111,16 @@ export class Garfish implements interfaces.Garfish {
     if (this.running) {
       __DEV__ &&
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
+      // Nested scene can be repeated registration application, and basic information for the basename
+      this.registerApp(
+        options.apps?.map((app) => {
+          return {
+            ...app,
+            basename: options?.basename || this.options.basename,
+            domGetter: options?.domGetter || this.options.domGetter,
+          };
+        }),
+      );
       return this;
     }
 
@@ -118,7 +129,7 @@ export class Garfish implements interfaces.Garfish {
     this.setOptions(options);
 
     // register plugins
-    options?.plugins.forEach((pluginCb) => {
+    options?.plugins?.forEach((pluginCb) => {
       this.usePlugin(pluginCb, this);
     });
 
@@ -172,8 +183,8 @@ export class Garfish implements interfaces.Garfish {
     } else {
       appInfo = {
         cache: true,
-        ...opts,
         ...appInfo,
+        ...opts,
       };
     }
 

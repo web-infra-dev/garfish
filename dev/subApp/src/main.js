@@ -79,7 +79,7 @@ const render = ({ dom, basename = '/' }) => {
 // console.log(document.body.contains(document.querySelector('#app')));
 
 // 没有运行表明，没有主应用执行 run，可以执行不在微前端环境下的渲染
-if (!window.Garfish.running) {
+if (!window.__GARFISH_PARENT__) {
   render({});
 }
 

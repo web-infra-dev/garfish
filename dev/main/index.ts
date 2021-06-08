@@ -1,5 +1,7 @@
 import GarfishInstance from '@garfish/framework';
 
+(window as any).__GARFISH_PARENT__ = true;
+
 GarfishInstance.run({
   basename: '/garfish_master',
   domGetter: '#submoduleByRouter',
@@ -7,20 +9,26 @@ GarfishInstance.run({
     {
       name: 'react',
       activeWhen: '/react',
+      cache: true,
       entry: 'http://localhost:3000',
     },
     {
       name: 'vue',
       activeWhen: '/vue',
       cache: true,
-      entry: 'http://localhost:9090',
+      entry: 'http://localhost:9000',
     },
   ],
-  plugins: [],
+  sandbox: {
+    open: true,
+    snapshot: true,
+  },
   async beforeLoad(appInfo) {
     console.log('开始加载了', appInfo);
-    // return Promise.resolve();
   },
+  // beforeMount (appInfo) {
+  //   console.log('开始渲染', appInfo);
+  // }
 });
 
 console.log(GarfishInstance);
@@ -50,7 +58,6 @@ document.getElementById('reactBtn').onclick = async () => {
   }
 };
 
-export function provider() {}
 // setTimeout(() => {
 //   throw new Error('main error');
 // }, 3000);

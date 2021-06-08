@@ -19,7 +19,19 @@ export interface OverridesData {
 }
 
 declare module '@garfish/core' {
+  export interface Garfish {
+    getGlobalObject: () => Window & typeof globalThis;
+    setGlobalValue(key: string, value?: any): void;
+    clearEscapeEffect: (key: string, value?: any) => void;
+  }
+
   export namespace interfaces {
+    export interface Garfish {
+      getGlobalObject: () => Window & typeof globalThis;
+      setGlobalValue(key: string, value?: any): void;
+      clearEscapeEffect: (key: string, value?: any) => void;
+    }
+
     export interface SandboxConfig {
       hooks?: TypeHooks;
       modules?: Record<string, (sandbox: Sandbox) => OverridesData>;
@@ -44,6 +56,16 @@ export default function BrowserVm() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     // Use the default Garfish instance attributes
     let config: BrowserConfig = { open: true };
+    Garfish.getGlobalObject = () => Sandbox.getGlobalObject();
+    Garfish.setGlobalValue = (key, value) =>
+      (Garfish.getGlobalObject()[key] = value);
+    Garfish.clearEscapeEffect = (key, value?: any) => {
+      const global = Garfish.getGlobalObject();
+      if (key in global) {
+        global[key] = value;
+      }
+    };
+
     const options = {
       name: 'browser-vm',
       version: __VERSION__,

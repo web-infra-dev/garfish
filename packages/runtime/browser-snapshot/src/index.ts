@@ -1,5 +1,5 @@
 import { SnapshotSandbox } from './sandbox';
-import { Garfish, interfaces } from '@garfish/core';
+import { interfaces } from '@garfish/core';
 
 export interface SandboxConfig {
   open?: boolean;
@@ -32,7 +32,7 @@ interface BrowserConfig {
 }
 
 export default function BrowserSnapshot(op?: BrowserConfig) {
-  return function (Garfish: Garfish): interfaces.Plugin {
+  return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     const config: BrowserConfig = op || { open: true };
 
     const options = {
