@@ -54,11 +54,9 @@ export function createContext(): Garfish {
   };
 
   if (inBrowser()) {
-    set('Gar');
     set('Garfish');
 
     // 全局标识符
-    set('__GAR__', true);
     set('__GARFISH__', true);
   }
 
