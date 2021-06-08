@@ -55,7 +55,7 @@ const defaultModules: Record<string, Module> = {
 export class Sandbox {
   public type = 'vm';
   public closed = true;
-  public id = `${createKey()}_${sandboxId++}`;
+  public id = `${sandboxId++}`;
   public version = __VERSION__;
   public context?: FakeWindow;
   public options: SandboxOptions;
