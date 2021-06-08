@@ -55,7 +55,7 @@ export class Hooks {
     };
   }
 
-  public usePlugins(plugin: Plugin) {
+  public usePlugins(plugin: interfaces.Plugin) {
     const lifecycleKeys = keys(this.lifecycle);
     const pluginName = plugin.name;
     lifecycleKeys.forEach((key) => {

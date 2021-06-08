@@ -46,12 +46,6 @@ export function createContext(): Garfish {
             next();
           }
         }
-      } else if (
-        window[namespace] &&
-        window[namespace].flag === __GARFISH_FLAG__
-      ) {
-        // Nested scene
-        window[namespace].subInstances.push(GarfishInstance);
       }
     } else {
       fresh = true;

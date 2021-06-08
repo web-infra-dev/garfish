@@ -1,5 +1,5 @@
 import { Hooks } from './hooks';
-import { getDefaultOptions } from './config';
+import { getDefaultOptions, lifecycle } from './config';
 import {
   assert,
   isObject,
@@ -30,7 +30,6 @@ export class Garfish implements interfaces.Garfish {
   public plugins: Array<interfaces.Plugin> = [];
   public loader: Loader;
   public hooks: Hooks;
-  public subInstances: Array<Garfish> = [];
   public externals: Record<string, any> = {};
 
   constructor(options: interfaces.Options) {
@@ -110,6 +109,16 @@ export class Garfish implements interfaces.Garfish {
     if (this.running) {
       __DEV__ &&
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
+      // Nested scene can be repeated registration application, and basic information for the basename
+      this.registerApp(
+        options.apps?.map((app) => {
+          return {
+            ...app,
+            basename: options?.basename || this.options.basename,
+            domGetter: options?.domGetter || this.options.domGetter,
+          };
+        }),
+      );
       return this;
     }
 
