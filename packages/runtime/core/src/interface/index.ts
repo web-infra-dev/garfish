@@ -2,7 +2,7 @@ import { VText, VNode } from '@garfish/utils';
 import {
   CssResource,
   HtmlResource as HtmlResourceInterfaces,
-  JsResource,
+  JsResource as JsResourceInterfaces,
 } from '../module/source';
 import {
   SyncHook,
@@ -28,6 +28,7 @@ export namespace interfaces {
   ) => Promise<void> | void;
 
   export interface App {}
+  export interface Component {}
 
   export interface AppInfo {
     name: string;
@@ -37,6 +38,14 @@ export namespace interfaces {
     activeWhen?: string | ((path: string) => boolean);
     props?: Record<string, any>;
     domGetter?: DomGetter;
+  }
+
+  export interface ComponentInfo {
+    name: string;
+    url: string;
+    cache?: boolean; // Whether the cache
+    props?: Record<string, any>;
+    version?: string;
   }
 
   // export interface SandboxConfig {
@@ -59,6 +68,10 @@ export namespace interfaces {
       name: string,
       opts: interfaces.LoadAppOptions,
     ): Promise<interfaces.App>;
+    loadComponent(
+      name: string,
+      opts: interfaces.LoadComponentOptions,
+    ): Promise<interfaces.Component>;
   }
 
   export interface Provider {
@@ -111,6 +124,7 @@ export namespace interfaces {
   }
 
   export type HtmlResource = HtmlResourceInterfaces;
+  export type JsResource = JsResourceInterfaces;
 
   export type Options = Config & HooksLifecycle;
 
@@ -192,6 +206,24 @@ export namespace interfaces {
         noEntry?: boolean;
       },
     ): void;
+  }
+
+  export interface Component {
+    name: string;
+    componentInfo: ComponentInfo;
+    cjsModules: Record<string, any>;
+    global: any;
+    getExecScriptEnv(noEntry: boolean): Record<string, any>;
+    execScript(
+      code: string,
+      env: Record<string, any>,
+      url?: string,
+      options?: {
+        async?: boolean;
+        noEntry?: boolean;
+      },
+    ): void;
+    getComponent: () => any;
   }
 
   export interface Lifecycle {
