@@ -335,14 +335,14 @@ export class Sandbox {
       }
     } catch (e) {
       // 触发 window.onerror
-      // const source = url || this.options.baseUrl;
-      // const message = e instanceof Error ? e.message : String(e);
+      const source = url || this.options.baseUrl;
+      const message = e instanceof Error ? e.message : String(e);
 
-      // if (typeof refs.context.onerror === 'function') {
-      //   // @ts-ignore
-      //   const fn = refs.context.onerror._native || refs.context.onerror;
-      //   fn.call(window, message, source, null, null, e);
-      // }
+      if (typeof refs.context.onerror === 'function') {
+        // @ts-ignore
+        const fn = refs.context.onerror._native || refs.context.onerror;
+        fn.call(window, message, source, null, null, e);
+      }
       throw e;
     }
 
