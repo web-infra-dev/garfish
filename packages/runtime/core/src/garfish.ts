@@ -1,5 +1,4 @@
-import { Hooks } from './hooks';
-import { getDefaultOptions, lifecycle } from './config';
+import { EventEmitter } from 'events';
 import {
   assert,
   isObject,
@@ -9,13 +8,14 @@ import {
   hasOwn,
   __GARFISH_FLAG__,
 } from '@garfish/utils';
+import { getDefaultOptions, lifecycle } from './config';
+import { Hooks } from './hooks';
 import { Loader } from './module/loader';
 import { interfaces } from './interface';
 import { App } from './module/app';
 import GarfishHMRPlugin from './plugins/fixHMR';
 import GarfishOptionsLife from './plugins/lifecycle';
 import GarfishPreloadPlugin from './plugins/preload';
-import { EventEmitter } from 'events';
 
 export class Garfish implements interfaces.Garfish {
   public version = __VERSION__;
