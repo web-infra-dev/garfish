@@ -137,6 +137,11 @@ export namespace interfaces {
     domGetter: DomGetter;
   };
 
+  export type LoadComponentOptions = Pick<
+    ComponentInfo,
+    Exclude<keyof ComponentInfo, 'name'>
+  >;
+
   type AsyncResource = {
     async: boolean;
     content: () => Promise<any>;
