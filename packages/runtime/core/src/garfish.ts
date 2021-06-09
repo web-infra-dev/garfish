@@ -273,6 +273,13 @@ export class Garfish implements interfaces.Garfish {
     return this.loading[name];
   }
 
+  public getComponent(name: string): any {
+    if (!name || !this.cacheComponents[name]) {
+      return;
+    }
+    return this.cacheComponents[name].getComponent();
+  }
+
   public setExternal(nameOrExtObj: string | Record<string, any>, value?: any) {
     assert(nameOrExtObj, 'Invalid parameter.');
     if (typeof nameOrExtObj === 'object') {

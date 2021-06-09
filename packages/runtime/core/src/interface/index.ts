@@ -41,12 +41,19 @@ export namespace interfaces {
     domGetter?: DomGetter;
   }
 
+  export type ComponentParser = (
+    code: string,
+    env: Record<string, any>,
+    url?: string,
+  ) => Promise<void | boolean> | void | boolean;
+
   export interface ComponentInfo {
     name: string;
     url: string;
     cache?: boolean; // Whether the cache
     props?: Record<string, any>;
     version?: string;
+    parser?: ComponentParser;
   }
 
   // export interface SandboxConfig {

@@ -34,8 +34,7 @@ export class Component {
     //Execute script
     try {
       this.execScript(code, {}, url, {
-        async: false,
-        noEntry: false,
+        parser: this.componentInfo.parser,
       });
     } catch (err) {
       console.error(err);
@@ -46,28 +45,21 @@ export class Component {
     code: string,
     env: Record<string, any>,
     url?: string,
-    options?: { async?: boolean; noEntry?: boolean },
+    options?: { parser: interfaces.ComponentParser },
   ) {
-    const revertCurrentScript = setDocCurrentScript(
-      this.global.document,
-      code,
-      true,
-      url,
-      options.async,
-    );
     env = this.getExecScriptEnv() || {};
     const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
 
     try {
-      // const fn = evalWithEnv(`;${code}\n${sourceUrl}`, env);
-      // Todo: Provide extensions for component source code parsing
-      const fn = eval(`;${code}\n${sourceUrl}`);
-      fn.call(env.exports, env.module, env.exports, env.require.bind(env));
+      if (options?.parser) {
+        options.parser(code, env, url);
+        return;
+      }
+      evalWithEnv(`;${code}\n${sourceUrl}`, env);
     } catch (e) {
       // this.context.hooks.lifecycle.errorExecCode.call(this.componentInfo, e);
       throw e;
     }
-    revertCurrentScript();
   }
 
   getComponent() {
