@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Shared dev</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  <script src="./utils.umd.js"></script>
+  <script>
+    const c1 = {
+      a: 1,
+      dd: 'tt'
+    }
+    const c2 = {
+      a: 2,
+      dd: 'tfds'
+    }
+
+    const a = {
+      c1: c1,
+    };
+    const b = {
+      c1: c2,
+      aa: 'c'
+    }
+
+    c1.b = c1;
+    c2.b = c2;
+
+    const cr = Shared.deepMerge(a, b, true);
+    console.log(cr);
+  </script>
+</body>
+</html>

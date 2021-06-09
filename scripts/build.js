@@ -31,7 +31,13 @@ run();
 async function run() {
   const buildAll = async (targets) => {
     for (const target of targets) {
-      await build(target);
+      // watch mode can't await
+      if (target.indexOf('hooks') !== -1) return;
+      if (watch) {
+        build(target);
+      } else {
+        await build(target);
+      }
     }
   };
 
@@ -43,7 +49,7 @@ async function run() {
 }
 
 async function build(target) {
-  const pkgDir = path.resolve(`packages/core/${target}`);
+  const pkgDir = path.resolve(`packages/runtime/${target}`);
   const pkg = require(`${pkgDir}/package.json`);
 
   if (pkg.private) {
@@ -74,9 +80,9 @@ async function build(target) {
   );
 
   // Merge .d.ts
-  if (mergeTypes && pkg.types) {
-    mergeBuildTypes(pkgDir, target);
-  }
+  // if (mergeTypes && pkg.types && !pkgDir.includes('hooks')) {
+  //   mergeBuildTypes(pkgDir, target);
+  // }
 }
 
 function getPrivateDeps(dotDTs) {
@@ -84,7 +90,9 @@ function getPrivateDeps(dotDTs) {
   const deps = getDeps(code);
   return allTargets
     .map((target) => {
-      const pkg = require(path.resolve(`packages/core/${target}/package.json`));
+      const pkg = require(path.resolve(
+        `packages/runtime/${target}/package.json`,
+      ));
       return pkg.private
         ? deps.find((v) => {
             if (v.pkgName === pkg.name) {
@@ -115,13 +123,13 @@ function mergePrivateTypes(
 
   // 复用 config，打包依赖的私有包
   config.mainEntryPointFilePath = mainEntryPointFilePath.replace(
-    `dist/packages/core/${target}/`,
-    `dist/packages/core/${dirName}/`,
+    `dist/packages/runtime/${target}/`,
+    `dist/packages/runtime/${dirName}/`,
   );
 
   config.publicTrimmedFilePath = publicTrimmedFilePath.replace(
-    `core/${baseRoot}/dist/${target}.d.ts`,
-    `core/${baseRoot}/dist/${dirName}.d.ts`,
+    `runtime/${baseRoot}/dist/${target}.d.ts`,
+    `runtime/${baseRoot}/dist/${dirName}.d.ts`,
   );
 
   // 替换包的引用方式
@@ -181,6 +189,8 @@ async function mergeBuildTypes(pkgDir, target) {
       )
     ) {
       // 如果当前包内有额外的全局 .d.ts，可以手动拼接到后面
+      if (extractorConfig.globalEntryPointFilePath) {
+      }
       console.log(chalk.green.bold('API Extractor completed successfully.\n'));
       await fs.remove(`${pkgDir}/dist/packages`);
       await fs.remove('dist');

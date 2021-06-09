@@ -8,6 +8,7 @@ es/
 .vscode
 .rts2_cache/
 temp/
+core_
 
 # Editor directories and files
 .idea
@@ -25,3 +26,10 @@ test.js
 **/yarn-debug.log*
 **/yarn-error.log*
 lerna-debug.log
+
+
+# lock files
+package-lock.json
+yarn.lock
+**/yarn.lock
+**/package-lock.json

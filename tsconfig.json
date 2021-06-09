@@ -3,8 +3,9 @@
     "baseUrl": ".",
     "rootDir": ".",
     "outDir": "dist",
-    "module": "ES2015",
-    "target": "es5",
+    "module": "ESNext",
+    "target": "es6",
+    "lib": ["es6","dom"],
     "sourceMap": false,
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -13,12 +14,12 @@
     "declaration": true,
     "allowJs": true,
     "paths": {
-      "@garfish/*": ["packages/core/*/src"]
+      "@garfish/*": ["packages/runtime/*/src"]
     }
   },
   "include": [
-      "packages/core/*/src",
-      "packages/core/*/__tests__",
-      "packages/core/global.d.ts"
+    "packages/runtime/*/src",
+    "packages/runtime/*/__tests__",
+    "packages/runtime/global.d.ts"
   ]
 }
