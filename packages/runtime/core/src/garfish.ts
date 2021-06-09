@@ -33,7 +33,7 @@ export class Garfish implements interfaces.Garfish {
   public externals: Record<string, any> = {};
 
   constructor(options: interfaces.Options) {
-    this.hooks = new Hooks();
+    this.hooks = new Hooks(true);
     this.loader = new Loader();
 
     // init Garfish options
@@ -41,42 +41,24 @@ export class Garfish implements interfaces.Garfish {
 
     // register plugins
     options?.plugins.forEach((pluginCb) => {
-      this.usePlugin(pluginCb, this);
+      this.usePlugin(this.hooks, pluginCb, this);
     });
 
     this.hooks.lifecycle.initialize.call(this.options);
   }
 
   private injectOptionalPlugin(options?: interfaces.Options) {
-    const defaultPlugin = [GarfishHMRPlugin(), GarfishOptionsLife()];
+    const defaultPlugin = [GarfishHMRPlugin(), GarfishOptionsLife(options)];
     // Preload plugin
     if (!options.disablePreloadApp) defaultPlugin.push(GarfishPreloadPlugin());
 
-    // // The open set to false, just said to close the sandbox
-    // const noSandbox = options.sandbox?.open === false;
-    // const useBrowserVm = options?.sandbox?.snapshot === false;
-
-    // // Add the sandbox plug-in
-    // if (!noSandbox) {
-    //   // The current environment without setting the proxy and the use of vm sandbox to open it
-    //   if (window.Proxy && useBrowserVm) {
-    //     defaultPlugin.push(GarfishBrowserVm());
-    //   } else {
-    //     if (!window.Proxy && useBrowserVm) {
-    //       warn(
-    //         'Due to the current environment without the proxy, does not support the vm sandbox, if to maintain its normal operation in the current environment, please pass the sandbox snapshot parameter switch to the sandbox',
-    //       );
-    //     }
-    //     defaultPlugin.push(GarfishBrowserSnapshot());
-    //   }
-    // }
-
     defaultPlugin.forEach((pluginCb) => {
-      this.usePlugin(pluginCb, this);
+      this.usePlugin(this.hooks, pluginCb, this);
     });
   }
 
   public usePlugin(
+    hooks,
     plugin: (context: Garfish) => interfaces.Plugin,
     ...args: Array<any>
   ) {
@@ -88,7 +70,7 @@ export class Garfish implements interfaces.Garfish {
     (plugin as any)._registered = true;
     const res = plugin.apply(this, [this, ...args]);
     this.plugins.push(res);
-    return this.hooks.usePlugins(res);
+    return hooks.usePlugins(res);
   }
 
   public setOptions(options: Partial<interfaces.Options>) {
@@ -109,13 +91,17 @@ export class Garfish implements interfaces.Garfish {
     if (this.running) {
       __DEV__ &&
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
-      // Nested scene can be repeated registration application, and basic information for the basename
+      // Nested scene can be repeated registration application, and basic information for the basename、domGetter、lifeCycle
+      const hooks = new Hooks(false);
+      this.usePlugin(hooks, GarfishOptionsLife(options));
       this.registerApp(
         options.apps?.map((app) => {
           return {
             ...app,
             basename: options?.basename || this.options.basename,
             domGetter: options?.domGetter || this.options.domGetter,
+            lifecycle: hooks.lifecycle,
+            hooks: hooks,
           };
         }),
       );
@@ -128,7 +114,7 @@ export class Garfish implements interfaces.Garfish {
 
     // register plugins
     options?.plugins?.forEach((pluginCb) => {
-      this.usePlugin(pluginCb, this);
+      this.usePlugin(this.hooks, pluginCb, this);
     });
 
     this.injectOptionalPlugin(options);

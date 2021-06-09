@@ -13,8 +13,9 @@ export function keys<O>(o: O) {
 
 export class Hooks {
   public lifecycle: interfaces.Lifecycle;
+  public plugins: Array<interfaces.Plugin> = [];
 
-  constructor() {
+  constructor(hasIntercept) {
     this.lifecycle = {
       // beforeInitialize: new SyncHook(['options']),
       initialize: new SyncHook(['options']),
@@ -54,6 +55,24 @@ export class Hooks {
       afterUnMount: new SyncHook(['appInfo', 'appInstance']),
       errorExecCode: new SyncHook(['appInfo', 'error']),
     };
+
+    if (hasIntercept) {
+      Object.keys(this.lifecycle).forEach((lifeKey) => {
+        this.lifecycle[lifeKey].intercept({
+          async call(...args) {
+            const appInfo = args[0];
+            // hasAppInfo lifecycle
+            if (appInfo && appInfo.lifecycle && appInfo.lifecycle[lifeKey]) {
+              if (lifeKey === 'beforeLoad') {
+                await appInfo.lifecycle[lifeKey].promise(...args);
+              } else {
+                appInfo.lifecycle[lifeKey].call(...args);
+              }
+            }
+          },
+        });
+      });
+    }
   }
 
   public usePlugins(plugin: interfaces.Plugin) {
@@ -64,6 +83,7 @@ export class Hooks {
       __DEV__ && warn('Plug-in must return object type');
     if (pluginName) __DEV__ && warn('Plug-in must provide a name');
 
+    if (this.plugins.indexOf(plugin) === -1) this.plugins.push(plugin);
     lifecycleKeys.forEach((key) => {
       const pluginLife = plugin[key];
       if (!pluginLife) return;
@@ -83,4 +103,4 @@ export class Hooks {
   }
 }
 
-export const hooks = new Hooks();
+// export const hooks = new Hooks();

@@ -38,6 +38,7 @@ export namespace interfaces {
     activeWhen?: string | ((path: string) => boolean);
     props?: Record<string, any>;
     domGetter?: DomGetter;
+    lifecycle?: Lifecycle;
   }
 
   // export interface SandboxConfig {
