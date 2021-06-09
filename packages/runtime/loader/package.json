@@ -1,6 +1,6 @@
 {
   "name": "@garfish/loader",
-  "version": "0.0.2",
+  "version": "0.0.8",
   "description": "loader module.",
   "keywords": [
     "garfish",
@@ -19,7 +19,7 @@
     "url": "https://github.com/bytedance/garfish/issues"
   },
   "scripts": {},
-  "types": "dist/loader.d.ts",
+  "types": "dist/index.d.ts",
   "buildOptions": {
     "name": "Loader",
     "devTemplate": "module",
@@ -30,10 +30,12 @@
       "umd"
     ]
   },
-  "dependencies": {
-    "isomorphic-unfetch": "3.1.0"
+  "peerDependencies": {
+    "@garfish/core": "^0.0.1"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org"
-  }
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "gitHead": "1967845252838eafc43e99d51e1902b7de89d097"
 }

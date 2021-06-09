@@ -1,7 +1,0 @@
-{
-  "extends": "../../../api-extractor.json",
-  "mainEntryPointFilePath": "./dist/packages/runtime/sp-sandbox/src/index.d.ts",
-  "dtsRollup": {
-    "publicTrimmedFilePath": "./dist/sp-sandbox.d.ts"
-  }
-}

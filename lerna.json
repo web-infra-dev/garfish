@@ -1,5 +1,5 @@
 {
-  "version": "0.0.2",
+  "version": "0.0.8",
   "npmClient": "npm",
   "command": {
     "publish": {
@@ -19,7 +19,7 @@
     }
   },
   "packages": [
-    "packages/runtime/*",
-    "packages/tools/*"
+    "packages/runtime/**",
+    "packages/tools/**"
   ]
 }

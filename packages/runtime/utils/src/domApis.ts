@@ -1,5 +1,5 @@
-import { makeMap } from './utils';
-import { rawRemoveChild } from './raw';
+import { makeMap, noop, warn } from './utils';
+import { rawDocument, rawRemoveChild } from './raw';
 
 export interface VText {
   type: 'text' | 'comment';
@@ -13,6 +13,13 @@ export interface VNode {
   children: Array<VNode | VText>;
   attributes: Array<Record<string, string | null>>;
 }
+
+export const toResolveUrl = (vnode: VNode, urlKey: string, baseUrl: string) => {
+  const src = findProp(vnode, urlKey);
+  if (src) {
+    src.value = transformUrl(baseUrl, src.value);
+  }
+};
 
 const xChar = 120; // x
 const colonChar = 58; // :
@@ -183,4 +190,45 @@ export function findTarget(el: Element | ShadowRoot, selectors: Array<string>) {
     if (target) return target;
   }
   return el;
+}
+
+export function setDocCurrentScript(
+  target,
+  code: string,
+  define?: boolean,
+  url?: string,
+  async?: boolean,
+) {
+  if (!target) return noop;
+  const el = rawDocument.createElement('script');
+  if (async) {
+    el.setAttribute('async', 'true');
+  }
+
+  if (url) {
+    el.setAttribute('src', url);
+  } else if (code) {
+    el.textContent = code;
+  }
+
+  const set = (val) => {
+    try {
+      if (define) {
+        Object.defineProperty(target, 'currentScript', {
+          value: val,
+          writable: true,
+          configurable: true,
+        });
+      } else {
+        target.currentScript = val;
+      }
+    } catch (e) {
+      if (__DEV__) {
+        warn(e);
+      }
+    }
+  };
+
+  set(el);
+  return () => set(null);
 }

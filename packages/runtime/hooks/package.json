@@ -1,6 +1,6 @@
 {
   "name": "@garfish/hooks",
-  "version": "0.0.1",
+  "version": "0.0.8",
   "author": "zhoushaw",
   "description": "fork from tapable",
   "license": "MIT",
@@ -9,7 +9,6 @@
     "type": "git",
     "url": "http://github.com/webpack/tapable.git"
   },
-  "private": true,
   "devDependencies": {
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
@@ -27,9 +26,14 @@
     "tapable.d.ts"
   ],
   "main": "./src/index.js",
-  "types": "./tapable.d.ts",
+  "module": "./src/index.js",
+  "types": "./src/index.d.ts",
   "browser": {
     "util": "./lib/util-browser.js"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
   },
   "scripts": {
     "test": "jest",
@@ -41,5 +45,6 @@
     "transform": {
       "__tests__[\\\\/].+\\.js$": "babel-jest"
     }
-  }
+  },
+  "gitHead": "1967845252838eafc43e99d51e1902b7de89d097"
 }

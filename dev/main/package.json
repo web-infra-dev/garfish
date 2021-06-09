@@ -4,7 +4,7 @@
   "description": "main template",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server"
+    "start": "node linkdeps.js && webpack-dev-server"
   },
   "author": "Bytedance",
   "license": "MIT",
@@ -22,13 +22,19 @@
     "style-loader": "^1.0.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
+    "@garfish/framework": "0.0.8",
     "webpack-dev-server": "^3.9.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1",
+    "loader-utils": "^2.0.0",
     "mobx": "^6.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "ts-loader": "^8.0.0",
     "vue": "^2.6.11",
     "vue-router": "^3.4.2",
     "vuex": "^3.5.1"

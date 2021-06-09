@@ -7,9 +7,22 @@
     b { cursor: pointer; }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mobx/5.15.7/mobx.umd.js"></script>
+  <script>
+      // window.addEventListener('unhandledrejection', event => {
+      //   event.promise.catch((e)=>{
+      //     if (e instanceof Error) {
+      //       console.log('main app get error:', event); // 捕获后自定义处理
+      //     }
+      //   })
+      // }, true);
+      // window.addEventListener('error', event => {
+      //   console.log('main app get error:', event); // 捕获后自定义处理
+      // }, true);
+  </script>
 </head>
 <body>
   <div id="MainApp">
+    <!-- <script src="1xxx" ></script> -->
     <div>
       <h1 align="center">Main project</h1>
       <h2 align="center">

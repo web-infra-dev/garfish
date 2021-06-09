@@ -1,13 +1,31 @@
-import { Options } from './type';
-import { deepMerge } from '@garfish/utils';
+import { deepMerge, error } from '@garfish/utils';
+import { interfaces } from './interface';
 
-const defaultOptions: Options = {
+export const lifecycle: Array<Exclude<
+  keyof interfaces.HooksLifecycle,
+  'customLoader'
+>> = [
+  'beforeLoad',
+  'afterLoad',
+  'beforeEval',
+  'afterEval',
+  'beforeMount',
+  'afterMount',
+  'beforeUnmount',
+  'afterUnmount',
+  'errorLoadApp',
+  'errorMountApp',
+  'errorUnmountApp',
+];
+
+const defaultOptions: interfaces.Options = {
   apps: [],
   basename: '',
+  domGetter: () => null,
   sandbox: {
     open: true,
     snapshot: false,
-    useStrict: true,
+    useStrict: false,
     strictIsolation: false,
   },
   protectVariable: [],
@@ -15,8 +33,7 @@ const defaultOptions: Options = {
   autoRefreshApp: true,
   disableStatistics: false,
   disablePreloadApp: false,
-  domGetter: () => null,
-  beforeLoad: () => {},
+  beforeLoad: async () => {},
   afterLoad: () => {},
   beforeEval: () => {},
   afterEval: () => {},

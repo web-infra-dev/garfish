@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
 import json from '@rollup/plugin-json';
@@ -113,6 +113,45 @@ function allExternal() {
   return [...base, ...deps];
 }
 
+function extractTsDeclare() {
+  let outputoptions;
+  let pkgDir = '';
+  let pkgName = '';
+  return {
+    name: 'garfish-extractTsDeclare',
+    options(op) {
+      outputoptions = op;
+      pkgDir = op.input.replace('/src/index.ts', '');
+      let splitPkg = pkgDir.split('/');
+      pkgName = splitPkg[splitPkg.length - 1];
+    },
+    generateBundle() {
+      if (!pkgName) return;
+
+      let tsTypeDir = path.resolve(
+        pkgDir,
+        `dist/packages/runtime/${pkgName}/src`,
+      );
+
+      if (!fs.existsSync(tsTypeDir)) return;
+      setTimeout(() => {
+        fs.copySync(
+          path.resolve(pkgDir, tsTypeDir),
+          path.resolve(pkgDir, `dist/`),
+        );
+
+        const args = require('minimist')(process.argv.slice(2));
+        const watch = args.watch || args.w;
+        if (!watch) {
+          fs.remove(path.resolve(pkgDir, `dist/packages`));
+          fs.remove(path.resolve(pkgDir, `dist/dist`));
+          fs.remove(path.resolve(pkgDir, `temp`));
+        }
+      }, 1000);
+    },
+  };
+}
+
 function createConfig(format, output, plugins = []) {
   if (!output) {
     console.log(require('chalk').yellow(`invalid format: "${format}"`));
@@ -176,6 +215,7 @@ function createConfig(format, output, plugins = []) {
       ),
       ...nodePlugins,
       ...plugins,
+      extractTsDeclare(),
     ],
     treeshake: { moduleSideEffects: true },
     // 可以裸跑在浏览器里面的或者指定了不需要 external 的都需要把依赖打进去

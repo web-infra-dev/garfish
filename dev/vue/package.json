@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "vue-cli-service serve",
+    "start": "node linkdeps.js && vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -12,7 +12,8 @@
     "element-ui": "^2.14.1",
     "vue": "^2.6.11",
     "vue-router": "^3.4.3",
-    "vuex": "^3.5.1"
+    "vuex": "^3.5.1",
+    "@garfish/core": "0.0.8-alpha.5"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",
@@ -22,6 +23,9 @@
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "vue-template-compiler": "^2.6.11"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   },
   "eslintConfig": {
     "root": true,

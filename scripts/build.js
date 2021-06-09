@@ -31,7 +31,13 @@ run();
 async function run() {
   const buildAll = async (targets) => {
     for (const target of targets) {
-      await build(target);
+      // watch mode can't await
+      if (target.indexOf('hooks') !== -1) return;
+      if (watch) {
+        build(target);
+      } else {
+        await build(target);
+      }
     }
   };
 
@@ -74,9 +80,9 @@ async function build(target) {
   );
 
   // Merge .d.ts
-  if (mergeTypes && pkg.types) {
-    mergeBuildTypes(pkgDir, target);
-  }
+  // if (mergeTypes && pkg.types && !pkgDir.includes('hooks')) {
+  //   mergeBuildTypes(pkgDir, target);
+  // }
 }
 
 function getPrivateDeps(dotDTs) {
@@ -183,6 +189,8 @@ async function mergeBuildTypes(pkgDir, target) {
       )
     ) {
       // 如果当前包内有额外的全局 .d.ts，可以手动拼接到后面
+      if (extractorConfig.globalEntryPointFilePath) {
+      }
       console.log(chalk.green.bold('API Extractor completed successfully.\n'));
       await fs.remove(`${pkgDir}/dist/packages`);
       await fs.remove('dist');

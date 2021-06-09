@@ -1,11 +1,11 @@
 /*
 	MIT License http://www.opensource.org/licenses/mit-license.php
 	Author Tobias Koppers @sokra
+	Copy from https://github.com/webpack/tapable
 */
-"use strict";
 
-const Hook = require("./Hook");
-const HookCodeFactory = require("./HookCodeFactory");
+import Hook from "./Hook";
+import HookCodeFactory from "./HookCodeFactory";
 
 class AsyncSeriesBailHookCodeFactory extends HookCodeFactory {
 	content({ onError, onResult, resultReturns, onDone }) {
@@ -28,7 +28,7 @@ const COMPILE = function (options) {
 	return factory.create(options);
 };
 
-function AsyncSeriesBailHook(args = [], name = undefined) {
+export function AsyncSeriesBailHook(args = [], name = undefined) {
 	const hook = new Hook(args, name);
 	hook.constructor = AsyncSeriesBailHook;
 	hook.compile = COMPILE;
@@ -38,5 +38,3 @@ function AsyncSeriesBailHook(args = [], name = undefined) {
 }
 
 AsyncSeriesBailHook.prototype = null;
-
-module.exports = AsyncSeriesBailHook;

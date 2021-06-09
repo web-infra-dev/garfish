@@ -1,6 +1,6 @@
 {
   "name": "garfish",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "private": true,
   "workspaces": [
     "packages/runtime/*",
@@ -9,10 +9,11 @@
   "description": "a powerful micro front-end framework",
   "scripts": {
     "dev": "node scripts/dev.js",
-    "dev:garfish": "npm run build garfish -- -f=esm-bundler -w -e",
+    "dev:core": "yarn dev core",
     "pkg": "node scripts/createPackage.js",
     "build": "node scripts/build.js",
     "build:all": "node scripts/build.js -m -e",
+    "build:watch": "lerna exec -- yarn link && node scripts/build.js -m -e  -f=esm-bundler -w",
     "reset": "lerna clean --yes && rm -rf node_modules",
     "setup": "npm run reset && npm install && lerna bootstrap --hoist",
     "prepublishOnly": "npm run test && npm run build:all && npm run changelog",
@@ -20,10 +21,11 @@
     "test": "node scripts/jestTest.js",
     "test:cover": "node scripts/jestTest.js --coverage",
     "ls-lint": "ls-lint",
-    "lint": "eslint --ext .ts packages/*/src/**",
+    "lint": "eslint --ext .ts packages/*/*/src/**",
     "reset-gittag": "git tag -l | xargs git tag -d && git fetch --prune",
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
-    "format:js": "prettier --write --parser typescript \"(packages|scripts)/**/*.js\""
+    "format:js": "prettier --write --parser typescript \"(packages|scripts)/**/*.js\"",
+    "format:md": "prettier --write \"**/*.md\""
   },
   "husky": {
     "hooks": {
@@ -38,6 +40,9 @@
     "*.ts?(x)": [
       "eslint --fix",
       "prettier --parser=typescript --write"
+    ],
+    "*.md": [
+      "prettier --write"
     ]
   },
   "publishConfig": {

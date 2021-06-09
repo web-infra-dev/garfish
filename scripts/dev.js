@@ -72,40 +72,15 @@ async function run() {
     process.exit(1);
   }
 
+  // install all deps
   await transfer(pkgDir, pkgDevDir, buildOptions);
   await sleep(100);
 
-  const buildProcess = execa(
-    'rollup',
-    [
-      '-wc',
-      '--environment',
-      [
-        'ENV:develop',
-        'SOURCE_MAP:true',
-        `TARGET:${target}`,
-        `CHECK:${!noCheck}`,
-        `FORMATS:${formats}`,
-        `MAIN:${
-          buildOptions.devDist ||
-          (buildOptions.devTemplate === 'module'
-            ? 'dev'
-            : path.resolve('dev/main/dist'))
-        }`,
-      ]
-        .filter(Boolean)
-        .join(','),
-    ],
-    {
-      stdio: 'inherit',
-    },
-  );
-
   if (buildOptions.devTemplate === 'module') {
-    devServer(pkgDevDir, buildProcess);
+    devServer(pkgDevDir);
   } else {
     await sleep(2000);
-    multipleServer(pkgDevDir, buildProcess);
+    multipleServer(pkgDevDir);
   }
 }
 
@@ -123,23 +98,9 @@ async function eachApps(pkgDevDir, fn) {
 
 async function transfer(pkgDir, pkgDevDir, buildOptions) {
   const isModuleDev = buildOptions.devTemplate === 'module';
-  const name = buildOptions.name || toCamelCase(path.basename(pkgDir));
-  const modulePath = `${path.basename(pkgDir)}.${formats}.js`;
-
-  const replace = (e) => {
-    const index = fs.readFileSync(e, 'utf-8');
-    fs.writeFileSync(
-      e,
-      index.replace(/\#name/g, name).replace(/\#module/g, `./${modulePath}`),
-    );
-  };
 
   const installDeps = async () => {
     await eachApps(pkgDevDir, async (cwd, n) => {
-      if (n === 'main') {
-        replace(path.resolve(cwd, './index.js'));
-      }
-
       clearConsole(
         chalk.blue.bold(
           `🧺 ${chalk.underline(
@@ -155,25 +116,10 @@ async function transfer(pkgDir, pkgDevDir, buildOptions) {
       });
     });
   };
-
-  if (clear && isModuleDev) {
-    console.log(chalk.blue.bold('🧹 Old dev template removeing...'));
-    await fs.remove(pkgDevDir);
-  }
-
-  if (isModuleDev) {
-    if (!fs.existsSync(pkgDevDir)) {
-      const file = path.join(pkgDevDir, './index.html');
-      await fs.mkdirp(pkgDevDir);
-      await fs.writeFile(file, devTemplate);
-      replace(file);
-    }
-  } else {
-    await installDeps();
-  }
+  await installDeps();
 }
 
-function devServer(pkgDevDir, buildProcess) {
+function devServer(pkgDevDir) {
   if (pkgDevDir) {
     const child = execa('http-server', [
       pkgDevDir,
@@ -186,16 +132,13 @@ function devServer(pkgDevDir, buildProcess) {
 
     child.on('error', (err) => {
       console.error(chalk.red.bold('Dev server obtain error:'), err);
-      if (buildProcess) {
-        buildProcess.kill('SIGKILL');
-      }
       process.exit(1);
     });
   }
 }
 
 // main 下面的工程统一用 webpack 来调试
-async function multipleServer(pkgDevDir, buildProcess) {
+async function multipleServer(pkgDevDir) {
   const starts = [];
 
   eachApps(pkgDevDir, async (cwd, n) => {
@@ -213,15 +156,13 @@ async function multipleServer(pkgDevDir, buildProcess) {
     child.stderr.on('data', async (buf) => {
       const str = buf.toString();
       if (
-        /(warning|\d+\%)/.test(str) ||
+        /(warning|browserslist|\d+\%)/.test(str) ||
         new RegExp(`./${target}.${formats}.{1}js`).test(str)
       ) {
         return;
       }
 
-      if (buildProcess) {
-        buildProcess.kill('SIGKILL');
-      }
+      console.log(chalk.red.bold(str));
       await sleep(10);
     });
 

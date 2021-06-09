@@ -1,7 +1,0 @@
-{
-  "extends": "../../../api-extractor.json",
-  "mainEntryPointFilePath": "./dist/packages/runtime/vm-sandbox/src/index.d.ts",
-  "dtsRollup": {
-    "publicTrimmedFilePath": "./dist/vm-sandbox.d.ts"
-  }
-}

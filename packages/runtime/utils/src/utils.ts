@@ -1,4 +1,5 @@
 // import Sandbox from '@garfish/sandbox';
+import { Hooks } from '@garfish/browser-vm';
 import { rawWindow } from './raw';
 
 export const noop = () => {};
@@ -81,6 +82,15 @@ export function error(error: string | Error) {
   });
 }
 
+export const supportLetStatement = (() => {
+  try {
+    new Function('let a = 1;');
+    return true;
+  } catch (e) {
+    return false;
+  }
+})();
+
 // 将字符串被设置为对象属性名时，会被尝试改造为常量化版本，避免浏览器重复产生缓存
 export function internFunc(internalizeString) {
   //  暂时不考虑Hash-collision，https://en.wikipedia.org/wiki/Collision_(computer_science)。v8貌似在16383长度时会发生hash-collision，经过测试后发现正常
@@ -89,23 +99,42 @@ export function internFunc(internalizeString) {
   return Object.keys(temporaryOb)[0];
 }
 
+export function validURL(str) {
+  const pattern = new RegExp(
+    '^(https?:\\/\\/)?' + // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d_]*)?$',
+    'i',
+  ); // fragment locator
+  return !!pattern.test(str);
+}
+
 export function evalWithEnv(code: string, params: Record<string, any>) {
   const keys = Object.keys(params);
   // 不可使用随机值，否则无法作为常量字符串复用
   const randomValKey = '__garfish__exec_temporary__';
-  const vals = keys.map((k) => `window.${randomValKey}.${k}`);
+  const vales = keys.map((k) => `window.${randomValKey}.${k}`);
   try {
     rawWindow[randomValKey] = params;
     const evalInfo = [
       `;(function(${keys.join(',')}){`,
-      `\n}).call(${vals[0]},${vals.join(',')});`,
+      `\n}).call(${vales[0]},${vales.join(',')});`,
     ];
     const internalizeString = internFunc(evalInfo[0] + code + evalInfo[1]);
-    // (0, eval) 这个表达式会让 eval 在全局作用域下执行
+    // (0, eval) This expression makes the eval under the global scope
     (0, eval)(internalizeString);
+  } catch (e) {
+    throw e;
   } finally {
     delete rawWindow[randomValKey];
   }
+}
+
+export function nextTick(cb: () => void): void {
+  Promise.resolve().then(cb);
 }
 
 export function assert(condition: any, msg?: string | Error) {
@@ -116,6 +145,23 @@ export function assert(condition: any, msg?: string | Error) {
 
 export function toBoolean(val: any) {
   return val === 'false' ? false : Boolean(val);
+}
+
+// 调用沙箱的钩子，统一快照和 vm
+export function emitSandboxHook(
+  hooks: Hooks,
+  name: keyof Hooks,
+  args: Array<any>,
+) {
+  const fns: any = hooks?.[name];
+  if (fns) {
+    if (typeof fns === 'function') {
+      return [fns.apply(null, args)];
+    } else if (Array.isArray(fns)) {
+      return fns.length === 0 ? false : fns.map((fn) => fn.apply(null, args));
+    }
+  }
+  return false;
 }
 
 export function remove<T>(list: Array<T> | Set<T>, el: T) {
@@ -129,6 +175,12 @@ export function remove<T>(list: Array<T> | Set<T>, el: T) {
       list.delete(el);
     }
   }
+}
+
+export function mixins(...list) {
+  return function (target) {
+    Object.assign(target.prototype, ...list);
+  };
 }
 
 // 有些测试 jest.mock 不好测，可用这个工具方法
@@ -274,4 +326,13 @@ export function deepMerge<K, T>(o: K, n: T, dp?: boolean) {
   };
 
   return mergeObject(o, n) as K & T;
+}
+
+export function getType(val) {
+  const type = Object.prototype.toString.call(val);
+  return type.slice(1, type.length - 8).toLowerCase();
+}
+
+export function inBrowser() {
+  return typeof window !== 'undefined';
 }
