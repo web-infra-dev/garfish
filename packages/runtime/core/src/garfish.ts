@@ -253,10 +253,11 @@ export class Garfish implements interfaces.Garfish {
       ...defaultLoadComponentOptions,
       ...options,
     };
+    const nameWithVersion = opts?.version ? `${name}@${opts?.version}` : name;
     const asyncLoadProcess = async () => {
       // Existing cache caching logic
       let result = null;
-      const cacheComponents = this.cacheComponents[name];
+      const cacheComponents = this.cacheComponents[nameWithVersion];
       if (opts.cache && cacheComponents) {
         result = cacheComponents;
       } else {
@@ -265,20 +266,20 @@ export class Garfish implements interfaces.Garfish {
         )) as interfaces.JsResource;
         try {
           result = new Component(this, { name, ...opts }, manager);
-          this.cacheComponents[name] = result;
+          this.cacheComponents[nameWithVersion] = result;
         } catch (e) {
           __DEV__ && error(e);
         } finally {
-          this.loading[name] = null;
+          this.loading[nameWithVersion] = null;
         }
       }
       return result;
     };
 
-    if (!opts.cache || !this.loading[name]) {
-      this.loading[name] = asyncLoadProcess();
+    if (!opts.cache || !this.loading[nameWithVersion]) {
+      this.loading[nameWithVersion] = asyncLoadProcess();
     }
-    return this.loading[name];
+    return this.loading[nameWithVersion];
   }
 
   public setExternal(nameOrExtObj: string | Record<string, any>, value?: any) {
