@@ -47,4 +47,11 @@ const defaultOptions: interfaces.Options = {
   onNotMatchRouter: () => {},
 };
 
+export const defaultLoadComponentOptions: Pick<
+  interfaces.ComponentInfo,
+  'cache'
+> = {
+  cache: true,
+};
+
 export const getDefaultOptions = () => deepMerge({}, defaultOptions);
