@@ -8,7 +8,11 @@ import {
   hasOwn,
   __GARFISH_FLAG__,
 } from '@garfish/utils';
-import { getDefaultOptions, lifecycle } from './config';
+import {
+  getDefaultOptions,
+  lifecycle,
+  defaultLoadComponentOptions,
+} from './config';
 import { Hooks } from './hooks';
 import { Loader } from './module/loader';
 import { interfaces } from './interface';
@@ -243,8 +247,12 @@ export class Garfish implements interfaces.Garfish {
 
   public async loadComponent(
     name: string,
-    opts: interfaces.LoadComponentOptions,
+    options: interfaces.LoadComponentOptions,
   ): Promise<interfaces.Component> {
+    const opts: interfaces.LoadComponentOptions = {
+      ...defaultLoadComponentOptions,
+      ...options,
+    };
     const asyncLoadProcess = async () => {
       // Existing cache caching logic
       let result = null;
@@ -271,13 +279,6 @@ export class Garfish implements interfaces.Garfish {
       this.loading[name] = asyncLoadProcess();
     }
     return this.loading[name];
-  }
-
-  public getComponent(name: string): any {
-    if (!name || !this.cacheComponents[name]) {
-      return;
-    }
-    return this.cacheComponents[name].getComponent();
   }
 
   public setExternal(nameOrExtObj: string | Record<string, any>, value?: any) {
