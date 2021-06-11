@@ -57,7 +57,12 @@ export default class Loader {
     return this.load(scope, url, true);
   }
 
-  load<T>(scope: string, url: string, isComponent?: boolean): Promise<T> {
+  // Unable to know the final data type, so through "generics"
+  load<T extends any>(
+    scope: string,
+    url: string,
+    isComponent?: boolean,
+  ): Promise<T> {
     const { options, loadingList, cacheStore } = this;
 
     if (loadingList[url]) {
