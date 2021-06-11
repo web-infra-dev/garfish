@@ -30,15 +30,16 @@ export namespace interfaces {
 
   export interface App {}
 
-  export interface AppInfo {
+  export interface AppInfo
+    extends Exclude<
+      Options,
+      ['apps', 'appID', 'plugins', 'disableStatistics', 'plugins']
+    > {
     name: string;
     entry: string;
-    basename?: string;
     cache?: boolean; // Whether the cache
     activeWhen?: string | ((path: string) => boolean);
-    props?: Record<string, any>;
-    domGetter?: DomGetter;
-    lifecycle?: Lifecycle;
+    hooks?: Hooks;
   }
 
   // export interface SandboxConfig {
@@ -88,6 +89,7 @@ export namespace interfaces {
     disableStatistics?: boolean;
     disablePreloadApp?: boolean;
     domGetter?: DomGetter;
+    nested?: boolean;
   }
 
   export interface HooksLifecycle {

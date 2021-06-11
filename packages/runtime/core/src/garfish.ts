@@ -89,23 +89,35 @@ export class Garfish implements interfaces.Garfish {
 
   public async run(options?: interfaces.Options) {
     if (this.running) {
+      // Nested scene can be repeated registration application, and basic information for the basename、domGetter、lifeCycle
+      if (options.nested) {
+        const hooks = new Hooks(false);
+        this.usePlugin(hooks, GarfishOptionsLife(options));
+        [
+          'autoRefreshApp',
+          'disableStatistics',
+          'disablePreloadApp',
+          'sandbox',
+        ].forEach((key) => {
+          if (key in options)
+            __DEV__ &&
+              error(`Nested scene does not support the configuration ${key}`);
+        });
+
+        this.registerApp(
+          options.apps?.map((app) => {
+            return {
+              ...app,
+              basename: options?.basename || this.options.basename,
+              domGetter: options?.domGetter || this.options.domGetter,
+              hooks: hooks,
+            };
+          }),
+        );
+        return this;
+      }
       __DEV__ &&
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
-      // Nested scene can be repeated registration application, and basic information for the basename、domGetter、lifeCycle
-      const hooks = new Hooks(false);
-      this.usePlugin(hooks, GarfishOptionsLife(options));
-      this.registerApp(
-        options.apps?.map((app) => {
-          return {
-            ...app,
-            basename: options?.basename || this.options.basename,
-            domGetter: options?.domGetter || this.options.domGetter,
-            lifecycle: hooks.lifecycle,
-            hooks: hooks,
-          };
-        }),
-      );
-      return this;
     }
 
     this.hooks.lifecycle.beforeBootstrap.call(this.options);

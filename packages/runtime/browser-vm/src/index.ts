@@ -70,24 +70,6 @@ export default function BrowserVm() {
       name: 'browser-vm',
       version: __VERSION__,
       openVm: true,
-      bootstrap() {
-        // Support for instance configuration, to ensure that old versions compatible
-        const sandboxConfig = Garfish?.options?.sandbox;
-        if (sandboxConfig === false) config.open = false;
-        if (sandboxConfig) {
-          config = {
-            open:
-              rawWindow.Proxy &&
-              sandboxConfig?.open &&
-              sandboxConfig?.snapshot === false,
-            protectVariable: Garfish?.options?.protectVariable || [],
-            insulationVariable: Garfish?.options?.insulationVariable || [],
-            modules: sandboxConfig.modules || {},
-            hooks: sandboxConfig.hooks || {},
-          };
-        }
-        options.openVm = config.open;
-      },
       // Get all the application resources of static address, used to distinguish whether the error is derived from the application
       // processResource(appInfo, manager, _resource) {
       //   const sourceList = [];
@@ -102,6 +84,23 @@ export default function BrowserVm() {
       //   appSourceList.set(appInfo.name, sourceList);
       // },
       afterLoad(appInfo, appInstance) {
+        // Support for instance configuration, to ensure that old versions compatible
+        const sandboxConfig = appInfo.sandbox || Garfish?.options?.sandbox;
+        if (sandboxConfig === false) config.open = false;
+        if (sandboxConfig) {
+          config = {
+            open:
+              rawWindow.Proxy &&
+              sandboxConfig?.open &&
+              sandboxConfig?.snapshot === false,
+            protectVariable: Garfish?.options?.protectVariable || [],
+            insulationVariable: Garfish?.options?.insulationVariable || [],
+            modules: sandboxConfig.modules || {},
+            hooks: sandboxConfig.hooks || {},
+          };
+        }
+        options.openVm = config.open;
+
         if (!config.open) return;
 
         if (appInstance) {
