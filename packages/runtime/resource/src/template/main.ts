@@ -4,8 +4,8 @@ import {
   isNode,
   isText,
   isCommentNode,
-  createTextNode,
   createElement,
+  createTextNode,
 } from './renderApi';
 
 type Renderer = Record<string, (node: Node) => Element | Comment>;
@@ -60,6 +60,7 @@ export class TemplateResource {
     return collection;
   }
 
+  // Render dom tree
   createElements(renderer: Renderer, parent: Element) {
     const elements: Array<Element> = [];
     const traverse = (node: Node | Text, parentEl?: Element) => {
@@ -79,6 +80,7 @@ export class TemplateResource {
           el = createElement(node as Node);
         }
         if (parentEl && el) parentEl.appendChild(el);
+        // Filter "comment" and "document" node
         if (nodeType !== 8 && nodeType !== 10) {
           for (const child of children) {
             traverse(child, el);
