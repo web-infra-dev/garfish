@@ -39,16 +39,14 @@ export default function BrowserSnapshot(op?: BrowserConfig) {
       name: 'browser-snapshot',
       version: __VERSION__,
       openBrowser: false,
-      bootstrap() {
-        const sandboxConfig = Garfish?.options?.sandbox;
+      afterLoad(appInfo, appInstance) {
+        const sandboxConfig = appInfo.sandbox || Garfish?.options?.sandbox;
         if (sandboxConfig === false) config.open = false;
         if (sandboxConfig) {
           config.open = sandboxConfig?.open && sandboxConfig?.snapshot === true;
           config.protectVariable = Garfish?.options?.protectVariable || [];
         }
         options.openBrowser = config.open;
-      },
-      afterLoad(appInfo, appInstance) {
         if (!config.open) return;
         if (appInstance) {
           // existing
