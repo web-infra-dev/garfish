@@ -1,8 +1,8 @@
 const MAX_SIZE = 10 * 1024 * 1024;
-const DEFAULT_BUFFER_POLL = Symbol('__defaultBufferPoll__');
-const CACHE_FILE_TYPES = ['js', 'css', 'html', 'component'] as const;
+const DEFAULT_POLL = Symbol('__defaultBufferPoll__');
+const FILE_TYPES = ['js', 'css', 'html', 'component'] as const;
 
-export type FileType = typeof CACHE_FILE_TYPES[number];
+export type FileType = typeof FILE_TYPES[number];
 
 export class AppCacheContainer {
   private maxSize: number;
@@ -10,30 +10,30 @@ export class AppCacheContainer {
 
   constructor(maxSize = MAX_SIZE) {
     this.maxSize = maxSize;
-    CACHE_FILE_TYPES.forEach((key) => {
+    FILE_TYPES.forEach((key) => {
       this[key] = new Map<string, any>();
     });
-    this[DEFAULT_BUFFER_POLL] = new Map<string, any>();
+    this[DEFAULT_POLL] = new Map<string, any>();
   }
 
-  bufferPool(type: FileType | typeof DEFAULT_BUFFER_POLL) {
+  bufferPool(type: FileType | typeof DEFAULT_POLL) {
     return this[type] as Map<string, any>;
   }
 
   has(url: string) {
     return (
-      CACHE_FILE_TYPES.some((key) => this[key].has(url)) ||
-      this.bufferPool(DEFAULT_BUFFER_POLL).has(url)
+      FILE_TYPES.some((key) => this[key].has(url)) ||
+      this.bufferPool(DEFAULT_POLL).has(url)
     );
   }
 
   get(url: string) {
-    for (const key of CACHE_FILE_TYPES) {
+    for (const key of FILE_TYPES) {
       if (this[key].has(url)) {
         return this[key].get(url);
       }
     }
-    const defaultPool = this.bufferPool(DEFAULT_BUFFER_POLL);
+    const defaultPool = this.bufferPool(DEFAULT_POLL);
     if (defaultPool.has(url)) {
       return defaultPool.get(url);
     }
@@ -44,7 +44,7 @@ export class AppCacheContainer {
     if (totalSize < this.maxSize) {
       let bufferPool = this.bufferPool(type);
       if (!bufferPool) {
-        bufferPool = this.bufferPool(DEFAULT_BUFFER_POLL);
+        bufferPool = this.bufferPool(DEFAULT_POLL);
       }
       bufferPool.set(url, data);
       this.totalSize = totalSize;
@@ -60,10 +60,10 @@ export class AppCacheContainer {
         cacheBox.clear();
       }
     } else {
-      CACHE_FILE_TYPES.forEach((key) => {
+      FILE_TYPES.forEach((key) => {
         this[key].clear();
       });
-      this.bufferPool(DEFAULT_BUFFER_POLL).clear();
+      this.bufferPool(DEFAULT_POLL).clear();
     }
   }
 }

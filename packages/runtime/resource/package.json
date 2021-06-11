@@ -1,0 +1,38 @@
+{
+  "name": "@garfish/garfish-resource",
+  "version": "0.0.8",
+  "private": true,
+  "description": "resource module.",
+  "keywords": [
+    "garfish",
+    "resource"
+  ],
+  "author": "chentao.arthur <chentao.arthur@bytedance.com>",
+  "homepage": "https://github.com/bytedance/garfish",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "module": "dist/resource.esm-bundler.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "scripts": {},
+  "types": "dist/resource.d.ts",
+  "buildOptions": {
+    "name": "Resource",
+    "devTemplate": "module",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "umd"
+    ]
+  },
+  "dependencies": {},
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}
