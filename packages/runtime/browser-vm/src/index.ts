@@ -1,13 +1,5 @@
 import { interfaces } from '@garfish/core';
-import {
-  assert,
-  findProp,
-  rawWindow,
-  sourceListTags,
-  sourceNode,
-  transformUrl,
-  warn,
-} from '@garfish/utils';
+import { rawWindow, sourceNode } from '@garfish/utils';
 import { Sandbox } from './sandbox';
 import { BrowserConfig, Hooks as TypeHooks } from './types';
 import './utils/handleNode';

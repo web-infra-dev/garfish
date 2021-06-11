@@ -4,8 +4,36 @@
 
 ## Usage
 
-```
-import @garfish/loader from '@garfish/loader';
+```js
+import Loader from '@garfish/loader';
 
-// TODO: DEMONSTRATE API
+const loader = new Loader({
+  maxSize: 10 * 1024 * 1024,
+});
+
+// beforeLoad
+loader.lifecycle.beforeLoad.on(({ url, config }) => {
+  // You can changed the request config
+  if (url.includes('xx')) {
+    url = url.replace('xx', '');
+  }
+  return { url, config };
+});
+
+// loaded
+loader.lifecycle.loaded.on((data) => {
+  const { code, result, mimeType, isComponent } = data;
+  return 1;
+});
+
+loader.lifecycle.loaded.on((data) => {
+  console.log(data); // 1
+  // The results will be cached this time.
+  // So, you can transform the request result.
+  return data * 2;
+});
+
+loader.load('appName', 'https://xxx').then((result) => {
+  console.log(result); // 2
+});
 ```

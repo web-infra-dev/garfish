@@ -56,7 +56,9 @@ export class Garfish implements interfaces.Garfish {
   private injectOptionalPlugin(options?: interfaces.Options) {
     const defaultPlugin = [GarfishHMRPlugin(), GarfishOptionsLife()];
     // Preload plugin
-    if (!options.disablePreloadApp) defaultPlugin.push(GarfishPreloadPlugin());
+    if (!options.disablePreloadApp) {
+      defaultPlugin.push(GarfishPreloadPlugin());
+    }
 
     // // The open set to false, just said to close the sandbox
     // const noSandbox = options.sandbox?.open === false;
