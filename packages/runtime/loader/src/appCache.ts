@@ -1,6 +1,6 @@
 const MAX_SIZE = 10 * 1024 * 1024;
 const DEFAULT_POLL = Symbol('__defaultBufferPoll__');
-const FILE_TYPES = ['js', 'css', 'html', 'component'] as const;
+const FILE_TYPES = ['js', 'css', 'template', 'component'] as const;
 
 export type FileType = typeof FILE_TYPES[number];
 

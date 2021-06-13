@@ -3,7 +3,6 @@ let id = 0;
 // Maybe we can convert "esModule" to "commonjs" in the future
 export class JavaScriptManager {
   public id = id++;
-  public type = 'javascript';
   public url: string | null;
   public mimeType: string;
   public scriptCode: string;

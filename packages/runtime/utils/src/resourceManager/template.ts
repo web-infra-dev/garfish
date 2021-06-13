@@ -16,12 +16,12 @@ const transformCode = (code: string) => {
 
 export class TemplateManager {
   public DOMApis = DOMApis;
-  public type = 'template';
   public url: string | null;
   public astTree: Array<Node>;
   private pretreatmentStore: Record<string, Node[]>;
 
   constructor(template: string, url?: string) {
+    // The url is only base url, it may also be a js resource address.
     this.url = url || null;
     // About 1M text parse takes about 100ms
     this.astTree = parse(transformCode(template));
@@ -100,5 +100,9 @@ export class TemplateManager {
 
   findAllJsNodes() {
     return this.getNodeByTagName('script').script;
+  }
+
+  findAttributeValue(node: Node, type: string) {
+    return node.attributes?.find(({ key }) => key === type)?.value;
   }
 }

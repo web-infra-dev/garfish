@@ -6,6 +6,7 @@ import {
   assert,
   hasOwn,
   isObject,
+  findProp,
   deepMerge,
   transformUrl,
   __GARFISH_FLAG__,
@@ -179,7 +180,6 @@ export class Garfish implements interfaces.Garfish {
     }
 
     const asyncLoadProcess = async () => {
-      // let AppConstructor = null;
       // Return not undefined type data directly to end loading
       const stopLoad = await this.hooks.lifecycle.beforeLoad.promise(appInfo);
       if (stopLoad === false) {
@@ -201,7 +201,7 @@ export class Garfish implements interfaces.Garfish {
             } else {
               // prettier-ignore
               const managerCtor =
-                fileType === 'html'
+                fileType === 'template'
                   ? TemplateManager
                   : fileType === 'css'
                     ? StyleManager
@@ -213,13 +213,25 @@ export class Garfish implements interfaces.Garfish {
             return null;
           });
 
-          const entryUrl = transformUrl(location.href, appInfo.entry);
           const manager = await this.loader.load<Manager>(
             appInfo.name,
-            entryUrl,
+            transformUrl(location.href, appInfo.entry),
           );
-          if (manager.type === 'template') {
-            manager;
+
+          if (manager instanceof TemplateManager) {
+            const jsNodes = manager.findAllJsNodes();
+            const linkNodes = manager.findAllLinkNodes();
+            jsNodes.map((node) => {
+              const src = (manager as TemplateManager).findAttributeValue(
+                node,
+                'src',
+              );
+            });
+          } else if (manager instanceof JavaScriptManager) {
+          } else {
+            error(
+              `The resource returned by the entry of "${appInfo.name}" app cannot be css.`,
+            );
           }
 
           // this.hooks.lifecycle.processResource.call(

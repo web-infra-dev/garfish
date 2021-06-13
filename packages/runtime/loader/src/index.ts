@@ -43,16 +43,20 @@ const mergeConfig = (loader: Loader, url: string) => {
 };
 
 export class Loader {
-  private options: LoaderOptions;
-  private loadingList: Record<string, Promise<any>>;
-  private cacheStore: { [name: string]: AppCacheContainer };
-
   public lifecycle = {
     clear: new PluginManager<ClearPluginArgs>('clear'),
     loaded: new PluginManager<LoadedPluginArgs>('loaded'),
     beforeLoad: new PluginManager<BeforeLoadPluginArgs>('beforeLoad'),
   };
+
+  /**
+   * @deprecated
+   */
   public requestConfig: RequestInit | ((url: string) => RequestInit);
+
+  private options: LoaderOptions;
+  private loadingList: Record<string, Promise<any>>;
+  private cacheStore: { [name: string]: AppCacheContainer };
 
   constructor(options?: LoaderOptions) {
     this.options = options || {};
@@ -112,7 +116,7 @@ export class Loader {
         if (isComponent) {
           fileType = 'component';
         } else if (isHtml(mimeType) || /\.html/.test(url)) {
-          fileType = 'html';
+          fileType = 'template';
         } else if (isJs(mimeType) || /\.js/.test(url)) {
           fileType = 'js';
         } else if (isCss(mimeType) || /\.css/.test(url)) {
