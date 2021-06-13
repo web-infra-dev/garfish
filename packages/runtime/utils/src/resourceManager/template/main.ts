@@ -1,30 +1,24 @@
 import { parse } from 'himalaya';
-import { Node, Text } from './renderApi';
-import {
-  isNode,
-  isText,
-  isCommentNode,
-  createElement,
-  createTextNode,
-} from './renderApi';
+import { Node, Text, DOMApis } from './renderApi';
 
 type Renderer = Record<string, (node: Node) => Element | Comment>;
 
 // Convert irregular grammar to compliant grammar
 // 1M text takes about time:
-//    chrome 30ms
-//    safari: 25ms
-//    firefox: 25ms
+//   chrome 30ms
+//   safari: 25ms
+//   firefox: 25ms
 const transformCode = (code: string) => {
   const node = document.createElement('html');
   node.innerHTML = code;
   return node.innerHTML;
 };
 
-export class TemplateResource {
+export class TemplateManager {
+  public DOMApis = DOMApis;
   public url: string | null;
   public astTree: Array<Node>;
-  private pretreatmentStore: Record<string, any>;
+  private pretreatmentStore: Record<string, Node[]>;
 
   constructor(template: string, url?: string) {
     this.url = url || null;
@@ -65,19 +59,19 @@ export class TemplateResource {
     const elements: Array<Element> = [];
     const traverse = (node: Node | Text, parentEl?: Element) => {
       let el = null;
-      if (isCommentNode(node)) {
+      if (this.DOMApis.isCommentNode(node)) {
         // Filter comment node
-      } else if (isText(node)) {
-        el = createTextNode(node as Text);
+      } else if (this.DOMApis.isText(node)) {
+        el = this.DOMApis.createTextNode(node as Text);
         parentEl && parentEl.appendChild(el);
-      } else if (isNode(node)) {
+      } else if (this.DOMApis.isNode(node)) {
         const nodeType = el && el.nodeType;
         const { tagName, children } = node as Node;
 
         if (renderer[tagName]) {
           el = renderer[tagName](node as Node);
         } else {
-          el = createElement(node as Node);
+          el = this.DOMApis.createElement(node as Node);
         }
         if (parentEl && el) parentEl.appendChild(el);
         // Filter "comment" and "document" node
@@ -91,7 +85,7 @@ export class TemplateResource {
     };
 
     for (const node of this.astTree) {
-      if (isNode(node) && node.tagName !== '!doctype') {
+      if (this.DOMApis.isNode(node) && node.tagName !== '!doctype') {
         const el = traverse(node, parent);
         el && elements.push(el);
       }
