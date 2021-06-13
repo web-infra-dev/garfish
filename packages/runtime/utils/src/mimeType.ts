@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-type FileType = ReturnType<typeof parseContentType>;
+export type mimeType = ReturnType<typeof parseContentType>;
 
 export function parseContentType(input: string) {
   input = input?.trim();
@@ -31,17 +31,17 @@ export function parseContentType(input: string) {
   };
 }
 
-export function isCss(ft: FileType) {
-  return ft ? ft.type === 'text' && ft.subtype === 'css' : false;
+export function isCss(mt: mimeType) {
+  return mt ? mt.type === 'text' && mt.subtype === 'css' : false;
 }
 
-export function isHtml(ft: FileType) {
-  return ft ? ft.type === 'text' && ft.subtype === 'html' : false;
+export function isHtml(mt: mimeType) {
+  return mt ? mt.type === 'text' && mt.subtype === 'html' : false;
 }
 
 // https://mimesniff.spec.whatwg.org/#javascript-mime-type
-export function isJs(ft: FileType) {
-  const { type, subtype } = ft || {};
+export function isJs(mt: mimeType) {
+  const { type, subtype } = mt || {};
   switch (type) {
     case 'text': {
       switch (subtype) {

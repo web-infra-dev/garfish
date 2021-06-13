@@ -3,14 +3,15 @@ let id = 0;
 // Maybe we can convert "esModule" to "commonjs" in the future
 export class JavaScriptManager {
   public id = id++;
+  public type = 'javascript';
   public url: string | null;
   public mimeType: string;
   public scriptCode: string;
 
-  constructor(scriptCode: string, mimeType?: string, url?: string) {
+  constructor(scriptCode: string, url?: string) {
+    this.mimeType = '';
     this.url = url || null;
     this.scriptCode = scriptCode;
-    this.mimeType = mimeType || '';
   }
 
   isModule() {
@@ -19,5 +20,9 @@ export class JavaScriptManager {
 
   isInlineScript() {
     return Boolean(this.url);
+  }
+
+  setMimeType(mimeType: string) {
+    this.mimeType = mimeType;
   }
 }

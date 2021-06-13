@@ -1,6 +1,6 @@
 import { interfaces } from '../interface';
 
-export default function fixHMR() {
+export function GarfishHMRPlugin() {
   let hasInit = false;
   let isHotUpdate = false;
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {

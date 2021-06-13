@@ -1,13 +1,13 @@
-import { error } from '@garfish/utils';
+import { error, hasOwn } from '@garfish/utils';
 
 const ONCE_FLAG = Symbol('once');
 const REGISTER_PLUGINS = new Set();
 
-type Plugin = ((result: any) => Promise<any> | void) & { _onceFlag?: Symbol };
+type Plugin<T extends any> = ((result: T) => any) & { _onceFlag?: Symbol };
 
-export class PluginManager {
+export class PluginManager<T> {
   public type: string;
-  public plugins: Set<Plugin>;
+  public plugins: Set<Plugin<T>>;
   public onerror: (errMsg: string | Error) => void;
 
   constructor(type: string) {
@@ -19,21 +19,21 @@ export class PluginManager {
     this.plugins = new Set();
   }
 
-  add(plugin: Plugin) {
+  add(plugin: Plugin<T>) {
     if (this.plugins.has(plugin)) {
-      this.onerror('repeat add plugin');
+      __DEV__ && console.error('repeat add plugin.');
       return false;
     }
     this.plugins.add(plugin);
     return true;
   }
 
-  addOnce(plugin: Plugin) {
+  addOnce(plugin: Plugin<T>) {
     plugin._onceFlag = ONCE_FLAG;
     return this.add(plugin);
   }
 
-  remove(plugin: Plugin) {
+  remove(plugin: Plugin<T>) {
     if (this.plugins.has(plugin)) {
       this.plugins.delete(plugin);
       return true;
@@ -41,13 +41,23 @@ export class PluginManager {
     return false;
   }
 
-  run(result: any) {
+  run<T extends Record<string, any>>(result: T) {
     for (const fn of this.plugins) {
       try {
-        result = fn(result);
-        if (fn._onceFlag === ONCE_FLAG) {
-          this.remove(fn);
+        let illegalResult = false;
+        const tempResult = fn(result as any);
+        if (fn._onceFlag === ONCE_FLAG) this.remove(fn);
+        for (const key in result) {
+          if (!hasOwn(key, tempResult)) {
+            illegalResult = true;
+            break;
+          }
         }
+        illegalResult
+          ? this.onerror(
+              `The "${this.type}" type has a plugin return value error.`,
+            )
+          : (result = tempResult);
       } catch (err) {
         this.onerror(err);
         __DEV__ && console.error(err);
@@ -55,12 +65,4 @@ export class PluginManager {
     }
     return result;
   }
-}
-
-export function createLifecycle<T>(names: Array<keyof T>) {
-  const hooks = {};
-  for (const key of names) {
-    hooks[key as string] = new PluginManager(key as string);
-  }
-  return hooks as { [key in keyof T]: PluginManager };
 }

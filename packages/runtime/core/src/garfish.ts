@@ -1,84 +1,62 @@
 import { EventEmitter } from 'events';
+import { Loader } from '@garfish/loader';
 import {
-  assert,
-  isObject,
-  deepMerge,
   warn,
   error,
+  assert,
   hasOwn,
+  isObject,
+  deepMerge,
+  transformUrl,
   __GARFISH_FLAG__,
+  StyleManager,
+  TemplateManager,
+  JavaScriptManager,
 } from '@garfish/utils';
-import {
-  getDefaultOptions,
-  lifecycle,
-  defaultLoadComponentOptions,
-} from './config';
 import { Hooks } from './hooks';
-import { Loader } from './module/loader';
-import { interfaces } from './interface';
 import { App } from './module/app';
+import { interfaces } from './interface';
 import { Component } from './module/component';
-import GarfishHMRPlugin from './plugins/fixHMR';
-import GarfishOptionsLife from './plugins/lifecycle';
-import GarfishPreloadPlugin from './plugins/preload';
+import { GarfishHMRPlugin } from './plugins/fixHMR';
+import { GarfishOptionsLife } from './plugins/lifecycle';
+import { GarfishPreloadPlugin } from './plugins/preload';
+import { getDefaultOptions, defaultLoadComponentOptions } from './config';
+
+type Manager = StyleManager | TemplateManager | JavaScriptManager;
 
 export class Garfish implements interfaces.Garfish {
-  public version = __VERSION__;
+  public hooks: Hooks;
+  public loader: Loader;
   public running = false;
+  public version = __VERSION__;
   public flag = __GARFISH_FLAG__; // A unique identifier
-  public options = getDefaultOptions();
   public channel = new EventEmitter();
-  public appInfos: Record<string, interfaces.AppInfo> = {};
-  public activeApps: Record<string, interfaces.App> = {};
+  public options = getDefaultOptions();
+  public externals: Record<string, any> = {};
+  public plugins: Array<interfaces.Plugin> = [];
   public cacheApps: Record<string, interfaces.App> = {};
+  public activeApps: Record<string, interfaces.App> = {};
+  public appInfos: Record<string, interfaces.AppInfo> = {};
   public cacheComponents: Record<string, interfaces.Component> = {};
   private loading: Record<string, Promise<any> | null> = {};
-  public plugins: Array<interfaces.Plugin> = [];
-  public loader: Loader;
-  public hooks: Hooks;
-  public externals: Record<string, any> = {};
 
   constructor(options: interfaces.Options) {
     this.hooks = new Hooks();
     this.loader = new Loader();
-
     // init Garfish options
     this.setOptions(options);
-
     // register plugins
     options?.plugins.forEach((pluginCb) => {
       this.usePlugin(pluginCb, this);
     });
-
     this.hooks.lifecycle.initialize.call(this.options);
   }
 
   private injectOptionalPlugin(options?: interfaces.Options) {
     const defaultPlugin = [GarfishHMRPlugin(), GarfishOptionsLife()];
-    // Preload plugin
     if (!options.disablePreloadApp) {
       defaultPlugin.push(GarfishPreloadPlugin());
     }
-
-    // // The open set to false, just said to close the sandbox
-    // const noSandbox = options.sandbox?.open === false;
-    // const useBrowserVm = options?.sandbox?.snapshot === false;
-
-    // // Add the sandbox plug-in
-    // if (!noSandbox) {
-    //   // The current environment without setting the proxy and the use of vm sandbox to open it
-    //   if (window.Proxy && useBrowserVm) {
-    //     defaultPlugin.push(GarfishBrowserVm());
-    //   } else {
-    //     if (!window.Proxy && useBrowserVm) {
-    //       warn(
-    //         'Due to the current environment without the proxy, does not support the vm sandbox, if to maintain its normal operation in the current environment, please pass the sandbox snapshot parameter switch to the sandbox',
-    //       );
-    //     }
-    //     defaultPlugin.push(GarfishBrowserSnapshot());
-    //   }
-    // }
-
     defaultPlugin.forEach((pluginCb) => {
       this.usePlugin(pluginCb, this);
     });
@@ -99,7 +77,7 @@ export class Garfish implements interfaces.Garfish {
     return this.hooks.usePlugins(res);
   }
 
-  public setOptions(options: Partial<interfaces.Options>) {
+  setOptions(options: Partial<interfaces.Options>) {
     assert(!this.running, 'Garfish is running, can`t set options');
     if (isObject(options)) {
       this.options = deepMerge(this.options, options);
@@ -113,7 +91,7 @@ export class Garfish implements interfaces.Garfish {
     return this;
   }
 
-  public async run(options?: interfaces.Options) {
+  run(options?: interfaces.Options) {
     if (this.running) {
       __DEV__ &&
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
@@ -129,30 +107,38 @@ export class Garfish implements interfaces.Garfish {
       );
       return this;
     }
-
     this.hooks.lifecycle.beforeBootstrap.call(this.options);
-
     this.setOptions(options);
-
     // register plugins
     options?.plugins?.forEach((pluginCb) => {
       this.usePlugin(pluginCb, this);
     });
-
     this.injectOptionalPlugin(options);
     this.running = true;
-
     this.hooks.lifecycle.bootstrap.call(this.options);
+    return this;
   }
 
-  public registerApp(list: interfaces.AppInfo | Array<interfaces.AppInfo>) {
-    this.hooks.lifecycle.beforeRegisterApp.call(list);
+  setExternal(nameOrExtObj: string | Record<string, any>, value?: any) {
+    assert(nameOrExtObj, 'Invalid parameter.');
+    if (typeof nameOrExtObj === 'object') {
+      for (const key in nameOrExtObj) {
+        if (this.externals[key]) {
+          __DEV__ && warn(`The "${key}" will be overwritten in external.`);
+        }
+        this.externals[key] = nameOrExtObj[key];
+      }
+    } else {
+      this.externals[nameOrExtObj] = value;
+    }
+  }
 
+  registerApp(list: interfaces.AppInfo | Array<interfaces.AppInfo>) {
+    this.hooks.lifecycle.beforeRegisterApp.call(list);
     const adds = {};
     if (!Array.isArray(list)) {
       list = [list];
     }
-
     for (const info of list) {
       assert(info.name, 'Miss app.name.');
       if (this.appInfos[info.name]) {
@@ -166,23 +152,21 @@ export class Garfish implements interfaces.Garfish {
         this.appInfos[info.name] = info;
       }
     }
-
     this.hooks.lifecycle.registerApp.call(this.appInfos);
     return this;
   }
 
-  public async loadApp(
+  async loadApp(
     name: string,
     opts: interfaces.LoadAppOptions,
   ): Promise<interfaces.App> {
     let appInfo = this.appInfos[name];
-
     // Does not support does not have remote resources and no registered application
     assert(
       !(!appInfo && !opts.entry),
-      `Can't load unexpected module "${name}". Please provide the entry parameters or registered in advance of the app`,
+      `Can't load unexpected module "${name}".` +
+        'Please provide the entry parameters or registered in advance of the app',
     );
-
     // Pretreatment parameters, and the default cache
     if (!appInfo) {
       appInfo = { name, cache: true, ...opts };
@@ -210,25 +194,48 @@ export class Garfish implements interfaces.Garfish {
         result = cacheApp;
       } else {
         try {
-          const {
-            manager,
-            isHtmlMode,
-            resources,
-          } = await this.loader.loadAppSources(appInfo);
-          this.hooks.lifecycle.processResource.call(
-            appInfo,
-            manager,
-            resources,
-          );
+          this.loader.lifecycle.loaded.addOnce((data) => {
+            const { result, code, fileType, isComponent } = data;
+            if (isComponent) {
+              // deal with component result
+            } else {
+              // prettier-ignore
+              const managerCtor =
+                fileType === 'html'
+                  ? TemplateManager
+                  : fileType === 'css'
+                    ? StyleManager
+                    : fileType === 'js'
+                      ? JavaScriptManager
+                      : null;
+              return managerCtor ? new managerCtor(code, result.url) : null;
+            }
+            return null;
+          });
 
-          result = new App(
-            this,
-            appInfo,
-            manager,
-            resources,
-            isHtmlMode,
-            this.options.customLoader,
+          const entryUrl = transformUrl(location.href, appInfo.entry);
+          const manager = await this.loader.load<Manager>(
+            appInfo.name,
+            entryUrl,
           );
+          if (manager.type === 'template') {
+            manager;
+          }
+
+          // this.hooks.lifecycle.processResource.call(
+          //   appInfo,
+          //   manager,
+          //   resources,
+          // );
+
+          // result = new App(
+          //   this,
+          //   appInfo,
+          //   manager,
+          //   resources,
+          //   isHtmlMode,
+          //   this.options.customLoader,
+          // );
           this.cacheApps[name] = result;
         } catch (e) {
           __DEV__ && error(e);
@@ -247,7 +254,7 @@ export class Garfish implements interfaces.Garfish {
     return this.loading[name];
   }
 
-  public async loadComponent(
+  async loadComponent(
     name: string,
     options: interfaces.LoadComponentOptions,
   ): Promise<interfaces.Component> {
@@ -282,19 +289,5 @@ export class Garfish implements interfaces.Garfish {
       this.loading[nameWithVersion] = asyncLoadProcess();
     }
     return this.loading[nameWithVersion];
-  }
-
-  public setExternal(nameOrExtObj: string | Record<string, any>, value?: any) {
-    assert(nameOrExtObj, 'Invalid parameter.');
-    if (typeof nameOrExtObj === 'object') {
-      for (const key in nameOrExtObj) {
-        if (this.externals[key]) {
-          __DEV__ && warn(`The "${key}" will be overwritten in external.`);
-        }
-        this.externals[key] = nameOrExtObj[key];
-      }
-    } else {
-      this.externals[nameOrExtObj] = value;
-    }
   }
 }

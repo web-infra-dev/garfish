@@ -9,6 +9,6 @@ export * from './garfish';
 
 // resource manager
 export * from './resourceManager/style';
+export * from './resourceManager/template';
 export * from './resourceManager/component';
 export * from './resourceManager/javascript';
-export * from './resourceManager/template/main';

@@ -1,6 +1,6 @@
 # `@garfish/loader`
 
-> TODO: description
+> TODO: Garfish loader
 
 ## Usage
 
@@ -12,7 +12,7 @@ const loader = new Loader({
 });
 
 // beforeLoad
-loader.lifecycle.beforeLoad.on(({ url, config }) => {
+loader.lifecycle.beforeLoad.add(({ url, config }) => {
   // You can changed the request config
   if (url.includes('xx')) {
     url = url.replace('xx', '');
@@ -21,12 +21,12 @@ loader.lifecycle.beforeLoad.on(({ url, config }) => {
 });
 
 // loaded
-loader.lifecycle.loaded.on((data) => {
+loader.lifecycle.loaded.add((data) => {
   const { code, result, mimeType, isComponent } = data;
   return 1;
 });
 
-loader.lifecycle.loaded.on((data) => {
+loader.lifecycle.loaded.add((data) => {
   console.log(data); // 1
   // The results will be cached this time.
   // So, you can transform the request result.
@@ -47,5 +47,5 @@ loader.clear('appName'); // Clear all cached resources under "appName"
 loader.clear('appName', 'js'); // Clear all "js" cache resources under "appName"
 
 loader.clearAll(); // Clear all cached resources
-loader.clearAll('css'); // Clear all "js" cached resources
+loader.clearAll('css'); // Clear all "css" cached resources
 ```

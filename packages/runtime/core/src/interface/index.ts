@@ -1,4 +1,5 @@
 import { VText, VNode } from '@garfish/utils';
+import { Loader } from '@garfish/loader';
 import {
   CssResource,
   HtmlResource as HtmlResourceInterfaces,
@@ -11,7 +12,7 @@ import {
   AsyncSeriesHook,
 } from '@garfish/hooks';
 import { Garfish } from '../garfish';
-import { Loader } from '../module/loader';
+// import { Loader } from '../module/loader';
 import { EventEmitter } from 'events';
 // import { App } from '../module/app';
 

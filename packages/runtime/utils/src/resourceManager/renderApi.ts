@@ -15,8 +15,8 @@ export interface Node {
 
 type Attributes = Array<Record<string, string | null>>;
 
-const xChar = 120; // x
-const colonChar = 58; // :
+const xChar = 120; // "x" char
+const colonChar = 58; // ":" char
 const ns = 'http://www.w3.org/2000/svg';
 const xlinkNS = 'http://www.w3.org/1999/xlink'; // xmlns:xlink
 const xmlNS = 'http://www.w3.org/XML/1998/namespace'; // xmlns

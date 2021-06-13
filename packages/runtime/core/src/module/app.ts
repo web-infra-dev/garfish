@@ -27,7 +27,6 @@ import {
   setDocCurrentScript,
   exportTag,
 } from '@garfish/utils';
-import { nodeFetch } from 'packages/runtime/loader/src/fetch/nodeFetch';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
 import { markAndDerived } from '../utils';

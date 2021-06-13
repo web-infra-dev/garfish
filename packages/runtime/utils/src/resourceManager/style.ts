@@ -6,6 +6,7 @@ const MATCH_CSS_URL = /url\(['"]?([^\)]+?)['"]?\)/g;
 export class StyleManager {
   public url: string | null;
   public styleCode: string;
+  public type = 'style';
 
   constructor(styleCode: string, url?: string) {
     this.url = url || null;

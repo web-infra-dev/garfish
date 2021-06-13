@@ -16,6 +16,7 @@ const transformCode = (code: string) => {
 
 export class TemplateManager {
   public DOMApis = DOMApis;
+  public type = 'template';
   public url: string | null;
   public astTree: Array<Node>;
   private pretreatmentStore: Record<string, Node[]>;
@@ -24,11 +25,11 @@ export class TemplateManager {
     this.url = url || null;
     // About 1M text parse takes about 100ms
     this.astTree = parse(transformCode(template));
-    // pretreatment resource
+    // Pretreatment resource
     this.getNodeByTagName('link', 'style', 'script');
   }
 
-  getNodeByTagName<T>(...tags: Array<keyof T>) {
+  private getNodeByTagName<T>(...tags: Array<keyof T>) {
     let counter = 0;
     const collection: Record<keyof T, Array<Node>> = {} as any;
 
@@ -91,5 +92,13 @@ export class TemplateManager {
       }
     }
     return elements;
+  }
+
+  findAllLinkNodes() {
+    return this.getNodeByTagName('link').link;
+  }
+
+  findAllJsNodes() {
+    return this.getNodeByTagName('script').script;
   }
 }

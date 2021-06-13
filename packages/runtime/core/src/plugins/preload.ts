@@ -166,7 +166,7 @@ export function setRanking(appName: string) {
 
 const loadedMap = Object.create(null); // Global cache, only load again is enough
 
-export default function preloadApp() {
+export function GarfishPreloadPlugin() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     return {
       name: 'preload',
@@ -178,7 +178,7 @@ export default function preloadApp() {
       registerApp(appInfos) {
         setTimeout(
           () => {
-            if (isSlowNetwork()) return;
+            if (isMobile || isSlowNetwork()) return;
             const ranking = getRanking();
 
             for (const { appName } of ranking) {
