@@ -10,7 +10,7 @@ import {
 } from '@garfish/utils';
 import { Sandbox } from './sandbox';
 import { BrowserConfig, Hooks as TypeHooks } from './types';
-import './utils/handleNode';
+import { makeElInjector } from './utils/handleNode';
 
 export interface OverridesData {
   recover?: () => void;
@@ -102,6 +102,8 @@ export default function BrowserVm() {
         options.openVm = config.open;
 
         if (!config.open) return;
+        // inject Global capture
+        makeElInjector();
 
         if (appInstance) {
           // existing
