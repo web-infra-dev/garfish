@@ -32,7 +32,6 @@ async function run() {
   const buildAll = async (targets) => {
     for (const target of targets) {
       // watch mode can't await
-      if (target.indexOf('hooks') !== -1) return;
       if (watch) {
         build(target);
       } else {
