@@ -173,18 +173,15 @@ function createConfig(format, output, plugins = []) {
   }
 
   // 有可能引用外部包，但是外部包有可能没有 esm 版本
-  const nodePlugins =
-    format !== 'cjs'
-      ? [
-          require('@rollup/plugin-node-resolve').nodeResolve({
-            // console 这个模块和原生的有重合
-            preferBuiltins: false,
-          }),
-          require('@rollup/plugin-commonjs')({
-            sourceMap: false,
-          }),
-        ]
-      : [];
+  const nodePlugins = [
+    require('@rollup/plugin-node-resolve').nodeResolve({
+      // console 这个模块和原生的有重合
+      preferBuiltins: false,
+    }),
+    require('@rollup/plugin-commonjs')({
+      sourceMap: false,
+    }),
+  ];
 
   const tsPlugin = ts({
     check: process.env.CHECK !== 'false',
