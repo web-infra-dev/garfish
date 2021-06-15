@@ -1,4 +1,4 @@
-import { isAbsolute, transformUrl } from '../domApis';
+import { isAbsolute, transformUrl } from '@garfish/utils';
 
 // Match url in css
 const MATCH_CSS_URL = /url\(['"]?([^\)]+?)['"]?\)/g;

@@ -6,23 +6,6 @@ interface LoaderOptions {
   maxSize?: number; // The unit is "b"
 }
 
-interface ClearPluginArgs {
-  scope: string;
-  fileType?: FileType;
-}
-
-interface LoadedPluginArgs {
-  code: string;
-  result: Response;
-  fileType: FileType;
-  isComponent: boolean;
-}
-
-interface BeforeLoadPluginArgs {
-  url: string;
-  requestConfig: ResponseInit;
-}
-
 const request = async (url: string, config: RequestInit) => {
   const result = await fetch(url, config || {});
   // Response codes greater than "400" are regarded as errors
@@ -44,9 +27,9 @@ const mergeConfig = (loader: Loader, url: string) => {
 
 export class Loader {
   public lifecycle = {
-    clear: new PluginManager<ClearPluginArgs>('clear'),
-    loaded: new PluginManager<LoadedPluginArgs>('loaded'),
-    beforeLoad: new PluginManager<BeforeLoadPluginArgs>('beforeLoad'),
+    clear: new PluginManager<any>('clear'),
+    loaded: new PluginManager<any>('loaded'),
+    beforeLoad: new PluginManager<any>('beforeLoad'),
   };
 
   /**
@@ -115,17 +98,18 @@ export class Loader {
 
         if (isComponent) {
           fileType = 'component';
-        } else if (isHtml(mimeType) || /\.html/.test(url)) {
+        } else if (isHtml(mimeType) || /\.html/.test(result.url)) {
           fileType = 'template';
-        } else if (isJs(mimeType) || /\.js/.test(url)) {
+        } else if (isJs(mimeType) || /\.js/.test(result.url)) {
           fileType = 'js';
-        } else if (isCss(mimeType) || /\.css/.test(url)) {
+        } else if (isCss(mimeType) || /\.css/.test(result.url)) {
           fileType = 'css';
         }
 
         // The results will be cached this time.
         // So, you can transform the request result.
         const data = this.lifecycle.loaded.run({
+          url,
           code,
           result,
           fileType,

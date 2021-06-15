@@ -293,7 +293,7 @@ export class App {
     // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
     this.renderHtml();
 
-    //Execute asynchronous script
+    // Execute asynchronous script
     for (const manager of resources.js) {
       if (manager.async) {
         // Asynchronous script does not block the rendering process

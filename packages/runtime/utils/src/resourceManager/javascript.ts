@@ -18,10 +18,10 @@ export class JavaScriptManager {
   }
 
   isInlineScript() {
-    return Boolean(this.url);
+    return Boolean(!this.url);
   }
 
   setMimeType(mimeType: string) {
-    this.mimeType = mimeType;
+    this.mimeType = mimeType || '';
   }
 }
