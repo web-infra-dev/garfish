@@ -34,7 +34,8 @@
     "@garfish/browser-snapshot": "^0.0.9-alpha.2",
     "@garfish/browser-vm": "^0.0.9-alpha.2",
     "@garfish/core": "^0.0.9-alpha.2",
-    "@garfish/router": "^0.0.9-alpha.2"
+    "@garfish/router": "^0.0.9-alpha.2",
+    "@garfish/utils": "^0.0.9-alpha.2"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
