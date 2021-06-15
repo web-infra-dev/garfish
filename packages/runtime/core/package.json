@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@garfish/hooks": "^0.0.9-alpha.2",
+    "@garfish/utils": "^0.0.9-alpha.3",
     "himalaya": "^1.1.0"
   },
   "publishConfig": {

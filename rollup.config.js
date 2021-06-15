@@ -133,8 +133,8 @@ function extractTsDeclare() {
         `dist/packages/runtime/${pkgName}/src`,
       );
 
-      if (!fs.existsSync(tsTypeDir)) return;
       setTimeout(() => {
+        if (!fs.existsSync(tsTypeDir)) return;
         fs.copySync(
           path.resolve(pkgDir, tsTypeDir),
           path.resolve(pkgDir, `dist/`),
