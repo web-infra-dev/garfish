@@ -24,7 +24,7 @@
     "lib",
     "src",
     "!lib/__tests__",
-    "tapable.d.ts"
+    "index.d.ts"
   ],
   "main": "./src/index.js",
   "module": "./src/index.js",
