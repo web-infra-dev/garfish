@@ -22,6 +22,7 @@
   },
   "files": [
     "lib",
+    "src",
     "!lib/__tests__",
     "tapable.d.ts"
   ],
