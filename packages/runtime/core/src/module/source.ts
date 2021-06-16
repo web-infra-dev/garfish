@@ -1,5 +1,16 @@
-import { createElement, createTextNode, isComment, isVNode, isVText, rawAppendChild, VText, createKey, transformCssUrl, VNode } from "@garfish/utils";
-import { transformCode } from "../utils";
+import {
+  createElement,
+  createTextNode,
+  isComment,
+  isVNode,
+  isVText,
+  rawAppendChild,
+  VText,
+  createKey,
+  transformCssUrl,
+  VNode,
+} from '@garfish/utils';
+import { transformCode } from '../utils';
 import { parse } from 'himalaya';
 
 export interface HtmlResourceOpts {
@@ -96,7 +107,6 @@ export class HtmlResource {
     return els;
   }
 }
-
 
 export interface JsResourceOpts {
   url: string;
