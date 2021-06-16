@@ -1,6 +1,6 @@
+import { Text, StyleManager, TemplateManager } from '@garfish/loader';
 import {
   warn,
-  Text,
   assert,
   evalWithEnv,
   findTarget,
@@ -10,10 +10,7 @@ import {
   parseContentType,
   rawAppendChild,
   removeElement,
-  transformCssUrl,
   transformUrl,
-  StyleManager,
-  TemplateManager,
   createAppContainer,
   getRenderNode,
   sourceListTags,

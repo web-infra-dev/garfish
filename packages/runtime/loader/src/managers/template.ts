@@ -1,6 +1,5 @@
 import { parse } from 'himalaya';
-import { deepMerge } from '../utils';
-import { transformUrl } from '../domApis';
+import { deepMerge, transformUrl } from '@garfish/utils';
 import { Node, Text, DOMApis } from './renderApi';
 
 type Renderer = Record<string, (node: Node) => Element | Comment>;

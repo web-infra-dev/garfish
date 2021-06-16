@@ -22,15 +22,16 @@ loader.lifecycle.beforeLoad.add(({ url, config }) => {
 
 // loaded
 loader.lifecycle.loaded.add((data) => {
-  const { code, result, mimeType, isComponent } = data;
-  return 1;
+  const { result, value } = data;
+  data.n = 1;
+  return data;
 });
 
 loader.lifecycle.loaded.add((data) => {
-  console.log(data); // 1
-  // The results will be cached this time.
+  console.log(data.n); // 1
+  // The "data.value" will be cached this time.
   // So, you can transform the request result.
-  return data * 2;
+  return data;
 });
 
 loader.load('appName', 'https://xxx').then((result) => {

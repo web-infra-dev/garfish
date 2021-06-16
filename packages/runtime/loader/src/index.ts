@@ -1,6 +1,23 @@
 import { isJs, isCss, isHtml, error, parseContentType } from '@garfish/utils';
 import { PluginManager } from './pluginSystem';
 import { FileType, AppCacheContainer } from './appCache';
+import { StyleManager } from './managers/style';
+import { TemplateManager } from './managers/template';
+import { ComponentManager } from './managers/component';
+import { JavaScriptManager } from './managers/javascript';
+
+// Export types and manager constructor
+export * from './managers/style';
+export * from './managers/template';
+export * from './managers/component';
+export * from './managers/javascript';
+export * from './managers/renderApi';
+
+export type Manager =
+  | StyleManager
+  | TemplateManager
+  | ComponentManager
+  | JavaScriptManager;
 
 interface LoaderOptions {
   maxSize?: number; // The unit is "b"
@@ -11,12 +28,14 @@ interface ClearPluginArgs {
   fileType?: FileType;
 }
 
-interface LoadedPluginArgs {
-  url: string;
-  code: string;
+interface LoadedPluginArgs<T> {
   result: Response;
-  fileType: FileType;
-  isComponent: boolean;
+  value: {
+    url: string;
+    code: string;
+    fileType: FileType;
+    resourceManager: T | null;
+  };
 }
 
 interface BeforeLoadPluginArgs {
@@ -46,7 +65,7 @@ const mergeConfig = (loader: Loader, url: string) => {
 export class Loader {
   public lifecycle = {
     clear: new PluginManager<ClearPluginArgs>('clear'),
-    loaded: new PluginManager<LoadedPluginArgs>('loaded'),
+    loaded: new PluginManager<LoadedPluginArgs<Manager>>('loaded'),
     beforeLoad: new PluginManager<BeforeLoadPluginArgs>('beforeLoad'),
   };
 
@@ -56,8 +75,11 @@ export class Loader {
   public requestConfig: RequestInit | ((url: string) => RequestInit);
 
   private options: LoaderOptions;
-  private loadingList: Record<string, Promise<any>>;
   private cacheStore: { [name: string]: AppCacheContainer };
+  private loadingList: Record<
+    string,
+    Promise<LoadedPluginArgs<Manager>['value']>
+  >;
 
   constructor(options?: LoaderOptions) {
     this.options = options || {};
@@ -79,20 +101,20 @@ export class Loader {
     }
   }
 
-  loadComponent<T>(scope: string, url: string) {
+  loadComponent<T extends Manager>(scope: string, url: string) {
     return this.load<T>(scope, url, true);
   }
 
   // Unable to know the final data type, so through "generics"
-  load<T extends any>(
+  load<T extends Manager>(
     scope: string,
     url: string,
     isComponent = false,
-  ): Promise<T> {
+  ): Promise<LoadedPluginArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
 
     if (loadingList[url]) {
-      return loadingList[url];
+      return loadingList[url] as any;
     }
 
     let appCacheContainer = cacheStore[scope];
@@ -111,33 +133,44 @@ export class Loader {
 
     loadingList[url] = request(resOpts.url, resOpts.requestConfig).then(
       async ({ code, mimeType, result }) => {
-        let fileType: FileType;
+        let managerCtor, fileType: FileType;
         loadingList[url] = null;
 
         if (isComponent) {
           fileType = 'component';
+          managerCtor = ComponentManager;
         } else if (isHtml(mimeType) || /\.html/.test(result.url)) {
           fileType = 'template';
+          managerCtor = TemplateManager;
         } else if (isJs(mimeType) || /\.js/.test(result.url)) {
           fileType = 'js';
+          managerCtor = JavaScriptManager;
         } else if (isCss(mimeType) || /\.css/.test(result.url)) {
           fileType = 'css';
+          managerCtor = StyleManager;
         }
+
+        // Use result.url, resources may be redirected
+        const resourceManager: Manager | null = managerCtor
+          ? new managerCtor(code, result.url)
+          : null;
 
         // The results will be cached this time.
         // So, you can transform the request result.
         const data = this.lifecycle.loaded.run({
-          url,
-          code,
           result,
-          fileType,
-          isComponent: Boolean(isComponent),
+          value: {
+            url,
+            code,
+            fileType,
+            resourceManager,
+          },
         });
 
-        appCacheContainer.set(url, data, fileType);
-        return data;
+        appCacheContainer.set(url, data.value, fileType);
+        return data.value;
       },
     );
-    return loadingList[url];
+    return loadingList[url] as any;
   }
 }

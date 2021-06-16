@@ -1,5 +1,12 @@
 import { EventEmitter } from 'events';
-import { Loader } from '@garfish/loader';
+import {
+  Loader,
+  Text,
+  StyleManager,
+  TemplateManager,
+  JavaScriptManager,
+  ComponentManager,
+} from '@garfish/loader';
 import {
   warn,
   error,
@@ -9,10 +16,6 @@ import {
   deepMerge,
   transformUrl,
   __GARFISH_FLAG__,
-  Text,
-  StyleManager,
-  TemplateManager,
-  JavaScriptManager,
 } from '@garfish/utils';
 import { Hooks } from './hooks';
 import { App } from './module/app';
@@ -24,7 +27,6 @@ import { GarfishPreloadPlugin } from './plugins/preload';
 import { defaultLoadComponentOptions, getDefaultOptions } from './config';
 
 type GarfishPlugin = (context: Garfish) => interfaces.Plugin;
-type Manager = StyleManager | TemplateManager | JavaScriptManager;
 
 export class Garfish implements interfaces.Garfish {
   public hooks: Hooks;
@@ -45,22 +47,6 @@ export class Garfish implements interfaces.Garfish {
   constructor(options: interfaces.Options) {
     this.hooks = new Hooks();
     this.loader = new Loader();
-
-    this.loader.lifecycle.loaded.add((data) => {
-      const { code, result, fileType, isComponent } = data;
-      if (isComponent) return data;
-      // prettier-ignore
-      const managerCtor =
-      fileType === 'template'
-        ? TemplateManager
-        : fileType === 'css'
-          ? StyleManager
-          : fileType === 'js'
-            ? JavaScriptManager
-            : null;
-      // Use result.url, resources may be redirected
-      return managerCtor ? new managerCtor(code, result.url) : data;
-    });
 
     // init Garfish options
     this.setOptions(options);
@@ -213,7 +199,7 @@ export class Garfish implements interfaces.Garfish {
         try {
           let isHtmlMode, fakeEntryManager;
           const resources = { js: [], link: [] }; // Default resources
-          const entryManager = await this.loader.load<Manager>(
+          const { resourceManager: entryManager } = await this.loader.load(
             appName,
             transformUrl(location.href, appInfo.entry),
           );
@@ -240,7 +226,7 @@ export class Garfish implements interfaces.Garfish {
                     // we have a preload mechanism, so we don’t need to deal with it.
                     return this.loader
                       .load<JavaScriptManager>(appName, fetchUrl)
-                      .then((jsManager) => {
+                      .then(({ resourceManager: jsManager }) => {
                         jsManager.setDep(node);
                         jsManager.setMimeType(type);
                         jsManager.setAsyncAttribute(Boolean(async));
@@ -270,7 +256,7 @@ export class Garfish implements interfaces.Garfish {
                     const fetchUrl = transformUrl(entryManager.url, href);
                     return this.loader
                       .load<StyleManager>(appName, fetchUrl)
-                      .then((styleManager) => {
+                      .then(({ resourceManager: styleManager }) => {
                         styleManager.setDep(node);
                         // styleManager.setScope(appName);
                         styleManager.correctPath();
@@ -350,10 +336,11 @@ export class Garfish implements interfaces.Garfish {
           options.url,
           `Missing url for loading "${name}" micro component`,
         );
-        const manager = await this.loader.loadComponent<JavaScriptManager>(
-          name,
-          options.url,
-        );
+
+        const { resourceManager: manager } = await this.loader.loadComponent<
+          ComponentManager
+        >(name, options.url);
+
         try {
           result = new Component(this, { name, ...options }, manager);
           this.cacheComponents[nameWithVersion] = result;

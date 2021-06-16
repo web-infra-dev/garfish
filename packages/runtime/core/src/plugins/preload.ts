@@ -1,11 +1,5 @@
-import {
-  warn,
-  isCssLink,
-  transformUrl,
-  callTestCallback,
-  TemplateManager,
-} from '@garfish/utils';
-import { Loader } from '@garfish/loader';
+import { warn, transformUrl, callTestCallback } from '@garfish/utils';
+import { Loader, Manager, TemplateManager } from '@garfish/loader';
 import { interfaces } from '../interface';
 
 const storageKey = '__garfishPreloadApp__';
@@ -65,7 +59,7 @@ function safeLoad(
   loader: Loader,
   appName: string,
   url: string,
-  callback?: (...args: any) => any,
+  callback?: (m: Manager) => any,
 ) {
   requestQueue.add((next) => {
     const throwWarn = (e) => {
@@ -81,8 +75,8 @@ function safeLoad(
       try {
         loader
           .load(appName, url)
-          .then((manager) => {
-            callback && callback(manager);
+          .then(({ resourceManager }) => {
+            callback && callback(resourceManager);
             setTimeout(next, 500);
           })
           .catch(throwWarn);
@@ -157,7 +151,6 @@ export function GarfishPreloadPlugin() {
         return Promise.resolve(true);
       },
       registerApp(appInfos) {
-        console.log('preload registerApp', appInfos);
         setTimeout(
           () => {
             if (isMobile || isSlowNetwork()) return;

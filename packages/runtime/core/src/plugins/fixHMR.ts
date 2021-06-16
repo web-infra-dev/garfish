@@ -11,10 +11,10 @@ export function GarfishHMRPlugin() {
       bootstrap() {
         if (hasInit) return;
         hasInit = true;
-        const webpackHotUpdate = window.webpackHotUpdate;
+        const webpackHotUpdate = (window as any).webpackHotUpdate;
 
         if (typeof webpackHotUpdate === 'function') {
-          window.webpackHotUpdate = function () {
+          (window as any).webpackHotUpdate = function () {
             isHotUpdate = true;
             return webpackHotUpdate.apply(this, arguments);
           };

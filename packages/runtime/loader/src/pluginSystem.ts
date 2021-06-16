@@ -44,8 +44,20 @@ export class PluginManager<T> {
   run<T extends Record<string, any>>(result: T) {
     for (const fn of this.plugins) {
       try {
-        result = fn(result as any);
+        let illegalResult = false;
+        const tempResult = fn(result as any);
         if (fn._onceFlag === ONCE_FLAG) this.remove(fn);
+        for (const key in result) {
+          if (!hasOwn(key, tempResult)) {
+            illegalResult = true;
+            break;
+          }
+        }
+        illegalResult
+          ? this.onerror(
+              `The "${this.type}" type has a plugin return value error.`,
+            )
+          : (result = tempResult);
       } catch (err) {
         this.onerror(err);
         __DEV__ && console.error(err);

@@ -1,17 +1,12 @@
 import { EventEmitter } from 'events';
-import { Loader } from '@garfish/loader';
+import { SyncHook, AsyncSeriesBailHook } from '@garfish/hooks';
 import {
+  Loader,
   StyleManager as StyleManagerInterface,
   TemplateManager as TemplateManagerInterface,
+  ComponentManager as ComponentManagerInterface,
   JavaScriptManager as JavaScriptManagerInterface,
-} from '@garfish/utils';
-import {
-  SyncHook,
-  AsyncSeriesBailHook,
-  AsyncParallelBailHook,
-  AsyncSeriesHook,
-} from '@garfish/hooks';
-import { Garfish } from '../garfish';
+} from '@garfish/loader';
 import { App as AppInterface } from '../module/app';
 
 export namespace interfaces {
@@ -54,13 +49,6 @@ export namespace interfaces {
     version?: string;
     parser?: ComponentParser;
   }
-
-  // export interface SandboxConfig {
-  //   open?: boolean;
-  //   snapshot?: boolean;
-  //   useStrict?: boolean;
-  //   strictIsolation?: boolean;
-  // }
 
   export interface Garfish {
     flag: symbol;
@@ -135,6 +123,7 @@ export namespace interfaces {
 
   export type StyleManager = StyleManagerInterface;
   export type TemplateManager = TemplateManagerInterface;
+  export type ComponentManager = ComponentManagerInterface;
   export type JavaScriptManager = JavaScriptManagerInterface;
 
   export type Options = Config & HooksLifecycle;
