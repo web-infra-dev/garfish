@@ -325,7 +325,7 @@ export class App {
     // To append to the document flow, recursive again create the contents of the HTML or execute the script
     this.addContainer();
 
-    const customRenderer = {
+    const customRenderer: Parameters<typeof entryManager.createElements>[0] = {
       meta: () => null,
 
       img: (node) => {
@@ -486,6 +486,7 @@ export class App {
     }
 
     assert(provider, `"provider" is "${typeof provider}".`);
+    // No need to use "hasOwn", because "render" may be on the prototype chain
     assert('render' in provider, '"render" is required in provider.');
     assert('destroy' in provider, '"destroy" is required in provider.');
 

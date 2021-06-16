@@ -161,7 +161,7 @@ export class Garfish implements interfaces.Garfish {
   async loadApp(
     appName: string,
     options: interfaces.LoadAppOptions | string,
-  ): Promise<interfaces.App> {
+  ): Promise<interfaces.App | null> {
     let appInfo = this.appInfos[appName];
     // Does not support does not have remote resources and no registered application
     assert(
