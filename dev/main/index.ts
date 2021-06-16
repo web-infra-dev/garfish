@@ -19,7 +19,7 @@ GarfishInstance.run({
       entry: 'http://localhost:9000',
     },
   ],
-  disablePreloadApp: true,
+  // disablePreloadApp: true,
   sandbox: {
     open: true,
     snapshot: true,

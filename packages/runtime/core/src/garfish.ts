@@ -57,7 +57,7 @@ export class Garfish implements interfaces.Garfish {
           ? StyleManager
           : fileType === 'js'
             ? JavaScriptManager
-            : data;
+            : null;
       // Use result.url, resources may be redirected
       return managerCtor ? new managerCtor(code, result.url) : data;
     });
@@ -124,12 +124,12 @@ export class Garfish implements interfaces.Garfish {
       return this;
     }
     this.hooks.lifecycle.beforeBootstrap.call(this.options);
-    this.setOptions(options);
     // register plugins
     options?.plugins?.forEach((pluginCb) => {
       this.usePlugin(pluginCb, this);
     });
     this.injectOptionalPlugin(options);
+    this.setOptions(options);
     this.running = true;
     this.hooks.lifecycle.bootstrap.call(this.options);
     return this;
@@ -189,7 +189,7 @@ export class Garfish implements interfaces.Garfish {
       const tempInfo = appInfo;
       appInfo = deepMerge(tempInfo, options);
     } else if (typeof options === 'string') {
-      // Garfish.loadApp('appName', 'https://xxx.html')
+      // Garfish.loadApp('appName', 'https://xxx.html');
       appInfo = {
         name: appName,
         entry: options,
@@ -221,47 +221,65 @@ export class Garfish implements interfaces.Garfish {
           // Html entry
           if (entryManager instanceof TemplateManager) {
             isHtmlMode = true;
-            // Get all script element
-            const jsNodes = entryManager
-              .findAllJsNodes()
-              .map((node) => {
-                const src = entryManager.findAttributeValue(node, 'src');
-                const type = entryManager.findAttributeValue(node, 'type');
+            // Get all script elements
+            const jsNodes = Promise.all(
+              entryManager
+                .findAllJsNodes()
+                .map((node) => {
+                  const src = entryManager.findAttributeValue(node, 'src');
+                  const type = entryManager.findAttributeValue(node, 'type');
 
-                // There should be no embedded script in the script element tag with the src attribute specified
-                if (src) {
-                  const fetchUrl = transformUrl(entryManager.url, src);
-                  // Scripts with "async" attribute will make the rendering process very complicated,
-                  // we have a preload mechanism, so we don’t need to deal with it.
-                  return this.loader
-                    .load<JavaScriptManager>(appName, fetchUrl)
-                    .then((jsManager) => {
+                  // There should be no embedded script in the script element tag with the src attribute specified
+                  if (src) {
+                    const fetchUrl = transformUrl(entryManager.url, src);
+                    const async = entryManager.findAttributeValue(
+                      node,
+                      'async',
+                    );
+                    // Scripts with "async" attribute will make the rendering process very complicated,
+                    // we have a preload mechanism, so we don’t need to deal with it.
+                    return this.loader
+                      .load<JavaScriptManager>(appName, fetchUrl)
+                      .then((jsManager) => {
+                        jsManager.setDep(node);
+                        jsManager.setMimeType(type);
+                        jsManager.setAsyncAttribute(Boolean(async));
+                        return jsManager;
+                      });
+                  } else if (node.children.length > 0) {
+                    const code = (node.children[0] as Text).content;
+                    if (code) {
+                      const jsManager = new JavaScriptManager(code, '');
+                      jsManager.setDep(node);
                       jsManager.setMimeType(type);
                       return jsManager;
-                    });
-                } else {
-                  const code = (node.children[0] as Text).content;
-                  if (code) {
-                    const jsManager = new JavaScriptManager(code, '');
-                    jsManager.setMimeType(type);
-                    return jsManager;
+                    }
                   }
-                }
-              })
-              .filter((val) => val);
+                })
+                .filter(Boolean),
+            );
 
-            // Get all link element
-            const linkNodes = entryManager
-              .findAllLinkNodes()
-              .map((node) => {
-                if (!entryManager.DOMApis.isCssLinkNode(node)) return;
-                const href = entryManager.findAttributeValue(node, 'href');
-                if (href) {
-                  const fetchUrl = transformUrl(entryManager.url, href);
-                  return this.loader.load<StyleManager>(appName, fetchUrl);
-                }
-              })
-              .filter((val) => val);
+            // Get all link elements
+            const linkNodes = Promise.all(
+              entryManager
+                .findAllLinkNodes()
+                .map((node) => {
+                  if (!entryManager.DOMApis.isCssLinkNode(node)) return;
+                  const href = entryManager.findAttributeValue(node, 'href');
+                  if (href) {
+                    const fetchUrl = transformUrl(entryManager.url, href);
+                    return this.loader
+                      .load<StyleManager>(appName, fetchUrl)
+                      .then((styleManager) => {
+                        styleManager.setDep(node);
+                        // styleManager.setScope(appName);
+                        styleManager.correctPath();
+                        return styleManager;
+                      });
+                  }
+                })
+                .filter(Boolean),
+            );
 
             const [js, link] = await Promise.all([jsNodes, linkNodes]);
             resources.js = js;
@@ -281,6 +299,7 @@ export class Garfish implements interfaces.Garfish {
           }
 
           const manager = fakeEntryManager || entryManager;
+          // Call lifecycle
           this.hooks.lifecycle.processResource.call(
             appInfo,
             manager,
@@ -306,46 +325,50 @@ export class Garfish implements interfaces.Garfish {
       return appInstance;
     };
 
-    if (!options.cache || !this.loading[appName]) {
+    if (!appInfo.cache || !this.loading[appName]) {
       this.loading[appName] = asyncLoadProcess();
     }
     return this.loading[appName];
   }
 
-  // async loadComponent(
-  //   name: string,
-  //   options: interfaces.LoadComponentOptions,
-  // ): Promise<interfaces.Component> {
-  //   const opts: interfaces.LoadComponentOptions = {
-  //     ...defaultLoadComponentOptions,
-  //     ...options,
-  //   };
-  //   const nameWithVersion = opts?.version ? `${name}@${opts?.version}` : name;
-  //   const asyncLoadProcess = async () => {
-  //     // Existing cache caching logic
-  //     let result = null;
-  //     const cacheComponents = this.cacheComponents[nameWithVersion];
-  //     if (opts.cache && cacheComponents) {
-  //       result = cacheComponents;
-  //     } else {
-  //       const manager = (await this.loader.load(
-  //         opts?.url,
-  //       )) as interfaces.JsResource;
-  //       try {
-  //         result = new Component(this, { name, ...opts }, manager);
-  //         this.cacheComponents[nameWithVersion] = result;
-  //       } catch (e) {
-  //         __DEV__ && error(e);
-  //       } finally {
-  //         this.loading[nameWithVersion] = null;
-  //       }
-  //     }
-  //     return result;
-  //   };
+  async loadComponent(
+    name: string,
+    options: interfaces.LoadComponentOptions,
+  ): Promise<interfaces.Component> {
+    options = deepMerge(defaultLoadComponentOptions, options || ({} as any));
+    const nameWithVersion = options?.version
+      ? `${name}@${options.version}`
+      : name;
+    const asyncLoadProcess = async () => {
+      // Existing cache caching logic
+      let result = null;
+      const cacheComponents = this.cacheComponents[nameWithVersion];
+      if (options.cache && cacheComponents) {
+        result = cacheComponents;
+      } else {
+        assert(
+          options.url,
+          `Missing url for loading "${name}" micro component`,
+        );
+        const manager = await this.loader.loadComponent<JavaScriptManager>(
+          name,
+          options.url,
+        );
+        try {
+          result = new Component(this, { name, ...options }, manager);
+          this.cacheComponents[nameWithVersion] = result;
+        } catch (e) {
+          __DEV__ && error(e);
+        } finally {
+          this.loading[nameWithVersion] = null;
+        }
+      }
+      return result;
+    };
 
-  //   if (!opts.cache || !this.loading[nameWithVersion]) {
-  //     this.loading[nameWithVersion] = asyncLoadProcess();
-  //   }
-  //   return this.loading[nameWithVersion];
-  // }
+    if (!options.cache || !this.loading[nameWithVersion]) {
+      this.loading[nameWithVersion] = asyncLoadProcess();
+    }
+    return this.loading[nameWithVersion];
+  }
 }

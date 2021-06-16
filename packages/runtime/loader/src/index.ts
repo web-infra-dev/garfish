@@ -6,6 +6,24 @@ interface LoaderOptions {
   maxSize?: number; // The unit is "b"
 }
 
+interface ClearPluginArgs {
+  scope: string;
+  fileType?: FileType;
+}
+
+interface LoadedPluginArgs {
+  url: string;
+  code: string;
+  result: Response;
+  fileType: FileType;
+  isComponent: boolean;
+}
+
+interface BeforeLoadPluginArgs {
+  url: string;
+  requestConfig: ResponseInit;
+}
+
 const request = async (url: string, config: RequestInit) => {
   const result = await fetch(url, config || {});
   // Response codes greater than "400" are regarded as errors
@@ -27,9 +45,9 @@ const mergeConfig = (loader: Loader, url: string) => {
 
 export class Loader {
   public lifecycle = {
-    clear: new PluginManager<any>('clear'),
-    loaded: new PluginManager<any>('loaded'),
-    beforeLoad: new PluginManager<any>('beforeLoad'),
+    clear: new PluginManager<ClearPluginArgs>('clear'),
+    loaded: new PluginManager<LoadedPluginArgs>('loaded'),
+    beforeLoad: new PluginManager<BeforeLoadPluginArgs>('beforeLoad'),
   };
 
   /**
@@ -61,8 +79,8 @@ export class Loader {
     }
   }
 
-  loadComponent(scope: string, url: string) {
-    return this.load(scope, url, true);
+  loadComponent<T>(scope: string, url: string) {
+    return this.load<T>(scope, url, true);
   }
 
   // Unable to know the final data type, so through "generics"
@@ -78,7 +96,7 @@ export class Loader {
     }
 
     let appCacheContainer = cacheStore[scope];
-    if (appCacheContainer) {
+    if (!appCacheContainer) {
       appCacheContainer = cacheStore[scope] = new AppCacheContainer(
         options.maxSize,
       );
@@ -113,7 +131,7 @@ export class Loader {
           code,
           result,
           fileType,
-          isComponent,
+          isComponent: Boolean(isComponent),
         });
 
         appCacheContainer.set(url, data, fileType);

@@ -3,13 +3,11 @@ import {
   isCssLink,
   transformUrl,
   callTestCallback,
+  TemplateManager,
 } from '@garfish/utils';
-import { Loader, isOverCapacity } from '../module/loader';
-
-import { HtmlResource, JsResource } from '../module/source';
+import { Loader } from '@garfish/loader';
 import { interfaces } from '../interface';
 
-let currentSize = 0;
 const storageKey = '__garfishPreloadApp__';
 
 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -65,6 +63,7 @@ export const requestQueue = {
 // Test size, catch mistakes, avoid preload first screen white during parsing error
 function safeLoad(
   loader: Loader,
+  appName: string,
   url: string,
   callback?: (...args: any) => any,
 ) {
@@ -77,62 +76,44 @@ function safeLoad(
       }
     };
 
-    if (!isOverCapacity(currentSize)) {
-      // edge浏览器不知为何不为函数
-      requestIdleCallback(() => {
-        try {
-          loader
-            .load(url)
-            .then((resManager: HtmlResource | JsResource) => {
-              const size = resManager.opts.size;
-              currentSize += isNaN(size) ? 0 : size;
-              callback && callback(resManager);
-              setTimeout(next, 500);
-            })
-            .catch(throwWarn);
-        } catch (e) {
-          throwWarn(e);
-        }
-      });
-    } else if (__DEV__) {
-      warn(
-        'Resource caching capacity of more than ' +
-          `"${(currentSize / 1024 / 1024).toFixed()}M".`,
-      );
-    }
+    // edge浏览器不知为何不为函数
+    requestIdleCallback(() => {
+      try {
+        loader
+          .load(appName, url)
+          .then((manager) => {
+            callback && callback(manager);
+            setTimeout(next, 500);
+          })
+          .catch(throwWarn);
+      } catch (e) {
+        throwWarn(e);
+      }
+    });
   });
 }
 
 export function loadAppResource(loader: Loader, info: interfaces.AppInfo) {
-  if (__TEST__) {
-    callTestCallback(loadAppResource, info);
-  }
-  const entry = transformUrl(location.href, info.entry);
+  __TEST__ && callTestCallback(loadAppResource, info);
+  const fetchUrl = transformUrl(location.href, info.entry);
 
-  safeLoad(loader, entry, (resManager) => {
-    // if (typeof requestIdleCallback !== 'function') return;
+  safeLoad(loader, info.name, fetchUrl, (manager) => {
     requestIdleCallback(() => {
-      if (resManager.type === 'html') {
-        const baseUrl = resManager.opts.url;
-        const jsNodes = resManager.getVNodesByTagName('script');
-        const linkNodes = resManager.getVNodesByTagName('link');
-
+      if (manager instanceof TemplateManager) {
+        const baseUrl = manager.url;
+        const jsNodes = manager.findAllJsNodes();
+        const linkNodes = manager.findAllLinkNodes();
         if (jsNodes) {
-          jsNodes.forEach(({ attributes }) => {
-            const src = attributes.find(({ key }) => key === 'src');
-            if (src && src.value) {
-              safeLoad(loader, transformUrl(baseUrl, src.value));
-            }
+          jsNodes.forEach((node) => {
+            const src = manager.findAttributeValue(node, 'src');
+            src && safeLoad(loader, info.name, transformUrl(baseUrl, src));
           });
         }
-
         if (linkNodes) {
-          linkNodes.forEach((vnode) => {
-            if (isCssLink(vnode)) {
-              const href = vnode.attributes.find(({ key }) => key === 'href');
-              if (href && href.value) {
-                safeLoad(loader, transformUrl(baseUrl, href.value));
-              }
+          linkNodes.forEach((node) => {
+            if (manager.DOMApis.isCssLinkNode(node)) {
+              const href = manager.findAttributeValue(node, 'href');
+              href && safeLoad(loader, info.name, transformUrl(baseUrl, href));
             }
           });
         }
@@ -176,6 +157,7 @@ export function GarfishPreloadPlugin() {
         return Promise.resolve(true);
       },
       registerApp(appInfos) {
+        console.log('preload registerApp', appInfos);
         setTimeout(
           () => {
             if (isMobile || isSlowNetwork()) return;

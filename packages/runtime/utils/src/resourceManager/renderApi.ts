@@ -65,6 +65,23 @@ export const DOMApis = {
     return false;
   },
 
+  isPrefetchJsLink(node: Node) {
+    if (!this.isNode(node) || node.tagName !== 'link') return false;
+    let hasRelAttr, hasAsAttr;
+    for (const { key, value } of node.attributes) {
+      if (key === 'rel') {
+        hasRelAttr = true;
+        if (value !== 'preload' && value !== 'prefetch') {
+          return false;
+        }
+      } else if (key === 'as') {
+        hasAsAttr = true;
+        if (value !== 'script') return false;
+      }
+    }
+    return Boolean(hasRelAttr && hasAsAttr);
+  },
+
   removeElement(el: Element) {
     const parentNode = el && el.parentNode;
     if (parentNode) {

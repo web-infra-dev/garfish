@@ -16,9 +16,9 @@ declare module '@garfish/core' {
       sandbox?: SandboxConfig;
     }
 
-    export interface App {
-      snapshotSandbox?: SnapshotSandbox;
-    }
+    // export interface App {
+    //   snapshotSandbox?: SnapshotSandbox;
+    // }
 
     export interface Plugin {
       openBrowser?: boolean;

@@ -1,5 +1,6 @@
 import { interfaces } from '../interface';
 
+// When the main application is updated, the currently active child applications need to rerender.
 export function GarfishHMRPlugin() {
   let hasInit = false;
   let isHotUpdate = false;
@@ -10,10 +11,10 @@ export function GarfishHMRPlugin() {
       bootstrap() {
         if (hasInit) return;
         hasInit = true;
-        const webpackHotUpdate = (window as any).webpackHotUpdate;
+        const webpackHotUpdate = window.webpackHotUpdate;
 
         if (typeof webpackHotUpdate === 'function') {
-          (window as any).webpackHotUpdate = function () {
+          window.webpackHotUpdate = function () {
             isHotUpdate = true;
             return webpackHotUpdate.apply(this, arguments);
           };
@@ -25,8 +26,8 @@ export function GarfishHMRPlugin() {
             Object.keys(Garfish.activeApps).forEach((appName) => {
               const app = Garfish.activeApps[appName];
               if (app.mounted) {
-                // app.display && app.hide();
-                // app.show();
+                app.display && app.hide();
+                app.show();
               }
             });
           });
