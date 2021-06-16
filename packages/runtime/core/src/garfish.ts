@@ -126,16 +126,17 @@ export class Garfish implements interfaces.Garfish {
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
     }
 
-    this.hooks.lifecycle.beforeBootstrap.call(this.options);
-
-    this.setOptions(options);
+    this.injectOptionalPlugin(options);
 
     // register plugins
     options?.plugins?.forEach((pluginCb) => {
       this.usePlugin(this.hooks, pluginCb, this);
     });
 
-    this.injectOptionalPlugin(options);
+    this.hooks.lifecycle.beforeBootstrap.call(this.options);
+
+    this.setOptions(options);
+
     this.running = true;
 
     this.hooks.lifecycle.bootstrap.call(this.options);
