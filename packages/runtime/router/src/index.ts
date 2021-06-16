@@ -64,6 +64,19 @@ export default function Router(_args?: Options) {
           const call = (app: interfaces.App, isRender: boolean) => {
             if (!app) return;
             const isDes = cache && app.mounted;
+            console.log(
+              app.appInfo.name,
+              `isRender: ${isRender},`,
+              `isDes: ${
+                isDes
+                  ? isRender
+                    ? 'show'
+                    : 'hide'
+                  : isRender
+                  ? 'mount'
+                  : 'unmount'
+              }, cache: ${cache}, mounted: ${app.mounted}`,
+            );
             const fn = isRender
               ? app[isDes ? 'show' : 'mount']
               : app[isDes ? 'hide' : 'unmount'];

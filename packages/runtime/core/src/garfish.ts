@@ -203,7 +203,7 @@ export class Garfish implements interfaces.Garfish {
       // Existing cache caching logic
       let result = null;
       const cacheApp = this.cacheApps[name];
-      if (opts.cache && cacheApp) {
+      if (appInfo.cache && cacheApp) {
         result = cacheApp;
       } else {
         try {
@@ -238,7 +238,7 @@ export class Garfish implements interfaces.Garfish {
       return result;
     };
 
-    if (!opts.cache || !this.loading[name]) {
+    if (!appInfo.cache || !this.loading[name]) {
       this.loading[name] = asyncLoadProcess();
     }
     return this.loading[name];

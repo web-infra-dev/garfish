@@ -47,15 +47,16 @@ export default {
   mounted () {
     if (hasInit) return;
     hasInit = true;
-
-    console.log(`window.__GARFISH_PARENT__`, window.__GARFISH_PARENT__);
-    if (window.__GARFISH_PARENT__) {
-      GarfishInstance.registerApp([
+    GarfishInstance.run({
+      basename: '/garfish_master/vue',
+      nested: !!window.__GARFISH_PARENT__,
+      apps: [
         {
           name: 'vueApp',
           entry: 'http://localhost:8000',
           basename: '/garfish_master/vue',
           activeWhen: '/vueApp',
+          cache: true,
           domGetter: ()=> document.querySelector('#vueApp')
         },
         {
@@ -63,53 +64,16 @@ export default {
           entry: 'http://localhost:3000',
           basename: '/garfish_master/vue',
           activeWhen: '/reactApp',
+          cache: true,
           domGetter: ()=> document.querySelector('#vueApp')
         }
-      ]);
-    } else {
-      // GarfishInstance.run({
-      //   basename: '/garfish_master/vue',
-      //   apps: [
-      //     {
-      //       name: 'vueApp',
-      //       entry: 'http://localhost:8000',
-      //       basename: '/garfish_master/vue',
-      //       activeWhen: '/vueApp',
-      //       domGetter: ()=> document.querySelector('#vueApp')
-      //     },
-      //     {
-      //       name: 'reactApp',
-      //       entry: 'http://localhost:3000',
-      //       basename: '/garfish_master/vue',
-      //       activeWhen: '/reactApp',
-      //       domGetter: ()=> document.querySelector('#vueApp')
-      //     }
-      //   ]
-      // });
-    }
-
+      ],
+      async beforeLoad(appInfo) {
+        console.log('开始加载了', appInfo);
+        // return Promise.resolve();
+      },
+    });
     // Can only be run once
-    // GarfishInstance.run({
-    //   basename: this.basename || '/',
-    //   domGetter: ()=> this.$refs.vueApp,
-    //   sandbox: {
-    //     open: true,
-    //     snapshot: true,
-    //   },
-    //   apps: [
-    //     {
-    //       name: 'vueApp',
-    //       activeWhen: '/vueApp',
-    //       cache: true,
-    //       entry: 'http://localhost:8000',
-    //     },
-    //   ],
-    //   plugins: [],
-    //   async beforeLoad(appInfo) {
-    //     console.log('开始加载了', appInfo);
-    //     // return Promise.resolve();
-    //   },
-    // });
   },
   components: {
   }
