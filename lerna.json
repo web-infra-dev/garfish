@@ -1,5 +1,5 @@
 {
-  "version": "0.0.9-alpha.7",
+  "version": "0.0.9-alpha.8",
   "npmClient": "npm",
   "command": {
     "publish": {

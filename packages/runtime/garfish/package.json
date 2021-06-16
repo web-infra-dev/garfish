@@ -33,9 +33,9 @@
   "dependencies": {
     "@garfish/browser-snapshot": "^0.0.9-alpha.2",
     "@garfish/browser-vm": "^0.0.9-alpha.2",
-    "@garfish/core": "^0.0.9-alpha.7",
+    "@garfish/core": "^0.0.9-alpha.8",
     "@garfish/router": "^0.0.9-alpha.2",
-    "@garfish/utils": "^0.0.9-alpha.6"
+    "@garfish/utils": "^0.0.9-alpha.8"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
