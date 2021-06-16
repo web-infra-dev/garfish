@@ -31,7 +31,6 @@
   "browser": {
     "util": "./lib/util-browser.js"
   },
-  "private": true,
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
