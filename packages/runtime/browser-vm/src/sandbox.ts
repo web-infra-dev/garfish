@@ -4,12 +4,10 @@ import {
   hasOwn,
   makeMap,
   isObject,
-  rawWindow,
   evalWithEnv,
   emitSandboxHook,
   setDocCurrentScript,
   supportLetStatement,
-  createKey,
 } from '@garfish/utils';
 import {
   Hooks,
@@ -40,8 +38,15 @@ import { localStorageOverride } from './modules/storage';
 import { listenerOverride } from './modules/eventListener';
 import { timeoutOverride, intervalOverride } from './modules/timer';
 import { __windowBind__, __garfishGlobal__ } from './symbolTypes';
+import {
+  createHas,
+  createGetter,
+  createSetter,
+  createDefineProperty,
+  createDeleteProperty,
+} from './proxyInterceptor/global';
 
-let sandboxId = 0;
+let id = 0;
 const defaultModules: Record<string, Module> = {
   history: historyOverride,
   timeout: timeoutOverride,
@@ -49,34 +54,38 @@ const defaultModules: Record<string, Module> = {
   listener: listenerOverride,
   interval: intervalOverride,
   localStorage: localStorageOverride,
-  XMLHttpRequest: __DEV__ ? XMLHttpRequestOverride : null,
 };
 
+// Deal with hmr problem
+if (__DEV__) {
+  defaultModules.XMLHttpRequest = XMLHttpRequestOverride;
+}
+
 export class Sandbox {
+  public version = __VERSION__;
+  public id = id++;
   public type = 'vm';
   public closed = true;
-  public id = `${sandboxId++}`;
-  public version = __VERSION__;
-  public context?: FakeWindow;
+  private optimizeCode = ''; // To optimize the with statement
+  public global?: Window;
   public options: SandboxOptions;
-  private attachedCode = ''; // To optimize the with statement
   public recovers: Array<() => void> = [];
-  public overrideContext: {
+  public replaceGlobalVariables: {
     recovers: Array<() => void>;
-    overrides: Record<PropertyKey, any>;
-    createds: Array<OverridesData['created']>;
     prepares: Array<() => void>;
+    created: Array<OverridesData['created']>;
+    overrides: Record<PropertyKey, any>;
   } = {
-    createds: [],
+    created: [],
     prepares: [],
     recovers: [],
     overrides: {},
   };
 
-  private initComplete = false;
-  private isProtectVariable: (p: PropertyKey) => boolean;
-  private isInsulationVariable: (P: PropertyKey) => boolean;
-  private isExternalGlobalVariable: Set<PropertyKey> = new Set();
+  public initComplete = false;
+  public isProtectVariable: (p: PropertyKey) => boolean;
+  public isInsulationVariable: (P: PropertyKey) => boolean;
+  public isExternalGlobalVariable: Set<PropertyKey> = new Set();
 
   constructor(opts: SandboxOptions) {
     assert(isObject(opts), 'Miss options.');
@@ -100,174 +109,46 @@ export class Sandbox {
     return emitSandboxHook(this.options.hooks, name, args);
   }
 
-  createContext(moduleKeys?: Array<string>) {
-    assert(!this.closed, 'Sandbox is closed.');
+  createContext(moduleKeys: Array<string> = []) {
     const fakeWindow = createFakeObject(
-      rawWindow,
+      window,
       this.isInsulationVariable,
-      makeMap(moduleKeys || []),
+      makeMap(moduleKeys),
     );
 
     const baseHandlers = {
-      get: (target: FakeWindow, p: PropertyKey, receiver: any) => {
-        let value;
-        const overrides = this.overrideContext.overrides;
-
-        if (this.isProtectVariable(p)) {
-          // receiver 不要传，否则会造成 this 指向不对
-          return Reflect.get(rawWindow, p);
-        } else if (this.isInsulationVariable(p)) {
-          value = Reflect.get(target, p, receiver);
-        } else {
-          value = hasOwn(target, p)
-            ? Reflect.get(target, p, receiver)
-            : Reflect.get(rawWindow, p);
-        }
-
-        if (typeof value === 'function') {
-          // 以下几种情况不需要 bind
-          // 1. 原生的 es 标准上的全局方法
-          // 2. 沙箱内部或用户重写的方法
-          // 3. 构造函数
-          // 当过滤掉自定义和原生 es 的函数后，就只剩下 bom，dom 上的函数
-          // 对这些环境有关的函数做构造函数等判断，进一步缩小需要 bind 的范围
-          if (
-            isEsMethod(p) ||
-            hasOwn(overrides, p) ||
-            isConstructor(value) ||
-            this.isExternalGlobalVariable.has(p)
-          ) {
-            return value;
-          }
-        } else {
-          return value;
-        }
-
-        const newValue = hasOwn(value, __windowBind__)
-          ? value[__windowBind__]
-          : bind(value, rawWindow);
-        const verifyResult = verifyDescriptor(target, p, newValue);
-        if (verifyResult > 0) {
-          if (verifyResult === 1) return value;
-          if (verifyResult === 2) return undefined;
-        }
-        value[__windowBind__] = newValue;
-        return newValue;
-      },
-
-      set: (
-        target: FakeWindow,
-        p: PropertyKey,
-        value: unknown,
-        receiver: any,
-      ) => {
-        const verifyResult = verifySetDescriptor(
-          // prettier-ignore
-          this.isProtectVariable(p)
-            ? rawWindow
-            : receiver
-              ? receiver
-              : target,
-          p,
-          value,
-        );
-        // 值相同，直接返回设置成功。不可设置直接返回失败，在safari里面Reflect.set默认没有进行这部分处理
-        if (verifyResult > 0) {
-          if (verifyResult === 1 || verifyResult === 2) return false;
-          if (verifyResult === 3) return true;
-        }
-
-        if (this.isProtectVariable(p)) {
-          return Reflect.set(rawWindow, p, value);
-        } else {
-          const success = Reflect.set(target, p, value, receiver);
-          if (success) {
-            if (this.initComplete) {
-              this.isExternalGlobalVariable.add(p);
-            }
-            // Update need optimization variables
-            if (this.context) {
-              const { $optimizeMethods, $optimizeUpdateStack } = this.context;
-              if (Array.isArray($optimizeMethods)) {
-                if ($optimizeMethods.indexOf(p) > -1) {
-                  $optimizeUpdateStack.forEach((fn) => fn(p, value));
-                }
-              }
-            }
-          }
-          return success;
-        }
-      },
-
-      defineProperty: (
-        target: FakeWindow,
-        p: PropertyKey,
-        descriptor: PropertyDescriptor,
-      ) => {
-        if (this.isProtectVariable(p)) {
-          return Reflect.defineProperty(rawWindow, p, descriptor);
-        } else {
-          const success = Reflect.defineProperty(target, p, descriptor);
-          if (this.initComplete && success) {
-            this.isExternalGlobalVariable.add(p);
-          }
-          return success;
-        }
-      },
-
-      deleteProperty: (target: FakeWindow, p: PropertyKey) => {
-        if (hasOwn(target, p)) {
-          delete target[p as any];
-          if (this.initComplete && this.isExternalGlobalVariable.has(p)) {
-            this.isExternalGlobalVariable.delete(p);
-          }
-        } else if (__DEV__) {
-          if (hasOwn(rawWindow, p) && this.isProtectVariable(p)) {
-            warn(`The "${String(p)}" is global protect variable."`);
-          }
-        }
-        return true;
-      },
+      get: createGetter(this),
+      set: createSetter(this),
+      defineProperty: createDefineProperty(this),
+      deleteProperty: createDeleteProperty(this),
     };
 
     const parentHandlers = {
       ...baseHandlers,
-      has: (_: FakeWindow, p: PropertyKey) => {
-        return this.isProtectVariable(p) ? false : true;
-      },
+      has: createHas(this),
     };
 
-    // 其实都是代理 window, 但是通过 has 能够解决 var xxx 的问题
+    // In fact, they are all proxy windows, but the problem of `var a = xx` can be solved through has
     const proxy = new Proxy(fakeWindow, parentHandlers);
     const subProxy = new Proxy(fakeWindow, baseHandlers);
 
     proxy.self = subProxy;
     proxy.window = subProxy;
     proxy.globalThis = subProxy;
-    proxy.unstable_sandbox = this;
+    proxy.unstable_sandbox = this; // This attribute is used for debugger
+    proxy.top = window.top === window ? subProxy : window.top;
+    proxy.parent = window.parent === window ? subProxy : window.top;
 
-    // prettier-ignore
-    proxy.top = rawWindow.top === rawWindow
-      ? subProxy
-      : rawWindow.top;
-
-    // prettier-ignore
-    proxy.parent = rawWindow.parent === rawWindow
-      ? subProxy
-      : rawWindow.top;
-
-    addFakeWindowType(proxy, rawWindow);
+    addFakeWindowType(proxy, window);
     this.callHook('onCreateContext', [this]);
-
     return proxy;
   }
 
   // 获取所有重写的对象
   getOverrides() {
-    assert(!this.closed, 'Sandbox is closed.');
     const overrides = {};
     const recovers = [];
-    const createds = [];
+    const created = [];
     const prepares = [];
     const { modules, openSandbox } = this.options;
     const needLoadModules = {
@@ -280,7 +161,7 @@ export class Sandbox {
       if (typeof module === 'function') {
         const { recover, override, created, prepare } = module(this);
         if (recover) recovers.push(recover);
-        if (created) createds.push(created);
+        if (created) created.push(created);
         if (prepare) prepares.push(prepare);
 
         if (override) {
@@ -291,7 +172,7 @@ export class Sandbox {
         }
       }
     }
-    return { recovers, createds, overrides, prepares };
+    return { recovers, created, overrides, prepares };
   }
 
   execScript(code: string, env = {}, url = '', options?: ExecScriptOptions) {
@@ -388,7 +269,7 @@ export class Sandbox {
   start() {
     this.closed = false;
     this.callHook('onstart', [this]);
-    this.overrideContext = this.getOverrides();
+    this.replaceGlobalVariables = this.getOverrides();
 
     const { createds, overrides, recovers } = this.overrideContext;
 
@@ -432,7 +313,7 @@ export class Sandbox {
   static getGlobalObject() {
     let module = window;
     while (isModule(module)) {
-      module = module[__garfishGlobal__];
+      module = module[__garfishGlobal__ as any] as Window & typeof globalThis;
     }
     return module;
   }

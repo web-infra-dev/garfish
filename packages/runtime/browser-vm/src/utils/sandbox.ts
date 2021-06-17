@@ -81,7 +81,7 @@ export function toResolveUrl(sandbox: Sandbox, url: string) {
   return url;
 }
 
-// 主要是 copy 一份 window 和 document
+// Copy "window" and "document"
 export function createFakeObject(
   target: Record<PropertyKey, any>,
   filter?: (PropertyKey) => boolean,
@@ -89,11 +89,10 @@ export function createFakeObject(
 ) {
   const fakeObject = {};
   const propertyMap = {};
-  const storageBox = Object.create(null); // 存储改变后的值
-  const propertyNames = rawObject.getOwnPropertyNames(target);
-
+  const storageBox = Object.create(null); // Store changed value
+  const propertyNames = Object.getOwnPropertyNames(target);
   const def = (p: string) => {
-    const descriptor = rawObject.getOwnPropertyDescriptor(target, p);
+    const descriptor = Object.getOwnPropertyDescriptor(target, p);
 
     if (descriptor?.configurable) {
       const hasGetter = hasOwn(descriptor, 'get');
@@ -106,15 +105,12 @@ export function createFakeObject(
           ? storageBox[p]
           : target[p];
       }
-
       if (hasSetter) {
         descriptor.set = (val) => {
           storageBox[p] = val;
           return true;
         };
       }
-
-      // 更改为可写
       if (canWritable) {
         if (descriptor.writable === false) {
           descriptor.writable = true;
@@ -125,25 +121,17 @@ export function createFakeObject(
           };
         }
       }
-
-      rawObject.defineProperty(fakeObject, p, rawObject.freeze(descriptor));
+      Object.defineProperty(fakeObject, p, Object.freeze(descriptor));
     }
   };
-
   propertyNames.forEach((p) => {
-    if (typeof filter === 'function') {
-      !filter(p) && def(p);
-    } else {
-      def(p);
-    }
     propertyMap[p] = true;
+    typeof filter === 'function' ? !filter(p) && def(p) : def(p);
   });
-
-  // 有可能是原型链上的属性
+  // "prop" maybe in prototype chain
   for (const prop in target) {
     !propertyMap[prop] && def(prop);
   }
-
   return fakeObject as any;
 }
 

@@ -1,9 +1,9 @@
 import { interfaces } from '@garfish/core';
-import { assert, createKey, warn } from '@garfish/utils';
+import { createKey } from '@garfish/utils';
 import router, {
-  listenRouterAndReDirect,
-  RouterInterface,
   initRedirect,
+  RouterInterface,
+  listenRouterAndReDirect,
 } from './context';
 
 interface Options {
@@ -105,6 +105,7 @@ export default function Router(_args?: Options) {
 
         listenRouterAndReDirect(listenOptions);
       },
+
       registerApp(appInfos) {
         // Has been running after adding routing to trigger the redirection
         if (!Garfish.running) return;
