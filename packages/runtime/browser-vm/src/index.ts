@@ -35,9 +35,10 @@ declare module '@garfish/core' {
       sandbox?: SandboxConfig;
     }
 
-    // export interface App {
-    //   vmSandbox?: Sandbox;
-    // }
+    export interface App {
+      vmSandbox?: Sandbox;
+    }
+
     export interface Plugin {
       openVm?: boolean;
     }
