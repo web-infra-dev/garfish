@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot sandbox window test normal obj 1`] = `
+Object {
+  "a": undefined,
+  "nObj": Object {
+    "name": "hello",
+  },
+  "name": "add delete val",
+  "update": "update value",
+}
+`;
+
+exports[`snapshot sandbox window test normal obj 2`] = `
+Object {
+  "a": "hello",
+  "nObj": Object {
+    "name": "hello",
+  },
+  "name": undefined,
+  "update": "new value",
+}
+`;

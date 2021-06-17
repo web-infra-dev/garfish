@@ -14,7 +14,7 @@ const args = require('minimist')(process.argv.slice(2));
 const needBin = args.bin || args.b;
 const private = args.private || args.p;
 const app = args._[0];
-const type = args.type || args.t || 'core'; // 'core' | 'tool'
+const type = args.type || args.t || 'runtime'; // 'runtime' | 'tools'
 
 const clear = args.clear || args.c;
 const appDir = path.resolve(`packages/${type}/${app}`);
@@ -30,13 +30,13 @@ if (!app) {
   process.exit(1);
 }
 
-if (type !== 'core' && type !== 'tool') {
+if (type !== 'runtime' && type !== 'tools') {
   console.log();
   console.log(
     chalk.yellow.bold(
       `${chalk.red.bold(
         type,
-      )} type a packages are not allowed, currently there are only two packages "core" or "tool"`,
+      )} type a packages are not allowed, currently there are only two packages "runtime" or "tools"`,
     ),
   );
   process.exit(1);
@@ -75,7 +75,8 @@ async function create() {
   });
 
   const pkgJsonDir = path.resolve(appDir, './package.json');
-  const failed = () => {
+  const failed = (e) => {
+    console.error(e);
     if (failed.called) return;
     failed.called = true;
     child.kill('SIGINT');
@@ -101,7 +102,9 @@ async function create() {
 
   try {
     await stdioPipe(child);
-  } catch (err) {}
+  } catch (err) {
+    console.error(error);
+  }
 
   await updateAppContent(appDir);
 
@@ -152,19 +155,19 @@ function writeToPkgJson(is, write) {
   } else if (is('keywords')) {
     write(`garfish ${app}`);
   } else if (is('homepage')) {
-    write('http://garfish.bytedance.com');
+    write('https://github.com/bytedance/garfish');
   } else if (is('author')) {
     write('Bytedance');
   } else if (is('license')) {
     write('Apache-2.0');
   } else if (is('entry point')) {
-    if (type === 'tool') {
+    if (type === 'tools') {
       write('dist/index.js');
     } else {
       write('index.js');
     }
   } else if (is('module entry')) {
-    if (type === 'tool') {
+    if (type === 'tools') {
       write('dist/index.js');
     } else {
       write(`dist/${app}.esm-bundler.js`);
@@ -196,7 +199,7 @@ async function updateAppContent(appDir) {
   delete pkg.directories;
   delete pkg.publishConfig;
 
-  if (type === 'tool') {
+  if (type === 'tools') {
     pkg.tools = true;
     if (needBin) {
       pkg.bin = { [toCamelCase(app, false)]: './bin/start.js' };
@@ -217,6 +220,9 @@ async function updateAppContent(appDir) {
     };
   }
   pkg.dependencies = {};
+  pkg.publishConfig = {
+    registry: 'https://registry.npmjs.org',
+  };
   fs.writeFileSync(jsonDir, JSON.stringify(pkg, null, 2));
 
   // update app.js to index.ts
@@ -249,13 +255,13 @@ async function updateAppContent(appDir) {
   );
 
   // create files of different environment
-  if (type === 'core') {
+  if (type === 'runtime') {
     fs.writeFileSync(
       resolve('./api-extractor.json'),
       JSON.stringify(
         {
           extends: '../../../api-extractor.json',
-          mainEntryPointFilePath: `./dist/packages/core/${app}/src/index.d.ts`,
+          mainEntryPointFilePath: `./dist/packages/runtime/${app}/src/index.d.ts`,
           dtsRollup: {
             publicTrimmedFilePath: `./dist/${app}.d.ts`,
           },

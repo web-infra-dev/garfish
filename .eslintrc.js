@@ -17,7 +17,7 @@ module.exports = {
     'no-restricted-globals': ['error', ...NodeGlobals],
     // forbidden to use export default
     'no-restricted-syntax': [
-      'error',
+      0,
       {
         selector: 'ExportDefaultDeclaration',
         message: 'Forbidden to use export default.',
@@ -29,15 +29,15 @@ module.exports = {
         properties: 'never',
       },
     ],
-    indent: [
-      'error',
-      2,
-      {
-        MemberExpression: 1,
-        VariableDeclarator: 2,
-        offsetTernaryExpressions: true,
-      },
-    ],
+    // indent: [
+    //   'error',
+    //   2,
+    //   {
+    //     MemberExpression: 1,
+    //     VariableDeclarator: 2,
+    //     offsetTernaryExpressions: true,
+    //   },
+    // ],
     semi: [0, 'never'],
     eqeqeq: [2, 'allow-null'],
     quotes: ['error', 'single'],

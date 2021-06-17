@@ -2,19 +2,16 @@ const fs = require('fs');
 const chalk = require('chalk');
 
 const allTargets = (exports.allTargets = fs
-  .readdirSync('packages/core')
+  .readdirSync('packages/runtime')
   .filter((f) => {
-    if (!fs.statSync(`packages/core/${f}`).isDirectory()) {
+    if (!fs.statSync(`packages/runtime/${f}`).isDirectory()) {
       return false;
     }
 
-    if (!fs.existsSync(`packages/core/${f}/package.json`)) {
+    if (!fs.existsSync(`packages/runtime/${f}/package.json`)) {
       return false;
     }
 
-    // if (require(`../packages/core/${f}/package.json`).private) {
-    //   return false;
-    // }
     return true;
   }));
 
@@ -53,7 +50,7 @@ exports.matchPkgName = function (pkgName) {
 exports.getDeps = function (code) {
   let res;
   const deps = [];
-  const reg = exports.matchPkgName('@byted\\/.*');
+  const reg = exports.matchPkgName('@garfish\\/.*');
 
   while ((res = reg.exec(code))) {
     const idx = res[3] ? 3 : 1;

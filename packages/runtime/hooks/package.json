@@ -1,0 +1,50 @@
+{
+  "name": "@garfish/hooks",
+  "version": "0.0.8",
+  "author": "zhoushaw",
+  "description": "fork from tapable",
+  "license": "MIT",
+  "homepage": "https://github.com/webpack/tapable",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/webpack/tapable.git"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "babel-jest": "^24.8.0",
+    "codecov": "^3.5.0",
+    "jest": "^24.8.0",
+    "prettier": "^1.17.1"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "files": [
+    "lib",
+    "!lib/__tests__",
+    "tapable.d.ts"
+  ],
+  "main": "./src/index.js",
+  "module": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "browser": {
+    "util": "./lib/util-browser.js"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "scripts": {
+    "test": "jest",
+    "travis": "yarn pretty-lint && jest --coverage && codecov",
+    "pretty-lint": "prettier --check lib/*.js lib/__tests__/*.js",
+    "pretty": "prettier --loglevel warn --write lib/*.js lib/__tests__/*.js"
+  },
+  "jest": {
+    "transform": {
+      "__tests__[\\\\/].+\\.js$": "babel-jest"
+    }
+  },
+  "gitHead": "1967845252838eafc43e99d51e1902b7de89d097"
+}

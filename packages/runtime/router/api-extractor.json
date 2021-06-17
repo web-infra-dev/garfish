@@ -1,0 +1,7 @@
+{
+  "extends": "../../../api-extractor.json",
+  "mainEntryPointFilePath": "./dist/packages/runtime/router/src/index.d.ts",
+  "dtsRollup": {
+    "publicTrimmedFilePath": "./dist/router.d.ts"
+  }
+}

@@ -1,23 +1,31 @@
 {
   "name": "garfish",
-  "version": "0.0.1",
+  "version": "0.0.3",
+  "private": true,
+  "workspaces": [
+    "packages/runtime/*",
+    "packages/tools/*"
+  ],
   "description": "a powerful micro front-end framework",
   "scripts": {
-    "dev:garfish": "yarn run build garfish -f=esm-bundler -w -e",
+    "dev": "node scripts/dev.js",
+    "dev:core": "yarn dev core",
     "pkg": "node scripts/createPackage.js",
     "build": "node scripts/build.js",
-    "build:core": "node scripts/build.js -m -e",
-    "build:tool": "lerna run build --scope @garfish/garfish*",
-    "build:all": "npm run build:core && npm run build:tool",
-    "prepublishOnly": "npm run test && npm run build:all",
+    "build:all": "node scripts/build.js -m -e",
+    "build:watch": "lerna exec -- yarn link && node scripts/build.js -m -e  -f=esm-bundler -w",
+    "reset": "lerna clean --yes && rm -rf node_modules",
+    "setup": "npm run reset && npm install && lerna bootstrap --hoist",
+    "prepublishOnly": "npm run test && npm run build:all && npm run changelog",
+    "changelog": "node scripts/changelog.js",
+    "test": "node scripts/jestTest.js",
+    "test:cover": "node scripts/jestTest.js --coverage",
     "ls-lint": "ls-lint",
-    "test": "jest",
-    "test:cover": "jest --coverage",
-    "lint": "eslint --ext .ts packages/*/src/**",
-    "reinstall": "rm -rf node_modules && npm install",
+    "lint": "eslint --ext .ts packages/*/*/src/**",
     "reset-gittag": "git tag -l | xargs git tag -d && git fetch --prune",
-    "format:js": "prettier --write --parser typescript \\\"scripts/*.js\\\"",
-    "format": "prettier --write --parser typescript \\\"packages/**/*.ts?(x)\\\""
+    "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
+    "format:js": "prettier --write --parser typescript \"(packages|scripts)/**/*.js\"",
+    "format:md": "prettier --write \"**/*.md\""
   },
   "private": true,
   "workspaces": {
@@ -38,7 +46,13 @@
     "*.ts?(x)": [
       "eslint --fix",
       "prettier --parser=typescript --write"
+    ],
+    "*.md": [
+      "prettier --write"
     ]
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   },
   "author": "bytedance",
   "license": "Apache-2.0",
@@ -57,21 +71,19 @@
     "babel-polyfill": "^6.26.0",
     "chalk": "^4.1.0",
     "codecov": "^3.8.1",
+    "conventional-changelog-cli": "^2.1.1",
     "dir-parser": "^1.2.10",
     "eslint": "^7.14.0",
     "execa": "^4.1.0",
-    "expect-puppeteer": "^4.4.0",
     "fs-extra": "^9.0.1",
     "http-server": "^0.12.3",
     "husky": "^4.3.0",
     "jest": "^26.6.3",
-    "jest-puppeteer": "^4.4.0",
     "lint-staged": "^10.5.2",
     "minimist": "^1.2.5",
     "open": "^7.3.0",
     "prettier": "~2.0.5",
     "prettier-eslint-cli": "^5.0.0",
-    "puppeteer": "^5.5.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.34.0",
     "rollup-plugin-terser": "^6.1.0",

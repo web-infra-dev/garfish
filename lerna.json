@@ -1,22 +1,25 @@
 {
-  "version": "0.0.1",
+  "version": "0.0.8",
   "npmClient": "npm",
   "command": {
     "publish": {
       "ignoreChanges": [
         "ignored-file",
-        "*.md"
+        "*.md",
+        "packages/tools/*"
       ],
       "message": "chore(release): publish"
     },
     "bootstrap": {
       "ignore": "component-*",
+      "hoist": true,
       "npmClientArgs": [
         "--no-package-lock"
       ]
     }
   },
   "packages": [
-    "packages/core/*"
+    "packages/runtime/**",
+    "packages/tools/**"
   ]
 }
