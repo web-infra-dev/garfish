@@ -28,6 +28,72 @@ import { defaultLoadComponentOptions, getDefaultOptions } from './config';
 
 type GarfishPlugin = (context: Garfish) => interfaces.Plugin;
 
+// Fetch script and link elements
+const fetchStaticResources = (
+  appName: string,
+  loader: Loader,
+  entryManager: TemplateManager,
+) => {
+  // Get all script elements
+  const jsNodes = Promise.all(
+    entryManager
+      .findAllJsNodes()
+      .map((node) => {
+        const src = entryManager.findAttributeValue(node, 'src');
+        const type = entryManager.findAttributeValue(node, 'type');
+
+        // There should be no embedded script in the script element tag with the src attribute specified
+        if (src) {
+          const fetchUrl = transformUrl(entryManager.url, src);
+          const async = entryManager.findAttributeValue(node, 'async');
+          // Scripts with "async" attribute will make the rendering process very complicated,
+          // we have a preload mechanism, so we don’t need to deal with it.
+          return loader
+            .load<JavaScriptManager>(appName, fetchUrl)
+            .then(({ resourceManager: jsManager }) => {
+              jsManager.setDep(node);
+              jsManager.setMimeType(type);
+              jsManager.setAsyncAttribute(Boolean(async));
+              return jsManager;
+            });
+        } else if (node.children.length > 0) {
+          const code = (node.children[0] as Text).content;
+          if (code) {
+            const jsManager = new JavaScriptManager(code, '');
+            jsManager.setDep(node);
+            jsManager.setMimeType(type);
+            return jsManager;
+          }
+        }
+      })
+      .filter(Boolean),
+  );
+
+  // Get all link elements
+  const linkNodes = Promise.all(
+    entryManager
+      .findAllLinkNodes()
+      .map((node) => {
+        if (!entryManager.DOMApis.isCssLinkNode(node)) return;
+        const href = entryManager.findAttributeValue(node, 'href');
+        if (href) {
+          const fetchUrl = transformUrl(entryManager.url, href);
+          return loader
+            .load<StyleManager>(appName, fetchUrl)
+            .then(({ resourceManager: styleManager }) => {
+              styleManager.setDep(node);
+              // styleManager.setScope(appName);
+              styleManager.correctPath();
+              return styleManager;
+            });
+        }
+      })
+      .filter(Boolean),
+  );
+
+  return Promise.all([jsNodes, linkNodes]);
+};
+
 export class Garfish implements interfaces.Garfish {
   public hooks: Hooks;
   public loader: Loader;
@@ -207,67 +273,11 @@ export class Garfish implements interfaces.Garfish {
           // Html entry
           if (entryManager instanceof TemplateManager) {
             isHtmlMode = true;
-            // Get all script elements
-            const jsNodes = Promise.all(
-              entryManager
-                .findAllJsNodes()
-                .map((node) => {
-                  const src = entryManager.findAttributeValue(node, 'src');
-                  const type = entryManager.findAttributeValue(node, 'type');
-
-                  // There should be no embedded script in the script element tag with the src attribute specified
-                  if (src) {
-                    const fetchUrl = transformUrl(entryManager.url, src);
-                    const async = entryManager.findAttributeValue(
-                      node,
-                      'async',
-                    );
-                    // Scripts with "async" attribute will make the rendering process very complicated,
-                    // we have a preload mechanism, so we don’t need to deal with it.
-                    return this.loader
-                      .load<JavaScriptManager>(appName, fetchUrl)
-                      .then(({ resourceManager: jsManager }) => {
-                        jsManager.setDep(node);
-                        jsManager.setMimeType(type);
-                        jsManager.setAsyncAttribute(Boolean(async));
-                        return jsManager;
-                      });
-                  } else if (node.children.length > 0) {
-                    const code = (node.children[0] as Text).content;
-                    if (code) {
-                      const jsManager = new JavaScriptManager(code, '');
-                      jsManager.setDep(node);
-                      jsManager.setMimeType(type);
-                      return jsManager;
-                    }
-                  }
-                })
-                .filter(Boolean),
+            const [js, link] = await fetchStaticResources(
+              appName,
+              this.loader,
+              entryManager,
             );
-
-            // Get all link elements
-            const linkNodes = Promise.all(
-              entryManager
-                .findAllLinkNodes()
-                .map((node) => {
-                  if (!entryManager.DOMApis.isCssLinkNode(node)) return;
-                  const href = entryManager.findAttributeValue(node, 'href');
-                  if (href) {
-                    const fetchUrl = transformUrl(entryManager.url, href);
-                    return this.loader
-                      .load<StyleManager>(appName, fetchUrl)
-                      .then(({ resourceManager: styleManager }) => {
-                        styleManager.setDep(node);
-                        // styleManager.setScope(appName);
-                        styleManager.correctPath();
-                        return styleManager;
-                      });
-                  }
-                })
-                .filter(Boolean),
-            );
-
-            const [js, link] = await Promise.all([jsNodes, linkNodes]);
             resources.js = js;
             resources.link = link;
           } else if (entryManager instanceof JavaScriptManager) {
