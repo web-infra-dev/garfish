@@ -1,19 +1,13 @@
-import { VText, VNode } from '@garfish/utils';
-import {
-  CssResource,
-  HtmlResource as HtmlResourceInterfaces,
-  JsResource as JsResourceInterfaces,
-} from '../module/source';
-import {
-  SyncHook,
-  AsyncSeriesBailHook,
-  AsyncParallelBailHook,
-  AsyncSeriesHook,
-} from '@garfish/hooks';
-import { Garfish } from '../garfish';
-import { Loader } from '../module/loader';
 import { EventEmitter } from 'events';
-// import { App } from '../module/app';
+import { SyncHook, AsyncSeriesBailHook } from '@garfish/hooks';
+import {
+  Loader,
+  StyleManager as StyleManagerInterface,
+  TemplateManager as TemplateManagerInterface,
+  ComponentManager as ComponentManagerInterface,
+  JavaScriptManager as JavaScriptManagerInterface,
+} from '@garfish/loader';
+import { App as AppInterface } from '../module/app';
 
 export namespace interfaces {
   export type DomGetter = Element | (() => Element | null) | string;
@@ -28,7 +22,7 @@ export namespace interfaces {
     path: string,
   ) => Promise<void> | void;
 
-  export interface App {}
+  export interface App extends AppInterface {}
   export interface Component {}
 
   export interface AppInfo {
@@ -55,13 +49,6 @@ export namespace interfaces {
     version?: string;
     parser?: ComponentParser;
   }
-
-  // export interface SandboxConfig {
-  //   open?: boolean;
-  //   snapshot?: boolean;
-  //   useStrict?: boolean;
-  //   strictIsolation?: boolean;
-  // }
 
   export interface Garfish {
     flag: symbol;
@@ -134,8 +121,10 @@ export namespace interfaces {
     ) => Promise<LoaderResult | void> | LoaderResult | void;
   }
 
-  export type HtmlResource = HtmlResourceInterfaces;
-  export type JsResource = JsResourceInterfaces;
+  export type StyleManager = StyleManagerInterface;
+  export type TemplateManager = TemplateManagerInterface;
+  export type ComponentManager = ComponentManagerInterface;
+  export type JavaScriptManager = JavaScriptManagerInterface;
 
   export type Options = Config & HooksLifecycle;
 
@@ -149,80 +138,20 @@ export namespace interfaces {
     Exclude<keyof ComponentInfo, 'name'>
   >;
 
-  type AsyncResource = {
-    async: boolean;
-    content: () => Promise<any>;
-  };
-
   export interface ResourceModules {
-    link: Array<any>;
-    js: Array<any | AsyncResource>;
+    js: Array<JavaScriptManager>;
+    link: Array<StyleManagerInterface>;
   }
-
-  export interface AppSources {
-    manager: HtmlResource;
-    resources: ResourceModules;
-    isHtmlMode: boolean;
-  }
-
-  // export interface Loader {
-  //   forceCaches: Set<string>;
-  //   caches: Record<string, HtmlResource | CssResource | JsResource>;
-  //   loadings: Record<
-  //     string,
-  //     Promise<HtmlResource | CssResource | JsResource>
-  //   >;
-  //   requestConfig: RequestInit | ((url: string) => RequestInit);
-  //   takeJsResources(manager: HtmlResource): any[]
-  //   loadAppSources(appInfo: AppInfo): Promise<AppSources>;
-  //   // takeLinkResources(manager: HtmlResource): any[]
-  //   // createApp(appInfo: AppInfo, manager: HtmlResource, isHtmlMode: boolean): Promise<any>
-  //   // loadAllSources(manager: HtmlResource, isHtmlMode: boolean): Promise<{
-  //   //   manager: HtmlResource;
-  //   //   resources: interfaces.ResourceModules;
-  //   //   isHtmlMode: boolean;
-  //   // }>
-  //   // load(url: string, config?: RequestInit): Promise<HtmlResource | CssResource | JsResource>
-  //   // loadAppSources(appInfo: interfaces.AppInfo): Promise<interfaces.AppSources>
-  // }
 
   export type BootStrapArgs = [Garfish, Options];
 
   type AppConstructor = new (
     context: Garfish,
     appInfo: AppInfo,
-    entryResManager: HtmlResource,
+    entryResManager: TemplateManagerInterface,
     resources: interfaces.ResourceModules,
     isHtmlMode: boolean,
   ) => any;
-
-  export interface App {
-    name: string;
-    appInfo: AppInfo;
-    entryResManager: interfaces.HtmlResource;
-    cjsModules: Record<string, any>;
-    customExports: Record<string, any>; // If you don't want to use the CJS export, can use this
-    mounted: boolean;
-    appContainer: HTMLElement;
-    provider: Provider;
-    global: any;
-    htmlNode: HTMLElement | ShadowRoot;
-    isHtmlMode: boolean;
-    strictIsolation: boolean;
-    sourceList: Array<string>;
-    mount(): Promise<boolean>;
-    unmount(): boolean;
-    getExecScriptEnv(noEntry: boolean): Record<string, any>;
-    execScript(
-      code: string,
-      env: Record<string, any>,
-      url?: string,
-      options?: {
-        async?: boolean;
-        noEntry?: boolean;
-      },
-    ): void;
-  }
 
   export interface Component {
     name: string;
@@ -251,12 +180,18 @@ export namespace interfaces {
     registerApp: SyncHook<[Record<string, interfaces.AppInfo>], void>;
     beforeLoad: AsyncSeriesBailHook<AppInfo, boolean | void | AppConstructor>; // 根据返回值决定是否继续执行后续代码 or return a constructor
     initializeApp: AsyncSeriesBailHook<
-      [Garfish, AppInfo, HtmlResource, interfaces.ResourceModules, boolean],
+      [
+        Garfish,
+        AppInfo,
+        TemplateManagerInterface,
+        interfaces.ResourceModules,
+        boolean,
+      ],
       App
     >;
     afterLoad: SyncHook<[AppInfo, App | void], void | boolean>;
     processResource: SyncHook<
-      [AppInfo, HtmlResource, interfaces.ResourceModules],
+      [AppInfo, TemplateManagerInterface, interfaces.ResourceModules],
       void | boolean
     >;
     errorLoadApp: SyncHook<[AppInfo, Error], void>;

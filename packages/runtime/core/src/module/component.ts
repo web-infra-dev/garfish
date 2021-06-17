@@ -1,4 +1,4 @@
-import { evalWithEnv, setDocCurrentScript } from '@garfish/utils';
+import { evalWithEnv } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
 
@@ -7,14 +7,14 @@ export class Component {
   public cjsModules: Record<string, any>;
   public componentInfo: interfaces.ComponentInfo;
   public esModule: boolean = false;
-  public manager: interfaces.JsResource;
+  public manager: interfaces.ComponentManager;
   private context: Garfish;
   public global: any = window;
 
   constructor(
     context: Garfish,
     componentInfo: interfaces.ComponentInfo,
-    manager: interfaces.JsResource,
+    manager: interfaces.ComponentManager,
   ) {
     this.context = context;
     this.name = componentInfo.name;
@@ -29,11 +29,10 @@ export class Component {
   }
 
   init() {
-    const { code, url } = this.manager.opts;
-
+    const { url, componentCode } = this.manager;
     //Execute script
     try {
-      this.execScript(code, {}, url, {
+      this.execScript(componentCode, {}, url, {
         parser: this.componentInfo.parser,
       });
     } catch (err) {
