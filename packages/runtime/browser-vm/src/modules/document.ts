@@ -8,7 +8,7 @@ import {
 } from '../proxyInterceptor/document';
 
 const rawDocumentCtor = Document;
-export const documentOverride = (sandbox: Sandbox) => {
+export const documentModule = (sandbox: Sandbox) => {
   // eslint-disable-next-line
   let proxyDocument;
   const fakeDocument = createFakeObject(document);

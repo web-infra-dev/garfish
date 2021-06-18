@@ -4,7 +4,7 @@ import { Sandbox } from '../sandbox';
 type Opts = boolean | AddEventListenerOptions;
 type Listener = EventListenerOrEventListenerObject;
 
-export function listenerOverride(_sandbox: Sandbox) {
+export function listenerModule() {
   const listeners = new Map<string, Listener[]>();
   const rawAddEventListener = window.addEventListener;
   const rawRemoveEventListener = window.removeEventListener;

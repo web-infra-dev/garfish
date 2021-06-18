@@ -47,7 +47,7 @@ export class CusStorage {
   }
 }
 
-export function localStorageOverride(sandbox: Sandbox) {
+export function localStorageModule(sandbox: Sandbox) {
   const namespace = sandbox.options.namespace;
   return {
     override: {

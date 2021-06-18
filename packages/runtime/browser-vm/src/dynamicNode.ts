@@ -12,14 +12,8 @@ import {
   createStyleNode,
   parseContentType,
 } from '@garfish/utils';
-import { Sandbox } from './sandbox';
 import { __domWrapper__ } from './symbolTypes';
-import {
-  handlerParams,
-  rootElm,
-  toResolveUrl,
-  getElementSandbox,
-} from './utils';
+import { rootElm, sandboxMap, toResolveUrl, handlerParams } from './utils';
 
 const rawElementMethods = Object.create(null);
 const isResourceNode = makeMap(['a', 'img', 'link', 'script']);
@@ -88,7 +82,10 @@ function addDynamicLink(el: HTMLLinkElement, callback: (code: string) => void) {
 }
 
 // 动态添加的 script 标签
-function addDynamicScript(sandbox: Sandbox, el: HTMLScriptElement) {
+function addDynamicScript(
+  sandbox: ReturnType<typeof sandboxMap.get>,
+  el: HTMLScriptElement,
+) {
   const { src, type } = el;
   const code = el.textContent || el.text || '';
 
@@ -142,7 +139,7 @@ const makeElInjector = (current: Function, method: string) => {
     }
 
     if (el) {
-      const sandbox = getElementSandbox(el);
+      const sandbox = sandboxMap.get(el);
 
       if (sandbox) {
         let newNode;

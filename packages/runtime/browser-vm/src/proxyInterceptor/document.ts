@@ -1,8 +1,10 @@
 import { hasOwn, makeMap, isObject, findTarget } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
+import { rootElm, sandboxMap } from '../utils';
 import { __documentBind__ } from '../symbolTypes';
-import { rootElm, setElementSandbox } from '../utils';
 import { bind, verifyGetterDescriptor, verifySetterDescriptor } from './shared';
+
+const passedKey = makeMap(['title', 'cookie']);
 
 const queryFunctions = makeMap([
   'querySelector',
@@ -26,7 +28,7 @@ export function createGetter(sandbox: Sandbox) {
       if (p === 'createElement') {
         return function (tagName, options) {
           const el = value.call(document, tagName, options);
-          if (isObject(el)) setElementSandbox(el, sandbox);
+          isObject(el) && sandboxMap.set(el, sandbox);
           return el;
         };
       }
@@ -68,7 +70,6 @@ export function createGetter(sandbox: Sandbox) {
 // document proxy setter
 export function createSetter() {
   return (target: any, p: PropertyKey, value: any, receiver: any) => {
-    const passedKey = makeMap(['title', 'cookie']);
     const verifyResult = verifySetterDescriptor(
       // prettier-ignore
       typeof p === 'string' && passedKey(p)
@@ -93,7 +94,7 @@ export function createSetter() {
 // document proxy defineProperty
 export function createDefineProperty() {
   return (target: any, p: PropertyKey, descriptor: PropertyDescriptor) => {
-    return p === 'cookie'
+    return passedKey(p)
       ? Reflect.defineProperty(document, p, descriptor)
       : Reflect.defineProperty(target, p, descriptor);
   };

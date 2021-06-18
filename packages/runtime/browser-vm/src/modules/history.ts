@@ -1,6 +1,6 @@
 import { hasOwn } from '@garfish/utils';
 
-export function historyOverride() {
+export function historyModule() {
   const proto = Object.getPrototypeOf(window.history) || History.prototype;
   const fakeHistory = Object.create(proto);
 

@@ -5,7 +5,7 @@ import {
   rawClearInterval,
 } from '@garfish/utils';
 
-export const timeoutOverride = () => {
+export const timeoutModule = () => {
   const timeout = new Set<number>();
 
   const setTimeout = (
@@ -38,7 +38,7 @@ export const timeoutOverride = () => {
   };
 };
 
-export const intervalOverride = () => {
+export const intervalModule = () => {
   const timeout = new Set<number>();
 
   const setInterval = (

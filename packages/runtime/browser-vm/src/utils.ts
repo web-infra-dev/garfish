@@ -2,8 +2,6 @@ import {
   hasOwn,
   makeMap,
   nextTick,
-  rawObject,
-  rawDocument,
   transformUrl,
   rawObjectDefineProperty,
 } from '@garfish/utils';
@@ -11,8 +9,7 @@ import { Sandbox } from './sandbox';
 import { __proxyNode__ } from './symbolTypes';
 
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object
-const esGlobalMethods = // Function properties of the global object
-(
+const esGlobalMethods = ( // Function properties of the global object
   'eval,isFinite,isNaN,parseFloat,parseInt' +
   // URL handling functions
   'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent' +
@@ -34,7 +31,7 @@ export const optimizeMethods = [...esGlobalMethods].filter((v) => v !== 'eval');
 export function isConstructor(fn: () => void | FunctionConstructor) {
   const fp = fn.prototype;
   const hasConstructor =
-    fp && fp.constructor === fn && rawObject.getOwnPropertyNames(fp).length > 1;
+    fp && fp.constructor === fn && Object.getOwnPropertyNames(fp).length > 1;
   const functionStr = !hasConstructor && fn.toString();
 
   return (
@@ -56,6 +53,19 @@ export function rootElm(sandbox: Sandbox) {
   const container = sandbox && (sandbox.options.el as any);
   return container && (container() as Element);
 }
+
+export const sandboxMap = {
+  deps: new WeakMap(),
+
+  get(element: Element): Sandbox {
+    return this.deps.get(element);
+  },
+
+  set(element: Element, sandbox: Sandbox) {
+    if (this.deps.get(element)) return;
+    this.deps.set(element, sandbox);
+  },
+};
 
 export function toResolveUrl(sandbox: Sandbox, url: string) {
   if (sandbox.options.baseUrl) {
@@ -122,7 +132,7 @@ let setting = true;
 export function microTaskHtmlProxyDocument(proxyDocument) {
   // The HTML parent node into agent for the document
   // In micro tasks replace primary node
-  const html = rawDocument.children[0];
+  const html = document.children[0];
   if (html && html.parentNode !== proxyDocument) {
     rawObjectDefineProperty(html, 'parentNode', {
       value: proxyDocument,
@@ -135,21 +145,10 @@ export function microTaskHtmlProxyDocument(proxyDocument) {
       nextTick(() => {
         setting = true;
         rawObjectDefineProperty(html, 'parentNode', {
-          value: rawDocument,
+          value: document,
           configurable: true,
         });
       });
     }
   }
 }
-
-const sandboxMap = new WeakMap();
-
-export const setElementSandbox = function (element: Element, sandbox: Sandbox) {
-  if (sandboxMap.get(element)) return;
-  sandboxMap.set(element, sandbox);
-};
-
-export const getElementSandbox = function (element: Element): Sandbox {
-  return sandboxMap.get(element);
-};

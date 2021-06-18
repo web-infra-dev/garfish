@@ -2,7 +2,7 @@ import { transformUrl } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 
 // When dealing with hot updates, "ho-update.json" requires a proxy across domains
-export function XMLHttpRequestOverride(sandbox: Sandbox) {
+export function XMLHttpRequestModule(sandbox: Sandbox) {
   let override;
   const baseUrl = sandbox.options.baseUrl;
 

@@ -1,6 +1,5 @@
 import {
   warn,
-  assert,
   hasOwn,
   makeMap,
   isObject,
@@ -14,12 +13,12 @@ import {
   ExecScriptOptions,
   ReplaceGlobalVariables,
 } from './types';
-import { historyOverride } from './modules/history';
-import { documentOverride } from './modules/document';
-import { XMLHttpRequestOverride } from './modules/xhr';
-import { localStorageOverride } from './modules/storage';
-import { listenerOverride } from './modules/eventListener';
-import { timeoutOverride, intervalOverride } from './modules/timer';
+import { historyModule } from './modules/history';
+import { documentModule } from './modules/document';
+import { XMLHttpRequestModule } from './modules/xhr';
+import { localStorageModule } from './modules/storage';
+import { listenerModule } from './modules/eventListener';
+import { timeoutModule, intervalModule } from './modules/timer';
 import { optimizeMethods, createFakeObject } from './utils';
 import { __garfishGlobal__, GAR_OPTIMIZE_NAME } from './symbolTypes';
 import {
@@ -32,17 +31,17 @@ import {
 
 let id = 0;
 const defaultModules: Array<Module> = [
-  historyOverride,
-  timeoutOverride,
-  documentOverride,
-  listenerOverride,
-  intervalOverride,
-  localStorageOverride,
+  timeoutModule,
+  intervalModule,
+  historyModule,
+  documentModule,
+  listenerModule,
+  localStorageModule,
 ];
 
 // Deal with hmr problem
 if (__DEV__) {
-  defaultModules.push(XMLHttpRequestOverride);
+  defaultModules.push(XMLHttpRequestModule);
 }
 
 const isModule = (module: Window) => {
@@ -206,7 +205,6 @@ export class Sandbox {
   }
 
   optimizeGlobalMethod() {
-    assert(!this.closed, 'Sandbox is closed');
     let code = '';
     const methods = optimizeMethods.filter((p) => {
       return (
@@ -225,7 +223,7 @@ export class Sandbox {
     // Used to update the variables synchronously after `window.x = xx` is updated
     this.global[`${GAR_OPTIMIZE_NAME}Methods`] = methods;
     this.global[`${GAR_OPTIMIZE_NAME}UpdateStack`] = [];
-    code += `${GAR_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v") });`;
+    code += `${GAR_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v")});`;
     return code;
   }
 
