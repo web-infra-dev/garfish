@@ -13,7 +13,7 @@ const esGlobalMethods = // Function properties of the global object
   'FinalizationRegistry,Float32Array,Float64Array,Function,Int8Array,Int16Array,Int32Array,Map,Number' +
   'Object,Promise,Proxy,RangeError,ReferenceError,RegExp,Set,SharedArrayBuffer,String,Symbol,SyntaxError' +
   'TypeError,Uint8Array,Uint8ClampedArray,Uint16Array,Uint32Array,URIError,WeakMap,WeakRef,WeakSet' +
-  //  Other Properties of the Global Object
+  // Other Properties of the Global Object
   'Atomics,JSON,Math,Reflect'
 ).split(',');
 

@@ -69,7 +69,9 @@ export default function BrowserVm() {
           config = {
             modules: sandboxConfig.modules || [],
             openSandbox:
-              sandboxConfig?.open && sandboxConfig?.snapshot === false,
+              Sandbox.canSupport() &&
+              sandboxConfig.open &&
+              !sandboxConfig.snapshot,
             protectVariable: () => [
               ...Garfish?.options?.protectVariable,
               ...(appInfo.protectVariable || []),
