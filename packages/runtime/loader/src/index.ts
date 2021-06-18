@@ -55,6 +55,13 @@ const request = async (url: string, config: RequestInit) => {
   return { code, result, mimeType };
 };
 
+const copyResult = (result: LoadedPluginArgs<any>['value']) => {
+  if (result.resourceManager) {
+    result.resourceManager = result.resourceManager.clone();
+  }
+  return result;
+};
+
 // Compatible with old api
 const mergeConfig = (loader: Loader, url: string) => {
   const extra = loader.requestConfig;
@@ -125,7 +132,18 @@ export class Loader {
     }
 
     if (appCacheContainer.has(url)) {
-      return Promise.resolve(appCacheContainer.get(url));
+      return Promise.resolve(copyResult(appCacheContainer.get(url)));
+    } else {
+      // If other containers have cache
+      for (const key in cacheStore) {
+        const container = cacheStore[key];
+        if (container === appCacheContainer) continue;
+        if (container.has(url)) {
+          const result = container.get(url);
+          appCacheContainer.set(url, result, result.fileType);
+          return Promise.resolve(copyResult(result));
+        }
+      }
     }
 
     const requestConfig = mergeConfig(this, url);
@@ -168,7 +186,7 @@ export class Loader {
         });
 
         appCacheContainer.set(url, data.value, fileType);
-        return data.value;
+        return copyResult(data.value);
       },
     );
     return loadingList[url] as any;
