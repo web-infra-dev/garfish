@@ -20,9 +20,9 @@ import { XMLHttpRequestModule } from './modules/xhr';
 import { localStorageModule } from './modules/storage';
 import { listenerModule } from './modules/eventListener';
 import { timeoutModule, intervalModule } from './modules/timer';
+import { makeElInjector } from './dynamicNode';
 import { optimizeMethods, createFakeObject } from './utils';
 import { __garfishGlobal__, GAR_OPTIMIZE_NAME } from './symbolTypes';
-import { makeElInjector } from './dynamicNode';
 import {
   createHas,
   createGetter,
