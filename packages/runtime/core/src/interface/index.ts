@@ -34,7 +34,14 @@ export namespace interfaces {
   export interface AppInfo
     extends Exclude<
       Options,
-      ['apps', 'appID', 'plugins', 'disableStatistics', 'plugins']
+      [
+        'apps',
+        'appID',
+        'plugins',
+        'disableStatistics',
+        'disablePreloadApp',
+        'plugins',
+      ]
     > {
     name: string;
     entry: string;

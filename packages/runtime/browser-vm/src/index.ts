@@ -93,8 +93,14 @@ export default function BrowserVm() {
               rawWindow.Proxy &&
               sandboxConfig?.open &&
               sandboxConfig?.snapshot === false,
-            protectVariable: Garfish?.options?.protectVariable || [],
-            insulationVariable: Garfish?.options?.insulationVariable || [],
+            protectVariable: [
+              ...Garfish?.options?.protectVariable,
+              ...appInfo?.protectVariable,
+            ],
+            insulationVariable: [
+              ...Garfish?.options?.insulationVariable,
+              ...appInfo?.insulationVariable,
+            ],
             modules: sandboxConfig.modules || {},
             hooks: sandboxConfig.hooks || {},
           };
