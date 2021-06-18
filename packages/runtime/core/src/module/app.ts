@@ -1,19 +1,17 @@
-import { Text, StyleManager, TemplateManager } from '@garfish/loader';
+import { Text, DOMApis, StyleManager, TemplateManager } from '@garfish/loader';
 import {
   warn,
   assert,
-  evalWithEnv,
-  findTarget,
   isJs,
   isObject,
   isPromise,
-  parseContentType,
-  rawAppendChild,
-  removeElement,
+  findTarget,
+  evalWithEnv,
   transformUrl,
-  createAppContainer,
   getRenderNode,
   sourceListTags,
+  parseContentType,
+  createAppContainer,
   setDocCurrentScript,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
@@ -227,7 +225,7 @@ export class App {
       this.mounted = true;
       this.context.hooks.lifecycle.afterMount.call(this.appInfo, this);
     } catch (err) {
-      removeElement(this.appContainer);
+      DOMApis.removeElement(this.appContainer);
       this.context.hooks.lifecycle.errorMount.call(this.appInfo, err);
       throw err;
     } finally {
@@ -263,7 +261,9 @@ export class App {
       }
       this.mounting = false;
       // Will have been added to the document flow on the container
-      if (this.appContainer) removeElement(this.appContainer);
+      if (this.appContainer) {
+        DOMApis.removeElement(this.appContainer);
+      }
       return false;
     }
     return true;
@@ -304,13 +304,15 @@ export class App {
   private callDestroy(provider: interfaces.Provider) {
     const { rootElement, appContainer } = this;
     provider.destroy({ dom: rootElement });
-    removeElement(appContainer);
+    DOMApis.removeElement(appContainer);
   }
 
   // Create a container node and add in the document flow
   // domGetter Have been dealing with
   private addContainer() {
-    rawAppendChild.call(this.appInfo.domGetter, this.appContainer);
+    if (typeof (this.appInfo.domGetter as Element).appendChild === 'function') {
+      (this.appInfo.domGetter as Element).appendChild(this.appContainer);
+    }
   }
 
   private renderTemplate() {
