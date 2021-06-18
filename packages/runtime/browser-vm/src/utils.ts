@@ -1,15 +1,10 @@
-import {
-  hasOwn,
-  makeMap,
-  nextTick,
-  transformUrl,
-  rawObjectDefineProperty,
-} from '@garfish/utils';
+import { hasOwn, makeMap, nextTick } from '@garfish/utils';
 import { Sandbox } from './sandbox';
 import { __proxyNode__ } from './symbolTypes';
 
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object
-const esGlobalMethods = ( // Function properties of the global object
+const esGlobalMethods = // Function properties of the global object
+(
   'eval,isFinite,isNaN,parseFloat,parseInt' +
   // URL handling functions
   'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent' +
@@ -127,7 +122,7 @@ export function microTaskHtmlProxyDocument(proxyDocument) {
   // In micro tasks replace primary node
   const html = document.children[0];
   if (html && html.parentNode !== proxyDocument) {
-    rawObjectDefineProperty(html, 'parentNode', {
+    Object.defineProperty(html, 'parentNode', {
       value: proxyDocument,
       configurable: true,
     });
@@ -137,7 +132,7 @@ export function microTaskHtmlProxyDocument(proxyDocument) {
       // // Do not use micro tasks, Element will appear in the task placed in nextTick after node
       nextTick(() => {
         setting = true;
-        rawObjectDefineProperty(html, 'parentNode', {
+        Object.defineProperty(html, 'parentNode', {
           value: document,
           configurable: true,
         });

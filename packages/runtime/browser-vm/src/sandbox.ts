@@ -126,7 +126,9 @@ export class Sandbox {
     if (createdList) {
       createdList.forEach((fn) => fn(this.global));
     }
-    this.optimizeCode = this.optimizeGlobalMethod();
+    if (!this.options.useStrict) {
+      this.optimizeCode = this.optimizeGlobalMethod();
+    }
     this.initComplete = true;
   }
 
@@ -282,5 +284,27 @@ export class Sandbox {
       module = module[__garfishGlobal__ as any] as Window & typeof globalThis;
     }
     return module;
+  }
+
+  static canSupport() {
+    let support = true;
+    if (
+      !window.Set ||
+      !window.Proxy ||
+      !window.WeakMap ||
+      !Array.prototype.includes ||
+      !String.prototype.includes
+    ) {
+      support = false;
+    }
+    // let statement
+    if (support) {
+      try {
+        new Function('let a = 1;');
+      } catch {
+        support = false;
+      }
+    }
+    return support;
   }
 }

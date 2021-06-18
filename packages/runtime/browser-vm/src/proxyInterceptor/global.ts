@@ -91,7 +91,7 @@ export function createSetter(sandbox: Sandbox) {
         if (sandbox.global) {
           const methods = sandbox.global[`${GAR_OPTIMIZE_NAME}Methods`];
           if (Array.isArray(methods)) {
-            if (methods.indexOf(p) > -1) {
+            if (methods.includes(p)) {
               const updateStack =
                 sandbox.global[`${GAR_OPTIMIZE_NAME}UpdateStack`];
               updateStack.forEach((fn) => fn(p, value));
