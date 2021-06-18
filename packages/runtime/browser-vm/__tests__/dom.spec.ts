@@ -1,4 +1,5 @@
 import { Sandbox } from '../src/index';
+import { makeElInjector } from '../src/utils/handleNode';
 
 // Garfish使用Proxy对dom进行了劫持, 同时对调用dom的函数做了劫持, 修正dom节点的类型
 // 对调用dom的相关方法进行测试
@@ -6,6 +7,7 @@ import { Sandbox } from '../src/index';
 describe('Sandbox:Dom & Bom', () => {
   let sandbox: Sandbox;
   window.dispatchEvent = () => true;
+  makeElInjector();
 
   const go = (code: string) => {
     return `

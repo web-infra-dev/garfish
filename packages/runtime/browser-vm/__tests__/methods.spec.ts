@@ -34,7 +34,7 @@ describe('Init', () => {
       );
     });
     expect(opts.modules).toEqual({});
-    expect(opts.useStrict).toBe(true);
+    expect(opts.useStrict).toBe(false);
     expect(opts.namespace).toBe('app');
     expect((opts.el as Function)()).toBe(null);
   });
