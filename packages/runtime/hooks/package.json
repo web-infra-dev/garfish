@@ -29,9 +29,6 @@
   "main": "./src/index.js",
   "module": "./src/index.js",
   "types": "./index.d.ts",
-  "browser": {
-    "util": "./lib/util-browser.js"
-  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
