@@ -1,42 +1,33 @@
-import { warn, exportTag } from '@garfish/utils';
+import { warn } from '@garfish/utils';
 
-function findArray(arr, p) {
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === p) {
-      return p;
-    }
-  }
-  return null;
-}
+const exportTag = '-garfish-exports';
 
 export function markAndDerived() {
-  let curringAddTags = [];
   let historyTags = [];
+  let curringAddTags = [];
 
   return {
     markExport(global) {
-      curringAddTags = [];
       historyTags = [];
+      curringAddTags = [];
       for (const p in global) {
         if (p.indexOf(exportTag) !== -1) {
           historyTags.push(p);
         }
       }
     },
+
     getExport(global) {
       for (const p in global) {
         if (p.indexOf(exportTag) !== -1) {
-          if (!findArray(historyTags, p)) {
+          if (historyTags.indexOf(p) < 0) {
             curringAddTags.push(p);
           }
         }
       }
       if (curringAddTags.length > 1) {
-        warn(
-          `Access to export the contents of two or more： ${curringAddTags.concat(
-            ',',
-          )}`,
-        );
+        const tagString = curringAddTags.concat(',');
+        warn(`Access to export the contents of two or more： ${tagString}`);
       }
       if (global[curringAddTags[0]]) {
         return global[curringAddTags[0]];

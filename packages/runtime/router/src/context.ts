@@ -1,5 +1,4 @@
 import { interfaces } from '@garfish/core';
-import { getType } from '@garfish/utils';
 import { listen } from './agentRouter';
 import {
   setRouterConfig,

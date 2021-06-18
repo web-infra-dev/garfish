@@ -1,22 +1,20 @@
+import { DOMApis, StyleManager, JavaScriptManager } from '@garfish/loader';
 import {
   def,
   warn,
   isJs,
   isCss,
   makeMap,
-  rawObject,
-  rawDocument,
-  rawObserver,
   findTarget,
-  transformCssUrl,
-  createStyleNode,
+  transformUrl,
+  sourceListTags,
   parseContentType,
 } from '@garfish/utils';
+import { Sandbox } from './sandbox';
 import { __domWrapper__ } from './symbolTypes';
-import { rootElm, sandboxMap, toResolveUrl, handlerParams } from './utils';
+import { rootElm, sandboxMap, handlerParams } from './utils';
 
 const rawElementMethods = Object.create(null);
-const isResourceNode = makeMap(['a', 'img', 'link', 'script']);
 const isInsertMethod = makeMap(['insertBefore', 'insertAdjacentElement']);
 
 const mountElementMethods = [
@@ -26,48 +24,39 @@ const mountElementMethods = [
   'insertAdjacentElement',
 ];
 
-// 创建 js 注释节点
-function createScriptComment(src: string, code: string) {
-  src = src ? `src="${src}" ` : '';
-  return rawDocument.createComment(
-    `<script ${src}execute by garfish(dynamic)>${code}</script>`,
-  );
-}
+const fixResourceNodeUrl = (el: any, baseUrl: string) => {
+  const src = el.getAttribute('src');
+  const href = el.getAttribute('href');
+  src && (el.src = transformUrl(baseUrl, src));
+  href && (el.href = transformUrl(baseUrl, href));
+};
 
-function createLinkComment(href: string) {
-  href = href ? `href="${href}" ` : '';
-  return rawDocument.createComment(
-    `<link ${href}execute by garfish(dynamic)></link>`,
-  );
-}
-
-function dispatchEvent(el: Element, type: string) {
-  // 放到下个宏任务中，以保证当前的同步脚本执行完
+const dispatchEvent = (el: Element, type: string) => {
+  // Put it in the next macro task to ensure that the current synchronization script is executed
   setTimeout(() => {
     const event: Event & { garfish?: boolean } = new Event(type);
     event.garfish = true;
-    rawObject.defineProperty(event, 'target', { value: el });
+    Object.defineProperty(event, 'target', { value: el });
     el.dispatchEvent(event);
   });
-}
+};
 
-function processResponse(res: Response) {
-  if (res.status >= 400) {
-    throw new Error(`"${res.url}" load failed with status "${res.status}"`);
-  }
-  return res.text();
-}
-
-function addDynamicLink(el: HTMLLinkElement, callback: (code: string) => void) {
+const addDynamicLinkNode = (
+  sandbox: Sandbox,
+  el: HTMLLinkElement,
+  callback: (styleNode: HTMLStyleElement) => void,
+) => {
   const { href, type } = el;
 
   if (!type || isCss(parseContentType(type))) {
     if (href) {
-      fetch(href, { mode: 'cors' })
-        .then(processResponse)
-        .then((code) => {
+      const namespace = sandbox.options.namespace || '';
+      sandbox.loader
+        .load<StyleManager>(namespace, href)
+        .then(({ resourceManager: styleManager }) => {
           dispatchEvent(el, 'load');
-          callback(code);
+          styleManager.correctPath();
+          callback(styleManager.renderAsStyleElement());
           return;
         })
         .catch((e) => {
@@ -75,170 +64,157 @@ function addDynamicLink(el: HTMLLinkElement, callback: (code: string) => void) {
           dispatchEvent(el, 'error');
         });
     }
-  } else if (__DEV__) {
-    warn(`Invalid resource type "${type}", "${href}"`);
+  } else {
+    if (__DEV__) {
+      warn(`Invalid resource type "${type}", "${href}"`);
+    }
   }
-  return createLinkComment(href);
-}
+  return DOMApis.createLinkCommentNode(href);
+};
 
-// 动态添加的 script 标签
-function addDynamicScript(
-  sandbox: ReturnType<typeof sandboxMap.get>,
-  el: HTMLScriptElement,
-) {
+const addDynamicScriptNode = (sandbox: Sandbox, el: HTMLScriptElement) => {
   const { src, type } = el;
   const code = el.textContent || el.text || '';
 
   if (!type || isJs(parseContentType(type))) {
-    const namespace = sandbox.options.namespace || '';
-
-    // The SRC higher priority
+    // The "src" higher priority
     if (src) {
-      fetch(src, { mode: 'cors' })
-        .then(processResponse)
-        .then((code) => {
+      const namespace = sandbox.options.namespace || '';
+
+      sandbox.loader
+        .load<JavaScriptManager>(namespace, src)
+        .then(({ resourceManager: { url, scriptCode } }) => {
           dispatchEvent(el, 'load');
-          return code;
+          sandbox.execScript(scriptCode, {}, url, { noEntry: true });
         })
         .catch((e) => {
           __DEV__ && warn(e);
           dispatchEvent(el, 'error');
-        })
-        .then((code) => {
-          if (code) {
-            sandbox.execScript(code, {}, src, { noEntry: true });
-          }
         });
     } else if (code) {
-      sandbox.execScript(code, {}, `${namespace}_dynamic_script`, {
-        noEntry: true,
-      });
+      sandbox.execScript(code, {}, '', { noEntry: true });
     }
-  } else if (__DEV__) {
-    // 现在还不支持 esm
-    warn(
-      type === 'module'
-        ? `Does not support "esm" module script. "${src}"`
-        : `Invalid resource type "${type}", "${src}"`,
-    );
+  } else {
+    if (__DEV__) {
+      warn(
+        type === 'module'
+          ? `Does not support "esm" module script in sandbox. "${src}"`
+          : `Invalid resource type "${type}", "${src}"`,
+      );
+    }
   }
-  return createScriptComment(src, code);
-}
+  return DOMApis.createScriptCommentNode({ src, code });
+};
 
-let hasInject = false;
+const injector = (current: Function, methodName: string) => {
+  return function () {
+    // prettier-ignore
+    const el = methodName === 'insertAdjacentElement'
+      ? arguments[1]
+      : arguments[0];
+    const sandbox = el && sandboxMap.get(el);
 
-export function makeElInjector() {
-  if (hasInject) return;
-  hasInject = true;
-  const makeElInjector = (current: Function, method: string) => {
-    return function () {
-      const el =
-        method === 'insertAdjacentElement' ? arguments[1] : arguments[0];
+    if (this?.tagName?.toLowerCase() === 'style') {
+      const sandbox = sandboxMap.get(el);
+      const baseUrl = sandbox && sandbox.options.baseUrl;
+      if (baseUrl) {
+        const manager = new StyleManager(el.textContent);
+        manager.correctPath(baseUrl);
+        this.textContent = manager.styleCode;
+        return current.apply(this, arguments);
+      }
+    }
 
-      // 过滤 css 中的相对路径
-      if (this?.tagName?.toLowerCase() === 'style') {
-        const baseUrl = el.GARFISH_SANDBOX?.options.baseUrl;
+    if (sandbox) {
+      let convertedNode;
+      let rootNode = rootElm(sandbox);
+      const { baseUrl } = sandbox.options;
+      const append = rawElementMethods['appendChild'];
+      const tag = el.tagName && el.tagName.toLowerCase();
+
+      // Deal with some static resource nodes
+      if (baseUrl && sourceListTags.includes(tag)) {
+        fixResourceNodeUrl(el, baseUrl);
+      }
+
+      // Add dynamic script node by loader
+      if (tag === 'script') {
+        convertedNode = addDynamicScriptNode(sandbox, el);
+      }
+
+      // The style node needs to be placed in the sandbox root container
+      if (tag === 'style') {
         if (baseUrl) {
-          this.textContent = transformCssUrl(baseUrl, el.textContent);
+          const manager = new StyleManager(el.textContent);
+          manager.correctPath(baseUrl);
+          el.textContent = manager.styleCode;
+        }
+        convertedNode = el;
+      }
+
+      // The link node of the request css needs to be changed to style node
+      if (tag === 'link') {
+        if (el.rel === 'stylesheet' && el.href) {
+          convertedNode = addDynamicLinkNode(sandbox, el, (styleNode) =>
+            append.call(rootNode, styleNode),
+          );
+        } else {
+          convertedNode = el;
+        }
+      }
+
+      if (__DEV__) {
+        // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
+        if (tag === 'iframe' && typeof el.onload === 'function') {
+          def(el, 'contentWindow', sandbox.global);
+          def(el, 'contentDocument', sandbox.global.document);
+        }
+      }
+
+      if (convertedNode) {
+        // If it is "insertBefore" or "insertAdjacentElement" method,
+        // No need to rewrite when added to the container
+        if (
+          isInsertMethod(methodName) &&
+          rootNode.contains(this) &&
+          arguments[1]?.parentNode === this
+        ) {
           return current.apply(this, arguments);
         }
-      }
 
-      if (el) {
-        const sandbox = sandboxMap.get(el);
-
-        if (sandbox) {
-          let newNode;
-          const rootEl = rootElm(sandbox);
-          const append = rawElementMethods['appendChild'];
-          const tag = el.tagName && el.tagName.toLowerCase();
-          const { baseUrl } = sandbox.options;
-
-          // 转换为绝对路径
-          if (isResourceNode(tag)) {
-            const src = el.getAttribute('src');
-            const href = el.getAttribute('href');
-            if (src) {
-              el.src = toResolveUrl(sandbox, src);
-            } else if (href) {
-              el.href = toResolveUrl(sandbox, href);
-            }
-          }
-
-          if (tag === 'style') {
-            newNode = el;
-            if (baseUrl)
-              newNode.textContent = transformCssUrl(baseUrl, el.textContent);
-          } else if (tag === 'script') {
-            newNode = addDynamicScript(sandbox, el);
-          } else if (tag === 'link') {
-            if (el.rel === 'stylesheet' && el.href) {
-              newNode = addDynamicLink(el, (code) => {
-                // link 标签转为 style 标签，修正 url
-                code = transformCssUrl(el.href, code);
-                append.call(rootEl, createStyleNode(code));
-              });
-            } else {
-              newNode = el;
-            }
-          } else if (__DEV__) {
-            // 沙箱内部创建的 iframe 标签上的 window 都用当前沙箱的代理 window
-            if (tag === 'iframe' && typeof el.onload === 'function') {
-              def(el, 'contentWindow', sandbox.global);
-              def(el, 'contentDocument', sandbox.global.document);
-            }
-          }
-
-          // sandbox.callHook('onAppendNode', [sandbox, rootEl, newNode, tag, el]);
-
-          if (newNode) {
-            // 如果是 insertBefore、insertAdjacentElement 方法
-            // 添加到容器内时不需要进行再次改写
-            if (
-              isInsertMethod(method) &&
-              rootEl.contains(this) &&
-              arguments[1]?.parentNode === this
-            ) {
-              return current.apply(this, arguments);
-            }
-
-            if (tag === 'style' || tag === 'link') {
-              return append.call(
-                findTarget(rootEl, ['head', 'div[__GarfishMockHead__]']),
-                newNode,
-              );
-            }
-
-            if (tag === 'script') {
-              return append.call(
-                findTarget(rootEl, ['body', 'div[__GarfishMockBody__]']),
-                newNode,
-              );
-            }
-            return append.call(rootEl, newNode);
-          }
+        if (tag === 'style' || tag === 'link') {
+          rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
+        } else if (tag === 'script') {
+          rootNode = findTarget(rootNode, ['body', 'div[__GarfishMockBody__]']);
         }
+        return append.call(rootNode, convertedNode);
       }
-      return current.apply(this, arguments);
-    };
+    }
+    return current.apply(this, arguments);
   };
+};
 
-  // 初始化
+export function makeElInjector() {
+  if ((makeElInjector as any).hasInject) return;
+  (makeElInjector as any).hasInject = true;
+
   if (typeof window.Element === 'function') {
-    for (const method of mountElementMethods) {
-      const nativeMethod = window.Element.prototype[method];
-      if (typeof nativeMethod !== 'function' || nativeMethod[__domWrapper__]) {
+    for (const name of mountElementMethods) {
+      const fn = window.Element.prototype[name];
+      if (typeof fn !== 'function' || fn[__domWrapper__]) {
         continue;
       }
-
-      rawElementMethods[method] = nativeMethod;
-      const wrapper = makeElInjector(nativeMethod, method);
+      rawElementMethods[name] = fn;
+      const wrapper = injector(fn, name);
       wrapper[__domWrapper__] = true;
-      window.Element.prototype[method] = wrapper;
+      window.Element.prototype[name] = wrapper;
     }
   }
 
-  MutationObserver.prototype.observe = function () {
-    return rawObserver.apply(this, handlerParams(arguments));
-  };
+  if (window.MutationObserver) {
+    const rawObserver = window.MutationObserver.prototype.observe;
+    MutationObserver.prototype.observe = function () {
+      return rawObserver.apply(this, handlerParams(arguments));
+    };
+  }
 }

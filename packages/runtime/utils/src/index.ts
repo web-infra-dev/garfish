@@ -5,4 +5,3 @@ export * from './mimeType';
 export * from './raw';
 export * from './sentry';
 export * from './utils';
-export * from './webpack';

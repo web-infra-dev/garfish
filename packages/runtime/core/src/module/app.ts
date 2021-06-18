@@ -42,21 +42,21 @@ export interface Provider {
  * 5. Trigger the destruction: Perform the destroy function of child application, and applies the child node is removed from the document flow.
  */
 export class App {
-  public name: string;
   public display = false;
   public mounted = false;
   public esModule = false;
   public strictIsolation = false;
-  public isHtmlMode: boolean;
+  public name: string;
   public global: any = window;
-  public appInfo: interfaces.AppInfo;
+  public isHtmlMode: boolean;
+  public appContainer: HTMLElement;
+  public sourceList: Array<string> = [];
   public cjsModules: Record<string, any>;
+  public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
   public provider: Provider;
+  public appInfo: interfaces.AppInfo;
   public entryManager: TemplateManager;
-  public appContainer: HTMLElement;
-  public htmlNode: HTMLElement | ShadowRoot;
-  public sourceList: Array<string> = [];
   public customLoader: CustomerLoader;
 
   private active = false;

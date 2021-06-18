@@ -18,13 +18,13 @@ const queryFunctions = makeMap([
 // document proxy getter
 export function createGetter(sandbox: Sandbox) {
   return (target: any, p: PropertyKey, receiver?: any) => {
-    const rootEl = rootElm(sandbox);
+    const rootNode = rootElm(sandbox);
     const strictIsolation = sandbox.options.strictIsolation;
     const value = hasOwn(target, p)
       ? Reflect.get(target, p, receiver)
       : Reflect.get(document, p);
 
-    if (rootEl) {
+    if (rootNode) {
       if (p === 'createElement') {
         return function (tagName, options) {
           const el = value.call(document, tagName, options);
@@ -33,18 +33,18 @@ export function createGetter(sandbox: Sandbox) {
         };
       }
 
-      // rootEl is a Shadow dom
+      // rootNode is a Shadow dom
       if (strictIsolation) {
         if (p === 'head') {
-          return findTarget(rootEl, ['head', 'div[__GarfishMockHead__]']);
+          return findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
         }
         if (p === 'body') {
-          return findTarget(rootEl, ['body', 'div[__GarfishMockBody__]']);
+          return findTarget(rootNode, ['body', 'div[__GarfishMockBody__]']);
         }
         if (queryFunctions(p)) {
           return p === 'getElementById'
-            ? (id) => rootEl.querySelector(`#${id}`)
-            : rootEl[p].bind(rootEl);
+            ? (id) => rootNode.querySelector(`#${id}`)
+            : rootNode[p].bind(rootNode);
         }
       }
     }

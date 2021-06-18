@@ -51,7 +51,7 @@ export function handlerParams(args: IArguments | Array<any>) {
 // Container node, because it changes all the time, take it as you use it
 export function rootElm(sandbox: Sandbox) {
   const container = sandbox && (sandbox.options.el as any);
-  return container && (container() as Element);
+  return container && (container() as Element | ShadowRoot);
 }
 
 export const sandboxMap = {
@@ -66,13 +66,6 @@ export const sandboxMap = {
     this.deps.set(element, sandbox);
   },
 };
-
-export function toResolveUrl(sandbox: Sandbox, url: string) {
-  if (sandbox.options.baseUrl) {
-    return transformUrl(sandbox.options.baseUrl, url);
-  }
-  return url;
-}
 
 // Copy "window" and "document"
 export function createFakeObject(

@@ -2,7 +2,7 @@ import { Garfish } from '@garfish/core';
 import GarfishRouter from '@garfish/router';
 import GarfishBrowserVm from '@garfish/browser-vm';
 import GarfishBrowserSnapshot from '@garfish/browser-snapshot';
-import { def, hasOwn, inBrowser, warn, __GARFISH_FLAG__ } from '@garfish/utils';
+import { def, warn, hasOwn, inBrowser, __GARFISH_FLAG__ } from '@garfish/utils';
 
 declare global {
   interface Window {
@@ -53,8 +53,7 @@ export function createContext(): Garfish {
 
   if (inBrowser()) {
     set('Garfish');
-
-    // 全局标识符
+    // Global flag
     set('__GARFISH__', true);
   }
 

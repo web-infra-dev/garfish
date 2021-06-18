@@ -110,18 +110,33 @@ export const DOMApis = {
     return el;
   },
 
-  createLinkCommentNode(node: Node) {
-    const ps = attributesString(node.attributes);
-    return `<link ${ps.slice(0, -1)}></link>`;
+  createLinkCommentNode(node: Node | string) {
+    if (this.isNode(node)) {
+      const ps = attributesString((node as Node).attributes);
+      return `<link ${ps.slice(0, -1)}></link>`;
+    } else {
+      node = node ? `src="${node}" ` : '';
+      return document.createComment(
+        `<link ${node}execute by garfish(dynamic)></link>`,
+      );
+    }
   },
 
-  createScriptCommentNode(node: Node) {
-    const { attributes, children } = node;
-    const ps = attributesString(attributes);
-    const code = children?.[0] ? (children[0] as Text).content : '';
-    return document.createComment(
-      `<script ${ps} execute by garfish>${code}</script>`,
-    );
+  createScriptCommentNode(node: Node | { code: string; src?: string }) {
+    if (this.isNode(node)) {
+      const { attributes, children } = node as Node;
+      const ps = attributesString(attributes);
+      const code = children?.[0] ? (children[0] as Text).content : '';
+      return document.createComment(
+        `<script ${ps} execute by garfish>${code}</script>`,
+      );
+    } else {
+      const { src, code } = node as any;
+      const url = src ? `src="${src}" ` : '';
+      return document.createComment(
+        `<script ${url}execute by garfish(dynamic)>${code}</script>`,
+      );
+    }
   },
 
   applyAttributes(el: Element, attributes: Attributes) {
