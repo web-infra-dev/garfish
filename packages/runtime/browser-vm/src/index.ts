@@ -1,7 +1,7 @@
 import { interfaces } from '@garfish/core';
 import { Sandbox } from './sandbox';
 import { SandboxOptions } from './types';
-import './dynamicNode';
+export { Sandbox } from './sandbox';
 
 declare module '@garfish/core' {
   // This type declaration is used to extend garfish core
@@ -67,17 +67,20 @@ export default function BrowserVm() {
 
         if (sandboxConfig) {
           config = {
-            modules: sandboxConfig.modules || [],
             openSandbox:
               Sandbox.canSupport() &&
               sandboxConfig.open &&
               !sandboxConfig.snapshot,
+
+            modules: sandboxConfig.modules || [],
+
             protectVariable: () => [
-              ...Garfish?.options?.protectVariable,
+              ...(Garfish?.options?.protectVariable || []),
               ...(appInfo.protectVariable || []),
             ],
+
             insulationVariable: () => [
-              ...Garfish?.options?.insulationVariable,
+              ...(Garfish?.options?.insulationVariable || []),
               ...(appInfo.insulationVariable || []),
             ],
           };
@@ -130,5 +133,3 @@ export default function BrowserVm() {
     return options;
   };
 }
-
-export { Sandbox } from './sandbox';

@@ -300,7 +300,7 @@ export class Sandbox {
     // let statement
     if (support) {
       try {
-        new Function('let a = 1;');
+        new Function('let a = 666;');
       } catch {
         support = false;
       }

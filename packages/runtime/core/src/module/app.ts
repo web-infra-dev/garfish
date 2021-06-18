@@ -317,7 +317,7 @@ export class App {
 
   private renderTemplate() {
     const { appInfo, entryManager, resources } = this;
-    const { url: baseUrl, DOMApis } = entryManager;
+    const { url: baseUrl } = entryManager;
     const { htmlNode, appContainer } = createAppContainer(appInfo.name);
 
     // Transformation relative path

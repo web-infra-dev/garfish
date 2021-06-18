@@ -128,6 +128,7 @@ const injector = (current: Function, methodName: string) => {
     if (sandbox) {
       let convertedNode;
       let rootNode = rootElm(sandbox);
+      const baseRootNode = rootNode;
       const { baseUrl } = sandbox.options;
       const append = rawElementMethods['appendChild'];
       const tag = el.tagName && el.tagName.toLowerCase();
@@ -139,11 +140,13 @@ const injector = (current: Function, methodName: string) => {
 
       // Add dynamic script node by loader
       if (tag === 'script') {
+        rootNode = findTarget(rootNode, ['body', 'div[__GarfishMockBody__]']);
         convertedNode = addDynamicScriptNode(sandbox, el);
       }
 
       // The style node needs to be placed in the sandbox root container
       if (tag === 'style') {
+        rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
         if (baseUrl) {
           const manager = new StyleManager(el.textContent);
           manager.correctPath(baseUrl);
@@ -154,6 +157,7 @@ const injector = (current: Function, methodName: string) => {
 
       // The link node of the request css needs to be changed to style node
       if (tag === 'link') {
+        rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
         if (el.rel === 'stylesheet' && el.href) {
           convertedNode = addDynamicLinkNode(sandbox, el, (styleNode) =>
             append.call(rootNode, styleNode),
@@ -176,16 +180,10 @@ const injector = (current: Function, methodName: string) => {
         // No need to rewrite when added to the container
         if (
           isInsertMethod(methodName) &&
-          rootNode.contains(this) &&
+          baseRootNode.contains(this) &&
           arguments[1]?.parentNode === this
         ) {
           return current.apply(this, arguments);
-        }
-
-        if (tag === 'style' || tag === 'link') {
-          rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
-        } else if (tag === 'script') {
-          rootNode = findTarget(rootNode, ['body', 'div[__GarfishMockBody__]']);
         }
         return append.call(rootNode, convertedNode);
       }

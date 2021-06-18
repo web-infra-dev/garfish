@@ -70,16 +70,15 @@ const mergeConfig = (loader: Loader, url: string) => {
 };
 
 export class Loader {
+  /**
+   * @deprecated
+   */
+  public requestConfig: RequestInit | ((url: string) => RequestInit);
   public lifecycle = {
     clear: new PluginManager<ClearPluginArgs>('clear'),
     loaded: new PluginManager<LoadedPluginArgs<Manager>>('loaded'),
     beforeLoad: new PluginManager<BeforeLoadPluginArgs>('beforeLoad'),
   };
-
-  /**
-   * @deprecated
-   */
-  public requestConfig: RequestInit | ((url: string) => RequestInit);
 
   private options: LoaderOptions;
   private cacheStore: { [name: string]: AppCacheContainer };
