@@ -12,6 +12,7 @@ import {
 // window proxy getter
 export function createGetter(sandbox: Sandbox) {
   return function (target: Window, p: PropertyKey, receiver: any) {
+    if (p === Symbol.unscopables) return undefined;
     let value;
     const { overrideList } = sandbox.replaceGlobalVariables;
 
