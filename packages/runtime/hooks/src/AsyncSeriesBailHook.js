@@ -4,37 +4,37 @@
 	Copy from https://github.com/webpack/tapable
 */
 
-import Hook from "./Hook";
-import HookCodeFactory from "./HookCodeFactory";
+import Hook from './Hook';
+import HookCodeFactory from './HookCodeFactory';
 
 class AsyncSeriesBailHookCodeFactory extends HookCodeFactory {
-	content({ onError, onResult, resultReturns, onDone }) {
-		return this.callTapsSeries({
-			onError: (i, err, next, doneBreak) => onError(err) + doneBreak(true),
-			onResult: (i, result, next) =>
-				`if(${result} !== undefined) {\n${onResult(
-					result
-				)}\n} else {\n${next()}}\n`,
-			resultReturns,
-			onDone,
-		});
-	}
+  content({ onError, onResult, resultReturns, onDone }) {
+    return this.callTapsSeries({
+      onError: (i, err, next, doneBreak) => onError(err) + doneBreak(true),
+      onResult: (i, result, next) =>
+        `if(${result} !== undefined) {\n${onResult(
+          result,
+        )}\n} else {\n${next()}}\n`,
+      resultReturns,
+      onDone,
+    });
+  }
 }
 
 const factory = new AsyncSeriesBailHookCodeFactory();
 
 const COMPILE = function (options) {
-	factory.setup(this, options);
-	return factory.create(options);
+  factory.setup(this, options);
+  return factory.create(options);
 };
 
 export function AsyncSeriesBailHook(args = [], name = undefined) {
-	const hook = new Hook(args, name);
-	hook.constructor = AsyncSeriesBailHook;
-	hook.compile = COMPILE;
-	hook._call = undefined;
-	hook.call = undefined;
-	return hook;
+  const hook = new Hook(args, name);
+  hook.constructor = AsyncSeriesBailHook;
+  hook.compile = COMPILE;
+  hook._call = undefined;
+  hook.call = undefined;
+  return hook;
 }
 
 AsyncSeriesBailHook.prototype = null;

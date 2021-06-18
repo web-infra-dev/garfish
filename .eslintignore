@@ -2,4 +2,5 @@
 **/dist/**/**
 api-extractor.json
 packages/core/*/index.js
+packages/runtime/**/dist/**/**
 packages/core/runtime/*/dist/**

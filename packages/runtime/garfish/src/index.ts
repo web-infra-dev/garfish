@@ -7,9 +7,7 @@ import { def, hasOwn, inBrowser, warn, __GARFISH_FLAG__ } from '@garfish/utils';
 declare global {
   interface Window {
     Garfish: Garfish;
-    Gar: Garfish;
     __GARFISH__: boolean;
-    __GAR__: boolean;
   }
 }
 

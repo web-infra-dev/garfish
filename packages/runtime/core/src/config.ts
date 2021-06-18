@@ -33,6 +33,7 @@ const defaultOptions: interfaces.Options = {
   autoRefreshApp: true,
   disableStatistics: false,
   disablePreloadApp: false,
+  nested: false,
   beforeLoad: async () => {},
   afterLoad: () => {},
   beforeEval: () => {},

@@ -10,8 +10,7 @@ import {
 import { __proxyNode__ } from '../symbolTypes';
 
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object
-const esNames = // Function properties of the global object
-(
+const esNames = ( // Function properties of the global object
   'eval,isFinite,isNaN,parseFloat,parseInt' +
   // URL handling functions
   'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent' +

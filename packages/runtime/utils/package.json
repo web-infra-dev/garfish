@@ -1,6 +1,6 @@
 {
   "name": "@garfish/utils",
-  "version": "0.0.8",
+  "version": "0.0.9-alpha.13",
   "description": "utils module.",
   "keywords": [
     "garfish",
@@ -18,7 +18,6 @@
   "bugs": {
     "url": "https://github.com/bytedance/garfish/issues"
   },
-  "private": true,
   "scripts": {},
   "types": "dist/index.d.ts",
   "buildOptions": {

@@ -10,6 +10,7 @@ module.exports = {
     filename: '[name].js',
     publicPath: '//localhost:2333/',
     globalObject: 'window',
+    jsonpFunction: 'main-jsonp-function',
   },
   devtool: 'source-map',
   devServer: {

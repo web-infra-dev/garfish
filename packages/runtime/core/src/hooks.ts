@@ -1,9 +1,4 @@
-import {
-  SyncHook,
-  AsyncSeriesBailHook,
-  AsyncParallelBailHook,
-  AsyncSeriesHook,
-} from '@garfish/hooks';
+import { SyncHook, AsyncSeriesBailHook } from '@garfish/hooks';
 import { warn } from '@garfish/utils';
 import { interfaces } from './interface';
 
@@ -13,8 +8,9 @@ export function keys<O>(o: O) {
 
 export class Hooks {
   public lifecycle: interfaces.Lifecycle;
+  public plugins: Array<interfaces.Plugin> = [];
 
-  constructor() {
+  constructor(hasIntercept) {
     this.lifecycle = {
       // beforeInitialize: new SyncHook(['options']),
       initialize: new SyncHook(['options']),
@@ -54,6 +50,30 @@ export class Hooks {
       afterUnMount: new SyncHook(['appInfo', 'appInstance']),
       errorExecCode: new SyncHook(['appInfo', 'error']),
     };
+
+    if (hasIntercept) {
+      Object.keys(this.lifecycle).forEach((lifeKey) => {
+        this.lifecycle[lifeKey].intercept({
+          async call(...args) {
+            const appInfo = args[0];
+            // hasAppInfo lifecycle
+            if (
+              appInfo &&
+              appInfo.hooks &&
+              appInfo.hooks.lifecycle &&
+              appInfo.hooks.lifecycle[lifeKey]
+            ) {
+              const lifecycle = appInfo.hooks.lifecycle[lifeKey];
+              if (lifeKey === 'beforeLoad') {
+                await lifecycle.promise.apply(lifecycle, ...args);
+              } else {
+                lifecycle.call.apply(lifecycle, ...args);
+              }
+            }
+          },
+        });
+      });
+    }
   }
 
   public usePlugins(plugin: interfaces.Plugin) {
@@ -64,17 +84,14 @@ export class Hooks {
       __DEV__ && warn('Plug-in must return object type');
     if (pluginName) __DEV__ && warn('Plug-in must provide a name');
 
+    if (this.plugins.indexOf(plugin) === -1) this.plugins.push(plugin);
     lifecycleKeys.forEach((key) => {
       const pluginLife = plugin[key];
       if (!pluginLife) return;
 
       const cst = this.lifecycle[key].constructor;
       // 区分不同的hooks类型，采用不同的注册策略
-      if (
-        cst === AsyncParallelBailHook ||
-        cst === AsyncSeriesBailHook ||
-        cst === AsyncParallelBailHook
-      ) {
+      if (cst === AsyncSeriesBailHook) {
         (this.lifecycle[key] as any).tapPromise(pluginName, pluginLife);
       } else {
         (this.lifecycle[key] as any).tap(pluginName, pluginLife);
@@ -83,4 +100,4 @@ export class Hooks {
   }
 }
 
-export const hooks = new Hooks();
+// export const hooks = Hooks();
