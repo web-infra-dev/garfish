@@ -1,8 +1,7 @@
 import { hasOwn, makeMap, isObject, findTarget } from '@garfish/utils';
-import { rootElm } from '../utils';
 import { Sandbox } from '../sandbox';
-import { setElementSandbox } from '../global';
 import { __documentBind__ } from '../symbolTypes';
+import { rootElm, setElementSandbox } from '../utils';
 import { bind, verifyGetterDescriptor, verifySetterDescriptor } from './shared';
 
 const queryFunctions = makeMap([

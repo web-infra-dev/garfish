@@ -1,7 +1,6 @@
 import { Sandbox } from '../sandbox';
 import { GAR_NAMESPACE_PREFIX } from '../symbolTypes';
 
-// 自定义的Storage类
 export class CusStorage {
   prefix: string;
   namespace: string;
@@ -13,7 +12,6 @@ export class CusStorage {
     this.prefix = `${GAR_NAMESPACE_PREFIX}${namespace}__`;
   }
 
-  // 劫持length
   get length() {
     return this.getKeys().length;
   }
@@ -24,7 +22,7 @@ export class CusStorage {
     );
   }
 
-  // 获取当前命名空间的第 n 个 key, 需要去除前缀
+  // Get the "n" key of the current namespace, you need to remove the prefix
   key(n: number) {
     const key = this.getKeys()[n];
     return key ? key.substring(this.prefix.length) : null;

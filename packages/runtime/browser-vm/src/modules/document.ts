@@ -1,9 +1,3 @@
-import {
-  rawObject,
-  rawDocument,
-  rawDocumentCtor,
-  rawObjectDefineProperty,
-} from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 import { __proxyNode__ } from '../symbolTypes';
 import { createFakeObject, microTaskHtmlProxyDocument } from '../utils';
@@ -13,10 +7,11 @@ import {
   createDefineProperty,
 } from '../proxyInterceptor/document';
 
+const rawDocumentCtor = Document;
 export const documentOverride = (sandbox: Sandbox) => {
   // eslint-disable-next-line
   let proxyDocument;
-  const fakeDocument = createFakeObject(rawDocument);
+  const fakeDocument = createFakeObject(document);
   const getter = createGetter(sandbox);
 
   const fakeDocumentProto = new Proxy(fakeDocument, {
@@ -36,7 +31,7 @@ export const documentOverride = (sandbox: Sandbox) => {
     const docInstance = new rawDocumentCtor();
     // If you inherit fakeDocumentProto,
     // you will get the properties and methods on the original document, which do not meet expectations
-    rawObject.setPrototypeOf(docInstance, fakeDocument);
+    Object.setPrototypeOf(docInstance, fakeDocument);
     return docInstance;
   };
 
@@ -44,12 +39,12 @@ export const documentOverride = (sandbox: Sandbox) => {
   fakeDocumentCtor.prototype.constructor = fakeDocumentCtor;
 
   if (Symbol.hasInstance) {
-    rawObjectDefineProperty(fakeDocumentCtor, Symbol.hasInstance, {
+    Object.defineProperty(fakeDocumentCtor, Symbol.hasInstance, {
       configurable: true,
       value(value) {
         let proto = value;
-        if (proto === rawDocument) return true;
-        while ((proto = rawObject.getPrototypeOf(proto))) {
+        if (proto === document) return true;
+        while ((proto = Object.getPrototypeOf(proto))) {
           if (proto === fakeDocumentProto) {
             return true;
           }
@@ -70,7 +65,7 @@ export const documentOverride = (sandbox: Sandbox) => {
       [__proxyNode__]: {
         writable: false,
         configurable: false,
-        value: rawDocument,
+        value: document,
       },
     }),
     {

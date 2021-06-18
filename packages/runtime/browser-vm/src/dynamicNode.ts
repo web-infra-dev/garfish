@@ -12,11 +12,14 @@ import {
   createStyleNode,
   parseContentType,
 } from '@garfish/utils';
-import { Sandbox } from '../sandbox';
-import { handlerParams } from './index';
-import { __domWrapper__ } from '../symbolTypes';
-import { rootElm, toResolveUrl } from './sandbox';
-import { getElementSandbox } from '../global';
+import { Sandbox } from './sandbox';
+import { __domWrapper__ } from './symbolTypes';
+import {
+  handlerParams,
+  rootElm,
+  toResolveUrl,
+  getElementSandbox,
+} from './utils';
 
 const rawElementMethods = Object.create(null);
 const isResourceNode = makeMap(['a', 'img', 'link', 'script']);

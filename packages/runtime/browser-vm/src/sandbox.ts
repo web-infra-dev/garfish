@@ -14,19 +14,13 @@ import {
   ExecScriptOptions,
   ReplaceGlobalVariables,
 } from './types';
-import {
-  isModule,
-  optimizeMethods,
-  createFakeObject,
-  addProxyWindowType,
-} from './utils';
-import { defaultConfig } from './config';
 import { historyOverride } from './modules/history';
 import { documentOverride } from './modules/document';
 import { XMLHttpRequestOverride } from './modules/xhr';
 import { localStorageOverride } from './modules/storage';
 import { listenerOverride } from './modules/eventListener';
 import { timeoutOverride, intervalOverride } from './modules/timer';
+import { optimizeMethods, createFakeObject } from './utils';
 import { __garfishGlobal__, GAR_OPTIMIZE_NAME } from './symbolTypes';
 import {
   createHas,
@@ -51,6 +45,19 @@ if (__DEV__) {
   defaultModules.push(XMLHttpRequestOverride);
 }
 
+const isModule = (module: Window) => {
+  return isObject(module)
+    ? module[__garfishGlobal__ as any] !== undefined
+    : false;
+};
+
+const addProxyWindowType = (module: Window, parentModule: Window) => {
+  if (!isModule(module)) {
+    module[__garfishGlobal__ as any] = parentModule;
+  }
+  return module;
+};
+
 export class Sandbox {
   public version = __VERSION__;
   public id = id++;
@@ -69,7 +76,21 @@ export class Sandbox {
 
   constructor(options: SandboxOptions) {
     this.options = isObject(options)
-      ? deepMerge(defaultConfig, options)
+      ? deepMerge(
+          // Default sandbox config
+          {
+            modules: [],
+            baseUrl: '',
+            namespace: '',
+            useStrict: false,
+            openSandbox: true,
+            strictIsolation: false,
+            el: () => {},
+            protectVariable: () => [],
+            insulationVariable: () => [],
+          },
+          options,
+        )
       : deepMerge({}, options);
 
     const { protectVariable, insulationVariable } = this.options;
@@ -82,7 +103,8 @@ export class Sandbox {
       recoverList: [],
       overrideList: {},
     };
-    this.start(); // The default startup sandbox
+    // The default startup sandbox
+    this.start();
   }
 
   start() {

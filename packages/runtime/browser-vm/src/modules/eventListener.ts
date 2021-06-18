@@ -1,4 +1,4 @@
-import { computeErrorUrl, filterAndWrapEventListener } from '@garfish/utils';
+// import { computeErrorUrl, filterAndWrapEventListener } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 
 type Opts = boolean | AddEventListenerOptions;

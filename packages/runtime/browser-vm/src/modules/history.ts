@@ -1,16 +1,13 @@
-import { hasOwn, rawObject, rawWindow } from '@garfish/utils';
+import { hasOwn } from '@garfish/utils';
 
 export function historyOverride() {
-  const proto =
-    rawObject.getPrototypeOf(rawWindow.history) || History.prototype;
-  const fakeHistory = rawObject.create(proto);
+  const proto = Object.getPrototypeOf(window.history) || History.prototype;
+  const fakeHistory = Object.create(proto);
 
   const proxyHistory = new Proxy(fakeHistory, {
     get(target: any, p: PropertyKey) {
-      const value = hasOwn(target, p) ? target[p] : rawWindow.history[p];
-      return typeof value === 'function'
-        ? value.bind(rawWindow.history)
-        : value;
+      const value = hasOwn(target, p) ? target[p] : window.history[p];
+      return typeof value === 'function' ? value.bind(window.history) : value;
     },
 
     // "__proto__" is not a standard attribute, it is temporarily not compatible

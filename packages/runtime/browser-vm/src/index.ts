@@ -1,7 +1,7 @@
 import { interfaces } from '@garfish/core';
 import { Sandbox } from './sandbox';
 import { SandboxOptions } from './types';
-import './utils/handleNode';
+import './dynamicNode';
 
 declare module '@garfish/core' {
   // This type declaration is used to extend garfish core

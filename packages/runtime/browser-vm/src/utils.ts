@@ -1,12 +1,14 @@
-export * from './sandbox';
 import {
+  hasOwn,
   makeMap,
   nextTick,
   rawObject,
   rawDocument,
+  transformUrl,
   rawObjectDefineProperty,
 } from '@garfish/utils';
-import { __proxyNode__ } from '../symbolTypes';
+import { Sandbox } from './sandbox';
+import { __proxyNode__ } from './symbolTypes';
 
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object
 const esGlobalMethods = // Function properties of the global object
@@ -49,44 +51,74 @@ export function handlerParams(args: IArguments | Array<any>) {
   });
 }
 
-let setting = true;
-let tempEl = null;
-export function macroTaskProxyDocument(el, proxyDocument) {
-  if (!el) return;
-  // 若从子应用的根节点中获取parentNode，可能存在从当前环境向上查询到document，产生逃逸出代理document的情况
-  // 获取节点parentNode时将html的父节点变为代理document
-  // 在微任务时替换成原生节点
-  const html = rawDocument.children[0];
-  if (el.parentNode !== proxyDocument) tempEl = el.parentNode;
-  const defineFn = function () {
-    if (html && html.parentNode !== proxyDocument) {
-      rawObjectDefineProperty(html, 'parentNode', {
-        value: proxyDocument,
-        configurable: true,
-      });
-      if (setting) {
-        setting = false;
-        // 不可使用微任务，Element中出现将经过节点后的任务放置了nextTick中
-        setTimeout(() => {
-          setting = true;
-          rawObjectDefineProperty(html, 'parentNode', {
-            value: rawDocument,
-            configurable: true,
-          });
-        });
-      }
-    }
-    return tempEl;
-  };
-
-  const desc = Object.getOwnPropertyDescriptor(el, 'parentNode');
-  if (desc?.get === defineFn) return;
-  rawObjectDefineProperty(el, 'parentNode', {
-    get: defineFn,
-    configurable: true,
-  });
+// Container node, because it changes all the time, take it as you use it
+export function rootElm(sandbox: Sandbox) {
+  const container = sandbox && (sandbox.options.el as any);
+  return container && (container() as Element);
 }
 
+export function toResolveUrl(sandbox: Sandbox, url: string) {
+  if (sandbox.options.baseUrl) {
+    return transformUrl(sandbox.options.baseUrl, url);
+  }
+  return url;
+}
+
+// Copy "window" and "document"
+export function createFakeObject(
+  target: Record<PropertyKey, any>,
+  filter?: (PropertyKey) => boolean,
+  isWritable?: (PropertyKey) => boolean,
+) {
+  const fakeObject = {};
+  const propertyMap = {};
+  const storageBox = Object.create(null); // Store changed value
+  const propertyNames = Object.getOwnPropertyNames(target);
+  const def = (p: string) => {
+    const descriptor = Object.getOwnPropertyDescriptor(target, p);
+
+    if (descriptor?.configurable) {
+      const hasGetter = hasOwn(descriptor, 'get');
+      const hasSetter = hasOwn(descriptor, 'set');
+      const canWritable = typeof isWritable === 'function' && isWritable(p);
+
+      if (hasGetter) {
+        // prettier-ignore
+        descriptor.get = () => hasOwn(storageBox, p)
+          ? storageBox[p]
+          : target[p];
+      }
+      if (hasSetter) {
+        descriptor.set = (val) => {
+          storageBox[p] = val;
+          return true;
+        };
+      }
+      if (canWritable) {
+        if (descriptor.writable === false) {
+          descriptor.writable = true;
+        } else if (hasGetter) {
+          descriptor.set = (val) => {
+            storageBox[p] = val;
+            return true;
+          };
+        }
+      }
+      Object.defineProperty(fakeObject, p, Object.freeze(descriptor));
+    }
+  };
+  propertyNames.forEach((p) => {
+    propertyMap[p] = true;
+    typeof filter === 'function' ? !filter(p) && def(p) : def(p);
+  });
+  // "prop" maybe in prototype chain
+  for (const prop in target) {
+    !propertyMap[prop] && def(prop);
+  }
+  return fakeObject as any;
+}
+
+let setting = true;
 export function microTaskHtmlProxyDocument(proxyDocument) {
   // The HTML parent node into agent for the document
   // In micro tasks replace primary node
@@ -110,3 +142,14 @@ export function microTaskHtmlProxyDocument(proxyDocument) {
     }
   }
 }
+
+const sandboxMap = new WeakMap();
+
+export const setElementSandbox = function (element: Element, sandbox: Sandbox) {
+  if (sandboxMap.get(element)) return;
+  sandboxMap.set(element, sandbox);
+};
+
+export const getElementSandbox = function (element: Element): Sandbox {
+  return sandboxMap.get(element);
+};
