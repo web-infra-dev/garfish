@@ -1,6 +1,7 @@
 import { interfaces } from '../interface';
 
-export default function fixHMR() {
+// When the main application is updated, the currently active child applications need to rerender.
+export function GarfishHMRPlugin() {
   let hasInit = false;
   let isHotUpdate = false;
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
@@ -25,8 +26,8 @@ export default function fixHMR() {
             Object.keys(Garfish.activeApps).forEach((appName) => {
               const app = Garfish.activeApps[appName];
               if (app.mounted) {
-                // app.display && app.hide();
-                // app.show();
+                app.display && app.hide();
+                app.show();
               }
             });
           });

@@ -169,11 +169,15 @@ export function remove<T>(list: Array<T> | Set<T>, el: T) {
     const i = list.indexOf(el);
     if (i > -1) {
       list.splice(i, 1);
+      return true;
     }
+    return false;
   } else {
     if (list.has(el)) {
       list.delete(el);
+      return true;
     }
+    return false;
   }
 }
 

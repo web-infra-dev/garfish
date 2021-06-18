@@ -1,42 +1,114 @@
 import { EventEmitter } from 'events';
 import {
-  assert,
-  isObject,
-  deepMerge,
+  Loader,
+  Text,
+  StyleManager,
+  TemplateManager,
+  JavaScriptManager,
+  ComponentManager,
+} from '@garfish/loader';
+import {
   warn,
   error,
+  assert,
   hasOwn,
+  isObject,
+  deepMerge,
+  transformUrl,
   __GARFISH_FLAG__,
 } from '@garfish/utils';
-import {
-  getDefaultOptions,
-  lifecycle,
-  defaultLoadComponentOptions,
-} from './config';
 import { Hooks } from './hooks';
-import { Loader } from './module/loader';
-import { interfaces } from './interface';
 import { App } from './module/app';
 import { Component } from './module/component';
-import GarfishHMRPlugin from './plugins/fixHMR';
-import GarfishOptionsLife from './plugins/lifecycle';
-import GarfishPreloadPlugin from './plugins/preload';
+import { interfaces } from './interface';
+import { GarfishHMRPlugin } from './plugins/fixHMR';
+import { GarfishOptionsLife } from './plugins/lifecycle';
+import { GarfishPreloadPlugin } from './plugins/preload';
+import { defaultLoadComponentOptions, getDefaultOptions } from './config';
+
+type GarfishPlugin = (context: Garfish) => interfaces.Plugin;
+
+// Fetch script and link elements
+const fetchStaticResources = (
+  appName: string,
+  loader: Loader,
+  entryManager: TemplateManager,
+) => {
+  // Get all script elements
+  const jsNodes = Promise.all(
+    entryManager
+      .findAllJsNodes()
+      .map((node) => {
+        const src = entryManager.findAttributeValue(node, 'src');
+        const type = entryManager.findAttributeValue(node, 'type');
+
+        // There should be no embedded script in the script element tag with the src attribute specified
+        if (src) {
+          const fetchUrl = transformUrl(entryManager.url, src);
+          const async = entryManager.findAttributeValue(node, 'async');
+          // Scripts with "async" attribute will make the rendering process very complicated,
+          // we have a preload mechanism, so we don’t need to deal with it.
+          return loader
+            .load<JavaScriptManager>(appName, fetchUrl)
+            .then(({ resourceManager: jsManager }) => {
+              jsManager.setDep(node);
+              jsManager.setMimeType(type);
+              jsManager.setAsyncAttribute(Boolean(async));
+              return jsManager;
+            });
+        } else if (node.children.length > 0) {
+          const code = (node.children[0] as Text).content;
+          if (code) {
+            const jsManager = new JavaScriptManager(code, '');
+            jsManager.setDep(node);
+            jsManager.setMimeType(type);
+            return jsManager;
+          }
+        }
+      })
+      .filter(Boolean),
+  );
+
+  // Get all link elements
+  const linkNodes = Promise.all(
+    entryManager
+      .findAllLinkNodes()
+      .map((node) => {
+        if (!entryManager.DOMApis.isCssLinkNode(node)) return;
+        const href = entryManager.findAttributeValue(node, 'href');
+        if (href) {
+          const fetchUrl = transformUrl(entryManager.url, href);
+          return loader
+            .load<StyleManager>(appName, fetchUrl)
+            .then(({ resourceManager: styleManager }) => {
+              styleManager.setDep(node);
+              // styleManager.setScope(appName);
+              styleManager.correctPath();
+              return styleManager;
+            });
+        }
+      })
+      .filter(Boolean),
+  );
+
+  return Promise.all([jsNodes, linkNodes]);
+};
 
 export class Garfish implements interfaces.Garfish {
-  public version = __VERSION__;
+  public hooks: Hooks;
+  public loader: Loader;
   public running = false;
+  public version = __VERSION__;
   public flag = __GARFISH_FLAG__; // A unique identifier
-  public options = getDefaultOptions();
   public channel = new EventEmitter();
-  public appInfos: Record<string, interfaces.AppInfo> = {};
-  public activeApps: Record<string, interfaces.App> = {};
+  public options = getDefaultOptions();
+  public externals: Record<string, any> = {};
+  public plugins: Array<interfaces.Plugin> = [];
   public cacheApps: Record<string, interfaces.App> = {};
+  public activeApps: Record<string, interfaces.App> = {};
+  public appInfos: Record<string, interfaces.AppInfo> = {};
   public cacheComponents: Record<string, interfaces.Component> = {};
   private loading: Record<string, Promise<any> | null> = {};
-  public plugins: Array<interfaces.Plugin> = [];
-  public loader: Loader;
-  public hooks: Hooks;
-  public externals: Record<string, any> = {};
 
   constructor(options: interfaces.Options) {
     this.hooks = new Hooks(true);
@@ -44,12 +116,10 @@ export class Garfish implements interfaces.Garfish {
 
     // init Garfish options
     this.setOptions(options);
-
     // register plugins
     options?.plugins.forEach((pluginCb) => {
       this.usePlugin(this.hooks, pluginCb, this);
     });
-
     this.hooks.lifecycle.initialize.call(this.options);
   }
 
@@ -79,7 +149,7 @@ export class Garfish implements interfaces.Garfish {
     return hooks.usePlugins(res);
   }
 
-  public setOptions(options: Partial<interfaces.Options>) {
+  setOptions(options: Partial<interfaces.Options>) {
     assert(!this.running, 'Garfish is running, can`t set options');
     if (isObject(options)) {
       this.options = deepMerge(this.options, options);
@@ -93,7 +163,7 @@ export class Garfish implements interfaces.Garfish {
     return this;
   }
 
-  public async run(options?: interfaces.Options) {
+  run(options?: interfaces.Options) {
     if (this.running) {
       // Nested scene can be repeated registration application, and basic information for the basename、domGetter、lifeCycle
       if (options.nested) {
@@ -138,18 +208,30 @@ export class Garfish implements interfaces.Garfish {
     this.setOptions(options);
 
     this.running = true;
-
     this.hooks.lifecycle.bootstrap.call(this.options);
+    return this;
   }
 
-  public registerApp(list: interfaces.AppInfo | Array<interfaces.AppInfo>) {
-    this.hooks.lifecycle.beforeRegisterApp.call(list);
+  setExternal(nameOrExtObj: string | Record<string, any>, value?: any) {
+    assert(nameOrExtObj, 'Invalid parameter.');
+    if (typeof nameOrExtObj === 'object') {
+      for (const key in nameOrExtObj) {
+        if (this.externals[key]) {
+          __DEV__ && warn(`The "${key}" will be overwritten in external.`);
+        }
+        this.externals[key] = nameOrExtObj[key];
+      }
+    } else {
+      this.externals[nameOrExtObj] = value;
+    }
+  }
 
+  registerApp(list: interfaces.AppInfo | Array<interfaces.AppInfo>) {
+    this.hooks.lifecycle.beforeRegisterApp.call(list);
     const adds = {};
     if (!Array.isArray(list)) {
       list = [list];
     }
-
     for (const info of list) {
       assert(info.name, 'Miss app.name.');
       if (this.appInfos[info.name]) {
@@ -163,62 +245,88 @@ export class Garfish implements interfaces.Garfish {
         this.appInfos[info.name] = info;
       }
     }
-
     this.hooks.lifecycle.registerApp.call(this.appInfos);
     return this;
   }
 
-  public async loadApp(
-    name: string,
-    opts: interfaces.LoadAppOptions,
-  ): Promise<interfaces.App> {
-    let appInfo = this.appInfos[name];
-
+  async loadApp(
+    appName: string,
+    options: interfaces.LoadAppOptions | string,
+  ): Promise<interfaces.App | null> {
+    let appInfo = this.appInfos[appName];
     // Does not support does not have remote resources and no registered application
     assert(
-      !(!appInfo && !opts.entry),
-      `Can't load unexpected module "${name}". Please provide the entry parameters or registered in advance of the app`,
+      !(!appInfo && !appInfo.entry),
+      `Can't load unexpected module "${appName}".` +
+        'Please provide the entry parameters or registered in advance of the app',
     );
 
-    // Pretreatment parameters, and the default cache
-    if (!appInfo) {
-      appInfo = { name, cache: true, ...opts };
-    } else {
+    // Deep clone app options
+    if (isObject(options)) {
+      const tempInfo = appInfo;
+      appInfo = deepMerge(tempInfo, options);
+    } else if (typeof options === 'string') {
+      // Garfish.loadApp('appName', 'https://xxx.html');
       appInfo = {
-        cache: true,
-        ...appInfo,
-        ...opts,
+        name: appName,
+        entry: options,
+        domGetter: () => document.createElement('div'),
       };
     }
 
     const asyncLoadProcess = async () => {
-      // let AppConstructor = null;
-      //  Return not undefined type data directly to end loading
+      // Return not undefined type data directly to end loading
       const stopLoad = await this.hooks.lifecycle.beforeLoad.promise(appInfo);
       if (stopLoad === false) {
-        warn(`Load ${name} application is terminated by beforeLoad`);
+        warn(`Load ${appName} application is terminated by beforeLoad.`);
         return null;
       }
-
       // Existing cache caching logic
-      let result = null;
-      const cacheApp = this.cacheApps[name];
+      let appInstance = null;
+      const cacheApp = this.cacheApps[appName];
       if (appInfo.cache && cacheApp) {
-        result = cacheApp;
+        appInstance = cacheApp;
       } else {
         try {
-          const {
-            manager,
-            isHtmlMode,
-            resources,
-          } = await this.loader.loadAppSources(appInfo);
+          let isHtmlMode, fakeEntryManager;
+          const resources = { js: [], link: [] }; // Default resources
+          const { resourceManager: entryManager } = await this.loader.load(
+            appName,
+            transformUrl(location.href, appInfo.entry),
+          );
+
+          // Html entry
+          if (entryManager instanceof TemplateManager) {
+            isHtmlMode = true;
+            const [js, link] = await fetchStaticResources(
+              appName,
+              this.loader,
+              entryManager,
+            );
+            resources.js = js;
+            resources.link = link;
+          } else if (entryManager instanceof JavaScriptManager) {
+            // Js entry
+            isHtmlMode = false;
+            const mockTemplateCode = `<script src="${entryManager.url}"></script>`;
+            fakeEntryManager = new TemplateManager(
+              mockTemplateCode,
+              entryManager.url,
+            );
+            resources.js = [entryManager];
+          } else {
+            // No other types of entrances are currently supported
+            error(`Entrance wrong type of resource of "${appName}"`);
+          }
+
+          const manager = fakeEntryManager || entryManager;
+          // Call lifecycle
           this.hooks.lifecycle.processResource.call(
             appInfo,
             manager,
             resources,
           );
-
-          result = new App(
+          appInstance = new App(
             this,
             appInfo,
             manager,
@@ -226,45 +334,50 @@ export class Garfish implements interfaces.Garfish {
             isHtmlMode,
             this.options.customLoader,
           );
-          this.cacheApps[name] = result;
+          this.cacheApps[appName] = appInstance;
         } catch (e) {
           __DEV__ && error(e);
           this.hooks.lifecycle.errorLoadApp.call(appInfo, e);
         } finally {
-          this.loading[name] = null;
+          this.loading[appName] = null;
         }
       }
-      this.hooks.lifecycle.afterLoad.call(appInfo, result);
-      return result;
+      this.hooks.lifecycle.afterLoad.call(appInfo, appInstance);
+      return appInstance;
     };
 
-    if (!appInfo.cache || !this.loading[name]) {
-      this.loading[name] = asyncLoadProcess();
+    if (!appInfo.cache || !this.loading[appName]) {
+      this.loading[appName] = asyncLoadProcess();
     }
-    return this.loading[name];
+    return this.loading[appName];
   }
 
-  public async loadComponent(
+  async loadComponent(
     name: string,
     options: interfaces.LoadComponentOptions,
   ): Promise<interfaces.Component> {
-    const opts: interfaces.LoadComponentOptions = {
-      ...defaultLoadComponentOptions,
-      ...options,
-    };
-    const nameWithVersion = opts?.version ? `${name}@${opts?.version}` : name;
+    options = deepMerge(defaultLoadComponentOptions, options || ({} as any));
+    const nameWithVersion = options?.version
+      ? `${name}@${options.version}`
+      : name;
     const asyncLoadProcess = async () => {
       // Existing cache caching logic
       let result = null;
       const cacheComponents = this.cacheComponents[nameWithVersion];
-      if (opts.cache && cacheComponents) {
+      if (options.cache && cacheComponents) {
         result = cacheComponents;
       } else {
-        const manager = (await this.loader.load(
-          opts?.url,
-        )) as interfaces.JsResource;
+        assert(
+          options.url,
+          `Missing url for loading "${name}" micro component`,
+        );
+
+        const { resourceManager: manager } = await this.loader.loadComponent<
+          ComponentManager
+        >(name, options.url);
+
         try {
-          result = new Component(this, { name, ...opts }, manager);
+          result = new Component(this, { name, ...options }, manager);
           this.cacheComponents[nameWithVersion] = result;
         } catch (e) {
           __DEV__ && error(e);
@@ -275,23 +388,9 @@ export class Garfish implements interfaces.Garfish {
       return result;
     };
 
-    if (!opts.cache || !this.loading[nameWithVersion]) {
+    if (!options.cache || !this.loading[nameWithVersion]) {
       this.loading[nameWithVersion] = asyncLoadProcess();
     }
     return this.loading[nameWithVersion];
-  }
-
-  public setExternal(nameOrExtObj: string | Record<string, any>, value?: any) {
-    assert(nameOrExtObj, 'Invalid parameter.');
-    if (typeof nameOrExtObj === 'object') {
-      for (const key in nameOrExtObj) {
-        if (this.externals[key]) {
-          __DEV__ && warn(`The "${key}" will be overwritten in external.`);
-        }
-        this.externals[key] = nameOrExtObj[key];
-      }
-    } else {
-      this.externals[nameOrExtObj] = value;
-    }
   }
 }
