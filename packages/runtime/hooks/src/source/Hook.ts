@@ -25,7 +25,7 @@ class Hook {
   name: any;
   private taps: any[];
   private interceptors: any[];
-  private _call: (...args: any[]) => any;
+  public _call: any;
   call: (...args: any[]) => any;
   _callAsync: (...args: any[]) => any;
   _promise: (...args: any[]) => any;

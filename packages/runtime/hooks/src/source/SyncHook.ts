@@ -1,5 +1,5 @@
-import Hook from './Hook';
-import HookCodeFactory from './HookCodeFactory';
+import Hook from '../Hook';
+import HookCodeFactory from '../HookCodeFactory';
 
 class SyncHookCodeFactory extends HookCodeFactory {
   content({ onError, onDone, rethrowIfPossible }) {
@@ -26,7 +26,7 @@ const COMPILE = function (options) {
   return factory.create(options);
 };
 
-export function SyncHook(args = [], name = undefined) {
+export function SyncHook(args = [], name = undefined): SyncHook {
   const hook = new Hook(args, name);
   hook.constructor = SyncHook;
   hook.tapAsync = TAP_ASYNC;

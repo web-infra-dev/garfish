@@ -4,12 +4,7 @@ import {
   HtmlResource as HtmlResourceInterfaces,
   JsResource as JsResourceInterfaces,
 } from '../module/source';
-import {
-  SyncHook,
-  AsyncSeriesBailHook,
-  AsyncParallelBailHook,
-  AsyncSeriesHook,
-} from '@garfish/hooks';
+import { SyncHook, AsyncSeriesBailHook } from '@garfish/hooks';
 import { Garfish } from '../garfish';
 import { Loader } from '../module/loader';
 import { EventEmitter } from 'events';

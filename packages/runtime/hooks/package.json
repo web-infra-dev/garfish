@@ -26,8 +26,8 @@
     "!lib/__tests__",
     "index.d.ts"
   ],
-  "main": "./src/source/index.js",
-  "module": "./src/source/index.js",
+  "main": "./src/index.js",
+  "module": "./src/index.js",
   "types": "./index.d.ts",
   "browser": {
     "util": "./lib/util-browser.js"
