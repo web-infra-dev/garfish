@@ -95,11 +95,11 @@ export default function BrowserVm() {
               sandboxConfig?.snapshot === false,
             protectVariable: [
               ...Garfish?.options?.protectVariable,
-              ...appInfo?.protectVariable,
+              ...(appInfo.protectVariable || []),
             ],
             insulationVariable: [
               ...Garfish?.options?.insulationVariable,
-              ...appInfo?.insulationVariable,
+              ...(appInfo.insulationVariable || []),
             ],
             modules: sandboxConfig.modules || {},
             hooks: sandboxConfig.hooks || {},

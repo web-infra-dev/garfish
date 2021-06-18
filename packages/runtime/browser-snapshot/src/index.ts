@@ -44,7 +44,10 @@ export default function BrowserSnapshot(op?: BrowserConfig) {
         if (sandboxConfig === false) config.open = false;
         if (sandboxConfig) {
           config.open = sandboxConfig?.open && sandboxConfig?.snapshot === true;
-          config.protectVariable = Garfish?.options?.protectVariable || [];
+          config.protectVariable = [
+            ...Garfish?.options?.protectVariable,
+            ...(appInfo.protectVariable || []),
+          ];
         }
         options.openBrowser = config.open;
         if (!config.open) return;
