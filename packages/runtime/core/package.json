@@ -1,6 +1,6 @@
 {
   "name": "@garfish/core",
-  "version": "0.0.9-alpha.12",
+  "version": "0.0.9-alpha.13",
   "description": "core module.",
   "keywords": [
     "garfish",
@@ -32,8 +32,8 @@
     ]
   },
   "dependencies": {
-    "@garfish/hooks": "^0.0.9-alpha.10",
-    "@garfish/utils": "^0.0.9-alpha.12",
+    "@garfish/hooks": "^0.0.9-alpha.13",
+    "@garfish/utils": "^0.0.9-alpha.13",
     "himalaya": "^1.1.0"
   },
   "publishConfig": {
