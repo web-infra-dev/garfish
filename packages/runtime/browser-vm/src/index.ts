@@ -58,69 +58,71 @@ export default function BrowserVm() {
       name: 'browser-vm',
       version: __VERSION__,
 
-      bootstrap() {
+      afterLoad(appInfo, appInstance) {
         // Support for instance configuration, to ensure that old versions compatible
-        const sandboxConfig = Garfish?.options?.sandbox;
+        const sandboxConfig = appInfo.sandbox || Garfish?.options?.sandbox;
         if (sandboxConfig === false) {
           config.openSandbox = false;
         }
 
         if (sandboxConfig) {
-          console.log(sandboxConfig, 'sandboxConfig');
           config = {
+            modules: sandboxConfig.modules || [],
             openSandbox:
               sandboxConfig?.open && sandboxConfig?.snapshot === false,
-            protectVariable: () => Garfish?.options?.protectVariable,
-            insulationVariable: () => Garfish?.options?.insulationVariable,
+            protectVariable: () => [
+              ...Garfish?.options?.protectVariable,
+              ...(appInfo.protectVariable || []),
+            ],
+            insulationVariable: () => [
+              ...Garfish?.options?.insulationVariable,
+              ...(appInfo.insulationVariable || []),
+            ],
           };
         }
         options.openVm = config.openSandbox;
-      },
 
-      afterLoad(appInfo, appInstance) {
-        if (!config.openSandbox || !appInstance || appInstance.vmSandbox) {
-          return;
+        if (!config.openSandbox) return;
+        if (appInstance) {
+          if (appInstance.vmSandbox) return;
+
+          // webpack
+          const webpackAttrs: PropertyKey[] = [
+            'onerror',
+            'webpackjsonp',
+            '__REACT_ERROR_OVERLAY_GLOBAL_HOOK__',
+          ];
+          if (__DEV__) {
+            webpackAttrs.push('webpackHotUpdate');
+          }
+
+          // Create sandbox instance
+          const sandbox = new Sandbox({
+            openSandbox: true,
+            namespace: appInfo.name,
+            strictIsolation: appInstance.strictIsolation,
+            el: () => appInstance.htmlNode,
+            protectVariable: config.protectVariable,
+            insulationVariable: () => {
+              return webpackAttrs.concat(config.insulationVariable() || []);
+            },
+            modules: [
+              () => ({
+                override: appInstance.getExecScriptEnv(false) || {},
+              }),
+            ],
+          });
+
+          appInstance.vmSandbox = sandbox;
+          appInstance.global = sandbox.global;
+          // Rewrite `app.execScript`
+          appInstance.execScript = (code, env, url, options) => {
+            sandbox.execScript(code, env, url, options);
+          };
+
+          // Use `Garfish.loader` instead of the `sandbox.loader`
+          sandbox.loader = Garfish.loader;
         }
-        // Create sandbox instance
-        const sandbox = new Sandbox({
-          openSandbox: true,
-          namespace: appInfo.name,
-          el: () => appInstance.htmlNode,
-          strictIsolation: appInstance.strictIsolation,
-          protectVariable: config.protectVariable,
-          insulationVariable: () => {
-            // webpack
-            const webpackAttrs: PropertyKey[] = [
-              'onerror',
-              'webpackjsonp',
-              '__REACT_ERROR_OVERLAY_GLOBAL_HOOK__',
-            ];
-            if (__DEV__) {
-              webpackAttrs.push('webpackHotUpdate');
-            }
-            return webpackAttrs.concat(config.insulationVariable() || []);
-          },
-          modules: [
-            () => ({
-              override: appInstance.getExecScriptEnv(false) || {},
-            }),
-          ],
-          // hooks: {
-          //   onAppendNode(sandbox, rootEl, el, tag, oldEl) {
-          //     if (sourceNode(tag)) {
-          //       const url = (oldEl as any)?.src || (oldEl as any)?.href;
-          //       url && appInstance.sourceList.push(url);
-          //     }
-          //   },
-          // },
-        });
-
-        appInstance.vmSandbox = sandbox;
-        appInstance.global = sandbox.global;
-        // Rewrite `app.execScript`
-        appInstance.execScript = (code, env, url, options) => {
-          sandbox.execScript(code, env, url, options);
-        };
       },
     };
     return options;

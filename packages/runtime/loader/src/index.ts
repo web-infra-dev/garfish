@@ -19,7 +19,7 @@ export type Manager =
   | ComponentManager
   | JavaScriptManager;
 
-interface LoaderOptions {
+export interface LoaderOptions {
   maxSize?: number; // The unit is "b"
 }
 
@@ -149,10 +149,12 @@ export class Loader {
     const requestConfig = mergeConfig(this, url);
     const resOpts = this.lifecycle.beforeLoad.run({ url, requestConfig });
 
-    loadingList[url] = request(resOpts.url, resOpts.requestConfig).then(
-      async ({ code, mimeType, result }) => {
-        let managerCtor, fileType: FileType;
+    loadingList[url] = request(resOpts.url, resOpts.requestConfig)
+      .finally(() => {
         loadingList[url] = null;
+      })
+      .then(async ({ code, mimeType, result }) => {
+        let managerCtor, fileType: FileType;
 
         if (isComponent) {
           fileType = 'component';
@@ -187,8 +189,7 @@ export class Loader {
 
         appCacheContainer.set(url, data.value, fileType);
         return copyResult(data.value as any);
-      },
-    );
+      });
     return loadingList[url] as any;
   }
 }

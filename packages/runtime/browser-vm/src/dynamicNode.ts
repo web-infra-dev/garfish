@@ -125,113 +125,120 @@ function addDynamicScript(
   return createScriptComment(src, code);
 }
 
-const makeElInjector = (current: Function, method: string) => {
-  return function () {
-    const el = method === 'insertAdjacentElement' ? arguments[1] : arguments[0];
+let hasInject = false;
 
-    // 过滤 css 中的相对路径
-    if (this?.tagName?.toLowerCase() === 'style') {
-      const baseUrl = el.GARFISH_SANDBOX?.options.baseUrl;
-      if (baseUrl) {
-        this.textContent = transformCssUrl(baseUrl, el.textContent);
-        return current.apply(this, arguments);
-      }
-    }
+export function makeElInjector() {
+  if (hasInject) return;
+  hasInject = true;
+  const makeElInjector = (current: Function, method: string) => {
+    return function () {
+      const el =
+        method === 'insertAdjacentElement' ? arguments[1] : arguments[0];
 
-    if (el) {
-      const sandbox = sandboxMap.get(el);
-
-      if (sandbox) {
-        let newNode;
-        const rootEl = rootElm(sandbox);
-        const append = rawElementMethods['appendChild'];
-        const tag = el.tagName && el.tagName.toLowerCase();
-        const { baseUrl } = sandbox.options;
-
-        // 转换为绝对路径
-        if (isResourceNode(tag)) {
-          const src = el.getAttribute('src');
-          const href = el.getAttribute('href');
-          if (src) {
-            el.src = toResolveUrl(sandbox, src);
-          } else if (href) {
-            el.href = toResolveUrl(sandbox, href);
-          }
+      // 过滤 css 中的相对路径
+      if (this?.tagName?.toLowerCase() === 'style') {
+        const baseUrl = el.GARFISH_SANDBOX?.options.baseUrl;
+        if (baseUrl) {
+          this.textContent = transformCssUrl(baseUrl, el.textContent);
+          return current.apply(this, arguments);
         }
+      }
 
-        if (tag === 'style') {
-          newNode = el;
-          if (baseUrl)
-            newNode.textContent = transformCssUrl(baseUrl, el.textContent);
-        } else if (tag === 'script') {
-          newNode = addDynamicScript(sandbox, el);
-        } else if (tag === 'link') {
-          if (el.rel === 'stylesheet' && el.href) {
-            newNode = addDynamicLink(el, (code) => {
-              // link 标签转为 style 标签，修正 url
-              code = transformCssUrl(el.href, code);
-              append.call(rootEl, createStyleNode(code));
-            });
-          } else {
+      if (el) {
+        const sandbox = sandboxMap.get(el);
+
+        if (sandbox) {
+          let newNode;
+          const rootEl = rootElm(sandbox);
+          const append = rawElementMethods['appendChild'];
+          const tag = el.tagName && el.tagName.toLowerCase();
+          const { baseUrl } = sandbox.options;
+
+          // 转换为绝对路径
+          if (isResourceNode(tag)) {
+            const src = el.getAttribute('src');
+            const href = el.getAttribute('href');
+            if (src) {
+              el.src = toResolveUrl(sandbox, src);
+            } else if (href) {
+              el.href = toResolveUrl(sandbox, href);
+            }
+          }
+
+          if (tag === 'style') {
             newNode = el;
-          }
-        } else if (__DEV__) {
-          // 沙箱内部创建的 iframe 标签上的 window 都用当前沙箱的代理 window
-          if (tag === 'iframe' && typeof el.onload === 'function') {
-            def(el, 'contentWindow', sandbox.global);
-            def(el, 'contentDocument', sandbox.global.document);
-          }
-        }
-
-        // sandbox.callHook('onAppendNode', [sandbox, rootEl, newNode, tag, el]);
-
-        if (newNode) {
-          // 如果是 insertBefore、insertAdjacentElement 方法
-          // 添加到容器内时不需要进行再次改写
-          if (
-            isInsertMethod(method) &&
-            rootEl.contains(this) &&
-            arguments[1]?.parentNode === this
-          ) {
-            return current.apply(this, arguments);
-          }
-
-          if (tag === 'style' || tag === 'link') {
-            return append.call(
-              findTarget(rootEl, ['head', 'div[__GarfishMockHead__]']),
-              newNode,
-            );
+            if (baseUrl)
+              newNode.textContent = transformCssUrl(baseUrl, el.textContent);
+          } else if (tag === 'script') {
+            newNode = addDynamicScript(sandbox, el);
+          } else if (tag === 'link') {
+            if (el.rel === 'stylesheet' && el.href) {
+              newNode = addDynamicLink(el, (code) => {
+                // link 标签转为 style 标签，修正 url
+                code = transformCssUrl(el.href, code);
+                append.call(rootEl, createStyleNode(code));
+              });
+            } else {
+              newNode = el;
+            }
+          } else if (__DEV__) {
+            // 沙箱内部创建的 iframe 标签上的 window 都用当前沙箱的代理 window
+            if (tag === 'iframe' && typeof el.onload === 'function') {
+              def(el, 'contentWindow', sandbox.global);
+              def(el, 'contentDocument', sandbox.global.document);
+            }
           }
 
-          if (tag === 'script') {
-            return append.call(
-              findTarget(rootEl, ['body', 'div[__GarfishMockBody__]']),
-              newNode,
-            );
+          // sandbox.callHook('onAppendNode', [sandbox, rootEl, newNode, tag, el]);
+
+          if (newNode) {
+            // 如果是 insertBefore、insertAdjacentElement 方法
+            // 添加到容器内时不需要进行再次改写
+            if (
+              isInsertMethod(method) &&
+              rootEl.contains(this) &&
+              arguments[1]?.parentNode === this
+            ) {
+              return current.apply(this, arguments);
+            }
+
+            if (tag === 'style' || tag === 'link') {
+              return append.call(
+                findTarget(rootEl, ['head', 'div[__GarfishMockHead__]']),
+                newNode,
+              );
+            }
+
+            if (tag === 'script') {
+              return append.call(
+                findTarget(rootEl, ['body', 'div[__GarfishMockBody__]']),
+                newNode,
+              );
+            }
+            return append.call(rootEl, newNode);
           }
-          return append.call(rootEl, newNode);
         }
       }
-    }
-    return current.apply(this, arguments);
+      return current.apply(this, arguments);
+    };
   };
-};
 
-// 初始化
-if (typeof window.Element === 'function') {
-  for (const method of mountElementMethods) {
-    const nativeMethod = window.Element.prototype[method];
-    if (typeof nativeMethod !== 'function' || nativeMethod[__domWrapper__]) {
-      continue;
+  // 初始化
+  if (typeof window.Element === 'function') {
+    for (const method of mountElementMethods) {
+      const nativeMethod = window.Element.prototype[method];
+      if (typeof nativeMethod !== 'function' || nativeMethod[__domWrapper__]) {
+        continue;
+      }
+
+      rawElementMethods[method] = nativeMethod;
+      const wrapper = makeElInjector(nativeMethod, method);
+      wrapper[__domWrapper__] = true;
+      window.Element.prototype[method] = wrapper;
     }
-
-    rawElementMethods[method] = nativeMethod;
-    const wrapper = makeElInjector(nativeMethod, method);
-    wrapper[__domWrapper__] = true;
-    window.Element.prototype[method] = wrapper;
   }
-}
 
-MutationObserver.prototype.observe = function () {
-  return rawObserver.apply(this, handlerParams(arguments));
-};
+  MutationObserver.prototype.observe = function () {
+    return rawObserver.apply(this, handlerParams(arguments));
+  };
+}

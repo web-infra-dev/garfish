@@ -111,29 +111,33 @@ export class Garfish implements interfaces.Garfish {
   private loading: Record<string, Promise<any> | null> = {};
 
   constructor(options: interfaces.Options) {
-    this.hooks = new Hooks();
+    this.hooks = new Hooks(false);
     this.loader = new Loader();
 
     // init Garfish options
     this.setOptions(options);
     // register plugins
     options?.plugins.forEach((pluginCb) => {
-      this.usePlugin(pluginCb, this);
+      this.usePlugin(this.hooks, pluginCb, this);
     });
     this.hooks.lifecycle.initialize.call(this.options);
   }
 
   private injectOptionalPlugin(options?: interfaces.Options) {
-    const defaultPlugin = [GarfishHMRPlugin(), GarfishOptionsLife()];
-    if (!options.disablePreloadApp) {
-      defaultPlugin.push(GarfishPreloadPlugin());
-    }
+    const defaultPlugin = [GarfishHMRPlugin(), GarfishOptionsLife(options)];
+    // Preload plugin
+    if (!options.disablePreloadApp) defaultPlugin.push(GarfishPreloadPlugin());
+
     defaultPlugin.forEach((pluginCb) => {
-      this.usePlugin(pluginCb, this);
+      this.usePlugin(this.hooks, pluginCb, this);
     });
   }
 
-  public usePlugin(plugin: GarfishPlugin, ...args: Array<any>) {
+  public usePlugin(
+    hooks,
+    plugin: (context: Garfish) => interfaces.Plugin,
+    ...args: Array<any>
+  ) {
     assert(typeof plugin === 'function', 'Plugin must be a function.');
     if ((plugin as any)._registered) {
       __DEV__ && warn('Please do not register the plugin repeatedly.');
@@ -142,7 +146,7 @@ export class Garfish implements interfaces.Garfish {
     (plugin as any)._registered = true;
     const res = plugin.apply(this, [this, ...args]);
     this.plugins.push(res);
-    return this.hooks.usePlugins(res);
+    return hooks.usePlugins(res);
   }
 
   setOptions(options: Partial<interfaces.Options>) {
@@ -161,27 +165,48 @@ export class Garfish implements interfaces.Garfish {
 
   run(options?: interfaces.Options) {
     if (this.running) {
+      // Nested scene can be repeated registration application, and basic information for the basename、domGetter、lifeCycle
+      if (options.nested) {
+        const hooks = new Hooks(true);
+        this.usePlugin(hooks, GarfishOptionsLife(options));
+        [
+          'autoRefreshApp',
+          'disableStatistics',
+          'disablePreloadApp',
+          'sandbox',
+        ].forEach((key) => {
+          if (key in options)
+            __DEV__ &&
+              error(`Nested scene does not support the configuration ${key}`);
+        });
+
+        this.registerApp(
+          options.apps?.map((app) => {
+            return {
+              ...app,
+              basename: options?.basename || this.options.basename,
+              domGetter: options?.domGetter || this.options.domGetter,
+              hooks: hooks,
+            };
+          }),
+        );
+        return this;
+      }
       __DEV__ &&
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
-      // Nested scene can be repeated registration application, and basic information for the basename
-      this.registerApp(
-        options.apps?.map((app) => {
-          return {
-            ...app,
-            basename: options?.basename || this.options.basename,
-            domGetter: options?.domGetter || this.options.domGetter,
-          };
-        }),
-      );
-      return this;
     }
-    this.hooks.lifecycle.beforeBootstrap.call(this.options);
+
+    this.injectOptionalPlugin(options);
+
     // register plugins
     options?.plugins?.forEach((pluginCb) => {
-      this.usePlugin(pluginCb, this);
+      this.usePlugin(this.hooks, pluginCb, this);
     });
-    this.injectOptionalPlugin(options);
+
+    this.hooks.lifecycle.beforeBootstrap.call(this.options);
+
     this.setOptions(options);
+
     this.running = true;
     this.hooks.lifecycle.bootstrap.call(this.options);
     return this;

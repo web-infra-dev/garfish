@@ -1,3 +1,4 @@
+import { Loader } from '@garfish/loader';
 import {
   warn,
   hasOwn,
@@ -21,6 +22,7 @@ import { listenerModule } from './modules/eventListener';
 import { timeoutModule, intervalModule } from './modules/timer';
 import { optimizeMethods, createFakeObject } from './utils';
 import { __garfishGlobal__, GAR_OPTIMIZE_NAME } from './symbolTypes';
+import { makeElInjector } from './dynamicNode';
 import {
   createHas,
   createGetter,
@@ -62,6 +64,7 @@ export class Sandbox {
   public id = id++;
   public type = 'vm';
   public closed = true;
+  public loader: Loader;
   public initComplete = false;
   public global?: Window;
   public options: SandboxOptions;
@@ -92,7 +95,8 @@ export class Sandbox {
         )
       : deepMerge({}, options);
 
-    const { protectVariable, insulationVariable } = this.options;
+    const { loaderOptions, protectVariable, insulationVariable } = this.options;
+    this.loader = new Loader(loaderOptions);
     this.isProtectVariable = makeMap(protectVariable?.() || []);
     this.isInsulationVariable = makeMap(insulationVariable?.() || []);
 
@@ -102,6 +106,8 @@ export class Sandbox {
       recoverList: [],
       overrideList: {},
     };
+    // inject Global capture
+    makeElInjector();
     // The default startup sandbox
     this.start();
   }

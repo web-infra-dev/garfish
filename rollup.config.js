@@ -134,12 +134,11 @@ function extractTsDeclare() {
       );
 
       if (!fs.existsSync(tsTypeDir)) return;
+      fs.copySync(
+        path.resolve(pkgDir, tsTypeDir),
+        path.resolve(pkgDir, `dist/`),
+      );
       setTimeout(() => {
-        fs.copySync(
-          path.resolve(pkgDir, tsTypeDir),
-          path.resolve(pkgDir, `dist/`),
-        );
-
         const args = require('minimist')(process.argv.slice(2));
         const watch = args.watch || args.w;
         if (!watch) {
@@ -147,7 +146,7 @@ function extractTsDeclare() {
           fs.remove(path.resolve(pkgDir, `dist/dist`));
           fs.remove(path.resolve(pkgDir, `temp`));
         }
-      }, 1000);
+      }, 10000);
     },
   };
 }
@@ -173,18 +172,15 @@ function createConfig(format, output, plugins = []) {
   }
 
   // 有可能引用外部包，但是外部包有可能没有 esm 版本
-  const nodePlugins =
-    format !== 'cjs'
-      ? [
-          require('@rollup/plugin-node-resolve').nodeResolve({
-            // console 这个模块和原生的有重合
-            preferBuiltins: false,
-          }),
-          require('@rollup/plugin-commonjs')({
-            sourceMap: false,
-          }),
-        ]
-      : [];
+  const nodePlugins = [
+    require('@rollup/plugin-node-resolve').nodeResolve({
+      // console 这个模块和原生的有重合
+      preferBuiltins: false,
+    }),
+    require('@rollup/plugin-commonjs')({
+      sourceMap: false,
+    }),
+  ];
 
   const tsPlugin = ts({
     check: process.env.CHECK !== 'false',

@@ -1,6 +1,6 @@
 {
   "name": "@garfish/hooks",
-  "version": "0.0.8",
+  "version": "0.0.9-alpha.13",
   "author": "zhoushaw",
   "description": "fork from tapable",
   "license": "MIT",
@@ -22,15 +22,13 @@
   },
   "files": [
     "lib",
+    "src",
     "!lib/__tests__",
-    "tapable.d.ts"
+    "index.d.ts"
   ],
   "main": "./src/index.js",
   "module": "./src/index.js",
-  "types": "./src/index.d.ts",
-  "browser": {
-    "util": "./lib/util-browser.js"
-  },
+  "types": "./index.d.ts",
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"

@@ -25,14 +25,23 @@ export namespace interfaces {
   export interface App extends AppInterface {}
   export interface Component {}
 
-  export interface AppInfo {
+  export interface AppInfo
+    extends Exclude<
+      Options,
+      [
+        'apps',
+        'appID',
+        'plugins',
+        'disableStatistics',
+        'disablePreloadApp',
+        'plugins',
+      ]
+    > {
     name: string;
     entry: string;
-    basename?: string;
     cache?: boolean; // Whether the cache
     activeWhen?: string | ((path: string) => boolean);
-    props?: Record<string, any>;
-    domGetter?: DomGetter;
+    hooks?: Hooks;
   }
 
   export type ComponentParser = (
@@ -94,6 +103,7 @@ export namespace interfaces {
     disableStatistics?: boolean;
     disablePreloadApp?: boolean;
     domGetter?: DomGetter;
+    nested?: boolean;
   }
 
   export interface HooksLifecycle {

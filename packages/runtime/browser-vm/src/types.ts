@@ -1,4 +1,5 @@
 import { Sandbox } from './sandbox';
+import { LoaderOptions } from '@garfish/loader';
 
 export type FakeWindow = Window & Record<PropertyKey, any>;
 export type Module = (sandbox: Sandbox) => OverridesData;
@@ -22,6 +23,7 @@ export interface SandboxOptions {
   openSandbox?: boolean;
   strictIsolation?: boolean;
   modules?: Array<Module>;
+  loaderOptions?: LoaderOptions;
   el?: () => Element | ShadowRoot;
   protectVariable?: () => Array<PropertyKey>;
   insulationVariable?: () => Array<PropertyKey>;

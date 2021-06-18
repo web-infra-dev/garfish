@@ -296,7 +296,7 @@ export function deepMerge<K, T>(o: K, n: T, dp?: boolean) {
 
 export function getType(val) {
   const type = Object.prototype.toString.call(val);
-  return type.slice(1, type.length - 8).toLowerCase();
+  return type.slice(8, type.length - 1).toLowerCase();
 }
 
 export function inBrowser() {
