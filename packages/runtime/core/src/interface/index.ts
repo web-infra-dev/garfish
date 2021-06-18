@@ -73,8 +73,8 @@ export namespace interfaces {
     hooks: Hooks;
     loadApp(
       name: string,
-      opts: interfaces.LoadAppOptions,
-    ): Promise<interfaces.App>;
+      opts: Partial<interfaces.LoadAppOptions> | string,
+    ): Promise<interfaces.App | null>;
     loadComponent(
       name: string,
       opts: interfaces.LoadComponentOptions,
