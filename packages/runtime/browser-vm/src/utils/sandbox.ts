@@ -1,72 +1,21 @@
-import {
-  noop,
-  warn,
-  error,
-  hasOwn,
-  isObject,
-  rawObject,
-  rawDocument,
-  transformUrl,
-} from '@garfish/utils';
+import { hasOwn, isObject, transformUrl } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 import { __garfishGlobal__ } from '../symbolTypes';
-import { FakeWindow, Hooks, SandboxOptions } from '../types';
 
-export const hookNames: Array<keyof Hooks> = [
-  'onerror',
-  'onclose',
-  'onstart',
-  'onAppendNode',
-  'onClearEffect',
-  'onInvokeAfter',
-  'onInvokeBefore',
-  'onCreateContext',
-];
-
-// 容器节点，因为时刻变化着，随用随取
+// Container node, because it changes all the time, take it as you use it
 export function rootElm(sandbox: Sandbox) {
   const container = sandbox && (sandbox.options.el as any);
   return container && (container() as Element);
 }
 
-export function initContainer(opts: SandboxOptions) {
-  const el = opts.el;
-  if (typeof el === 'function') {
-    opts.el = () => {
-      const elm = el();
-      return isObject(elm) ? elm : null;
-    };
-  } else if (typeof el === 'string') {
-    opts.el = () => document.querySelector(el);
-  } else {
-    opts.el = () => null;
-  }
-}
-
-export function initHooks(opts: SandboxOptions) {
-  const hooks = opts.hooks || {};
-  for (const key of hookNames) {
-    if (!hooks[key]) {
-      // prettier-ignore
-      hooks[key] = key === 'onerror'
-        ? error
-        : noop as any;
-    }
-  }
-  opts.hooks = hooks;
-}
-
-export function isModule(module: FakeWindow) {
+export function isModule(module: Window) {
   return isObject(module)
     ? // @ts-ignore
       module[__garfishGlobal__] !== undefined
     : false;
 }
 
-export function addFakeWindowType(
-  module: FakeWindow,
-  parentModule: FakeWindow,
-) {
+export function addProxyWindowType(module: Window, parentModule: Window) {
   if (!isModule(module)) {
     // @ts-ignore
     module[__garfishGlobal__] = parentModule;
@@ -133,60 +82,4 @@ export function createFakeObject(
     !propertyMap[prop] && def(prop);
   }
   return fakeObject as any;
-}
-
-export function isDataDescriptor(desc?: PropertyDescriptor) {
-  if (desc === undefined) return false;
-  return 'value' in desc || 'writable' in desc;
-}
-
-export function isAccessorDescriptor(desc?: PropertyDescriptor) {
-  if (desc === undefined) return false;
-  return 'get' in desc || 'set' in desc;
-}
-
-export function verifyDescriptor(target: any, p: PropertyKey, newValue: any) {
-  const desc = Object.getOwnPropertyDescriptor(target, p);
-  // https://tc39.es/ecma262/#sec-proxy-object-internal-methods-and-internal-slots-get-p-receiver
-  if (desc !== undefined && desc.configurable === false) {
-    if (isDataDescriptor(desc) && desc.writable === false) {
-      // https://tc39.es/ecma262/#sec-object.is
-      if (!Object.is(newValue, desc.value)) {
-        if (__DEV__) {
-          // prettier-ignore
-          warn(`property "${String(p)}" is non-configurable and non-writable.`);
-        }
-        return 1;
-      }
-    } else if (isAccessorDescriptor(desc) && desc.get === undefined) {
-      return 2;
-    }
-  }
-  return 0;
-}
-
-export function verifySetDescriptor(
-  target: any,
-  p: PropertyKey,
-  newValue: any,
-) {
-  const desc = Object.getOwnPropertyDescriptor(target, p);
-  // https://tc39.es/ecma262/#sec-proxy-object-internal-methods-and-internal-slots-set-p-v-receiver
-  if (desc !== undefined && desc.configurable === false) {
-    if (isDataDescriptor(desc) && desc.writable === false) {
-      // https://tc39.es/ecma262/#sec-object.is
-      if (!Object.is(newValue, desc.value)) {
-        if (__DEV__) {
-          // prettier-ignore
-          warn(`property "${String(p)}" is non-configurable and non-writable.`);
-        }
-        return 1;
-      } else {
-        return 3;
-      }
-    } else if (isAccessorDescriptor(desc) && desc.set === undefined) {
-      return 2;
-    }
-  }
-  return 0;
 }

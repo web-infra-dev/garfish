@@ -57,5 +57,6 @@ export class StyleManager {
     cloned.url = this.url;
     cloned.styleCode = this.styleCode;
     cloned.depsStack = new Set(this.depsStack);
+    return cloned;
   }
 }

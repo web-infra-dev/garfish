@@ -54,16 +54,6 @@ function dispatchEvent(el: Element, type: string) {
   });
 }
 
-function filterRequestConfig(
-  url: string,
-  config: Sandbox['options']['requestConfig'],
-): RequestInit {
-  if (typeof config === 'function') {
-    config = config(url);
-  }
-  return { mode: 'cors', ...config };
-}
-
 function processResponse(res: Response) {
   if (res.status >= 400) {
     throw new Error(`"${res.url}" load failed with status "${res.status}"`);
@@ -71,18 +61,12 @@ function processResponse(res: Response) {
   return res.text();
 }
 
-function addDynamicLink(
-  el: HTMLLinkElement,
-  config: Sandbox['options']['requestConfig'],
-  callback: (code: string) => void,
-) {
+function addDynamicLink(el: HTMLLinkElement, callback: (code: string) => void) {
   const { href, type } = el;
 
   if (!type || isCss(parseContentType(type))) {
     if (href) {
-      const requestConfig = filterRequestConfig(href, config);
-
-      fetch(href, requestConfig)
+      fetch(href, { mode: 'cors' })
         .then(processResponse)
         .then((code) => {
           dispatchEvent(el, 'load');
@@ -101,11 +85,7 @@ function addDynamicLink(
 }
 
 // 动态添加的 script 标签
-function addDynamicScript(
-  sandbox: Sandbox,
-  config: Sandbox['options']['requestConfig'],
-  el: HTMLScriptElement,
-) {
+function addDynamicScript(sandbox: Sandbox, el: HTMLScriptElement) {
   const { src, type } = el;
   const code = el.textContent || el.text || '';
 
@@ -114,9 +94,7 @@ function addDynamicScript(
 
     // The SRC higher priority
     if (src) {
-      const requestConfig = filterRequestConfig(src, config);
-
-      fetch(src, requestConfig)
+      fetch(src, { mode: 'cors' })
         .then(processResponse)
         .then((code) => {
           dispatchEvent(el, 'load');
@@ -168,7 +146,7 @@ const makeElInjector = (current: Function, method: string) => {
         const rootEl = rootElm(sandbox);
         const append = rawElementMethods['appendChild'];
         const tag = el.tagName && el.tagName.toLowerCase();
-        const { baseUrl, requestConfig } = sandbox.options;
+        const { baseUrl } = sandbox.options;
 
         // 转换为绝对路径
         if (isResourceNode(tag)) {
@@ -186,10 +164,10 @@ const makeElInjector = (current: Function, method: string) => {
           if (baseUrl)
             newNode.textContent = transformCssUrl(baseUrl, el.textContent);
         } else if (tag === 'script') {
-          newNode = addDynamicScript(sandbox, requestConfig, el);
+          newNode = addDynamicScript(sandbox, el);
         } else if (tag === 'link') {
           if (el.rel === 'stylesheet' && el.href) {
-            newNode = addDynamicLink(el, requestConfig, (code) => {
+            newNode = addDynamicLink(el, (code) => {
               // link 标签转为 style 标签，修正 url
               code = transformCssUrl(el.href, code);
               append.call(rootEl, createStyleNode(code));
@@ -200,12 +178,12 @@ const makeElInjector = (current: Function, method: string) => {
         } else if (__DEV__) {
           // 沙箱内部创建的 iframe 标签上的 window 都用当前沙箱的代理 window
           if (tag === 'iframe' && typeof el.onload === 'function') {
-            def(el, 'contentWindow', sandbox.context);
-            def(el, 'contentDocument', sandbox.context.document);
+            def(el, 'contentWindow', sandbox.global);
+            def(el, 'contentDocument', sandbox.global.document);
           }
         }
 
-        sandbox.callHook('onAppendNode', [sandbox, rootEl, newNode, tag, el]);
+        // sandbox.callHook('onAppendNode', [sandbox, rootEl, newNode, tag, el]);
 
         if (newNode) {
           // 如果是 insertBefore、insertAdjacentElement 方法

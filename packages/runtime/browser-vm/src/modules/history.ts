@@ -13,7 +13,7 @@ export function historyOverride() {
         : value;
     },
 
-    // __proto__ 不是一个标准的属性，暂时不做兼容
+    // "__proto__" is not a standard attribute, it is temporarily not compatible
     getPrototypeOf() {
       return fakeHistory;
     },
@@ -22,7 +22,7 @@ export function historyOverride() {
   const fakeHistoryCtor = function History() {
     throw new TypeError('Illegal constructor');
   };
-  // 避免原型链被更改产生副作用
+  // Avoid side effects of prototype chain being changed
   fakeHistoryCtor.prototype = fakeHistory;
   fakeHistoryCtor.prototype.constructor = fakeHistoryCtor;
 

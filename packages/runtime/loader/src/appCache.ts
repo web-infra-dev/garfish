@@ -4,6 +4,8 @@ const FILE_TYPES = ['js', 'css', 'template', 'component'] as const;
 
 export type FileType = typeof FILE_TYPES[number];
 
+const getObjectSize = () => {};
+
 export class AppCacheContainer {
   private maxSize: number;
   private totalSize = 0;
@@ -41,6 +43,7 @@ export class AppCacheContainer {
 
   set(url: string, data: any, type: FileType) {
     const totalSize = this.totalSize + new Blob([data]).size;
+    console.log(new Blob([data]).size, data);
     if (totalSize < this.maxSize) {
       let bufferPool = this.bufferPool(type);
       if (!bufferPool) {

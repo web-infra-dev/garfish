@@ -52,9 +52,8 @@ export function listenerOverride(_sandbox: Sandbox) {
       addEventListener: addListener.bind(window),
       removeEventListener: removeListener.bind(window),
     },
-    // document.addEventListener === window.addEventListener
-    created(context: Sandbox['context']) {
-      const fakeDocument = context.document;
+    created(global: Sandbox['global']) {
+      const fakeDocument = global.document;
       if (fakeDocument) {
         fakeDocument.addEventListener = addListener.bind(document);
         fakeDocument.removeEventListener = removeListener.bind(document);

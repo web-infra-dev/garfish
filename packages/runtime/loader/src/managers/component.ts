@@ -12,5 +12,6 @@ export class ComponentManager {
     const cloned = new this.constructor();
     cloned.url = this.url;
     cloned.componentCode = this.componentCode;
+    return cloned;
   }
 }

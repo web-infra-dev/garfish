@@ -1,19 +1,19 @@
 import { warn, hasOwn } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
-import { __windowBind__, __garfishGlobal__ } from '../symbolTypes';
+import { isEsGlobalMethods } from '../utils';
+import { __windowBind__, GAR_OPTIMIZE_NAME } from '../symbolTypes';
 import {
   bind,
-  isEsMethod,
   isConstructor,
-  verifyDescriptor,
-  verifySetDescriptor,
-} from '../utils';
+  verifyGetterDescriptor,
+  verifySetterDescriptor,
+} from './shared';
 
 // window proxy getter
 export function createGetter(sandbox: Sandbox) {
   return function (target: Window, p: PropertyKey, receiver: any) {
     let value;
-    const overrides = sandbox.overrideContext.overrides;
+    const { overrideList } = sandbox.replaceGlobalVariables;
 
     if (sandbox.isProtectVariable(p)) {
       // Don't pass the "receiver", otherwise it will cause the wrong point of this
@@ -34,10 +34,10 @@ export function createGetter(sandbox: Sandbox) {
       // After filtering out custom and native es functions, only bom and dom functions are left
       // Make judgments such as constructors for these environment-related functions to further narrow the scope of bind
       if (
-        isEsMethod(p) ||
-        hasOwn(overrides, p) ||
+        isEsGlobalMethods(p) ||
+        hasOwn(overrideList, p) ||
         isConstructor(value) ||
-        this.isExternalGlobalVariable.has(p)
+        sandbox.isExternalGlobalVariable.has(p)
       ) {
         return value;
       }
@@ -48,7 +48,7 @@ export function createGetter(sandbox: Sandbox) {
     const newValue = hasOwn(value, __windowBind__)
       ? value[__windowBind__]
       : bind(value, window);
-    const verifyResult = verifyDescriptor(target, p, newValue);
+    const verifyResult = verifyGetterDescriptor(target, p, newValue);
     if (verifyResult > 0) {
       if (verifyResult === 1) return value;
       if (verifyResult === 2) return undefined;
@@ -61,7 +61,7 @@ export function createGetter(sandbox: Sandbox) {
 // window proxy setter
 export function createSetter(sandbox: Sandbox) {
   return (target: Window, p: PropertyKey, value: unknown, receiver: any) => {
-    const verifyResult = verifySetDescriptor(
+    const verifyResult = verifySetterDescriptor(
       // prettier-ignore
       sandbox.isProtectVariable(p)
         ? window
@@ -88,11 +88,13 @@ export function createSetter(sandbox: Sandbox) {
         }
 
         // Update need optimization variables
-        if (sandbox.context) {
-          const { $optimizeMethods, $optimizeUpdateStack } = sandbox.context;
-          if (Array.isArray($optimizeMethods)) {
-            if ($optimizeMethods.indexOf(p) > -1) {
-              $optimizeUpdateStack.forEach((fn) => fn(p, value));
+        if (sandbox.global) {
+          const methods = sandbox.global[`${GAR_OPTIMIZE_NAME}Methods`];
+          if (Array.isArray(methods)) {
+            if (methods.indexOf(p) > -1) {
+              const updateStack =
+                sandbox.global[`${GAR_OPTIMIZE_NAME}UpdateStack`];
+              updateStack.forEach((fn) => fn(p, value));
             }
           }
         }

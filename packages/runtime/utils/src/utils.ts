@@ -1,7 +1,3 @@
-// import Sandbox from '@garfish/sandbox';
-import { Hooks } from '@garfish/browser-vm';
-import { rawWindow } from './raw';
-
 export const noop = () => {};
 
 export function createKey() {
@@ -118,7 +114,7 @@ export function evalWithEnv(code: string, params: Record<string, any>) {
   const randomValKey = '__garfish__exec_temporary__';
   const vales = keys.map((k) => `window.${randomValKey}.${k}`);
   try {
-    rawWindow[randomValKey] = params;
+    window[randomValKey] = params;
     const evalInfo = [
       `;(function(${keys.join(',')}){`,
       `\n}).call(${vales[0]},${vales.join(',')});`,
@@ -129,7 +125,7 @@ export function evalWithEnv(code: string, params: Record<string, any>) {
   } catch (e) {
     throw e;
   } finally {
-    delete rawWindow[randomValKey];
+    delete window[randomValKey];
   }
 }
 
@@ -145,23 +141,6 @@ export function assert(condition: any, msg?: string | Error) {
 
 export function toBoolean(val: any) {
   return val === 'false' ? false : Boolean(val);
-}
-
-// 调用沙箱的钩子，统一快照和 vm
-export function emitSandboxHook(
-  hooks: Hooks,
-  name: keyof Hooks,
-  args: Array<any>,
-) {
-  const fns: any = hooks?.[name];
-  if (fns) {
-    if (typeof fns === 'function') {
-      return [fns.apply(null, args)];
-    } else if (Array.isArray(fns)) {
-      return fns.length === 0 ? false : fns.map((fn) => fn.apply(null, args));
-    }
-  }
-  return false;
 }
 
 export function remove<T>(list: Array<T> | Set<T>, el: T) {
@@ -196,23 +175,6 @@ export function callTestCallback(obj: any, ...args: any[]) {
     }
   }
 }
-
-// 调用沙箱的钩子，统一快照和 vm
-// export function emitSandboxHook(
-//   hooks: Sandbox['options']['hooks'],
-//   name: keyof Sandbox['options']['hooks'],
-//   args: Array<any>,
-// ) {
-//   const fns: any = hooks?.[name];
-//   if (fns) {
-//     if (typeof fns === 'function') {
-//       return [fns.apply(null, args)];
-//     } else if (Array.isArray(fns)) {
-//       return fns.length === 0 ? false : fns.map((fn) => fn.apply(null, args));
-//     }
-//   }
-//   return false;
-// }
 
 // 数组去重，不保证顺序
 export function unique<T>(list: Array<T>) {

@@ -125,5 +125,6 @@ export class TemplateManager {
     cloned.DOMApis = this.DOMApis;
     cloned.astTree = this.astTree;
     cloned.pretreatmentStore = this.pretreatmentStore;
+    return cloned;
   }
 }

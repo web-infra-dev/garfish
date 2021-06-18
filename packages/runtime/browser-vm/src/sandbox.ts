@@ -4,40 +4,30 @@ import {
   hasOwn,
   makeMap,
   isObject,
+  deepMerge,
   evalWithEnv,
-  emitSandboxHook,
   setDocCurrentScript,
-  supportLetStatement,
 } from '@garfish/utils';
 import {
-  Hooks,
   Module,
-  FakeWindow,
-  OverridesData,
   SandboxOptions,
   ExecScriptOptions,
+  ReplaceGlobalVariables,
 } from './types';
 import {
-  bind,
   isModule,
-  initHooks,
-  isEsMethod,
-  isConstructor,
-  initContainer,
-  verifyDescriptor,
-  verifySetDescriptor,
-  createFakeObject,
-  addFakeWindowType,
   optimizeMethods,
-  // setDocCurrentScript,
+  createFakeObject,
+  addProxyWindowType,
 } from './utils';
+import { defaultConfig } from './config';
 import { historyOverride } from './modules/history';
 import { documentOverride } from './modules/document';
 import { XMLHttpRequestOverride } from './modules/xhr';
 import { localStorageOverride } from './modules/storage';
 import { listenerOverride } from './modules/eventListener';
 import { timeoutOverride, intervalOverride } from './modules/timer';
-import { __windowBind__, __garfishGlobal__ } from './symbolTypes';
+import { __garfishGlobal__, GAR_OPTIMIZE_NAME } from './symbolTypes';
 import {
   createHas,
   createGetter,
@@ -47,18 +37,18 @@ import {
 } from './proxyInterceptor/global';
 
 let id = 0;
-const defaultModules: Record<string, Module> = {
-  history: historyOverride,
-  timeout: timeoutOverride,
-  document: documentOverride,
-  listener: listenerOverride,
-  interval: intervalOverride,
-  localStorage: localStorageOverride,
-};
+const defaultModules: Array<Module> = [
+  historyOverride,
+  timeoutOverride,
+  documentOverride,
+  listenerOverride,
+  intervalOverride,
+  localStorageOverride,
+];
 
 // Deal with hmr problem
 if (__DEV__) {
-  defaultModules.XMLHttpRequest = XMLHttpRequestOverride;
+  defaultModules.push(XMLHttpRequestOverride);
 }
 
 export class Sandbox {
@@ -66,50 +56,68 @@ export class Sandbox {
   public id = id++;
   public type = 'vm';
   public closed = true;
-  private optimizeCode = ''; // To optimize the with statement
+  public initComplete = false;
   public global?: Window;
   public options: SandboxOptions;
   public recovers: Array<() => void> = [];
-  public replaceGlobalVariables: {
-    recovers: Array<() => void>;
-    prepares: Array<() => void>;
-    created: Array<OverridesData['created']>;
-    overrides: Record<PropertyKey, any>;
-  } = {
-    created: [],
-    prepares: [],
-    recovers: [],
-    overrides: {},
-  };
-
-  public initComplete = false;
+  public replaceGlobalVariables: ReplaceGlobalVariables;
   public isProtectVariable: (p: PropertyKey) => boolean;
   public isInsulationVariable: (P: PropertyKey) => boolean;
   public isExternalGlobalVariable: Set<PropertyKey> = new Set();
 
-  constructor(opts: SandboxOptions) {
-    assert(isObject(opts), 'Miss options.');
+  private optimizeCode = ''; // To optimize the with statement
 
-    if (!opts.modules) opts.modules = {};
-    if (!('useStrict' in opts)) opts.useStrict = false;
-    if (!('openSandbox' in opts)) opts.openSandbox = true;
-    if (!('requestConfig' in opts)) opts.requestConfig = {};
-    if (!('strictIsolation' in opts)) opts.strictIsolation = true;
+  constructor(options: SandboxOptions) {
+    this.options = isObject(options)
+      ? deepMerge(defaultConfig, options)
+      : deepMerge({}, options);
 
-    initHooks(opts);
-    initContainer(opts);
-    this.isProtectVariable = makeMap(opts.protectVariable?.() || []);
-    this.isInsulationVariable = makeMap(opts.insulationVariable?.() || []);
+    const { protectVariable, insulationVariable } = this.options;
+    this.isProtectVariable = makeMap(protectVariable?.() || []);
+    this.isInsulationVariable = makeMap(insulationVariable?.() || []);
 
-    this.options = opts;
+    this.replaceGlobalVariables = {
+      createdList: [],
+      prepareList: [],
+      recoverList: [],
+      overrideList: {},
+    };
     this.start(); // The default startup sandbox
   }
 
-  callHook(name: keyof Hooks, args = []) {
-    return emitSandboxHook(this.options.hooks, name, args);
+  start() {
+    this.closed = false;
+    this.replaceGlobalVariables = this.getModuleData();
+    const { createdList, overrideList } = this.replaceGlobalVariables;
+    this.global = this.createProxyWindow(Object.keys(overrideList));
+
+    if (overrideList) {
+      for (const key in overrideList) {
+        this.global[key] = overrideList[key];
+      }
+    }
+    if (createdList) {
+      createdList.forEach((fn) => fn(this.global));
+    }
+    this.optimizeCode = this.optimizeGlobalMethod();
+    this.initComplete = true;
   }
 
-  createContext(moduleKeys: Array<string> = []) {
+  close() {
+    if (!this.closed) return;
+    this.clearEffects();
+    this.closed = true;
+    this.global = null;
+    this.optimizeCode = '';
+    this.initComplete = false;
+  }
+
+  reset() {
+    this.close();
+    this.start();
+  }
+
+  createProxyWindow(moduleKeys: Array<string> = []) {
     const fakeWindow = createFakeObject(
       window,
       this.isInsulationVariable,
@@ -138,56 +146,75 @@ export class Sandbox {
     proxy.unstable_sandbox = this; // This attribute is used for debugger
     proxy.top = window.top === window ? subProxy : window.top;
     proxy.parent = window.parent === window ? subProxy : window.top;
-
-    addFakeWindowType(proxy, window);
-    this.callHook('onCreateContext', [this]);
+    addProxyWindowType(proxy, window);
     return proxy;
   }
 
-  // 获取所有重写的对象
-  getOverrides() {
-    const overrides = {};
-    const recovers = [];
-    const created = [];
-    const prepares = [];
+  getModuleData() {
+    const recoverList = [];
+    const createdList = [];
+    const prepareList = [];
+    const overrideList = {};
     const { modules, openSandbox } = this.options;
-    const needLoadModules = {
-      ...(openSandbox ? defaultModules : {}),
-      ...modules,
-    };
+    const allModules = openSandbox ? defaultModules.concat(modules) : modules;
 
-    for (const key of Object.keys(needLoadModules)) {
-      const module = needLoadModules[key];
+    for (const module of allModules) {
       if (typeof module === 'function') {
         const { recover, override, created, prepare } = module(this);
-        if (recover) recovers.push(recover);
-        if (created) created.push(created);
-        if (prepare) prepares.push(prepare);
-
+        if (recover) recoverList.push(recover);
+        if (created) createdList.push(created);
+        if (prepare) prepareList.push(prepare);
         if (override) {
-          // 后面的会覆盖前面的变量
+          // The latter will overwrite the previous variable
           for (const key in override) {
-            overrides[key] = override[key];
+            if (__DEV__ && overrideList[key]) {
+              warn(`"${key}" global variables are overwritten.`);
+            }
+            overrideList[key] = override[key];
           }
         }
       }
     }
-    return { recovers, created, overrides, prepares };
+    return { recoverList, createdList, overrideList, prepareList };
+  }
+
+  clearEffects() {
+    const recovers = this.replaceGlobalVariables.recoverList || [];
+    recovers.forEach((fn) => fn && fn());
+  }
+
+  optimizeGlobalMethod() {
+    assert(!this.closed, 'Sandbox is closed');
+    let code = '';
+    const methods = optimizeMethods.filter((p) => {
+      return (
+        // If the method does not exist in the current environment, do not care
+        p && !this.isProtectVariable(p) && hasOwn(this.global, p)
+      );
+    });
+    if (methods.length === 0) return code;
+
+    code = methods.reduce((prevCode, name) => {
+      // You can only use let, if you use var,
+      // declaring the characteristics in advance will cause you to fetch from with,
+      // resulting in a recursive loop
+      return `${prevCode} let ${name} = window.${name};`;
+    }, code);
+    // Used to update the variables synchronously after `window.x = xx` is updated
+    this.global[`${GAR_OPTIMIZE_NAME}Methods`] = methods;
+    this.global[`${GAR_OPTIMIZE_NAME}UpdateStack`] = [];
+    code += `${GAR_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v") });`;
+    return code;
   }
 
   execScript(code: string, env = {}, url = '', options?: ExecScriptOptions) {
-    assert(!this.closed, 'Sandbox is closed');
-    // 执行代码前初始环境时调用
-    const { prepares } = this.overrideContext;
-    if (prepares) prepares.forEach((fn) => fn());
-
     const { async } = options || {};
-    const context = this.context;
-    const refs = { url, code, context };
+    const { useStrict, openSandbox } = this.options;
+    const { prepareList, overrideList } = this.replaceGlobalVariables;
+    if (prepareList) prepareList.forEach((fn) => fn && fn());
 
-    this.callHook('onInvokeBefore', [this, refs]);
     const revertCurrentScript = setDocCurrentScript(
-      this.context.document,
+      this.global.document,
       code,
       false,
       url,
@@ -195,17 +222,12 @@ export class Sandbox {
     );
 
     try {
-      const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
-      let code = `${refs.code}\n${sourceUrl}`;
-      code = !this.options.useStrict
-        ? `with(window) {;${this.attachedCode + code}}`
-        : code;
-
-      if (this.options.openSandbox) {
+      code += `\n${url ? `//# sourceURL=${url}\n` : ''}`;
+      code = !useStrict ? `with(window) {;${this.optimizeCode + code}}` : code;
+      if (openSandbox) {
         evalWithEnv(code, {
-          window: refs.context,
-          ...this.overrideContext.overrides,
-          unstable_sandbox: this,
+          window: this.global,
+          ...overrideList,
           ...env,
         });
       } else {
@@ -215,110 +237,24 @@ export class Sandbox {
         });
       }
     } catch (e) {
-      // 触发 window.onerror
+      // dispatch `window.onerror`
       const source = url || this.options.baseUrl;
       const message = e instanceof Error ? e.message : String(e);
-
-      if (typeof refs.context.onerror === 'function') {
-        // @ts-ignore
-        const fn = refs.context.onerror._native || refs.context.onerror;
-        fn.call(window, message, source, null, null, e);
+      if (typeof this.global.onerror === 'function') {
+        const errorFn =
+          (this.global.onerror as any)._native || this.global.onerror;
+        errorFn.call(window, message, source, null, null, e);
       }
       throw e;
     }
-
     revertCurrentScript();
-    this.callHook('onInvokeAfter', [this, refs]);
   }
 
-  optimizeGlobalMethod() {
-    assert(!this.closed, 'Sandbox is closed');
-    let code = '';
-    const { context } = this;
-    const methods = optimizeMethods.filter((p) => {
-      return (
-        p && !this.isProtectVariable(p) && hasOwn(context, p) // 如果当前环境不存在该方法，则不用管
-      );
-    });
-
-    if (methods.length > 0) {
-      code = methods.reduce((prevCode, method) => {
-        // 只能用 let, 如果用 var，声明提前的特性会造成去 with 里面取，造成递归死循环
-        return `${prevCode} let ${method} = window.${method};`;
-      }, code);
-      // 用于 `window.x = xx` 更新后，同步更新变量
-      context.$optimizeMethods = methods;
-      context.$optimizeUpdateStack = [];
-      code += '$optimizeUpdateStack.push(function(key,val){eval(key+"=val")});';
-    }
-    return code;
-  }
-
-  clearEffects() {
-    if (this.recovers && this.recovers.length > 0) {
-      for (const fn of this.recovers) {
-        if (typeof fn === 'function') {
-          fn();
-        }
-      }
-      this.recovers = [];
-      this.callHook('onClearEffect', [this]);
-    }
-  }
-
-  start() {
-    this.closed = false;
-    this.callHook('onstart', [this]);
-    this.replaceGlobalVariables = this.getOverrides();
-
-    const { createds, overrides, recovers } = this.overrideContext;
-
-    this.recovers = recovers;
-    this.context = this.createContext(Object.keys(overrides));
-
-    // 覆盖全部的访问变量
-    if (this.context) {
-      if (overrides) {
-        for (const key in overrides) {
-          this.context[key] = overrides[key];
-        }
-      }
-      if (createds) {
-        createds.forEach((fn) => fn(this.context));
-      }
-    }
-    if (supportLetStatement) {
-      this.attachedCode = this.optimizeGlobalMethod();
-    }
-    this.initComplete = true;
-  }
-
-  close() {
-    if (!this.closed) {
-      this.clearEffects();
-      this.initComplete = false;
-      this.closed = true;
-      this.context = null;
-      this.attachedCode = '';
-      this.callHook('onclose', [this]);
-    }
-  }
-
-  // 调用 sandbox.reset 或 new Sandbox() 得到一份干净的沙箱系统
-  reset() {
-    this.close();
-    this.start();
-  }
-
-  static getGlobalObject() {
+  static getNativeWindow() {
     let module = window;
     while (isModule(module)) {
       module = module[__garfishGlobal__ as any] as Window & typeof globalThis;
     }
     return module;
-  }
-
-  static isBaseGlobal(module: Window) {
-    return !isModule(module);
   }
 }

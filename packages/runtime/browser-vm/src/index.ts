@@ -1,16 +1,10 @@
 import { interfaces } from '@garfish/core';
-import { rawWindow, sourceNode } from '@garfish/utils';
 import { Sandbox } from './sandbox';
-import { BrowserConfig, Hooks as TypeHooks } from './types';
+import { SandboxOptions } from './types';
 import './utils/handleNode';
 
-export interface OverridesData {
-  recover?: () => void;
-  override?: Record<string, any>;
-  created?: (context: Sandbox['context']) => void;
-}
-
 declare module '@garfish/core' {
+  // This type declaration is used to extend garfish core
   export interface Garfish {
     getGlobalObject: () => Window & typeof globalThis;
     setGlobalValue(key: string, value?: any): void;
@@ -19,14 +13,9 @@ declare module '@garfish/core' {
 
   export namespace interfaces {
     export interface Garfish {
-      getGlobalObject: () => Window & typeof globalThis;
       setGlobalValue(key: string, value?: any): void;
+      getGlobalObject: () => Window & typeof globalThis;
       clearEscapeEffect: (key: string, value?: any) => void;
-    }
-
-    export interface SandboxConfig {
-      hooks?: TypeHooks;
-      modules?: Record<string, (sandbox: Sandbox) => OverridesData>;
     }
 
     export interface Config {
@@ -45,92 +34,90 @@ declare module '@garfish/core' {
   }
 }
 
+// Default export Garfish plugin
 export default function BrowserVm() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
-    // Use the default Garfish instance attributes
-    let config: BrowserConfig = { open: true };
-    Garfish.getGlobalObject = () => Sandbox.getGlobalObject();
-    Garfish.setGlobalValue = (key, value) =>
-      (Garfish.getGlobalObject()[key] = value);
-    Garfish.clearEscapeEffect = (key, value?: any) => {
-      const global = Garfish.getGlobalObject();
-      if (key in global) {
-        global[key] = value;
-      }
+    // Garfish apis
+    Garfish.getGlobalObject = () => {
+      return Sandbox.getNativeWindow();
     };
 
+    Garfish.setGlobalValue = (key, value) => {
+      return (Garfish.getGlobalObject()[key] = value);
+    };
+
+    Garfish.clearEscapeEffect = (key, value?: any) => {
+      const global = Garfish.getGlobalObject();
+      if (key in global) global[key] = value;
+    };
+
+    // Use the default Garfish instance attributes
+    let config: Partial<SandboxOptions> = { openSandbox: true };
     const options = {
+      openVm: true,
       name: 'browser-vm',
       version: __VERSION__,
-      openVm: true,
+
       bootstrap() {
         // Support for instance configuration, to ensure that old versions compatible
         const sandboxConfig = Garfish?.options?.sandbox;
-        if (sandboxConfig === false) config.open = false;
+        if (sandboxConfig === false) {
+          config.openSandbox = false;
+        }
+
         if (sandboxConfig) {
+          console.log(sandboxConfig, 'sandboxConfig');
           config = {
-            open:
-              rawWindow.Proxy &&
-              sandboxConfig?.open &&
-              sandboxConfig?.snapshot === false,
-            protectVariable: Garfish?.options?.protectVariable || [],
-            insulationVariable: Garfish?.options?.insulationVariable || [],
-            modules: sandboxConfig.modules || {},
-            hooks: sandboxConfig.hooks || {},
+            openSandbox:
+              sandboxConfig?.open && sandboxConfig?.snapshot === false,
+            protectVariable: () => Garfish?.options?.protectVariable,
+            insulationVariable: () => Garfish?.options?.insulationVariable,
           };
         }
-        options.openVm = config.open;
+        options.openVm = config.openSandbox;
       },
 
       afterLoad(appInfo, appInstance) {
-        if (!config.open || !appInstance || appInstance.vmSandbox) {
+        if (!config.openSandbox || !appInstance || appInstance.vmSandbox) {
           return;
         }
-
-        const cjsModule = appInstance.getExecScriptEnv(false);
-
-        // webpack
-        const webpackAttrs: PropertyKey[] = [
-          'onerror',
-          'webpackjsonp',
-          '__REACT_ERROR_OVERLAY_GLOBAL_HOOK__',
-        ];
-        if (__DEV__) {
-          webpackAttrs.push('webpackHotUpdate');
-        }
-
         // Create sandbox instance
         const sandbox = new Sandbox({
+          openSandbox: true,
           namespace: appInfo.name,
           el: () => appInstance.htmlNode,
-          openSandbox: true,
           strictIsolation: appInstance.strictIsolation,
-          protectVariable: () => config.protectVariable || [],
+          protectVariable: config.protectVariable,
           insulationVariable: () => {
-            return webpackAttrs.concat(config?.insulationVariable || []);
+            // webpack
+            const webpackAttrs: PropertyKey[] = [
+              'onerror',
+              'webpackjsonp',
+              '__REACT_ERROR_OVERLAY_GLOBAL_HOOK__',
+            ];
+            if (__DEV__) {
+              webpackAttrs.push('webpackHotUpdate');
+            }
+            return webpackAttrs.concat(config.insulationVariable() || []);
           },
-          modules: {
-            cjsModule: () => {
-              return {
-                override: {
-                  ...cjsModule,
-                },
-              };
-            },
-          },
-          hooks: {
-            onAppendNode(sandbox, rootEl, el, tag, oldEl) {
-              if (sourceNode(tag)) {
-                const url = (oldEl as any)?.src || (oldEl as any)?.href;
-                url && appInstance.sourceList.push(url);
-              }
-            },
-          },
+          modules: [
+            () => ({
+              override: appInstance.getExecScriptEnv(false) || {},
+            }),
+          ],
+          // hooks: {
+          //   onAppendNode(sandbox, rootEl, el, tag, oldEl) {
+          //     if (sourceNode(tag)) {
+          //       const url = (oldEl as any)?.src || (oldEl as any)?.href;
+          //       url && appInstance.sourceList.push(url);
+          //     }
+          //   },
+          // },
         });
 
         appInstance.vmSandbox = sandbox;
-        appInstance.global = sandbox.context;
-
+        appInstance.global = sandbox.global;
+        // Rewrite `app.execScript`
         appInstance.execScript = (code, env, url, options) => {
           sandbox.execScript(code, env, url, options);
         };
@@ -141,4 +128,3 @@ export default function BrowserVm() {
 }
 
 export { Sandbox } from './sandbox';
-export { Hooks } from './types';

@@ -49,5 +49,6 @@ export class JavaScriptManager {
     cloned.mimeType = this.mimeType;
     cloned.scriptCode = this.scriptCode;
     cloned.depsStack = new Set(this.depsStack);
+    return cloned;
   }
 }

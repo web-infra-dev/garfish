@@ -22,7 +22,7 @@ GarfishInstance.run({
   // disablePreloadApp: true,
   sandbox: {
     open: true,
-    snapshot: true,
+    snapshot: false,
   },
   async beforeLoad(appInfo) {
     console.log('开始加载了', appInfo);

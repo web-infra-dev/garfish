@@ -1,4 +1,4 @@
-import { warn, makeMap, hasOwn, isObject } from '@garfish/utils';
+import { warn, makeMap, isObject } from '@garfish/utils';
 import { handlerParams } from '../utils';
 
 export function isDataDescriptor(desc?: PropertyDescriptor) {

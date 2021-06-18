@@ -33,7 +33,7 @@ interface LoadedPluginArgs<T> {
   value: {
     url: string;
     code: string;
-    fileType: FileType;
+    fileType: FileType | '';
     resourceManager: T | null;
   };
 }
@@ -179,14 +179,14 @@ export class Loader {
           result,
           value: {
             url,
-            code,
-            fileType,
             resourceManager,
+            fileType: fileType || '',
+            code: resourceManager ? '' : code,
           },
         });
 
         appCacheContainer.set(url, data.value, fileType);
-        return copyResult(data.value);
+        return copyResult(data.value as any);
       },
     );
     return loadingList[url] as any;

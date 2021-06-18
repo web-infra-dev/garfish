@@ -1,16 +1,15 @@
 export * from './sandbox';
 import {
   makeMap,
-  isObject,
+  nextTick,
   rawObject,
   rawDocument,
   rawObjectDefineProperty,
-  nextTick,
 } from '@garfish/utils';
 import { __proxyNode__ } from '../symbolTypes';
 
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object
-const esNames = // Function properties of the global object
+const esGlobalMethods = // Function properties of the global object
 (
   'eval,isFinite,isNaN,parseFloat,parseInt' +
   // URL handling functions
@@ -24,11 +23,11 @@ const esNames = // Function properties of the global object
   'Atomics,JSON,Math,Reflect'
 ).split(',');
 
-export const isEsMethod = makeMap(esNames);
+export const isEsGlobalMethods = makeMap(esGlobalMethods);
 
 // Need to optimize, avoid from the with
 // Can't filter document, eval keywords, such as document in handling parentNode useful
-export const optimizeMethods = [...esNames].filter((v) => v !== 'eval');
+export const optimizeMethods = [...esGlobalMethods].filter((v) => v !== 'eval');
 
 export function isConstructor(fn: () => void | FunctionConstructor) {
   const fp = fn.prototype;
@@ -48,63 +47,6 @@ export function handlerParams(args: IArguments | Array<any>) {
   return args.map((v) => {
     return v && v[__proxyNode__] ? v[__proxyNode__] : v;
   });
-}
-
-const buildInProps = makeMap([
-  'length',
-  'caller',
-  'callee',
-  'arguments',
-  'prototype',
-  Symbol.hasInstance,
-]);
-function transferProps(o: Function, n: Function) {
-  for (const key of Reflect.ownKeys(o)) {
-    if (buildInProps(key)) continue;
-    const desc = rawObject.getOwnPropertyDescriptor(n, key);
-    if (desc && desc.writable) {
-      n[key] = o[key];
-    }
-  }
-}
-
-// 我们暂时没法通过是否是 constructor 判断，因为要处理参数
-export function bind(fn, context: any) {
-  const fNOP = function () {};
-  function bound() {
-    const args = handlerParams(arguments);
-    if (this instanceof bound) {
-      const obj = new fn(...args);
-      rawObject.setPrototypeOf(obj, bound.prototype);
-      return obj;
-    } else {
-      return fn.apply(context, args);
-    }
-  }
-
-  // 记录原来的函数
-  bound._native = fn;
-  transferProps(fn, bound);
-
-  if (fn.prototype) {
-    // `Function.prototype` doesn't have a prototype property
-    fNOP.prototype = fn.prototype;
-  }
-  bound.prototype = new fNOP();
-
-  // 经过包装后，需要修正 instanceof 操作
-  if (Symbol.hasInstance) {
-    rawObjectDefineProperty(bound, Symbol.hasInstance, {
-      configurable: true,
-      value(instance) {
-        const op = fn.prototype;
-        return isObject(op) || typeof op === 'function'
-          ? instance instanceof fn
-          : false;
-      },
-    });
-  }
-  return bound;
 }
 
 let setting = true;
