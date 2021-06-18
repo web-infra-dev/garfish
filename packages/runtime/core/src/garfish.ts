@@ -111,7 +111,7 @@ export class Garfish implements interfaces.Garfish {
   private loading: Record<string, Promise<any> | null> = {};
 
   constructor(options: interfaces.Options) {
-    this.hooks = new Hooks(true);
+    this.hooks = new Hooks(false);
     this.loader = new Loader();
 
     // init Garfish options
@@ -167,7 +167,7 @@ export class Garfish implements interfaces.Garfish {
     if (this.running) {
       // Nested scene can be repeated registration application, and basic information for the basename、domGetter、lifeCycle
       if (options.nested) {
-        const hooks = new Hooks(false);
+        const hooks = new Hooks(true);
         this.usePlugin(hooks, GarfishOptionsLife(options));
         [
           'autoRefreshApp',

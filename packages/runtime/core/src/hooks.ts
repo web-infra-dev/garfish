@@ -63,10 +63,11 @@ export class Hooks {
               appInfo.hooks.lifecycle &&
               appInfo.hooks.lifecycle[lifeKey]
             ) {
+              const lifecycle = appInfo.hooks.lifecycle[lifeKey];
               if (lifeKey === 'beforeLoad') {
-                await appInfo.hooks.lifecycle[lifeKey].promise(...args);
+                await lifecycle.promise.apply(lifecycle, ...args);
               } else {
-                appInfo.hooks.lifecycle[lifeKey].call(...args);
+                lifecycle.call.apply(lifecycle, ...args);
               }
             }
           },
