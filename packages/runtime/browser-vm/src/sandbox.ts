@@ -289,9 +289,7 @@ export class Sandbox {
   static canSupport() {
     let support = true;
     if (
-      !window.Set ||
       !window.Proxy ||
-      !window.WeakMap ||
       !Array.prototype.includes ||
       !String.prototype.includes
     ) {
@@ -304,6 +302,9 @@ export class Sandbox {
       } catch {
         support = false;
       }
+    }
+    if (__DEV__ && !support) {
+      warn('The current environment does not support "vm sandbox".');
     }
     return support;
   }
