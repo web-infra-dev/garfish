@@ -1,10 +1,34 @@
+import { isObject, isPrimitive } from '@garfish/utils';
+
 const MAX_SIZE = 10 * 1024 * 1024;
 const DEFAULT_POLL = Symbol('__defaultBufferPoll__');
 const FILE_TYPES = ['js', 'css', 'template', 'component'] as const;
 
 export type FileType = typeof FILE_TYPES[number];
 
-const getObjectSize = () => {};
+const calculateObjectSize = (obj: any) => {
+  let size = 0;
+  const valueSet = new WeakSet();
+  const add = (val: any) => {
+    if (isPrimitive(val) || typeof val === 'function') {
+      size += new Blob([val]).size;
+    } else if (isObject(val)) {
+      if (!valueSet.has(val)) {
+        valueSet.add(val);
+        for (const key in val) add(val[key]);
+      }
+    } else if (Array.isArray(val)) {
+      if (!valueSet.has(val)) {
+        valueSet.add(val);
+        val.forEach(add);
+      }
+    } else {
+      size += new Blob([val]).size;
+    }
+  };
+  add(obj);
+  return size;
+};
 
 export class AppCacheContainer {
   private maxSize: number;
@@ -42,7 +66,7 @@ export class AppCacheContainer {
   }
 
   set(url: string, data: any, type: FileType) {
-    const totalSize = this.totalSize + new Blob([data]).size;
+    const totalSize = this.totalSize + calculateObjectSize(data);
     if (totalSize < this.maxSize) {
       let bufferPool = this.bufferPool(type);
       if (!bufferPool) {
