@@ -31,7 +31,7 @@ export function calculateObjectSize(obj: any) {
   let size = 0;
   const valueSet = new WeakSet();
   const add = (val: any) => {
-    if (isPrimitive(val) || typeof val === 'function') {
+    if (isPrimitive(val)) {
       size += new Blob([val]).size;
     } else if (isObject(val)) {
       if (!valueSet.has(val)) {
