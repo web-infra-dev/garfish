@@ -1,6 +1,7 @@
-import { isJs, isCss, isHtml, error, parseContentType } from '@garfish/utils';
+import { isJs, isCss, isHtml } from '@garfish/utils';
 import { PluginManager } from './pluginSystem';
 import { FileType, AppCacheContainer } from './appCache';
+import { request, copyResult, mergeConfig } from './utils';
 import { StyleManager } from './managers/style';
 import { TemplateManager } from './managers/template';
 import { ComponentManager } from './managers/component';
@@ -23,12 +24,12 @@ export interface LoaderOptions {
   maxSize?: number; // The unit is "b"
 }
 
-interface ClearPluginArgs {
+export interface ClearPluginArgs {
   scope: string;
   fileType?: FileType;
 }
 
-interface LoadedPluginArgs<T> {
+export interface LoadedPluginArgs<T> {
   result: Response;
   value: {
     url: string;
@@ -38,36 +39,10 @@ interface LoadedPluginArgs<T> {
   };
 }
 
-interface BeforeLoadPluginArgs {
+export interface BeforeLoadPluginArgs {
   url: string;
   requestConfig: ResponseInit;
 }
-
-const request = async (url: string, config: RequestInit) => {
-  const result = await fetch(url, config || {});
-  // Response codes greater than "400" are regarded as errors
-  if (result.status >= 400) {
-    error(`"${url}" load failed with status "${result.status}"`);
-  }
-  const code = await result.text();
-  const type = result.headers.get('content-type');
-  const mimeType = parseContentType(type);
-  return { code, result, mimeType };
-};
-
-const copyResult = (result: LoadedPluginArgs<any>['value']) => {
-  if (result.resourceManager) {
-    result.resourceManager = result.resourceManager.clone();
-  }
-  return result;
-};
-
-// Compatible with old api
-const mergeConfig = (loader: Loader, url: string) => {
-  const extra = loader.requestConfig;
-  const config = typeof extra === 'function' ? extra(url) : extra;
-  return { mode: 'cors', ...config } as RequestInit;
-};
 
 export class Loader {
   /**
