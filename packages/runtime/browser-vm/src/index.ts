@@ -102,7 +102,7 @@ export default function BrowserVm() {
 
           // Compatible with old code
           if (isObject(config.modules)) {
-            __DEV__ && warn('"vm sandbox" module should be an array', true);
+            __DEV__ && warn('"vm sandbox" modules should be an array', true);
             const list = [];
             for (const key in config.modules) {
               list.push(config.modules[key]);
