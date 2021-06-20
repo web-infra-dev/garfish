@@ -245,6 +245,7 @@ export class Garfish implements interfaces.Garfish {
               mockTemplateCode,
               entryManager.url,
             );
+            entryManager.setDep(fakeEntryManager.findAllJsNodes()[0]);
             resources.js = [entryManager];
           } else {
             // No other types of entrances are currently supported
