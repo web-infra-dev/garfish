@@ -1,4 +1,9 @@
-import { error, isObject, isPrimitive, parseContentType } from '@garfish/utils';
+import {
+  error,
+  isPlainObject,
+  isPrimitive,
+  parseContentType,
+} from '@garfish/utils';
 import { Loader, LoadedPluginArgs } from './index';
 
 export async function request(url: string, config: RequestInit) {
@@ -33,7 +38,7 @@ export function calculateObjectSize(obj: any) {
   const add = (val: any) => {
     if (isPrimitive(val)) {
       size += new Blob([val]).size;
-    } else if (isObject(val)) {
+    } else if (isPlainObject(val)) {
       if (!valueSet.has(val)) {
         valueSet.add(val);
         for (const key in val) add(val[key]);

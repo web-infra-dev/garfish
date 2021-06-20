@@ -127,7 +127,7 @@ const injector = (current: Function, methodName: string) => {
 
     if (sandbox) {
       let convertedNode;
-      let rootNode = rootElm(sandbox);
+      let rootNode = rootElm(sandbox) || document;
       const baseRootNode = rootNode;
       const { baseUrl } = sandbox.options;
       const append = rawElementMethods['appendChild'];

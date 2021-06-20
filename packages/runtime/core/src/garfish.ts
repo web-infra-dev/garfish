@@ -10,9 +10,9 @@ import {
   error,
   assert,
   hasOwn,
-  isObject,
   deepMerge,
   transformUrl,
+  isPlainObject,
   __GARFISH_FLAG__,
 } from '@garfish/utils';
 import { Hooks } from './hooks';
@@ -82,7 +82,7 @@ export class Garfish implements interfaces.Garfish {
 
   setOptions(options: Partial<interfaces.Options>) {
     assert(!this.running, 'Garfish is running, can`t set options');
-    if (isObject(options)) {
+    if (isPlainObject(options)) {
       this.options = deepMerge(this.options, options);
       // register apps
       this.registerApp(options.apps || []);
@@ -187,7 +187,7 @@ export class Garfish implements interfaces.Garfish {
   ): Promise<interfaces.App | null> {
     let appInfo = this.appInfos[appName];
 
-    if (isObject(options)) {
+    if (isPlainObject(options)) {
       // Does not support does not have remote resources and no registered application
       assert(
         !(!appInfo && !appInfo.entry),

@@ -6,6 +6,7 @@ import {
   isObject,
   deepMerge,
   evalWithEnv,
+  isPlainObject,
   setDocCurrentScript,
 } from '@garfish/utils';
 import {
@@ -76,23 +77,21 @@ export class Sandbox {
   private optimizeCode = ''; // To optimize the with statement
 
   constructor(options: SandboxOptions) {
-    this.options = isObject(options)
-      ? deepMerge(
-          // Default sandbox config
-          {
-            modules: [],
-            baseUrl: '',
-            namespace: '',
-            useStrict: false,
-            openSandbox: true,
-            strictIsolation: false,
-            el: () => {},
-            protectVariable: () => [],
-            insulationVariable: () => [],
-          },
-          options,
-        )
-      : deepMerge({}, options);
+    // Default sandbox config
+    const defaultOptions = {
+      modules: [],
+      baseUrl: '',
+      namespace: '',
+      useStrict: false,
+      openSandbox: true,
+      strictIsolation: false,
+      el: () => null,
+      protectVariable: () => [],
+      insulationVariable: () => [],
+    };
+    this.options = isPlainObject(options)
+      ? deepMerge(defaultOptions, options)
+      : defaultOptions;
 
     const { loaderOptions, protectVariable, insulationVariable } = this.options;
     this.loader = new Loader(loaderOptions);

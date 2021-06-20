@@ -3,8 +3,7 @@ import { Sandbox } from './sandbox';
 import { __proxyNode__ } from './symbolTypes';
 
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object
-const esGlobalMethods = // Function properties of the global object
-(
+const esGlobalMethods = ( // Function properties of the global object
   'eval,isFinite,isNaN,parseFloat,parseInt' +
   // URL handling functions
   'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent' +
@@ -45,8 +44,8 @@ export function handlerParams(args: IArguments | Array<any>) {
 
 // Container node, because it changes all the time, take it as you use it
 export function rootElm(sandbox: Sandbox) {
-  const container = sandbox && (sandbox.options.el as any);
-  return container && (container() as Element | ShadowRoot);
+  const container = sandbox && sandbox.options.el;
+  return container && container();
 }
 
 export const sandboxMap = {

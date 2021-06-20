@@ -24,7 +24,7 @@ export interface SandboxOptions {
   strictIsolation?: boolean;
   modules?: Array<Module>;
   loaderOptions?: LoaderOptions;
-  el?: () => Element | ShadowRoot;
+  el?: () => Element | ShadowRoot | null;
   protectVariable?: () => Array<PropertyKey>;
   insulationVariable?: () => Array<PropertyKey>;
 }

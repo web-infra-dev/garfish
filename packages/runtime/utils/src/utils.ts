@@ -1,3 +1,5 @@
+export const objectToString = Object.prototype.toString;
+
 export const noop = () => {};
 
 export function createKey() {
@@ -6,6 +8,10 @@ export function createKey() {
 
 export function isObject(val: any) {
   return val && typeof val === 'object';
+}
+
+export function isPlainObject(val: any) {
+  return objectToString.call(val) === '[object Object]';
 }
 
 export function isPromise(obj: any) {
@@ -262,7 +268,7 @@ export function deepMerge<K, T>(o: K, n: T, dp?: boolean) {
         if (isArray(lv) && isArray(rv)) {
           const item = clone([].concat(lv, rv));
           res[key] = dp ? unique(item) : item;
-        } else if (isObject(lv) && isObject(rv)) {
+        } else if (isPlainObject(lv) && isPlainObject(rv)) {
           res[key] = isAllRefs(lv, rv)
             ? lRecord.get(lv) // 左边右边同一个值，取哪个都行
             : mergeObject(lv, rv);

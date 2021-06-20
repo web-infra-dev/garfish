@@ -18,7 +18,10 @@ export function transformUrl(resolvePath: string, curPath: string) {
   return realPath.href;
 }
 
-export function findTarget(el: Element | ShadowRoot, selectors: Array<string>) {
+export function findTarget(
+  el: Element | ShadowRoot | Document,
+  selectors: Array<string>,
+) {
   for (const s of selectors) {
     const target = el.querySelector(s);
     if (target) return target;
