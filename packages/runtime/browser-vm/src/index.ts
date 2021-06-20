@@ -147,6 +147,14 @@ export default function BrowserVm() {
           sandbox.loader = Garfish.loader;
         }
       },
+
+      afterUnMount(appInfo, appInstance) {
+        if (appInstance.vmSandbox) {
+          // If the app is uninstalled,
+          // the sandbox needs to clear all effects and then reset
+          appInstance.vmSandbox.reset();
+        }
+      },
     };
     return options;
   };
