@@ -1,7 +1,7 @@
 import { isJs, isCss, isHtml } from '@garfish/utils';
 import { PluginManager } from './pluginSystem';
-import { FileType, AppCacheContainer } from './appCache';
 import { request, copyResult, mergeConfig } from './utils';
+import { FileType, cachedDataSet, AppCacheContainer } from './appCache';
 import { StyleManager } from './managers/style';
 import { TemplateManager } from './managers/template';
 import { ComponentManager } from './managers/component';
@@ -114,6 +114,7 @@ export class Loader {
         if (container === appCacheContainer) continue;
         if (container.has(url)) {
           const result = container.get(url);
+          cachedDataSet.add(result);
           appCacheContainer.set(url, result, result.fileType);
           return Promise.resolve(copyResult(result));
         }

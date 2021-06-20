@@ -4,6 +4,7 @@ const MAX_SIZE = 10 * 1024 * 1024;
 const DEFAULT_POLL = Symbol('__defaultBufferPoll__');
 const FILE_TYPES = ['js', 'css', 'template', 'component'] as const;
 
+export const cachedDataSet = new WeakSet();
 export type FileType = typeof FILE_TYPES[number];
 
 export class AppCacheContainer {
@@ -42,7 +43,12 @@ export class AppCacheContainer {
   }
 
   set(url: string, data: any, type: FileType) {
-    const totalSize = this.totalSize + calculateObjectSize(data);
+    // prettier-ignore
+    const totalSize = this.totalSize + (
+      cachedDataSet.has(data)
+        ? 0
+        : calculateObjectSize(data)
+    );
     if (totalSize < this.maxSize) {
       let bufferPool = this.bufferPool(type);
       if (!bufferPool) {
