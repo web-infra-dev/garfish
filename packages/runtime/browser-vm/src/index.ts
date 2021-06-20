@@ -1,4 +1,5 @@
 import { interfaces } from '@garfish/core';
+import { warn, isObject } from '@garfish/utils';
 import { Sandbox } from './sandbox';
 import { SandboxOptions } from './types';
 export { Sandbox } from './sandbox';
@@ -97,8 +98,16 @@ export default function BrowserVm() {
             'webpackjsonp',
             '__REACT_ERROR_OVERLAY_GLOBAL_HOOK__',
           ];
-          if (__DEV__) {
-            webpackAttrs.push('webpackHotUpdate');
+          __DEV__ && webpackAttrs.push('webpackHotUpdate');
+
+          // Compatible with old code
+          if (isObject(config.modules)) {
+            __DEV__ && warn('"vm sandbox" modules should be an array', true);
+            const list = [];
+            for (const key in config.modules) {
+              list.push(config.modules[key]);
+            }
+            config.modules = list;
           }
 
           // Create sandbox instance

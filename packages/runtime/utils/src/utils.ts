@@ -57,14 +57,14 @@ const processError = (
   }
 };
 
-export function warn(msg: string | Error) {
+export function warn(msg: string | Error, serious?: boolean) {
   processError(msg, (e, isString) => {
     const warnMsg = isString ? e : (e as Error).message;
     if (__TEST__) {
       callTestCallback(warn, warnMsg);
       return;
     }
-    console.warn(warnMsg);
+    serious ? console.error(warnMsg) : console.warn(warnMsg);
   });
 }
 
