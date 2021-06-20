@@ -156,28 +156,6 @@ export class App {
     return this.cjsModules;
   }
 
-  private canMount() {
-    // If you are not in mount mount
-    if (this.mounting) {
-      __DEV__ && warn(`The ${this.appInfo.name} app mounting.`);
-      return false;
-    }
-    // If the application has been rendered complete, apply colours to a drawing again, need to destroy the rendering
-    if (this.mounted) {
-      __DEV__ && warn(`The ${this.appInfo.name} app already mounted.`);
-      return false;
-    }
-    // Application in destruction state, the need to destroy completed to render
-    if (this.unmounting) {
-      __DEV__ &&
-        warn(
-          `The ${this.appInfo.name} app is unmounting can't Perform application rendering.`,
-        );
-      return false;
-    }
-    return true;
-  }
-
   show() {
     this.active = true;
     const { display, mounted, provider } = this;
@@ -215,13 +193,14 @@ export class App {
     this.mounting = true;
     try {
       // add container and compile js with cjs
-      this.compileAndRenderContainer();
+      await this.compileAndRenderContainer();
+      // Existing asynchronous functions need to decide whether the application has been unloaded
+      if (!this.stopMountAndClearEffect()) return false;
 
       // Good provider is set at compile time
       const provider = await this.checkAndGetProvider();
-
-      // Existing asynchronous functions need to decide whether the application has been unloaded
       if (!this.stopMountAndClearEffect()) return false;
+
       this.callRender(provider);
       this.display = true;
       this.mounted = true;
@@ -264,6 +243,53 @@ export class App {
     return true;
   }
 
+  // Performs js resources provided by the module, finally get the content of the export
+  compileAndRenderContainer() {
+    // Render the application node
+    // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
+    this.renderTemplate();
+
+    // Execute asynchronous script
+    return new Promise<void>((resolve) => {
+      // Asynchronous script does not block the rendering process
+      setTimeout(() => {
+        if (this.stopMountAndClearEffect()) {
+          for (const jsManager of this.resources.js) {
+            if (jsManager.async) {
+              this.execScript(jsManager.scriptCode, {}, jsManager.url, {
+                async: false,
+                noEntry: true,
+              });
+            }
+          }
+        }
+        resolve();
+      });
+    });
+  }
+
+  private canMount() {
+    // If you are not in mount mount
+    if (this.mounting) {
+      __DEV__ && warn(`The ${this.appInfo.name} app mounting.`);
+      return false;
+    }
+    // If the application has been rendered complete, apply colours to a drawing again, need to destroy the rendering
+    if (this.mounted) {
+      __DEV__ && warn(`The ${this.appInfo.name} app already mounted.`);
+      return false;
+    }
+    // Application in destruction state, the need to destroy completed to render
+    if (this.unmounting) {
+      __DEV__ &&
+        warn(
+          `The ${this.appInfo.name} app is unmounting can't Perform application rendering.`,
+        );
+      return false;
+    }
+    return true;
+  }
+
   // If asynchronous task encountered in the rendering process, such as triggering the beforeEval before executing code,
   // after the asynchronous task, you need to determine whether the application has been destroyed or in the end state.
   // If in the end state will need to perform the side effects of removing rendering process, adding a mount point to a document,
@@ -281,28 +307,6 @@ export class App {
       return false;
     }
     return true;
-  }
-
-  // Performs js resources provided by the module, finally get the content of the export
-  public compileAndRenderContainer() {
-    // Render the application node
-    // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
-    this.renderTemplate();
-
-    // Execute asynchronous script
-    for (const jsManager of this.resources.js) {
-      if (jsManager.async) {
-        // Asynchronous script does not block the rendering process
-        try {
-          this.execScript(jsManager.scriptCode, {}, jsManager.url, {
-            async: false,
-            noEntry: true,
-          });
-        } catch (err) {
-          console.error(err);
-        }
-      }
-    }
   }
 
   // Calls to render do compatible with two different sandbox
