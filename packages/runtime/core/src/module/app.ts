@@ -193,15 +193,19 @@ export class App {
     this.mounting = true;
     try {
       // add container and compile js with cjs
-      await this.compileAndRenderContainer();
-      // Existing asynchronous functions need to decide whether the application has been unloaded
-      if (!this.stopMountAndClearEffect()) return false;
+      const execAsyncJs = this.compileAndRenderContainer();
 
       // Good provider is set at compile time
       const provider = await this.checkAndGetProvider();
+      // Existing asynchronous functions need to decide whether the application has been unloaded
       if (!this.stopMountAndClearEffect()) return false;
 
       this.callRender(provider);
+
+      // Execute all asynchronous scripts
+      await execAsyncJs();
+      if (!this.stopMountAndClearEffect()) return false;
+
       this.display = true;
       this.mounted = true;
       this.context.hooks.lifecycle.afterMount.call(this.appInfo, this);
@@ -250,22 +254,23 @@ export class App {
     this.renderTemplate();
 
     // Execute asynchronous script
-    return new Promise<void>((resolve) => {
-      // Asynchronous script does not block the rendering process
-      setTimeout(() => {
-        if (this.stopMountAndClearEffect()) {
-          for (const jsManager of this.resources.js) {
-            if (jsManager.async) {
-              this.execScript(jsManager.scriptCode, {}, jsManager.url, {
-                async: false,
-                noEntry: true,
-              });
+    return () =>
+      new Promise<void>((resolve) => {
+        // Asynchronous script does not block the rendering process
+        setTimeout(() => {
+          if (this.stopMountAndClearEffect()) {
+            for (const jsManager of this.resources.js) {
+              if (jsManager.async) {
+                this.execScript(jsManager.scriptCode, {}, jsManager.url, {
+                  async: false,
+                  noEntry: true,
+                });
+              }
             }
           }
-        }
-        resolve();
+          resolve();
+        });
       });
-    });
   }
 
   private canMount() {
