@@ -1,7 +1,9 @@
-import { Text, DOMApis, StyleManager, TemplateManager } from '@garfish/loader';
+import { StyleManager, TemplateManager } from '@garfish/loader';
 import {
   warn,
   assert,
+  Text,
+  DOMApis,
   isJs,
   isObject,
   isPromise,
@@ -206,7 +208,7 @@ export class App {
   }
 
   async mount() {
-    if (!this.canMount()) return;
+    if (!this.canMount()) return false;
     this.context.hooks.lifecycle.beforeMount.call(this.appInfo, this);
 
     this.active = true;
@@ -227,10 +229,11 @@ export class App {
     } catch (err) {
       DOMApis.removeElement(this.appContainer);
       this.context.hooks.lifecycle.errorMount.call(this.appInfo, err);
-      throw err;
+      return false;
     } finally {
       this.mounting = false;
     }
+    return true;
   }
 
   unmount() {
@@ -246,12 +249,18 @@ export class App {
     this.unmounting = true;
     this.context.hooks.lifecycle.beforeUnMount.call(this.appInfo, this);
 
-    this.callDestroy(this.provider);
-    this.display = false;
-    this.unmounting = false;
-    this.mounted = false;
-
-    this.context.hooks.lifecycle.afterUnMount.call(this.appInfo, this);
+    try {
+      this.callDestroy(this.provider);
+      this.display = false;
+      this.mounted = false;
+      this.context.hooks.lifecycle.afterUnMount.call(this.appInfo, this);
+    } catch (err) {
+      DOMApis.removeElement(this.appContainer);
+      this.context.hooks.lifecycle.errorMountApp.call(this.appInfo, err);
+      return false;
+    } finally {
+      this.unmounting = false;
+    }
     return true;
   }
 

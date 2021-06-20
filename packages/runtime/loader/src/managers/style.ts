@@ -1,5 +1,4 @@
-import { isAbsolute, transformUrl } from '@garfish/utils';
-import { Node } from './renderApi';
+import { Node, isAbsolute, transformUrl } from '@garfish/utils';
 
 // Match url in css
 const MATCH_CSS_URL = /url\(['"]?([^\)]+?)['"]?\)/g;

@@ -230,6 +230,7 @@ export namespace interfaces {
     errorMount: SyncHook<[AppInfo, Error], void>;
     beforeUnMount: SyncHook<[AppInfo, interfaces.App], void>;
     afterUnMount: SyncHook<[AppInfo, interfaces.App], void>;
+    errorMountApp: SyncHook<[AppInfo, Error], void>;
     errorExecCode: SyncHook<[AppInfo, Error], void>;
   }
 

@@ -1,7 +1,6 @@
-import { warn, transformUrl } from '@garfish/utils';
+import { warn, Text, transformUrl } from '@garfish/utils';
 import {
   Loader,
-  Text,
   StyleManager,
   TemplateManager,
   JavaScriptManager,

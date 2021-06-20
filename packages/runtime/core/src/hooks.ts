@@ -48,6 +48,7 @@ export class Hooks {
       errorMount: new SyncHook(['appInfo', 'error']),
       beforeUnMount: new SyncHook(['appInfo', 'appInstance']),
       afterUnMount: new SyncHook(['appInfo', 'appInstance']),
+      errorMountApp: new SyncHook(['appInfo', 'error']),
       errorExecCode: new SyncHook(['appInfo', 'error']),
     };
 

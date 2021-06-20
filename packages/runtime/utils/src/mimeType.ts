@@ -6,7 +6,7 @@ export function parseContentType(input: string) {
 
   let idx = 0;
   let type = '';
-  let subtype = '';
+  let subType = '';
   while (idx < input.length && input[idx] !== '/') {
     type += input[idx];
     idx++;
@@ -17,15 +17,15 @@ export function parseContentType(input: string) {
   // jump over '/'
   idx++;
   while (idx < input.length && input[idx] !== ';') {
-    subtype += input[idx];
+    subType += input[idx];
     idx++;
   }
-  subtype = subtype.replace(/[ \t\n\r]+$/, '');
-  if (subtype.length === 0) return null;
+  subType = subType.replace(/[ \t\n\r]+$/, '');
+  if (subType.length === 0) return null;
 
   return {
     type: type.toLocaleLowerCase(),
-    subtype: subtype.toLocaleLowerCase(),
+    subtype: subType.toLocaleLowerCase(),
   };
 }
 

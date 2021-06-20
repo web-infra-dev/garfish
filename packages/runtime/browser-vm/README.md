@@ -8,10 +8,10 @@ import vmSandbox from '@garfish/vm-sandbox';
 let nameMap = { a: 'chen' };
 
 const sandbox = new vmSandbox({
+  namespace: 'app',
   el: () => document.body,
   modules: [
     () => ({
-      namespace: 'app',
       override: { nameMap },
       recover() {
         nameMap = { a: 'chen' };
