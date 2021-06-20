@@ -68,7 +68,6 @@ export class Sandbox {
   public initComplete = false;
   public global?: Window;
   public options: SandboxOptions;
-  public recovers: Array<() => void> = [];
   public replaceGlobalVariables: ReplaceGlobalVariables;
   public isProtectVariable: (p: PropertyKey) => boolean;
   public isInsulationVariable: (P: PropertyKey) => boolean;

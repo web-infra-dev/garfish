@@ -94,14 +94,12 @@ export default function BrowserVm() {
               Sandbox.canSupport() &&
               sandboxConfig.open &&
               !sandboxConfig.snapshot,
-
             modules: sandboxConfig.modules || [],
 
             protectVariable: () => [
               ...(Garfish?.options?.protectVariable || []),
               ...(appInfo.protectVariable || []),
             ],
-
             insulationVariable: () => [
               ...(Garfish?.options?.insulationVariable || []),
               ...(appInfo.insulationVariable || []),
@@ -121,17 +119,18 @@ export default function BrowserVm() {
             openSandbox: true,
             namespace: appInfo.name,
             strictIsolation: appInstance.strictIsolation,
-            el: () => appInstance.htmlNode,
-            protectVariable: config.protectVariable,
-            insulationVariable: () => {
-              return webpackAttrs.concat(config.insulationVariable() || []);
-            },
             modules: [
               () => ({
                 override: appInstance.getExecScriptEnv(false) || {},
               }),
               ...(config.modules || []),
             ],
+
+            el: () => appInstance.htmlNode,
+            protectVariable: config.protectVariable,
+            insulationVariable: () => {
+              return webpackAttrs.concat(config.insulationVariable() || []);
+            },
           });
 
           appInstance.vmSandbox = sandbox;
@@ -140,7 +139,6 @@ export default function BrowserVm() {
           appInstance.execScript = (code, env, url, options) => {
             sandbox.execScript(code, env, url, options);
           };
-
           // Use `Garfish.loader` instead of the `sandbox.loader`
           sandbox.loader = Garfish.loader;
         }
