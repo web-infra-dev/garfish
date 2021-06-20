@@ -235,10 +235,15 @@ export class App {
 
   unmount() {
     this.active = false;
+    if (!this.mounted || !this.appContainer) {
+      return false;
+    }
     if (this.unmounting) {
       __DEV__ && warn(`The ${this.name} app unmounting.`);
       return false;
     }
+    // This prevents the unmount of the current app from being called in "provider.destroy"
+    this.unmounting = true;
     this.context.hooks.lifecycle.beforeUnMount.call(this.appInfo, this);
 
     this.callDestroy(this.provider);

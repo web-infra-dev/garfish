@@ -31,7 +31,7 @@ GarfishInstance.run({
     return new Promise<any>((resolve) => {
       setTimeout(() => {
         resolve(true);
-      }, 1000);
+      }, 2000);
     });
   },
   // beforeMount (appInfo) {
