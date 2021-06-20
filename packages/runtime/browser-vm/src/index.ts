@@ -39,7 +39,7 @@ declare module '@garfish/core' {
   }
 }
 
-// webpack
+// Strongly isolated webpack attributes
 const webpackAttrs: PropertyKey[] = [
   'onerror',
   'webpackjsonp',
@@ -49,8 +49,8 @@ if (__DEV__) {
   webpackAttrs.push('webpackHotUpdate');
 }
 
+// Compatible with old code
 const compatibleOldModulesType = (config) => {
-  // Compatible with old code
   if (isPlainObject(config.modules)) {
     __DEV__ && warn('"vm sandbox" modules should be an array');
     const list = [];
