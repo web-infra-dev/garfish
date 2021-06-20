@@ -115,9 +115,10 @@ export class Garfish implements interfaces.Garfish {
           options.apps?.map((app) => {
             return {
               ...app,
+              hooks: hooks,
+              sandbox: options?.sandbox || this.options.sandbox,
               basename: options?.basename || this.options.basename,
               domGetter: options?.domGetter || this.options.domGetter,
-              hooks: hooks,
             };
           }),
         );
@@ -197,7 +198,7 @@ export class Garfish implements interfaces.Garfish {
       const tempInfo = appInfo;
       appInfo = deepMerge(tempInfo, options);
     } else if (typeof options === 'string') {
-      // `Garfish.loadApp('appName', 'https://xxx.html');`
+      // `Garfish.loadApp('appName', 'https://xx.html');`
       appInfo = {
         name: appName,
         entry: options,

@@ -303,8 +303,11 @@ export class Sandbox {
         support = false;
       }
     }
-    if (__DEV__ && !support) {
-      warn('The current environment does not support "vm sandbox".');
+    if (!support) {
+      warn(
+        'The current environment does not support "vm sandbox",' +
+          'Please use the "snapshot sandbox" instead.',
+      );
     }
     return support;
   }
