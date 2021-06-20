@@ -25,7 +25,7 @@ export class TemplateManager {
     // The url is only base url, it may also be a js resource address.
     this.url = url || null;
     // About 1M text parse takes about 100ms
-    this.astTree = parse(transformCode(template));
+    this.astTree = template ? parse(transformCode(template)) : [];
     // Pretreatment resource
     this.getNodesByTagName('link', 'style', 'script');
   }
@@ -95,10 +95,6 @@ export class TemplateManager {
     return elements;
   }
 
-  cloneNode(node: Node) {
-    return deepMerge(node, {});
-  }
-
   toResolveUrl(node: Node, type: string, baseUrl: string) {
     const src = node.attributes?.find(({ key }) => key === type);
     if (src) {
@@ -116,5 +112,19 @@ export class TemplateManager {
 
   findAttributeValue(node: Node, type: string) {
     return node.attributes?.find(({ key }) => key === type)?.value;
+  }
+
+  cloneNode(node: Node) {
+    return deepMerge(node, {});
+  }
+
+  clone() {
+    // @ts-ignore
+    const cloned = new this.constructor();
+    cloned.url = this.url;
+    cloned.DOMApis = this.DOMApis;
+    cloned.astTree = this.astTree;
+    cloned.pretreatmentStore = this.pretreatmentStore;
+    return cloned;
   }
 }

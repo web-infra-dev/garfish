@@ -7,8 +7,8 @@ es/
 **/coverage/
 .vscode
 .rts2_cache/
+.yarn/
 temp/
-core_
 
 # Editor directories and files
 .idea

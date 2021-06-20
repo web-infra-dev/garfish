@@ -9,23 +9,30 @@ GarfishInstance.run({
     {
       name: 'react',
       activeWhen: '/react',
-      cache: true,
+      // cache: true,
       entry: 'http://localhost:3000',
     },
     {
       name: 'vue',
       activeWhen: '/vue',
-      cache: true,
+      // cache: true,
       entry: 'http://localhost:9090',
     },
   ],
   // disablePreloadApp: true,
   sandbox: {
     open: true,
-    snapshot: true,
+    snapshot: false,
+    // modules: [],
   },
   async beforeLoad(appInfo) {
     console.log('开始加载了', appInfo);
+    // test async load
+    return new Promise<any>((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 2000);
+    });
   },
   // beforeMount (appInfo) {
   //   console.log('开始渲染', appInfo);

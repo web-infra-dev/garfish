@@ -1,4 +1,4 @@
-// 先启动一个 server，再通过 jest 测试
+// Start a server first, and then pass the jest test
 const argv = process.argv;
 
 if (argv.includes('--startMockServer')) {

@@ -40,4 +40,15 @@ export class JavaScriptManager {
   isSameOrigin(node: Node) {
     return this.depsStack.has(node);
   }
+
+  clone() {
+    // @ts-ignore
+    const cloned = new this.constructor();
+    cloned.url = this.url;
+    cloned.async = this.async;
+    cloned.mimeType = this.mimeType;
+    cloned.scriptCode = this.scriptCode;
+    cloned.depsStack = new Set(this.depsStack);
+    return cloned;
+  }
 }

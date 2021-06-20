@@ -1,6 +1,4 @@
-// import Sandbox from '@garfish/sandbox';
-import { Hooks } from '@garfish/browser-vm';
-import { rawWindow } from './raw';
+export const objectToString = Object.prototype.toString;
 
 export const noop = () => {};
 
@@ -10,6 +8,10 @@ export function createKey() {
 
 export function isObject(val: any) {
   return val && typeof val === 'object';
+}
+
+export function isPlainObject(val: any) {
+  return objectToString.call(val) === '[object Object]';
 }
 
 export function isPromise(obj: any) {
@@ -82,15 +84,6 @@ export function error(error: string | Error) {
   });
 }
 
-export const supportLetStatement = (() => {
-  try {
-    new Function('let a = 1;');
-    return true;
-  } catch (e) {
-    return false;
-  }
-})();
-
 // 将字符串被设置为对象属性名时，会被尝试改造为常量化版本，避免浏览器重复产生缓存
 export function internFunc(internalizeString) {
   //  暂时不考虑Hash-collision，https://en.wikipedia.org/wiki/Collision_(computer_science)。v8貌似在16383长度时会发生hash-collision，经过测试后发现正常
@@ -118,7 +111,7 @@ export function evalWithEnv(code: string, params: Record<string, any>) {
   const randomValKey = '__garfish__exec_temporary__';
   const vales = keys.map((k) => `window.${randomValKey}.${k}`);
   try {
-    rawWindow[randomValKey] = params;
+    window[randomValKey] = params;
     const evalInfo = [
       `;(function(${keys.join(',')}){`,
       `\n}).call(${vales[0]},${vales.join(',')});`,
@@ -129,7 +122,7 @@ export function evalWithEnv(code: string, params: Record<string, any>) {
   } catch (e) {
     throw e;
   } finally {
-    delete rawWindow[randomValKey];
+    delete window[randomValKey];
   }
 }
 
@@ -145,23 +138,6 @@ export function assert(condition: any, msg?: string | Error) {
 
 export function toBoolean(val: any) {
   return val === 'false' ? false : Boolean(val);
-}
-
-// 调用沙箱的钩子，统一快照和 vm
-export function emitSandboxHook(
-  hooks: Hooks,
-  name: keyof Hooks,
-  args: Array<any>,
-) {
-  const fns: any = hooks?.[name];
-  if (fns) {
-    if (typeof fns === 'function') {
-      return [fns.apply(null, args)];
-    } else if (Array.isArray(fns)) {
-      return fns.length === 0 ? false : fns.map((fn) => fn.apply(null, args));
-    }
-  }
-  return false;
 }
 
 export function remove<T>(list: Array<T> | Set<T>, el: T) {
@@ -196,23 +172,6 @@ export function callTestCallback(obj: any, ...args: any[]) {
     }
   }
 }
-
-// 调用沙箱的钩子，统一快照和 vm
-// export function emitSandboxHook(
-//   hooks: Sandbox['options']['hooks'],
-//   name: keyof Sandbox['options']['hooks'],
-//   args: Array<any>,
-// ) {
-//   const fns: any = hooks?.[name];
-//   if (fns) {
-//     if (typeof fns === 'function') {
-//       return [fns.apply(null, args)];
-//     } else if (Array.isArray(fns)) {
-//       return fns.length === 0 ? false : fns.map((fn) => fn.apply(null, args));
-//     }
-//   }
-//   return false;
-// }
 
 // 数组去重，不保证顺序
 export function unique<T>(list: Array<T>) {
@@ -309,7 +268,7 @@ export function deepMerge<K, T>(o: K, n: T, dp?: boolean) {
         if (isArray(lv) && isArray(rv)) {
           const item = clone([].concat(lv, rv));
           res[key] = dp ? unique(item) : item;
-        } else if (isObject(lv) && isObject(rv)) {
+        } else if (isPlainObject(lv) && isPlainObject(rv)) {
           res[key] = isAllRefs(lv, rv)
             ? lRecord.get(lv) // 左边右边同一个值，取哪个都行
             : mergeObject(lv, rv);
@@ -330,11 +289,6 @@ export function deepMerge<K, T>(o: K, n: T, dp?: boolean) {
   };
 
   return mergeObject(o, n) as K & T;
-}
-
-export function getType(val) {
-  const type = Object.prototype.toString.call(val);
-  return type.slice(8, type.length - 1).toLowerCase();
 }
 
 export function inBrowser() {

@@ -50,4 +50,13 @@ export class StyleManager {
     );
     return node;
   }
+
+  clone() {
+    // @ts-ignore
+    const cloned = new this.constructor();
+    cloned.url = this.url;
+    cloned.styleCode = this.styleCode;
+    cloned.depsStack = new Set(this.depsStack);
+    return cloned;
+  }
 }

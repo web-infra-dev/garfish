@@ -1,8 +1,8 @@
 import { transformUrl } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 
-// 处理热更新时 ho-update.json 跨域需要代理的问题
-export function XMLHttpRequestOverride(sandbox: Sandbox) {
+// When dealing with hot updates, "ho-update.json" requires a proxy across domains
+export function XMLHttpRequestModule(sandbox: Sandbox) {
   let override;
   const baseUrl = sandbox.options.baseUrl;
 

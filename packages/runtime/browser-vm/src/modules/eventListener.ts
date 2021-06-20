@@ -1,10 +1,10 @@
-import { computeErrorUrl, filterAndWrapEventListener } from '@garfish/utils';
+// import { computeErrorUrl, filterAndWrapEventListener } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 
 type Opts = boolean | AddEventListenerOptions;
 type Listener = EventListenerOrEventListenerObject;
 
-export function listenerOverride(_sandbox: Sandbox) {
+export function listenerModule() {
   const listeners = new Map<string, Listener[]>();
   const rawAddEventListener = window.addEventListener;
   const rawRemoveEventListener = window.removeEventListener;
@@ -52,9 +52,8 @@ export function listenerOverride(_sandbox: Sandbox) {
       addEventListener: addListener.bind(window),
       removeEventListener: removeListener.bind(window),
     },
-    // document.addEventListener === window.addEventListener
-    created(context: Sandbox['context']) {
-      const fakeDocument = context.document;
+    created(global: Sandbox['global']) {
+      const fakeDocument = global.document;
       if (fakeDocument) {
         fakeDocument.addEventListener = addListener.bind(document);
         fakeDocument.removeEventListener = removeListener.bind(document);

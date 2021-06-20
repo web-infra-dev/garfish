@@ -1,19 +1,17 @@
-import { Text, StyleManager, TemplateManager } from '@garfish/loader';
+import { Text, DOMApis, StyleManager, TemplateManager } from '@garfish/loader';
 import {
   warn,
   assert,
-  evalWithEnv,
-  findTarget,
   isJs,
   isObject,
   isPromise,
-  parseContentType,
-  rawAppendChild,
-  removeElement,
+  findTarget,
+  evalWithEnv,
   transformUrl,
-  createAppContainer,
   getRenderNode,
   sourceListTags,
+  parseContentType,
+  createAppContainer,
   setDocCurrentScript,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
@@ -42,21 +40,21 @@ export interface Provider {
  * 5. Trigger the destruction: Perform the destroy function of child application, and applies the child node is removed from the document flow.
  */
 export class App {
-  public name: string;
   public display = false;
   public mounted = false;
   public esModule = false;
   public strictIsolation = false;
-  public isHtmlMode: boolean;
+  public name: string;
   public global: any = window;
-  public appInfo: interfaces.AppInfo;
+  public isHtmlMode: boolean;
+  public appContainer: HTMLElement;
+  public sourceList: Array<string> = [];
   public cjsModules: Record<string, any>;
+  public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
   public provider: Provider;
+  public appInfo: interfaces.AppInfo;
   public entryManager: TemplateManager;
-  public appContainer: HTMLElement;
-  public htmlNode: HTMLElement | ShadowRoot;
-  public sourceList: Array<string> = [];
   public customLoader: CustomerLoader;
 
   private active = false;
@@ -227,7 +225,7 @@ export class App {
       this.mounted = true;
       this.context.hooks.lifecycle.afterMount.call(this.appInfo, this);
     } catch (err) {
-      removeElement(this.appContainer);
+      DOMApis.removeElement(this.appContainer);
       this.context.hooks.lifecycle.errorMount.call(this.appInfo, err);
       throw err;
     } finally {
@@ -237,10 +235,15 @@ export class App {
 
   unmount() {
     this.active = false;
+    if (!this.mounted || !this.appContainer) {
+      return false;
+    }
     if (this.unmounting) {
       __DEV__ && warn(`The ${this.name} app unmounting.`);
       return false;
     }
+    // This prevents the unmount of the current app from being called in "provider.destroy"
+    this.unmounting = true;
     this.context.hooks.lifecycle.beforeUnMount.call(this.appInfo, this);
 
     this.callDestroy(this.provider);
@@ -263,7 +266,9 @@ export class App {
       }
       this.mounting = false;
       // Will have been added to the document flow on the container
-      if (this.appContainer) removeElement(this.appContainer);
+      if (this.appContainer) {
+        DOMApis.removeElement(this.appContainer);
+      }
       return false;
     }
     return true;
@@ -304,18 +309,20 @@ export class App {
   private callDestroy(provider: interfaces.Provider) {
     const { rootElement, appContainer } = this;
     provider.destroy({ dom: rootElement });
-    removeElement(appContainer);
+    DOMApis.removeElement(appContainer);
   }
 
   // Create a container node and add in the document flow
   // domGetter Have been dealing with
   private addContainer() {
-    rawAppendChild.call(this.appInfo.domGetter, this.appContainer);
+    if (typeof (this.appInfo.domGetter as Element).appendChild === 'function') {
+      (this.appInfo.domGetter as Element).appendChild(this.appContainer);
+    }
   }
 
   private renderTemplate() {
     const { appInfo, entryManager, resources } = this;
-    const { url: baseUrl, DOMApis } = entryManager;
+    const { url: baseUrl } = entryManager;
     const { htmlNode, appContainer } = createAppContainer(appInfo.name);
 
     // Transformation relative path
@@ -423,9 +430,12 @@ export class App {
             );
           }
         }
-        return DOMApis.isPrefetchJsLink(node)
+        // prettier-ignore
+        return DOMApis.isPrefetchJsLinkNode(node)
           ? DOMApis.createScriptCommentNode(node)
-          : DOMApis.createElement(node);
+          : DOMApis.isIconLinkNode(node)
+            ? null // Filter the icon of the child app, and cannot affect the main application
+            : DOMApis.createElement(node);
       },
     };
 

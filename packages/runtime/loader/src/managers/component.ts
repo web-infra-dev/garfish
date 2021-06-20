@@ -2,8 +2,16 @@ export class ComponentManager {
   public componentCode: string;
   public url: string | null;
 
-  constructor(scriptCode: string, url?: string) {
+  constructor(componentCode: string, url?: string) {
     this.url = url || null;
-    this.componentCode = scriptCode;
+    this.componentCode = componentCode;
+  }
+
+  clone() {
+    // @ts-ignore
+    const cloned = new this.constructor();
+    cloned.url = this.url;
+    cloned.componentCode = this.componentCode;
+    return cloned;
   }
 }

@@ -1,11 +1,9 @@
-import {
-  rawSetTimeout,
-  rawClearTimeout,
-  rawSetInterval,
-  rawClearInterval,
-} from '@garfish/utils';
+const rawSetTimeout = window.setTimeout;
+const rawClearTimeout = window.clearTimeout;
+const rawSetInterval = window.setInterval;
+const rawClearInterval = window.clearInterval;
 
-export const timeoutOverride = () => {
+export const timeoutModule = () => {
   const timeout = new Set<number>();
 
   const setTimeout = (
@@ -38,7 +36,7 @@ export const timeoutOverride = () => {
   };
 };
 
-export const intervalOverride = () => {
+export const intervalModule = () => {
   const timeout = new Set<number>();
 
   const setInterval = (

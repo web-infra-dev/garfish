@@ -1,16 +1,11 @@
 import { interfaces } from '@garfish/core';
-import { rawWindow, sourceNode } from '@garfish/utils';
+import { warn, isPlainObject } from '@garfish/utils';
 import { Sandbox } from './sandbox';
-import { BrowserConfig, Hooks as TypeHooks } from './types';
-import { makeElInjector } from './utils/handleNode';
-
-export interface OverridesData {
-  recover?: () => void;
-  override?: Record<string, any>;
-  created?: (context: Sandbox['context']) => void;
-}
+import { Module, SandboxOptions } from './types';
+export { Sandbox } from './sandbox';
 
 declare module '@garfish/core' {
+  // This type declaration is used to extend garfish core
   export interface Garfish {
     getGlobalObject: () => Window & typeof globalThis;
     setGlobalValue(key: string, value?: any): void;
@@ -19,14 +14,13 @@ declare module '@garfish/core' {
 
   export namespace interfaces {
     export interface Garfish {
-      getGlobalObject: () => Window & typeof globalThis;
       setGlobalValue(key: string, value?: any): void;
+      getGlobalObject: () => Window & typeof globalThis;
       clearEscapeEffect: (key: string, value?: any) => void;
     }
 
     export interface SandboxConfig {
-      hooks?: TypeHooks;
-      modules?: Record<string, (sandbox: Sandbox) => OverridesData>;
+      modules?: Array<Module>;
     }
 
     export interface Config {
@@ -45,119 +39,123 @@ declare module '@garfish/core' {
   }
 }
 
+// Strongly isolated webpack attributes
+const webpackAttrs: PropertyKey[] = [
+  'onerror',
+  'webpackjsonp',
+  '__REACT_ERROR_OVERLAY_GLOBAL_HOOK__',
+];
+if (__DEV__) {
+  webpackAttrs.push('webpackHotUpdate');
+}
+
+// Compatible with old code
+const compatibleOldModulesType = (config) => {
+  if (isPlainObject(config.modules)) {
+    __DEV__ && warn('"vm sandbox" modules should be an array');
+    const list = [];
+    for (const key in config.modules) {
+      list.push(config.modules[key]);
+    }
+    config.modules = list;
+  }
+};
+
+// Default export Garfish plugin
 export default function BrowserVm() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
-    // Use the default Garfish instance attributes
-    let config: BrowserConfig = { open: true };
-    Garfish.getGlobalObject = () => Sandbox.getGlobalObject();
-    Garfish.setGlobalValue = (key, value) =>
-      (Garfish.getGlobalObject()[key] = value);
-    Garfish.clearEscapeEffect = (key, value?: any) => {
-      const global = Garfish.getGlobalObject();
-      if (key in global) {
-        global[key] = value;
-      }
+    // Garfish apis
+    Garfish.getGlobalObject = () => {
+      return Sandbox.getNativeWindow();
     };
 
+    Garfish.setGlobalValue = (key, value) => {
+      return (Garfish.getGlobalObject()[key] = value);
+    };
+
+    Garfish.clearEscapeEffect = (key, value?: any) => {
+      const global = Garfish.getGlobalObject();
+      if (key in global) global[key] = value;
+    };
+
+    // Use the default Garfish instance attributes
+    let config: Partial<SandboxOptions> = { openSandbox: true };
     const options = {
+      openVm: true,
       name: 'browser-vm',
       version: __VERSION__,
-      openVm: true,
-      // Get all the application resources of static address, used to distinguish whether the error is derived from the application
-      // processResource(appInfo, manager, _resource) {
-      //   const sourceList = [];
-      //   sourceListTags.forEach((tag) => {
-      //     manager.getVNodesByTagName(tag).forEach((node) => {
-      //       const url = findProp(node, 'href') || findProp(node, 'src');
-      //       if (url && url.value) {
-      //         sourceList.push(transformUrl(manager.opts.url, url.value));
-      //       }
-      //     });
-      //   });
-      //   appSourceList.set(appInfo.name, sourceList);
-      // },
+
       afterLoad(appInfo, appInstance) {
         // Support for instance configuration, to ensure that old versions compatible
         const sandboxConfig = appInfo.sandbox || Garfish?.options?.sandbox;
-        if (sandboxConfig === false) config.open = false;
+        if (sandboxConfig === false) {
+          config.openSandbox = false;
+        }
+
         if (sandboxConfig) {
           config = {
-            open:
-              rawWindow.Proxy &&
-              sandboxConfig?.open &&
-              sandboxConfig?.snapshot === false,
-            protectVariable: [
-              ...Garfish?.options?.protectVariable,
+            openSandbox:
+              Sandbox.canSupport() &&
+              sandboxConfig.open &&
+              !sandboxConfig.snapshot,
+            modules: sandboxConfig.modules || [],
+
+            protectVariable: () => [
+              ...(Garfish?.options?.protectVariable || []),
               ...(appInfo.protectVariable || []),
             ],
-            insulationVariable: [
-              ...Garfish?.options?.insulationVariable,
+            insulationVariable: () => [
+              ...(Garfish?.options?.insulationVariable || []),
               ...(appInfo.insulationVariable || []),
             ],
-            modules: sandboxConfig.modules || {},
-            hooks: sandboxConfig.hooks || {},
           };
         }
-        options.openVm = config.open;
+        options.openVm = config.openSandbox;
 
-        if (!config.open) return;
-        // inject Global capture
-        makeElInjector();
-
+        if (!config.openSandbox) return;
         if (appInstance) {
-          // existing
           if (appInstance.vmSandbox) return;
-          const cjsModule = appInstance.getExecScriptEnv(false);
 
-          // webpack
-          const webpackAttrs: PropertyKey[] = [
-            'onerror',
-            'webpackjsonp',
-            '__REACT_ERROR_OVERLAY_GLOBAL_HOOK__',
-          ];
-          if (__DEV__) {
-            webpackAttrs.push('webpackHotUpdate');
-          }
+          compatibleOldModulesType(config);
 
+          // Create sandbox instance
           const sandbox = new Sandbox({
-            namespace: appInfo.name,
-            el: () => appInstance.htmlNode,
             openSandbox: true,
+            namespace: appInfo.name,
             strictIsolation: appInstance.strictIsolation,
-            protectVariable: () => config.protectVariable || [],
-            insulationVariable: () =>
-              webpackAttrs.concat(config?.insulationVariable || []),
-            modules: {
-              cjsModule: () => {
-                return {
-                  override: {
-                    ...cjsModule,
-                  },
-                };
-              },
-            },
-            hooks: {
-              onAppendNode(sandbox, rootEl, el, tag, oldEl) {
-                if (sourceNode(tag)) {
-                  const url = (oldEl as any)?.src || (oldEl as any)?.href;
-                  url && appInstance.sourceList.push(url);
-                }
-              },
+            modules: [
+              () => ({
+                override: appInstance.getExecScriptEnv(false) || {},
+              }),
+              ...(config.modules || []),
+            ],
+
+            el: () => appInstance.htmlNode,
+            protectVariable: config.protectVariable,
+            insulationVariable: () => {
+              return webpackAttrs.concat(config.insulationVariable() || []);
             },
           });
 
           appInstance.vmSandbox = sandbox;
-          appInstance.global = sandbox.context;
-
+          appInstance.global = sandbox.global;
+          // Rewrite `app.execScript`
           appInstance.execScript = (code, env, url, options) => {
             sandbox.execScript(code, env, url, options);
           };
+          // Use `Garfish.loader` instead of the `sandbox.loader`
+          sandbox.loader = Garfish.loader;
+        }
+      },
+
+      afterUnMount(appInfo, appInstance) {
+        if (appInstance.vmSandbox) {
+          // If the app is uninstalled,
+          // the sandbox needs to clear all effects and then reset
+          appInstance.vmSandbox.reset();
         }
       },
     };
     return options;
   };
 }
-
-export { Sandbox } from './sandbox';
-export { Hooks } from './types';

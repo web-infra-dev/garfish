@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 export type mimeType = ReturnType<typeof parseContentType>;
 
 export function parseContentType(input: string) {
@@ -15,8 +14,7 @@ export function parseContentType(input: string) {
   if (type.length === 0 || idx >= input.length) {
     return null;
   }
-
-  // 跳过 '/'
+  // jump over '/'
   idx++;
   while (idx < input.length && input[idx] !== ';') {
     subtype += input[idx];

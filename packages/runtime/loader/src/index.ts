@@ -1,6 +1,7 @@
-import { isJs, isCss, isHtml, error, parseContentType } from '@garfish/utils';
+import { isJs, isCss, isHtml } from '@garfish/utils';
 import { PluginManager } from './pluginSystem';
-import { FileType, AppCacheContainer } from './appCache';
+import { request, copyResult, mergeConfig } from './utils';
+import { FileType, cachedDataSet, AppCacheContainer } from './appCache';
 import { StyleManager } from './managers/style';
 import { TemplateManager } from './managers/template';
 import { ComponentManager } from './managers/component';
@@ -19,60 +20,40 @@ export type Manager =
   | ComponentManager
   | JavaScriptManager;
 
-interface LoaderOptions {
+export interface LoaderOptions {
   maxSize?: number; // The unit is "b"
 }
 
-interface ClearPluginArgs {
+export interface ClearPluginArgs {
   scope: string;
   fileType?: FileType;
 }
 
-interface LoadedPluginArgs<T> {
+export interface LoadedPluginArgs<T> {
   result: Response;
   value: {
     url: string;
     code: string;
-    fileType: FileType;
+    fileType: FileType | '';
     resourceManager: T | null;
   };
 }
 
-interface BeforeLoadPluginArgs {
+export interface BeforeLoadPluginArgs {
   url: string;
   requestConfig: ResponseInit;
 }
 
-const request = async (url: string, config: RequestInit) => {
-  const result = await fetch(url, config || {});
-  // Response codes greater than "400" are regarded as errors
-  if (result.status >= 400) {
-    error(`"${url}" load failed with status "${result.status}"`);
-  }
-  const code = await result.text();
-  const type = result.headers.get('content-type');
-  const mimeType = parseContentType(type);
-  return { code, result, mimeType };
-};
-
-// Compatible with old api
-const mergeConfig = (loader: Loader, url: string) => {
-  const extra = loader.requestConfig;
-  const config = typeof extra === 'function' ? extra(url) : extra;
-  return { mode: 'cors', ...config } as RequestInit;
-};
-
 export class Loader {
+  /**
+   * @deprecated
+   */
+  public requestConfig: RequestInit | ((url: string) => RequestInit);
   public lifecycle = {
     clear: new PluginManager<ClearPluginArgs>('clear'),
     loaded: new PluginManager<LoadedPluginArgs<Manager>>('loaded'),
     beforeLoad: new PluginManager<BeforeLoadPluginArgs>('beforeLoad'),
   };
-
-  /**
-   * @deprecated
-   */
-  public requestConfig: RequestInit | ((url: string) => RequestInit);
 
   private options: LoaderOptions;
   private cacheStore: { [name: string]: AppCacheContainer };
@@ -125,16 +106,30 @@ export class Loader {
     }
 
     if (appCacheContainer.has(url)) {
-      return Promise.resolve(appCacheContainer.get(url));
+      return Promise.resolve(copyResult(appCacheContainer.get(url)));
+    } else {
+      // If other containers have cache
+      for (const key in cacheStore) {
+        const container = cacheStore[key];
+        if (container === appCacheContainer) continue;
+        if (container.has(url)) {
+          const result = container.get(url);
+          cachedDataSet.add(result);
+          appCacheContainer.set(url, result, result.fileType);
+          return Promise.resolve(copyResult(result));
+        }
+      }
     }
 
     const requestConfig = mergeConfig(this, url);
     const resOpts = this.lifecycle.beforeLoad.run({ url, requestConfig });
 
-    loadingList[url] = request(resOpts.url, resOpts.requestConfig).then(
-      async ({ code, mimeType, result }) => {
-        let managerCtor, fileType: FileType;
+    loadingList[url] = request(resOpts.url, resOpts.requestConfig)
+      .finally(() => {
         loadingList[url] = null;
+      })
+      .then(async ({ code, mimeType, result }) => {
+        let managerCtor, fileType: FileType;
 
         if (isComponent) {
           fileType = 'component';
@@ -161,16 +156,15 @@ export class Loader {
           result,
           value: {
             url,
-            code,
-            fileType,
             resourceManager,
+            fileType: fileType || '',
+            code: resourceManager ? '' : code,
           },
         });
 
         appCacheContainer.set(url, data.value, fileType);
-        return data.value;
-      },
-    );
+        return copyResult(data.value as any);
+      });
     return loadingList[url] as any;
   }
 }
