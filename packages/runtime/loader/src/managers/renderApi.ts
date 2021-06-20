@@ -65,7 +65,16 @@ export const DOMApis = {
     return false;
   },
 
-  isPrefetchJsLink(node: Node) {
+  isIconLinkNode(node: Node) {
+    if (this.isNode(node) && node.tagName === 'link') {
+      return !!node.attributes.find(
+        ({ key, value }) => key === 'rel' && value === 'icon',
+      );
+    }
+    return false;
+  },
+
+  isPrefetchJsLinkNode(node: Node) {
     if (!this.isNode(node) || node.tagName !== 'link') return false;
     let hasRelAttr, hasAsAttr;
     for (const { key, value } of node.attributes) {

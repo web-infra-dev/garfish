@@ -425,9 +425,12 @@ export class App {
             );
           }
         }
-        return DOMApis.isPrefetchJsLink(node)
+        // prettier-ignore
+        return DOMApis.isPrefetchJsLinkNode(node)
           ? DOMApis.createScriptCommentNode(node)
-          : DOMApis.createElement(node);
+          : DOMApis.isIconLinkNode(node)
+            ? null // Filter the icon of the child app, and cannot affect the main application
+            : DOMApis.createElement(node);
       },
     };
 
