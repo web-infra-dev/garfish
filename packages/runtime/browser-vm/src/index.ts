@@ -35,6 +35,28 @@ declare module '@garfish/core' {
   }
 }
 
+// webpack
+const webpackAttrs: PropertyKey[] = [
+  'onerror',
+  'webpackjsonp',
+  '__REACT_ERROR_OVERLAY_GLOBAL_HOOK__',
+];
+if (__DEV__) {
+  webpackAttrs.push('webpackHotUpdate');
+}
+
+const compatibleOldModulesType = (config) => {
+  // Compatible with old code
+  if (isObject(config.modules)) {
+    __DEV__ && warn('"vm sandbox" modules should be an array', true);
+    const list = [];
+    for (const key in config.modules) {
+      list.push(config.modules[key]);
+    }
+    config.modules = list;
+  }
+};
+
 // Default export Garfish plugin
 export default function BrowserVm() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
@@ -92,23 +114,7 @@ export default function BrowserVm() {
         if (appInstance) {
           if (appInstance.vmSandbox) return;
 
-          // webpack
-          const webpackAttrs: PropertyKey[] = [
-            'onerror',
-            'webpackjsonp',
-            '__REACT_ERROR_OVERLAY_GLOBAL_HOOK__',
-          ];
-          __DEV__ && webpackAttrs.push('webpackHotUpdate');
-
-          // Compatible with old code
-          if (isObject(config.modules)) {
-            __DEV__ && warn('"vm sandbox" modules should be an array', true);
-            const list = [];
-            for (const key in config.modules) {
-              list.push(config.modules[key]);
-            }
-            config.modules = list;
-          }
+          compatibleOldModulesType(config);
 
           // Create sandbox instance
           const sandbox = new Sandbox({
@@ -124,6 +130,7 @@ export default function BrowserVm() {
               () => ({
                 override: appInstance.getExecScriptEnv(false) || {},
               }),
+              ...(config.modules || []),
             ],
           });
 
