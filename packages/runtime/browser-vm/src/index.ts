@@ -52,7 +52,7 @@ if (__DEV__) {
 const compatibleOldModulesType = (config) => {
   // Compatible with old code
   if (isPlainObject(config.modules)) {
-    __DEV__ && warn('"vm sandbox" modules should be an array', true);
+    __DEV__ && warn('"vm sandbox" modules should be an array');
     const list = [];
     for (const key in config.modules) {
       list.push(config.modules[key]);
