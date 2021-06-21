@@ -66,7 +66,6 @@ export namespace interfaces {
     version: string;
     options: Options;
     appInfos: Record<string, interfaces.AppInfo>;
-    apps: Record<string, interfaces.App>;
     activeApps: Array<interfaces.App>;
     plugins: Array<interfaces.Plugin>;
     channel: EventEmitter;

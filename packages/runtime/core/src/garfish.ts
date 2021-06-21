@@ -36,7 +36,6 @@ export class Garfish implements interfaces.Garfish {
   public externals: Record<string, any> = {};
   public plugins: Array<interfaces.Plugin> = [];
   public activeApps: Array<interfaces.App> = [];
-  public apps: Record<string, interfaces.App> = {};
   public cacheApps: Record<string, interfaces.App> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
   public cacheComponents: Record<string, interfaces.Component> = {};
