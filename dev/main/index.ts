@@ -24,6 +24,7 @@ GarfishInstance.run({
   sandbox: {
     open: true,
     snapshot: false,
+    modules: [],
   },
   // async beforeLoad(appInfo) {
   //   console.log('开始加载了', appInfo);

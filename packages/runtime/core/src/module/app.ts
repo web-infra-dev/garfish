@@ -530,3 +530,5 @@ export class App {
     return provider;
   }
 }
+
+export type AppInterface = App;

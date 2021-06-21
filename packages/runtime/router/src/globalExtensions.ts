@@ -3,11 +3,13 @@ import { RouterInterface } from './context';
 declare module '@garfish/core' {
   export interface Garfish {
     router: RouterInterface;
+    apps: Record<string, interfaces.App>;
   }
 
   export namespace interfaces {
     export interface Garfish {
       router: RouterInterface;
+      apps: Record<string, interfaces.App>;
     }
 
     export interface Config {

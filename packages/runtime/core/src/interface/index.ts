@@ -2,12 +2,12 @@ import { EventEmitter } from 'events';
 import { SyncHook, AsyncSeriesBailHook } from '@garfish/hooks';
 import {
   Loader,
-  StyleManager as StyleManagerInterface,
-  TemplateManager as TemplateManagerInterface,
-  ComponentManager as ComponentManagerInterface,
-  JavaScriptManager as JavaScriptManagerInterface,
+  StyleManager,
+  TemplateManager,
+  ComponentManager,
+  JavaScriptManager,
 } from '@garfish/loader';
-import { App as AppInterface } from '../module/app';
+import { AppInterface } from '../module/app';
 
 export namespace interfaces {
   export type DomGetter = Element | (() => Element | null) | string;
@@ -133,10 +133,10 @@ export namespace interfaces {
     ) => Promise<LoaderResult | void> | LoaderResult | void;
   }
 
-  export type StyleManager = StyleManagerInterface;
-  export type TemplateManager = TemplateManagerInterface;
-  export type ComponentManager = ComponentManagerInterface;
-  export type JavaScriptManager = JavaScriptManagerInterface;
+  export interface StyleManagerInterface extends StyleManager {}
+  export interface TemplateManagerInterface extends TemplateManager {}
+  export interface ComponentManagerInterface extends ComponentManager {}
+  export interface JavaScriptManagerInterface extends JavaScriptManager {}
 
   export type Options = Config & HooksLifecycle;
 

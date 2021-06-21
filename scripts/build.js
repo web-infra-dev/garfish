@@ -81,7 +81,7 @@ async function build(target) {
 
   // Merge .d.ts
   if (mergeTypes && pkg.types) {
-    mergeBuildTypes(pkgDir, target);
+    // mergeBuildTypes(pkgDir, target);
   }
 }
 
