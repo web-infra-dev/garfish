@@ -35,8 +35,8 @@ export class Garfish implements interfaces.Garfish {
   public options = getDefaultOptions();
   public externals: Record<string, any> = {};
   public plugins: Array<interfaces.Plugin> = [];
+  public activeApps: Array<interfaces.App> = [];
   public cacheApps: Record<string, interfaces.App> = {};
-  public activeApps: Record<string, interfaces.App> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
   public cacheComponents: Record<string, interfaces.Component> = {};
   private loading: Record<string, Promise<any> | null> = {};
@@ -128,8 +128,6 @@ export class Garfish implements interfaces.Garfish {
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
     }
 
-    this.injectOptionalPlugin(options);
-
     // register plugins
     options?.plugins?.forEach((pluginCb) => {
       this.usePlugin(this.hooks, pluginCb, this);
@@ -138,6 +136,7 @@ export class Garfish implements interfaces.Garfish {
     this.hooks.lifecycle.beforeBootstrap.call(this.options);
 
     this.setOptions(options);
+    this.injectOptionalPlugin(this.options);
 
     this.running = true;
     this.hooks.lifecycle.bootstrap.call(this.options);
@@ -245,6 +244,7 @@ export class Garfish implements interfaces.Garfish {
               mockTemplateCode,
               entryManager.url,
             );
+            entryManager.setDep(fakeEntryManager.findAllJsNodes()[0]);
             resources.js = [entryManager];
           } else {
             // No other types of entrances are currently supported
@@ -269,7 +269,7 @@ export class Garfish implements interfaces.Garfish {
           this.cacheApps[appName] = appInstance;
         } catch (e) {
           __DEV__ && error(e);
-          this.hooks.lifecycle.errorLoadApp.call(appInfo, e);
+          this.hooks.lifecycle.errorLoadApp.call(e, appInfo);
         } finally {
           this.loading[appName] = null;
         }

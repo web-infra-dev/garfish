@@ -1,7 +1,6 @@
-import { warn, transformUrl } from '@garfish/utils';
+import { warn, Text, transformUrl } from '@garfish/utils';
 import {
   Loader,
-  Text,
   StyleManager,
   TemplateManager,
   JavaScriptManager,
@@ -62,6 +61,7 @@ export const fetchStaticResources = (
         if (src) {
           const fetchUrl = transformUrl(entryManager.url, src);
           const async = entryManager.findAttributeValue(node, 'async');
+
           // Scripts with "async" attribute will make the rendering process very complicated,
           // we have a preload mechanism, so we don’t need to deal with it.
           return loader
@@ -69,7 +69,9 @@ export const fetchStaticResources = (
             .then(({ resourceManager: jsManager }) => {
               jsManager.setDep(node);
               jsManager.setMimeType(type);
-              jsManager.setAsyncAttribute(Boolean(async));
+              jsManager.setAsyncAttribute(
+                typeof async !== 'undefined' && async !== 'false',
+              );
               return jsManager;
             });
         } else if (node.children.length > 0) {

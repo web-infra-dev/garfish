@@ -28,7 +28,12 @@ export function createGetter(sandbox: Sandbox) {
       if (p === 'createElement') {
         return function (tagName, options) {
           const el = value.call(document, tagName, options);
-          isObject(el) && sandboxMap.set(el, sandbox);
+          if (isObject(el)) {
+            sandboxMap.set(el, sandbox);
+            if (__DEV__) {
+              el.__SANDBOX__ = true;
+            }
+          }
           return el;
         };
       }

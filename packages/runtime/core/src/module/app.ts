@@ -1,7 +1,10 @@
-import { Text, DOMApis, StyleManager, TemplateManager } from '@garfish/loader';
+import { StyleManager, TemplateManager } from '@garfish/loader';
 import {
   warn,
   assert,
+  remove,
+  Text,
+  DOMApis,
   isJs,
   isObject,
   isPromise,
@@ -154,28 +157,6 @@ export class App {
     return this.cjsModules;
   }
 
-  private canMount() {
-    // If you are not in mount mount
-    if (this.mounting) {
-      __DEV__ && warn(`The ${this.appInfo.name} app mounting.`);
-      return false;
-    }
-    // If the application has been rendered complete, apply colours to a drawing again, need to destroy the rendering
-    if (this.mounted) {
-      __DEV__ && warn(`The ${this.appInfo.name} app already mounted.`);
-      return false;
-    }
-    // Application in destruction state, the need to destroy completed to render
-    if (this.unmounting) {
-      __DEV__ &&
-        warn(
-          `The ${this.appInfo.name} app is unmounting can't Perform application rendering.`,
-        );
-      return false;
-    }
-    return true;
-  }
-
   show() {
     this.active = true;
     const { display, mounted, provider } = this;
@@ -206,31 +187,36 @@ export class App {
   }
 
   async mount() {
-    if (!this.canMount()) return;
+    if (!this.canMount()) return false;
     this.context.hooks.lifecycle.beforeMount.call(this.appInfo, this);
 
     this.active = true;
     this.mounting = true;
     try {
       // add container and compile js with cjs
-      this.compileAndRenderContainer();
+      const asyncJsProcess = this.compileAndRenderContainer();
 
       // Good provider is set at compile time
       const provider = await this.checkAndGetProvider();
-
       // Existing asynchronous functions need to decide whether the application has been unloaded
       if (!this.stopMountAndClearEffect()) return false;
+
       this.callRender(provider);
       this.display = true;
       this.mounted = true;
+      this.context.activeApps.push(this);
       this.context.hooks.lifecycle.afterMount.call(this.appInfo, this);
+
+      await asyncJsProcess;
+      if (!this.stopMountAndClearEffect()) return false;
     } catch (err) {
       DOMApis.removeElement(this.appContainer);
-      this.context.hooks.lifecycle.errorMount.call(this.appInfo, err);
-      throw err;
+      this.context.hooks.lifecycle.errorMountApp.call(err, this.appInfo);
+      return false;
     } finally {
       this.mounting = false;
     }
+    return true;
   }
 
   unmount() {
@@ -246,12 +232,74 @@ export class App {
     this.unmounting = true;
     this.context.hooks.lifecycle.beforeUnMount.call(this.appInfo, this);
 
-    this.callDestroy(this.provider);
-    this.display = false;
-    this.unmounting = false;
-    this.mounted = false;
+    try {
+      this.callDestroy(this.provider);
+      this.display = false;
+      this.mounted = false;
+      remove(this.context.activeApps, this);
+      this.context.hooks.lifecycle.afterUnMount.call(this.appInfo, this);
+    } catch (err) {
+      remove(this.context.activeApps, this);
+      DOMApis.removeElement(this.appContainer);
+      this.context.hooks.lifecycle.errorUnmountApp.call(err, this.appInfo);
+      return false;
+    } finally {
+      this.unmounting = false;
+    }
+    return true;
+  }
 
-    this.context.hooks.lifecycle.afterUnMount.call(this.appInfo, this);
+  // Performs js resources provided by the module, finally get the content of the export
+  compileAndRenderContainer() {
+    // Render the application node
+    // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
+    this.renderTemplate();
+
+    // Execute asynchronous script
+    return new Promise<void>((resolve) => {
+      // Asynchronous script does not block the rendering process
+      setTimeout(() => {
+        if (this.stopMountAndClearEffect()) {
+          for (const jsManager of this.resources.js) {
+            if (jsManager.async) {
+              try {
+                this.execScript(jsManager.scriptCode, {}, jsManager.url, {
+                  async: false,
+                  noEntry: true,
+                });
+              } catch (err) {
+                this.context.hooks.lifecycle.errorMountApp.call(
+                  err,
+                  this.appInfo,
+                );
+              }
+            }
+          }
+        }
+        resolve();
+      });
+    });
+  }
+
+  private canMount() {
+    // If you are not in mount mount
+    if (this.mounting) {
+      __DEV__ && warn(`The ${this.appInfo.name} app mounting.`);
+      return false;
+    }
+    // If the application has been rendered complete, apply colours to a drawing again, need to destroy the rendering
+    if (this.mounted) {
+      __DEV__ && warn(`The ${this.appInfo.name} app already mounted.`);
+      return false;
+    }
+    // Application in destruction state, the need to destroy completed to render
+    if (this.unmounting) {
+      __DEV__ &&
+        warn(
+          `The ${this.appInfo.name} app is unmounting can't Perform application rendering.`,
+        );
+      return false;
+    }
     return true;
   }
 
@@ -272,28 +320,6 @@ export class App {
       return false;
     }
     return true;
-  }
-
-  // Performs js resources provided by the module, finally get the content of the export
-  public compileAndRenderContainer() {
-    // Render the application node
-    // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
-    this.renderTemplate();
-
-    // Execute asynchronous script
-    for (const jsManager of this.resources.js) {
-      if (jsManager.async) {
-        // Asynchronous script does not block the rendering process
-        try {
-          this.execScript(jsManager.scriptCode, {}, jsManager.url, {
-            async: false,
-            noEntry: true,
-          });
-        } catch (err) {
-          console.error(err);
-        }
-      }
-    }
   }
 
   // Calls to render do compatible with two different sandbox
@@ -398,7 +424,7 @@ export class App {
           });
         } else if (__DEV__) {
           const async = entryManager.findAttributeValue(node, 'async');
-          if (!async) {
+          if (typeof async === 'undefined' || async === 'false') {
             const tipInfo = JSON.stringify(node, null, 2);
             warn(
               `The current js node cannot be found, maybe this is a bug.\n\n ${tipInfo}`,

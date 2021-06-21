@@ -1,10 +1,11 @@
-import { DOMApis, StyleManager, JavaScriptManager } from '@garfish/loader';
+import { StyleManager, JavaScriptManager } from '@garfish/loader';
 import {
   def,
   warn,
   isJs,
   isCss,
   makeMap,
+  DOMApis,
   findTarget,
   transformUrl,
   sourceListTags,

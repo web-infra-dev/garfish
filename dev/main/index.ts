@@ -16,7 +16,7 @@ GarfishInstance.run({
       name: 'vue',
       activeWhen: '/vue',
       // cache: true,
-      entry: 'http://localhost:9090',
+      entry: 'http://localhost:8001',
     },
   ],
   autoRefreshApp: false,
@@ -25,15 +25,15 @@ GarfishInstance.run({
     open: true,
     snapshot: false,
   },
-  async beforeLoad(appInfo) {
-    console.log('开始加载了', appInfo);
-    // test async load
-    return new Promise<any>((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 2000);
-    });
-  },
+  // async beforeLoad(appInfo) {
+  //   console.log('开始加载了', appInfo);
+  //   // test async load
+  //   return new Promise<any>((resolve) => {
+  //     setTimeout(() => {
+  //       resolve(true);
+  //     }, 2000);
+  //   });
+  // },
   // beforeMount (appInfo) {
   //   console.log('开始渲染', appInfo);
   // }
@@ -41,13 +41,13 @@ GarfishInstance.run({
 
 console.log(GarfishInstance);
 
-const useRouterMode = true;
+const useRouterMode = false;
 document.getElementById('vueBtn').onclick = async () => {
   if (useRouterMode) {
     history.pushState({}, 'vue', '/garfish_master/vue'); // use router to load app
   } else {
     let prevApp = await GarfishInstance.loadApp('vue', {
-      entry: 'http://localhost:3000',
+      entry: 'http://localhost:8001',
       domGetter: '#submoduleByCunstom',
     });
     console.log(prevApp);
