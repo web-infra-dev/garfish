@@ -1,29 +1,12 @@
 import { SnapshotSandbox } from './sandbox';
 import { interfaces } from '@garfish/core';
+import './globalExtensions';
 
 export interface SandboxConfig {
   open?: boolean;
   snapshot?: boolean;
   useStrict?: boolean;
   strictIsolation?: boolean;
-}
-
-declare module '@garfish/core' {
-  export namespace interfaces {
-    export interface Config {
-      protectVariable?: PropertyKey[];
-      insulationVariable?: PropertyKey[];
-      sandbox?: SandboxConfig;
-    }
-
-    export interface App {
-      snapshotSandbox?: SnapshotSandbox;
-    }
-
-    export interface Plugin {
-      openBrowser?: boolean;
-    }
-  }
 }
 
 interface BrowserConfig {

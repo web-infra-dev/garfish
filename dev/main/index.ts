@@ -1,10 +1,4 @@
-/// <reference types="@garfish/core" />
-/// <reference types="@garfish/browser-vm" />
-/// <reference types="@garfish/browser-snapshot" />
-/// <reference types="@garfish/router" />
 import GarfishInstance from '@garfish/framework';
-import GarfishCore from '@garfish/core';
-import GarfishRouter from '@garfish/router';
 
 (window as any).__GARFISH_PARENT__ = true;
 

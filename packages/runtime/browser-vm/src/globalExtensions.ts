@@ -19,7 +19,6 @@ declare module '@garfish/core' {
 
     export interface SandboxConfig {
       modules?: Array<Module>;
-      someting: boolean;
     }
 
     export interface Config {
