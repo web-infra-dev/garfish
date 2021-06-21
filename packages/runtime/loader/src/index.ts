@@ -12,7 +12,6 @@ export * from './managers/style';
 export * from './managers/template';
 export * from './managers/component';
 export * from './managers/javascript';
-export * from './managers/renderApi';
 
 export type Manager =
   | StyleManager

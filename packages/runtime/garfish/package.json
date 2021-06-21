@@ -4,7 +4,11 @@
   "description": "garfish module.",
   "keywords": [
     "garfish",
-    "garfish"
+    "micro frontend",
+    "microfrontend",
+    "micro frontends",
+    "micro-frontend",
+    "micro-frontends"
   ],
   "author": "zhoushaw <codingzx@gmail.com>",
   "homepage": "https://github.com/bytedance/garfish",

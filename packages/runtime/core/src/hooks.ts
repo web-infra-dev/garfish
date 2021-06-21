@@ -28,7 +28,6 @@ export class Hooks {
         'resources',
         'isHtmlMode',
       ]),
-      errorLoadApp: new SyncHook(['appInfo', 'error']),
       beforeEval: new SyncHook([
         'appInfo',
         'code',
@@ -45,9 +44,11 @@ export class Hooks {
       ]),
       beforeMount: new SyncHook(['appInfo', 'appInstance']),
       afterMount: new SyncHook(['appInfo', 'appInstance']),
-      errorMount: new SyncHook(['appInfo', 'error']),
       beforeUnMount: new SyncHook(['appInfo', 'appInstance']),
       afterUnMount: new SyncHook(['appInfo', 'appInstance']),
+      errorLoadApp: new SyncHook(['appInfo', 'error']),
+      errorMountApp: new SyncHook(['appInfo', 'error']),
+      errorUnmountApp: new SyncHook(['appInfo', 'error']),
       errorExecCode: new SyncHook(['appInfo', 'error']),
     };
 

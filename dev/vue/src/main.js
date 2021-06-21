@@ -53,8 +53,8 @@ Vue.config.productionTip = false;
 // console.log(audio instanceof Audio);
 let vm;
 const render = ({ dom, basename = '/' }) => {
-  console.log('be here', dom);
-  if (!dom) return;
+  // console.log('be here', dom);
+  // if (!dom) return;
   // console.log('##########3', basename);
   const router = new VueRouter({
     mode: 'history',
@@ -72,6 +72,7 @@ const render = ({ dom, basename = '/' }) => {
     router,
     render: (h) => h(App, { props: { basename } }),
   }).$mount();
+
   (dom || document).querySelector('#app').appendChild(vm.$el);
   // console.log('#######', dom.querySelector('#app'));
   // document.addEventListener('resize', () => console.log(1));
@@ -81,11 +82,12 @@ const render = ({ dom, basename = '/' }) => {
 // console.log(document.body.contains(document.querySelector('#app')));
 
 // 这能够让子应用独立运行起来
-if (!window.__GARFISH__PARENT__) {
+if (!window.__GARFISH__) {
   render({});
 }
 
 export function provider({ basename, dom }) {
+  console.log(1111, 'provider');
   return {
     render: () => render({ basename, dom }),
     destroy() {

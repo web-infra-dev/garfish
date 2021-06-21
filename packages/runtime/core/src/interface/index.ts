@@ -66,7 +66,7 @@ export namespace interfaces {
     version: string;
     options: Options;
     appInfos: Record<string, interfaces.AppInfo>;
-    activeApps: Record<string, interfaces.App>;
+    activeApps: Array<interfaces.App>;
     plugins: Array<interfaces.Plugin>;
     channel: EventEmitter;
     loader: Loader;
@@ -204,7 +204,6 @@ export namespace interfaces {
       [AppInfo, TemplateManagerInterface, interfaces.ResourceModules],
       void | boolean
     >;
-    errorLoadApp: SyncHook<[AppInfo, Error], void>;
     beforeEval: SyncHook<
       [
         AppInfo,
@@ -227,9 +226,11 @@ export namespace interfaces {
     >;
     beforeMount: SyncHook<[AppInfo, interfaces.App], void>;
     afterMount: SyncHook<[AppInfo, interfaces.App], void>;
-    errorMount: SyncHook<[AppInfo, Error], void>;
     beforeUnMount: SyncHook<[AppInfo, interfaces.App], void>;
     afterUnMount: SyncHook<[AppInfo, interfaces.App], void>;
+    errorLoadApp: SyncHook<[Error, AppInfo], void>;
+    errorMountApp: SyncHook<[Error, AppInfo], void>;
+    errorUnmountApp: SyncHook<[Error, AppInfo], void>;
     errorExecCode: SyncHook<[AppInfo, Error], void>;
   }
 

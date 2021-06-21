@@ -14,11 +14,13 @@ interface Options {
 declare module '@garfish/core' {
   export interface Garfish {
     router: RouterInterface;
+    apps: Record<string, interfaces.App>;
   }
 
   export namespace interfaces {
     export interface Garfish {
       router: RouterInterface;
+      apps: Record<string, interfaces.App>;
     }
 
     export interface Config {
@@ -37,7 +39,9 @@ declare module '@garfish/core' {
 
 export default function Router(_args?: Options) {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
+    Garfish.apps = {};
     Garfish.router = router;
+
     return {
       name: 'router',
       version: __VERSION__,
@@ -70,7 +74,7 @@ export default function Router(_args?: Options) {
             return fn.call(app);
           };
 
-          Garfish.activeApps[name] = app;
+          Garfish.apps[name] = app;
           unmounts[name] = () => call(app, false);
 
           if (currentApp === activeApp) {
@@ -85,7 +89,7 @@ export default function Router(_args?: Options) {
 
           const unmount = unmounts[name];
           unmount && unmount();
-          delete Garfish.activeApps[name];
+          delete Garfish.apps[name];
         }
 
         const appList = apps.filter(

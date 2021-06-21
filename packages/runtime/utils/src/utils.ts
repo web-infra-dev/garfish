@@ -33,18 +33,21 @@ export function def(obj: Object, key: string, value: any) {
         }
       }
     },
-    // 测试环境允许 delete
     configurable: __DEV__ ? true : false,
   });
 }
 
-// 数组变为对象 `['a'] => { a: true }`
+// Array to Object `['a'] => { a: true }`
 export function makeMap(list: Array<PropertyKey>) {
   const map = Object.create(null);
   for (let i = 0; i < list.length; i++) {
     map[list[i]] = true;
   }
   return (val) => map[val] as boolean;
+}
+
+export function inBrowser() {
+  return typeof window !== 'undefined';
 }
 
 const warnPrefix = '[Garfish warning]';
@@ -84,14 +87,6 @@ export function error(error: string | Error) {
   });
 }
 
-// 将字符串被设置为对象属性名时，会被尝试改造为常量化版本，避免浏览器重复产生缓存
-export function internFunc(internalizeString) {
-  //  暂时不考虑Hash-collision，https://en.wikipedia.org/wiki/Collision_(computer_science)。v8貌似在16383长度时会发生hash-collision，经过测试后发现正常
-  const temporaryOb = {};
-  temporaryOb[internalizeString] = true;
-  return Object.keys(temporaryOb)[0];
-}
-
 export function validURL(str) {
   const pattern = new RegExp(
     '^(https?:\\/\\/)?' + // protocol
@@ -105,9 +100,19 @@ export function validURL(str) {
   return !!pattern.test(str);
 }
 
+// When the string is set as the object property name,
+// it will be attempted to be transformed into a constant version to avoid repeated caching by the browser
+export function internFunc(internalizeString) {
+  // Don't consider "Hash-collision，https://en.wikipedia.org/wiki/Collision_(computer_science)"
+  // v8貌似在 16383 长度时会发生 hash-collision，经过测试后发现正常
+  const temporaryOb = {};
+  temporaryOb[internalizeString] = true;
+  return Object.keys(temporaryOb)[0];
+}
+
 export function evalWithEnv(code: string, params: Record<string, any>) {
   const keys = Object.keys(params);
-  // 不可使用随机值，否则无法作为常量字符串复用
+  // No random value can be used, otherwise it cannot be reused as a constant string
   const randomValKey = '__garfish__exec_temporary__';
   const vales = keys.map((k) => `window.${randomValKey}.${k}`);
   try {
@@ -157,12 +162,6 @@ export function remove<T>(list: Array<T> | Set<T>, el: T) {
   }
 }
 
-export function mixins(...list) {
-  return function (target) {
-    Object.assign(target.prototype, ...list);
-  };
-}
-
 // 有些测试 jest.mock 不好测，可用这个工具方法
 export function callTestCallback(obj: any, ...args: any[]) {
   if (__TEST__) {
@@ -199,44 +198,43 @@ export function isPrimitive(val: any) {
   );
 }
 
-// 深度合并两个对象，能处理循环引用，后面的覆盖前面的，可选数组去重
+// Deeply merge two objects, can handle circular references, the latter overwrite the previous
 export function deepMerge<K, T>(o: K, n: T, dp?: boolean) {
-  const lRecord = new WeakMap();
-  const rRecord = new WeakMap();
-  const vRecord = new WeakMap();
+  const leftRecord = new WeakMap();
+  const rightRecord = new WeakMap();
+  const valueRecord = new WeakMap();
 
   const isArray = Array.isArray;
   const isAllRefs = (a, b) => {
-    // 判断 merge 左右两边，不需要用到 vRecord
-    if (lRecord.has(a) || rRecord.has(a)) {
-      return lRecord.has(b) || rRecord.has(b);
+    if (leftRecord.has(a) || rightRecord.has(a)) {
+      return leftRecord.has(b) || rightRecord.has(b);
     }
   };
 
   const clone = (v) => {
-    // 深拷贝
+    // Deep clone
     if (isPrimitive(v) || typeof v === 'function') {
       return v;
-    } else if (vRecord.has(v)) {
-      return vRecord.get(v);
-    } else if (lRecord.has(v)) {
-      return lRecord.get(v);
-    } else if (rRecord.has(v)) {
-      return rRecord.get(v);
+    } else if (valueRecord.has(v)) {
+      return valueRecord.get(v);
+    } else if (leftRecord.has(v)) {
+      return leftRecord.get(v);
+    } else if (rightRecord.has(v)) {
+      return rightRecord.get(v);
     } else if (isArray(v)) {
       if (dp) v = unique(v);
-      const res = [];
-      vRecord.set(v, res);
+      const arr = [];
+      valueRecord.set(v, arr);
       for (let i = 0, len = v.length; i < len; i++) {
-        res[i] = clone(v[i]);
+        arr[i] = clone(v[i]);
       }
-      return res;
+      return arr;
     } else if (typeof v === 'object') {
-      const res = {};
-      vRecord.set(v, res);
+      const obj = {};
+      valueRecord.set(v, obj);
       const keys = Reflect.ownKeys(v);
-      keys.forEach((key) => (res[key] = clone(v[key])));
-      return res;
+      keys.forEach((key) => (obj[key] = clone(v[key])));
+      return obj;
     }
   };
 
@@ -254,13 +252,13 @@ export function deepMerge<K, T>(o: K, n: T, dp?: boolean) {
 
   const mergeObject = (l, r) => {
     const res = {};
-    const lkeys = Reflect.ownKeys(l);
-    const rkeys = Reflect.ownKeys(r);
+    const leftKeys = Reflect.ownKeys(l);
+    const rightKeys = Reflect.ownKeys(r);
 
-    lRecord.set(l, res);
-    rRecord.set(r, res);
+    leftRecord.set(l, res);
+    rightRecord.set(r, res);
 
-    lkeys.forEach((key) => {
+    leftKeys.forEach((key) => {
       const lv = l[key];
       const rv = r[key];
 
@@ -270,19 +268,19 @@ export function deepMerge<K, T>(o: K, n: T, dp?: boolean) {
           res[key] = dp ? unique(item) : item;
         } else if (isPlainObject(lv) && isPlainObject(rv)) {
           res[key] = isAllRefs(lv, rv)
-            ? lRecord.get(lv) // 左边右边同一个值，取哪个都行
+            ? leftRecord.get(lv) // The same value on the left and right, whichever is OK
             : mergeObject(lv, rv);
         } else {
-          res[key] = setValue(rRecord, rv);
+          res[key] = setValue(rightRecord, rv);
         }
       } else {
-        res[key] = setValue(lRecord, lv);
+        res[key] = setValue(leftRecord, lv);
       }
     });
 
-    rkeys.forEach((key) => {
+    rightKeys.forEach((key) => {
       if (hasOwn(res, key)) return;
-      res[key] = setValue(rRecord, r[key]);
+      res[key] = setValue(rightRecord, r[key]);
     });
 
     return res;
@@ -291,6 +289,72 @@ export function deepMerge<K, T>(o: K, n: T, dp?: boolean) {
   return mergeObject(o, n) as K & T;
 }
 
-export function inBrowser() {
-  return typeof window !== 'undefined';
+// Scheme: https://tools.ietf.org/html/rfc3986#section-3.1
+// Absolute URL: https://tools.ietf.org/html/rfc3986#section-4.3
+export function isAbsolute(url: string) {
+  // `c:\\` 这种 case 返回 false，在浏览器中使用本地图片，应该用 file 协议
+  if (!/^[a-zA-Z]:\\/.test(url)) {
+    if (/^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(url)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function transformUrl(resolvePath: string, curPath: string) {
+  const baseUrl = new URL(resolvePath, location.href);
+  const realPath = new URL(curPath, baseUrl.href);
+  return realPath.href;
+}
+
+export function findTarget(
+  el: Element | ShadowRoot | Document,
+  selectors: Array<string>,
+) {
+  for (const s of selectors) {
+    const target = el.querySelector(s);
+    if (target) return target;
+  }
+  return el;
+}
+
+export function setDocCurrentScript(
+  target,
+  code: string,
+  define?: boolean,
+  url?: string,
+  async?: boolean,
+) {
+  if (!target) return noop;
+  const el = document.createElement('script');
+  if (async) {
+    el.setAttribute('async', 'true');
+  }
+
+  if (url) {
+    el.setAttribute('src', url);
+  } else if (code) {
+    el.textContent = code;
+  }
+
+  const set = (val) => {
+    try {
+      if (define) {
+        Object.defineProperty(target, 'currentScript', {
+          value: val,
+          writable: true,
+          configurable: true,
+        });
+      } else {
+        target.currentScript = val;
+      }
+    } catch (e) {
+      if (__DEV__) {
+        warn(e);
+      }
+    }
+  };
+
+  set(el);
+  return () => set(null);
 }

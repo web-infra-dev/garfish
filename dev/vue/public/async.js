@@ -1,3 +1,1 @@
-console.log('async');
-
-throw 121;
+throw new Error('async error');

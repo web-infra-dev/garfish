@@ -1,4 +1,4 @@
-import { Node } from './renderApi';
+import { Node } from '@garfish/utils';
 
 // Maybe we can convert "esModule" to "commonjs" in the future
 export class JavaScriptManager {
