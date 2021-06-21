@@ -2,6 +2,7 @@ import { StyleManager, TemplateManager } from '@garfish/loader';
 import {
   warn,
   assert,
+  remove,
   Text,
   DOMApis,
   isJs,
@@ -193,8 +194,7 @@ export class App {
     this.mounting = true;
     try {
       // add container and compile js with cjs
-      await this.compileAndRenderContainer();
-      if (!this.stopMountAndClearEffect()) return false;
+      const asyncJsProcess = this.compileAndRenderContainer();
 
       // Good provider is set at compile time
       const provider = await this.checkAndGetProvider();
@@ -204,10 +204,14 @@ export class App {
       this.callRender(provider);
       this.display = true;
       this.mounted = true;
+      this.context.activeApps.push(this);
       this.context.hooks.lifecycle.afterMount.call(this.appInfo, this);
+
+      await asyncJsProcess;
+      if (!this.stopMountAndClearEffect()) return false;
     } catch (err) {
       DOMApis.removeElement(this.appContainer);
-      this.context.hooks.lifecycle.errorMount.call(this.appInfo, err);
+      this.context.hooks.lifecycle.errorMountApp.call(err, this.appInfo);
       return false;
     } finally {
       this.mounting = false;
@@ -232,10 +236,12 @@ export class App {
       this.callDestroy(this.provider);
       this.display = false;
       this.mounted = false;
+      remove(this.context.activeApps, this);
       this.context.hooks.lifecycle.afterUnMount.call(this.appInfo, this);
     } catch (err) {
+      remove(this.context.activeApps, this);
       DOMApis.removeElement(this.appContainer);
-      this.context.hooks.lifecycle.errorMountApp.call(this.appInfo, err);
+      this.context.hooks.lifecycle.errorUnmountApp.call(err, this.appInfo);
       return false;
     } finally {
       this.unmounting = false;
@@ -256,10 +262,17 @@ export class App {
         if (this.stopMountAndClearEffect()) {
           for (const jsManager of this.resources.js) {
             if (jsManager.async) {
-              this.execScript(jsManager.scriptCode, {}, jsManager.url, {
-                async: false,
-                noEntry: true,
-              });
+              try {
+                this.execScript(jsManager.scriptCode, {}, jsManager.url, {
+                  async: false,
+                  noEntry: true,
+                });
+              } catch (err) {
+                this.context.hooks.lifecycle.errorMountApp.call(
+                  err,
+                  this.appInfo,
+                );
+              }
             }
           }
         }
@@ -411,7 +424,7 @@ export class App {
           });
         } else if (__DEV__) {
           const async = entryManager.findAttributeValue(node, 'async');
-          if (!async) {
+          if (typeof async === 'undefined' || async === 'false') {
             const tipInfo = JSON.stringify(node, null, 2);
             warn(
               `The current js node cannot be found, maybe this is a bug.\n\n ${tipInfo}`,

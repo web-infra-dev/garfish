@@ -70,7 +70,7 @@ export default function Router(_args?: Options) {
             return fn.call(app);
           };
 
-          Garfish.activeApps[name] = app;
+          Garfish.apps[name] = app;
           unmounts[name] = () => call(app, false);
 
           if (currentApp === activeApp) {
@@ -85,7 +85,7 @@ export default function Router(_args?: Options) {
 
           const unmount = unmounts[name];
           unmount && unmount();
-          delete Garfish.activeApps[name];
+          delete Garfish.apps[name];
         }
 
         const appList = apps.filter(

@@ -155,6 +155,16 @@ export default function BrowserVm() {
           appInstance.vmSandbox.reset();
         }
       },
+
+      afterMount(appInfo, appInstance) {
+        if (appInstance.vmSandbox) {
+          (appInstance.vmSandbox as Sandbox).execScript(`
+            if (typeof window.onload === 'function') {
+              window.onload.call(window);
+            }
+          `);
+        }
+      },
     };
     return options;
   };

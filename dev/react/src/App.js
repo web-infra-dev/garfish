@@ -31,6 +31,8 @@ function App() {
     window.a.b.c = 1;
   };
 
+  console.log(12121);
+  debugger;
   return (
     <div className="App">
       <Button type="primary" onClick={showModal}>
