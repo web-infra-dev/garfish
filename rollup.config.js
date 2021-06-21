@@ -211,7 +211,7 @@ function createConfig(format, output, plugins = []) {
       ),
       ...nodePlugins,
       ...plugins,
-      extractTsDeclare(),
+      // extractTsDeclare(),
     ],
     treeshake: { moduleSideEffects: true },
     // 可以裸跑在浏览器里面的或者指定了不需要 external 的都需要把依赖打进去

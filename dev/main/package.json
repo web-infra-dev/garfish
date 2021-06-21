@@ -23,6 +23,9 @@
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "@garfish/framework": "0.0.8",
+    "@garfish/browser-snapshot": "^0.0.9-alpha.13",
+    "@garfish/browser-vm": "^0.0.9-alpha.13",
+    "@garfish/router": "^0.0.9-alpha.9",
     "webpack-dev-server": "^3.9.0"
   },
   "publishConfig": {

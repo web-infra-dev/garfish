@@ -1,4 +1,10 @@
+/// <reference types="@garfish/core" />
+/// <reference types="@garfish/browser-vm" />
+/// <reference types="@garfish/browser-snapshot" />
+/// <reference types="@garfish/router" />
 import GarfishInstance from '@garfish/framework';
+import GarfishCore from '@garfish/core';
+import GarfishRouter from '@garfish/router';
 
 (window as any).__GARFISH_PARENT__ = true;
 
@@ -19,11 +25,11 @@ GarfishInstance.run({
       entry: 'http://localhost:9090',
     },
   ],
-  // disablePreloadApp: true,
+  autoRefreshApp: false,
+  disablePreloadApp: true,
   sandbox: {
     open: true,
     snapshot: false,
-    // modules: [],
   },
   async beforeLoad(appInfo) {
     console.log('开始加载了', appInfo);

@@ -74,3 +74,5 @@ export default function BrowserSnapshot(op?: BrowserConfig) {
     return options;
   };
 }
+
+export { SnapshotSandbox } from './sandbox';
