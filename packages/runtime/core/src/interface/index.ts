@@ -102,8 +102,8 @@ export namespace interfaces {
     props?: Record<string, any>;
     disableStatistics?: boolean;
     disablePreloadApp?: boolean;
-    onNotMatchRouter?: (path: string) => Promise<void> | void;
-    autoRefreshApp?: boolean;
+    // onNotMatchRouter?: (path: string) => Promise<void> | void;
+    // autoRefreshApp?: boolean;
     domGetter?: DomGetter;
     nested?: boolean;
   }
