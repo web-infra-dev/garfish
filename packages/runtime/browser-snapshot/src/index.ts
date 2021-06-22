@@ -28,7 +28,7 @@ export default function BrowserSnapshot(op?: BrowserConfig) {
         if (sandboxConfig) {
           config.open = sandboxConfig?.open && sandboxConfig?.snapshot === true;
           config.protectVariable = [
-            ...Garfish?.options?.protectVariable,
+            ...(Garfish?.options.protectVariable || []),
             ...(appInfo.protectVariable || []),
           ];
         }
