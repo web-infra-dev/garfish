@@ -4,7 +4,7 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "packages/core/*"
+      "packages/runtime/*"
     ]
   },
   "description": "a powerful micro front-end framework",

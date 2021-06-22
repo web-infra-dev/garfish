@@ -17,7 +17,6 @@ import { rootElm, sandboxMap, handlerParams } from './utils';
 
 const rawElementMethods = Object.create(null);
 const isInsertMethod = makeMap(['insertBefore', 'insertAdjacentElement']);
-
 const mountElementMethods = [
   'append',
   'appendChild',
@@ -25,120 +24,200 @@ const mountElementMethods = [
   'insertAdjacentElement',
 ];
 
-const fixResourceNodeUrl = (el: any, baseUrl: string) => {
-  const src = el.getAttribute('src');
-  const href = el.getAttribute('href');
-  src && (el.src = transformUrl(baseUrl, src));
-  href && (el.href = transformUrl(baseUrl, href));
-};
+class DynamicNodeManager {
+  private el: any; // any Element
+  private sandbox: Sandbox;
+  private methodName: string;
+  private nativeAppend: Function;
+  private rootElement: Element | ShadowRoot | Document;
 
-// Put it in the next macro task to ensure that the current synchronization script is executed
-const dispatchEvent = (el: Element, type: string) => {
-  setTimeout(() => {
-    const event: Event & { garfish?: boolean } = new Event(type);
-    event.garfish = true;
-    Object.defineProperty(event, 'target', { value: el });
-    el.dispatchEvent(event);
-  });
-};
+  constructor(el, sandbox, methodName) {
+    this.el = el;
+    this.sandbox = sandbox;
+    this.methodName = methodName;
+    this.nativeAppend = rawElementMethods['appendChild'];
+    this.rootElement = rootElm(this.sandbox) || document;
+  }
 
-// Load dynamic link node
-const addDynamicLinkNode = (
-  sandbox: Sandbox,
-  el: HTMLLinkElement,
-  callback: (styleNode: HTMLStyleElement) => void,
-) => {
-  const { href, type } = el;
-
-  if (!type || isCss(parseContentType(type))) {
-    if (href) {
-      const { baseUrl, namespace = '' } = sandbox.options;
-      const fetchUrl = baseUrl ? transformUrl(baseUrl, href) : href;
-
-      sandbox.loader
-        .load<StyleManager>(namespace, fetchUrl)
-        .then(({ resourceManager: styleManager }) => {
-          dispatchEvent(el, 'load');
-          styleManager.correctPath();
-          callback(styleManager.renderAsStyleElement());
-          return;
-        })
-        .catch((e) => {
-          __DEV__ && warn(e);
-          dispatchEvent(el, 'error');
-        });
-    }
-  } else {
-    if (__DEV__) {
-      warn(`Invalid resource type "${type}", "${href}"`);
+  private fixResourceNodeUrl() {
+    const baseUrl = this.sandbox.options.baseUrl;
+    if (baseUrl) {
+      const src = this.el.getAttribute('src');
+      const href = this.el.getAttribute('href');
+      src && (this.el.src = transformUrl(baseUrl, src));
+      href && (this.el.href = transformUrl(baseUrl, href));
     }
   }
-  return DOMApis.createLinkCommentNode(href) as Comment;
-};
 
-// Load dynamic js script
-const addDynamicScriptNode = (sandbox: Sandbox, el: HTMLScriptElement) => {
-  const { src, type } = el;
-  const code = el.textContent || el.text || '';
-
-  if (!type || isJs(parseContentType(type))) {
-    // The "src" higher priority
-    if (src) {
-      const { baseUrl, namespace = '' } = sandbox.options;
-      const fetchUrl = baseUrl ? transformUrl(baseUrl, src) : src;
-
-      sandbox.loader
-        .load<JavaScriptManager>(namespace, fetchUrl)
-        .then(({ resourceManager: { url, scriptCode } }) => {
-          dispatchEvent(el, 'load');
-          sandbox.execScript(scriptCode, {}, url, { noEntry: true });
-        })
-        .catch((e) => {
-          __DEV__ && warn(e);
-          dispatchEvent(el, 'error');
-        });
-    } else if (code) {
-      sandbox.execScript(code, {}, '', { noEntry: true });
-    }
-  } else {
-    if (__DEV__) {
-      warn(
-        type === 'module'
-          ? `Does not support "esm" module script in sandbox. "${src}"`
-          : `Invalid resource type "${type}", "${src}"`,
-      );
-    }
+  // Put it in the next macro task to ensure that the current synchronization script is executed
+  private dispatchEvent(type: string) {
+    setTimeout(() => {
+      const event: Event & { garfish?: boolean } = new Event(type);
+      event.garfish = true;
+      Object.defineProperty(event, 'target', { value: this.el });
+      this.el.dispatchEvent(event);
+    });
   }
-  return DOMApis.createScriptCommentNode({ src, code });
-};
 
-// When append an empty link node and then add href attribute
-const monitorChangesOfLinkNode = (
-  sandbox: Sandbox,
-  el: HTMLLinkElement & { modifyTag: boolean },
-) => {
-  if (el.modifyTag) return;
+  // Load dynamic link node
+  private addDynamicLinkNode(callback: (styleNode: HTMLStyleElement) => void) {
+    const { href, type } = this.el;
 
-  const mutator = new MutationObserver((mutations) => {
-    if (el.modifyTag) return;
-    for (const { type, attributeName } of mutations) {
-      if (type === 'attributes') {
-        if (attributeName === 'rel' || attributeName === 'stylesheet') {
-          if (el.modifyTag) return;
-          if (el.rel === 'stylesheet' && el.href) {
-            el.disabled = el.modifyTag = true;
-            const commentNode = addDynamicLinkNode(sandbox, el, (styleNode) => {
-              commentNode.parentNode?.replaceChild(styleNode, commentNode);
-            });
-            el.parentNode?.replaceChild(commentNode, el);
+    if (!type || isCss(parseContentType(type))) {
+      if (href) {
+        const { baseUrl, namespace = '' } = this.sandbox.options;
+        const fetchUrl = baseUrl ? transformUrl(baseUrl, href) : href;
+
+        this.sandbox.loader
+          .load<StyleManager>(namespace, fetchUrl)
+          .then(({ resourceManager: styleManager }) => {
+            this.dispatchEvent('load');
+            styleManager.correctPath();
+            callback(styleManager.renderAsStyleElement());
+            return;
+          })
+          .catch((e) => {
+            __DEV__ && warn(e);
+            this.dispatchEvent('error');
+          });
+      }
+    } else {
+      if (__DEV__) {
+        warn(`Invalid resource type "${type}", "${href}"`);
+      }
+    }
+    return DOMApis.createLinkCommentNode(href) as Comment;
+  }
+
+  // Load dynamic js script
+  private addDynamicScriptNode() {
+    const { src, type } = this.el;
+    const code = this.el.textContent || this.el.text || '';
+
+    if (!type || isJs(parseContentType(type))) {
+      // The "src" higher priority
+      if (src) {
+        const { baseUrl, namespace = '' } = this.sandbox.options;
+        const fetchUrl = baseUrl ? transformUrl(baseUrl, src) : src;
+
+        this.sandbox.loader
+          .load<JavaScriptManager>(namespace, fetchUrl)
+          .then(({ resourceManager: { url, scriptCode } }) => {
+            this.dispatchEvent('load');
+            this.sandbox.execScript(scriptCode, {}, url, { noEntry: true });
+          })
+          .catch((e) => {
+            __DEV__ && warn(e);
+            this.dispatchEvent('error');
+          });
+      } else if (code) {
+        this.sandbox.execScript(code, {}, '', { noEntry: true });
+      }
+    } else {
+      if (__DEV__) {
+        warn(
+          type === 'module'
+            ? `Does not support "esm" module script in sandbox. "${src}"`
+            : `Invalid resource type "${type}", "${src}"`,
+        );
+      }
+    }
+    return DOMApis.createScriptCommentNode({ src, code });
+  }
+
+  // When append an empty link node and then add href attribute
+  private monitorChangesOfLinkNode() {
+    if (this.el.modifyTag) return;
+
+    const mutator = new MutationObserver((mutations) => {
+      if (this.el.modifyTag) return;
+      for (const { type, attributeName } of mutations) {
+        if (type === 'attributes') {
+          if (attributeName === 'rel' || attributeName === 'stylesheet') {
+            if (this.el.modifyTag) return;
+            if (this.el.rel === 'stylesheet' && this.el.href) {
+              this.el.disabled = this.el.modifyTag = true;
+              const commentNode = this.addDynamicLinkNode((styleNode) => {
+                commentNode.parentNode?.replaceChild(styleNode, commentNode);
+              });
+              this.el.parentNode?.replaceChild(commentNode, this.el);
+            }
           }
         }
       }
+    });
+    // https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/disconnect
+    mutator.observe(this.el, { attributes: true });
+  }
+
+  append(context: Element, args: IArguments, originProcess: Function) {
+    let convertedNode;
+    let rootNode = this.rootElement;
+    const { baseUrl } = this.sandbox.options;
+    const tag = this.el.tagName && this.el.tagName.toLowerCase();
+
+    this.sandbox.replaceGlobalVariables.recoverList.push(() => {
+      DOMApis.removeElement(this.el);
+    });
+
+    // Deal with some static resource nodes
+    if (sourceListTags.includes(tag)) {
+      this.fixResourceNodeUrl();
     }
-  });
-  // https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/disconnect
-  mutator.observe(el, { attributes: true });
-};
+
+    // Add dynamic script node by loader
+    if (tag === 'script') {
+      rootNode = findTarget(rootNode, ['body', 'div[__GarfishMockBody__]']);
+      convertedNode = this.addDynamicScriptNode();
+    }
+
+    // The style node needs to be placed in the sandbox root container
+    if (tag === 'style') {
+      rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
+      if (baseUrl) {
+        const manager = new StyleManager(this.el.textContent);
+        manager.correctPath(baseUrl);
+        this.el.textContent = manager.styleCode;
+      }
+      convertedNode = this.el;
+    }
+
+    // The link node of the request css needs to be changed to style node
+    if (tag === 'link') {
+      rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
+      if (this.el.rel === 'stylesheet' && this.el.href) {
+        convertedNode = this.addDynamicLinkNode((styleNode) =>
+          this.nativeAppend.call(rootNode, styleNode),
+        );
+      } else {
+        convertedNode = this.el;
+        this.monitorChangesOfLinkNode();
+      }
+    }
+
+    if (__DEV__ || (this.sandbox?.global as any).__dev__) {
+      // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
+      if (tag === 'iframe' && typeof this.el.onload === 'function') {
+        def(this.el, 'contentWindow', this.sandbox.global);
+        def(this.el, 'contentDocument', this.sandbox.global.document);
+      }
+    }
+
+    if (convertedNode) {
+      // If it is "insertBefore" or "insertAdjacentElement" method,
+      // No need to rewrite when added to the container
+      if (
+        isInsertMethod(this.methodName) &&
+        this.rootElement.contains(context) &&
+        args[1]?.parentNode === context
+      ) {
+        return originProcess();
+      }
+      return this.nativeAppend.call(rootNode, convertedNode);
+    }
+    return originProcess();
+  }
+}
 
 const injector = (current: Function, methodName: string) => {
   return function () {
@@ -147,87 +226,29 @@ const injector = (current: Function, methodName: string) => {
       ? arguments[1]
       : arguments[0];
     const sandbox = el && sandboxMap.get(el);
+    const originProcess = () => current.apply(this, arguments);
 
     if (this?.tagName?.toLowerCase() === 'style') {
-      const sandbox = sandboxMap.get(el);
       const baseUrl = sandbox && sandbox.options.baseUrl;
       if (baseUrl) {
         const manager = new StyleManager(el.textContent);
         manager.correctPath(baseUrl);
         this.textContent = manager.styleCode;
-        return current.apply(this, arguments);
+        return originProcess();
       }
     }
 
     if (sandbox) {
-      let convertedNode;
-      let rootNode = rootElm(sandbox) || document;
-      const baseRootNode = rootNode;
-      const { baseUrl } = sandbox.options;
-      const append = rawElementMethods['appendChild'];
-      const tag = el.tagName && el.tagName.toLowerCase();
-
-      sandbox.replaceGlobalVariables.recoverList.push(() => {
-        DOMApis.removeElement(el);
-      });
-
-      // Deal with some static resource nodes
-      if (baseUrl && sourceListTags.includes(tag)) {
-        fixResourceNodeUrl(el, baseUrl);
-      }
-
-      // Add dynamic script node by loader
-      if (tag === 'script') {
-        rootNode = findTarget(rootNode, ['body', 'div[__GarfishMockBody__]']);
-        convertedNode = addDynamicScriptNode(sandbox, el);
-      }
-
-      // The style node needs to be placed in the sandbox root container
-      if (tag === 'style') {
-        rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
-        if (baseUrl) {
-          const manager = new StyleManager(el.textContent);
-          manager.correctPath(baseUrl);
-          el.textContent = manager.styleCode;
-        }
-        convertedNode = el;
-      }
-
-      // The link node of the request css needs to be changed to style node
-      if (tag === 'link') {
-        rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
-        if (el.rel === 'stylesheet' && el.href) {
-          convertedNode = addDynamicLinkNode(sandbox, el, (styleNode) =>
-            append.call(rootNode, styleNode),
-          );
-        } else {
-          convertedNode = el;
-          monitorChangesOfLinkNode(sandbox, el);
-        }
-      }
-
-      if (__DEV__ || sandbox.global.__DEV__) {
-        // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
-        if (tag === 'iframe' && typeof el.onload === 'function') {
-          def(el, 'contentWindow', sandbox.global);
-          def(el, 'contentDocument', sandbox.global.document);
-        }
-      }
-
-      if (convertedNode) {
-        // If it is "insertBefore" or "insertAdjacentElement" method,
-        // No need to rewrite when added to the container
-        if (
-          isInsertMethod(methodName) &&
-          baseRootNode.contains(this) &&
-          arguments[1]?.parentNode === this
-        ) {
-          return current.apply(this, arguments);
-        }
-        return append.call(rootNode, convertedNode);
-      }
+      const dynamicNodeManager = new DynamicNodeManager(
+        el,
+        sandbox,
+        methodName,
+      );
+      console.log(dynamicNodeManager, 'dynamicNodeManager');
+      return dynamicNodeManager.append(this, arguments, originProcess);
+    } else {
+      return originProcess();
     }
-    return current.apply(this, arguments);
   };
 };
 

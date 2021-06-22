@@ -33,6 +33,9 @@
   "peerDependencies": {
     "@garfish/core": "^0.0.9"
   },
+  "dependencies": {
+    "himalaya": "1.1.0"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
