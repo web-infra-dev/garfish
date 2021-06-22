@@ -1,1 +1,1 @@
-throw new Error('async error');
+// throw new Error('async error');

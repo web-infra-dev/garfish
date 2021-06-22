@@ -42,7 +42,7 @@ GarfishInstance.run({
 
 console.log(GarfishInstance);
 
-const useRouterMode = false;
+const useRouterMode = true;
 document.getElementById('vueBtn').onclick = async () => {
   if (useRouterMode) {
     history.pushState({}, 'vue', '/garfish_master/vue'); // use router to load app
@@ -64,6 +64,8 @@ document.getElementById('reactBtn').onclick = async () => {
       entry: '',
       domGetter: '#submoduleByCunstom',
     });
+    console.log(prevApp);
+    await prevApp.mount();
   }
 };
 
