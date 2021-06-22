@@ -88,6 +88,7 @@ export class Sandbox {
       el: () => null,
       protectVariable: () => [],
       insulationVariable: () => [],
+      sourceList: [],
     };
     this.options = isPlainObject(options)
       ? deepMerge(defaultOptions, options)

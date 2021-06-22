@@ -27,6 +27,7 @@ export interface SandboxOptions {
   el?: () => Element | ShadowRoot | null;
   protectVariable?: () => Array<PropertyKey>;
   insulationVariable?: () => Array<PropertyKey>;
+  sourceList?: Array<string>;
 }
 
 export interface ExecScriptOptions {

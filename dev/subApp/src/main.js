@@ -1,4 +1,4 @@
-import Garfish from '@garfish/framework';
+import Garfish from 'garfish';
 import Vue from 'vue';
 import App from './App.vue';
 import store from './store';

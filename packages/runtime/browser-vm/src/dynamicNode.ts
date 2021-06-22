@@ -30,6 +30,7 @@ const fixResourceNodeUrl = (el: any, baseUrl: string) => {
   const href = el.getAttribute('href');
   src && (el.src = transformUrl(baseUrl, src));
   href && (el.href = transformUrl(baseUrl, href));
+  return el.src || el.href || '';
 };
 
 const dispatchEvent = (el: Element, type: string) => {
@@ -136,7 +137,8 @@ const injector = (current: Function, methodName: string) => {
 
       // Deal with some static resource nodes
       if (baseUrl && sourceListTags.includes(tag)) {
-        fixResourceNodeUrl(el, baseUrl);
+        const sourceHref = fixResourceNodeUrl(el, baseUrl);
+        sandbox.options.sourceList.push(sourceHref);
       }
 
       // Add dynamic script node by loader

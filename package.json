@@ -1,5 +1,5 @@
 {
-  "name": "garfish",
+  "name": "garfish-monorepo",
   "version": "0.0.3",
   "private": true,
   "workspaces": {

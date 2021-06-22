@@ -1,10 +1,10 @@
-// import { computeErrorUrl, filterAndWrapEventListener } from '@garfish/utils';
+import { computeErrorUrl, filterAndWrapEventListener } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 
 type Opts = boolean | AddEventListenerOptions;
 type Listener = EventListenerOrEventListenerObject;
 
-export function listenerModule() {
+export function listenerModule(sandbox: Sandbox) {
   const listeners = new Map<string, Listener[]>();
   const rawAddEventListener = window.addEventListener;
   const rawRemoveEventListener = window.removeEventListener;
@@ -17,7 +17,7 @@ export function listenerModule() {
     rawAddEventListener.call(
       this,
       type,
-      // filterAndWrapEventListener(type, listener, sourceList),
+      filterAndWrapEventListener(type, listener, sandbox.options.sourceList),
       listener,
       options,
     );
