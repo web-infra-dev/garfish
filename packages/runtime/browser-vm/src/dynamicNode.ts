@@ -159,7 +159,6 @@ class DynamicNodeManager {
     this.sandbox.replaceGlobalVariables.recoverList.push(() => {
       DOMApis.removeElement(this.el);
     });
-
     // Deal with some static resource nodes
     if (sourceListTags.includes(tag)) {
       this.fixResourceNodeUrl();
@@ -170,7 +169,6 @@ class DynamicNodeManager {
       rootNode = findTarget(rootNode, ['body', 'div[__GarfishMockBody__]']);
       convertedNode = this.addDynamicScriptNode();
     }
-
     // The style node needs to be placed in the sandbox root container
     if (tag === 'style') {
       rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
@@ -181,7 +179,6 @@ class DynamicNodeManager {
       }
       convertedNode = this.el;
     }
-
     // The link node of the request css needs to be changed to style node
     if (tag === 'link') {
       rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
@@ -194,7 +191,6 @@ class DynamicNodeManager {
         this.monitorChangesOfLinkNode();
       }
     }
-
     if (__DEV__ || (this.sandbox?.global as any).__dev__) {
       // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
       if (tag === 'iframe' && typeof this.el.onload === 'function') {
@@ -219,7 +215,7 @@ class DynamicNodeManager {
   }
 }
 
-const injector = (current: Function, methodName: string) => {
+function injector(current: Function, methodName: string) {
   return function () {
     // prettier-ignore
     const el = methodName === 'insertAdjacentElement'
@@ -244,13 +240,12 @@ const injector = (current: Function, methodName: string) => {
         sandbox,
         methodName,
       );
-      console.log(dynamicNodeManager, 'dynamicNodeManager');
       return dynamicNodeManager.append(this, arguments, originProcess);
     } else {
       return originProcess();
     }
   };
-};
+}
 
 export function makeElInjector() {
   if ((makeElInjector as any).hasInject) return;
