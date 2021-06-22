@@ -16,7 +16,7 @@
     "build:all": "node scripts/build.js -m -e",
     "build:watch": "lerna exec -- yarn link && node scripts/build.js -m -e  -f=esm-bundler -w",
     "reset": "lerna clean --yes && rm -rf node_modules",
-    "setup": "npm run reset && npm install && lerna bootstrap --hoist",
+    "setup": "yarn reset && yarn install && lerna bootstrap --hoist",
     "prepublishOnly": "npm run test && npm run build:all && npm run changelog",
     "changelog": "node scripts/changelog.js",
     "test": "node scripts/jestTest.js",

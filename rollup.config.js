@@ -125,7 +125,7 @@ function extractTsDeclare() {
       let splitPkg = pkgDir.split('/');
       pkgName = splitPkg[splitPkg.length - 1];
     },
-    generateBundle() {
+    writeBundle() {
       if (!pkgName) return;
 
       let tsTypeDir = path.resolve(
@@ -134,19 +134,24 @@ function extractTsDeclare() {
       );
 
       if (!fs.existsSync(tsTypeDir)) return;
-      fs.copySync(
-        path.resolve(pkgDir, tsTypeDir),
-        path.resolve(pkgDir, `dist/`),
-      );
+      setTimeout(() => {
+        fs.copySync(
+          path.resolve(pkgDir, tsTypeDir),
+          path.resolve(pkgDir, `dist/`),
+          {
+            overwrite: true,
+          },
+        );
+      }, 1000);
       setTimeout(() => {
         const args = require('minimist')(process.argv.slice(2));
         const watch = args.watch || args.w;
-        if (!watch) {
-          fs.remove(path.resolve(pkgDir, `dist/packages`));
-          fs.remove(path.resolve(pkgDir, `dist/dist`));
-          fs.remove(path.resolve(pkgDir, `temp`));
-        }
-      }, 10000);
+        // if (!watch) {
+        fs.remove(path.resolve(pkgDir, `dist/packages`));
+        fs.remove(path.resolve(pkgDir, `dist/dist`));
+        fs.remove(path.resolve(pkgDir, `temp`));
+        // }
+      }, 3000);
     },
   };
 }
