@@ -1,7 +1,5 @@
 # `@garfish/loader`
 
-> TODO: Garfish loader
-
 ## Usage
 
 ```js
