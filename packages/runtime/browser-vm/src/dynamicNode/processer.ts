@@ -121,16 +121,16 @@ export class DynamicNodeProcesser {
 
   // When append an empty link node and then add href attribute
   private monitorChangesOfLinkNode() {
-    if (this.el.modifyTag) return;
+    if (this.el.modifyFlag) return;
 
     const mutator = new MutationObserver((mutations) => {
-      if (this.el.modifyTag) return;
+      if (this.el.modifyFlag) return;
       for (const { type, attributeName } of mutations) {
         if (type === 'attributes') {
           if (attributeName === 'rel' || attributeName === 'stylesheet') {
-            if (this.el.modifyTag) return;
+            if (this.el.modifyFlag) return;
             if (this.el.rel === 'stylesheet' && this.el.href) {
-              this.el.disabled = this.el.modifyTag = true;
+              this.el.disabled = this.el.modifyFlag = true;
               const commentNode = this.addDynamicLinkNode((styleNode) => {
                 commentNode.parentNode?.replaceChild(styleNode, commentNode);
               });
