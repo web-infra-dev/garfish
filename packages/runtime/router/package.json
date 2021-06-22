@@ -30,7 +30,7 @@
       "umd"
     ]
   },
-  "peerDependencies": {
+  "dependencies": {
     "@garfish/core": "^0.0.9"
   },
   "publishConfig": {

@@ -22,10 +22,6 @@
     "style-loader": "^1.0.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
-    "@garfish/framework": "0.0.8",
-    "@garfish/browser-snapshot": "^0.0.9-alpha.13",
-    "@garfish/browser-vm": "^0.0.9-alpha.13",
-    "@garfish/router": "^0.0.9-alpha.9",
     "webpack-dev-server": "^3.9.0"
   },
   "publishConfig": {
@@ -40,6 +36,10 @@
     "ts-loader": "^8.0.0",
     "vue": "^2.6.11",
     "vue-router": "^3.4.2",
+    "garfish": "0.0.8",
+    "@garfish/browser-snapshot": "^0.0.9-alpha.13",
+    "@garfish/browser-vm": "^0.0.9-alpha.13",
+    "@garfish/router": "^0.0.9-alpha.9",
     "vuex": "^3.5.1"
   }
 }

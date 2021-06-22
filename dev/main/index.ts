@@ -1,4 +1,4 @@
-import GarfishInstance from '@garfish/framework';
+import GarfishInstance from 'garfish';
 
 (window as any).__GARFISH_PARENT__ = true;
 
@@ -19,7 +19,7 @@ GarfishInstance.run({
       entry: 'http://localhost:8001',
     },
   ],
-  // autoRefreshApp: false,
+  autoRefreshApp: false,
   disablePreloadApp: true,
   sandbox: {
     open: true,
