@@ -4,27 +4,21 @@ import {
   warn,
   isJs,
   isCss,
-  makeMap,
   DOMApis,
+  makeMap,
   findTarget,
   transformUrl,
   sourceListTags,
   parseContentType,
 } from '@garfish/utils';
-import { Sandbox } from './sandbox';
-import { __domWrapper__ } from './symbolTypes';
-import { rootElm, sandboxMap, handlerParams } from './utils';
+import { rootElm } from '../utils';
+import { Sandbox } from '../sandbox';
 
-const rawElementMethods = Object.create(null);
 const isInsertMethod = makeMap(['insertBefore', 'insertAdjacentElement']);
-const mountElementMethods = [
-  'append',
-  'appendChild',
-  'insertBefore',
-  'insertAdjacentElement',
-];
 
-class DynamicNodeManager {
+export const rawElementMethods = Object.create(null);
+
+export class DynamicNodeProcesser {
   private el: any; // any Element
   private sandbox: Sandbox;
   private methodName: string;
@@ -212,62 +206,5 @@ class DynamicNodeManager {
       return this.nativeAppend.call(rootNode, convertedNode);
     }
     return originProcess();
-  }
-}
-
-function injector(current: Function, methodName: string) {
-  return function () {
-    // prettier-ignore
-    const el = methodName === 'insertAdjacentElement'
-      ? arguments[1]
-      : arguments[0];
-    const sandbox = el && sandboxMap.get(el);
-    const originProcess = () => current.apply(this, arguments);
-
-    if (this?.tagName?.toLowerCase() === 'style') {
-      const baseUrl = sandbox && sandbox.options.baseUrl;
-      if (baseUrl) {
-        const manager = new StyleManager(el.textContent);
-        manager.correctPath(baseUrl);
-        this.textContent = manager.styleCode;
-        return originProcess();
-      }
-    }
-
-    if (sandbox) {
-      const dynamicNodeManager = new DynamicNodeManager(
-        el,
-        sandbox,
-        methodName,
-      );
-      return dynamicNodeManager.append(this, arguments, originProcess);
-    } else {
-      return originProcess();
-    }
-  };
-}
-
-export function makeElInjector() {
-  if ((makeElInjector as any).hasInject) return;
-  (makeElInjector as any).hasInject = true;
-
-  if (typeof window.Element === 'function') {
-    for (const name of mountElementMethods) {
-      const fn = window.Element.prototype[name];
-      if (typeof fn !== 'function' || fn[__domWrapper__]) {
-        continue;
-      }
-      rawElementMethods[name] = fn;
-      const wrapper = injector(fn, name);
-      wrapper[__domWrapper__] = true;
-      window.Element.prototype[name] = wrapper;
-    }
-  }
-
-  if (window.MutationObserver) {
-    const rawObserver = window.MutationObserver.prototype.observe;
-    MutationObserver.prototype.observe = function () {
-      return rawObserver.apply(this, handlerParams(arguments));
-    };
   }
 }

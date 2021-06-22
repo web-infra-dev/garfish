@@ -86,7 +86,7 @@ export default function BrowserVm() {
       name: 'browser-vm',
       version: __VERSION__,
 
-      afterLoad(appInfo, appInstance) {
+      afterLoad(appInfo, appInstance: interfaces.App) {
         // Support for instance configuration, to ensure that old versions compatible
         const sandboxConfig = appInfo.sandbox || Garfish?.options?.sandbox;
         if (sandboxConfig === false) {
@@ -123,6 +123,7 @@ export default function BrowserVm() {
           const sandbox = new Sandbox({
             openSandbox: true,
             namespace: appInfo.name,
+            baseUrl: appInstance.entryManager.url,
             strictIsolation: appInstance.strictIsolation,
             modules: [
               () => ({
