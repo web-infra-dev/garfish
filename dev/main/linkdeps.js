@@ -1,7 +1,7 @@
 const { exec } = require('child_process');
 
 [
-  '@garfish/framework',
+  'garfish',
   // '@garfish/core',
   // '@garfish/router',
   // '@garfish/browser-snapshot',

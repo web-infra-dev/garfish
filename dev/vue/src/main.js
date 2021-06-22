@@ -10,7 +10,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 // setTimeout(() => {
 //   let cur = document.querySelector('#app');
-//   console.log('^^^^^^^^^^^^^', cur, document);
+//   console.log(cur, document);
 //   while (cur !== document && cur) {
 //     cur = cur && cur.parentNode;
 //     console.log(cur);
@@ -42,20 +42,10 @@ Vue.use(VueRouter);
 // 查看父应用注入的 external 模块
 Vue.config.productionTip = false;
 
-// 这会一直加载 vue
-// setTimeout(() => {
-//   window.Garfish.loadApp('vue', {
-//     domGetter: '#vueApp',
-//   }).then(app => app.mount())
-// }, 1000)
-
 // const audio = new Audio();
 // console.log(audio instanceof Audio);
 let vm;
 const render = ({ dom, basename = '/' }) => {
-  // console.log('be here', dom);
-  // if (!dom) return;
-  // console.log('##########3', basename);
   const router = new VueRouter({
     mode: 'history',
     base: basename,

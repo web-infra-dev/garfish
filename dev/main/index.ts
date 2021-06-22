@@ -1,6 +1,7 @@
 import GarfishInstance from 'garfish';
 
 (window as any).__GARFISH_PARENT__ = true;
+console.log(GarfishInstance);
 
 GarfishInstance.run({
   basename: '/garfish_master',
@@ -26,23 +27,10 @@ GarfishInstance.run({
     snapshot: false,
     modules: [],
   },
-  // async beforeLoad(appInfo) {
-  //   console.log('开始加载了', appInfo);
-  //   // test async load
-  //   return new Promise<any>((resolve) => {
-  //     setTimeout(() => {
-  //       resolve(true);
-  //     }, 2000);
-  //   });
-  // },
-  // beforeMount (appInfo) {
-  //   console.log('开始渲染', appInfo);
-  // }
 });
 
-console.log(GarfishInstance);
-
 const useRouterMode = true;
+
 document.getElementById('vueBtn').onclick = async () => {
   if (useRouterMode) {
     history.pushState({}, 'vue', '/garfish_master/vue'); // use router to load app
@@ -61,14 +49,10 @@ document.getElementById('reactBtn').onclick = async () => {
     history.pushState({}, 'react', '/garfish_master/react');
   } else {
     let prevApp = await GarfishInstance.loadApp('react', {
-      entry: '',
+      entry: 'http://localhost:3000',
       domGetter: '#submoduleByCunstom',
     });
     console.log(prevApp);
     await prevApp.mount();
   }
 };
-
-// setTimeout(() => {
-//   throw new Error('main error');
-// }, 3000);
