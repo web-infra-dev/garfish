@@ -1,11 +1,20 @@
-# `@garfish/garfish`
+# `garfish`
 
 > TODO: description
 
 ## Usage
 
 ```js
-import @garfish/garfish from '@garfish/garfish';
+import Garfish from 'garfish';
 
-// TODO: DEMONSTRATE API
+Garfish.run({
+  domGetter: '#AppContainer',
+  apps: [
+    {
+      name: 'app',
+      entry: 'xx.html',
+      activeWhen: '/index',
+    },
+  ],
+});
 ```

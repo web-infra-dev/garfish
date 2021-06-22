@@ -12,8 +12,7 @@
     "element-ui": "^2.14.1",
     "vue": "^2.6.11",
     "vue-router": "^3.4.3",
-    "vuex": "^3.5.1",
-    "@garfish/framework": "0.0.8"
+    "vuex": "^3.5.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",

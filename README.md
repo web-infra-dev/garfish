@@ -10,12 +10,12 @@
 
 ## 安装
 
-`$ npm i @garfish/core`
+`$ npm install garfish`
 
 ## 快速开始
 
 ```js
-import Garfish from '@garfish/core';
+import Garfish from 'garfish';
 
 Garfish.run({
   domGetter: '#AppContainer',
@@ -32,7 +32,6 @@ Garfish.run({
 ## 文档
 
 - [API](https://github.com/bytedance/garfish/wiki/API)
-- [Build](https://github.com/bytedance/garfish/wiki/Build)
 
 ## LICENSE
 
