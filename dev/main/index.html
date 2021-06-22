@@ -15,12 +15,15 @@
     window.addEventListener('unhandledrejection',function (...args) {
       console.log('mainApp: unhandledrejection error',args);
     });
+    window.onerror = function (...args) {
+      console.log('mainApp onerror: unhandledrejection error',args);
+    }
   </script>
 
   <script>
-    setTimeout(()=>{
-      throw Error('mainApp: unhandledrejection error');
-    },5000)
+    // setTimeout(()=>{
+    //   throw Error('mainApp: unhandledrejection error');
+    // },5000)
   </script>
   <script>
       // window.addEventListener('unhandledrejection', event => {
