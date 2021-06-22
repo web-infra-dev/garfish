@@ -120,3 +120,10 @@ export function provider({ basename, dom }) {
 // }, 3000);
 
 // console.log(document.currentScript);
+
+const link = document.createElement('link');
+document.body.appendChild(link);
+// link.disabled = true
+window.Garfish.getGlobalObject().l = link;
+link.setAttribute('href', 'http://localhost:9090/css/xxx/xx.css');
+link.setAttribute('rel', 'stylesheet');

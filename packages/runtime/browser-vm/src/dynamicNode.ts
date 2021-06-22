@@ -32,8 +32,8 @@ const fixResourceNodeUrl = (el: any, baseUrl: string) => {
   href && (el.href = transformUrl(baseUrl, href));
 };
 
+// Put it in the next macro task to ensure that the current synchronization script is executed
 const dispatchEvent = (el: Element, type: string) => {
-  // Put it in the next macro task to ensure that the current synchronization script is executed
   setTimeout(() => {
     const event: Event & { garfish?: boolean } = new Event(type);
     event.garfish = true;
@@ -42,6 +42,7 @@ const dispatchEvent = (el: Element, type: string) => {
   });
 };
 
+// Load dynamic link node
 const addDynamicLinkNode = (
   sandbox: Sandbox,
   el: HTMLLinkElement,
@@ -51,9 +52,11 @@ const addDynamicLinkNode = (
 
   if (!type || isCss(parseContentType(type))) {
     if (href) {
-      const namespace = sandbox.options.namespace || '';
+      const { baseUrl, namespace = '' } = sandbox.options;
+      const fetchUrl = baseUrl ? transformUrl(baseUrl, href) : href;
+
       sandbox.loader
-        .load<StyleManager>(namespace, href)
+        .load<StyleManager>(namespace, fetchUrl)
         .then(({ resourceManager: styleManager }) => {
           dispatchEvent(el, 'load');
           styleManager.correctPath();
@@ -70,9 +73,10 @@ const addDynamicLinkNode = (
       warn(`Invalid resource type "${type}", "${href}"`);
     }
   }
-  return DOMApis.createLinkCommentNode(href);
+  return DOMApis.createLinkCommentNode(href) as Comment;
 };
 
+// Load dynamic js script
 const addDynamicScriptNode = (sandbox: Sandbox, el: HTMLScriptElement) => {
   const { src, type } = el;
   const code = el.textContent || el.text || '';
@@ -80,10 +84,11 @@ const addDynamicScriptNode = (sandbox: Sandbox, el: HTMLScriptElement) => {
   if (!type || isJs(parseContentType(type))) {
     // The "src" higher priority
     if (src) {
-      const namespace = sandbox.options.namespace || '';
+      const { baseUrl, namespace = '' } = sandbox.options;
+      const fetchUrl = baseUrl ? transformUrl(baseUrl, src) : src;
 
       sandbox.loader
-        .load<JavaScriptManager>(namespace, src)
+        .load<JavaScriptManager>(namespace, fetchUrl)
         .then(({ resourceManager: { url, scriptCode } }) => {
           dispatchEvent(el, 'load');
           sandbox.execScript(scriptCode, {}, url, { noEntry: true });
@@ -105,6 +110,34 @@ const addDynamicScriptNode = (sandbox: Sandbox, el: HTMLScriptElement) => {
     }
   }
   return DOMApis.createScriptCommentNode({ src, code });
+};
+
+// When append an empty link node and then add href attribute
+const monitorChangesOfLinkNode = (
+  sandbox: Sandbox,
+  el: HTMLLinkElement & { modifyTag: boolean },
+) => {
+  if (el.modifyTag) return;
+
+  const mutator = new MutationObserver((mutations) => {
+    if (el.modifyTag) return;
+    for (const { type, attributeName } of mutations) {
+      if (type === 'attributes') {
+        if (attributeName === 'rel' || attributeName === 'stylesheet') {
+          if (el.modifyTag) return;
+          if (el.rel === 'stylesheet' && el.href) {
+            el.disabled = el.modifyTag = true;
+            const commentNode = addDynamicLinkNode(sandbox, el, (styleNode) => {
+              commentNode.parentNode?.replaceChild(styleNode, commentNode);
+            });
+            el.parentNode?.replaceChild(commentNode, el);
+          }
+        }
+      }
+    }
+  });
+  // https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/disconnect
+  mutator.observe(el, { attributes: true });
 };
 
 const injector = (current: Function, methodName: string) => {
@@ -133,6 +166,10 @@ const injector = (current: Function, methodName: string) => {
       const { baseUrl } = sandbox.options;
       const append = rawElementMethods['appendChild'];
       const tag = el.tagName && el.tagName.toLowerCase();
+
+      sandbox.replaceGlobalVariables.recoverList.push(() => {
+        DOMApis.removeElement(el);
+      });
 
       // Deal with some static resource nodes
       if (baseUrl && sourceListTags.includes(tag)) {
@@ -165,10 +202,11 @@ const injector = (current: Function, methodName: string) => {
           );
         } else {
           convertedNode = el;
+          monitorChangesOfLinkNode(sandbox, el);
         }
       }
 
-      if (__DEV__) {
+      if (__DEV__ || sandbox.global.__DEV__) {
         // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
         if (tag === 'iframe' && typeof el.onload === 'function') {
           def(el, 'contentWindow', sandbox.global);

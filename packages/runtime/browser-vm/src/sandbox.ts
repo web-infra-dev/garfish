@@ -137,6 +137,10 @@ export class Sandbox {
     this.global = null;
     this.optimizeCode = '';
     this.initComplete = false;
+    this.replaceGlobalVariables.createdList = [];
+    this.replaceGlobalVariables.prepareList = [];
+    this.replaceGlobalVariables.recoverList = [];
+    this.replaceGlobalVariables.overrideList = [];
   }
 
   reset() {
@@ -206,8 +210,7 @@ export class Sandbox {
   }
 
   clearEffects() {
-    const recovers = this.replaceGlobalVariables.recoverList || [];
-    recovers.forEach((fn) => fn && fn());
+    this.replaceGlobalVariables.recoverList.forEach((fn) => fn && fn());
   }
 
   optimizeGlobalMethod() {
