@@ -137,8 +137,16 @@ const injector = (current: Function, methodName: string) => {
 
       // Deal with some static resource nodes
       if (baseUrl && sourceListTags.includes(tag)) {
-        const sourceHref = fixResourceNodeUrl(el, baseUrl);
-        sandbox.options.sourceList.push(sourceHref);
+        fixResourceNodeUrl(el, baseUrl);
+      }
+
+      if (
+        sourceListTags.includes(tag) &&
+        sandbox.options &&
+        sandbox.options.sourceList
+      ) {
+        const sourceLink = el.getAttribute('src') || el.getAttribute('href');
+        sourceLink && sandbox.options.sourceList.push(sourceLink);
       }
 
       // Add dynamic script node by loader

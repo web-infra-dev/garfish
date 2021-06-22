@@ -16,7 +16,7 @@ GarfishInstance.run({
       name: 'vue',
       activeWhen: '/vue',
       // cache: true,
-      entry: 'http://localhost:8001',
+      entry: 'http://localhost:9090',
     },
   ],
   autoRefreshApp: false,

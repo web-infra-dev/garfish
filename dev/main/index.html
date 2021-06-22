@@ -8,6 +8,21 @@
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mobx/5.15.7/mobx.umd.js"></script>
   <script>
+    window.addEventListener('error',function (...args) {
+      console.log('mainApp: normal error',args)
+    });
+
+    window.addEventListener('unhandledrejection',function (...args) {
+      console.log('mainApp: unhandledrejection error',args);
+    });
+  </script>
+
+  <script>
+    setTimeout(()=>{
+      throw Error('mainApp: unhandledrejection error');
+    },5000)
+  </script>
+  <script>
       // window.addEventListener('unhandledrejection', event => {
       //   event.promise.catch((e)=>{
       //     if (e instanceof Error) {

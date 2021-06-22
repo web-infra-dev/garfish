@@ -36,11 +36,29 @@
   <script>
     // console.log(document.getElementById('subVue'), document.head, 'document.head');
   </script>
+  <script>
+    window.addEventListener('error',function (...args) {
+      console.log('subApp: normal error',args)
+    });
+
+    window.addEventListener('unhandledrejection',function () {
+      console.log('subApp: unhandledrejection error',args);
+    });
+  </script>
   <body>
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div id="app"></div>
+    <!-- <script>
+      throw Error('normal err');
+    </script> -->
+    <script>
+      setTimeout(()=>{
+        throw Error('subApp unhandledrejection error');
+      })
+      throw Error('subApp normal error');
+    </script>
     <!-- built files will be auto injected -->
     <!-- <img src="xxx" />
     <video src="1xxx" ></video> -->

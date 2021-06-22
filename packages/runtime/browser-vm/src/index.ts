@@ -88,7 +88,6 @@ export default function BrowserVm() {
       someting: 'hello world',
 
       afterLoad(appInfo, appInstance) {
-        console.log('#############', appInstance, appInstance.sourceList);
         // Support for instance configuration, to ensure that old versions compatible
         const sandboxConfig = appInfo.sandbox || Garfish?.options?.sandbox;
         if (sandboxConfig === false) {
