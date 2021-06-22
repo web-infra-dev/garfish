@@ -1,6 +1,6 @@
 {
   "name": "@garfish/utils",
-  "version": "0.0.9-alpha.13",
+  "version": "0.0.9",
   "description": "utils module.",
   "keywords": [
     "garfish",
@@ -37,5 +37,5 @@
     "registry": "https://registry.npmjs.org",
     "access": "public"
   },
-  "gitHead": "9dd3445fab40001ecefcf4959c5123b8b4894a27"
+  "gitHead": "a4a257160a2f0122157aeaf07e89372d5adf5b49"
 }

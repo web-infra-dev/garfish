@@ -7,14 +7,14 @@ export class Component {
   public cjsModules: Record<string, any>;
   public componentInfo: interfaces.ComponentInfo;
   public esModule: boolean = false;
-  public manager: interfaces.ComponentManager;
+  public manager: interfaces.ComponentManagerInterface;
   private context: Garfish;
   public global: any = window;
 
   constructor(
     context: Garfish,
     componentInfo: interfaces.ComponentInfo,
-    manager: interfaces.ComponentManager,
+    manager: interfaces.ComponentManagerInterface,
   ) {
     this.context = context;
     this.name = componentInfo.name;

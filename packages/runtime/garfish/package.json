@@ -1,6 +1,6 @@
 {
-  "name": "@garfish/framework",
-  "version": "0.0.9-alpha.13",
+  "name": "garfish",
+  "version": "0.0.9",
   "description": "garfish module.",
   "keywords": [
     "garfish",
@@ -23,7 +23,7 @@
     "url": "https://github.com/bytedance/garfish/issues"
   },
   "scripts": {},
-  "types": "dist/index.d.ts",
+  "types": "./index.d.ts",
   "buildOptions": {
     "name": "Garfish",
     "devTemplate": "module",
@@ -35,15 +35,15 @@
     ]
   },
   "dependencies": {
-    "@garfish/browser-snapshot": "^0.0.9-alpha.13",
-    "@garfish/browser-vm": "^0.0.9-alpha.13",
-    "@garfish/core": "^0.0.9-alpha.13",
-    "@garfish/router": "^0.0.9-alpha.9",
-    "@garfish/utils": "^0.0.9-alpha.13"
+    "@garfish/browser-snapshot": "^0.0.9",
+    "@garfish/browser-vm": "^0.0.9",
+    "@garfish/core": "^0.0.9",
+    "@garfish/router": "^0.0.9",
+    "@garfish/utils": "^0.0.9"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
   },
-  "gitHead": "1967845252838eafc43e99d51e1902b7de89d097"
+  "gitHead": "a4a257160a2f0122157aeaf07e89372d5adf5b49"
 }

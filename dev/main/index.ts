@@ -19,11 +19,12 @@ GarfishInstance.run({
       entry: 'http://localhost:8001',
     },
   ],
-  // disablePreloadApp: true,
+  autoRefreshApp: false,
+  disablePreloadApp: true,
   sandbox: {
     open: true,
     snapshot: false,
-    // modules: [],
+    modules: [],
   },
   // async beforeLoad(appInfo) {
   //   console.log('开始加载了', appInfo);

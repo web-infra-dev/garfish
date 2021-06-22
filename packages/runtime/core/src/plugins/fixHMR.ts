@@ -23,8 +23,8 @@ export function GarfishHMRPlugin() {
             if (!isHotUpdate) return;
             isHotUpdate = false;
 
-            Object.keys(Garfish.activeApps).forEach((appName) => {
-              const app = Garfish.activeApps[appName];
+            Garfish.activeApps.forEach((appInstance) => {
+              const app = Garfish.activeApps[appInstance.name];
               if (app.mounted) {
                 app.display && app.hide();
                 app.show();

@@ -80,9 +80,9 @@ async function build(target) {
   );
 
   // Merge .d.ts
-  // if (mergeTypes && pkg.types && !pkgDir.includes('hooks')) {
-  //   mergeBuildTypes(pkgDir, target);
-  // }
+  if (mergeTypes && pkg.types) {
+    // mergeBuildTypes(pkgDir, target);
+  }
 }
 
 function getPrivateDeps(dotDTs) {
@@ -165,8 +165,29 @@ function mergePrivateTypes(
   return result.succeeded;
 }
 
+function extractorGlobalExtensions(pkgDir, target, extractorConfig) {
+  // If the current package contains additional global. Which s, can be manually spliced into the back
+  const globalExtensions = path.resolve(
+    pkgDir,
+    `dist/packages/runtime/${target}/src/globalExtensions.d.ts`,
+  );
+  if (fs.existsSync(globalExtensions)) {
+    const codeExternals = fs.readFileSync(globalExtensions).toString();
+    const code = fs
+      .readFileSync(extractorConfig.publicTrimmedFilePath)
+      .toString();
+    let hasExport = false;
+
+    const codeFormate = codeExternals.split('\n').reduce((pre, next) => {
+      if (next.indexOf('declare module') !== -1) hasExport = true;
+      if (!hasExport || !next) return pre;
+      return `${pre}\n${next}`;
+    }, '');
+    fs.writeFileSync(extractorConfig.publicTrimmedFilePath, code + codeFormate);
+  }
+}
+
 async function mergeBuildTypes(pkgDir, target) {
-  console.log();
   console.log(
     chalk.bold(chalk.blue.bold(`Rolling up type definitions for ${target}...`)),
   );
@@ -188,13 +209,11 @@ async function mergeBuildTypes(pkgDir, target) {
         mergePrivateTypes(extractorConfig, target, target, completedPkgs, data),
       )
     ) {
-      // 如果当前包内有额外的全局 .d.ts，可以手动拼接到后面
-      if (extractorConfig.globalEntryPointFilePath) {
-      }
       console.log(chalk.green.bold('API Extractor completed successfully.\n'));
-      await fs.remove(`${pkgDir}/dist/packages`);
-      await fs.remove('dist');
-      await fs.remove('temp');
+      extractorGlobalExtensions(pkgDir, target, extractorConfig);
+      // await fs.remove(`${pkgDir}/dist/packages`);
+      // await fs.remove('dist');
+      // await fs.remove('temp');
     }
   } else {
     console.log(

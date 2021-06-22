@@ -28,8 +28,6 @@ const defaultOptions: interfaces.Options = {
     useStrict: false,
     strictIsolation: false,
   },
-  protectVariable: [],
-  insulationVariable: [],
   autoRefreshApp: true,
   disableStatistics: false,
   disablePreloadApp: false,

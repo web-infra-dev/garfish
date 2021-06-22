@@ -1,6 +1,6 @@
 {
   "name": "@garfish/router",
-  "version": "0.0.9-alpha.9",
+  "version": "0.0.9",
   "description": "router module.",
   "keywords": [
     "garfish",
@@ -37,5 +37,5 @@
     "registry": "https://registry.npmjs.org",
     "access": "public"
   },
-  "gitHead": "1967845252838eafc43e99d51e1902b7de89d097"
+  "gitHead": "a4a257160a2f0122157aeaf07e89372d5adf5b49"
 }

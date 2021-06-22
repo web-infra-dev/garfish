@@ -2,7 +2,14 @@ import { Garfish } from '@garfish/core';
 import GarfishRouter from '@garfish/router';
 import GarfishBrowserVm from '@garfish/browser-vm';
 import GarfishBrowserSnapshot from '@garfish/browser-snapshot';
-import { def, warn, hasOwn, inBrowser, __GARFISH_FLAG__ } from '@garfish/utils';
+import {
+  def,
+  warn,
+  hasOwn,
+  inBrowser,
+  __GARFISH_FLAG__,
+  error,
+} from '@garfish/utils';
 
 declare global {
   interface Window {
@@ -19,6 +26,31 @@ export function createContext(): Garfish {
     return window['Garfish'];
 
   const GarfishInstance = new Garfish({
+    apps: [],
+    basename: '',
+    domGetter: () => null,
+    sandbox: {
+      open: true,
+      snapshot: false,
+      useStrict: false,
+      strictIsolation: false,
+    },
+    autoRefreshApp: true,
+    disableStatistics: false,
+    disablePreloadApp: false,
+    nested: false,
+    beforeLoad: async () => {},
+    afterLoad: () => {},
+    beforeEval: () => {},
+    afterEval: () => {},
+    beforeMount: () => {},
+    afterMount: () => {},
+    beforeUnmount: () => {},
+    afterUnmount: () => {},
+    errorLoadApp: (err) => error(err),
+    errorMountApp: (err) => error(err),
+    errorUnmountApp: (err) => error(err),
+    onNotMatchRouter: () => {},
     plugins: [GarfishRouter(), GarfishBrowserVm(), GarfishBrowserSnapshot()],
   });
 
