@@ -1,4 +1,4 @@
-import GarfishInstance from '@garfish/framework';
+import GarfishInstance from 'garfish';
 
 (window as any).__GARFISH_PARENT__ = true;
 
