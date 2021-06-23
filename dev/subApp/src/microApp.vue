@@ -12,7 +12,7 @@
 
 <script>
 // 嵌套场景中
-import GarfishInstance from '@garfish/framework';
+import GarfishInstance from 'garfish';
 
 let hasInit = false;
 export default {
