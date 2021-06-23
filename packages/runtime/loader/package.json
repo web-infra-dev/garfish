@@ -1,6 +1,6 @@
 {
   "name": "@garfish/loader",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "loader module.",
   "keywords": [
     "garfish",
@@ -31,8 +31,8 @@
     ]
   },
   "dependencies": {
-    "himalaya": "1.1.0",
-    "@garfish/utils": "^0.0.23"
+    "@garfish/utils": "^0.0.24",
+    "himalaya": "1.1.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
