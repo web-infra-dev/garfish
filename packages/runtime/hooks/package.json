@@ -44,5 +44,5 @@
       "__tests__[\\\\/].+\\.js$": "babel-jest"
     }
   },
-  "gitHead": "fce3d003277037652f23f609c5db5d1b3c0713da"
+  "gitHead": "65a4fb7ff7d6dad9507b1ff95664f55b6f86a2e2"
 }
