@@ -31,8 +31,8 @@
     ]
   },
   "dependencies": {
-    "@garfish/core": "^0.0.13",
-    "@garfish/loader": "^0.0.13"
+    "@garfish/core": "^0.0.20",
+    "@garfish/loader": "^0.0.20"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

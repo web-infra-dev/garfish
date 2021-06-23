@@ -32,10 +32,9 @@
     ]
   },
   "dependencies": {
-    "@garfish/hooks": "^0.0.13",
-    "@garfish/loader": "^0.0.13",
-    "@garfish/utils": "^0.0.13",
-    "himalaya": "^1.1.0"
+    "@garfish/hooks": "^0.0.20",
+    "@garfish/loader": "^0.0.20",
+    "@garfish/utils": "^0.0.20"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
