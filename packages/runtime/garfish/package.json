@@ -39,7 +39,7 @@
     "@garfish/browser-vm": "^0.0.23",
     "@garfish/core": "^0.0.23",
     "@garfish/router": "^0.0.23",
-    "@garfish/utils": "^0.0.22"
+    "@garfish/utils": "^0.0.23"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
