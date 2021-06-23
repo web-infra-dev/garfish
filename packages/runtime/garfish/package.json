@@ -1,6 +1,6 @@
 {
   "name": "garfish",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "garfish module.",
   "keywords": [
     "garfish",
@@ -35,10 +35,10 @@
     ]
   },
   "dependencies": {
-    "@garfish/browser-snapshot": "^0.0.22",
-    "@garfish/browser-vm": "^0.0.22",
-    "@garfish/core": "^0.0.22",
-    "@garfish/router": "^0.0.22",
+    "@garfish/browser-snapshot": "^0.0.23",
+    "@garfish/browser-vm": "^0.0.23",
+    "@garfish/core": "^0.0.23",
+    "@garfish/router": "^0.0.23",
     "@garfish/utils": "^0.0.22"
   },
   "publishConfig": {

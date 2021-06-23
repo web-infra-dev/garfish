@@ -1,6 +1,6 @@
 {
   "name": "@garfish/browser-snapshot",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "browser-snapshot module.",
   "keywords": [
     "garfish",
@@ -31,7 +31,7 @@
     ]
   },
   "dependencies": {
-    "@garfish/core": "^0.0.22"
+    "@garfish/core": "^0.0.23"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
