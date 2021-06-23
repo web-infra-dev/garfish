@@ -30,8 +30,7 @@
       "umd"
     ]
   },
-  "peerDependencies": {
-    "@garfish/core": "^0.0.20",
+  "dependencies": {
     "himalaya": "1.1.0"
   },
   "publishConfig": {

@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@garfish/hooks": "^0.0.21",
-    "@garfish/loader": "^0.0.20",
+    "@garfish/loader": "^0.0.21",
     "@garfish/utils": "^0.0.21"
   },
   "publishConfig": {

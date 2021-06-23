@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@garfish/core": "^0.0.21",
-    "@garfish/loader": "^0.0.20"
+    "@garfish/loader": "^0.0.21"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
