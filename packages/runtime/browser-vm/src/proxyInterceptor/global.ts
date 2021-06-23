@@ -1,7 +1,7 @@
 import { warn, hasOwn } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 import { isEsGlobalMethods } from '../utils';
-import { __windowBind__, GAR_OPTIMIZE_NAME } from '../symbolTypes';
+import { __windowBind__, GARFISH_OPTIMIZE_NAME } from '../symbolTypes';
 import {
   bind,
   isConstructor,
@@ -90,11 +90,11 @@ export function createSetter(sandbox: Sandbox) {
 
         // Update need optimization variables
         if (sandbox.global) {
-          const methods = sandbox.global[`${GAR_OPTIMIZE_NAME}Methods`];
+          const methods = sandbox.global[`${GARFISH_OPTIMIZE_NAME}Methods`];
           if (Array.isArray(methods)) {
             if (methods.includes(p)) {
               const updateStack =
-                sandbox.global[`${GAR_OPTIMIZE_NAME}UpdateStack`];
+                sandbox.global[`${GARFISH_OPTIMIZE_NAME}UpdateStack`];
               updateStack.forEach((fn) => fn(p, value));
             }
           }
