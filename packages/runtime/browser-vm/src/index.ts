@@ -81,12 +81,12 @@ export default function BrowserVm() {
 
     // Use the default Garfish instance attributes
     let config: Partial<SandboxOptions> = { openSandbox: true };
-    const options = {
+    const options: interfaces.Plugin = {
       openVm: true,
       name: 'browser-vm',
       version: __VERSION__,
 
-      afterLoad(appInfo, appInstance: interfaces.App) {
+      afterLoad(appInfo, appInstance) {
         // Support for instance configuration, to ensure that old versions compatible
         const sandboxConfig = appInfo.sandbox || Garfish?.options?.sandbox;
         if (sandboxConfig === false) {
@@ -160,7 +160,7 @@ export default function BrowserVm() {
 
       afterMount(appInfo, appInstance) {
         if (appInstance.vmSandbox) {
-          (appInstance.vmSandbox as Sandbox).execScript(`
+          appInstance.vmSandbox.execScript(`
             if (typeof window.onload === 'function') {
               window.onload.call(window);
             }
@@ -168,6 +168,7 @@ export default function BrowserVm() {
         }
       },
     };
+
     return options;
   };
 }
