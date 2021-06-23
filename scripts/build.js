@@ -82,6 +82,9 @@ async function build(target) {
   // Merge .d.ts
   if (mergeTypes && pkg.types) {
     // mergeBuildTypes(pkgDir, target);
+    await fs.remove(`${pkgDir}/dist/packages`);
+    await fs.remove('dist');
+    await fs.remove('temp');
   }
 }
 
