@@ -1,6 +1,6 @@
 {
   "name": "@garfish/utils",
-  "version": "0.0.22",
+  "version": "0.0.21",
   "description": "utils module.",
   "keywords": [
     "garfish",
@@ -30,7 +30,7 @@
       "umd"
     ]
   },
-  "dependencies": {
+  "peerDependencies": {
     "@garfish/core": "^0.0.22"
   },
   "publishConfig": {
