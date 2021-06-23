@@ -1,6 +1,6 @@
 {
   "version": "0.0.20-alpha.1",
-  "npmClient": "yarn",
+  "npmClient": "npm",
   "command": {
     "publish": {
       "ignoreChanges": [
