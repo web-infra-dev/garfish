@@ -120,3 +120,15 @@ export function provider({ basename, dom }) {
 // }, 3000);
 
 // console.log(document.currentScript);
+
+const link = document.createElement('link');
+document.body.appendChild(link);
+// link.disabled = true
+// window.Garfish.getGlobalObject().l = link;
+link.setAttribute('href', 'http://localhost:9090/css/xxx/xx.css');
+link.setAttribute('rel', 'stylesheet');
+
+const jsNode = document.createElement('script');
+document.body.appendChild(jsNode);
+jsNode.innerHTML = 'console.log(1)';
+// jsNode.src = 'http://localhost:9090/async.js';

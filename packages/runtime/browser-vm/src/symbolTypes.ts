@@ -1,5 +1,5 @@
-export const GAR_NAMESPACE_PREFIX = '__Garfish__';
-export const GAR_OPTIMIZE_NAME = '__garfish_optimize__';
+export const GARFISH_NAMESPACE_PREFIX = '__Garfish__';
+export const GARFISH_OPTIMIZE_NAME = '__garfish_optimize__';
 export const __proxyNode__ = Symbol.for('garfish.proxyNode');
 export const __domWrapper__ = Symbol.for('garfish.domWrapper');
 export const __windowBind__ = Symbol.for('garfish.windowBind');

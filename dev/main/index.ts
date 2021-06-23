@@ -17,7 +17,7 @@ GarfishInstance.run({
       name: 'vue',
       activeWhen: '/vue',
       // cache: true,
-      entry: 'http://localhost:8001',
+      entry: 'http://localhost:9090',
     },
   ],
   autoRefreshApp: false,
@@ -36,7 +36,7 @@ document.getElementById('vueBtn').onclick = async () => {
     history.pushState({}, 'vue', '/garfish_master/vue'); // use router to load app
   } else {
     let prevApp = await GarfishInstance.loadApp('vue', {
-      entry: 'http://localhost:8001',
+      entry: 'http://localhost:9090',
       domGetter: '#submoduleByCunstom',
     });
     console.log(prevApp);

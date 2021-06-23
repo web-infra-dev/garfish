@@ -45,7 +45,7 @@ export default function Router(_args?: Options) {
     return {
       name: 'router',
       version: __VERSION__,
-      bootstrap(options) {
+      bootstrap(options: interfaces.Options) {
         let activeApp = null;
         const unmounts: Record<string, Function> = {};
         const { apps, basename } = options;

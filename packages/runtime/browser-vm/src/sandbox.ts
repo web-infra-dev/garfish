@@ -23,7 +23,7 @@ import { listenerModule } from './modules/eventListener';
 import { timeoutModule, intervalModule } from './modules/timer';
 import { makeElInjector } from './dynamicNode';
 import { optimizeMethods, createFakeObject } from './utils';
-import { __garfishGlobal__, GAR_OPTIMIZE_NAME } from './symbolTypes';
+import { __garfishGlobal__, GARFISH_OPTIMIZE_NAME } from './symbolTypes';
 import {
   createHas,
   createGetter,
@@ -137,6 +137,10 @@ export class Sandbox {
     this.global = null;
     this.optimizeCode = '';
     this.initComplete = false;
+    this.replaceGlobalVariables.createdList = [];
+    this.replaceGlobalVariables.prepareList = [];
+    this.replaceGlobalVariables.recoverList = [];
+    this.replaceGlobalVariables.overrideList = [];
   }
 
   reset() {
@@ -206,8 +210,7 @@ export class Sandbox {
   }
 
   clearEffects() {
-    const recovers = this.replaceGlobalVariables.recoverList || [];
-    recovers.forEach((fn) => fn && fn());
+    this.replaceGlobalVariables.recoverList.forEach((fn) => fn && fn());
   }
 
   optimizeGlobalMethod() {
@@ -227,9 +230,9 @@ export class Sandbox {
       return `${prevCode} let ${name} = window.${name};`;
     }, code);
     // Used to update the variables synchronously after `window.x = xx` is updated
-    this.global[`${GAR_OPTIMIZE_NAME}Methods`] = methods;
-    this.global[`${GAR_OPTIMIZE_NAME}UpdateStack`] = [];
-    code += `${GAR_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v")});`;
+    this.global[`${GARFISH_OPTIMIZE_NAME}Methods`] = methods;
+    this.global[`${GARFISH_OPTIMIZE_NAME}UpdateStack`] = [];
+    code += `${GARFISH_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v")});`;
     return code;
   }
 

@@ -1,5 +1,5 @@
 import { Sandbox } from '../sandbox';
-import { GAR_NAMESPACE_PREFIX } from '../symbolTypes';
+import { GARFISH_NAMESPACE_PREFIX } from '../symbolTypes';
 
 export class CusStorage {
   prefix: string;
@@ -9,7 +9,7 @@ export class CusStorage {
   constructor(namespace: string, rawStorage: Storage) {
     this.rawStorage = rawStorage;
     this.namespace = namespace;
-    this.prefix = `${GAR_NAMESPACE_PREFIX}${namespace}__`;
+    this.prefix = `${GARFISH_NAMESPACE_PREFIX}${namespace}__`;
   }
 
   get length() {
