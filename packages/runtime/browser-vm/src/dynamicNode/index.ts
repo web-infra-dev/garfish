@@ -1,7 +1,7 @@
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
 import { sandboxMap, handlerParams } from '../utils';
-import { DynamicNodeProcesser, rawElementMethods } from './processer';
+import { DynamicNodeProcessor, rawElementMethods } from './processor';
 
 const mountElementMethods = [
   'append',
@@ -30,8 +30,8 @@ function injector(current: Function, methodName: string) {
     }
 
     if (sandbox) {
-      const processer = new DynamicNodeProcesser(el, sandbox, methodName);
-      return processer.append(this, arguments, originProcess);
+      const processor = new DynamicNodeProcessor(el, sandbox, methodName);
+      return processor.append(this, arguments, originProcess);
     } else {
       return originProcess();
     }

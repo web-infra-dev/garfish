@@ -18,7 +18,7 @@ const isInsertMethod = makeMap(['insertBefore', 'insertAdjacentElement']);
 
 export const rawElementMethods = Object.create(null);
 
-export class DynamicNodeProcesser {
+export class DynamicNodeProcessor {
   private el: any; // any Element
   private sandbox: Sandbox;
   private methodName: string;
