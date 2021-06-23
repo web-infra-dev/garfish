@@ -20,7 +20,7 @@
     }
   },
   "packages": [
-    "packages/runtime/**",
-    "packages/tools/**"
+    "packages/runtime/*",
+    "packages/tools/*"
   ]
 }
