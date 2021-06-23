@@ -1,6 +1,6 @@
 {
   "name": "garfish",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "description": "garfish module.",
   "keywords": [
     "garfish",
@@ -35,11 +35,11 @@
     ]
   },
   "dependencies": {
-    "@garfish/browser-snapshot": "^0.0.26",
-    "@garfish/browser-vm": "^0.0.26",
-    "@garfish/core": "^0.0.26",
-    "@garfish/router": "^0.0.26",
-    "@garfish/utils": "^0.0.26"
+    "@garfish/browser-snapshot": "^0.0.27",
+    "@garfish/browser-vm": "^0.0.27",
+    "@garfish/core": "^0.0.27",
+    "@garfish/router": "^0.0.27",
+    "@garfish/utils": "^0.0.27"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
