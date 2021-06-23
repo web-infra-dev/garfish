@@ -30,8 +30,10 @@
       "umd"
     ]
   },
+  "devDependencies": {
+    "@garfish/core": "^0.0.23"
+  },
   "dependencies": {
-    "@garfish/core": "^0.0.23",
     "@garfish/loader": "^0.0.23"
   },
   "publishConfig": {
