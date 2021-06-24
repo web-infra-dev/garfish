@@ -3,6 +3,8 @@ import { calculateObjectSize } from './utils';
 const MAX_SIZE = 10 * 1024 * 1024;
 const DEFAULT_POLL = Symbol('__defaultBufferPoll__');
 const FILE_TYPES = ['js', 'css', 'template', 'component'] as const;
+// Add default poll
+(FILE_TYPES as any).push(DEFAULT_POLL);
 
 export const cachedDataSet = new WeakSet();
 export type FileType = typeof FILE_TYPES[number];
@@ -10,13 +12,14 @@ export type FileType = typeof FILE_TYPES[number];
 export class AppCacheContainer {
   private maxSize: number;
   private totalSize = 0;
+  private recorder = {};
 
   constructor(maxSize = MAX_SIZE) {
     this.maxSize = maxSize;
     FILE_TYPES.forEach((key) => {
+      this.recorder[key] = 0;
       this[key] = new Map<string, any>();
     });
-    this[DEFAULT_POLL] = new Map<string, any>();
   }
 
   bufferPool(type: FileType | typeof DEFAULT_POLL) {
@@ -24,10 +27,7 @@ export class AppCacheContainer {
   }
 
   has(url: string) {
-    return (
-      FILE_TYPES.some((key) => this[key].has(url)) ||
-      this.bufferPool(DEFAULT_POLL).has(url)
-    );
+    return FILE_TYPES.some((key) => this[key].has(url));
   }
 
   get(url: string) {
@@ -36,26 +36,23 @@ export class AppCacheContainer {
         return this[key].get(url);
       }
     }
-    const defaultPool = this.bufferPool(DEFAULT_POLL);
-    if (defaultPool.has(url)) {
-      return defaultPool.get(url);
-    }
   }
 
   set(url: string, data: any, type: FileType) {
-    // prettier-ignore
-    const totalSize = this.totalSize + (
-      cachedDataSet.has(data)
-        ? 0
-        : calculateObjectSize(data)
-    );
+    const curSize = cachedDataSet.has(data) ? 0 : calculateObjectSize(data);
+    const totalSize = this.totalSize + curSize;
+
     if (totalSize < this.maxSize) {
+      let bar = type;
       let bufferPool = this.bufferPool(type);
       if (!bufferPool) {
+        bar = DEFAULT_POLL as any;
         bufferPool = this.bufferPool(DEFAULT_POLL);
       }
+
       bufferPool.set(url, data);
       this.totalSize = totalSize;
+      this.recorder[bar] += curSize;
       return true;
     }
     return false;
@@ -65,13 +62,17 @@ export class AppCacheContainer {
     if (typeof type === 'string') {
       const cacheBox = this.bufferPool(type);
       if (cacheBox && cacheBox instanceof Map) {
+        const size = this.recorder[type];
+        this.totalSize -= size;
+        this.recorder[type] = 0;
         cacheBox.clear();
       }
     } else {
       FILE_TYPES.forEach((key) => {
         this[key].clear();
+        this.recorder[key] = 0;
       });
-      this.bufferPool(DEFAULT_POLL).clear();
+      this.totalSize = 0;
     }
   }
 }
