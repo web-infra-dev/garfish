@@ -1,2 +1,7 @@
-//eslint-disable-next-line
-export default {};
+import { loadComponent } from './loadComponent';
+
+const loader = {
+  loadComponent,
+};
+
+export { loadComponent, loader as default };
