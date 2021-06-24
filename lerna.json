@@ -1,5 +1,5 @@
 {
-  "version": "0.0.12",
+  "version": "0.0.30",
   "npmClient": "npm",
   "command": {
     "publish": {
@@ -8,7 +8,8 @@
         "*.md",
         "packages/tools/*"
       ],
-      "message": "chore(release): publish"
+      "message": "chore(release): publish",
+      "registry": "https://registry.npmjs.org"
     },
     "bootstrap": {
       "ignore": "component-*",
@@ -19,7 +20,7 @@
     }
   },
   "packages": [
-    "packages/runtime/**",
-    "packages/tools/**"
+    "packages/runtime/*",
+    "packages/tools/*"
   ]
 }

@@ -133,8 +133,8 @@ function extractTsDeclare() {
         `dist/packages/runtime/${pkgName}/src`,
       );
 
-      if (!fs.existsSync(tsTypeDir)) return;
       setTimeout(() => {
+        if (!fs.existsSync(tsTypeDir)) return;
         fs.copySync(
           path.resolve(pkgDir, tsTypeDir),
           path.resolve(pkgDir, `dist/`),
@@ -143,15 +143,15 @@ function extractTsDeclare() {
           },
         );
       }, 1000);
-      setTimeout(() => {
-        const args = require('minimist')(process.argv.slice(2));
-        const watch = args.watch || args.w;
-        // if (!watch) {
-        fs.remove(path.resolve(pkgDir, `dist/packages`));
-        fs.remove(path.resolve(pkgDir, `dist/dist`));
-        fs.remove(path.resolve(pkgDir, `temp`));
-        // }
-      }, 3000);
+      // setTimeout(() => {
+      //   const args = require('minimist')(process.argv.slice(2));
+      //   const watch = args.watch || args.w;
+      //   // if (!watch) {
+      //   fs.remove(path.resolve(pkgDir, `dist/packages`));
+      //   fs.remove(path.resolve(pkgDir, `dist/dist`));
+      //   fs.remove(path.resolve(pkgDir, `temp`));
+      //   // }
+      // }, 3000);
     },
   };
 }

@@ -85,6 +85,7 @@ export default function BrowserVm() {
       openVm: true,
       name: 'browser-vm',
       version: __VERSION__,
+      someting: 'hello world',
 
       afterLoad(appInfo, appInstance) {
         // Support for instance configuration, to ensure that old versions compatible
@@ -118,13 +119,13 @@ export default function BrowserVm() {
           if (appInstance.vmSandbox) return;
 
           compatibleOldModulesType(config);
-
           // Create sandbox instance
           const sandbox = new Sandbox({
             openSandbox: true,
             namespace: appInfo.name,
             baseUrl: appInstance.entryManager.url,
             strictIsolation: appInstance.strictIsolation,
+            sourceList: appInstance.sourceList,
             modules: [
               () => ({
                 override: appInstance.getExecScriptEnv(false) || {},

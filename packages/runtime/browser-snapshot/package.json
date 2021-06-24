@@ -1,6 +1,6 @@
 {
   "name": "@garfish/browser-snapshot",
-  "version": "0.0.12",
+  "version": "0.0.30",
   "description": "browser-snapshot module.",
   "keywords": [
     "garfish",
@@ -30,12 +30,12 @@
       "umd"
     ]
   },
-  "dependencies": {
-    "@garfish/core": "^0.0.13"
+  "peerDependencies": {
+    "@garfish/core": "^0.0.23"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
   },
-  "gitHead": "a4a257160a2f0122157aeaf07e89372d5adf5b49"
+  "gitHead": "65a4fb7ff7d6dad9507b1ff95664f55b6f86a2e2"
 }

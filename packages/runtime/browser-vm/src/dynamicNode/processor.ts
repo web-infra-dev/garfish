@@ -40,6 +40,8 @@ export class DynamicNodeProcessor {
       const href = this.el.getAttribute('href');
       src && (this.el.src = transformUrl(baseUrl, src));
       href && (this.el.href = transformUrl(baseUrl, href));
+      const url = this.el.src || this.el.href;
+      url && this.sandbox.options?.sourceList.push(url);
     }
   }
 

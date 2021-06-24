@@ -12,12 +12,5 @@
     "emitDecoratorMetadata": true,
     "declaration": true,
     "allowJs": true
-  },
-  "include": [
-    "./",
-    "./garfish",
-    "@garfish/router",
-    "@garfish/browser-vm",
-    "@garfish/browser-snapshot"
-  ]
+  }
 }

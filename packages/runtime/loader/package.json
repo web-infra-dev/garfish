@@ -1,6 +1,6 @@
 {
   "name": "@garfish/loader",
-  "version": "0.0.12",
+  "version": "0.0.30",
   "description": "loader module.",
   "keywords": [
     "garfish",
@@ -30,8 +30,9 @@
       "umd"
     ]
   },
-  "peerDependencies": {
-    "@garfish/core": "^0.0.9"
+  "dependencies": {
+    "@garfish/utils": "^0.0.30",
+    "himalaya": "1.1.0"
   },
   "dependencies": {
     "himalaya": "1.1.0"
@@ -40,5 +41,5 @@
     "registry": "https://registry.npmjs.org",
     "access": "public"
   },
-  "gitHead": "a4a257160a2f0122157aeaf07e89372d5adf5b49"
+  "gitHead": "65a4fb7ff7d6dad9507b1ff95664f55b6f86a2e2"
 }

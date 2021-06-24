@@ -1,6 +1,6 @@
 {
   "name": "@garfish/hooks",
-  "version": "0.0.12",
+  "version": "0.0.30",
   "author": "zhoushaw",
   "description": "fork from tapable",
   "license": "MIT",
@@ -44,5 +44,5 @@
       "__tests__[\\\\/].+\\.js$": "babel-jest"
     }
   },
-  "gitHead": "a4a257160a2f0122157aeaf07e89372d5adf5b49"
+  "gitHead": "65a4fb7ff7d6dad9507b1ff95664f55b6f86a2e2"
 }

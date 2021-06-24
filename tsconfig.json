@@ -6,7 +6,7 @@
     "module": "ESNext",
     "target": "es6",
     "lib": ["es6","dom"],
-    "sourceMap": false,
+    "sourceMap": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "experimentalDecorators": true,

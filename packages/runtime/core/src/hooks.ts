@@ -83,7 +83,7 @@ export class Hooks {
 
     if (typeof plugin !== 'object')
       __DEV__ && warn('Plug-in must return object type');
-    if (pluginName) __DEV__ && warn('Plug-in must provide a name');
+    if (!pluginName) __DEV__ && warn('Plug-in must provide a name');
 
     if (this.plugins.indexOf(plugin) === -1) this.plugins.push(plugin);
     lifecycleKeys.forEach((key) => {
