@@ -1,0 +1,37 @@
+{
+  "name": "@garfish/garfish-micro-component",
+  "version": "0.0.30",
+  "description": "micro-component module.",
+  "keywords": [
+    "garfish",
+    "micro-component"
+  ],
+  "author": "chentao.arthur <chentao.arthur@bytedance.com>",
+  "homepage": "https://github.com/bytedance/garfish",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "module": "dist/micro-component.esm-bundler.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "scripts": {},
+  "types": "dist/micro-component.d.ts",
+  "buildOptions": {
+    "name": "MicroComponent",
+    "devTemplate": "module",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "umd"
+    ]
+  },
+  "dependencies": {},
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}
