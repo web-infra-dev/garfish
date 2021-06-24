@@ -141,11 +141,11 @@ export function computeStackTraceFromStackProp(ex: any): StackTrace | null {
 
 export const sourceListTags = [
   'link',
-  'img',
+  'style',
   'script',
+  'img',
   'video',
   'audio',
-  'style',
 ];
 export const sourceNode = makeMap(sourceListTags);
 

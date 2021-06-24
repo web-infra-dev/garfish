@@ -4,9 +4,9 @@ import './App.css';
 import { Modal, Button } from 'antd';
 import 'antd/dist/antd.css';
 
-let cur = document.querySelector('#root');
+// let cur = document.querySelector('#root');
 // setTimeout(() => {
-//   console.log('^^^^^^^^^^^^^', cur, document);
+//   console.log(cur, document);
 //   while (cur !== document && cur) {
 //     cur = cur && cur.parentNode;
 //     console.log(cur);
@@ -31,8 +31,6 @@ function App() {
     window.a.b.c = 1;
   };
 
-  console.log(12121);
-  debugger;
   return (
     <div className="App">
       <Button type="primary" onClick={showModal}>

@@ -4,8 +4,8 @@
 
 ## Usage
 
-```
-import @garfish/utils from '@garfish/utils';
+```js
+import { isObject } from '@garfish/utils';
 
 // TODO: DEMONSTRATE API
 ```

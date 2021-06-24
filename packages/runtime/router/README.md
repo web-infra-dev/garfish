@@ -4,8 +4,8 @@
 
 ## Usage
 
-```
-import spSandbox from '@garfish/router';
+```js
+import router from '@garfish/router';
 
 // TODO: DEMONSTRATE API
 ```
