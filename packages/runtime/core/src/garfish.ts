@@ -304,12 +304,17 @@ export class Garfish implements interfaces.Garfish {
           `Missing url for loading "${name}" micro component`,
         );
 
-        const { resourceManager: manager } = await this.loader.loadComponent<
-          ComponentManager
-        >(name, options.url);
+        const data = await this.loader.loadComponent<ComponentManager>(
+          name,
+          options.url,
+        );
 
         try {
-          result = new Component(this, { name, ...options }, manager);
+          result = new Component(
+            this,
+            { name, ...options },
+            data.resourceManager,
+          );
           this.cacheComponents[nameWithVersion] = result;
         } catch (e) {
           __DEV__ && error(e);
