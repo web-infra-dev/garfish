@@ -187,7 +187,7 @@ export class DynamicNodeProcessor {
         this.monitorChangesOfLinkNode();
       }
     }
-    if (__DEV__ || (this.sandbox?.global as any).__dev__) {
+    if (__DEV__ || (this.sandbox?.global as any). __GARFISH__DEV__) {
       // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
       if (tag === 'iframe' && typeof this.el.onload === 'function') {
         def(this.el, 'contentWindow', this.sandbox.global);
