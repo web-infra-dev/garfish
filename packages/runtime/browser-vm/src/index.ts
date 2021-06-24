@@ -85,7 +85,6 @@ export default function BrowserVm() {
       openVm: true,
       name: 'browser-vm',
       version: __VERSION__,
-      someting: 'hello world',
 
       afterLoad(appInfo, appInstance) {
         // Support for instance configuration, to ensure that old versions compatible
