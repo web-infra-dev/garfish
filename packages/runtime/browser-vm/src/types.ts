@@ -23,11 +23,11 @@ export interface SandboxOptions {
   openSandbox?: boolean;
   strictIsolation?: boolean;
   modules?: Array<Module>;
+  sourceList?: Array<string>;
   loaderOptions?: LoaderOptions;
   el?: () => Element | ShadowRoot | null;
   protectVariable?: () => Array<PropertyKey>;
   insulationVariable?: () => Array<PropertyKey>;
-  sourceList?: Array<string>;
 }
 
 export interface ExecScriptOptions {

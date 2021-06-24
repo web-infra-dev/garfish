@@ -79,16 +79,16 @@ export class Sandbox {
   constructor(options: SandboxOptions) {
     // Default sandbox config
     const defaultOptions = {
-      modules: [],
       baseUrl: '',
       namespace: '',
+      modules: [],
+      sourceList: [],
       useStrict: false,
       openSandbox: true,
       strictIsolation: false,
       el: () => null,
       protectVariable: () => [],
       insulationVariable: () => [],
-      sourceList: [],
     };
     this.options = isPlainObject(options)
       ? deepMerge(defaultOptions, options)
