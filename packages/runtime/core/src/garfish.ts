@@ -186,16 +186,16 @@ export class Garfish implements interfaces.Garfish {
   ): Promise<interfaces.App | null> {
     let appInfo = this.appInfos[appName];
 
-    if (isPlainObject(options)) {
+    if (isPlainObject(appInfo)) {
       // Does not support does not have remote resources and no registered application
       assert(
         !(!appInfo && !appInfo.entry),
         `Can't load unexpected module "${appName}".` +
           'Please provide the entry parameters or registered in advance of the app',
       );
-      // Deep clone app options
-      const tempInfo = appInfo;
-      appInfo = deepMerge(tempInfo, options);
+
+      options = typeof options === 'string' ? { entry: options } : options;
+      appInfo = deepMerge(appInfo, options);
     } else if (typeof options === 'string') {
       // `Garfish.loadApp('appName', 'https://xx.html');`
       appInfo = {

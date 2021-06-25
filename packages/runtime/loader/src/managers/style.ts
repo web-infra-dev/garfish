@@ -1,4 +1,5 @@
-import { Node, isAbsolute, transformUrl } from '@garfish/utils';
+import { parse, stringify } from '@garfish/css-scope';
+import { warn, Node, isAbsolute, transformUrl } from '@garfish/utils';
 
 // Match url in css
 const MATCH_CSS_URL = /url\(['"]?([^\)]+?)['"]?\)/g;
@@ -7,10 +8,12 @@ export class StyleManager {
   public url: string | null;
   public styleCode: string;
 
+  private scopeString: string;
   private depsStack = new Set();
 
   constructor(styleCode: string, url?: string) {
     this.url = url || null;
+    this.scopeString = '';
     this.styleCode = styleCode;
   }
 
@@ -26,8 +29,18 @@ export class StyleManager {
     }
   }
 
-  setScope(_scope: string) {
-    // Process css cope
+  setScope(scope: string) {
+    if (scope !== this.scopeString) {
+      try {
+        const astTree = parse(this.styleCode, {
+          source: `Css parser: ${this.url}`,
+        });
+        this.styleCode = stringify(astTree, scope);
+        this.scopeString = scope;
+      } catch (err) {
+        warn(err);
+      }
+    }
   }
 
   setDep(node: Node) {
@@ -55,6 +68,7 @@ export class StyleManager {
     const cloned = new this.constructor();
     cloned.url = this.url;
     cloned.styleCode = this.styleCode;
+    cloned.scopeString = this.scopeString;
     cloned.depsStack = new Set(this.depsStack);
     return cloned;
   }

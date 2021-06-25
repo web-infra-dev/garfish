@@ -1,8 +1,10 @@
 # `@garfish/css-scope`
 
-> 简化了 [css](https://github.com/reworkcss/css) 这个库
+> simulate [css](https://github.com/reworkcss/css)
 
-这套方案有两种实现，一套依赖于浏览器平台，使用 dom 一些 api，一套走纯 parser 流程，适用于 ssr 等场景。
+There are two implementations of this scheme, one depends on the browser platform, uses some dom APIs, and the other uses a pure parser process, which is suitable for scenarios such as ssr.
+
+We temporarily use the second option.
 
 ## Usage
 
@@ -11,5 +13,5 @@ import { parse, stringify } from '@garfish/css-scope';
 
 const text = `a { color: #fff; }`;
 const ast = parse(text);
-stringify(ast, '#App');
+const scopedText = stringify(ast, '#App'); // #App a { color: #fff; }
 ```

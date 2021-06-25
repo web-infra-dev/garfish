@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 // https://drafts.csswg.org/css-animations-1/#typedef-single-animation
 // https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation#%E8%AF%AD%E6%B3%95
 
@@ -65,7 +64,7 @@ function isFillMode(p: string) {
 }
 
 // https://developer.mozilla.org/zh-CN/docs/Web/CSS/custom-ident#%E8%AF%AD%E6%B3%95
-// 配合 parser，只需要过滤关键字和 token 里面的特殊符号
+// With parser, only need to filter keywords and special symbols in token
 const symbols = /[,'"\(\)!;]/;
 function isLegalName(p: string) {
   if (symbols.test(p)) return false;
@@ -237,7 +236,7 @@ function stringify(tree: Array<Props>, prefix: string) {
             : splice(ps[i] as string);
 
         if (next === ',' || next === ';') {
-          // 不加空格
+          // No add spaces
         } else if (nextIsArray) {
           const fillUp = ps[i + 2] === ',' ? '' : ' ';
           cur += `${child(next as Array<string>)}${fillUp}`;
@@ -255,7 +254,7 @@ function stringify(tree: Array<Props>, prefix: string) {
 export function processAnimation(input: string, prefix: string) {
   if (!input || !prefix) return input;
   const tokens = tokenizer(input);
-  // 如果语法不正确，就直接返回原文本
+  // If the syntax is incorrect, just return to the original text
   if (tokens === false) {
     return input;
   }
