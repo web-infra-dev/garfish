@@ -48,6 +48,7 @@ export class Loader {
    * @deprecated
    */
   public requestConfig: RequestInit | ((url: string) => RequestInit);
+  public personalId: Symbol;
   public lifecycle = {
     clear: new PluginManager<ClearPluginArgs>('clear'),
     loaded: new PluginManager<LoadedPluginArgs<Manager>>('loaded'),
@@ -65,6 +66,7 @@ export class Loader {
     this.options = options || {};
     this.loadingList = Object.create(null);
     this.cacheStore = Object.create(null);
+    this.personalId = Symbol.for('garfish.loader');
   }
 
   clear(scope: string, fileType?: FileType) {
