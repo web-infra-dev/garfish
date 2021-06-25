@@ -1,7 +1,7 @@
 import { isJs, isCss, isHtml } from '@garfish/utils';
 import { PluginManager } from './pluginSystem';
 import { request, copyResult, mergeConfig } from './utils';
-import { FileType, cachedDataSet, AppCacheContainer } from './appCache';
+import { FileTypes, cachedDataSet, AppCacheContainer } from './appCache';
 import { StyleManager } from './managers/style';
 import { TemplateManager } from './managers/template';
 import { ComponentManager } from './managers/component';
@@ -25,7 +25,7 @@ export interface LoaderOptions {
 
 export interface ClearPluginArgs {
   scope: string;
-  fileType?: FileType;
+  fileType?: FileTypes;
 }
 
 export interface LoadedPluginArgs<T> {
@@ -33,7 +33,7 @@ export interface LoadedPluginArgs<T> {
   value: {
     url: string;
     code: string;
-    fileType: FileType | '';
+    fileType: FileTypes | '';
     resourceManager: T | null;
   };
 }
@@ -67,7 +67,7 @@ export class Loader {
     this.cacheStore = Object.create(null);
   }
 
-  clear(scope: string, fileType?: FileType) {
+  clear(scope: string, fileType?: FileTypes) {
     const appCacheContainer = this.cacheStore[scope];
     if (appCacheContainer) {
       appCacheContainer.clear(fileType);
@@ -75,7 +75,7 @@ export class Loader {
     }
   }
 
-  clearAll(fileType?: FileType) {
+  clearAll(fileType?: FileTypes) {
     for (const scope in this.cacheStore) {
       this.clear(scope, fileType);
     }
@@ -110,12 +110,13 @@ export class Loader {
       // If other containers have cache
       for (const key in cacheStore) {
         const container = cacheStore[key];
-        if (container === appCacheContainer) continue;
-        if (container.has(url)) {
-          const result = container.get(url);
-          cachedDataSet.add(result);
-          appCacheContainer.set(url, result, result.fileType);
-          return Promise.resolve(copyResult(result));
+        if (container !== appCacheContainer) {
+          if (container.has(url)) {
+            const result = container.get(url);
+            cachedDataSet.add(result);
+            appCacheContainer.set(url, result, result.fileType);
+            return Promise.resolve(copyResult(result));
+          }
         }
       }
     }
@@ -128,19 +129,19 @@ export class Loader {
         loadingList[url] = null;
       })
       .then(async ({ code, mimeType, result }) => {
-        let managerCtor, fileType: FileType;
+        let managerCtor, fileType: FileTypes;
 
         if (isComponent) {
-          fileType = 'component';
+          fileType = FileTypes.component;
           managerCtor = ComponentManager;
         } else if (isHtml(mimeType) || /\.html/.test(result.url)) {
-          fileType = 'template';
+          fileType = FileTypes.template;
           managerCtor = TemplateManager;
         } else if (isJs(mimeType) || /\.js/.test(result.url)) {
-          fileType = 'js';
+          fileType = FileTypes.js;
           managerCtor = JavaScriptManager;
         } else if (isCss(mimeType) || /\.css/.test(result.url)) {
-          fileType = 'css';
+          fileType = FileTypes.css;
           managerCtor = StyleManager;
         }
 
