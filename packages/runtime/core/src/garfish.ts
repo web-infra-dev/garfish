@@ -22,7 +22,7 @@ import { interfaces } from './interface';
 import { fetchStaticResources } from './utils';
 import { GarfishHMRPlugin } from './plugins/fixHMR';
 import { GarfishOptionsLife } from './plugins/lifecycle';
-import { GarfishPreloadPlugin } from './plugins/preload';
+import { loadAppResource, GarfishPreloadPlugin } from './plugins/preload';
 import { defaultLoadComponentOptions, getDefaultOptions } from './config';
 
 export class Garfish implements interfaces.Garfish {
@@ -178,6 +178,15 @@ export class Garfish implements interfaces.Garfish {
     }
     this.hooks.lifecycle.registerApp.call(this.appInfos);
     return this;
+  }
+
+  preloadApp(name: string) {
+    const appInfo = this.appInfos[name];
+    assert(
+      appInfo && appInfo.entry,
+      `Can't preloadApp unexpected module "${name}".`,
+    );
+    loadAppResource(this.loader, appInfo);
   }
 
   async loadApp(
