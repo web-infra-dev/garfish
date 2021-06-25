@@ -444,9 +444,8 @@ export class App {
       style: (node) => {
         const text = node.children[0] as Text;
         if (text) {
-          const styleManager = new StyleManager(text.content);
-          styleManager.correctPath(baseUrl);
-          // styleManager.setScope(this.name);
+          const styleManager = new StyleManager(text.content, baseUrl);
+          styleManager.setScope(this.name);
           return styleManager.renderAsStyleElement();
         }
         return DOMApis.createElement(node);

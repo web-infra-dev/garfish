@@ -189,22 +189,18 @@ export class Garfish implements interfaces.Garfish {
     loadAppResource(this.loader, appInfo);
   }
 
+  // `Garfish.loadApp('appName');`
+  // `Garfish.loadApp('appName', 'https://xx.html');`
+  // `Garfish.loadApp('appName', { entry: 'https://xx.html' });`
   async loadApp(
     appName: string,
-    options: Partial<interfaces.LoadAppOptions> | string,
+    options?: Partial<interfaces.LoadAppOptions> | string,
   ): Promise<interfaces.App | null> {
     let appInfo = this.appInfos[appName];
 
-    if (isPlainObject(appInfo)) {
-      // Does not support does not have remote resources and no registered application
-      assert(
-        !(!appInfo && !appInfo.entry),
-        `Can't load unexpected module "${appName}".` +
-          'Please provide the entry parameters or registered in advance of the app',
-      );
-
-      options = typeof options === 'string' ? { entry: options } : options;
-      appInfo = deepMerge(appInfo, options);
+    if (isPlainObject(options)) {
+      // Deep clone app options
+      appInfo = deepMerge(appInfo || ({} as any), options);
     } else if (typeof options === 'string') {
       // `Garfish.loadApp('appName', 'https://xx.html');`
       appInfo = {
@@ -213,6 +209,13 @@ export class Garfish implements interfaces.Garfish {
         domGetter: () => document.createElement('div'),
       };
     }
+
+    // Does not support does not have remote resources and no registered application
+    assert(
+      !(!appInfo && !appInfo.entry),
+      `Can't load unexpected module "${appName}".` +
+        'Please provide the entry parameters or registered in advance of the app',
+    );
 
     const asyncLoadProcess = async () => {
       // Return not undefined type data directly to end loading

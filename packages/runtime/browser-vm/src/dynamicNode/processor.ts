@@ -68,7 +68,6 @@ export class DynamicNodeProcessor {
           .load<StyleManager>(namespace, fetchUrl)
           .then(({ resourceManager: styleManager }) => {
             this.dispatchEvent('load');
-            styleManager.correctPath();
             callback(styleManager.renderAsStyleElement());
             return;
           })
@@ -169,8 +168,7 @@ export class DynamicNodeProcessor {
     if (tag === 'style') {
       rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
       if (baseUrl) {
-        const manager = new StyleManager(this.el.textContent);
-        manager.correctPath(baseUrl);
+        const manager = new StyleManager(this.el.textContent, baseUrl);
         this.el.textContent = manager.styleCode;
       }
       convertedNode = this.el;

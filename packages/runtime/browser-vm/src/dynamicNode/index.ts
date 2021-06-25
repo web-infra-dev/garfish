@@ -22,8 +22,7 @@ function injector(current: Function, methodName: string) {
     if (this?.tagName?.toLowerCase() === 'style') {
       const baseUrl = sandbox && sandbox.options.baseUrl;
       if (baseUrl) {
-        const manager = new StyleManager(el.textContent);
-        manager.correctPath(baseUrl);
+        const manager = new StyleManager(el.textContent, baseUrl);
         this.textContent = manager.styleCode;
         return originProcess();
       }

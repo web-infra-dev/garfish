@@ -15,12 +15,12 @@ export class StyleManager {
     this.url = url || null;
     this.scopeString = '';
     this.styleCode = styleCode;
+    this.correctPath();
   }
 
-  correctPath(baseUrl?: string) {
+  private correctPath() {
     const { url, styleCode } = this;
-    if (!baseUrl) baseUrl = url;
-    if (baseUrl && typeof styleCode === 'string') {
+    if (url && typeof styleCode === 'string') {
       // The relative path is converted to an absolute path according to the path of the css file
       this.styleCode = styleCode.replace(MATCH_CSS_URL, (k1, k2) => {
         if (isAbsolute(k2)) return k1;
@@ -29,18 +29,18 @@ export class StyleManager {
     }
   }
 
-  setScope(scope: string) {
-    if (scope !== this.scopeString) {
-      try {
-        const astTree = parse(this.styleCode, {
-          source: `Css parser: ${this.url}`,
-        });
-        this.styleCode = stringify(astTree, scope);
-        this.scopeString = scope;
-      } catch (err) {
-        warn(err);
-      }
-    }
+  setScope(_scope: string) {
+    // if (scope !== this.scopeString) {
+    //   try {
+    //     const astTree = parse(this.styleCode, {
+    //       source: `Css parser: ${this.url}`,
+    //     });
+    //     this.styleCode = stringify(astTree, scope);
+    //     this.scopeString = scope;
+    //   } catch (err) {
+    //     warn(err);
+    //   }
+    // }
   }
 
   setDep(node: Node) {
