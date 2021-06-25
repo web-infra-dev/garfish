@@ -1,13 +1,23 @@
 import { calculateObjectSize } from './utils';
 
+export const cachedDataSet = new WeakSet();
+
+export enum FileTypes {
+  js = 'js',
+  css = 'css',
+  template = 'template',
+  component = 'component',
+}
+
 const MAX_SIZE = 10 * 1024 * 1024;
 const DEFAULT_POLL = Symbol('__defaultBufferPoll__');
-const FILE_TYPES = ['js', 'css', 'template', 'component'] as const;
-// Add default poll
-(FILE_TYPES as any).push(DEFAULT_POLL);
-
-export const cachedDataSet = new WeakSet();
-export type FileType = typeof FILE_TYPES[number];
+const FILE_TYPES = [
+  FileTypes.js,
+  FileTypes.css,
+  FileTypes.template,
+  FileTypes.component,
+  DEFAULT_POLL,
+];
 
 export class AppCacheContainer {
   private maxSize: number;
@@ -22,7 +32,7 @@ export class AppCacheContainer {
     });
   }
 
-  bufferPool(type: FileType | typeof DEFAULT_POLL) {
+  bufferPool(type: FileTypes | typeof DEFAULT_POLL) {
     return this[type] as Map<string, any>;
   }
 
@@ -38,7 +48,7 @@ export class AppCacheContainer {
     }
   }
 
-  set(url: string, data: any, type: FileType) {
+  set(url: string, data: any, type: FileTypes) {
     const curSize = cachedDataSet.has(data) ? 0 : calculateObjectSize(data);
     const totalSize = this.totalSize + curSize;
 
@@ -58,7 +68,7 @@ export class AppCacheContainer {
     return false;
   }
 
-  clear(type?: FileType) {
+  clear(type?: FileTypes) {
     if (typeof type === 'string') {
       const cacheBox = this.bufferPool(type);
       if (cacheBox && cacheBox instanceof Map) {
