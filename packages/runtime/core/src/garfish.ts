@@ -189,9 +189,6 @@ export class Garfish implements interfaces.Garfish {
     loadAppResource(this.loader, appInfo);
   }
 
-  // `Garfish.loadApp('appName');`
-  // `Garfish.loadApp('appName', 'https://xx.html');`
-  // `Garfish.loadApp('appName', { entry: 'https://xx.html' });`
   async loadApp(
     appName: string,
     options?: Partial<interfaces.LoadAppOptions> | string,
@@ -206,6 +203,7 @@ export class Garfish implements interfaces.Garfish {
       appInfo = {
         name: appName,
         entry: options,
+        cssScope: true,
         domGetter: () => document.createElement('div'),
       };
     }

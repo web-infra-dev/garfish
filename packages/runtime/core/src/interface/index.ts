@@ -40,6 +40,7 @@ export namespace interfaces {
     name: string;
     entry: string;
     cache?: boolean; // Whether the cache
+    cssScope?: boolean;
     activeWhen?: string | ((path: string) => boolean);
     hooks?: Hooks;
   }
