@@ -1,4 +1,4 @@
-/*! For license information please see main.0e719017.js.LICENSE.txt */
+/*! For license information please see main.b490bb6c.js.LICENSE.txt */
 (self.webpackChunkgarfish_docs = self.webpackChunkgarfish_docs || []).push([
   [179],
   {
@@ -71,7 +71,7 @@
           title: 'Garfish',
           tagline: '\u5fae\u524d\u7aef\u89e3\u51b3\u65b9\u6848',
           url: 'https://bytedance.github.io/garfish/',
-          baseUrl: '/',
+          baseUrl: '/garfish/',
           organizationName: 'ByteDance',
           projectName: 'Garfish Docs',
           onBrokenLinks: 'throw',
@@ -336,7 +336,7 @@
             : null;
         },
         s = JSON.parse(
-          '{"/-c79":{"component":"9dd8a0d2","config":"5e9f5e1a"},"/resource-551":{"component":"38b60440","config":"5e9f5e1a"},"/search-79a":{"component":"1a4e3797"},"/showcase-8cd":{"component":"5fc994c2","config":"5e9f5e1a"},"/-183":{"component":"1be78505","versionMetadata":"935f2afb"},"/guide-81d":{"component":"17896441","content":"660e15c0"},"/guide/start/__meta__-28e":{"component":"17896441","content":"e0f4e069"}}',
+          '{"/garfish/-b9c":{"component":"9dd8a0d2","config":"5e9f5e1a"},"/garfish/resource-9e4":{"component":"38b60440","config":"5e9f5e1a"},"/garfish/search-9ec":{"component":"1a4e3797"},"/garfish/showcase-6fc":{"component":"5fc994c2","config":"5e9f5e1a"},"/garfish/-b35":{"component":"1be78505","versionMetadata":"935f2afb"},"/garfish/guide-22b":{"component":"17896441","content":"660e15c0"},"/garfish/guide/start/__meta__-9c3":{"component":"17896441","content":"e0f4e069"}}',
         ),
         c = {
           17896441: [
@@ -493,18 +493,34 @@
           );
         },
         p = [
-          { path: '/', component: d('/', 'c79'), exact: !0 },
-          { path: '/resource', component: d('/resource', '551'), exact: !0 },
-          { path: '/search', component: d('/search', '79a'), exact: !0 },
-          { path: '/showcase', component: d('/showcase', '8cd'), exact: !0 },
+          { path: '/garfish/', component: d('/garfish/', 'b9c'), exact: !0 },
           {
-            path: '/',
-            component: d('/', '183'),
+            path: '/garfish/resource',
+            component: d('/garfish/resource', '9e4'),
+            exact: !0,
+          },
+          {
+            path: '/garfish/search',
+            component: d('/garfish/search', '9ec'),
+            exact: !0,
+          },
+          {
+            path: '/garfish/showcase',
+            component: d('/garfish/showcase', '6fc'),
+            exact: !0,
+          },
+          {
+            path: '/garfish/',
+            component: d('/garfish/', 'b35'),
             routes: [
-              { path: '/guide', component: d('/guide', '81d'), exact: !0 },
               {
-                path: '/guide/start/__meta__',
-                component: d('/guide/start/__meta__', '28e'),
+                path: '/garfish/guide',
+                component: d('/garfish/guide', '22b'),
+                exact: !0,
+              },
+              {
+                path: '/garfish/guide/start/__meta__',
+                component: d('/garfish/guide/start/__meta__', '9c3'),
                 exact: !0,
               },
             ],
@@ -514,7 +530,7 @@
         m = n(6136),
         h = n(4186),
         g = JSON.parse(
-          '{"docusaurus-plugin-content-docs":{"default":{"path":"/","versions":[{"name":"current","label":"Next","isLast":true,"path":"/","mainDocId":"guide/start/__meta__","docs":[{"id":"guide/start/__meta__","path":"/guide/start/__meta__"},{"id":"guide/start/index","path":"/guide"}]}]}}}',
+          '{"docusaurus-plugin-content-docs":{"default":{"path":"/garfish/","versions":[{"name":"current","label":"Next","isLast":true,"path":"/garfish/","mainDocId":"guide/start/__meta__","docs":[{"id":"guide/start/__meta__","path":"/garfish/guide/start/__meta__"},{"id":"guide/start/index","path":"/garfish/guide"}]}]}}}',
         ),
         v = JSON.parse(
           '{"defaultLocale":"en","locales":["en"],"currentLocale":"en","localeConfigs":{"en":{"label":"en","direction":"ltr"}}}',

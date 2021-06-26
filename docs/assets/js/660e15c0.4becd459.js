@@ -105,10 +105,10 @@
             f = c(e, ['components', 'mdxType', 'originalType', 'parentName']),
             p = s(r),
             d = o,
-            m = p[''.concat(u, '.').concat(d)] || p[d] || l[d] || i;
+            g = p[''.concat(u, '.').concat(d)] || p[d] || l[d] || i;
           return r
-            ? n.createElement(m, a(a({ ref: t }, f), {}, { components: r }))
-            : n.createElement(m, a({ ref: t }, f));
+            ? n.createElement(g, a(a({ ref: t }, f), {}, { components: r }))
+            : n.createElement(g, a({ ref: t }, f));
         });
       function d(e, t) {
         var r = arguments,
@@ -164,13 +164,13 @@
           source: '@site/docs/guide/start/index.md',
           sourceDirName: 'guide/start',
           slug: '/guide',
-          permalink: '/guide',
+          permalink: '/garfish/guide',
           editUrl:
             'https://github.com/bytedance/garfish/docs/guide/start/index.md',
           version: 'current',
           lastUpdatedBy: 'zhoushaw',
-          lastUpdatedAt: 1624615522,
-          formattedLastUpdatedAt: '6/25/2021',
+          lastUpdatedAt: 1624678520,
+          formattedLastUpdatedAt: '6/26/2021',
           frontMatter: {
             title: 'Garfish \u4ecb\u7ecd',
             slug: '/guide',

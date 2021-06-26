@@ -114,12 +114,12 @@
           177: '41c3aba7',
           264: '7de5d82d',
           274: 'c4fc1194',
-          403: 'ed380c9a',
+          403: '51a5bc32',
           443: '82c85441',
           514: '17e1c8c8',
           525: '0bd4e357',
           592: 'bb7511e9',
-          764: '84787e80',
+          764: '4becd459',
           870: 'db1c867f',
           918: 'b5b62078',
           920: '69bb6dc1',
@@ -199,7 +199,7 @@
         Object.defineProperty(e, Symbol.toStringTag, { value: 'Module' }),
         Object.defineProperty(e, '__esModule', { value: !0 });
     }),
-    (f.p = '/'),
+    (f.p = '/garfish/'),
     (f.gca = function (e) {
       return (
         (e =
