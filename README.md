@@ -2,6 +2,8 @@
   <img src="https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/garfish-icon.png" width="300" alt="garfish" />
 </p>
 
+English | [简体中文](./README.zh-CN.md)
+
 ## Garfish
 
 Garfish is a micro front-end framework, mainly used to solve the problems of cross-team collaboration, diversification of technology system, and increasing complexity of applications brought by modern web applications in the context of front-end ecological boom and increasing complexity of web applications, and Garfish has been polished and tested by a large number of online applications, with strong functional stability and reliability.

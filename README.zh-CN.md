@@ -2,6 +2,8 @@
   <img src="https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/garfish-icon.png" width="300" alt="garfish" />
 </p>
 
+[English](./README.md) | 简体中文
+
 ## Garfish
 
 Garfish 是一个微前端框架，主要用于解决现代 web 应用在前端生态繁荣和 web 应用日益复杂化两大背景下带来的跨团队协作、技术体系多样化、应用日益复杂化等问题，并且 Garfish 已经经过大量的线上应用的打磨和测试，功能稳定性和可靠性强。
