@@ -1,4 +1,4 @@
-# Starry Docs
+# Garfish Docs
 
 ## 安装
 
