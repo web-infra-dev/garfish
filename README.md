@@ -1,37 +1,56 @@
-## 简介
-
-`Garfish` 是字节跳动内部自研的微前端框架，提供了从开发调试、服务注册和发现、部署上线、运行的完整解决方案，主要用于解决多团队协作的大型单体应用维护困难的问题。
-
-> 目前在字节跳动内部有超过 60 个团队，300 个项目使用 Garfish。
-
 <p align="center">
-  <img src="http://sf3-ttcdn-tos.pstatp.com/obj/garfish/Garfish.png" width="150" alt="garfish" />
+  <img src="https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/garfish-icon.png" width="300" alt="garfish" />
 </p>
 
-## 安装
+## Garfish
 
-`$ npm install garfish`
+Garfish is a micro front-end framework, mainly used to solve the problems of cross-team collaboration, diversification of technology system, and increasing complexity of applications brought by modern web applications in the context of front-end ecological boom and increasing complexity of web applications, and Garfish has been polished and tested by a large number of online applications, with strong functional stability and reliability.
 
-## 快速开始
+> Garfish Goals
 
-```js
+To compose multiple independently delivered front-end applications into a whole, and to decompose front-end applications into some smaller and simpler applications that can be "independently developed", "independently tested" and "independently deployed", while still appearing to users as cohesive individual products.
+
+## Documentation
+
+[https://bytedance.github.io/garfish/](https://bytedance.github.io/garfish/)
+
+## Quick Start
+
+1. Installation
+
+```bash
+$ yarn add garfish #or npm i garfish -S
+```
+
+2. Use
+
+```javascript
 import Garfish from 'garfish';
 
 Garfish.run({
-  domGetter: '#AppContainer',
+  domGetter: '#subApp',
   apps: [
     {
-      name: 'app',
-      entry: 'xx.html',
-      activeWhen: '/index',
+      name: 'vueApp',
+      activeWhen: '/vueApp',
+      entry: 'http://localhost:9000',
+    },
+    {
+      name: 'reactApp',
+      activeWhen: '/reactApp',
+      entry: 'http://localhost:8000',
     },
   ],
 });
 ```
 
-## 文档
+## Functionality
 
-- [API](https://github.com/bytedance/garfish/wiki/API)
+- Multi-technology system coexistence
+- Runtime sandboxing
+- Independent development and deployment of sub-applications
+- Resource preloading
+- Rich and diverse plug-in system
 
 ## LICENSE
 
