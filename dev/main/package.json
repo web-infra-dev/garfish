@@ -29,7 +29,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1",
-    "garfish": "0.0.12",
     "loader-utils": "^2.0.0",
     "mobx": "^6.0.1",
     "react": "^16.13.1",
@@ -37,6 +36,7 @@
     "ts-loader": "^8.0.0",
     "vue": "^2.6.11",
     "vue-router": "^3.4.2",
+    "garfish": "^0.0.24",
     "vuex": "^3.5.1"
   }
 }

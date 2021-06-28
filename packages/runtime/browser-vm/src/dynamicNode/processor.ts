@@ -40,6 +40,8 @@ export class DynamicNodeProcessor {
       const href = this.el.getAttribute('href');
       src && (this.el.src = transformUrl(baseUrl, src));
       href && (this.el.href = transformUrl(baseUrl, href));
+      const url = this.el.src || this.el.href;
+      url && this.sandbox.options?.sourceList.push(url);
     }
   }
 
@@ -185,7 +187,7 @@ export class DynamicNodeProcessor {
         this.monitorChangesOfLinkNode();
       }
     }
-    if (__DEV__ || (this.sandbox?.global as any).__dev__) {
+    if (__DEV__ || (this.sandbox?.global as any).__GARFISH__DEV__) {
       // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
       if (tag === 'iframe' && typeof this.el.onload === 'function') {
         def(this.el, 'contentWindow', this.sandbox.global);

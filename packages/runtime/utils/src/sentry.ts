@@ -184,7 +184,7 @@ export function filterAndWrapEventListener(
           return item.indexOf(computeErrorUrl(e)) !== -1;
         });
         if (res) {
-          e.stopPropagation();
+          // e.stopPropagation();
           listener(e);
         }
       } else {
@@ -217,4 +217,5 @@ export function filterAndWrapEventListener(
       }
     }
   };
+  return filterError;
 }

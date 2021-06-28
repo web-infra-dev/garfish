@@ -92,6 +92,7 @@ export class App {
     };
     this.customLoader = customLoader;
 
+    // Save all the resources to address
     const nodes = entryManager.getNodesByTagName(...sourceListTags);
     for (const key in nodes) {
       nodes[key].forEach((node) => {
@@ -103,6 +104,7 @@ export class App {
         }
       });
     }
+    this.sourceList.push(this.appInfo.entry);
   }
 
   get rootElement() {
@@ -263,10 +265,15 @@ export class App {
           for (const jsManager of this.resources.js) {
             if (jsManager.async) {
               try {
-                this.execScript(jsManager.scriptCode, {}, jsManager.url, {
-                  async: false,
-                  noEntry: true,
-                });
+                this.execScript(
+                  jsManager.scriptCode,
+                  {},
+                  jsManager.url || this.appInfo.entry,
+                  {
+                    async: false,
+                    noEntry: true,
+                  },
+                );
               } catch (err) {
                 this.context.hooks.lifecycle.errorMountApp.call(
                   err,
@@ -418,7 +425,7 @@ export class App {
             return DOMApis.createElement(node);
           }
           const { url, scriptCode } = jsManager;
-          this.execScript(scriptCode, {}, url, {
+          this.execScript(scriptCode, {}, url || this.appInfo.entry, {
             async: false,
             noEntry: Boolean(entryManager.findAttributeValue(node, 'no-entry')),
           });

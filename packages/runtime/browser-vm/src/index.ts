@@ -118,13 +118,13 @@ export default function BrowserVm() {
           if (appInstance.vmSandbox) return;
 
           compatibleOldModulesType(config);
-
           // Create sandbox instance
           const sandbox = new Sandbox({
             openSandbox: true,
             namespace: appInfo.name,
             baseUrl: appInstance.entryManager.url,
             strictIsolation: appInstance.strictIsolation,
+            sourceList: appInstance.sourceList,
             modules: [
               () => ({
                 override: appInstance.getExecScriptEnv(false) || {},
