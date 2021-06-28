@@ -8,24 +8,14 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
+      - uses: actions/checkout@v2
+      - name: build
+        run: |
+          yarn install
+          yarn build:docs
 
-    - name: Display the path
-      run: echo ${env:PATH}
-      shell: pwsh
-
-    - name: Into docs
-        run: cd website
-        shell: bash
-
-    - name: Install and Build 🔧
-            run: |
-              npm install
-              npm run build
-
-    - name: Build and Deploy
-      uses: JamesIves/github-pages-deploy-action@4.1.4
-      with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: docs
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
