@@ -10,7 +10,7 @@
     "micro-frontend",
     "micro-frontends"
   ],
-  "author": "wfatec <chao125010@163.com>",
+  "author": "wangchao.dennis <wangchao.dennis@bytedance.com>",
   "homepage": "https://github.com/bytedance/garfish",
   "license": "Apache-2.0",
   "main": "dist/garfish-react.cjs.js",
