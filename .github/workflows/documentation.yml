@@ -11,6 +11,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@master
 
+    - name: Display the path
+      run: echo ${env:PATH}
+      shell: pwsh
+
     - name: Into docs
         run: cd ./website
         shell: bash
