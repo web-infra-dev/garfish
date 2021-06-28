@@ -3,7 +3,8 @@ import { Sandbox } from './sandbox';
 import { __proxyNode__ } from './symbolTypes';
 
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object
-const esGlobalMethods = ( // Function properties of the global object
+const esGlobalMethods = // Function properties of the global object
+(
   'eval,isFinite,isNaN,parseFloat,parseInt' +
   // URL handling functions
   'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent' +
@@ -21,19 +22,6 @@ export const isEsGlobalMethods = makeMap(esGlobalMethods);
 // Need to optimize, avoid from the with
 // Can't filter document, eval keywords, such as document in handling parentNode useful
 export const optimizeMethods = [...esGlobalMethods].filter((v) => v !== 'eval');
-
-export function isConstructor(fn: () => void | FunctionConstructor) {
-  const fp = fn.prototype;
-  const hasConstructor =
-    fp && fp.constructor === fn && Object.getOwnPropertyNames(fp).length > 1;
-  const functionStr = !hasConstructor && fn.toString();
-
-  return (
-    hasConstructor ||
-    /^function\s+[A-Z]/.test(functionStr) ||
-    /^class\b/.test(functionStr)
-  );
-}
 
 export function handlerParams(args: IArguments | Array<any>) {
   args = Array.isArray(args) ? args : Array.from(args);
