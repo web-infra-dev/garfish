@@ -9,6 +9,7 @@ es/
 .rts2_cache/
 .yarn/
 temp/
+docs/
 
 # Editor directories and files
 .idea
