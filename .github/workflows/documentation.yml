@@ -11,9 +11,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@master
 
+  - name: Into docs
+      run: cd ./website
+      shell: cmd
+
     - name: Install and Build 🔧
             run: |
-              cd ./website
               npm install
               npm run build
 
