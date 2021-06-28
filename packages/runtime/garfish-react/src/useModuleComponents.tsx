@@ -2,17 +2,17 @@ import React from 'react';
 import MicroComp, { MicroCompInfo } from './components/MicroComp';
 
 const useModuleComponents = (
-  componentList: (Omit<MicroCompInfo, 'compName' | 'props'> | string)[],
+  componentList: (Omit<MicroCompInfo, 'componentName' | 'props'> | string)[],
 ) => {
   return componentList.map((compInfo) => {
     if (typeof compInfo === 'string') {
       return (props: any) => <MicroComp name={compInfo} props={props} />;
     }
-    const { comps, ...rest } = compInfo;
-    if (comps) {
-      return comps.map((compName) => {
+    const { componentList, ...rest } = compInfo;
+    if (componentList) {
+      return componentList.map((componentName) => {
         return (props: any) => (
-          <MicroComp {...rest} compName={compName} props={props} />
+          <MicroComp {...rest} componentName={componentName} props={props} />
         );
       });
     }

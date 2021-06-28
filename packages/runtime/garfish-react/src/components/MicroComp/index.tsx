@@ -4,14 +4,14 @@ import GarfishInstance from 'garfish';
 export interface MicroCompInfo {
   name: string;
   version?: string;
-  comps?: string[];
-  compName?: string;
+  componentList?: string[];
+  componentName?: string;
   url?: string;
   props?: any;
 }
 
-function MicroComp(microCompInfo: MicroCompInfo) {
-  const { name, version, compName, url, props } = microCompInfo;
+function MicroComp(microCompInfo: Omit<MicroCompInfo, 'componentList'>) {
+  const { name, version, componentName, url, props } = microCompInfo;
   const [Comp, setComp] = useState('');
 
   useEffect(() => {
@@ -20,13 +20,15 @@ function MicroComp(microCompInfo: MicroCompInfo) {
         url,
         version,
       }).then((res) => {
-        const ResComp = res.cjsModules.exports;
+        const ResComp = res.cjsModules.module.exports;
         if (typeof ResComp === 'function') {
           setComp(() => ResComp);
           return;
         }
-        if (compName) {
-          setComp(() => ResComp[compName]?.default || ResComp[compName]);
+        if (componentName) {
+          setComp(
+            () => ResComp[componentName]?.default || ResComp[componentName],
+          );
           return;
         }
         setComp(() => ResComp?.default || ResComp);
