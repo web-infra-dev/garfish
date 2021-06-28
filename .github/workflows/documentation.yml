@@ -13,7 +13,7 @@ jobs:
 
     - name: Into docs
         run: cd ./website
-        shell: cmd
+        shell: bash
 
     - name: Install and Build 🔧
             run: |
