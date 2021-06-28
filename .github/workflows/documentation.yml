@@ -1,0 +1,27 @@
+name: Deploy Github pages
+on:
+  push:
+    branches:
+      - master
+      - gh-pages
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Into docs
+        run: cd ./website
+        shell: bash
+
+    - name: Install and Build 🔧
+            run: |
+              npm install
+              npm run build
+
+    - name: Build and Deploy
+      uses: JamesIves/github-pages-deploy-action@4.1.4
+      with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: docs
