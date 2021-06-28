@@ -14,7 +14,9 @@ To compose multiple independently delivered front-end applications into a whole,
 
 ## Documentation
 
-[https://bytedance.github.io/garfish/](https://bytedance.github.io/garfish/)
+<!-- [https://bytedance.github.io/garfish/](https://bytedance.github.io/garfish/) -->
+
+[API](https://github.com/bytedance/garfish/wiki/API)
 
 ## Quick Start
 
