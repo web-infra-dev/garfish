@@ -20,12 +20,16 @@ function MicroComp(microCompInfo: MicroCompInfo) {
         url,
         version,
       }).then((res) => {
-        const ResComp = res.getComponent();
+        const ResComp = res.cjsModules.exports;
+        if (typeof ResComp === 'function') {
+          setComp(() => ResComp);
+          return;
+        }
         if (compName) {
           setComp(() => ResComp[compName]?.default || ResComp[compName]);
-        } else {
-          setComp(() => ResComp?.default || ResComp);
+          return;
         }
+        setComp(() => ResComp?.default || ResComp);
       });
     }
   });
