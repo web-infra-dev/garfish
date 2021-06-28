@@ -1,8 +1,19 @@
-import { loadComponent } from './loadComponent';
+import {
+  preloadComponent,
+  loadComponent,
+  loadComponentSync,
+} from './loadComponent';
 
 // Micro component loader uses singleton mode
 const loader = {
   loadComponent,
+  loadComponentSync,
+  preloadComponent,
 };
 
-export { loadComponent, loader as default };
+export {
+  loadComponent,
+  loadComponentSync,
+  preloadComponent,
+  loader as default,
+};
