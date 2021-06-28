@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "packages/runtime/*"
+      "packages/runtime/*",
+      "website"
     ]
   },
   "description": "a powerful micro front-end framework",
