@@ -16,7 +16,7 @@ jobs:
       shell: pwsh
 
     - name: Into docs
-        run: cd ./website
+        run: cd website
         shell: bash
 
     - name: Install and Build 🔧
