@@ -11,17 +11,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@master
 
-  - name: Into docs
-      run: cd ./website
-      shell: cmd
+    - name: Into docs
+        run: cd ./website
+        shell: cmd
 
-    - name: Install and Build 🔧
-            run: |
-              npm install
-              npm run build
+      - name: Install and Build 🔧
+              run: |
+                npm install
+                npm run build
 
-    - name: Build and Deploy
-      uses: JamesIves/github-pages-deploy-action@4.1.4
-      with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: docs
+      - name: Build and Deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+            branch: gh-pages # The branch the action should deploy to.
+            folder: docs
