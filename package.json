@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "packages/runtime/*"
+      "packages/runtime/*",
+      "website"
     ]
   },
   "description": "a powerful micro front-end framework",
@@ -13,10 +14,11 @@
     "pkg": "node scripts/createPackage.js",
     "build": "node scripts/build.js",
     "build:all": "node scripts/build.js -m -e",
+    "build:docs": "lerna run build --stream --scope garfish-docs",
     "build:watch": "lerna exec -- node scripts/build.js -m -e  -f=esm-bundler -w",
     "reset": "lerna clean --yes && rm -rf node_modules",
-    "setup": "npm run reset && npm install && lerna bootstrap --hoist",
-    "prepublishOnly": "npm run test && npm run build:all && npm run changelog",
+    "setup": "yarn reset && yarn install",
+    "prepublishOnly": "yarn test && yarn build:all && yarn changelog",
     "changelog": "node scripts/changelog.js",
     "test": "node scripts/jestTest.js",
     "test:cover": "node scripts/jestTest.js --coverage",

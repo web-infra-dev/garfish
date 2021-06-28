@@ -1,6 +1,6 @@
 {
   "version": "0.0.30",
-  "npmClient": "npm",
+  "npmClient": "yarn",
   "command": {
     "publish": {
       "ignoreChanges": [
@@ -23,6 +23,7 @@
   "packages": [
     "packages/runtime/*",
     "packages/tools/*",
-    "dev/*"
+    "dev/*",
+    "website"
   ]
 }

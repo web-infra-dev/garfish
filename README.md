@@ -1,37 +1,60 @@
-## 简介
-
 <p align="center">
-  <img src="http://sf3-ttcdn-tos.pstatp.com/obj/garfish/Garfish.png" width="150" alt="garfish" />
+  <img src="https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/icons/Garfish-icon-Square.png" width="300" alt="garfish" />
 </p>
 
-`Garfish` 是字节跳动内部自研的微前端框架，提供了从开发调试、服务注册和发现、部署上线、运行的完整解决方案，主要用于解决多团队协作的大型单体应用维护困难的问题。
+English | [简体中文](./README.zh-CN.md)
 
-> 目前在字节跳动内部有超过 60 个团队，300 个项目使用 Garfish。
+## Garfish
 
-## 安装
+Garfish is a micro front-end framework, mainly used to solve the problems of cross-team collaboration, diversification of technology system, increasing complexity of applications brought by modern web applications in the context of front-end ecological boom and increasing complexity of web applications, and Garfish has been polished and tested by a large number of online applications, with strong functional stability and reliability.
 
-`$ npm install garfish`
+> Garfish Goals
 
-## 快速开始
+Multiple independently delivered front-end applications is integrated into a whole，and front-end applications are disintegrated into some smaller and simpler applications that can be "independently developed", "independently tested" and "independently deployed", while still appearing to users as a single cohesive product.
 
-```js
+## Documentation
+
+<!-- [https://bytedance.github.io/garfish/](https://bytedance.github.io/garfish/) -->
+
+[API](https://github.com/bytedance/garfish/wiki/API)
+
+## Quick Start
+
+1. Installation
+
+```bash
+$ yarn add garfish # or npm i garfish -S
+```
+
+2. Use
+
+```javascript
 import Garfish from 'garfish';
 
 Garfish.run({
-  domGetter: '#AppContainer',
+  domGetter: '#subApp',
   apps: [
     {
-      name: 'app',
-      entry: 'xx.html',
-      activeWhen: '/index',
+      name: 'vueApp',
+      activeWhen: '/vueApp',
+      entry: 'http://localhost:9000',
+    },
+    {
+      name: 'reactApp',
+      activeWhen: '/reactApp',
+      entry: 'http://localhost:8000',
     },
   ],
 });
 ```
 
-## 文档
+## Functionality
 
-- [API](https://github.com/bytedance/garfish/wiki/API)
+- Multi-technology system coexistence
+- Runtime sandboxing
+- Independent development and deployment of sub-applications
+- Resource preloading
+- Rich and diverse plug-in system
 
 ## LICENSE
 
