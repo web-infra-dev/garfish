@@ -18,8 +18,8 @@ exports.Two = function () {
 ```js
 import React from 'React';
 import {
+  preload,
   setExternal,
-  preloadComponent,
   loadComponent,
   loadComponentSync,
 } from '@garfish/micro-component';
@@ -33,17 +33,48 @@ loadComponent('https://xx.js').then((components) => {
 
 // Or
 loadComponent({
-  url: 'https://xx.js',
-  env: { React },
   cache: true, // This will cache the component instance
+  env: { React },
+  url: 'https://xx.js',
   error: () => 'error content',
 }).then((components) => {
   console.log(components); // One, Two
 });
 
 // Or load the micro components synchronously
-preloadComponent(['https://1.js', 'https://2.js']).then(() => {
+preload(['https://1.js', 'https://2.js']).then(() => {
   const components = loadComponentSync('https://1.js');
   console.log(components); // One, Two
 });
+```
+
+## Combined with garfish
+
+If you are using "garfish" micro frontend.
+
+```jsx
+// Child app
+import {
+  preload,
+  setExternal,
+} from '@garfish/micro-component';
+
+if (window.__GARFISH__) {
+  setExternal(window.Garfish.externals);
+}
+
+export const provider = () => {
+  render() {
+    // When the resources of the micro component are preloaded,
+    // You can use synchronous syntax to load micro components in the current application.
+    // You can combine "webpack5 module federation" or other "component markets"
+    preload(menu.microComponents).then(() => {
+      ReactDom.render(<App/>)
+    })
+  },
+
+  destroy() {
+    ...
+  }
+}
 ```

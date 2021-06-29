@@ -1,4 +1,3 @@
-import { ComponentManager } from '@garfish/loader';
 import { warn, assert, deepMerge, isAbsolute } from '@garfish/utils';
 import { loader } from './utils';
 import { Actuator, EXTERNALS } from './actuator';
@@ -117,7 +116,7 @@ export function loadComponentSync(
 }
 
 // Preload the static resources of the component, so that the component can be loaded synchronously
-export function preloadComponent(urls: string | Array<string>) {
+export function preload(urls: string | Array<string>) {
   if (!Array.isArray(urls)) urls = [urls];
 
   return Promise.all(

@@ -304,10 +304,7 @@ export class Garfish implements interfaces.Garfish {
           `Missing url for loading "${name}" micro component`,
         );
 
-        const data = await this.loader.loadComponent<ComponentManager>(
-          name,
-          options.url,
-        );
+        const data = await this.loader.loadComponent(options.url);
 
         try {
           result = new Component(

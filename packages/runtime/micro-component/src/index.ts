@@ -1,22 +1,17 @@
-import {
-  setExternal,
-  preloadComponent,
-  loadComponent,
-  loadComponentSync,
-} from './apis';
+import { preload, setExternal, loadComponent, loadComponentSync } from './apis';
 
 // Micro component loader uses singleton mode
 const loader = {
+  preload,
   setExternal,
-  preloadComponent,
   loadComponent,
   loadComponentSync,
 };
 
 export {
+  preload,
   setExternal,
   loadComponent,
   loadComponentSync,
-  preloadComponent,
   loader as default,
 };
