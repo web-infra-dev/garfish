@@ -83,8 +83,8 @@ export class Loader {
     }
   }
 
-  loadComponent<T extends Manager>(scope: string, url: string) {
-    return this.load<T>(scope, url, true);
+  loadComponent(url: string) {
+    return this.load<ComponentManager>('components', url, true);
   }
 
   // Unable to know the final data type, so through "generics"

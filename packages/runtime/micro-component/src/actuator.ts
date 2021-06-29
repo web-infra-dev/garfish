@@ -1,24 +1,28 @@
 import { evalWithEnv } from '@garfish/utils';
 import { ComponentManager } from '@garfish/loader';
 
+export const EXTERNALS = Object.create(null);
+
 export class Actuator {
   private manager: ComponentManager;
-  // Default use cjs module
-  private cjsModules: Record<string, any>;
+  private env: Record<string, any>;
 
-  constructor(manager: ComponentManager) {
+  constructor(manager: ComponentManager, env?: Record<string, any>) {
     this.manager = manager;
-    this.cjsModules = {
+    // Default use cjs module
+    this.env = {
+      ...env,
       exports: {},
-      module: this.cjsModules,
+      module: this.env,
+      // env has a higher priority
+      require: (key) => this.env[key] || EXTERNALS[key],
     };
   }
 
   execScript() {
-    const env = this.cjsModules;
     const { url, componentCode } = this.manager;
     const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
-    evalWithEnv(`;${componentCode}\n${sourceUrl}`, env);
-    return this.cjsModules;
+    evalWithEnv(`;${componentCode}\n${sourceUrl}`, this.env);
+    return this.env;
   }
 }

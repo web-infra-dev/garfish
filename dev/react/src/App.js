@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import classnames from 'classnames';
+import { setExternal, loadComponent } from '@garfish/micro-component';
 import logo from './logo.svg';
 import './App.css';
 import { Modal, Button } from 'antd';
@@ -12,6 +14,26 @@ import 'antd/dist/antd.css';
 //     console.log(cur);
 //   }
 // }, 3000);
+
+setExternal({ React, classnames });
+
+function MicroComp(params) {
+  const { name, url, props } = params;
+  const [Comp, setComp] = useState('');
+
+  useEffect(() => {
+    if (!Comp) {
+      loadComponent('item', {
+        url:
+          'https://sf-unpkg-src.bytedance.net/@k12-fe/im-components@1.3.10/lib/ChatItem/index.js',
+      }).then((res) => {
+        console.log(res);
+      });
+    }
+  });
+
+  return Comp && <Comp {...props} />;
+}
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -33,6 +55,7 @@ function App() {
 
   return (
     <div className="App">
+      <MicroComp />
       <Button type="primary" onClick={showModal}>
         Open Modal
       </Button>

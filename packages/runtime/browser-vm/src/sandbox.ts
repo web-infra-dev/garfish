@@ -70,9 +70,9 @@ export class Sandbox {
   public global?: Window;
   public options: SandboxOptions;
   public replaceGlobalVariables: ReplaceGlobalVariables;
+  public isExternalGlobalVariable: Set<PropertyKey> = new Set();
   public isProtectVariable: (p: PropertyKey) => boolean;
   public isInsulationVariable: (P: PropertyKey) => boolean;
-  public isExternalGlobalVariable: Set<PropertyKey> = new Set();
 
   private optimizeCode = ''; // To optimize the with statement
 
