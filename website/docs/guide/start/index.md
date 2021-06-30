@@ -37,12 +37,6 @@ Garfish 是一套微前端的解决方案，主要用于解决现代 web 应用�
 
   - 提供业务插件满足业务方的各种定制需求
 
-- 🚧 **Goofy web 部署平台结合**
-  - 提供了应用的服务发现和服务注册能力，用于集中管理和下发应用数据
-  - 支持 Garfish 微前端子应用的独立部署、快速回滚能力
-  - 结合 Goofy web 的小流量能力，能实现 Garfish 微前端应用小流量灰度能力
-  - 提供了微前端场景中的菜单能力
-
 ## 架构设计
 
 ![image.png](https://p-vcloud.byteimg.com/tos-cn-i-em5hxbkur4/d456c7d2235c41daa298aba69ade435f~tplv-em5hxbkur4-noop.image?width=1126&height=454)
