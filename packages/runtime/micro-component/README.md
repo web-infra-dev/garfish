@@ -71,17 +71,31 @@ if (window.__GARFISH__) {
 }
 
 export const provider = () => {
-  render() {
+  render({ dom }) {
     // When the resources of the micro component are preloaded,
     // You can use synchronous syntax to load micro components in the current application.
     // You can combine "webpack5 module federation" or other "component markets"
     preload(menu.microComponents).then(() => {
-      ReactDom.render(<App/>)
+      ReactDom.render(<App/>, dom)
     })
   },
 
   destroy() {
     ...
   }
+}
+```
+
+```tsx
+import { loadComponentSync } from '@garfish/micro-component';
+
+function App() {
+  const { OneComponent } = loadComponentSync('https://xx.js');
+
+  return (
+    <div>
+      <OneComponent />
+    </div>
+  );
 }
 ```
