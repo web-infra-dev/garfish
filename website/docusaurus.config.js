@@ -38,14 +38,13 @@ module.exports = {
         {
           to: 'guide/',
           label: '文档',
-          position: 'right',
+          position: 'left',
         },
-        // 不能使用 api，api已经被接口占用
-        // {
-        //   to: 'napi/',
-        //   label: 'API',
-        //   position: 'left',
-        // },
+        {
+          to: 'napi/',
+          label: 'API',
+          position: 'left',
+        },
         // {
         //   to: 'issues/',
         //   label: '常见问题',
@@ -60,12 +59,12 @@ module.exports = {
         //   type: 'localeDropdown',
         //   position: 'right',
         // },
-        {
-          href:
-            'https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=601jeae5-250c-48b4-a3bd-7e6211cd4471',
-          position: 'right',
-          className: 'header-feishu-link',
-        },
+        // {
+        //   href:
+        //     'https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=601jeae5-250c-48b4-a3bd-7e6211cd4471',
+        //   position: 'right',
+        //   className: 'header-feishu-link',
+        // },
         {
           href: 'https://github.com/bytedance/garfish',
           className: 'header-github-link',

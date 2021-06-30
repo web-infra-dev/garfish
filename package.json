@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "dev:core": "yarn dev core",
+    "dev:docs": "lerna run start --stream --scope garfish-docs",
     "pkg": "node scripts/createPackage.js",
     "build": "node scripts/build.js",
     "build:all": "node scripts/build.js -m -e",
