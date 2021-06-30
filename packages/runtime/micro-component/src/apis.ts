@@ -30,13 +30,14 @@ export function loadComponent(
   options: ComponentInfo | string,
 ): Promise<Record<string, any> | null> {
   const info = getLoadOptions(options);
-  assert(info.url, 'Missing url for loading micro component');
+  const { url, env, cache, version, error, adapter } = info;
+
+  assert(url, 'Missing url for loading micro component');
   assert(
-    isAbsolute(info.url),
+    isAbsolute(url),
     'The loading of the micro component must be an absolute path.',
   );
 
-  const { url, env, cache, version, error, adapter } = info;
   // `1.0@https://xx.js`
   // `latest@https://xx.js`
   const urlWithVersion = `${version || 'latest'}@${url}`;
@@ -84,11 +85,11 @@ export function loadComponentSync(
     'The loading of the micro component must be an absolute path.',
   );
 
+  let result = null;
   const { url, env, cache, version, error, adapter } = info;
   const urlWithVersion = `${version || 'latest'}@${url}`;
-  let result = null;
-
   const component = cacheComponents[urlWithVersion];
+
   if (cache && component) {
     result = component;
   } else {
@@ -142,7 +143,10 @@ export function setExternal(
   if (typeof nameOrExtObj === 'object') {
     for (const key in nameOrExtObj) {
       if (EXTERNALS[key]) {
-        __DEV__ && warn(`The "${key}" will be overwritten in external.`);
+        __DEV__ &&
+          warn(
+            `The "${key}" will be overwritten in micro components external.`,
+          );
       }
       EXTERNALS[key] = nameOrExtObj[key];
     }
