@@ -3,10 +3,10 @@ const path = require('path');
 module.exports = {
   title: 'Garfish',
   tagline: '微前端解决方案',
-  url: 'https://bytedance.github.io/garfish/',
-  baseUrl: '/garfish/',
+  url: 'https://garfish.top',
+  baseUrl: '/',
   organizationName: 'bytedance',
-  projectName: 'https://bytedance.github.io/garfish/',
+  projectName: 'garfish',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon:
