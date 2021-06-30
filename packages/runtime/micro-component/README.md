@@ -22,6 +22,7 @@ import {
   setExternal,
   loadComponent,
   loadComponentSync,
+  cacheComponents,
 } from '@garfish/micro-component';
 
 // Environment variables required by microComponents
@@ -36,7 +37,10 @@ loadComponent({
   cache: true, // This will cache the component instance
   env: { React },
   url: 'https://xx.js',
-  error: () => 'error content',
+  error: (err) => {
+    console.error(err);
+    return 'render error content';
+  },
 }).then((components) => {
   console.log(components); // One, Two
 });
@@ -46,6 +50,9 @@ preload(['https://1.js', 'https://2.js']).then(() => {
   const components = loadComponentSync('https://1.js');
   console.log(components); // One, Two
 });
+
+// View already cached components
+console.log(cacheComponents);
 ```
 
 ## Combined with garfish

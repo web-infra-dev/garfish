@@ -14,7 +14,7 @@ export class Actuator {
       ...env,
       exports: {},
       module: this.env,
-      // env has a higher priority
+      // Env has a higher priority
       require: (key) => this.env[key] || EXTERNALS[key],
     };
   }

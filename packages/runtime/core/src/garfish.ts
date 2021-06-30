@@ -1,10 +1,5 @@
 import { EventEmitter } from 'events';
-import {
-  Loader,
-  TemplateManager,
-  ComponentManager,
-  JavaScriptManager,
-} from '@garfish/loader';
+import { Loader, TemplateManager, JavaScriptManager } from '@garfish/loader';
 import {
   warn,
   error,
@@ -17,13 +12,12 @@ import {
 } from '@garfish/utils';
 import { Hooks } from './hooks';
 import { App } from './module/app';
-import { Component } from './module/component';
 import { interfaces } from './interface';
+import { getDefaultOptions } from './config';
 import { fetchStaticResources } from './utils';
 import { GarfishHMRPlugin } from './plugins/fixHMR';
 import { GarfishOptionsLife } from './plugins/lifecycle';
 import { GarfishPreloadPlugin } from './plugins/preload';
-import { defaultLoadComponentOptions, getDefaultOptions } from './config';
 
 export class Garfish implements interfaces.Garfish {
   public hooks: Hooks;
@@ -38,7 +32,6 @@ export class Garfish implements interfaces.Garfish {
   public activeApps: Array<interfaces.App> = [];
   public cacheApps: Record<string, interfaces.App> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
-  public cacheComponents: Record<string, interfaces.Component> = {};
   private loading: Record<string, Promise<any> | null> = {};
 
   constructor(options: interfaces.Options) {
@@ -282,49 +275,5 @@ export class Garfish implements interfaces.Garfish {
       this.loading[appName] = asyncLoadProcess();
     }
     return this.loading[appName];
-  }
-
-  async loadComponent(
-    name: string,
-    options: interfaces.LoadComponentOptions,
-  ): Promise<interfaces.Component> {
-    options = deepMerge(defaultLoadComponentOptions, options || ({} as any));
-    const nameWithVersion = options?.version
-      ? `${name}@${options.version}`
-      : name;
-    const asyncLoadProcess = async () => {
-      // Existing cache caching logic
-      let result = null;
-      const cacheComponents = this.cacheComponents[nameWithVersion];
-      if (options.cache && cacheComponents) {
-        result = cacheComponents;
-      } else {
-        assert(
-          options.url,
-          `Missing url for loading "${name}" micro component`,
-        );
-
-        const data = await this.loader.loadComponent(options.url);
-
-        try {
-          result = new Component(
-            this,
-            { name, ...options },
-            data.resourceManager,
-          );
-          this.cacheComponents[nameWithVersion] = result;
-        } catch (e) {
-          __DEV__ && error(e);
-        } finally {
-          this.loading[nameWithVersion] = null;
-        }
-      }
-      return result;
-    };
-
-    if (!options.cache || !this.loading[nameWithVersion]) {
-      this.loading[nameWithVersion] = asyncLoadProcess();
-    }
-    return this.loading[nameWithVersion];
   }
 }

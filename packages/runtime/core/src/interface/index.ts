@@ -23,7 +23,6 @@ export namespace interfaces {
   ) => Promise<void> | void;
 
   export interface App extends AppInterface {}
-  export interface Component {}
 
   export interface AppInfo
     extends Exclude<
@@ -44,41 +43,23 @@ export namespace interfaces {
     hooks?: Hooks;
   }
 
-  export type ComponentParser = (
-    code: string,
-    env: Record<string, any>,
-    url?: string,
-  ) => Promise<void | boolean> | void | boolean;
-
-  export interface ComponentInfo {
-    name: string;
-    url: string;
-    cache?: boolean; // Whether the cache
-    props?: Record<string, any>;
-    version?: string;
-    parser?: ComponentParser;
-  }
-
   export interface Garfish {
     flag: symbol;
-    cacheApps: Record<string, interfaces.App>;
-    running: boolean;
     version: string;
+    running: boolean;
+    externals: Record<string, any>;
+    hooks: Hooks;
+    loader: Loader;
     options: Options;
-    appInfos: Record<string, interfaces.AppInfo>;
+    channel: EventEmitter;
     activeApps: Array<interfaces.App>;
     plugins: Array<interfaces.Plugin>;
-    channel: EventEmitter;
-    loader: Loader;
-    hooks: Hooks;
+    cacheApps: Record<string, interfaces.App>;
+    appInfos: Record<string, interfaces.AppInfo>;
     loadApp(
       name: string,
       opts: Partial<interfaces.LoadAppOptions> | string,
     ): Promise<interfaces.App | null>;
-    loadComponent(
-      name: string,
-      opts: interfaces.LoadComponentOptions,
-    ): Promise<interfaces.Component>;
   }
 
   export interface Provider {
@@ -145,11 +126,6 @@ export namespace interfaces {
     domGetter: DomGetter;
   };
 
-  export type LoadComponentOptions = Pick<
-    ComponentInfo,
-    Exclude<keyof ComponentInfo, 'name'>
-  >;
-
   export interface ResourceModules {
     js: Array<JavaScriptManager>;
     link: Array<StyleManagerInterface>;
@@ -164,24 +140,6 @@ export namespace interfaces {
     resources: interfaces.ResourceModules,
     isHtmlMode: boolean,
   ) => any;
-
-  export interface Component {
-    name: string;
-    componentInfo: ComponentInfo;
-    cjsModules: Record<string, any>;
-    global: any;
-    getExecScriptEnv(noEntry: boolean): Record<string, any>;
-    execScript(
-      code: string,
-      env: Record<string, any>,
-      url?: string,
-      options?: {
-        async?: boolean;
-        noEntry?: boolean;
-      },
-    ): void;
-    getComponent: () => any;
-  }
 
   export interface Lifecycle {
     // beforeInitialize: SyncHook<Options, void>;

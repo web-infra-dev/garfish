@@ -30,7 +30,12 @@
       "umd"
     ]
   },
-  "dependencies": {},
+  "devDependencies": {
+    "@garfish/core": "^0.0.30"
+  },
+  "dependencies": {
+    "@garfish/loader": "^0.0.30"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   }

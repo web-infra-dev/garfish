@@ -1,4 +1,11 @@
-import { preload, setExternal, loadComponent, loadComponentSync } from './apis';
+import { microComponentPlugin } from './garfishPlugin';
+import {
+  preload,
+  setExternal,
+  loadComponent,
+  loadComponentSync,
+  cacheComponents,
+} from './apis';
 
 // Micro component loader uses singleton mode
 const loader = {
@@ -6,6 +13,7 @@ const loader = {
   setExternal,
   loadComponent,
   loadComponentSync,
+  cacheComponents,
 };
 
 export {
@@ -13,5 +21,7 @@ export {
   setExternal,
   loadComponent,
   loadComponentSync,
+  cacheComponents,
+  microComponentPlugin,
   loader as default,
 };

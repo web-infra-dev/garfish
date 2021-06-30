@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@garfish/browser-snapshot": "^0.0.30",
+    "@garfish/micro-component": "^0.0.30",
     "@garfish/browser-vm": "^0.0.30",
     "@garfish/core": "^0.0.30",
     "@garfish/router": "^0.0.30",

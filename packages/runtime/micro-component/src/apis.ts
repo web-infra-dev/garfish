@@ -1,10 +1,10 @@
 import { warn, assert, deepMerge, isAbsolute } from '@garfish/utils';
-import { loader } from './utils';
+import { loader } from './loader';
 import { Actuator, EXTERNALS } from './actuator';
 
 const LOADING = Object.create(null);
-const CACHE_COMPONENTS = Object.create(null);
 const PRE_STORED_RESOURCES = Object.create(null);
+export const cacheComponents = Object.create(null);
 
 interface ComponentInfo {
   url: string;
@@ -28,7 +28,7 @@ export function getLoadOptions(options: ComponentInfo | string) {
 
 export function loadComponent(
   options: ComponentInfo | string,
-): Record<string, any> | null {
+): Promise<Record<string, any> | null> {
   const info = getLoadOptions(options);
   assert(info.url, 'Missing url for loading micro component');
   assert(
@@ -42,7 +42,7 @@ export function loadComponent(
   const asyncLoadProcess = async () => {
     let result = null;
     try {
-      const component = CACHE_COMPONENTS[urlWithVersion];
+      const component = cacheComponents[urlWithVersion];
       if (cache && component) {
         result = component;
       } else {
@@ -53,7 +53,7 @@ export function loadComponent(
           adapter(exports);
         }
         result = exports.default || exports;
-        CACHE_COMPONENTS[urlWithVersion] = result;
+        cacheComponents[urlWithVersion] = result;
       }
     } catch (err) {
       if (typeof error === 'function') {
@@ -86,7 +86,7 @@ export function loadComponentSync(
   const urlWithVersion = `${url}@${version || 'latest'}`;
   let result = null;
 
-  const component = CACHE_COMPONENTS[urlWithVersion];
+  const component = cacheComponents[urlWithVersion];
   if (cache && component) {
     result = component;
   } else {
@@ -103,7 +103,7 @@ export function loadComponentSync(
         adapter(exports);
       }
       result = exports.default || exports;
-      CACHE_COMPONENTS[urlWithVersion] = result;
+      cacheComponents[urlWithVersion] = result;
     } catch (err) {
       if (typeof error === 'function') {
         result = error(err);
