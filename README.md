@@ -6,11 +6,11 @@ English | [简体中文](./README.zh-CN.md)
 
 ## Garfish
 
-Garfish is a micro front-end framework, mainly used to solve the problems of cross-team collaboration, diversification of technology system, and increasing complexity of applications brought by modern web applications in the context of front-end ecological boom and increasing complexity of web applications, and Garfish has been polished and tested by a large number of online applications, with strong functional stability and reliability.
+Garfish is a micro front-end framework, mainly used to solve the problems of cross-team collaboration, diversification of technology system, increasing complexity of applications brought by modern web applications in the context of front-end ecological boom and increasing complexity of web applications, and Garfish has been polished and tested by a large number of online applications, with strong functional stability and reliability.
 
 > Garfish Goals
 
-To compose multiple independently delivered front-end applications into a whole, and to decompose front-end applications into some smaller and simpler applications that can be "independently developed", "independently tested" and "independently deployed", while still appearing to users as cohesive individual products.
+Multiple independently delivered front-end applications is integrated into a whole，and front-end applications are disintegrated into some smaller and simpler applications that can be "independently developed", "independently tested" and "independently deployed", while still appearing to users as a single cohesive product.
 
 ## Documentation
 
@@ -23,7 +23,7 @@ To compose multiple independently delivered front-end applications into a whole,
 1. Installation
 
 ```bash
-$ yarn add garfish #or npm i garfish -S
+$ yarn add garfish # or npm i garfish -S
 ```
 
 2. Use
