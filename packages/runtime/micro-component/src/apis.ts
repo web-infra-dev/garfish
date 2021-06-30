@@ -37,7 +37,9 @@ export function loadComponent(
   );
 
   const { url, env, cache, version, error, adapter } = info;
-  const urlWithVersion = `${url}@${version || 'latest'}`;
+  // `1.0@https://xx.js`
+  // `latest@https://xx.js`
+  const urlWithVersion = `${version || 'latest'}@${url}`;
 
   const asyncLoadProcess = async () => {
     let result = null;
@@ -83,7 +85,7 @@ export function loadComponentSync(
   );
 
   const { url, env, cache, version, error, adapter } = info;
-  const urlWithVersion = `${url}@${version || 'latest'}`;
+  const urlWithVersion = `${version || 'latest'}@${url}`;
   let result = null;
 
   const component = cacheComponents[urlWithVersion];
