@@ -86,10 +86,11 @@ export class App {
     this.isHtmlMode = isHtmlMode;
     this.cjsModules = {
       exports: {},
-      module: this.cjsModules,
+      module: null,
       require: (key: string) => context.externals[key],
       [__GARFISH_EXPORTS__]: this.customExports,
     };
+    this.cjsModules.module = this.cjsModules;
     this.customLoader = customLoader;
 
     // Save all the resources to address

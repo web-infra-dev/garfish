@@ -48,11 +48,11 @@ export function loadComponent(
       } else {
         const data = await loader.loadComponent(url);
         const actuator = new Actuator(data.resourceManager, env);
-        const exports = actuator.execScript().exports;
+        let exports = actuator.execScript().exports;
         if (typeof adapter === 'function') {
-          adapter(exports);
+          exports = adapter(exports);
         }
-        result = exports.default || exports;
+        result = exports;
         cacheComponents[urlWithVersion] = result;
       }
     } catch (err) {
@@ -98,11 +98,11 @@ export function loadComponentSync(
 
     try {
       const actuator = new Actuator(manager, env);
-      const exports = actuator.execScript().exports;
+      let exports = actuator.execScript().exports;
       if (typeof adapter === 'function') {
-        adapter(exports);
+        exports = adapter(exports);
       }
-      result = exports.default || exports;
+      result = exports;
       cacheComponents[urlWithVersion] = result;
     } catch (err) {
       if (typeof error === 'function') {

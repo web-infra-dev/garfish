@@ -13,10 +13,11 @@ export class Actuator {
     this.env = {
       ...env,
       exports: {},
-      module: this.env,
+      module: null,
       // Env has a higher priority
       require: (key) => this.env[key] || EXTERNALS[key],
     };
+    this.env.module = this.env;
   }
 
   execScript() {
