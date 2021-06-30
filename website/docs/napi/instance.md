@@ -217,4 +217,4 @@ Garfish.registerApp([
 
 `Garfish.loadApp(appName: string, options?: Options) : App | null`
 
-手动加载的 api，详细的用法请看[手动加载 app 文档](/napi/attributes/loadApp)
+手动加载的 api，详细的用法请看[手动加载 app 文档](../napi/attributes/loadApp)

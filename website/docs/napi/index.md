@@ -15,7 +15,6 @@ order: 1
 
 <!-- + [Garfish.options](/napi/attributes#options) -->
 
-- [Garfish.channel](/napi/attributes)
 - [Garfish.router](/napi/attributes/router)
 - [Garfish.loadApp](/napi/attributes/loadApp)
 - [Garfish.props](/napi/attributes/props)
