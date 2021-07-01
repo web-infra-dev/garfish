@@ -39,7 +39,7 @@ $ yarn add garfish   #或者 npm i garfish -S
   - Router 模块提供了路由驱动、主子路由隔离，用户仅需要配置路由表应用即可完成自主的渲染和销毁，用户无需关心内部逻辑
   - Sandbox 模块为应用的 Runtime 提供运行时隔离能力，能有效隔离 JS、Style 对应用的副作用影响
   - Store 提供了一套简单的通信数据交换机制
-- 🎯 高度可扩展的插件机制（coming soon...）
+- 🎯 高度可扩展的插件系统（coming soon...）
   - 提供业务插件满足业务方的各种定制需求
 
 
