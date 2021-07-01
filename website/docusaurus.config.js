@@ -38,20 +38,20 @@ module.exports = {
         {
           to: 'guide/',
           label: '文档',
-          position: 'right',
+          position: 'left',
         },
         {
           to: 'napi/',
           label: 'API',
-          position: 'right',
+          position: 'left',
         },
         {
           to: 'issues/',
           label: '常见问题',
-          position: 'right',
+          position: 'left',
         },
         {
-          to: 'community/contributing/discuss',
+          to: 'community/discuss',
           label: '社区',
           position: 'left',
         },
