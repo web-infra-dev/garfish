@@ -1,5 +1,5 @@
-import { Loader, ComponentManager } from '@garfish/loader';
 import { deepMerge } from '@garfish/utils';
+import { Loader, ComponentManager } from '@garfish/loader';
 
 export interface ComponentInfo {
   url: string;
