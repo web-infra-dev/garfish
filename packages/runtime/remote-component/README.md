@@ -88,6 +88,7 @@ You can also configure the information of remote components in the template, so 
 <!DOCTYPE html>
 <html lang="en">
   <body></body>
+  <!-- Preload component resources, but will not execute code -->
   <garfish-remote-component src="https://xx.js" />
 </html>
 ```
