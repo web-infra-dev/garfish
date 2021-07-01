@@ -2,31 +2,29 @@
   <img src="https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/icons/Garfish-icon-Square.png" width="300" alt="garfish" />
 </p>
 
-English | [简体中文](./README.zh-CN.md)
+简体中文 | [English](./README.en.md)
 
 ## Garfish
 
-Garfish is a micro front-end framework, mainly used to solve the problems of cross-team collaboration, diversification of technology system, and increasing complexity of applications brought by modern web applications in the context of front-end ecological boom and increasing complexity of web applications, and Garfish has been polished and tested by a large number of online applications, with strong functional stability and reliability.
+Garfish 是一个微前端框架，主要用于解决现代 web 应用在前端生态繁荣和 web 应用日益复杂化两大背景下带来的跨团队协作、技术体系多样化、应用日益复杂化等问题，并且 Garfish 已经经过大量的线上应用的打磨和测试，功能稳定性和可靠性强。
 
-> Garfish Goals
+> Garfish 目标
 
-To compose multiple independently delivered front-end applications into a whole, and to decompose front-end applications into some smaller and simpler applications that can be "independently developed", "independently tested" and "independently deployed", while still appearing to users as cohesive individual products.
+将多个独立交付的前端应用组成整体，将前端应用分解成一些更小、更简单的能够「独立开发」、「独立测试」、「独立部署」的应用，而在用户看来仍然是内聚的单个产品。
 
-## Documentation
-
-<!-- [https://bytedance.github.io/garfish/](https://bytedance.github.io/garfish/) -->
+## 文档
 
 [https://garfish.top/](https://garfish.top/)
 
-## Quick Start
+## 快速开始
 
-1. Installation
+1. 安装
 
 ```bash
-$ yarn add garfish #or npm i garfish -S
+$ yarn add garfish   #或者 npm i garfish -S
 ```
 
-2. Use
+2. 使用
 
 ```javascript
 import Garfish from 'garfish';
@@ -48,25 +46,23 @@ Garfish.run({
 });
 ```
 
-## Functionality
+## 功能
 
-- 🌈 Rich and efficient product features
-  - Garfish micro front-end sub-application supports any kind of framework and technology system access
-  - Garfish micro front-end sub-application supports "independent development", "independent testing" and "independent deployment
-  - Powerful pre-loading capability, automatically record user application loading habits to increase loading weight, and greatly reduce application switching time
-  - Support for dependency sharing, which greatly reduces the overall package size and the repeated loading of dependencies.
-  - Support data collection, effectively perceive the state of the application during operation
-  - Support for multiple instance capability to run multiple sub-applications in the page at the same time enhances the business splitting efforts
-  - Provides efficient and usable debugging tools to assist users in the micro front-end model brings different development experience problems from the traditional R&D model
-- 📦 Highly scalable core modules
-  - Supports HTML entry and JS entry through the Loader core module, making it easy to access micro front-end applications
-  - Router module provides route-driven, master-child route isolation, users only need to configure the routing table application can complete the independent rendering and destruction, the user does not need to care about the internal logic
-  - Sandbox module provides runtime isolation for the application's Runtime, which can effectively isolate the side effects of JS and Style on the application
-  - Store provides a simple mechanism for exchanging communication data
-- 🎯 Highly scalable plug-in mechanism (coming soon...)
-  - Provide business plug-ins to meet various customization needs of business parties
-
-Translated with www.DeepL.com/Translator (free version)
+- 🌈 丰富高效的产品特征
+  - Garfish 微前端子应用支持任意多种框架、技术体系接入
+  - Garfish 微前端子应用支持「独立开发」、「独立测试」、「独立部署」
+  - 强大的预加载能力，自动记录用户应用加载习惯增加加载权重，应用切换时间极大缩短
+  - 支持依赖共享，极大程度的降低整体的包体积，减少依赖的重复加载
+  - 支持数据收集，有效的感知到应用在运行期间的状态
+  - 支持多实例能力，可在页面中同时运行多个子应用提升了业务的拆分力度
+  - 提供了高效可用的调试工具，协助用户在微前端模式下带来的与传统研发模式不同带来的开发体验问题
+- 📦 高扩展性的核心模块
+  - 通过 Loader 核心模块支持 HTML entry、JS entry 的支持，接入微前端应用简单易用
+  - Router 模块提供了路由驱动、主子路由隔离，用户仅需要配置路由表应用即可完成自主的渲染和销毁，用户无需关心内部逻辑
+  - Sandbox 模块为应用的 Runtime 提供运行时隔离能力，能有效隔离 JS、Style 对应用的副作用影响
+  - Store 提供了一套简单的通信数据交换机制
+- 🎯 高度可扩展的插件机制（coming soon...）
+  - 提供业务插件满足业务方的各种定制需求
 
 ## LICENSE
 
