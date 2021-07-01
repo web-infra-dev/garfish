@@ -66,10 +66,6 @@ import {
   setExternal,
 } from '@garfish/remote-component';
 
-if (window.__GARFISH__) {
-  setExternal(window.Garfish.externals);
-}
-
 export const provider = () => {
   render({ dom }) {
     // When the resources of the micro component are preloaded,
@@ -84,6 +80,16 @@ export const provider = () => {
     ...
   }
 }
+```
+
+You can also configure the information of remote components in the template, so that these components can be used synchronously when the child application is initialized.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <body></body>
+  <garfish-remote-component src="https://xx.js" />
+</html>
 ```
 
 ```tsx

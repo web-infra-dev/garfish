@@ -129,6 +129,7 @@ export namespace interfaces {
   export interface ResourceModules {
     js: Array<JavaScriptManager>;
     link: Array<StyleManagerInterface>;
+    components: Array<ComponentManager>;
   }
 
   export type BootStrapArgs = [Garfish, Options];

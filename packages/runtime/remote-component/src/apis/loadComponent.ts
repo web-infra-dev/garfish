@@ -2,7 +2,7 @@ import { assert, isAbsolute } from '@garfish/utils';
 import { Actuator } from '../actuator';
 import {
   loader,
-  LOADING,
+  fetchLoading,
   purifyOptions,
   ComponentInfo,
   cacheComponents,
@@ -47,12 +47,12 @@ export function loadComponent(
         throw err;
       }
     } finally {
-      LOADING[urlWithVersion] = null;
+      fetchLoading[urlWithVersion] = null;
     }
     return result;
   };
-  if (!LOADING[urlWithVersion]) {
-    LOADING[urlWithVersion] = asyncLoadProcess();
+  if (!fetchLoading[urlWithVersion]) {
+    fetchLoading[urlWithVersion] = asyncLoadProcess();
   }
-  return LOADING[urlWithVersion];
+  return fetchLoading[urlWithVersion];
 }

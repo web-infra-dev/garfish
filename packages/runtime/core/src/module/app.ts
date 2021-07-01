@@ -27,6 +27,7 @@ export type CustomerLoader = (
 ) => Promise<interfaces.LoaderResult | void> | interfaces.LoaderResult | void;
 
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
+const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
 
 export interface Provider {
   destroy: ({ dom: HTMLElement }) => void;
@@ -65,6 +66,8 @@ export class App {
   private unmounting = false;
   private context: Garfish;
   private resources: interfaces.ResourceModules;
+  // Environment variables injected by garfish for linkage with sub-applications
+  private globalEnvVariables: Record<string, any>;
 
   constructor(
     context: Garfish,
@@ -84,13 +87,20 @@ export class App {
     this.resources = resources;
     this.entryManager = entryManager;
     this.isHtmlMode = isHtmlMode;
+    this.globalEnvVariables = {
+      loader: context.loader,
+      externals: context.externals,
+      remoteComponentsCode: resources.components,
+    };
     this.cjsModules = {
       exports: {},
       module: null,
       require: (key: string) => context.externals[key],
       [__GARFISH_EXPORTS__]: this.customExports,
+      [__GARFISH_GLOBAL_ENV__]: this.globalEnvVariables,
     };
     this.cjsModules.module = this.cjsModules;
+
     this.customLoader = customLoader;
 
     // Save all the resources to address
@@ -156,7 +166,12 @@ export class App {
   getExecScriptEnv(noEntry: boolean) {
     // The legacy of commonJS function support
     if (this.esModule) return {};
-    if (noEntry) return { [__GARFISH_EXPORTS__]: this.customExports };
+    if (noEntry) {
+      return {
+        [__GARFISH_EXPORTS__]: this.customExports,
+        [__GARFISH_GLOBAL_ENV__]: this.globalEnvVariables,
+      };
+    }
     return this.cjsModules;
   }
 

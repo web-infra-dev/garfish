@@ -4,7 +4,7 @@ import {
   purifyOptions,
   ComponentInfo,
   cacheComponents,
-  PRE_STORED_RESOURCES,
+  getComponentCode,
 } from '../common';
 
 export function loadComponentSync(
@@ -25,7 +25,7 @@ export function loadComponentSync(
   if (cache && component) {
     result = component;
   } else {
-    const manager = PRE_STORED_RESOURCES[url];
+    const manager = getComponentCode(url);
     assert(
       manager,
       'Synchronously load components must load resources in advance.',

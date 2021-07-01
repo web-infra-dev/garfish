@@ -1,7 +1,6 @@
 import { evalWithEnv } from '@garfish/utils';
 import { ComponentManager } from '@garfish/loader';
-
-export const EXTERNALS = Object.create(null);
+import { externals } from './common';
 
 export class Actuator {
   private manager: ComponentManager;
@@ -15,7 +14,7 @@ export class Actuator {
       exports: {},
       module: null,
       // Env has a higher priority
-      require: (key) => this.env[key] || EXTERNALS[key],
+      require: (key) => this.env[key] || externals[key],
     };
     this.env.module = this.env;
   }

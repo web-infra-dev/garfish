@@ -1,5 +1,5 @@
-import { warn, assert, deepMerge, isAbsolute } from '@garfish/utils';
-import { Actuator, EXTERNALS } from '../actuator';
+import { warn, assert } from '@garfish/utils';
+import { externals } from '../common';
 
 export function setExternal(
   nameOrExtObj: string | Record<string, any>,
@@ -8,15 +8,15 @@ export function setExternal(
   assert(nameOrExtObj, 'Invalid parameter.');
   if (typeof nameOrExtObj === 'object') {
     for (const key in nameOrExtObj) {
-      if (EXTERNALS[key]) {
+      if (externals[key]) {
         __DEV__ &&
           warn(
             `The "${key}" will be overwritten in remote components external.`,
           );
       }
-      EXTERNALS[key] = nameOrExtObj[key];
+      externals[key] = nameOrExtObj[key];
     }
   } else {
-    EXTERNALS[nameOrExtObj] = value;
+    externals[nameOrExtObj] = value;
   }
 }

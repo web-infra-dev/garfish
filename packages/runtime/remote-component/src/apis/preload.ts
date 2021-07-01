@@ -1,5 +1,5 @@
 import { assert, isAbsolute } from '@garfish/utils';
-import { loader, PRE_STORED_RESOURCES } from '../common';
+import { loader, storedResources } from '../common';
 
 // Preload the static resources of the component, so that the component can be loaded synchronously
 export function preload(urls: string | Array<string>) {
@@ -12,7 +12,7 @@ export function preload(urls: string | Array<string>) {
         'The loading of the micro component must be an absolute path.',
       );
       return loader.loadComponent(url).then((data) => {
-        PRE_STORED_RESOURCES[url] = data.resourceManager;
+        storedResources.push(data.resourceManager);
       });
     }),
   );

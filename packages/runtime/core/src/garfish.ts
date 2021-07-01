@@ -213,7 +213,7 @@ export class Garfish implements interfaces.Garfish {
       } else {
         try {
           let isHtmlMode, fakeEntryManager;
-          const resources = { js: [], link: [] }; // Default resources
+          const resources = { js: [], link: [], components: [] }; // Default resources
           const { resourceManager: entryManager } = await this.loader.load(
             appName,
             transformUrl(location.href, appInfo.entry),
