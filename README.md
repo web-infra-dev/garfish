@@ -13,40 +13,16 @@ Garfish 是一个微前端框架，主要用于解决现代 web 应用在前端�
 
 将多个独立交付的前端应用组成整体，将前端应用分解成一些更小、更简单的能够「独立开发」、「独立测试」、「独立部署」的应用，而在用户看来仍然是内聚的单个产品。
 
-
-## 文档
-
-[https://garfish.top/](https://garfish.top/)
-
-## 快速开始
-
-1. 安装
+## 安装
 
 ```bash
 $ yarn add garfish   #或者 npm i garfish -S
 ```
 
-2. 使用
+## 文档
 
-```javascript
-import Garfish from 'garfish';
+[https://garfish.top/](https://garfish.top/)
 
-Garfish.run({
-  domGetter: '#subApp',
-  apps: [
-    {
-      name: 'vueApp',
-      activeWhen: '/vueApp',
-      entry: 'http://localhost:9000',
-    },
-    {
-      name: 'reactApp',
-      activeWhen: '/reactApp',
-      entry: 'http://localhost:8000',
-    },
-  ],
-});
-```
 
 ## 功能
 
