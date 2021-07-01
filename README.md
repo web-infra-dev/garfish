@@ -50,11 +50,23 @@ Garfish.run({
 
 ## Functionality
 
-- Multi-technology system coexistence
-- Runtime sandboxing
-- Independent development and deployment of sub-applications
-- Resource preloading
-- Rich and diverse plug-in system
+- 🌈 Rich and efficient product features
+  - Garfish micro front-end sub-application supports any kind of framework and technology system access
+  - Garfish micro front-end sub-application supports "independent development", "independent testing" and "independent deployment
+  - Powerful pre-loading capability, automatically record user application loading habits to increase loading weight, and greatly reduce application switching time
+  - Support for dependency sharing, which greatly reduces the overall package size and the repeated loading of dependencies.
+  - Support data collection, effectively perceive the state of the application during operation
+  - Support for multiple instance capability to run multiple sub-applications in the page at the same time enhances the business splitting efforts
+  - Provides efficient and usable debugging tools to assist users in the micro front-end model brings different development experience problems from the traditional R&D model
+- 📦 Highly scalable core modules
+  - Supports HTML entry and JS entry through the Loader core module, making it easy to access micro front-end applications
+  - Router module provides route-driven, master-child route isolation, users only need to configure the routing table application can complete the independent rendering and destruction, the user does not need to care about the internal logic
+  - Sandbox module provides runtime isolation for the application's Runtime, which can effectively isolate the side effects of JS and Style on the application
+  - Store provides a simple mechanism for exchanging communication data
+- 🎯 Highly scalable plug-in mechanism (coming soon...)
+  - Provide business plug-ins to meet various customization needs of business parties
+
+Translated with www.DeepL.com/Translator (free version)
 
 ## LICENSE
 
