@@ -83,11 +83,13 @@ export class App {
 
     this.appInfo = appInfo;
     this.name = appInfo.name;
-
     this.resources = resources;
-    this.entryManager = entryManager;
     this.isHtmlMode = isHtmlMode;
+    this.entryManager = entryManager;
+
+    // garfish environment variables
     this.globalEnvVariables = {
+      currentApp: this,
       loader: context.loader,
       externals: context.externals,
       remoteComponentsCode: resources.components,
@@ -100,7 +102,6 @@ export class App {
       [__GARFISH_GLOBAL_ENV__]: this.globalEnvVariables,
     };
     this.cjsModules.module = this.cjsModules;
-
     this.customLoader = customLoader;
 
     // Save all the resources to address
