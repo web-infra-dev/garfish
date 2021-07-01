@@ -42,6 +42,11 @@ $ yarn add garfish   #或者 npm i garfish -S
 - 🎯 高度可扩展的插件机制（coming soon...）
   - 提供业务插件满足业务方的各种定制需求
 
+
+## 社区
+
+[https://garfish.dev/community/discuss](https://garfish.dev/community/discuss)
+
 ## LICENSE
 
 Garfish is released under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
