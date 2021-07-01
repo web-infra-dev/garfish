@@ -1,11 +1,9 @@
+import { preload } from './apis/preload';
+import { setExternal } from './apis/setExternal';
+import { loadComponent } from './apis/loadComponent';
+import { loadComponentSync } from './apis/loadComponentSync';
+import { cacheComponents } from './common';
 import { remoteComponentPlugin } from './garfishPlugin';
-import {
-  preload,
-  setExternal,
-  loadComponent,
-  loadComponentSync,
-  cacheComponents,
-} from './apis';
 
 // Micro component loader uses singleton mode
 const loader = {

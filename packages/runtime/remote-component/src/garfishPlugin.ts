@@ -1,12 +1,10 @@
 import { warn } from '@garfish/utils';
 import { interfaces } from '@garfish/core';
-import {
-  preload,
-  setExternal,
-  loadComponent,
-  loadComponentSync,
-  cacheComponents,
-} from './apis';
+import { cacheComponents } from './common';
+import { preload } from './apis/preload';
+import { setExternal } from './apis/setExternal';
+import { loadComponent } from './apis/loadComponent';
+import { loadComponentSync } from './apis/loadComponentSync';
 
 declare module '@garfish/core' {
   export interface Garfish {
