@@ -1,16 +1,16 @@
 {
-  "name": "@garfish/micro-component",
+  "name": "@garfish/remote-component",
   "version": "0.0.30",
-  "description": "micro-component module.",
+  "description": "remote-component module.",
   "keywords": [
     "garfish",
-    "micro-component"
+    "remote-component"
   ],
   "author": "chentao.arthur <chentao.arthur@bytedance.com>",
   "homepage": "https://github.com/bytedance/garfish",
   "license": "Apache-2.0",
   "main": "index.js",
-  "module": "dist/micro-component.esm-bundler.js",
+  "module": "dist/remote-component.esm-bundler.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
@@ -19,7 +19,7 @@
     "url": "https://github.com/bytedance/garfish/issues"
   },
   "scripts": {},
-  "types": "dist/micro-component.d.ts",
+  "types": "dist/remote-component.d.ts",
   "buildOptions": {
     "name": "MicroComponent",
     "devTemplate": "module",

@@ -1,4 +1,4 @@
-import { microComponentPlugin } from './garfishPlugin';
+import { remoteComponentPlugin } from './garfishPlugin';
 import {
   preload,
   setExternal,
@@ -21,7 +21,7 @@ export {
   setExternal,
   loadComponent,
   loadComponentSync,
+  remoteComponentPlugin,
   cacheComponents,
-  microComponentPlugin,
   loader as default,
 };

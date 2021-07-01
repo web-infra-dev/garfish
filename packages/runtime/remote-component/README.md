@@ -1,4 +1,4 @@
-# `@garfish/micro-component`
+# `@garfish/remote-component`
 
 > TODO: description
 
@@ -23,7 +23,7 @@ import {
   loadComponent,
   loadComponentSync,
   cacheComponents,
-} from '@garfish/micro-component';
+} from '@garfish/remote-component';
 
 // Environment variables required by microComponents
 setExternal({ React });
@@ -64,7 +64,7 @@ If you are using "garfish" micro frontend.
 import {
   preload,
   setExternal,
-} from '@garfish/micro-component';
+} from '@garfish/remote-component';
 
 if (window.__GARFISH__) {
   setExternal(window.Garfish.externals);
@@ -87,7 +87,7 @@ export const provider = () => {
 ```
 
 ```tsx
-import { loadComponentSync } from '@garfish/micro-component';
+import { loadComponentSync } from '@garfish/remote-component';
 
 function App() {
   const { OneComponent } = loadComponentSync('https://xx.js');

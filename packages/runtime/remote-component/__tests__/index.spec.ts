@@ -1,5 +1,5 @@
 import toolApp from '../src/index';
 
-describe('micro-component', () => {
+describe('remote-component', () => {
   it('needs tests');
 });

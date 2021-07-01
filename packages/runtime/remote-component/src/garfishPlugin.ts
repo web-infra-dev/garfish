@@ -26,7 +26,7 @@ declare module '@garfish/core' {
   }
 }
 
-export function microComponentPlugin() {
+export function remoteComponentPlugin() {
   return (Garfish: interfaces.Garfish): interfaces.Plugin => {
     const warning = () => {
       __DEV__ &&
