@@ -16,7 +16,7 @@ Multiple independently delivered front-end applications is integrated into a who
 
 <!-- [https://bytedance.github.io/garfish/](https://bytedance.github.io/garfish/) -->
 
-[API](https://github.com/bytedance/garfish/wiki/API)
+[https://garfish.top/](https://garfish.top/)
 
 ## Quick Start
 
