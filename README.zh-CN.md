@@ -14,7 +14,7 @@ Garfish 是一个微前端框架，主要用于解决现代 web 应用在前端�
 
 ## 文档
 
-[https://bytedance.github.io/garfish/](https://bytedance.github.io/garfish/)
+[https://garfish.top/](https://garfish.top/)
 
 ## 快速开始
 
