@@ -12,41 +12,16 @@ Garfish is a micro front-end framework, mainly used to solve the problems of cro
 
 To compose multiple independently delivered front-end applications into a whole, and to decompose front-end applications into some smaller and simpler applications that can be "independently developed", "independently tested" and "independently deployed", while still appearing to users as cohesive individual products.
 
-## Documentation
-
-<!-- [https://bytedance.github.io/garfish/](https://bytedance.github.io/garfish/) -->
-
-[https://garfish.top/](https://garfish.top/)
-
-## Quick Start
-
-1. Installation
+## Installation
 
 ```bash
 $ yarn add garfish #or npm i garfish -S
 ```
 
-2. Use
 
-```javascript
-import Garfish from 'garfish';
+## Documentation
 
-Garfish.run({
-  domGetter: '#subApp',
-  apps: [
-    {
-      name: 'vueApp',
-      activeWhen: '/vueApp',
-      entry: 'http://localhost:9000',
-    },
-    {
-      name: 'reactApp',
-      activeWhen: '/reactApp',
-      entry: 'http://localhost:8000',
-    },
-  ],
-});
-```
+[https://garfish.top/](https://garfish.top/)
 
 ## Functionality
 
