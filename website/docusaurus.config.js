@@ -45,16 +45,16 @@ module.exports = {
           label: 'API',
           position: 'left',
         },
-        // {
-        //   to: 'issues/',
-        //   label: '常见问题',
-        //   position: 'left',
-        // },
-        // {
-        //   to: 'community/contributing/docs',
-        //   label: '社区',
-        //   position: 'left',
-        // },
+        {
+          to: 'issues/',
+          label: '常见问题',
+          position: 'left',
+        },
+        {
+          to: 'community/discuss',
+          label: '社区',
+          position: 'left',
+        },
         // {
         //   type: 'localeDropdown',
         //   position: 'right',
@@ -88,7 +88,9 @@ module.exports = {
         language: ['en', 'zh'],
         docsRouteBasePath: [
           '/docs/',
-          // '/napi/',
+          '/napi/',
+          '/issues',
+          '/community',
           // '/blog/',
           // '/configuration/',
           // '/plugin/',

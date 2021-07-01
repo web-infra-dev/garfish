@@ -91,6 +91,6 @@ const listDocIds = (path, opt = {}) => {
 module.exports = {
   guide: listDocIds('guide'),
   napi: listDocIds('napi'),
-  // issues: listDocIds('issues'),
-  // community: listDocIds('community'),
+  issues: listDocIds('issues'),
+  community: listDocIds('community'),
 };
