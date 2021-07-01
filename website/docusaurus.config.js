@@ -38,23 +38,23 @@ module.exports = {
         {
           to: 'guide/',
           label: '文档',
-          position: 'left',
+          position: 'right',
         },
         {
           to: 'napi/',
           label: 'API',
+          position: 'right',
+        },
+        {
+          to: 'issues/',
+          label: '常见问题',
+          position: 'right',
+        },
+        {
+          to: 'community/contributing/discuss',
+          label: '社区',
           position: 'left',
         },
-        // {
-        //   to: 'issues/',
-        //   label: '常见问题',
-        //   position: 'left',
-        // },
-        // {
-        //   to: 'community/contributing/docs',
-        //   label: '社区',
-        //   position: 'left',
-        // },
         // {
         //   type: 'localeDropdown',
         //   position: 'right',
@@ -88,7 +88,9 @@ module.exports = {
         language: ['en', 'zh'],
         docsRouteBasePath: [
           '/docs/',
-          // '/napi/',
+          '/napi/',
+          '/issues',
+          '/community',
           // '/blog/',
           // '/configuration/',
           // '/plugin/',
