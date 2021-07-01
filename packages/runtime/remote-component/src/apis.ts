@@ -19,17 +19,15 @@ const defaultOptions: Pick<ComponentInfo, 'cache'> = {
   cache: true,
 };
 
-export function getLoadOptions(options: ComponentInfo | string) {
-  if (typeof options === 'string') {
-    options = { url: options } as any;
-  }
+const purifyOptions = (options: ComponentInfo | string) => {
+  if (typeof options === 'string') options = { url: options };
   return deepMerge(defaultOptions, options || {}) as ComponentInfo;
-}
+};
 
 export function loadComponent(
   options: ComponentInfo | string,
 ): Promise<Record<string, any> | null> {
-  const info = getLoadOptions(options);
+  const info = purifyOptions(options);
   const { url, env, cache, version, error, adapter } = info;
 
   assert(url, 'Missing url for loading micro component');
@@ -78,7 +76,7 @@ export function loadComponent(
 export function loadComponentSync(
   options: ComponentInfo | string,
 ): Record<string, any> {
-  const info = getLoadOptions(options);
+  const info = purifyOptions(options);
   assert(info.url, 'Missing url for loading micro component');
   assert(
     isAbsolute(info.url),
@@ -145,7 +143,7 @@ export function setExternal(
       if (EXTERNALS[key]) {
         __DEV__ &&
           warn(
-            `The "${key}" will be overwritten in micro components external.`,
+            `The "${key}" will be overwritten in remote components external.`,
           );
       }
       EXTERNALS[key] = nameOrExtObj[key];
