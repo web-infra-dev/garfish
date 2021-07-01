@@ -41,7 +41,9 @@ $ yarn add garfish #or npm i garfish -S
 - 🎯 Highly scalable plug-in mechanism (coming soon...)
   - Provide business plug-ins to meet various customization needs of business parties
 
-Translated with www.DeepL.com/Translator (free version)
+## community
+
+[https://garfish.dev/community/discuss](https://garfish.dev/community/discuss)
 
 ## LICENSE
 
