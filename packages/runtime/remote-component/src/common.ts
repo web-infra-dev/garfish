@@ -10,9 +10,12 @@ export interface ComponentInfo {
   adapter?: (cjsModule: Record<string, any>) => Record<string, any>;
 }
 
-// @ts-ignore
 // If garfish has pre-prepared data
-const garfishGlobalEnv = __GARFISH_GLOBAL_ENV__;
+let garfishGlobalEnv;
+try {
+  // @ts-ignore
+  garfishGlobalEnv = __GARFISH_GLOBAL_ENV__;
+} catch {}
 
 export const fetchLoading = Object.create(null);
 export const cacheComponents = Object.create(null);
@@ -48,4 +51,8 @@ export const getComponentCode = (url: string) => {
     }
   }
   return storedResources.find((manager) => manager.url === url);
+};
+
+export const getCurrentApp = () => {
+  return garfishGlobalEnv && garfishGlobalEnv.currentApp;
 };

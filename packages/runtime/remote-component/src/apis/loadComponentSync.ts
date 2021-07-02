@@ -9,11 +9,11 @@ import {
 
 // If we want to have perfect synchronization syntax to load remote components,
 // the source code of the child application must be analyzed so that it can be loaded on demand.
-// In the future, we need to wait until garfish supports esmodule,
+// In the future, we need to wait until garfish supports esModule,
 // To consider loading remote components on demand when using synchronous syntax.
 // E.g.
-// 1. esModule - Static analysis, recursively build dependency tree.
-// 2. webpack - Analyze the source code ast and build into different package versions.
+//  1. esModule - Static analysis, recursively build dependency tree.
+//  2. webpack - Analyze the source code ast and build into different package versions.
 
 export function loadComponentSync(
   options: ComponentInfo | string,

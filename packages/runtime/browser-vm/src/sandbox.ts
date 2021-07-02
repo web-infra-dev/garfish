@@ -69,6 +69,8 @@ export class Sandbox {
   public initComplete = false;
   public global?: Window;
   public options: SandboxOptions;
+  public tempEnvVariables: Array<PropertyKey> = [];
+  ß;
   public replaceGlobalVariables: ReplaceGlobalVariables;
   public isExternalGlobalVariable: Set<PropertyKey> = new Set();
   public isProtectVariable: (p: PropertyKey) => boolean;
@@ -233,7 +235,7 @@ export class Sandbox {
     // Used to update the variables synchronously after `window.x = xx` is updated
     this.global[`${GARFISH_OPTIMIZE_NAME}Methods`] = methods;
     this.global[`${GARFISH_OPTIMIZE_NAME}UpdateStack`] = [];
-    code += `${GARFISH_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v")});`;
+    code += `window.${GARFISH_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v")});`;
     return code;
   }
 
@@ -254,6 +256,7 @@ export class Sandbox {
     try {
       code += `\n${url ? `//# sourceURL=${url}\n` : ''}`;
       code = !useStrict ? `with(window) {;${this.optimizeCode + code}}` : code;
+      this.tempEnvVariables = Object.keys(env);
       if (openSandbox) {
         evalWithEnv(code, {
           window: this.global,
@@ -276,6 +279,8 @@ export class Sandbox {
         errorFn.call(window, message, source, null, null, e);
       }
       throw e;
+    } finally {
+      this.tempEnvVariables = [];
     }
     revertCurrentScript();
   }

@@ -28,9 +28,15 @@ import {
 // Environment variables required by microComponents
 setExternal({ React });
 
-loadComponent('https://xx.js').then((components) => {
-  console.log(components); // One, Two
-});
+React.lazy(() =>
+  loadComponent('https://xx.js').then((components) => {
+    console.log(components); // One, Two
+    return {
+      __esModule: true,
+      default: components.One,
+    };
+  }),
+);
 
 // Or
 loadComponent({

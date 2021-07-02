@@ -1,39 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import classnames from 'classnames';
-import { setExternal, loadComponent } from '@garfish/micro-component';
+import React, { useState } from 'react';
+import { loadComponent, setExternal } from '@garfish/remote-component';
 import logo from './logo.svg';
 import './App.css';
 import { Modal, Button } from 'antd';
 import 'antd/dist/antd.css';
 
-// let cur = document.querySelector('#root');
-// setTimeout(() => {
-//   console.log(cur, document);
-//   while (cur !== document && cur) {
-//     cur = cur && cur.parentNode;
-//     console.log(cur);
-//   }
-// }, 3000);
-
-setExternal({ React, classnames });
-
-function MicroComp(params) {
-  const { name, url, props } = params;
-  const [Comp, setComp] = useState('');
-
-  useEffect(() => {
-    if (!Comp) {
-      loadComponent('item', {
-        url:
-          'https://sf-unpkg-src.bytedance.net/@k12-fe/im-components@1.3.10/lib/ChatItem/index.js',
-      }).then((res) => {
-        console.log(res);
-      });
-    }
-  });
-
-  return Comp && <Comp {...props} />;
-}
+setExternal({ React });
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -53,9 +25,24 @@ function App() {
     window.a.b.c = 1;
   };
 
+  const RemoteComponent = React.lazy(() => {
+    return loadComponent('http://localhost:3000/remoteComponent.js').then(
+      (components) => {
+        return {
+          __esModule: true,
+          default: components.One,
+        };
+      },
+    );
+  });
+
   return (
     <div className="App">
-      <MicroComp />
+      <React.Suspense fallback={<div>loading</div>}>
+        <div>
+          <RemoteComponent text="2333" />
+        </div>
+      </React.Suspense>
       <Button type="primary" onClick={showModal}>
         Open Modal
       </Button>
