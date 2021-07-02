@@ -102,7 +102,9 @@ export const DOMApis = {
         }
       } else if (key === 'src') {
         hasSrcAttr = true;
-        if (value === '') return false;
+        if (typeof value === 'undefined' || value === '') {
+          return false;
+        }
       }
     }
     return Boolean(hasNameAttr && hasSrcAttr);
