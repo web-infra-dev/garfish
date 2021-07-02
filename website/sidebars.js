@@ -89,9 +89,8 @@ const listDocIds = (path, opt = {}) => {
 };
 
 module.exports = {
-  // guide: listDocIds('guide'),
-  // platform: listDocIds('platform'),
-  // napi: listDocIds('napi'),
-  // issues: listDocIds('issues'),
-  // community: listDocIds('community'),
+  guide: listDocIds('guide'),
+  napi: listDocIds('napi'),
+  issues: listDocIds('issues'),
+  community: listDocIds('community'),
 };

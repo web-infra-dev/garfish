@@ -1,3 +1,4 @@
+
 module.exports = {
   presets: [
     [
@@ -11,3 +12,4 @@ module.exports = {
   ],
   plugins: ['@babel/plugin-transform-regenerator'],
 };
+
