@@ -77,8 +77,6 @@ export class Garfish implements interfaces.Garfish {
     assert(!this.running, 'Garfish is running, can`t set options');
     if (isPlainObject(options)) {
       this.options = deepMerge(this.options, options);
-      // register apps
-      this.registerApp(options.apps || []);
       // Index object can't deep copy otherwise unable to communicate
       if (hasOwn(options, 'props')) {
         this.options.props = options.props;
@@ -130,6 +128,8 @@ export class Garfish implements interfaces.Garfish {
 
     this.setOptions(options);
     this.injectOptionalPlugin(this.options);
+    // register apps
+    this.registerApp(options.apps || []);
 
     this.running = true;
     this.hooks.lifecycle.bootstrap.call(this.options);

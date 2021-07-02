@@ -1,4 +1,9 @@
-import { warn, transformUrl, callTestCallback } from '@garfish/utils';
+import {
+  warn,
+  transformUrl,
+  isAbsolute,
+  callTestCallback,
+} from '@garfish/utils';
 import { Loader, Manager, TemplateManager } from '@garfish/loader';
 import { interfaces } from '../interface';
 
@@ -59,6 +64,7 @@ function safeLoad(
   loader: Loader,
   appName: string,
   url: string,
+  isComponent: boolean,
   callback?: (m: Manager) => any,
 ) {
   requestQueue.add((next) => {
@@ -70,16 +76,19 @@ function safeLoad(
       }
     };
 
-    // edge浏览器不知为何不为函数
+    const success = ({ resourceManager }) => {
+      callback && callback(resourceManager);
+      setTimeout(next, 500);
+    };
+
+    // edge
     requestIdleCallback(() => {
       try {
-        loader
-          .load(appName, url)
-          .then(({ resourceManager }) => {
-            callback && callback(resourceManager);
-            setTimeout(next, 500);
-          })
-          .catch(throwWarn);
+        if (isComponent) {
+          loader.loadComponent(url).then(success, throwWarn);
+        } else {
+          loader.load(appName, url).then(success, throwWarn);
+        }
       } catch (e) {
         throwWarn(e);
       }
@@ -91,23 +100,41 @@ export function loadAppResource(loader: Loader, info: interfaces.AppInfo) {
   __TEST__ && callTestCallback(loadAppResource, info);
   const fetchUrl = transformUrl(location.href, info.entry);
 
-  safeLoad(loader, info.name, fetchUrl, (manager) => {
+  safeLoad(loader, info.name, fetchUrl, false, (manager) => {
     requestIdleCallback(() => {
       if (manager instanceof TemplateManager) {
         const baseUrl = manager.url;
         const jsNodes = manager.findAllJsNodes();
         const linkNodes = manager.findAllLinkNodes();
+        const metaNodes = manager.findAllMetaNodes();
+
         if (jsNodes) {
           jsNodes.forEach((node) => {
             const src = manager.findAttributeValue(node, 'src');
-            src && safeLoad(loader, info.name, transformUrl(baseUrl, src));
+            src &&
+              safeLoad(loader, info.name, transformUrl(baseUrl, src), false);
           });
         }
         if (linkNodes) {
           linkNodes.forEach((node) => {
             if (manager.DOMApis.isCssLinkNode(node)) {
               const href = manager.findAttributeValue(node, 'href');
-              href && safeLoad(loader, info.name, transformUrl(baseUrl, href));
+              href &&
+                safeLoad(loader, info.name, transformUrl(baseUrl, href), false);
+            }
+          });
+        }
+        if (metaNodes) {
+          metaNodes.forEach((node) => {
+            if (manager.DOMApis.isRemoteComponent(node)) {
+              const src = manager.findAttributeValue(node, 'src');
+              if (isAbsolute(src)) {
+                safeLoad(loader, info.name, src, true);
+              } else {
+                warn(
+                  `The loading of the remote component must be an absolute path. "${src}"`,
+                );
+              }
             }
           });
         }
