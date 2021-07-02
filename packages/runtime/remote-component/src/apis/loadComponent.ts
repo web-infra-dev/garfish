@@ -14,10 +14,10 @@ export function loadComponent(
   const info = purifyOptions(options);
   const { url, env, cache, version, error, adapter } = info;
 
-  assert(url, 'Missing url for loading micro component');
+  assert(url, 'Missing url for loading remote components');
   assert(
     isAbsolute(url),
-    'The loading of the micro component must be an absolute path.',
+    `The loading of the remote component must be an absolute path. "${url}"`,
   );
 
   // `1.0@https://xx.js`

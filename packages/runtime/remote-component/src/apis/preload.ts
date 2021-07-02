@@ -9,7 +9,7 @@ export function preload(urls: string | Array<string>) {
     urls.map((url) => {
       assert(
         isAbsolute(url || ''),
-        'The loading of the micro component must be an absolute path.',
+        `The loading of the remote component must be an absolute path. "${url}"`,
       );
       return loader.loadComponent(url).then((data) => {
         storedResources.push(data.resourceManager);

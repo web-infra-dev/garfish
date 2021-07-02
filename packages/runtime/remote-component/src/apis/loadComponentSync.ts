@@ -1,4 +1,9 @@
-import { assert, isPromise, isAbsolute } from '@garfish/utils';
+import {
+  assert,
+  isPromise,
+  isAbsolute,
+  error as GarfishError,
+} from '@garfish/utils';
 import { Actuator } from '../actuator';
 import {
   purifyOptions,
@@ -19,14 +24,15 @@ export function loadComponentSync(
   options: ComponentInfo | string,
 ): Record<string, any> {
   const info = purifyOptions(options);
-  assert(info.url, 'Missing url for loading micro component');
+  const { url, env, cache, version, error, adapter } = info;
+
+  assert(url, 'Missing url for loading remote components');
   assert(
-    isAbsolute(info.url),
-    'The loading of the micro component must be an absolute path.',
+    isAbsolute(url),
+    `The loading of the remote component must be an absolute path. "${url}"`,
   );
 
   let result = null;
-  const { url, env, cache, version, error, adapter } = info;
   const urlWithVersion = `${version || 'latest'}@${url}`;
   const component = cacheComponents[urlWithVersion];
 
@@ -36,7 +42,7 @@ export function loadComponentSync(
     const manager = getComponentCode(url);
     assert(
       manager,
-      'Synchronously load components must load resources in advance.',
+      `Synchronously load components must load resources in advance. "${url}"`,
     );
 
     try {
@@ -46,14 +52,12 @@ export function loadComponentSync(
         exports = adapter(exports);
       }
       result = exports;
-      if (isPromise(exports)) {
-        // If there are multiple copies, the ones that arrive later will be cached
-        exports.then((res) => {
-          cacheComponents[urlWithVersion] = res;
-        });
-      } else {
-        cacheComponents[urlWithVersion] = result;
+      if (isPromise(result)) {
+        GarfishError(
+          `The current component return a promise, you should switch to asynchronous loading. "${url}"`,
+        );
       }
+      cacheComponents[urlWithVersion] = result;
     } catch (err) {
       if (typeof error === 'function') {
         result = error(err);
