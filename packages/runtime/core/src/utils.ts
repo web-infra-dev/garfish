@@ -49,6 +49,8 @@ export const fetchStaticResources = (
   loader: Loader,
   entryManager: TemplateManager,
 ) => {
+  const isAsync = (val) => typeof val !== 'undefined' && val !== 'false';
+
   // Get all script elements
   const jsNodes = Promise.all(
     entryManager
@@ -69,9 +71,7 @@ export const fetchStaticResources = (
             .then(({ resourceManager: jsManager }) => {
               jsManager.setDep(node);
               jsManager.setMimeType(type);
-              jsManager.setAsyncAttribute(
-                typeof async !== 'undefined' && async !== 'false',
-              );
+              jsManager.setAsyncAttribute(isAsync(async));
               return jsManager;
             });
         } else if (node.children.length > 0) {
@@ -109,5 +109,19 @@ export const fetchStaticResources = (
       .filter(Boolean),
   );
 
-  return Promise.all([jsNodes, linkNodes]);
+  const metaNodes = Promise.all(
+    entryManager
+      .findAllMetaNodes()
+      .map((node) => {
+        if (!entryManager.DOMApis.isRemoteComponent(node)) return;
+        const async = entryManager.findAttributeValue(node, 'async');
+        if (!isAsync(async)) {
+          const src = entryManager.findAttributeValue(node, 'src');
+          return loader.loadComponent(src);
+        }
+      })
+      .filter(Boolean),
+  );
+
+  return Promise.all([jsNodes, linkNodes, metaNodes]);
 };

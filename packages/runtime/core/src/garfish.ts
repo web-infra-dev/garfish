@@ -222,13 +222,14 @@ export class Garfish implements interfaces.Garfish {
           // Html entry
           if (entryManager instanceof TemplateManager) {
             isHtmlMode = true;
-            const [js, link] = await fetchStaticResources(
+            const [js, link, components] = await fetchStaticResources(
               appName,
               this.loader,
               entryManager,
             );
             resources.js = js;
             resources.link = link;
+            resources.components = components;
           } else if (entryManager instanceof JavaScriptManager) {
             // Js entry
             isHtmlMode = false;
