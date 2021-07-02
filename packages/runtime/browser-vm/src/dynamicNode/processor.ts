@@ -155,6 +155,7 @@ export class DynamicNodeProcessor {
     this.sandbox.replaceGlobalVariables.recoverList.push(() => {
       DOMApis.removeElement(this.el);
     });
+
     // Deal with some static resource nodes
     if (sourceListTags.includes(tag)) {
       this.fixResourceNodeUrl();

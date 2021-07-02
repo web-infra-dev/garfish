@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { loadComponent, setExternal } from '@garfish/remote-component';
+import { loadComponent, loadComponentSync } from '@garfish/remote-component';
 import logo from './logo.svg';
 import './App.css';
 import { Modal, Button } from 'antd';
 import 'antd/dist/antd.css';
-
-setExternal({ React });
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -25,14 +23,16 @@ function App() {
     window.a.b.c = 1;
   };
 
-  const RemoteComponent = React.lazy(() => {
+  const RemoteComponent = loadComponentSync(
+    'http://localhost:3000/remoteComponent.js',
+  ).One;
+
+  const RemoteComponentTwo = React.lazy(() => {
     return loadComponent('http://localhost:3000/remoteComponent.js').then(
       (components) => {
-        // eslint-disable-next-line
-        console.log('window', window.a, window.b);
         return {
           __esModule: true,
-          default: components.One,
+          default: components.Two,
         };
       },
     );
@@ -40,11 +40,14 @@ function App() {
 
   return (
     <div className="App">
+      <RemoteComponent text="cool!" />
+
       <React.Suspense fallback={<div>loading</div>}>
         <div>
-          <RemoteComponent text="2333" />
+          <RemoteComponentTwo text="good!" />
         </div>
       </React.Suspense>
+
       <Button type="primary" onClick={showModal}>
         Open Modal
       </Button>

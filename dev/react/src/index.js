@@ -2,6 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { preload, setExternal } from '@garfish/remote-component';
+
+setExternal({ React });
 
 // console.log(
 //   window.HTMLIFrameElement._native ===
@@ -47,9 +50,12 @@ const render = ({ dom }) => {
 };
 
 export const provider = (opts) => {
-  console.log(opts, 'opts');
   return {
-    render,
+    render(...args) {
+      preload('http://localhost:3000/remoteComponent.js').then(() => {
+        render(...args);
+      });
+    },
     destroy() {
       ReactDOM.unmountComponentAtNode(opts.dom.querySelector('#root'));
     },
