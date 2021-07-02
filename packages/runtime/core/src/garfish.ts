@@ -194,8 +194,7 @@ export class Garfish implements interfaces.Garfish {
           'Please provide the entry parameters or registered in advance of the app',
       );
       // Deep clone app options
-      const tempInfo = appInfo;
-      appInfo = deepMerge(tempInfo, options);
+      appInfo = deepMerge(appInfo, options);
     } else if (typeof options === 'string') {
       // `Garfish.loadApp('appName', 'https://xx.html');`
       appInfo = {
@@ -203,6 +202,10 @@ export class Garfish implements interfaces.Garfish {
         entry: options,
         domGetter: () => document.createElement('div'),
       };
+    }
+
+    if (this.options.props) {
+      appInfo.props = appInfo.props || this.options.props;
     }
 
     const asyncLoadProcess = async () => {
