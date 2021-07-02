@@ -28,6 +28,8 @@ function App() {
   const RemoteComponent = React.lazy(() => {
     return loadComponent('http://localhost:3000/remoteComponent.js').then(
       (components) => {
+        // eslint-disable-next-line
+        console.log('window', window.a, window.b);
         return {
           __esModule: true,
           default: components.One,

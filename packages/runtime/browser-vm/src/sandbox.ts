@@ -70,7 +70,6 @@ export class Sandbox {
   public global?: Window;
   public options: SandboxOptions;
   public tempEnvVariables: Array<PropertyKey> = [];
-  ß;
   public replaceGlobalVariables: ReplaceGlobalVariables;
   public isExternalGlobalVariable: Set<PropertyKey> = new Set();
   public isProtectVariable: (p: PropertyKey) => boolean;
@@ -140,6 +139,7 @@ export class Sandbox {
     this.global = null;
     this.optimizeCode = '';
     this.initComplete = false;
+    this.tempEnvVariables = [];
     this.replaceGlobalVariables.createdList = [];
     this.replaceGlobalVariables.prepareList = [];
     this.replaceGlobalVariables.recoverList = [];

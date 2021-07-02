@@ -9,11 +9,9 @@ export class Actuator {
   constructor(manager: ComponentManager, env?: Record<string, any>) {
     this.manager = manager;
     this.env = {
-      ...externals,
-      ...env,
       exports: {},
       module: null,
-      require: (key) => this.env[key] || externals[key],
+      require: (key) => (env || {})[key] || externals[key],
     };
     this.env.module = this.env;
   }
@@ -25,7 +23,7 @@ export class Actuator {
       // Avoid conflict with Garfish cjs
       app.execScript(componentCode, this.env, url, { noEntry: true });
     } else {
-      const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
+      const sourceUrl = `\n${url ? `//# sourceURL=${url}\n` : ''}`;
       evalWithEnv(`;${componentCode}\n${sourceUrl}`, this.env);
     }
     return this.env;

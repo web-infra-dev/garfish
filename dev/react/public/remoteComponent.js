@@ -1,3 +1,5 @@
+a = 1;
+window.b = 2;
 const React = require('React');
 
 exports.One = function (props) {
