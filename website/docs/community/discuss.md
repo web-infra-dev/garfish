@@ -8,4 +8,4 @@ order: 1
 
 [Garfish Discussions](https://github.com/bytedance/garfish/discussions)
 
-<img src="https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/Lark20210701-161615.png" width="300"/>
+<img src="https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/wechat.jpeg" width="300"/>
