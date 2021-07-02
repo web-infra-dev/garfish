@@ -66,7 +66,7 @@ export class App {
   private unmounting = false;
   private context: Garfish;
   private resources: interfaces.ResourceModules;
-  // Environment variables injected by garfish for linkage with sub-applications
+  // Environment variables injected by garfish for linkage with child applications
   private globalEnvVariables: Record<string, any>;
 
   constructor(

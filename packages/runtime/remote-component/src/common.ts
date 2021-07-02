@@ -54,5 +54,6 @@ export const getComponentCode = (url: string) => {
         .find((manager) => manager.url === url);
     }
   }
+  // It should be noted that if there is a redirect, `manager.url` is the url after the redirect
   return storedResources.find((manager) => manager.url === url);
 };
