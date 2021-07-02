@@ -19,22 +19,20 @@ exports.Two = function () {
 import React from 'React';
 import {
   preload,
+  toEsModule,
   setExternal,
   loadComponent,
   loadComponentSync,
   cacheComponents,
 } from '@garfish/remote-component';
 
-// Environment variables required by microComponents
+// Environment variables required by remoteComponents
 setExternal({ React });
 
 React.lazy(() =>
   loadComponent('https://xx.js').then((components) => {
     console.log(components); // One, Two
-    return {
-      __esModule: true,
-      default: components.One,
-    };
+    return toEsModule(components.One);
   }),
 );
 
@@ -51,7 +49,7 @@ loadComponent({
   console.log(components); // One, Two
 });
 
-// Or load the micro components synchronously
+// Or load the remote components synchronously
 preload(['https://1.js', 'https://2.js']).then(() => {
   const components = loadComponentSync('https://1.js');
   console.log(components); // One, Two
@@ -74,10 +72,10 @@ import {
 
 export const provider = () => {
   render({ dom }) {
-    // When the resources of the micro component are preloaded,
-    // You can use synchronous syntax to load micro components in the current application.
+    // When the resources of the remote component are preloaded,
+    // You can use synchronous syntax to load remote components in the current application.
     // You can combine "webpack5 module federation" or other "component markets"
-    preload(menu.microComponents).then(() => {
+    preload(menu.remoteComponents).then(() => {
       ReactDom.render(<App/>, dom)
     })
   },

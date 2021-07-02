@@ -1,4 +1,4 @@
-import { assert, isAbsolute } from '@garfish/utils';
+import { assert, isPromise, isAbsolute } from '@garfish/utils';
 import { Actuator } from '../actuator';
 import {
   purifyOptions,
@@ -46,7 +46,14 @@ export function loadComponentSync(
         exports = adapter(exports);
       }
       result = exports;
-      cacheComponents[urlWithVersion] = result;
+      if (isPromise(exports)) {
+        // If there are multiple copies, the ones that arrive later will be cached
+        exports.then((res) => {
+          cacheComponents[urlWithVersion] = res;
+        });
+      } else {
+        cacheComponents[urlWithVersion] = result;
+      }
     } catch (err) {
       if (typeof error === 'function') {
         result = error(err);

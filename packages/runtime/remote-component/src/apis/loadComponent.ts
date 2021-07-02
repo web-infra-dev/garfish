@@ -1,4 +1,4 @@
-import { assert, isAbsolute } from '@garfish/utils';
+import { assert, isPromise, isAbsolute } from '@garfish/utils';
 import { Actuator } from '../actuator';
 import {
   loader,
@@ -34,6 +34,10 @@ export function loadComponent(
         const data = await loader.loadComponent(url);
         const actuator = new Actuator(data.resourceManager, env);
         let exports = actuator.execScript().exports;
+
+        if (isPromise(exports)) {
+          exports = await exports;
+        }
         if (typeof adapter === 'function') {
           exports = adapter(exports);
         }

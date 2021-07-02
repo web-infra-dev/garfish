@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { loadComponent, loadComponentSync } from '@garfish/remote-component';
+import {
+  toEsModule,
+  loadComponent,
+  loadComponentSync,
+} from '@garfish/remote-component';
 import logo from './logo.svg';
 import './App.css';
 import { Modal, Button } from 'antd';
@@ -28,14 +32,9 @@ function App() {
   ).One;
 
   const RemoteComponentTwo = React.lazy(() => {
-    return loadComponent('http://localhost:3000/remoteComponent.js').then(
-      (components) => {
-        return {
-          __esModule: true,
-          default: components.Two,
-        };
-      },
-    );
+    return loadComponent(
+      'http://localhost:3000/remoteComponent.js',
+    ).then((cms) => toEsModule(cms.Two));
   });
 
   return (
