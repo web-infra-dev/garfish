@@ -91,9 +91,20 @@ You can also configure the information of remote components in the template, so 
 ```html
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <!-- Preload component resources, but will not execute code -->
+    <meta
+      name="garfish-remote-component"
+      src="http://localhost:3000/remoteComponent1.js"
+    />
+    <!-- With the async attribute will not block page rendering -->
+    <meta
+      name="garfish-remote-component"
+      src="http://localhost:3000/remoteComponent2.js"
+      async
+    />
+  </head>
   <body></body>
-  <!-- Preload component resources, but will not execute code -->
-  <garfish-remote-component src="https://xx.js" />
 </html>
 ```
 
