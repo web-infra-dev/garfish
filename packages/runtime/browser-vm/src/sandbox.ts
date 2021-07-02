@@ -264,18 +264,15 @@ export class Sandbox {
           ...env,
         });
       } else {
-        evalWithEnv(code, {
-          unstable_sandbox: this,
-          ...env,
-        });
+        evalWithEnv(code, env);
       }
     } catch (e) {
       // dispatch `window.onerror`
       const source = url || this.options.baseUrl;
       const message = e instanceof Error ? e.message : String(e);
       if (typeof this.global.onerror === 'function') {
-        const errorFn =
-          (this.global.onerror as any)._native || this.global.onerror;
+        // @ts-ignore
+        const errorFn = this.global.onerror._native || this.global.onerror;
         errorFn.call(window, message, source, null, null, e);
       }
       throw e;
