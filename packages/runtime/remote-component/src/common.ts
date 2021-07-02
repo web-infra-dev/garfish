@@ -3,7 +3,7 @@ import { Loader, ComponentManager } from '@garfish/loader';
 
 export interface ComponentInfo {
   url: string;
-  cache?: boolean; // Whether the cache
+  cache?: boolean;
   version?: string;
   env?: Record<string, any>;
   error?: (err: Error) => any;
@@ -41,6 +41,10 @@ export const purifyOptions = (options: ComponentInfo | string) => {
   return deepMerge({ cache: true }, options || {}) as ComponentInfo;
 };
 
+export const getCurrentApp = () => {
+  return garfishGlobalEnv && garfishGlobalEnv.currentApp;
+};
+
 export const getComponentCode = (url: string) => {
   if (garfishGlobalEnv) {
     const { remoteComponentsCode } = garfishGlobalEnv;
@@ -51,8 +55,4 @@ export const getComponentCode = (url: string) => {
     }
   }
   return storedResources.find((manager) => manager.url === url);
-};
-
-export const getCurrentApp = () => {
-  return garfishGlobalEnv && garfishGlobalEnv.currentApp;
 };
