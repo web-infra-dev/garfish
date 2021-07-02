@@ -52,9 +52,9 @@ const render = ({ dom }) => {
 export const provider = (opts) => {
   return {
     render(...args) {
-      preload('http://localhost:3000/remoteComponent.js').then(() => {
-        render(...args);
-      });
+      // preload('http://localhost:3000/remoteComponent.js').then(() => {
+      render(...args);
+      // });
     },
     destroy() {
       ReactDOM.unmountComponentAtNode(opts.dom.querySelector('#root'));
