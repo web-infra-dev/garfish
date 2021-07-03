@@ -11,6 +11,7 @@ import {
   getModuleCode,
 } from '../common';
 import { Actuator } from '../actuator';
+import { filterAlias } from './setModuleAlias';
 
 // If we want to have perfect synchronization syntax to load remote modules,
 // the source code of the child application must be analyzed so that it can be loaded on demand.
@@ -24,8 +25,10 @@ export function loadModuleSync(
   options: ModuleInfo | string,
 ): Record<string, any> {
   const info = purifyOptions(options);
-  const { url, env, cache, version, error, adapter } = info;
+  // eslint-disable-next-line
+  let { url, env, cache, version, error, adapter } = info;
 
+  url = filterAlias(url);
   assert(url, 'Missing url for loading remote module');
   assert(
     isAbsolute(url),

@@ -1,5 +1,4 @@
 import { assert, isPromise, isAbsolute } from '@garfish/utils';
-import { Actuator } from '../actuator';
 import {
   loader,
   ModuleInfo,
@@ -7,13 +6,17 @@ import {
   fetchLoading,
   purifyOptions,
 } from '../common';
+import { Actuator } from '../actuator';
+import { filterAlias } from './setModuleAlias';
 
 export function loadModule(
   options: ModuleInfo | string,
 ): Promise<Record<string, any> | null> {
   const info = purifyOptions(options);
-  const { url, env, cache, version, error, adapter } = info;
+  // eslint-disable-next-line
+  let { url, env, cache, version, error, adapter } = info;
 
+  url = filterAlias(url);
   assert(url, 'Missing url for loading remote module');
   assert(
     isAbsolute(url),

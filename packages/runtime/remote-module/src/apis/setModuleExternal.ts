@@ -1,7 +1,7 @@
 import { warn, assert } from '@garfish/utils';
 import { externals } from '../common';
 
-export function setExternal(
+export function setModuleExternal(
   nameOrExtObj: string | Record<string, any>,
   value?: any,
 ) {

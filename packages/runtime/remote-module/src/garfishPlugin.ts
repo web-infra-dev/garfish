@@ -1,24 +1,21 @@
 import { warn } from '@garfish/utils';
 import { interfaces } from '@garfish/core';
 import { cacheModules } from './common';
-import { preload } from './apis/preload';
 import { loadModule } from './apis/loadModule';
-import { setExternal } from './apis/setExternal';
-import { loadModuleSync } from './apis/loadModuleSync';
+import { setModuleAlias } from './apis/setModuleAlias';
+import { setModuleExternal } from './apis/setModuleExternal';
 
 declare module '@garfish/core' {
   export interface Garfish {
-    preload: typeof preload;
     loadModule: typeof loadModule;
-    loadModuleSync: typeof loadModuleSync;
+    setModuleAlias: typeof setModuleAlias;
     cacheModules: typeof cacheModules;
   }
 
   export namespace interfaces {
     export interface Garfish {
-      preload: typeof preload;
       loadModule: typeof loadModule;
-      loadModuleSync: typeof loadModuleSync;
+      setModuleAlias: typeof setModuleAlias;
       cacheModules: typeof cacheModules;
     }
   }
@@ -26,37 +23,26 @@ declare module '@garfish/core' {
 
 export function GarfishRemoteModulePlugin() {
   return (Garfish: interfaces.Garfish): interfaces.Plugin => {
-    const warning = () => {
+    Garfish.cacheModules = cacheModules;
+
+    Garfish.loadModule = function (...args) {
       __DEV__ &&
         warn(
           'If there is no need for performance optimization, ' +
             'you should not use the `Garfish.loadModule()`.',
         );
+      return loadModule(...args);
     };
 
-    Garfish.preload = function (urls) {
-      warning();
-      return preload(urls);
+    Garfish.setModuleAlias = function (...args) {
+      return setModuleAlias(...args);
     };
-
-    Garfish.loadModule = function (options) {
-      warning();
-      return loadModule(options);
-    };
-
-    Garfish.loadModuleSync = function (options) {
-      warning();
-      return loadModuleSync(options);
-    };
-
-    Garfish.cacheModules = cacheModules;
 
     return {
       name: 'remote-module',
       version: __VERSION__,
-
       bootstrap() {
-        setExternal(Garfish.externals);
+        setModuleExternal(Garfish.externals);
       },
     };
   };

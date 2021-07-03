@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { preload, setExternal } from '@garfish/remote-module';
+import { preload, setModuleExternal } from '@garfish/remote-module';
 
-setExternal({ React });
+setModuleExternal({ React });
 
 // console.log(
 //   window.HTMLIFrameElement._native ===

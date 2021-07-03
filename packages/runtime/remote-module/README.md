@@ -18,14 +18,14 @@ import React from 'React';
 import {
   preload,
   esModule,
-  setExternal,
   loadModule,
   loadModuleSync,
+  setModuleExternal,
   cacheModules,
 } from '@garfish/remote-module';
 
 // Environment variables required by remoteModules
-setExternal({ React });
+setModuleExternal({ React });
 
 React.lazy(() =>
   loadModule('https://xx.js').then((modules) => {
@@ -65,7 +65,7 @@ If you are using "garfish" micro frontend.
 // Child app
 import {
   preload,
-  setExternal,
+  setModuleExternal,
 } from '@garfish/remote-module';
 
 export const provider = () => {

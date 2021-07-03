@@ -19,6 +19,7 @@ try {
 
 export const fetchLoading = Object.create(null);
 export const cacheModules = Object.create(null);
+export const alias: Record<string, string> = Object.create(null);
 export const storedResources: Array<ModuleManager> = [];
 export const externals: Record<PropertyKey, any> = garfishGlobalEnv
   ? { ...garfishGlobalEnv.externals }
