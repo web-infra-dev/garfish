@@ -142,9 +142,9 @@ You can simplify the long url with the `setModuleAlias` method.
 ```js
 import { loadModule, setModuleAlias } from '@garfish/remote-module';
 
-setModuleAlias('a', 'http://localhost:3000/remoteModule');
+setModuleAlias('utils', 'http://localhost:3000/remoteModule');
 
-loadModule('@RemoteModule:a').then((modules) => {
-  console.log(modules);
+loadModule('@RemoteModule:utils').then((utils) => {
+  console.log(utils);
 });
 ```

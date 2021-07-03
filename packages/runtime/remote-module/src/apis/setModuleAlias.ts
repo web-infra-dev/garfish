@@ -1,8 +1,8 @@
 import { warn, assert, hasOwn, isAbsolute } from '@garfish/utils';
 import { alias } from '../common';
 
-// setAlias('a', 'https://xx.js');
-// loadModule('@RemoteModule:a').then((module) => {});
+// setAlias('utils', 'https://xx.js');
+// loadModule('@RemoteModule:utils').then((module) => {});
 const MARKER = '@RemoteModule:';
 
 export function setModuleAlias(name: string, url: string) {
