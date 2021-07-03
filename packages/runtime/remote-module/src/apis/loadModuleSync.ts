@@ -11,7 +11,7 @@ import {
   getModuleCode,
 } from '../common';
 import { Actuator } from '../actuator';
-import { filterAlias } from './setModuleAlias';
+import { processAlias, getValueInObject } from './setModuleAlias';
 
 // If we want to have perfect synchronization syntax to load remote modules,
 // the source code of the child application must be analyzed so that it can be loaded on demand.
@@ -25,10 +25,9 @@ export function loadModuleSync(
   options: ModuleInfo | string,
 ): Record<string, any> {
   const info = purifyOptions(options);
-  // eslint-disable-next-line
-  let { url, env, cache, version, error, adapter } = info;
+  const { env, cache, version, url: originalUrl, error, adapter } = info;
+  const [url, segments] = processAlias(originalUrl);
 
-  url = filterAlias(url);
   assert(url, 'Missing url for loading remote module');
   assert(
     isAbsolute(url),
@@ -54,13 +53,13 @@ export function loadModuleSync(
       if (typeof adapter === 'function') {
         exports = adapter(exports);
       }
-      result = exports;
-      if (isPromise(result)) {
+      if (isPromise(exports)) {
         GarfishError(
           `The current module return a promise, you should switch to asynchronous loading. "${url}"`,
         );
       }
-      cacheModules[urlWithVersion] = result;
+      result = getValueInObject(exports, segments);
+      cacheModules[urlWithVersion] = exports;
     } catch (err) {
       if (typeof error === 'function') {
         result = error(err);

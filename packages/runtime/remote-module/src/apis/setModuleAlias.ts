@@ -1,4 +1,4 @@
-import { warn, assert, hasOwn, isAbsolute } from '@garfish/utils';
+import { warn, assert, hasOwn, isObject, isAbsolute } from '@garfish/utils';
 import { alias } from '../common';
 
 // setAlias('utils', 'https://xx.js');
@@ -18,16 +18,37 @@ export function setModuleAlias(name: string, url: string) {
   alias[`${MARKER}${name}`] = url;
 }
 
-export function filterAlias(url: string) {
+type AliasResult = [string, Array<string> | null];
+export function processAlias(url: string): AliasResult {
+  // If url is an alias
   if (url && url.startsWith(MARKER)) {
-    // If url is an alias
-    const len = MARKER.length;
-    assert(url.length !== len, `Alias "${url}" cannot be empty.`);
-
-    const name = url.slice(len);
+    const segments = url.slice(MARKER.length).split('.');
+    const name = segments[0];
     const realUrl = alias[name];
     assert(realUrl, `Alias "${name}" is not defined.`);
-    return realUrl;
+    return [realUrl, segments];
   }
-  return url;
+  return [url, null];
+}
+
+export function getValueInObject(
+  obj: Record<string, any>,
+  segments?: Array<string>,
+) {
+  if (Array.isArray(segments)) {
+    const l = segments.length;
+    if (l > 1) {
+      for (let i = 1; i < l; i++) {
+        const p = segments[i];
+        assert(
+          isObject(obj),
+          `Remote module "${segments
+            .slice(0, i)
+            .join('.')}" is ${obj}, cannot get "${p}" attribute from it.`,
+        );
+        obj = obj[p];
+      }
+    }
+  }
+  return obj;
 }

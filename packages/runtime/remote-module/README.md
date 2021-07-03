@@ -147,4 +147,8 @@ setModuleAlias('utils', 'http://localhost:3000/remoteModule');
 loadModule('@RemoteModule:utils').then((utils) => {
   console.log(utils);
 });
+
+loadModule('@RemoteModule:utils.isObject').then((isObject) => {
+  console.log(isObject);
+});
 ```

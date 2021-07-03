@@ -7,16 +7,15 @@ import {
   purifyOptions,
 } from '../common';
 import { Actuator } from '../actuator';
-import { filterAlias } from './setModuleAlias';
+import { processAlias, getValueInObject } from './setModuleAlias';
 
 export function loadModule(
   options: ModuleInfo | string,
 ): Promise<Record<string, any> | null> {
   const info = purifyOptions(options);
-  // eslint-disable-next-line
-  let { url, env, cache, version, error, adapter } = info;
+  const { env, cache, version, url: originalUrl, error, adapter } = info;
+  const [url, segments] = processAlias(originalUrl);
 
-  url = filterAlias(url);
   assert(url, 'Missing url for loading remote module');
   assert(
     isAbsolute(url),
@@ -44,8 +43,8 @@ export function loadModule(
         if (typeof adapter === 'function') {
           exports = adapter(exports);
         }
-        result = exports;
-        cacheModules[urlWithVersion] = result;
+        result = getValueInObject(exports, segments);
+        cacheModules[urlWithVersion] = exports;
       }
     } catch (err) {
       if (typeof error === 'function') {
