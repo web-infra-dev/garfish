@@ -189,11 +189,15 @@ export class Garfish implements interfaces.Garfish {
       // Deep clone app options
       const tempInfo = appInfo;
       appInfo = deepMerge(tempInfo, options);
+      appInfo.props = hasOwn(tempInfo, 'props')
+        ? tempInfo.props
+        : this.options.props;
     } else if (typeof options === 'string') {
       // `Garfish.loadApp('appName', 'https://xx.html');`
       appInfo = {
         name: appName,
         entry: options,
+        props: this.options.props,
         domGetter: () => document.createElement('div'),
       };
     }
