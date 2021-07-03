@@ -3,20 +3,20 @@ import { PluginManager } from './pluginSystem';
 import { request, copyResult, mergeConfig } from './utils';
 import { FileTypes, cachedDataSet, AppCacheContainer } from './appCache';
 import { StyleManager } from './managers/style';
+import { ModuleManager } from './managers/module';
 import { TemplateManager } from './managers/template';
-import { ComponentManager } from './managers/component';
 import { JavaScriptManager } from './managers/javascript';
 
 // Export types and manager constructor
 export * from './managers/style';
+export * from './managers/module';
 export * from './managers/template';
-export * from './managers/component';
 export * from './managers/javascript';
 
 export type Manager =
   | StyleManager
+  | ModuleManager
   | TemplateManager
-  | ComponentManager
   | JavaScriptManager;
 
 export interface LoaderOptions {
@@ -83,15 +83,15 @@ export class Loader {
     }
   }
 
-  loadComponent(url: string) {
-    return this.load<ComponentManager>('components', url, true);
+  loadModule(url: string) {
+    return this.load<ModuleManager>('modules', url, true);
   }
 
   // Unable to know the final data type, so through "generics"
   load<T extends Manager>(
     scope: string,
     url: string,
-    isComponent = false,
+    isModule = false,
   ): Promise<LoadedPluginArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
 
@@ -133,9 +133,9 @@ export class Loader {
       .then(async ({ code, mimeType, result }) => {
         let managerCtor, fileType: FileTypes;
 
-        if (isComponent) {
-          fileType = FileTypes.component;
-          managerCtor = ComponentManager;
+        if (isModule) {
+          fileType = FileTypes.module;
+          managerCtor = ModuleManager;
         } else if (isHtml(mimeType) || /\.html/.test(result.url)) {
           fileType = FileTypes.template;
           managerCtor = TemplateManager;

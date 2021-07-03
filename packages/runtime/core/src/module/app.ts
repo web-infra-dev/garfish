@@ -92,7 +92,7 @@ export class App {
       currentApp: this,
       loader: context.loader,
       externals: context.externals,
-      remoteComponentsCode: resources.components,
+      remoteModulesCode: resources.modules,
     };
     this.cjsModules = {
       exports: {},

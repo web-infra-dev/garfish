@@ -114,11 +114,11 @@ export const fetchStaticResources = (
     entryManager
       .findAllMetaNodes()
       .map((node) => {
-        if (!entryManager.DOMApis.isRemoteComponent(node)) return;
+        if (!entryManager.DOMApis.isRemoteModule(node)) return;
         const async = entryManager.findAttributeValue(node, 'async');
         if (!isAsync(async)) {
           const src = entryManager.findAttributeValue(node, 'src');
-          return loader.loadComponent(src);
+          return loader.loadModule(src);
         }
       })
       .filter(Boolean),

@@ -213,7 +213,7 @@ export class Garfish implements interfaces.Garfish {
       } else {
         try {
           let isHtmlMode, fakeEntryManager;
-          const resources = { js: [], link: [], components: [] }; // Default resources
+          const resources = { js: [], link: [], modules: [] }; // Default resources
           const { resourceManager: entryManager } = await this.loader.load(
             appName,
             transformUrl(location.href, appInfo.entry),
@@ -222,14 +222,14 @@ export class Garfish implements interfaces.Garfish {
           // Html entry
           if (entryManager instanceof TemplateManager) {
             isHtmlMode = true;
-            const [js, link, components] = await fetchStaticResources(
+            const [js, link, modules] = await fetchStaticResources(
               appName,
               this.loader,
               entryManager,
             );
             resources.js = js;
             resources.link = link;
-            resources.components = components;
+            resources.modules = modules;
           } else if (entryManager instanceof JavaScriptManager) {
             // Js entry
             isHtmlMode = false;

@@ -1,36 +1,36 @@
 import { warn } from '@garfish/utils';
 import { interfaces } from '@garfish/core';
-import { cacheComponents } from './common';
+import { cacheModules } from './common';
 import { preload } from './apis/preload';
+import { loadModule } from './apis/loadModule';
 import { setExternal } from './apis/setExternal';
-import { loadComponent } from './apis/loadComponent';
-import { loadComponentSync } from './apis/loadComponentSync';
+import { loadModuleSync } from './apis/loadModuleSync';
 
 declare module '@garfish/core' {
   export interface Garfish {
     preload: typeof preload;
-    loadComponent: typeof loadComponent;
-    loadComponentSync: typeof loadComponentSync;
-    cacheComponents: typeof cacheComponents;
+    loadModule: typeof loadModule;
+    loadModuleSync: typeof loadModuleSync;
+    cacheModules: typeof cacheModules;
   }
 
   export namespace interfaces {
     export interface Garfish {
       preload: typeof preload;
-      loadComponent: typeof loadComponent;
-      loadComponentSync: typeof loadComponentSync;
-      cacheComponents: typeof cacheComponents;
+      loadModule: typeof loadModule;
+      loadModuleSync: typeof loadModuleSync;
+      cacheModules: typeof cacheModules;
     }
   }
 }
 
-export function remoteComponentPlugin() {
+export function GarfishRemoteModulePlugin() {
   return (Garfish: interfaces.Garfish): interfaces.Plugin => {
     const warning = () => {
       __DEV__ &&
         warn(
           'If there is no need for performance optimization, ' +
-            'you should not use the global component loading method.',
+            'you should not use the `Garfish.loadModule()`.',
         );
     };
 
@@ -39,20 +39,20 @@ export function remoteComponentPlugin() {
       return preload(urls);
     };
 
-    Garfish.loadComponent = function (options) {
+    Garfish.loadModule = function (options) {
       warning();
-      return loadComponent(options);
+      return loadModule(options);
     };
 
-    Garfish.loadComponentSync = function (options) {
+    Garfish.loadModuleSync = function (options) {
       warning();
-      return loadComponentSync(options);
+      return loadModuleSync(options);
     };
 
-    Garfish.cacheComponents = cacheComponents;
+    Garfish.cacheModules = cacheModules;
 
     return {
-      name: 'micro-component',
+      name: 'remote-module',
       version: __VERSION__,
 
       bootstrap() {

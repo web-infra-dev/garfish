@@ -3,8 +3,8 @@ import { SyncHook, AsyncSeriesBailHook } from '@garfish/hooks';
 import {
   Loader,
   StyleManager,
+  ModuleManager,
   TemplateManager,
-  ComponentManager,
   JavaScriptManager,
 } from '@garfish/loader';
 import { AppInterface } from '../module/app';
@@ -115,8 +115,8 @@ export namespace interfaces {
   }
 
   export interface StyleManagerInterface extends StyleManager {}
+  export interface ModuleManagerInterface extends ModuleManager {}
   export interface TemplateManagerInterface extends TemplateManager {}
-  export interface ComponentManagerInterface extends ComponentManager {}
   export interface JavaScriptManagerInterface extends JavaScriptManager {}
 
   export type Options = Config & HooksLifecycle;
@@ -129,7 +129,7 @@ export namespace interfaces {
   export interface ResourceModules {
     js: Array<JavaScriptManager>;
     link: Array<StyleManagerInterface>;
-    components: Array<ComponentManager>;
+    modules: Array<ModuleManager>;
   }
 
   export type BootStrapArgs = [Garfish, Options];

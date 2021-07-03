@@ -1,7 +1,7 @@
 import { assert, isAbsolute } from '@garfish/utils';
 import { loader, storedResources } from '../common';
 
-// Preload the static resources of the component, so that the component can be loaded synchronously
+// Preload the static resources of the module, so that the module can be loaded synchronously
 export function preload(urls: string | Array<string>) {
   if (!Array.isArray(urls)) urls = [urls];
 
@@ -9,9 +9,9 @@ export function preload(urls: string | Array<string>) {
     urls.map((url) => {
       assert(
         isAbsolute(url || ''),
-        `The loading of the remote component must be an absolute path. "${url}"`,
+        `The loading of the remote module must be an absolute path. "${url}"`,
       );
-      return loader.loadComponent(url).then((data) => {
+      return loader.loadModule(url).then((data) => {
         storedResources.push(data.resourceManager);
       });
     }),

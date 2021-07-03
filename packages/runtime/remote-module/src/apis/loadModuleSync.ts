@@ -4,45 +4,45 @@ import {
   isAbsolute,
   error as GarfishError,
 } from '@garfish/utils';
-import { Actuator } from '../actuator';
 import {
+  ModuleInfo,
+  cacheModules,
   purifyOptions,
-  ComponentInfo,
-  cacheComponents,
-  getComponentCode,
+  getModuleCode,
 } from '../common';
+import { Actuator } from '../actuator';
 
-// If we want to have perfect synchronization syntax to load remote components,
+// If we want to have perfect synchronization syntax to load remote modules,
 // the source code of the child application must be analyzed so that it can be loaded on demand.
 // In the future, we need to wait until garfish supports esModule,
-// To consider loading remote components on demand when using synchronous syntax.
+// To consider loading remote modules on demand when using synchronous syntax.
 // E.g.
 // 1. esModule - Static analysis, recursively build dependency tree.
 // 2. webpack - Analyze the source code ast and build into different package versions.
 
-export function loadComponentSync(
-  options: ComponentInfo | string,
+export function loadModuleSync(
+  options: ModuleInfo | string,
 ): Record<string, any> {
   const info = purifyOptions(options);
   const { url, env, cache, version, error, adapter } = info;
 
-  assert(url, 'Missing url for loading remote components');
+  assert(url, 'Missing url for loading remote module');
   assert(
     isAbsolute(url),
-    `The loading of the remote component must be an absolute path. "${url}"`,
+    `The loading of the remote module must be an absolute path. "${url}"`,
   );
 
   let result = null;
   const urlWithVersion = `${version || 'latest'}@${url}`;
-  const component = cacheComponents[urlWithVersion];
+  const _module = cacheModules[urlWithVersion];
 
-  if (cache && component) {
-    result = component;
+  if (cache && _module) {
+    result = _module;
   } else {
-    const manager = getComponentCode(url);
+    const manager = getModuleCode(url);
     assert(
       manager,
-      `Synchronously load components must load resources in advance. "${url}"`,
+      `Synchronously load module must load resources in advance. "${url}"`,
     );
 
     try {
@@ -54,10 +54,10 @@ export function loadComponentSync(
       result = exports;
       if (isPromise(result)) {
         GarfishError(
-          `The current component return a promise, you should switch to asynchronous loading. "${url}"`,
+          `The current module return a promise, you should switch to asynchronous loading. "${url}"`,
         );
       }
-      cacheComponents[urlWithVersion] = result;
+      cacheModules[urlWithVersion] = result;
     } catch (err) {
       if (typeof error === 'function') {
         result = error(err);

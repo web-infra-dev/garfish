@@ -10,9 +10,7 @@ export function setExternal(
     for (const key in nameOrExtObj) {
       if (externals[key]) {
         __DEV__ &&
-          warn(
-            `The "${key}" will be overwritten in remote components external.`,
-          );
+          warn(`The "${key}" will be overwritten in remote module external.`);
       }
       externals[key] = nameOrExtObj[key];
     }

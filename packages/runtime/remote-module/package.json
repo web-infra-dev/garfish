@@ -1,16 +1,16 @@
 {
-  "name": "@garfish/remote-component",
+  "name": "@garfish/remote-module",
   "version": "0.0.30",
-  "description": "remote-component module.",
+  "description": "remote-module module.",
   "keywords": [
     "garfish",
-    "remote-component"
+    "remote-module"
   ],
   "author": "chentao.arthur <chentao.arthur@bytedance.com>",
   "homepage": "https://github.com/bytedance/garfish",
   "license": "Apache-2.0",
   "main": "index.js",
-  "module": "dist/remote-component.esm-bundler.js",
+  "module": "dist/remote-module.esm-bundler.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
@@ -19,7 +19,7 @@
     "url": "https://github.com/bytedance/garfish/issues"
   },
   "scripts": {},
-  "types": "dist/remote-component.d.ts",
+  "types": "dist/remote-module.d.ts",
   "buildOptions": {
     "name": "MicroComponent",
     "devTemplate": "module",

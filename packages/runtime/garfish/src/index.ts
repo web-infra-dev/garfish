@@ -2,7 +2,7 @@ import { Garfish } from '@garfish/core';
 import GarfishRouter from '@garfish/router';
 import GarfishBrowserVm from '@garfish/browser-vm';
 import GarfishBrowserSnapshot from '@garfish/browser-snapshot';
-import { remoteComponentPlugin } from '@garfish/remote-component';
+import { GarfishRemoteModulePlugin } from '@garfish/remote-module';
 import {
   def,
   warn,
@@ -56,7 +56,7 @@ export function createContext(): Garfish {
       GarfishRouter(),
       GarfishBrowserVm(),
       GarfishBrowserSnapshot(),
-      remoteComponentPlugin(),
+      GarfishRemoteModulePlugin(),
     ],
   });
 

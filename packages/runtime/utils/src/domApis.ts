@@ -91,13 +91,13 @@ export const DOMApis = {
     return Boolean(hasRelAttr && hasAsAttr);
   },
 
-  isRemoteComponent(node: Node) {
+  isRemoteModule(node: Node) {
     if (!this.isNode(node) || node.tagName !== 'meta') return false;
     let hasNameAttr, hasSrcAttr;
     for (const { key, value } of node.attributes) {
       if (key === 'name') {
         hasNameAttr = true;
-        if (value !== 'garfish-remote-component') {
+        if (value !== 'garfish-remote-module') {
           return false;
         }
       } else if (key === 'src') {

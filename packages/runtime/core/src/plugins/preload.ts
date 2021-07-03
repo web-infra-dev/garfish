@@ -1,7 +1,7 @@
 import {
   warn,
-  transformUrl,
   isAbsolute,
+  transformUrl,
   callTestCallback,
 } from '@garfish/utils';
 import { Loader, Manager, TemplateManager } from '@garfish/loader';
@@ -64,7 +64,7 @@ function safeLoad(
   loader: Loader,
   appName: string,
   url: string,
-  isComponent: boolean,
+  isModule: boolean,
   callback?: (m: Manager) => any,
 ) {
   requestQueue.add((next) => {
@@ -84,8 +84,8 @@ function safeLoad(
     // edge
     requestIdleCallback(() => {
       try {
-        if (isComponent) {
-          loader.loadComponent(url).then(success, throwWarn);
+        if (isModule) {
+          loader.loadModule(url).then(success, throwWarn);
         } else {
           loader.load(appName, url).then(success, throwWarn);
         }
@@ -126,7 +126,7 @@ export function loadAppResource(loader: Loader, info: interfaces.AppInfo) {
         }
         if (metaNodes) {
           metaNodes.forEach((node) => {
-            if (manager.DOMApis.isRemoteComponent(node)) {
+            if (manager.DOMApis.isRemoteModule(node)) {
               const src = manager.findAttributeValue(node, 'src');
               if (isAbsolute(src)) {
                 safeLoad(loader, info.name, src, true);

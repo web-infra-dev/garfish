@@ -1,7 +1,7 @@
 import { deepMerge } from '@garfish/utils';
-import { Loader, ComponentManager } from '@garfish/loader';
+import { Loader, ModuleManager } from '@garfish/loader';
 
-export interface ComponentInfo {
+export interface ModuleInfo {
   url: string;
   cache?: boolean;
   version?: string;
@@ -18,8 +18,8 @@ try {
 } catch {}
 
 export const fetchLoading = Object.create(null);
-export const cacheComponents = Object.create(null);
-export const storedResources: Array<ComponentManager> = [];
+export const cacheModules = Object.create(null);
+export const storedResources: Array<ModuleManager> = [];
 export const externals: Record<PropertyKey, any> = garfishGlobalEnv
   ? { ...garfishGlobalEnv.externals }
   : {};
@@ -35,22 +35,22 @@ export const loader: Loader = (() => {
   return new Loader();
 })();
 
-export const purifyOptions = (options: ComponentInfo | string) => {
+export const purifyOptions = (options: ModuleInfo | string) => {
   if (typeof options === 'string') options = { url: options };
   // Default use cache
-  return deepMerge({ cache: true }, options || {}) as ComponentInfo;
+  return deepMerge({ cache: true }, options || {}) as ModuleInfo;
 };
 
 export const getCurrentApp = () => {
   return garfishGlobalEnv && garfishGlobalEnv.currentApp;
 };
 
-export const getComponentCode = (url: string) => {
+export const getModuleCode = (url: string) => {
   if (garfishGlobalEnv) {
-    const { remoteComponentsCode } = garfishGlobalEnv;
-    if (Array.isArray(remoteComponentsCode)) {
+    const { remoteModulesCode } = garfishGlobalEnv;
+    if (Array.isArray(remoteModulesCode)) {
       return storedResources
-        .concat(remoteComponentsCode)
+        .concat(remoteModulesCode)
         .find((manager) => manager.url === url);
     }
   }
