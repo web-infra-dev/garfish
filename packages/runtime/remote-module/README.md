@@ -24,6 +24,7 @@ import {
   esModule,
   loadModule,
   loadModuleSync,
+  setModuleAlias,
   setModuleExternal,
   cacheModules,
 } from '@garfish/remote-module';
@@ -38,10 +39,16 @@ const RemoteCm = React.lazy(() =>
   }),
 );
 
+// Or
+setModuleAlias('Component', 'https://xx.js');
+const RemoteCm = React.lazy(() => {
+  return loadModule('@RemoteModule:Component.One').then(esModule);
+});
+
 // Use `React.Suspense` to use components
 <React.Suspense fallback={<div>loading</div>}>
   <div>
-    <RemoteCm text="good!" />
+    <RemoteCm text="cool!" />
   </div>
 </React.Suspense>;
 ```
@@ -87,7 +94,7 @@ export const provider = () => {
   render({ dom }) {
     // When the resources of the remote module are preloaded,
     // You can use synchronous syntax to load remote modules in the current application.
-    // You can combine "webpack5 module federation" or other "module markets"
+    // You can combine "webpack5 module federation" or other "component markets"
     preload(menu.remoteModules).then(() => {
       ReactDom.render(<App/>, dom)
     })

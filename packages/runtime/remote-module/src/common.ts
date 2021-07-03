@@ -20,7 +20,7 @@ try {
 export const fetchLoading = Object.create(null);
 export const cacheModules = Object.create(null);
 export const alias: Record<string, string> = Object.create(null);
-export const storedResources: Array<ModuleManager> = [];
+export const resourcesStore: Array<ModuleManager> = [];
 export const externals: Record<PropertyKey, any> = garfishGlobalEnv
   ? { ...garfishGlobalEnv.externals }
   : {};
@@ -50,11 +50,11 @@ export const getModuleCode = (url: string) => {
   if (garfishGlobalEnv) {
     const { remoteModulesCode } = garfishGlobalEnv;
     if (Array.isArray(remoteModulesCode)) {
-      return storedResources
+      return resourcesStore
         .concat(remoteModulesCode)
         .find((manager) => manager.url === url);
     }
   }
   // It should be noted that if there is a redirect, `manager.url` is the url after the redirect
-  return storedResources.find((manager) => manager.url === url);
+  return resourcesStore.find((manager) => manager.url === url);
 };
