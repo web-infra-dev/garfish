@@ -43,7 +43,7 @@ export function markAndDerived() {
   };
 }
 
-// Fetch `script`, `link` and `components meta` elements
+// Fetch `script`, `link` and `module meta` elements
 export const fetchStaticResources = (
   appName: string,
   loader: Loader,
@@ -109,7 +109,7 @@ export const fetchStaticResources = (
       .filter(Boolean),
   );
 
-  // Get all remote components
+  // Get all remote modules
   const metaNodes = Promise.all(
     entryManager
       .findAllMetaNodes()

@@ -132,7 +132,7 @@ export function loadAppResource(loader: Loader, info: interfaces.AppInfo) {
                 safeLoad(loader, info.name, src, true);
               } else {
                 warn(
-                  `The loading of the remote component must be an absolute path. "${src}"`,
+                  `The loading of the remote module must be an absolute path. "${src}"`,
                 );
               }
             }
