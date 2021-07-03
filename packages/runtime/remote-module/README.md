@@ -1,11 +1,15 @@
 # `@garfish/remote-module`
 
+`@garfish/remote-module` can be used alone or combined with Garfish.
+
 ## Usage
 
-```jsx
-// Modules
-exports.One = function () {
-  return React.createElement('div');
+```js
+// module
+const React = require('React');
+
+exports.One = function (props) {
+  return React.createElement('div', null, [props.text]);
 };
 
 exports.Two = function () {
@@ -13,7 +17,7 @@ exports.Two = function () {
 };
 ```
 
-```js
+```jsx
 import React from 'React';
 import {
   preload,
@@ -27,13 +31,24 @@ import {
 // Environment variables required by remoteModules
 setModuleExternal({ React });
 
-React.lazy(() =>
+const RemoteCm = React.lazy(() =>
   loadModule('https://xx.js').then((modules) => {
     console.log(modules); // One, Two
     return esModule(modules.One);
   }),
 );
 
+// Use `React.Suspense` to use components
+<React.Suspense fallback={<div>loading</div>}>
+  <div>
+    <RemoteCm text="good!" />
+  </div>
+</React.Suspense>;
+```
+
+Other usage
+
+```js
 // Or
 loadModule({
   cache: true, // This will cache the module instance
@@ -57,7 +72,7 @@ preload(['https://1.js', 'https://2.js']).then(() => {
 console.log(cacheModules);
 ```
 
-## Combined with garfish
+## Combined with Garfish
 
 If you are using "garfish" micro frontend.
 
@@ -106,11 +121,11 @@ You can also configure the information of remote modules in the template, so tha
 </html>
 ```
 
-```tsx
+```jsx
 import { loadModuleSync } from '@garfish/remote-module';
 
 function App() {
-  const { OneModule } = loadModuleSync('https://xx.js');
+  const { OneModule } = loadModuleSync('http://localhost:3000/remoteModule1');
 
   return (
     <div>
@@ -118,4 +133,18 @@ function App() {
     </div>
   );
 }
+```
+
+# Alias
+
+You can simplify the long url with the `setModuleAlias` method.
+
+```js
+import { loadModule, setModuleAlias } from '@garfish/remote-module';
+
+setModuleAlias('a', 'http://localhost:3000/remoteModule');
+
+loadModule('@RemoteModule:a').then((modules) => {
+  console.log(modules);
+});
 ```
