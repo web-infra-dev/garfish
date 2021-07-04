@@ -115,6 +115,7 @@ You can also configure the information of remote modules in the template, so tha
     <!-- Preload Module resources, but will not execute code -->
     <meta
       name="garfish-remote-module"
+      alias="Component"
       src="http://localhost:3000/remoteModule1.js"
     />
     <!-- With the async attribute will not block page rendering -->
@@ -132,6 +133,7 @@ You can also configure the information of remote modules in the template, so tha
 import { loadModuleSync } from '@garfish/remote-module';
 
 function App() {
+  // const OneModule = loadModuleSync('@alias:Component.OneModule');
   const { OneModule } = loadModuleSync('http://localhost:3000/remoteModule1');
 
   return (
