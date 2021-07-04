@@ -14,6 +14,7 @@ export interface ModuleInfo {
   adapter?: (cjsModule: Record<string, any>) => Record<string, any>;
 }
 
+export let currentApp = null;
 export let resourcesStore: Array<ModuleManager> = [];
 export const cacheModules = Object.create(null);
 export const fetchLoading = Object.create(null);
@@ -33,7 +34,10 @@ try {
 
   // Inherit the configuration from garfish
   if (isObject(garfishGlobalEnv)) {
-    const { externals, remoteModulesCode } = garfishGlobalEnv;
+    const { externals, currentApp: app, remoteModulesCode } = garfishGlobalEnv;
+    if (app) {
+      currentApp = app;
+    }
     if (isObject(externals)) {
       moduleConfig.env = { ...externals };
     }
@@ -68,10 +72,6 @@ export const purifyOptions = (options: ModuleInfo | string) => {
     options = { url: options };
   }
   return deepMerge(moduleConfig, options) as ModuleInfo;
-};
-
-export const getCurrentApp = () => {
-  return isObject(garfishGlobalEnv) && garfishGlobalEnv.currentApp;
 };
 
 export const getModuleCode = (url: string) => {

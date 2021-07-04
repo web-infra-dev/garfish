@@ -1,6 +1,6 @@
 import { evalWithEnv } from '@garfish/utils';
 import { ModuleManager } from '@garfish/loader';
-import { moduleConfig, getCurrentApp } from './common';
+import { currentApp, moduleConfig } from './common';
 
 export class Actuator {
   private manager: ModuleManager;
@@ -17,11 +17,10 @@ export class Actuator {
   }
 
   execScript() {
-    const app = getCurrentApp();
     const { url, moduleCode } = this.manager;
-    if (app) {
+    if (currentApp) {
       // Avoid conflict with Garfish cjs
-      app.execScript(moduleCode, this.env, url, { noEntry: true });
+      currentApp.execScript(moduleCode, this.env, url, { noEntry: true });
     } else {
       const sourceUrl = `\n${url ? `//# sourceURL=${url}\n` : ''}`;
       evalWithEnv(`;${moduleCode}\n${sourceUrl}`, this.env);
