@@ -24,13 +24,14 @@ import {
   esModule,
   loadModule,
   loadModuleSync,
-  setModuleAlias,
-  setModuleExternal,
+  setModuleConfig,
   cacheModules,
 } from '@garfish/remote-module';
 
-// Environment variables required by remoteModules
-setModuleExternal({ React });
+setModuleConfig({
+  env: { React }, // Environment variables required by remoteModules
+  alias: { Component: 'https://xx.js' },
+});
 
 const RemoteCm = React.lazy(() =>
   loadModule('https://xx.js').then((modules) => {
@@ -40,9 +41,8 @@ const RemoteCm = React.lazy(() =>
 );
 
 // Or
-setModuleAlias('Component', 'https://xx.js');
 const RemoteCm = React.lazy(() => {
-  return loadModule('@alias:Component.One').then(esModule);
+  return loadModule('@Component.One').then(esModule);
 });
 
 // Use `React.Suspense` to use components
@@ -85,10 +85,7 @@ If you are using "garfish" micro frontend.
 
 ```jsx
 // Child app
-import {
-  preload,
-  setModuleExternal,
-} from '@garfish/remote-module';
+import { preload } from '@garfish/remote-module';
 
 export const provider = () => {
   render({ dom }) {
@@ -133,7 +130,7 @@ You can also configure the information of remote modules in the template, so tha
 import { loadModuleSync } from '@garfish/remote-module';
 
 function App() {
-  // const OneModule = loadModuleSync('@alias:Component.OneModule');
+  // const OneModule = loadModuleSync('@Component.OneModule');
   const { OneModule } = loadModuleSync('http://localhost:3000/remoteModule1');
 
   return (
@@ -146,18 +143,20 @@ function App() {
 
 # Alias
 
-You can simplify the long url with the `setModuleAlias` method.
+You can simplify the long url with the `alias` config.
 
 ```js
-import { loadModule, setModuleAlias } from '@garfish/remote-module';
+import { loadModule, setModuleConfig } from '@garfish/remote-module';
 
-setModuleAlias('utils', 'http://localhost:3000/remoteModule');
+setModuleConfig({
+  alias: { utils: 'http://localhost:3000/remoteModule' },
+});
 
-loadModule('@alias:utils').then((utils) => {
+loadModule('@utils').then((utils) => {
   console.log(utils);
 });
 
-loadModule('@alias:utils.isObject').then((isObject) => {
+loadModule('@utils.isObject').then((isObject) => {
   console.log(isObject);
 });
 ```

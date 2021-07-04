@@ -2,19 +2,19 @@ import { warn } from '@garfish/utils';
 import { interfaces } from '@garfish/core';
 import { cacheModules } from './common';
 import { loadModule } from './apis/loadModule';
-import { setModuleInfo } from './apis/setModuleInfo';
+import { setModuleConfig } from './apis/setModuleConfig';
 
 declare module '@garfish/core' {
   export interface Garfish {
     loadModule: typeof loadModule;
-    setModuleInfo: typeof setModuleInfo;
+    setModuleConfig: typeof setModuleConfig;
     cacheModules: typeof cacheModules;
   }
 
   export namespace interfaces {
     export interface Garfish {
       loadModule: typeof loadModule;
-      setModuleInfo: typeof setModuleInfo;
+      setModuleConfig: typeof setModuleConfig;
       cacheModules: typeof cacheModules;
     }
   }
@@ -33,15 +33,15 @@ export function GarfishRemoteModulePlugin() {
       return loadModule(...args);
     };
 
-    Garfish.setModuleInfo = function (...args) {
-      return setModuleInfo(...args);
+    Garfish.setModuleConfig = function (...args) {
+      return setModuleConfig(...args);
     };
 
     return {
       name: 'remote-module',
       version: __VERSION__,
       bootstrap() {
-        setModuleInfo({
+        setModuleConfig({
           env: Garfish.externals,
         });
       },

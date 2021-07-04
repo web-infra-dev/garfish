@@ -23,7 +23,7 @@ const setAlias = (obj: ModuleConfig['alias']) => {
   }
 };
 
-export function setModuleInfo(obj: Partial<ModuleConfig>) {
+export function setModuleConfig(obj: Partial<ModuleConfig>) {
   assert(isPlainObject(obj), 'Module configuration must be an object.');
   for (const key in obj) {
     if (hasOwn(moduleConfig, key)) {
