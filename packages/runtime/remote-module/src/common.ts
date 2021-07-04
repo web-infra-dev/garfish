@@ -1,4 +1,4 @@
-import { deepMerge } from '@garfish/utils';
+import { deepMerge, isObject } from '@garfish/utils';
 import { Loader, ModuleManager } from '@garfish/loader';
 
 export interface ModuleInfo {
@@ -10,20 +10,34 @@ export interface ModuleInfo {
   adapter?: (cjsModule: Record<string, any>) => Record<string, any>;
 }
 
+export let externals = Object.create(null);
+export let resourcesStore: Array<ModuleManager> = [];
+export const fetchLoading = Object.create(null);
+export const cacheModules = Object.create(null);
+export const alias: Record<string, string> = Object.create(null);
+
 // If garfish has pre-prepared data
 let garfishGlobalEnv;
 try {
   // @ts-ignore
   garfishGlobalEnv = __GARFISH_GLOBAL_ENV__;
-} catch {}
 
-export const fetchLoading = Object.create(null);
-export const cacheModules = Object.create(null);
-export const alias: Record<string, string> = Object.create(null);
-export const resourcesStore: Array<ModuleManager> = [];
-export const externals: Record<PropertyKey, any> = garfishGlobalEnv
-  ? { ...garfishGlobalEnv.externals }
-  : {};
+  // Inherit the configuration from garfish
+  if (isObject(garfishGlobalEnv)) {
+    const { remoteModulesCode, externals: GarfishExternals } = garfishGlobalEnv;
+    if (isObject(GarfishExternals)) {
+      externals = { ...GarfishExternals };
+    }
+    if (Array.isArray(remoteModulesCode)) {
+      resourcesStore = resourcesStore.concat(remoteModulesCode);
+      remoteModulesCode.forEach((manager) => {
+        if (manager.alias) {
+          alias[manager.alias] = manager.url;
+        }
+      });
+    }
+  }
+} catch {}
 
 export const loader: Loader = (() => {
   if (garfishGlobalEnv) {
@@ -47,14 +61,6 @@ export const getCurrentApp = () => {
 };
 
 export const getModuleCode = (url: string) => {
-  if (garfishGlobalEnv) {
-    const { remoteModulesCode } = garfishGlobalEnv;
-    if (Array.isArray(remoteModulesCode)) {
-      return resourcesStore
-        .concat(remoteModulesCode)
-        .find((manager) => manager.url === url);
-    }
-  }
   // It should be noted that if there is a redirect, `manager.url` is the url after the redirect
   return resourcesStore.find((manager) => manager.url === url);
 };

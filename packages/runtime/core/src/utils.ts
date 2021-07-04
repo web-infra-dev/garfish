@@ -116,9 +116,17 @@ export const fetchStaticResources = (
       .map((node) => {
         if (!entryManager.DOMApis.isRemoteModule(node)) return;
         const async = entryManager.findAttributeValue(node, 'async');
+        const alias = entryManager.findAttributeValue(node, 'alias');
         if (!isAsync(async)) {
           const src = entryManager.findAttributeValue(node, 'src');
-          return loader.loadModule(src).then((res) => res.resourceManager);
+          return loader
+            .loadModule(src)
+            .then(({ resourceManager: moduleManager }) => {
+              moduleManager.setAlias(alias);
+              return moduleManager;
+            });
+        } else if (alias) {
+          warn(`Asynchronous loading module, the alias "${alias}" is invalid.`);
         }
       })
       .filter(Boolean),

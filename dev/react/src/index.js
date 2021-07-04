@@ -2,16 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import {
-  preload,
-  setModuleAlias,
-  setModuleExternal,
-} from '@garfish/remote-module';
+import { preload, setModuleExternal } from '@garfish/remote-module';
 
 setModuleExternal({ React });
-setModuleAlias({
-  testModule: 'http://localhost:3000/remoteComponent.js',
-});
+// setModuleAlias({
+//   testModule: 'http://localhost:3000/remoteComponent.js',
+// });
 
 // console.log(
 //   window.HTMLIFrameElement._native ===

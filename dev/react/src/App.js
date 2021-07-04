@@ -28,9 +28,9 @@ function App() {
     window.a.b.c = 1;
   };
 
-  const RemoteComponent = loadModuleSync('@alias:testModule.One');
+  const RemoteComponent = loadModuleSync('@alias:Component.One');
   const RemoteComponentTwo = React.lazy(() =>
-    loadModule('@alias:testModule.Two').then(esModule),
+    loadModule('@alias:Component.Two').then(esModule),
   );
 
   return (
