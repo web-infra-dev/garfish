@@ -118,7 +118,7 @@ export function microTaskHtmlProxyDocument(proxyDocument) {
 
     if (setting) {
       setting = false;
-      // // Do not use micro tasks, Element will appear in the task placed in nextTick after node
+      // Do not use micro tasks, Element will appear in the task placed in nextTick after node
       nextTick(() => {
         setting = true;
         Object.defineProperty(html, 'parentNode', {

@@ -18,7 +18,7 @@ import { processAlias, getValueInObject } from './setModuleConfig';
 
 const throwWarn = (url: string) => {
   error(
-    `The current module return a promise, You should use "remoteModule.loadModule('${url}')".`,
+    `The current module return a promise, You should use "loadModule('${url}')".`,
   );
 };
 
@@ -61,7 +61,7 @@ export function loadModuleSync(
       cacheModules[urlWithVersion] = exports;
     } catch (err) {
       if (typeof error === 'function') {
-        result = error(err);
+        result = error(err, info);
       } else {
         throw err;
       }

@@ -10,7 +10,7 @@ export interface ModuleInfo {
   cache?: boolean;
   version?: string;
   env?: Record<string, any>;
-  error?: (err: Error) => any;
+  error?: (err: Error, info: ModuleInfo) => any;
   adapter?: (cjsModule: Record<string, any>) => Record<string, any>;
 }
 

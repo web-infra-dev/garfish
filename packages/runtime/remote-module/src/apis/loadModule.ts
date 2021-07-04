@@ -51,7 +51,7 @@ export function loadModule(
       }
     } catch (err) {
       if (typeof error === 'function') {
-        result = error(err);
+        result = error(err, info);
       } else {
         throw err;
       }
