@@ -71,7 +71,10 @@ export const normalAgent = () => {
     // Before the collection application sub routing, forward backward routing updates between child application
     window.addEventListener(
       'popstate',
-      function () {
+      function (event) {
+        // Stop trigger collection function, fire again match rendering
+        if (event && typeof event === 'object' && (event as any).garfish)
+          return;
         window.dispatchEvent(
           new CustomEvent(__GARFISH_BEFORE_ROUTER_EVENT__, {
             detail: {

@@ -10,8 +10,8 @@ function createPopStateEvent(state: any, originalMethodName: string) {
     evt = document.createEvent('PopStateEvent');
     (evt as any).initPopStateEvent('popstate', false, false, state);
   }
-  (evt as any).gar = true;
-  (evt as any).garTrigger = originalMethodName;
+  (evt as any).garfish = true;
+  (evt as any).garfishTrigger = originalMethodName;
   return evt;
 }
 
