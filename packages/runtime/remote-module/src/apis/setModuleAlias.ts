@@ -1,21 +1,29 @@
-import { warn, assert, hasOwn, isObject, isAbsolute } from '@garfish/utils';
+import { warn, assert, isObject, isAbsolute } from '@garfish/utils';
 import { alias } from '../common';
 
 // setAlias('utils', 'https://xx.js');
 // loadModule('@alias:utils').then((utils) => {});
 const MARKER = '@alias:';
 
-export function setModuleAlias(name: string, url: string) {
-  assert(name, 'Alias cannot be empty.');
-  assert(
-    isAbsolute(url),
-    `The loading of the remote module must be an absolute path. "${url}"`,
-  );
-
-  if (__DEV__ && hasOwn(alias, name)) {
-    warn(`${name} is defined repeatedly.`);
+export function setModuleAlias(
+  nameOrExtObj: string | Record<string, string>,
+  url?: string,
+) {
+  assert(nameOrExtObj, 'Invalid parameter.');
+  if (typeof nameOrExtObj === 'string') {
+    nameOrExtObj = { [nameOrExtObj]: url };
   }
-  alias[name] = url;
+  for (const key in nameOrExtObj) {
+    const value = nameOrExtObj[key];
+    assert(
+      isAbsolute(value),
+      `The loading of the remote module must be an absolute path. "${value}"`,
+    );
+    if (__DEV__) {
+      alias[key] && warn(`${key} is defined repeatedly.`);
+    }
+    alias[key] = value;
+  }
 }
 
 type AliasResult = [string, Array<string> | null];

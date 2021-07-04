@@ -140,8 +140,9 @@ export class Garfish implements interfaces.Garfish {
     assert(nameOrExtObj, 'Invalid parameter.');
     if (typeof nameOrExtObj === 'object') {
       for (const key in nameOrExtObj) {
-        if (this.externals[key]) {
-          __DEV__ && warn(`The "${key}" will be overwritten in external.`);
+        if (__DEV__) {
+          this.externals[key] &&
+            warn(`The "${key}" will be overwritten in external.`);
         }
         this.externals[key] = nameOrExtObj[key];
       }

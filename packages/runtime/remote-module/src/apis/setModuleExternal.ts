@@ -8,8 +8,8 @@ export function setModuleExternal(
   assert(nameOrExtObj, 'Invalid parameter.');
   if (typeof nameOrExtObj === 'object') {
     for (const key in nameOrExtObj) {
-      if (externals[key]) {
-        __DEV__ &&
+      if (__DEV__) {
+        externals[key] &&
           warn(`The "${key}" will be overwritten in remote module external.`);
       }
       externals[key] = nameOrExtObj[key];

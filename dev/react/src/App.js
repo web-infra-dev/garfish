@@ -10,8 +10,6 @@ import './App.css';
 import { Modal, Button } from 'antd';
 import 'antd/dist/antd.css';
 
-setModuleAlias('testModule', 'http://localhost:3000/remoteComponent.js');
-
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -31,10 +29,9 @@ function App() {
   };
 
   const RemoteComponent = loadModuleSync('@alias:testModule.One');
-
-  const RemoteComponentTwo = React.lazy(() => {
-    return loadModule('@alias:testModule').then((cms) => esModule(cms.Two));
-  });
+  const RemoteComponentTwo = React.lazy(() =>
+    loadModule('@alias:testModule.Two').then(esModule),
+  );
 
   return (
     <div className="App">
