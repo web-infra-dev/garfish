@@ -34,6 +34,8 @@ export interface Provider {
   render: ({ dom: HTMLElement, basename: string }) => void;
 }
 
+export type AppInterface = App;
+
 /**
  * Have the ability to App instance
  * 1. Provide static resource, the structure of the HTML, CSS, js.
@@ -129,14 +131,10 @@ export class App {
     url?: string,
     options?: { async?: boolean; noEntry?: boolean },
   ) {
-    const revertCurrentScript = setDocCurrentScript(
-      this.global.document,
-      code,
-      true,
-      url,
-      options.async,
-    );
-    env = this.getExecScriptEnv(options?.noEntry) || {};
+    env = {
+      ...(env || {}),
+      ...this.getExecScriptEnv(options?.noEntry),
+    };
 
     this.context.hooks.lifecycle.beforeEval.call(
       this.appInfo,
@@ -145,15 +143,13 @@ export class App {
       url,
       options,
     );
-    const sourceUrl = url ? `//# sourceURL=${url}\n` : '';
 
     try {
-      evalWithEnv(`;${code}\n${sourceUrl}`, env);
+      this.runCode(code, env, url, options);
     } catch (e) {
       this.context.hooks.lifecycle.errorExecCode.call(this.appInfo, e);
       throw e;
     }
-    revertCurrentScript();
 
     this.context.hooks.lifecycle.afterEval.call(
       this.appInfo,
@@ -164,16 +160,23 @@ export class App {
     );
   }
 
-  getExecScriptEnv(noEntry: boolean) {
-    // The legacy of commonJS function support
-    if (this.esModule) return {};
-    if (noEntry) {
-      return {
-        [__GARFISH_EXPORTS__]: this.customExports,
-        [__GARFISH_GLOBAL_ENV__]: this.globalEnvVariables,
-      };
-    }
-    return this.cjsModules;
+  // `vm sandbox` can override this method
+  runCode(
+    code: string,
+    env: Record<string, any>,
+    url?: string,
+    options?: { async?: boolean; noEntry?: boolean },
+  ) {
+    const revertCurrentScript = setDocCurrentScript(
+      this.global.document,
+      code,
+      true,
+      url,
+      options.async,
+    );
+    code += url ? `//# sourceURL=${url}\n` : '';
+    evalWithEnv(`;${code}`, env);
+    revertCurrentScript();
   }
 
   show() {
@@ -268,8 +271,20 @@ export class App {
     return true;
   }
 
+  private getExecScriptEnv(noEntry: boolean) {
+    // The legacy of commonJS function support
+    if (this.esModule) return {};
+    if (noEntry) {
+      return {
+        [__GARFISH_EXPORTS__]: this.customExports,
+        [__GARFISH_GLOBAL_ENV__]: this.globalEnvVariables,
+      };
+    }
+    return this.cjsModules;
+  }
+
   // Performs js resources provided by the module, finally get the content of the export
-  compileAndRenderContainer() {
+  private compileAndRenderContainer() {
     // Render the application node
     // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
     this.renderTemplate();
@@ -554,5 +569,3 @@ export class App {
     return provider;
   }
 }
-
-export type AppInterface = App;

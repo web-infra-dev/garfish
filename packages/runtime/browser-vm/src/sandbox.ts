@@ -277,9 +277,9 @@ export class Sandbox {
       }
       throw e;
     } finally {
+      revertCurrentScript();
       this.tempEnvVariables = [];
     }
-    revertCurrentScript();
   }
 
   static getNativeWindow() {
