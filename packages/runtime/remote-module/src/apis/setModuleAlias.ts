@@ -26,8 +26,7 @@ export function setModuleAlias(
   }
 }
 
-type AliasResult = [string, Array<string> | null];
-export function processAlias(url: string): AliasResult {
+export function processAlias(url: string): [string, Array<string> | null] {
   // If url is an alias
   if (url && url.startsWith(MARKER)) {
     const segments = url.slice(MARKER.length).split('.');
