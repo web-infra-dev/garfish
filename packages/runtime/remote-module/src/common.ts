@@ -33,9 +33,9 @@ try {
 
   // Inherit the configuration from garfish
   if (isObject(garfishGlobalEnv)) {
-    const { remoteModulesCode, externals: GarfishExternals } = garfishGlobalEnv;
-    if (isObject(GarfishExternals)) {
-      moduleConfig.env = { ...GarfishExternals };
+    const { externals, remoteModulesCode } = garfishGlobalEnv;
+    if (isObject(externals)) {
+      moduleConfig.env = { ...externals };
     }
     if (Array.isArray(remoteModulesCode)) {
       resourcesStore = resourcesStore.concat(remoteModulesCode);
@@ -49,10 +49,13 @@ try {
 } catch {}
 
 export const loader: Loader = (() => {
-  if (garfishGlobalEnv) {
+  if (isObject(garfishGlobalEnv)) {
     const loader = garfishGlobalEnv.loader;
     // Garfish loader will have an identifier
-    if (loader && loader.personalId === Symbol.for('garfish.loader')) {
+    if (
+      isObject(loader) &&
+      loader.personalId === Symbol.for('garfish.loader')
+    ) {
       return loader;
     }
   }
@@ -68,7 +71,7 @@ export const purifyOptions = (options: ModuleInfo | string) => {
 };
 
 export const getCurrentApp = () => {
-  return garfishGlobalEnv && garfishGlobalEnv.currentApp;
+  return isObject(garfishGlobalEnv) && garfishGlobalEnv.currentApp;
 };
 
 export const getModuleCode = (url: string) => {
