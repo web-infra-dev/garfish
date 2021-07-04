@@ -30,12 +30,10 @@ function App() {
     window.a.b.c = 1;
   };
 
-  const RemoteComponent = loadModuleSync('@RemoteModule:testModule').One;
+  const RemoteComponent = loadModuleSync('@@alias:testModule').One;
 
   const RemoteComponentTwo = React.lazy(() => {
-    return loadModule('@RemoteModule:testModule').then((cms) =>
-      esModule(cms.Two),
-    );
+    return loadModule('@@alias:testModule').then((cms) => esModule(cms.Two));
   });
 
   return (

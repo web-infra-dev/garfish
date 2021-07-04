@@ -2,8 +2,8 @@ import { warn, assert, hasOwn, isObject, isAbsolute } from '@garfish/utils';
 import { alias } from '../common';
 
 // setAlias('utils', 'https://xx.js');
-// loadModule('@RemoteModule:utils').then((module) => {});
-const MARKER = '@RemoteModule:';
+// loadModule('@alias:utils').then((utils) => {});
+const MARKER = '@alias:';
 
 export function setModuleAlias(name: string, url: string) {
   assert(name, 'Alias cannot be empty.');
@@ -40,11 +40,10 @@ export function getValueInObject(
     if (l > 1) {
       for (let i = 1; i < l; i++) {
         const p = segments[i];
+        // prettier-ignore
         assert(
           isObject(obj),
-          `Remote module "${segments
-            .slice(0, i)
-            .join('.')}" is ${obj}, cannot get "${p}" attribute from it.`,
+          `Remote module "${segments.slice(0, i).join('.')}" is ${obj}, cannot get "${p}" attribute from it.`,
         );
         obj = obj[p];
       }

@@ -42,7 +42,7 @@ const RemoteCm = React.lazy(() =>
 // Or
 setModuleAlias('Component', 'https://xx.js');
 const RemoteCm = React.lazy(() => {
-  return loadModule('@RemoteModule:Component.One').then(esModule);
+  return loadModule('@alias:Component.One').then(esModule);
 });
 
 // Use `React.Suspense` to use components
@@ -151,11 +151,11 @@ import { loadModule, setModuleAlias } from '@garfish/remote-module';
 
 setModuleAlias('utils', 'http://localhost:3000/remoteModule');
 
-loadModule('@RemoteModule:utils').then((utils) => {
+loadModule('@alias:utils').then((utils) => {
   console.log(utils);
 });
 
-loadModule('@RemoteModule:utils.isObject').then((isObject) => {
+loadModule('@alias:utils.isObject').then((isObject) => {
   console.log(isObject);
 });
 ```
