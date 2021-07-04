@@ -31,7 +31,7 @@ export function loadModule(
     try {
       const _module = cacheModules[urlWithVersion];
       if (cache && _module) {
-        result = _module;
+        result = getValueInObject(_module, segments);
       } else {
         const data = await loader.loadModule(url);
         const actuator = new Actuator(data.resourceManager, env);

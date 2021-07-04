@@ -118,7 +118,7 @@ export const fetchStaticResources = (
         const async = entryManager.findAttributeValue(node, 'async');
         if (!isAsync(async)) {
           const src = entryManager.findAttributeValue(node, 'src');
-          return loader.loadModule(src);
+          return loader.loadModule(src).then((res) => res.resourceManager);
         }
       })
       .filter(Boolean),

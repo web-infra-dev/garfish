@@ -15,7 +15,7 @@ export function setModuleAlias(name: string, url: string) {
   if (__DEV__ && hasOwn(alias, name)) {
     warn(`${name} is defined repeatedly.`);
   }
-  alias[`${MARKER}${name}`] = url;
+  alias[name] = url;
 }
 
 type AliasResult = [string, Array<string> | null];

@@ -39,7 +39,7 @@ export function loadModuleSync(
   const _module = cacheModules[urlWithVersion];
 
   if (cache && _module) {
-    result = _module;
+    result = getValueInObject(_module, segments);
   } else {
     const manager = getModuleCode(url);
     assert(
