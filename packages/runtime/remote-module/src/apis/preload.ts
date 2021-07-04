@@ -1,5 +1,5 @@
 import { assert, isAbsolute } from '@garfish/utils';
-import { processAlias } from './setModuleAlias';
+import { processAlias } from './setModuleInfo';
 import { loader, resourcesStore } from '../common';
 
 // Preload the static resources of the module, so that the module can be loaded synchronously

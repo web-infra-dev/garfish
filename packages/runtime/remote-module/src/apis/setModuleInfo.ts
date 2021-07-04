@@ -1,28 +1,42 @@
-import { warn, assert, isObject, isAbsolute } from '@garfish/utils';
-import { alias } from '../common';
+import {
+  warn,
+  hasOwn,
+  assert,
+  isObject,
+  isAbsolute,
+  isPlainObject,
+} from '@garfish/utils';
+import { moduleConfig, ModuleConfig } from '../common';
 
-// setAlias('utils', 'https://xx.js');
-// loadModule('@alias:utils').then((utils) => {});
-const MARKER = '@alias:';
+// setModuleInfo({ alias: { utils: 'https://xx.js' } });
+// loadModule('@utils').then((utils) => {});
+const MARKER = '@';
 
-export function setModuleAlias(
-  nameOrExtObj: string | Record<string, string>,
-  url?: string,
-) {
-  assert(nameOrExtObj, 'Invalid parameter.');
-  if (typeof nameOrExtObj === 'string') {
-    nameOrExtObj = { [nameOrExtObj]: url };
-  }
-  for (const key in nameOrExtObj) {
-    const value = nameOrExtObj[key];
+const setAlias = (obj: ModuleConfig['alias']) => {
+  for (const key in obj) {
+    const value = obj[key];
     assert(
       isAbsolute(value),
       `The loading of the remote module must be an absolute path. "${value}"`,
     );
-    if (__DEV__) {
-      alias[key] && warn(`${key} is defined repeatedly.`);
+    moduleConfig.alias[key] = value;
+  }
+};
+
+export function setModuleInfo(obj: Partial<ModuleConfig>) {
+  assert(isPlainObject(obj), 'Module configuration must be an object.');
+  for (const key in obj) {
+    if (hasOwn(moduleConfig, key)) {
+      if (key === 'env') {
+        Object.assign(moduleConfig[key], obj[key]);
+      } else if (key === 'alias') {
+        setAlias(obj[key]);
+      } else {
+        moduleConfig[key] = obj[key];
+      }
+    } else if (__DEV__) {
+      warn(`Invalid configuration "${key}".`);
     }
-    alias[key] = value;
   }
 }
 
@@ -31,7 +45,7 @@ export function processAlias(url: string): [string, Array<string> | null] {
   if (url && url.startsWith(MARKER)) {
     const segments = url.slice(MARKER.length).split('.');
     const name = segments[0];
-    const realUrl = alias[name];
+    const realUrl = moduleConfig.alias[name];
     assert(realUrl, `Alias "${name}" is not defined.`);
     return [realUrl, segments];
   }

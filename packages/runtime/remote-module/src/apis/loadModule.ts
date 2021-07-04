@@ -7,7 +7,7 @@ import {
   purifyOptions,
 } from '../common';
 import { Actuator } from '../actuator';
-import { processAlias, getValueInObject } from './setModuleAlias';
+import { processAlias, getValueInObject } from './setModuleInfo';
 
 export function loadModule(
   options: ModuleInfo | string,

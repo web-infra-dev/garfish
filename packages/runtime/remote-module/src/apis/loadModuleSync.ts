@@ -6,7 +6,7 @@ import {
   getModuleCode,
 } from '../common';
 import { Actuator } from '../actuator';
-import { processAlias, getValueInObject } from './setModuleAlias';
+import { processAlias, getValueInObject } from './setModuleInfo';
 
 // If we want to have perfect synchronization syntax to load remote modules,
 // the source code of the child application must be analyzed so that it can be loaded on demand.

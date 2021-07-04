@@ -4,8 +4,7 @@ import { preload } from './apis/preload';
 import { esModule } from './apis/esModule';
 import { loadModule } from './apis/loadModule';
 import { loadModuleSync } from './apis/loadModuleSync';
-import { setModuleAlias } from './apis/setModuleAlias';
-import { setModuleExternal } from './apis/setModuleExternal';
+import { setModuleInfo } from './apis/setModuleInfo';
 
 // Remote module loader uses singleton mode
 const loader = {
@@ -13,8 +12,7 @@ const loader = {
   esModule,
   loadModule,
   loadModuleSync,
-  setModuleAlias,
-  setModuleExternal,
+  setModuleInfo,
   cacheModules,
 };
 
@@ -23,8 +21,7 @@ export {
   esModule,
   loadModule,
   loadModuleSync,
-  setModuleAlias,
-  setModuleExternal,
+  setModuleInfo,
   cacheModules,
   GarfishRemoteModulePlugin,
   loader as default,

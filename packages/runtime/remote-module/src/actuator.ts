@@ -1,6 +1,6 @@
 import { evalWithEnv } from '@garfish/utils';
 import { ModuleManager } from '@garfish/loader';
-import { externals, getCurrentApp } from './common';
+import { moduleConfig, getCurrentApp } from './common';
 
 export class Actuator {
   private manager: ModuleManager;
@@ -11,7 +11,7 @@ export class Actuator {
     this.env = {
       exports: {},
       module: null,
-      require: (key) => (env || {})[key] || externals[key],
+      require: (key) => (env || {})[key] || moduleConfig.env[key],
     };
     this.env.module = this.env;
   }
