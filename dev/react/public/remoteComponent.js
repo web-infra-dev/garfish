@@ -9,3 +9,16 @@ exports.One = function (props) {
 exports.Two = function (props) {
   return React.createElement('div', null, ['远程组件2: ', props.text]);
 };
+
+// module.exports = new Promise((resolve) => {
+//   setTimeout(() => {
+//     resolve({
+//       One(props) {
+//         return React.createElement('div', null, ['远程组件1: ', props.text]);
+//       },
+//       Two(props) {
+//         return React.createElement('div', null, ['远程组件2: ', props.text]);
+//       }
+//     })
+//   }, 2000)
+// })

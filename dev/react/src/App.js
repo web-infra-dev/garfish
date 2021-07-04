@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import {
   esModule,
-  setModuleAlias,
   loadModule,
   loadModuleSync,
+  cacheModules,
 } from '@garfish/remote-module';
 import logo from './logo.svg';
 import './App.css';
 import { Modal, Button } from 'antd';
 import 'antd/dist/antd.css';
+
+console.log(cacheModules);
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -30,7 +32,7 @@ function App() {
 
   const RemoteComponent = loadModuleSync('@alias:Component.One');
   const RemoteComponentTwo = React.lazy(() =>
-    loadModule('@alias:Component.Two').then(esModule),
+    esModule(loadModule('@alias:Component.Two')),
   );
 
   return (

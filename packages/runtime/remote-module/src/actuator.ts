@@ -4,7 +4,7 @@ import { externals, getCurrentApp } from './common';
 
 export class Actuator {
   private manager: ModuleManager;
-  private env: Record<string, any>;
+  public env: Record<string, any>;
 
   constructor(manager: ModuleManager, env?: Record<string, any>) {
     this.manager = manager;

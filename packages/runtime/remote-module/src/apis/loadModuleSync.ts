@@ -1,9 +1,4 @@
-import {
-  assert,
-  isPromise,
-  isAbsolute,
-  error as GarfishError,
-} from '@garfish/utils';
+import { error, assert, isPromise, isAbsolute } from '@garfish/utils';
 import {
   ModuleInfo,
   cacheModules,
@@ -21,6 +16,12 @@ import { processAlias, getValueInObject } from './setModuleAlias';
 // 1. esModule - Static analysis, recursively build dependency tree.
 // 2. webpack - Analyze the source code ast and build into different package versions.
 
+const throwWarn = (url: string) => {
+  error(
+    `The current module return a promise, You should use "remoteModule.loadModule('${url}')".`,
+  );
+};
+
 export function loadModuleSync(
   options: ModuleInfo | string,
 ): Record<string, any> {
@@ -36,10 +37,11 @@ export function loadModuleSync(
 
   let result = null;
   const urlWithVersion = `${version || 'latest'}@${url}`;
-  const _module = cacheModules[urlWithVersion];
+  const module = cacheModules[urlWithVersion];
 
-  if (cache && _module) {
-    result = getValueInObject(_module, segments);
+  if (cache && module) {
+    isPromise(module) && throwWarn(url);
+    result = getValueInObject(module, segments);
   } else {
     const manager = getModuleCode(url);
     assert(
@@ -50,13 +52,10 @@ export function loadModuleSync(
     try {
       const actuator = new Actuator(manager, env);
       let exports = actuator.execScript().exports;
+
+      isPromise(exports) && throwWarn(url);
       if (typeof adapter === 'function') {
         exports = adapter(exports);
-      }
-      if (isPromise(exports)) {
-        GarfishError(
-          `The current module return a promise, you should switch to asynchronous loading. "${url}"`,
-        );
       }
       result = getValueInObject(exports, segments);
       cacheModules[urlWithVersion] = exports;

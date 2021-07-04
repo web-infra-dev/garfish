@@ -12,8 +12,8 @@ export interface ModuleInfo {
 
 export let externals = Object.create(null);
 export let resourcesStore: Array<ModuleManager> = [];
-export const fetchLoading = Object.create(null);
 export const cacheModules = Object.create(null);
+export const fetchLoading = Object.create(null);
 export const alias: Record<string, string> = Object.create(null);
 
 // If garfish has pre-prepared data

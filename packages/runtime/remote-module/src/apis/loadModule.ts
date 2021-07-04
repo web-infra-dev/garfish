@@ -29,9 +29,12 @@ export function loadModule(
   const asyncLoadProcess = async () => {
     let result = null;
     try {
-      const _module = cacheModules[urlWithVersion];
-      if (cache && _module) {
-        result = getValueInObject(_module, segments);
+      let module = cacheModules[urlWithVersion];
+      if (cache && module) {
+        if (isPromise(module)) {
+          module = await module;
+        }
+        result = getValueInObject(module, segments);
       } else {
         const data = await loader.loadModule(url);
         const actuator = new Actuator(data.resourceManager, env);
@@ -44,7 +47,7 @@ export function loadModule(
           exports = adapter(exports);
         }
         result = getValueInObject(exports, segments);
-        cacheModules[urlWithVersion] = exports;
+        cacheModules[urlWithVersion] = actuator.env.exports;
       }
     } catch (err) {
       if (typeof error === 'function') {
