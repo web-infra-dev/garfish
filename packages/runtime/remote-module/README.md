@@ -161,3 +161,29 @@ loadModule('@alias:utils.isObject').then((isObject) => {
   console.log(isObject);
 });
 ```
+
+# Remote module
+
+The remote module only supports the `commonjs` format, but you can also package the module in the `umd` format.
+
+```js
+module.exports = {
+  a() {},
+  b() {},
+};
+```
+
+If the module wants to return asynchronous content.
+
+> When the module exports a promise, you can only use the `RemoteModule.loadModule` method, otherwise an error will be reported.
+
+```js
+module.exports = new Promise((resolve) => {
+  setTimeout(() => {
+    resolve({
+      a() {},
+      b() {},
+    });
+  }, 1000);
+});
+```
