@@ -16,6 +16,8 @@ import {
   parseContentType,
   createAppContainer,
   setDocCurrentScript,
+  __GARFISH_EXPORTS__,
+  __GARFISH_GLOBAL_ENV__,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
@@ -25,9 +27,6 @@ export type CustomerLoader = (
   appInfo: interfaces.AppInfo,
   path: string,
 ) => Promise<interfaces.LoaderResult | void> | interfaces.LoaderResult | void;
-
-const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
-const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
 
 export interface Provider {
   destroy: ({ dom: HTMLElement }) => void;
