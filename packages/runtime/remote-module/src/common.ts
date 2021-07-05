@@ -11,7 +11,7 @@ export interface ModuleInfo {
   cache?: boolean;
   version?: string;
   env?: Record<string, any>;
-  error?: (err: Error, info: ModuleInfo) => any;
+  error?: (err: Error, info: ModuleInfo, alias: string) => any;
   adapter?: (cjsModule: Record<string, any>) => Record<string, any>;
 }
 
@@ -69,6 +69,11 @@ export const loader: Loader = (() => {
   return new Loader();
 })();
 
+export const getModuleCode = (url: string) => {
+  // It should be noted that if there is a redirect, `manager.url` is the url after the redirect
+  return resourcesStore.find((manager) => manager.url === url);
+};
+
 export const purifyOptions = (options: ModuleInfo | string) => {
   assert(options, 'Missing url for loading remote module');
   if (typeof options === 'string') {
@@ -77,7 +82,32 @@ export const purifyOptions = (options: ModuleInfo | string) => {
   return deepMerge(moduleConfig, options) as ModuleInfo;
 };
 
-export const getModuleCode = (url: string) => {
-  // It should be noted that if there is a redirect, `manager.url` is the url after the redirect
-  return resourcesStore.find((manager) => manager.url === url);
+export const prettifyError = (
+  error: Error | string,
+  alias: string,
+  url: string,
+) => {
+  const tipMarkers = [currentApp && currentApp.name, alias, url];
+  let prefix = tipMarkers.reduce((msg, val, i) => {
+    if (!val) return msg;
+    return i === tipMarkers.length - 1
+      ? msg + `"${val}"`
+      : msg + `"${val}" -> `;
+  }, 'remoteModule: ');
+  prefix = ` (${prefix})`;
+
+  if (typeof error === 'number') {
+    error = String(error);
+  }
+  if (typeof error === 'string') {
+    if (!error.endsWith(prefix)) {
+      return `${error}${prefix}`;
+    }
+  }
+  if (error instanceof Error) {
+    if (!error.message.endsWith(prefix)) {
+      error.message = `${error.message}${prefix}`;
+    }
+  }
+  return error;
 };

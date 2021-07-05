@@ -27,5 +27,5 @@ module.exports = new Promise((resolve) => {
   console.log('loading other modules.');
   setTimeout(() => {
     resolve(components);
-  }, 1000);
+  }, 100);
 });

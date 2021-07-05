@@ -5,6 +5,7 @@ import {
   cacheModules,
   fetchLoading,
   purifyOptions,
+  prettifyError,
 } from '../common';
 import { Actuator } from '../actuator';
 import { processAlias, getValueInObject } from './setModuleConfig';
@@ -49,10 +50,11 @@ export function loadModule(
         result = getValueInObject(exports, segments);
       }
     } catch (err) {
+      const alias = segments ? segments[0] : '';
       if (typeof error === 'function') {
-        result = error(err, info);
+        result = error(err, info, alias);
       } else {
-        throw err;
+        throw prettifyError(err, alias, url);
       }
     } finally {
       fetchLoading[urlWithVersion] = null;

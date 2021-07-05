@@ -61,7 +61,7 @@ loadModule({
   cache: true, // This will cache the module instance
   env: { React },
   url: 'https://xx.js',
-  error: (err) => {
+  error: (err, info, alias) => {
     console.error(err);
     return 'render error content';
   },

@@ -4,6 +4,7 @@ import {
   cacheModules,
   purifyOptions,
   getModuleCode,
+  prettifyError,
 } from '../common';
 import { Actuator } from '../actuator';
 import { processAlias, getValueInObject } from './setModuleConfig';
@@ -55,14 +56,15 @@ export function loadModuleSync(
       if (typeof adapter === 'function') {
         exports = adapter(exports);
       }
-      cacheModules[urlWithVersion] = exports;
       isPromise(exports) && throwWarn(url);
+      cacheModules[urlWithVersion] = exports;
       result = getValueInObject(exports, segments);
     } catch (err) {
+      const alias = segments ? segments[0] : '';
       if (typeof error === 'function') {
-        result = error(err, info);
+        result = error(err, info, alias);
       } else {
-        throw err;
+        throw prettifyError(err, alias, url);
       }
     }
   }
