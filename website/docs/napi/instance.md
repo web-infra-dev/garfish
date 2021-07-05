@@ -17,12 +17,11 @@ order: 2
 #### `apps: Array<AppInfo>`
 
 :::note
-
 1. 主框架不会自动与远程 Garfish 管理平台关联，需要手动注入。
 2. 子应用资源地址需要支持跨域（**请控制允许的范围，若没有设置允许的范围可能造成安全风险**）。
 3. `Garfish` 会根据资源的 `mineType` 判断是 `html entry` 还是 `js entry`。
 4. 单个 `js`，导出内容必须为 `provider: { render, destroy }`。
-   :::
+:::
 
 - `AppInfo: { name, entry, activeWhen, active, deactive }`
   - `name` 模板名称，请确保该名称的唯一性。
