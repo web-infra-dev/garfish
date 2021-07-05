@@ -1,10 +1,5 @@
 import { Loader, ModuleManager } from '@garfish/loader';
-import {
-  assert,
-  deepMerge,
-  isObject,
-  __GARFISH_GLOBAL_ENV__ as envVarString,
-} from '@garfish/utils';
+import { assert, isObject, deepMerge } from '@garfish/utils';
 
 export type ModuleConfig = Required<
   Omit<ModuleInfo, 'url' | 'version'> & { alias: Record<string, string> }
@@ -34,7 +29,8 @@ export const moduleConfig: ModuleConfig = {
 // If garfish has pre-prepared data
 let garfishGlobalEnv;
 try {
-  garfishGlobalEnv = eval(envVarString);
+  // @ts-ignore
+  garfishGlobalEnv = __GARFISH_GLOBAL_ENV__;
 
   // Inherit the configuration from garfish
   if (isObject(garfishGlobalEnv)) {

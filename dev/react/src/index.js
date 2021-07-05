@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { preload, setModuleInfo } from '@garfish/remote-module';
+import { preload, setModuleConfig } from '@garfish/remote-module';
 
-setModuleInfo({
+setModuleConfig({
   env: { React },
 });
 // setModuleAlias({

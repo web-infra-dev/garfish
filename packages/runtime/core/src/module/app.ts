@@ -16,8 +16,6 @@ import {
   parseContentType,
   createAppContainer,
   setDocCurrentScript,
-  __GARFISH_EXPORTS__,
-  __GARFISH_GLOBAL_ENV__,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
@@ -34,6 +32,9 @@ export interface Provider {
 }
 
 export type AppInterface = App;
+
+const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
+const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
 
 /**
  * Have the ability to App instance
