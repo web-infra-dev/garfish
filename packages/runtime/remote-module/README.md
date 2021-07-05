@@ -130,12 +130,12 @@ You can also configure the information of remote modules in the template, so tha
 import { loadModuleSync } from '@garfish/remote-module';
 
 function App() {
-  // const OneModule = loadModuleSync('@Component.OneModule');
-  const { OneModule } = loadModuleSync('http://localhost:3000/remoteModule1');
+  // const One = loadModuleSync('@Component.One');
+  const { One } = loadModuleSync('http://localhost:3000/remoteModule1');
 
   return (
     <div>
-      <OneModule />
+      <One />
     </div>
   );
 }
@@ -177,12 +177,16 @@ If the module wants to return asynchronous content.
 > When the module exports a promise, you can only use the `RemoteModule.loadModule` method, otherwise an error will be reported.
 
 ```js
+// The loadModule method is provided by default
+const loadModule = require('loadModule');
+
 module.exports = new Promise((resolve) => {
-  setTimeout(() => {
+  loadModule('@otherModules').then((modules) => {
     resolve({
       a() {},
       b() {},
+      ...modules,
     });
-  }, 1000);
+  });
 });
 ```
