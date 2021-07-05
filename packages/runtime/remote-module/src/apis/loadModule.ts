@@ -39,15 +39,14 @@ export function loadModule(
         const data = await loader.loadModule(url);
         const actuator = new Actuator(data.resourceManager, env);
         let exports = actuator.execScript().exports;
-
-        if (isPromise(exports)) {
-          exports = await exports;
-        }
         if (typeof adapter === 'function') {
           exports = adapter(exports);
         }
+        cacheModules[urlWithVersion] = exports;
+        if (isPromise(exports)) {
+          exports = await exports;
+        }
         result = getValueInObject(exports, segments);
-        cacheModules[urlWithVersion] = actuator.env.exports;
       }
     } catch (err) {
       if (typeof error === 'function') {
@@ -60,8 +59,14 @@ export function loadModule(
     }
     return result;
   };
-  if (!fetchLoading[urlWithVersion]) {
-    fetchLoading[urlWithVersion] = asyncLoadProcess();
+
+  if (fetchLoading[urlWithVersion]) {
+    return fetchLoading[urlWithVersion].then(() => {
+      return Promise.resolve(cacheModules[urlWithVersion]).then((m) =>
+        getValueInObject(m, segments),
+      );
+    });
   }
+  fetchLoading[urlWithVersion] = asyncLoadProcess();
   return fetchLoading[urlWithVersion];
 }

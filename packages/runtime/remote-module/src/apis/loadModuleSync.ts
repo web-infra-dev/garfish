@@ -52,13 +52,12 @@ export function loadModuleSync(
     try {
       const actuator = new Actuator(manager, env);
       let exports = actuator.execScript().exports;
-
-      isPromise(exports) && throwWarn(url);
       if (typeof adapter === 'function') {
         exports = adapter(exports);
       }
-      result = getValueInObject(exports, segments);
       cacheModules[urlWithVersion] = exports;
+      isPromise(exports) && throwWarn(url);
+      result = getValueInObject(exports, segments);
     } catch (err) {
       if (typeof error === 'function') {
         result = error(err, info);

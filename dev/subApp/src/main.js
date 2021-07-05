@@ -7,6 +7,7 @@ import HelloWorld from './components/HelloWorld.vue';
 import Test from './components/test.vue';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import { preload } from '@garfish/remote-module';
 
 // setTimeout(() => {
 //   let cur = document.querySelector('#app');
@@ -64,12 +65,15 @@ const render = ({ dom, basename = '/' }) => {
     ],
   });
 
-  vm = new Vue({
-    store,
-    router,
-    render: (h) => h(App, { props: { basename } }),
-  }).$mount();
-  (dom || document).querySelector('#app').appendChild(vm.$el);
+  preload('@Component').then(() => {
+    vm = new Vue({
+      store,
+      router,
+      render: (h) => h(App, { props: { basename } }),
+    }).$mount();
+    (dom || document).querySelector('#app').appendChild(vm.$el);
+  });
+
   // console.log('#######', dom.querySelector('#app'));
   // document.addEventListener('resize', () => console.log(1));
   // window.addEventListener('resize', () => console.log(2));

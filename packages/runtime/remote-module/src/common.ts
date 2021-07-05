@@ -1,5 +1,6 @@
 import { Loader, ModuleManager } from '@garfish/loader';
 import { assert, isObject, deepMerge } from '@garfish/utils';
+import { loadModule } from './apis/loadModule';
 
 export type ModuleConfig = Required<
   Omit<ModuleInfo, 'url' | 'version'> & { alias: Record<string, string> }
@@ -19,11 +20,13 @@ export let resourcesStore: Array<ModuleManager> = [];
 export const cacheModules = Object.create(null);
 export const fetchLoading = Object.create(null);
 export const moduleConfig: ModuleConfig = {
-  env: {},
   alias: {},
   cache: true, // Default use cache
   error: null,
   adapter: null,
+  env: {
+    loadModule, // Only `loadModule` is provided for use by remote modules
+  },
 };
 
 // If garfish has pre-prepared data
