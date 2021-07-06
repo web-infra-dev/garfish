@@ -1,5 +1,4 @@
 import { cacheModules } from './common';
-import { GarfishRemoteModulePlugin } from './garfishPlugin';
 import { preload } from './apis/preload';
 import { esModule } from './apis/esModule';
 import { loadModule } from './apis/loadModule';
@@ -23,6 +22,5 @@ export {
   loadModuleSync,
   setModuleConfig,
   cacheModules,
-  GarfishRemoteModulePlugin,
   loader as default,
 };

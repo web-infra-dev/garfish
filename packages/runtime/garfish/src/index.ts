@@ -2,7 +2,6 @@ import { Garfish } from '@garfish/core';
 import GarfishRouter from '@garfish/router';
 import GarfishBrowserVm from '@garfish/browser-vm';
 import GarfishBrowserSnapshot from '@garfish/browser-snapshot';
-import { GarfishRemoteModulePlugin } from '@garfish/remote-module';
 import {
   def,
   warn,
@@ -52,12 +51,7 @@ export function createContext(): Garfish {
     errorMountApp: (err) => error(err),
     errorUnmountApp: (err) => error(err),
     onNotMatchRouter: () => {},
-    plugins: [
-      GarfishRouter(),
-      GarfishBrowserVm(),
-      GarfishBrowserSnapshot(),
-      GarfishRemoteModulePlugin(),
-    ],
+    plugins: [GarfishRouter(), GarfishBrowserVm(), GarfishBrowserSnapshot()],
   });
 
   type globalValue = boolean | Garfish | Record<string, unknown>;
