@@ -22,7 +22,6 @@
 
 <script>
 import {
-  esModule,
   loadModule,
   setModuleConfig,
 } from '@garfish/remote-module';
@@ -50,8 +49,8 @@ export default {
   },
   components: {
     MicroApp,
-    cmOne: () => esModule(loadModule('@Component.cmOne')),
-    cmTwo: () => esModule(loadModule('@Component.cmTwo')),
+    cmOne: () => loadModule('@Component.cmOne'),
+    cmTwo: () => loadModule('@Component.cmTwo'),
   }
 }
 </script>
