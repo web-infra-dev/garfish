@@ -24,19 +24,19 @@ const throwWarn = (url: string) => {
 };
 
 export function loadModuleSync(
-  options: ModuleInfo | string,
+  urlOrAlias: string,
+  options?: ModuleInfo,
 ): Record<string, any> {
-  const info = purifyOptions(options);
-  const { cache, version, externals, url: originalUrl, error, adapter } = info;
-  const [url, segments] = processAlias(originalUrl);
-
-  assert(url, 'Missing url for loading remote module');
+  assert(urlOrAlias, 'Missing url for loading remote module');
+  const [url, segments] = processAlias(urlOrAlias);
   assert(
     isAbsolute(url),
     `The loading of the remote module must be an absolute path. "${url}"`,
   );
 
   let result = null;
+  const info = purifyOptions(url, options);
+  const { cache, version, externals, error, adapter } = info;
   const urlWithVersion = `${version || 'latest'}@${url}`;
   const module = cacheModules[urlWithVersion];
 

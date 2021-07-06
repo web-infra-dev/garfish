@@ -11,21 +11,19 @@ import { Actuator } from '../actuator';
 import { processAlias, getValueInObject } from './setModuleConfig';
 
 export function loadModule(
-  options: ModuleInfo | string,
+  urlOrAlias: string,
+  options?: ModuleInfo,
 ): Promise<Record<string, any> | null> {
-  const info = purifyOptions(options);
-  const { cache, version, externals, url: originalUrl, error, adapter } = info;
-  const [url, segments] = processAlias(originalUrl);
-
-  assert(url, 'Missing url for loading remote module');
+  assert(urlOrAlias, 'Missing url for loading remote module');
+  const [url, segments] = processAlias(urlOrAlias);
   assert(
     isAbsolute(url),
     `The loading of the remote module must be an absolute path. "${url}"`,
   );
 
-  // `1.0@https://xx.js`
-  // `latest@https://xx.js`
-  const urlWithVersion = `${version || 'latest'}@${url}`;
+  const info = purifyOptions(url, options);
+  const { cache, version, externals, error, adapter } = info;
+  const urlWithVersion = `${version || 'latest'}@${url}`; // `latest@https://xx.js`
 
   const asyncLoadProcess = async () => {
     let result = null;

@@ -3,11 +3,10 @@ import { assert, isObject, deepMerge } from '@garfish/utils';
 import { loadModule } from './apis/loadModule';
 
 export type ModuleConfig = Required<
-  Omit<ModuleInfo, 'url' | 'version'> & { alias: Record<string, string> }
+  Omit<ModuleInfo, 'version'> & { alias: Record<string, string> }
 >;
 
 export interface ModuleInfo {
-  url: string;
   cache?: boolean;
   version?: string;
   externals?: Record<string, any>;
@@ -74,12 +73,11 @@ export const getModuleCode = (url: string) => {
   return resourcesStore.find((manager) => manager.url === url);
 };
 
-export const purifyOptions = (options: ModuleInfo | string) => {
-  assert(options, 'Missing url for loading remote module');
-  if (typeof options === 'string') {
-    options = { url: options };
-  }
-  return deepMerge(moduleConfig, options) as ModuleInfo;
+export const purifyOptions = (urlOrAlias: string, options?: ModuleInfo) => {
+  return deepMerge(moduleConfig, {
+    ...options,
+    url: urlOrAlias,
+  }) as ModuleInfo & { url: string };
 };
 
 export const prettifyError = (

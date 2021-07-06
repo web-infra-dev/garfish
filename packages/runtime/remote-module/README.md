@@ -57,10 +57,9 @@ Other usage
 
 ```js
 // Or
-loadModule({
-  cache: true, // This will cache the module instance
+loadModule('https://xx.js', {
+  cache: true, // This will cache the module instance, default value is `true`
   externals: { React },
-  url: 'https://xx.js',
   error: (err, info, alias) => {
     console.error(err);
     return 'render error content';

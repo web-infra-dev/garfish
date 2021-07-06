@@ -30,8 +30,7 @@ function App() {
     window.a.b.c = 1;
   };
 
-  const RemoteComponent = loadModuleSync({
-    url: '@Component.One',
+  const RemoteComponent = loadModuleSync('@Component.One', {
     env: {
       a: 1,
     },
