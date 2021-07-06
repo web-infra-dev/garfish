@@ -10,7 +10,7 @@ export interface ModuleInfo {
   url: string;
   cache?: boolean;
   version?: string;
-  env?: Record<string, any>;
+  externals?: Record<string, any>;
   error?: (err: Error, info: ModuleInfo, alias: string) => any;
   adapter?: (cjsModule: Record<string, any>) => Record<string, any>;
 }
@@ -24,7 +24,7 @@ export const moduleConfig: ModuleConfig = {
   cache: true, // Default use cache
   error: null,
   adapter: null,
-  env: {
+  externals: {
     loadModule, // Only `loadModule` is provided for use by remote modules
   },
 };
@@ -42,7 +42,7 @@ try {
       currentApp = app;
     }
     if (isObject(externals)) {
-      moduleConfig.env = { ...externals };
+      moduleConfig.externals = { ...externals };
     }
     if (Array.isArray(remoteModulesCode)) {
       resourcesStore = resourcesStore.concat(remoteModulesCode);

@@ -29,7 +29,7 @@ import {
 } from '@garfish/remote-module';
 
 setModuleConfig({
-  env: { React }, // Environment variables required by remoteModules
+  externals: { React }, // Environment variables required by remoteModules
   alias: { Component: 'https://xx.js' },
 });
 
@@ -59,7 +59,7 @@ Other usage
 // Or
 loadModule({
   cache: true, // This will cache the module instance
-  env: { React },
+  externals: { React },
   url: 'https://xx.js',
   error: (err, info, alias) => {
     console.error(err);

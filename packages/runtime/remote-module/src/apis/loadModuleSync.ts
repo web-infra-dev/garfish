@@ -27,7 +27,7 @@ export function loadModuleSync(
   options: ModuleInfo | string,
 ): Record<string, any> {
   const info = purifyOptions(options);
-  const { env, cache, version, url: originalUrl, error, adapter } = info;
+  const { cache, version, externals, url: originalUrl, error, adapter } = info;
   const [url, segments] = processAlias(originalUrl);
 
   assert(url, 'Missing url for loading remote module');
@@ -51,7 +51,7 @@ export function loadModuleSync(
     );
 
     try {
-      const actuator = new Actuator(manager, env);
+      const actuator = new Actuator(manager, externals);
       let exports = actuator.execScript().exports;
       if (typeof adapter === 'function') {
         exports = adapter(exports);

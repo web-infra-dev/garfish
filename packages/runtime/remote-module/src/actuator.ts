@@ -6,12 +6,12 @@ export class Actuator {
   private manager: ModuleManager;
   public env: Record<string, any>;
 
-  constructor(manager: ModuleManager, env?: Record<string, any>) {
+  constructor(manager: ModuleManager, externals?: Record<string, any>) {
     this.manager = manager;
     this.env = {
       exports: {},
       module: null,
-      require: (key) => (env || {})[key] || moduleConfig.env[key],
+      require: (key) => (externals || {})[key] || moduleConfig.externals[key],
     };
     this.env.module = this.env;
   }

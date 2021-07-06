@@ -42,7 +42,7 @@ export function GarfishRemoteModulePlugin() {
       version: __VERSION__,
       bootstrap() {
         setModuleConfig({
-          env: Garfish.externals,
+          externals: Garfish.externals,
         });
       },
     };

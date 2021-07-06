@@ -14,7 +14,7 @@ export function loadModule(
   options: ModuleInfo | string,
 ): Promise<Record<string, any> | null> {
   const info = purifyOptions(options);
-  const { env, cache, version, url: originalUrl, error, adapter } = info;
+  const { cache, version, externals, url: originalUrl, error, adapter } = info;
   const [url, segments] = processAlias(originalUrl);
 
   assert(url, 'Missing url for loading remote module');
@@ -38,7 +38,7 @@ export function loadModule(
         result = getValueInObject(module, segments);
       } else {
         const data = await loader.loadModule(url);
-        const actuator = new Actuator(data.resourceManager, env);
+        const actuator = new Actuator(data.resourceManager, externals);
         let exports = actuator.execScript().exports;
         if (typeof adapter === 'function') {
           exports = adapter(exports);
