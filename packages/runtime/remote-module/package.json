@@ -1,16 +1,16 @@
 {
-  "name": "@garfish/loader",
+  "name": "@garfish/remote-module",
   "version": "0.0.30",
-  "description": "loader module.",
+  "description": "remote-module module.",
   "keywords": [
     "garfish",
-    "loader"
+    "remote-module"
   ],
   "author": "chentao.arthur <chentao.arthur@bytedance.com>",
-  "homepage": "http://garfish.bytedance.com",
+  "homepage": "https://github.com/bytedance/garfish",
   "license": "Apache-2.0",
   "main": "index.js",
-  "module": "dist/loader.esm-bundler.js",
+  "module": "dist/remote-module.esm-bundler.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
@@ -19,9 +19,9 @@
     "url": "https://github.com/bytedance/garfish/issues"
   },
   "scripts": {},
-  "types": "dist/index.d.ts",
+  "types": "dist/remote-module.d.ts",
   "buildOptions": {
-    "name": "Loader",
+    "name": "MicroComponent",
     "devTemplate": "module",
     "formats": [
       "esm-bundler",
@@ -30,12 +30,13 @@
       "umd"
     ]
   },
+  "devDependencies": {
+    "@garfish/core": "^0.0.30"
+  },
   "dependencies": {
-    "himalaya": "1.1.0"
+    "@garfish/loader": "^0.0.30"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org",
-    "access": "public"
-  },
-  "gitHead": "65a4fb7ff7d6dad9507b1ff95664f55b6f86a2e2"
+    "registry": "https://registry.npmjs.org"
+  }
 }

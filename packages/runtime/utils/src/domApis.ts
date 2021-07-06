@@ -91,6 +91,25 @@ export const DOMApis = {
     return Boolean(hasRelAttr && hasAsAttr);
   },
 
+  isRemoteModule(node: Node) {
+    if (!this.isNode(node) || node.tagName !== 'meta') return false;
+    let hasNameAttr, hasSrcAttr;
+    for (const { key, value } of node.attributes) {
+      if (key === 'name') {
+        hasNameAttr = true;
+        if (value !== 'garfish-remote-module') {
+          return false;
+        }
+      } else if (key === 'src') {
+        hasSrcAttr = true;
+        if (typeof value === 'undefined' || value === '') {
+          return false;
+        }
+      }
+    }
+    return Boolean(hasNameAttr && hasSrcAttr);
+  },
+
   removeElement(el: Element) {
     const parentNode = el && el.parentNode;
     if (parentNode) {

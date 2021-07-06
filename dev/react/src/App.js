@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
+import {
+  esModule,
+  loadModule,
+  loadModuleSync,
+  cacheModules,
+} from '@garfish/remote-module';
 import logo from './logo.svg';
 import './App.css';
 import { Modal, Button } from 'antd';
 import 'antd/dist/antd.css';
 
-// let cur = document.querySelector('#root');
-// setTimeout(() => {
-//   console.log(cur, document);
-//   while (cur !== document && cur) {
-//     cur = cur && cur.parentNode;
-//     console.log(cur);
-//   }
-// }, 3000);
+console.log(cacheModules);
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -31,8 +30,25 @@ function App() {
     window.a.b.c = 1;
   };
 
+  const RemoteComponent = loadModuleSync('@Component.One', {
+    env: {
+      a: 1,
+    },
+  });
+  const RemoteComponentTwo = React.lazy(() =>
+    esModule(loadModule('@Component.Two')),
+  );
+
   return (
     <div className="App">
+      <RemoteComponent text="cool!" />
+
+      <React.Suspense fallback={<div>loading</div>}>
+        <div>
+          <RemoteComponentTwo text="good!" />
+        </div>
+      </React.Suspense>
+
       <Button type="primary" onClick={showModal}>
         Open Modal
       </Button>

@@ -3,16 +3,18 @@ import { Sandbox } from './sandbox';
 import { __proxyNode__ } from './symbolTypes';
 
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object
-const esGlobalMethods = // Function properties of the global object
-(
-  'eval,isFinite,isNaN,parseFloat,parseInt' +
+const esGlobalMethods =
+  // prettier-ignore
+  (
+  // Function properties of the global object
+  'eval,isFinite,isNaN,parseFloat,parseInt,' +
   // URL handling functions
-  'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent' +
+  'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +
   // Constructor properties of the global object
   'Array,ArrayBuffer,BigInt,BigInt64Array,BigUint64Array,Boolean,DataView,Date,Error,EvalError,' +
-  'FinalizationRegistry,Float32Array,Float64Array,Function,Int8Array,Int16Array,Int32Array,Map,Number' +
-  'Object,Promise,Proxy,RangeError,ReferenceError,RegExp,Set,SharedArrayBuffer,String,Symbol,SyntaxError' +
-  'TypeError,Uint8Array,Uint8ClampedArray,Uint16Array,Uint32Array,URIError,WeakMap,WeakRef,WeakSet' +
+  'FinalizationRegistry,Float32Array,Float64Array,Function,Int8Array,Int16Array,Int32Array,Map,Number,' +
+  'Object,Promise,Proxy,RangeError,ReferenceError,RegExp,Set,SharedArrayBuffer,String,Symbol,SyntaxError,' +
+  'TypeError,Uint8Array,Uint8ClampedArray,Uint16Array,Uint32Array,URIError,WeakMap,WeakRef,WeakSet,' +
   // Other Properties of the Global Object
   'Atomics,JSON,Math,Reflect'
 ).split(',');
@@ -116,7 +118,7 @@ export function microTaskHtmlProxyDocument(proxyDocument) {
 
     if (setting) {
       setting = false;
-      // // Do not use micro tasks, Element will appear in the task placed in nextTick after node
+      // Do not use micro tasks, Element will appear in the task placed in nextTick after node
       nextTick(() => {
         setting = true;
         Object.defineProperty(html, 'parentNode', {

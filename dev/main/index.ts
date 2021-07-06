@@ -21,10 +21,10 @@ GarfishInstance.run({
     },
   ],
   autoRefreshApp: false,
-  disablePreloadApp: true,
+  // disablePreloadApp: true,
   sandbox: {
     open: true,
-    snapshot: false,
+    snapshot: true,
     modules: [],
   },
 });

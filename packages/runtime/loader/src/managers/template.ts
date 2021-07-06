@@ -5,9 +5,9 @@ type Renderer = Record<string, (node: Node) => Element | Comment>;
 
 // Convert irregular grammar to compliant grammar
 // 1M text takes about time:
-//   chrome 30ms
-//   safari: 25ms
-//   firefox: 25ms
+// 1. chrome 30ms
+// 2. safari: 25ms
+// 3. firefox: 25ms
 const transformCode = (code: string) => {
   const node = document.createElement('html');
   node.innerHTML = code;
@@ -26,7 +26,7 @@ export class TemplateManager {
     // About 1M text parse takes about 100ms
     this.astTree = template ? parse(transformCode(template)) : [];
     // Pretreatment resource
-    this.getNodesByTagName('link', 'style', 'script');
+    this.getNodesByTagName('meta', 'link', 'style', 'script');
   }
 
   getNodesByTagName<T>(...tags: Array<keyof T>) {
@@ -99,6 +99,10 @@ export class TemplateManager {
     if (src) {
       src.value = transformUrl(baseUrl, src.value);
     }
+  }
+
+  findAllMetaNodes() {
+    return this.getNodesByTagName('meta').meta;
   }
 
   findAllLinkNodes() {

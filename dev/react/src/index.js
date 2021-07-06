@@ -2,6 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { setModuleConfig } from '@garfish/remote-module';
+
+setModuleConfig({
+  externals: { React },
+});
+// setModuleAlias({
+//   testModule: 'http://localhost:3000/remoteComponent.js',
+// });
 
 // console.log(
 //   window.HTMLIFrameElement._native ===
@@ -47,11 +55,16 @@ const render = ({ dom }) => {
 };
 
 export const provider = (opts) => {
-  console.log(opts, 'opts');
   return {
-    render,
-    destroy() {
-      ReactDOM.unmountComponentAtNode(opts.dom.querySelector('#root'));
+    render(...args) {
+      // preload('http://localhost:3000/remoteComponent.js').then(() => {
+      render(...args);
+      // });
+    },
+    destroy({ isUnmount }) {
+      if (isUnmount) {
+        ReactDOM.unmountComponentAtNode(opts.dom.querySelector('#root'));
+      }
     },
   };
 };
