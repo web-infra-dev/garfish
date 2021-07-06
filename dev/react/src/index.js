@@ -61,8 +61,10 @@ export const provider = (opts) => {
       render(...args);
       // });
     },
-    destroy() {
-      ReactDOM.unmountComponentAtNode(opts.dom.querySelector('#root'));
+    destroy({ isUnmount }) {
+      if (isUnmount) {
+        ReactDOM.unmountComponentAtNode(opts.dom.querySelector('#root'));
+      }
     },
   };
 };

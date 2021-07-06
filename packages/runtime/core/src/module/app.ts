@@ -189,7 +189,7 @@ export class App {
     }
 
     this.addContainer();
-    this.callRender(provider);
+    this.callRender(provider, false);
     this.display = true;
     return true;
   }
@@ -203,7 +203,7 @@ export class App {
       return false;
     }
 
-    this.callDestroy(provider);
+    this.callDestroy(provider, false);
     this.display = false;
     return true;
   }
@@ -223,7 +223,7 @@ export class App {
       // Existing asynchronous functions need to decide whether the application has been unloaded
       if (!this.stopMountAndClearEffect()) return false;
 
-      this.callRender(provider);
+      this.callRender(provider, true);
       this.display = true;
       this.mounted = true;
       this.context.activeApps.push(this);
@@ -255,7 +255,7 @@ export class App {
     this.context.hooks.lifecycle.beforeUnMount.call(this.appInfo, this);
 
     try {
-      this.callDestroy(this.provider);
+      this.callDestroy(this.provider, true);
       this.display = false;
       this.mounted = false;
       remove(this.context.activeApps, this);
@@ -362,18 +362,22 @@ export class App {
   }
 
   // Calls to render do compatible with two different sandbox
-  private callRender(provider: interfaces.Provider) {
+  private callRender(provider: interfaces.Provider, isMount: boolean) {
     const { appInfo, rootElement } = this;
     provider.render({
       dom: rootElement,
       basename: appInfo.basename,
+      appRenderInfo: { isMount },
     });
   }
 
   // Call to destroy do compatible with two different sandbox
-  private callDestroy(provider: interfaces.Provider) {
+  private callDestroy(provider: interfaces.Provider, isUnmount: boolean) {
     const { rootElement, appContainer } = this;
-    provider.destroy({ dom: rootElement });
+    provider.destroy({
+      dom: rootElement,
+      appRenderInfo: { isUnmount },
+    });
     DOMApis.removeElement(appContainer);
   }
 

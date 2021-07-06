@@ -62,9 +62,18 @@ export namespace interfaces {
     ): Promise<interfaces.App | null>;
   }
 
+  export interface AppRenderInfo {
+    isMount?: boolean;
+    isUnmount?: boolean;
+  }
+
   export interface Provider {
-    destroy: ({ dom: HTMLElement }) => void;
-    render: ({ dom: HTMLElement, basename: string }) => void;
+    destroy: ({ dom: HTMLElement, appRenderInfo: AppRenderInfo }) => void;
+    render: ({
+      dom: HTMLElement,
+      basename: string,
+      appRenderInfo: AppRenderInfo,
+    }) => void;
   }
 
   export interface SandboxConfig {

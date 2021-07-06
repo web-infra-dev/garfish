@@ -27,7 +27,7 @@ export function loadModuleSync(
   urlOrAlias: string,
   options?: ModuleInfo,
 ): Record<string, any> {
-  assert(urlOrAlias, 'Missing url for loading remote module');
+  assert(urlOrAlias, 'Missing url for loading remote module.');
   const [url, segments] = processAlias(urlOrAlias);
   assert(
     isAbsolute(url),

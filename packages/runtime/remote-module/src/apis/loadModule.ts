@@ -14,7 +14,7 @@ export function loadModule(
   urlOrAlias: string,
   options?: ModuleInfo,
 ): Promise<Record<string, any> | null> {
-  assert(urlOrAlias, 'Missing url for loading remote module');
+  assert(urlOrAlias, 'Missing url for loading remote module.');
   const [url, segments] = processAlias(urlOrAlias);
   assert(
     isAbsolute(url),
