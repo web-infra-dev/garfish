@@ -1,5 +1,5 @@
 import toolApp from '../src/index';
 
-describe('remote-component', () => {
+describe('remote-module', () => {
   it('needs tests');
 });
