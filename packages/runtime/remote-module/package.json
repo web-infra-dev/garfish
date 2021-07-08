@@ -21,7 +21,7 @@
   "scripts": {},
   "types": "dist/remote-module.d.ts",
   "buildOptions": {
-    "name": "MicroComponent",
+    "name": "RemoteModule",
     "devTemplate": "module",
     "formats": [
       "esm-bundler",
