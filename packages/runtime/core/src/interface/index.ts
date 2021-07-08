@@ -17,11 +17,6 @@ export namespace interfaces {
     unmount: () => void;
   }
 
-  export declare type LifeCycleFn = (
-    appInfo: AppInfo,
-    path: string,
-  ) => Promise<void> | void;
-
   export interface App extends AppInterface {}
 
   export interface AppInfo
@@ -98,21 +93,33 @@ export namespace interfaces {
     nested?: boolean;
   }
 
+  export declare type MountLifeCycleFn = (
+    appInfo: AppInfo,
+    app: interfaces.App,
+  ) => Promise<void> | void;
+
+  export declare type LoadLifeCycleFn<T> = (
+    appInfo: AppInfo,
+    opts: LoadAppOptions,
+  ) => T;
+
+  export declare type EvalLifeCycleFn = (
+    appInfo: AppInfo,
+    code: string,
+    env: Record<string, any>,
+    url: string,
+    options: { async?: boolean; noEntry?: boolean },
+  ) => void;
+
   export interface HooksLifecycle {
-    beforeEval?: LifeCycleFn;
-    afterEval?: LifeCycleFn;
-    beforeMount?: LifeCycleFn;
-    afterMount?: LifeCycleFn;
-    beforeUnmount?: LifeCycleFn;
-    afterUnmount?: LifeCycleFn;
-    beforeLoad?: (
-      appInfo: AppInfo,
-      opts: LoadAppOptions,
-    ) => Promise<void | false> | void | false;
-    afterLoad?: (
-      appInfo: AppInfo,
-      opts: LoadAppOptions,
-    ) => Promise<void> | void;
+    beforeLoad?: LoadLifeCycleFn<Promise<void | false> | void | false>;
+    afterLoad?: LoadLifeCycleFn<Promise<void> | void>;
+    beforeMount?: MountLifeCycleFn;
+    afterMount?: MountLifeCycleFn;
+    beforeUnmount?: MountLifeCycleFn;
+    afterUnmount?: MountLifeCycleFn;
+    beforeEval?: EvalLifeCycleFn;
+    afterEval?: EvalLifeCycleFn;
     errorLoadApp?: (err: Error | string, appInfo: AppInfo) => void;
     errorMountApp?: (err: Error | string, appInfo: AppInfo) => void;
     errorUnmountApp?: (err: Error | string, appInfo: AppInfo) => void;
