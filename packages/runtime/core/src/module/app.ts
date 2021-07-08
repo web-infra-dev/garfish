@@ -147,7 +147,7 @@ export class App {
     try {
       this.runCode(code, env, url, options);
     } catch (e) {
-      this.context.hooks.lifecycle.errorExecCode.call(this.appInfo, e);
+      this.context.hooks.lifecycle.errorExecCode.call(e, this.appInfo);
       throw e;
     }
 

@@ -201,7 +201,7 @@ export namespace interfaces {
     errorLoadApp: SyncHook<[Error, AppInfo], void>;
     errorMountApp: SyncHook<[Error, AppInfo], void>;
     errorUnmountApp: SyncHook<[Error, AppInfo], void>;
-    errorExecCode: SyncHook<[AppInfo, Error], void>;
+    errorExecCode: SyncHook<[Error, AppInfo], void>;
   }
 
   type ConstructorParameters<T> = T extends SyncHook<any, any>
