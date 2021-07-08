@@ -14,10 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: install deps
-      run: yarn setup
-      
-    - name: unit test
-      run: yarn test
-      
-    - name: run build
-      run: yarn build:all
+      run: |
+        yarn setup
+        yarn test
+        yarn build:all
