@@ -9,7 +9,7 @@ order: 1
 ### 1. 安装 Garfish
 
 ```bash
-$ yarn add garfish # or npm i arfish -S
+$ yarn add garfish # or npm i garfish -S
 ```
 
 ### 2. 在主应用上注册子应用并启动 Garfish
