@@ -19,7 +19,6 @@
     "build:watch": "lerna exec -- yarn link && node scripts/build.js -m -e  -f=esm-bundler -w",
     "reset": "lerna clean --yes && rm -rf node_modules",
     "setup": "yarn reset && yarn install",
-    "prepublishOnly": "yarn test && yarn build:all && yarn changelog",
     "changelog": "node scripts/changelog.js",
     "test": "node scripts/jestTest.js",
     "test:cover": "node scripts/jestTest.js --coverage",
