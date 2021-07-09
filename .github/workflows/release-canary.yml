@@ -9,5 +9,7 @@ jobs:
         run: |
           yarn setup
           yarn build:all
+      - name: set npm token
+        run: echo "//registry.npmjs.org/:_authToken=${{NPM_TOKEN}}" >> ~/.npmrc
       - name: release canary
         run: yarn release:canary
