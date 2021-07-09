@@ -31,7 +31,7 @@ function App() {
   };
 
   const RemoteComponent = loadModuleSync('@Component.One', {
-    env: {
+    externals: {
       a: 1,
     },
   });
