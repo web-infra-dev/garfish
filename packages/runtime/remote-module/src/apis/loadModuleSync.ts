@@ -17,9 +17,13 @@ import { processAlias, getValueInObject } from './setModuleConfig';
 // 1. esModule - Static analysis, recursively build dependency tree.
 // 2. webpack - Analyze the source code ast and build into different package versions.
 
-const throwWarn = (url: string) => {
+const throwWarn = (alias: string, url: string) => {
   error(
-    `The current module return a promise, You should use "loadModule('${url}')".`,
+    prettifyError(
+      `The current module return a promise, You should use "loadModule('${url}')".`,
+      alias,
+      url,
+    ),
   );
 };
 
@@ -39,9 +43,10 @@ export function loadModuleSync(
   const { cache, version, externals, error, adapter } = info;
   const urlWithVersion = `${version || 'latest'}@${url}`;
   const module = cacheModules[urlWithVersion];
+  const alias = segments ? segments[0] : '';
 
   if (cache && module) {
-    isPromise(module) && throwWarn(url);
+    isPromise(module) && throwWarn(alias, url);
     result = getValueInObject(module, segments);
   } else {
     const manager = getModuleCode(url);
@@ -53,14 +58,14 @@ export function loadModuleSync(
     try {
       const actuator = new Actuator(manager, externals);
       let exports = actuator.execScript().exports;
+
       if (typeof adapter === 'function') {
         exports = adapter(exports);
       }
-      isPromise(exports) && throwWarn(url);
+      isPromise(exports) && throwWarn(alias, url);
       cacheModules[urlWithVersion] = exports;
       result = getValueInObject(exports, segments);
     } catch (err) {
-      const alias = segments ? segments[0] : '';
       if (typeof error === 'function') {
         result = error(err, info, alias);
       } else {

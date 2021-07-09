@@ -38,6 +38,7 @@ export function loadModule(
         const data = await loader.loadModule(url);
         const actuator = new Actuator(data.resourceManager, externals);
         let exports = actuator.execScript().exports;
+
         if (typeof adapter === 'function') {
           exports = adapter(exports);
         }
