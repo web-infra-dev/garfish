@@ -1,7 +1,5 @@
 # `@garfish/core`
 
-> TODO: description
-
 ## Usage
 
 ```shell
@@ -48,11 +46,16 @@ const GarfishInstance = new Garfish({
 // `appName` is globally unique.
 GarfishInstance.loadApp('appName', 'https://xx.html').then(async (app) => {
   if (!app) return;
-  const mountSuccess = await app.mount();
+  let mountSuccess;
+  try {
+    mountSuccess = await app.mount();
+  } catch (e) {
+    // If you add the `errorMountApp` hook, no error will be thrown here
+    console.log(e);
+  }
 
   if (mountSuccess) {
     document.body.appendChild(app.appContainer);
-
     // unmount
     setTimeout(() => {
       const unmountSuccess = app.unmout();
@@ -69,6 +72,7 @@ GarfishInstance.loadApp({
   cache: true,
   name: 'appName',
   entry: 'https://xx.html',
+  domGetter: '#appContainer', // When the child application is rendered, it will be mounted here
 }).then(async (app) => {
   if (!app) return;
   // ...
