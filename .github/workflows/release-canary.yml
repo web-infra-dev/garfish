@@ -7,13 +7,21 @@ jobs:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2.2.0
+      - uses: actions/setup-node@v2
         with:
           node-version: '14'
           cache: 'yarn'
           registry-url: https://registry.npmjs.org/
           always-auth: true
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Configure Git User
+        run: |
+          git config --global user.email "codingzx@gmail.com"
+          git config --global user.name "garfish-ci"
       - uses: actions/checkout@v2
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: install and build
         run: |
           yarn setup
