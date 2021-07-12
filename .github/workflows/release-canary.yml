@@ -12,6 +12,7 @@ jobs:
           node-version: '14'
           cache: 'yarn'
           registry-url: https://registry.npmjs.org/
+          always-auth: true
       - name: install and build
         run: |
           yarn setup
