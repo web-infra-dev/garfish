@@ -35,11 +35,11 @@
     ]
   },
   "dependencies": {
-    "@garfish/browser-snapshot": "^0.0.31",
-    "@garfish/browser-vm": "^0.0.31",
-    "@garfish/core": "^0.0.31",
-    "@garfish/router": "^0.0.31",
-    "@garfish/utils": "^0.0.31"
+    "@garfish/browser-snapshot": "^0.0.32",
+    "@garfish/browser-vm": "^0.0.32",
+    "@garfish/core": "^0.0.32",
+    "@garfish/router": "^0.0.32",
+    "@garfish/utils": "^0.0.32"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
