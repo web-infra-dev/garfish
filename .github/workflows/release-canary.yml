@@ -5,11 +5,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2.2.0
+      - uses: actions/setup-node@v2.2.0
         with:
           node-version: '14'
           cache: 'yarn'
+      - name: set npmrc
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        run: |
+          set -e
+          echo "********NPM_AUTH_TOKEN: $NPM_AUTH_TOKEN"
+          echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" >> ~/.npmrc
       - name: install and build
         run: |
           yarn setup
