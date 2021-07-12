@@ -4,7 +4,7 @@ jobs:
   release-canary:
     runs-on: ubuntu-latest
     env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2.2.0
@@ -13,8 +13,6 @@ jobs:
           cache: 'yarn'
           registry-url: https://registry.npmjs.org/
           always-auth: true
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
       - uses: actions/checkout@v2
       - name: install and build
         run: |
