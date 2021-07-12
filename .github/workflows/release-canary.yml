@@ -3,6 +3,8 @@ on: workflow_dispatch
 jobs:
   release-canary:
     runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2.2.0
@@ -14,13 +16,9 @@ jobs:
         run: |
           set -e
           echo "//registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN" >> ~/.npmrc
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
       - name: install and build
         run: |
           yarn setup
           yarn build:all
       - name: release canary
         run: yarn release:canary
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
