@@ -44,7 +44,7 @@ function attributesString(attributes: Node['attributes']) {
 }
 
 export class DOMApis {
-  private document: Document;
+  public document: Document;
 
   constructor(cusDocument?: Document) {
     this.document = cusDocument || document;
