@@ -14,8 +14,8 @@ jobs:
           yarn setup
           yarn build:all
       - name: set npm token
-        run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        uses: jgierer12/npm-auth-gpr@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
       - name: release canary
         run: yarn release:canary
