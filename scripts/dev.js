@@ -110,10 +110,14 @@ async function transfer(pkgDir, pkgDevDir, buildOptions) {
       );
       console.log();
 
-      await execa('yarn', ['install'], {
-        cwd,
-        stdio: 'inherit',
-      });
+      await execa(
+        'yarn',
+        ['install', '--registry=https://registry.npmjs.org'],
+        {
+          cwd,
+          stdio: 'inherit',
+        },
+      );
     });
   };
   await installDeps();
