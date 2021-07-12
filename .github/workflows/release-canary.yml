@@ -13,9 +13,7 @@ jobs:
         run: |
           yarn setup
           yarn build:all
-      - name: set npm token
-        uses: jgierer12/npm-auth-gpr@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
       - name: release canary
         run: yarn release:canary
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
