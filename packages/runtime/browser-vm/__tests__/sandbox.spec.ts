@@ -12,8 +12,8 @@ describe('Sandbox', () => {
     return `
       const sandbox = unstable_sandbox;
       const Sandbox = sandbox.constructor;
-      const nativeWindow = Sandbox.getGlobalObject();
-      const parentWindow = sandbox.context[Symbol.for('garfish.globalObject')];
+      const nativeWindow = Sandbox.getNativeWindow();
+      const parentWindow = sandbox.global[Symbol.for('garfish.globalObject')];
       ${code}
     `;
   };
@@ -22,9 +22,8 @@ describe('Sandbox', () => {
     return new Sandbox({
       ...opts,
       namespace: 'app',
-      modules: {
-        // 注入测试的一些方法
-        jest: () => ({
+      modules: [
+        () => ({
           recover() {},
           override: {
             go,
@@ -32,7 +31,7 @@ describe('Sandbox', () => {
             expect,
           },
         }),
-      },
+      ],
     });
   };
 

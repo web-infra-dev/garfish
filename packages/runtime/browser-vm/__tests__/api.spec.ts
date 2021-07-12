@@ -10,7 +10,7 @@ describe('Apis', () => {
   beforeEach(() => {
     sandbox = new Sandbox({
       namespace: 'app',
-      modules: { document: doc },
+      modules: [doc],
     });
   });
 
@@ -25,11 +25,11 @@ describe('Apis', () => {
   it('close', () => {
     const spy = jest.spyOn(sandbox, 'clearEffects');
     expect(sandbox.closed).toBe(false);
-    expect(sandbox.context && typeof sandbox.context === 'object').toBe(true);
+    expect(sandbox.global && typeof sandbox.global === 'object').toBe(true);
     expect(sandbox.close.length).toBe(0);
     expect(sandbox.close()).toBe(undefined);
     expect(sandbox.closed).toBe(true);
-    expect(sandbox.context).toBe(null);
+    expect(sandbox.global).toBe(null);
     // close 应该调用 clearEffects
     expect(spy).toHaveBeenCalled();
   });
@@ -46,33 +46,25 @@ describe('Apis', () => {
   });
 
   it('createContext', () => {
-    const context = sandbox.createContext();
-    expect(sandbox.createContext.length).toBe(1);
+    const context = sandbox.createProxyWindow();
+    expect(sandbox.createProxyWindow.length).toBe(0);
     expect(typeof context).toBe('object');
     sandbox.close();
-    expect(sandbox.createContext.bind(sandbox)).toThrow(/Garfish warning/);
   });
 
   it('getOverrides', () => {
-    const res = sandbox.getOverrides();
+    const res = sandbox.getModuleData();
     expect(typeof res).toBe('object');
-    expect(Array.isArray(res.recovers)).toBe(true);
-    expect(typeof res.overrides).toBe('object');
+    expect(Array.isArray(res.recoverList)).toBe(true);
+    expect(typeof res.recoverList).toBe('object');
     sandbox.close();
-    expect(sandbox.getOverrides.bind(sandbox)).toThrow(/Garfish warning/);
   });
 
   it('getGlobalObject', () => {
-    const m = Sandbox.getGlobalObject();
+    const m = Sandbox.getNativeWindow();
     expect(m).toBe(window);
-    expect(Sandbox.getGlobalObject.length).toBe(0);
-    expect(sandbox.context[Symbol.for('garfish.globalObject') as any]).toBe(m);
-  });
-
-  it('isBaseGlobal', () => {
-    expect(Sandbox.isBaseGlobal.length).toBe(1);
-    expect(Sandbox.isBaseGlobal(sandbox.context)).toBe(false);
-    expect(Sandbox.isBaseGlobal(Sandbox.getGlobalObject())).toBe(true);
+    expect(Sandbox.getNativeWindow.length).toBe(0);
+    expect(sandbox.global[Symbol.for('garfish.globalObject') as any]).toBe(m);
   });
 
   it('execScript', () => {
@@ -80,23 +72,14 @@ describe('Apis', () => {
     // expect(sandbox.execScript.length).toBe(2);
     expect(sandbox.execScript('')).toBe(undefined);
     sandbox.close();
-    expect(sandbox.createContext.bind(sandbox)).toThrow(/Garfish warning/);
-  });
-
-  it('callHook', () => {
-    expect(sandbox.callHook('onstart')).toEqual([undefined]);
-    sandbox.options.hooks!.onstart = undefined;
-    expect(sandbox.callHook('onstart')).toEqual(false);
-    sandbox.options.hooks!.onstart = [];
-    expect(sandbox.callHook('onstart')).toEqual(false);
   });
 
   it('clearEffects', () => {
     let effect: null | boolean = null;
     sandbox = new Sandbox({
       namespace: 'app',
-      modules: {
-        test: () => {
+      modules: [
+        () => {
           return {
             recover() {
               effect = null;
@@ -110,7 +93,7 @@ describe('Apis', () => {
             },
           };
         },
-      },
+      ],
     });
     expect(sandbox.clearEffects.length).toBe(0);
     expect(effect).toBe(null);
