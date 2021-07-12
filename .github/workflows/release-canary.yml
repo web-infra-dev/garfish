@@ -20,8 +20,6 @@ jobs:
           git config --global user.email "codingzx@gmail.com"
           git config --global user.name "garfish-ci"
       - uses: actions/checkout@v2
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: install and build
         run: |
           yarn setup
