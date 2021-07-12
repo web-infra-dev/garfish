@@ -55,10 +55,10 @@ module.exports = {
           label: '社区',
           position: 'left',
         },
-        // {
-        //   type: 'localeDropdown',
-        //   position: 'right',
-        // },
+        {
+          type: 'localeDropdown',
+          position: 'right',
+        },
         // {
         //   href:
         //     'https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=601jeae5-250c-48b4-a3bd-7e6211cd4471',
@@ -135,18 +135,18 @@ module.exports = {
       },
     ],
   ],
-  // i18n: {
-  //   defaultLocale: 'zh',
-  //   locales: ['en', 'zh-CN'],
-  //   localeConfigs: {
-  //     en: {
-  //       label: 'English (Auto)',
-  //       direction: 'ltr',
-  //     },
-  //     'zh-CN': {
-  //       label: '简体中文（中国）',
-  //       direction: 'ltr',
-  //     },
-  //   },
-  // },
+  i18n: {
+    defaultLocale: 'zh-CN',
+    locales: ['en', 'zh-CN'],
+    localeConfigs: {
+      en: {
+        label: 'English (Auto)',
+        direction: 'ltr',
+      },
+      'zh-CN': {
+        label: '简体中文（中国）',
+        direction: 'ltr',
+      },
+    },
+  },
 };
