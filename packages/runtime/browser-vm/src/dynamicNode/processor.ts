@@ -21,6 +21,7 @@ export const rawElementMethods = Object.create(null);
 export class DynamicNodeProcessor {
   private el: any; // any Element
   private sandbox: Sandbox;
+  private DOMApis: DOMApis;
   private methodName: string;
   private nativeAppend: Function;
   private rootElement: Element | ShadowRoot | Document;
@@ -30,6 +31,7 @@ export class DynamicNodeProcessor {
     this.sandbox = sandbox;
     this.methodName = methodName;
     this.nativeAppend = rawElementMethods['appendChild'];
+    this.DOMApis = new DOMApis(sandbox.global.document);
     this.rootElement = rootElm(this.sandbox) || document;
   }
 
@@ -82,7 +84,7 @@ export class DynamicNodeProcessor {
         warn(`Invalid resource type "${type}", "${href}"`);
       }
     }
-    return DOMApis.createLinkCommentNode(href) as Comment;
+    return this.DOMApis.createLinkCommentNode(href) as Comment;
   }
 
   // Load dynamic js script
@@ -118,7 +120,7 @@ export class DynamicNodeProcessor {
         );
       }
     }
-    return DOMApis.createScriptCommentNode({ src, code });
+    return this.DOMApis.createScriptCommentNode({ src, code });
   }
 
   // When append an empty link node and then add href attribute
@@ -153,7 +155,7 @@ export class DynamicNodeProcessor {
     const tag = this.el.tagName && this.el.tagName.toLowerCase();
 
     this.sandbox.replaceGlobalVariables.recoverList.push(() => {
-      DOMApis.removeElement(this.el);
+      this.DOMApis.removeElement(this.el);
     });
 
     // Deal with some static resource nodes

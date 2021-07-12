@@ -15,9 +15,9 @@ const transformCode = (code: string) => {
 };
 
 export class TemplateManager {
-  public DOMApis = DOMApis;
   public url: string | null;
   public astTree: Array<Node>;
+  public DOMApis = new DOMApis();
   private pretreatmentStore: Record<string, Node[]> = {};
 
   constructor(template: string, url?: string) {
