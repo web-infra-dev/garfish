@@ -12,7 +12,7 @@ jobs:
       - name: set npmrc
         run: |
           set -e
-          npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
         env:
           NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
       - name: install and build
