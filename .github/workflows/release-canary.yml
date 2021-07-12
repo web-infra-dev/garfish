@@ -12,10 +12,6 @@ jobs:
           node-version: '14'
           cache: 'yarn'
           registry-url: https://registry.npmjs.org/
-      - name: set npmrc
-        run: |
-          set -e
-          echo "//registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN" >> ~/.npmrc
       - name: install and build
         run: |
           yarn setup
