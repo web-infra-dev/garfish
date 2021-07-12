@@ -13,16 +13,9 @@ jobs:
           cache: 'yarn'
           registry-url: https://registry.npmjs.org/
           always-auth: true
-      - uses: actions/checkout@v2
-      - name: Decrypt large secret
-        run: ./.github/workflows/decrypt_secret.sh
         env:
-          LARGE_SECRET_PASSPHRASE: ${{ secrets.NPM_AUTH_TOKEN }}
-      # This command is just an example to show your secret being printed
-      # Ensure you remove any print statements of your secrets. GitHub does
-      # not hide secrets that use this workaround.
-      - name: Test printing your secret (Remove this step in production)
-        run: cat $HOME/secrets/my_secret.json
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      - uses: actions/checkout@v2
       - name: install and build
         run: |
           yarn setup
