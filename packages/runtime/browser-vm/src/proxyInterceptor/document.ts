@@ -36,17 +36,19 @@ export function createGetter(sandbox: Sandbox) {
           }
           return el;
         };
+      } else if (p === 'head') {
+        return (
+          findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']) || value
+        );
       }
 
       // rootNode is a Shadow dom
       if (strictIsolation) {
-        if (p === 'head') {
-          return findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
-        }
         if (p === 'body') {
+          // When the node is inserted, if it is a pop-up scene,
+          // it needs to be placed globally, so it is not placed outside by default.
           return findTarget(rootNode, ['body', 'div[__GarfishMockBody__]']);
-        }
-        if (queryFunctions(p)) {
+        } else if (queryFunctions(p)) {
           return p === 'getElementById'
             ? (id) => rootNode.querySelector(`#${id}`)
             : rootNode[p].bind(rootNode);

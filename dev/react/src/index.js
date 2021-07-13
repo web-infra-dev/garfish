@@ -7,6 +7,7 @@ import { setModuleConfig } from '@garfish/remote-module';
 setModuleConfig({
   externals: { React },
 });
+
 // setModuleAlias({
 //   testModule: 'http://localhost:3000/remoteComponent.js',
 // });

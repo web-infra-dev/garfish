@@ -168,6 +168,7 @@ export class DynamicNodeProcessor {
       rootNode = findTarget(rootNode, ['body', 'div[__GarfishMockBody__]']);
       convertedNode = this.addDynamicScriptNode();
     }
+
     // The style node needs to be placed in the sandbox root container
     if (tag === 'style') {
       rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
@@ -178,6 +179,7 @@ export class DynamicNodeProcessor {
       }
       convertedNode = this.el;
     }
+
     // The link node of the request css needs to be changed to style node
     if (tag === 'link') {
       rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
@@ -190,6 +192,7 @@ export class DynamicNodeProcessor {
         this.monitorChangesOfLinkNode();
       }
     }
+
     if (__DEV__ || (this.sandbox?.global as any).__GARFISH__DEV__) {
       // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
       if (tag === 'iframe' && typeof this.el.onload === 'function') {
