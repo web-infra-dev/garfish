@@ -31,6 +31,7 @@ import {
   createDefineProperty,
   createDeleteProperty,
 } from './proxyInterceptor/global';
+import { UiEventOverride } from './modules/uiEvent';
 
 let id = 0;
 const defaultModules: Array<Module> = [
@@ -40,6 +41,7 @@ const defaultModules: Array<Module> = [
   documentModule,
   listenerModule,
   localStorageModule,
+  UiEventOverride,
 ];
 
 // Deal with hmr problem
@@ -133,7 +135,7 @@ export class Sandbox {
   }
 
   close() {
-    if (!this.closed) return;
+    if (this.closed) return;
     this.clearEffects();
     this.closed = true;
     this.global = null;
