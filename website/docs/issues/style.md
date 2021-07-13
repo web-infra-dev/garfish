@@ -73,11 +73,6 @@ export const provider = ({ dom , basename}) => ({
 
 ## 主子应用样式冲突
 
-### arco-design 多版本样式冲突
-
-1. [Arco-design 全局配置 ConfigProvider](https://arco.design/react/components/config-provider)
-2. 给子应用分别设置不同的 `prefixCls` 前缀
-
 ### ant-design 样式冲突
 
 1. 配置 `webpack` 配置

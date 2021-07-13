@@ -360,3 +360,18 @@ export function setDocCurrentScript(
   set(el);
   return () => set(null);
 }
+
+export function __extends(d, b) {
+  Object.setPrototypeOf(d, b);
+
+  function fNOP() {
+    this.constructor = d;
+  }
+
+  if (b === null) {
+    d.prototype = Object.create(b);
+  } else {
+    if (b.prototype) fNOP.prototype = b.prototype;
+    d.prototype = new fNOP();
+  }
+}
