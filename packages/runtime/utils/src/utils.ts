@@ -112,11 +112,13 @@ export function internFunc(internalizeString) {
 
 export function evalWithEnv(code: string, params: Record<string, any>) {
   const keys = Object.keys(params);
+  const nativeWindow = (0, eval)('window;');
   // No random value can be used, otherwise it cannot be reused as a constant string
   const randomValKey = '__garfish__exec_temporary__';
   const vales = keys.map((k) => `window.${randomValKey}.${k}`);
+
   try {
-    window[randomValKey] = params;
+    nativeWindow[randomValKey] = params;
     const evalInfo = [
       `;(function(${keys.join(',')}){`,
       `\n}).call(${vales[0]},${vales.join(',')});`,
@@ -127,7 +129,7 @@ export function evalWithEnv(code: string, params: Record<string, any>) {
   } catch (e) {
     throw e;
   } finally {
-    delete window[randomValKey];
+    delete nativeWindow[randomValKey];
   }
 }
 

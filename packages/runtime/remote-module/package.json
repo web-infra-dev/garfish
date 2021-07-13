@@ -1,0 +1,44 @@
+{
+  "name": "@garfish/remote-module",
+  "version": "0.0.31",
+  "description": "remote-module module.",
+  "keywords": [
+    "garfish",
+    "remote-module"
+  ],
+  "author": "chentao.arthur <chentao.arthur@bytedance.com>",
+  "homepage": "https://github.com/bytedance/garfish",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "module": "dist/remote-module.esm-bundler.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "scripts": {},
+  "types": "dist/index.d.ts",
+  "buildOptions": {
+    "name": "RemoteModule",
+    "devTemplate": "module",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "umd"
+    ]
+  },
+  "devDependencies": {
+    "@garfish/core": "^0.0.31"
+  },
+  "dependencies": {
+    "@garfish/loader": "^0.0.31"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "gitHead": "4a882c7f2734d085689d423f5e0c51d9a0eccbba"
+}

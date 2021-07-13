@@ -1,6 +1,6 @@
 {
   "name": "garfish-docs",
-  "version": "0.0.1",
+  "version": "0.0.31",
   "private": true,
   "scripts": {
     "setup": "npm run reset && yarn install",
@@ -21,11 +21,11 @@
     "@docusaurus/preset-classic": "^2.0.0-alpha.72",
     "@easyops-cn/docusaurus-search-local": "^0.16.3",
     "@mdx-js/react": "^1.6.21",
-    "puppeteer": "^10.0.0",
     "cld": "^2.7.0",
     "clsx": "^1.1.1",
     "front-matter": "^4.0.2",
     "nodejieba": "^2.5.1",
+    "puppeteer": "^10.0.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "swiper": "^6.6.1"

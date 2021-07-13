@@ -5,6 +5,7 @@ import { __proxyNode__ } from './symbolTypes';
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object
 const esGlobalMethods = // Function properties of the global object
 (
+  // Function properties of the global object
   'eval,isFinite,isNaN,parseFloat,parseInt,' +
   // URL handling functions
   'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +
@@ -116,7 +117,7 @@ export function microTaskHtmlProxyDocument(proxyDocument) {
 
     if (setting) {
       setting = false;
-      // // Do not use micro tasks, Element will appear in the task placed in nextTick after node
+      // Do not use micro tasks, Element will appear in the task placed in nextTick after node
       nextTick(() => {
         setting = true;
         Object.defineProperty(html, 'parentNode', {

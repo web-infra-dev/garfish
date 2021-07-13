@@ -6,10 +6,10 @@ order: 1
 
 ## Garfish 实例方法
 
-- [Garfish.run](/napi#run)
-- [Garfish.setExternal](/napi#setexternal)
-- [Garfish.registerApp](/napi#registerapp)
-- [Garfish.loadApp](/napi#loadapp)
+- [Garfish.run](/napi/new#run)
+<!-- - [Garfish.setExternal](/napi#setexternal) -->
+- [Garfish.registerApp](/napi/new#registerapp)
+- [Garfish.loadApp](/napi/new#loadapp)
 
 ## Garfish 实例属性
 

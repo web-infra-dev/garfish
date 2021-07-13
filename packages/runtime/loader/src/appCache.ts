@@ -5,8 +5,8 @@ export const cachedDataSet = new WeakSet();
 export enum FileTypes {
   js = 'js',
   css = 'css',
+  module = 'module',
   template = 'template',
-  component = 'component',
 }
 
 const MAX_SIZE = 10 * 1024 * 1024;
@@ -14,8 +14,8 @@ const DEFAULT_POLL = Symbol('__defaultBufferPoll__');
 const FILE_TYPES = [
   FileTypes.js,
   FileTypes.css,
+  FileTypes.module,
   FileTypes.template,
-  FileTypes.component,
   DEFAULT_POLL,
 ];
 

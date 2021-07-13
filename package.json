@@ -18,8 +18,7 @@
     "build:docs": "lerna run build --stream --scope garfish-docs",
     "build:watch": "lerna exec -- yarn link && node scripts/build.js -m -e  -f=esm-bundler -w",
     "reset": "lerna clean --yes && rm -rf node_modules",
-    "setup": "yarn reset && yarn install",
-    "prepublishOnly": "yarn test && yarn build:all && yarn changelog",
+    "setup": "yarn reset && yarn install --registry=https://registry.npmjs.org",
     "changelog": "node scripts/changelog.js",
     "test": "node scripts/jestTest.js",
     "test:cover": "node scripts/jestTest.js --coverage",
@@ -28,7 +27,10 @@
     "reset-gittag": "git tag -l | xargs git tag -d && git fetch --prune",
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
     "format:js": "prettier --write --parser typescript \"(packages|scripts)/**/*.js\"",
-    "format:md": "prettier --write \"**/*.md\""
+    "format:md": "prettier --write \"**/*.md\"",
+    "bump": "node ./scripts/versionBump.js",
+    "release": "node ./scripts/publish.js",
+    "release:canary": "node ./scripts/publish.js --canary"
   },
   "husky": {
     "hooks": {
@@ -87,7 +89,9 @@
     "rollup-plugin-terser": "^6.1.0",
     "rollup-plugin-typescript2": "^0.27.3",
     "ts-jest": "^26.4.4",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.5",
+    "@lerna/publish": "^3.20.2",
+    "@lerna/version": "^3.20.2"
   },
-  "version": "0.0.29"
+  "version": "0.0.31"
 }

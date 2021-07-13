@@ -3,20 +3,20 @@ import { PluginManager } from './pluginSystem';
 import { request, copyResult, mergeConfig } from './utils';
 import { FileTypes, cachedDataSet, AppCacheContainer } from './appCache';
 import { StyleManager } from './managers/style';
+import { ModuleManager } from './managers/module';
 import { TemplateManager } from './managers/template';
-import { ComponentManager } from './managers/component';
 import { JavaScriptManager } from './managers/javascript';
 
 // Export types and manager constructor
 export * from './managers/style';
+export * from './managers/module';
 export * from './managers/template';
-export * from './managers/component';
 export * from './managers/javascript';
 
 export type Manager =
   | StyleManager
+  | ModuleManager
   | TemplateManager
-  | ComponentManager
   | JavaScriptManager;
 
 export interface LoaderOptions {
@@ -48,6 +48,7 @@ export class Loader {
    * @deprecated
    */
   public requestConfig: RequestInit | ((url: string) => RequestInit);
+  public personalId: Symbol;
   public lifecycle = {
     clear: new PluginManager<ClearPluginArgs>('clear'),
     loaded: new PluginManager<LoadedPluginArgs<Manager>>('loaded'),
@@ -65,6 +66,7 @@ export class Loader {
     this.options = options || {};
     this.loadingList = Object.create(null);
     this.cacheStore = Object.create(null);
+    this.personalId = Symbol.for('garfish.loader');
   }
 
   clear(scope: string, fileType?: FileTypes) {
@@ -81,15 +83,15 @@ export class Loader {
     }
   }
 
-  loadComponent<T extends Manager>(scope: string, url: string) {
-    return this.load<T>(scope, url, true);
+  loadModule(url: string) {
+    return this.load<ModuleManager>('modules', url, true);
   }
 
   // Unable to know the final data type, so through "generics"
   load<T extends Manager>(
     scope: string,
     url: string,
-    isComponent = false,
+    isModule = false,
   ): Promise<LoadedPluginArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
 
@@ -131,9 +133,9 @@ export class Loader {
       .then(async ({ code, mimeType, result }) => {
         let managerCtor, fileType: FileTypes;
 
-        if (isComponent) {
-          fileType = FileTypes.component;
-          managerCtor = ComponentManager;
+        if (isModule) {
+          fileType = FileTypes.module;
+          managerCtor = ModuleManager;
         } else if (isHtml(mimeType) || /\.html/.test(result.url)) {
           fileType = FileTypes.template;
           managerCtor = TemplateManager;
