@@ -11,7 +11,7 @@ describe('Sandbox:Dom & Bom', () => {
       const sandbox = unstable_sandbox;
       const Sandbox = sandbox.constructor;
       const nativeWindow = Sandbox.getNativeWindow();
-      document.body.innerHTML = '<div id="root">123</div>'
+      document.body.innerHTML = '<div id="root">123</div><div __GarfishMockHead__></div>'
       ${code}
     `;
   };
@@ -94,6 +94,15 @@ describe('Sandbox:Dom & Bom', () => {
         const div = document.createElement('div');
         expect(document.ownerDocument === null).toBe(true);
         expect(div.ownerDocument === document).toBe(true);
+      `),
+    );
+  });
+
+  it('document.head', () => {
+    sandbox.execScript(
+      go(`
+        const head = document.head;
+        expect(head.tagName.toLowerCase()).toBe('div');
       `),
     );
   });
