@@ -133,7 +133,7 @@ export class Sandbox {
   }
 
   close() {
-    if (!this.closed) return;
+    if (this.closed) return;
     this.clearEffects();
     this.closed = true;
     this.global = null;
