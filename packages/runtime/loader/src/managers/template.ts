@@ -125,9 +125,9 @@ export class TemplateManager {
     // @ts-ignore
     const cloned = new this.constructor();
     cloned.url = this.url;
-    cloned.DOMApis = this.DOMApis;
     cloned.astTree = this.astTree;
     cloned.pretreatmentStore = this.pretreatmentStore;
+    cloned.DOMApis = new DOMApis(this.DOMApis.document);
     return cloned;
   }
 }
