@@ -15,9 +15,9 @@ const transformCode = (code: string) => {
 };
 
 export class TemplateManager {
-  public DOMApis = DOMApis;
   public url: string | null;
   public astTree: Array<Node>;
+  public DOMApis = new DOMApis();
   private pretreatmentStore: Record<string, Node[]> = {};
 
   constructor(template: string, url?: string) {
@@ -125,9 +125,9 @@ export class TemplateManager {
     // @ts-ignore
     const cloned = new this.constructor();
     cloned.url = this.url;
-    cloned.DOMApis = this.DOMApis;
     cloned.astTree = this.astTree;
     cloned.pretreatmentStore = this.pretreatmentStore;
+    cloned.DOMApis = new DOMApis(this.DOMApis.document);
     return cloned;
   }
 }

@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import {
-  esModule,
-  loadModule,
-  loadModuleSync,
-  cacheModules,
-} from '@garfish/remote-module';
+import { esModule, loadModule, cacheModules } from '@garfish/remote-module';
 import logo from './logo.svg';
 import './App.css';
 import { Modal, Button } from 'antd';
@@ -30,24 +25,24 @@ function App() {
     window.a.b.c = 1;
   };
 
-  const RemoteComponent = loadModuleSync('@Component.One', {
-    externals: {
-      a: 1,
-    },
-  });
-  const RemoteComponentTwo = React.lazy(() =>
-    esModule(loadModule('@Component.Two')),
-  );
+  // const RemoteComponent = loadModuleSync('@Component.One', {
+  //   externals: {
+  //     a: 1,
+  //   },
+  // });
+  // const RemoteComponentTwo = React.lazy(() =>
+  //   esModule(loadModule('@Component.Two')),
+  // );
 
   return (
     <div className="App">
-      <RemoteComponent text="cool!" />
+      {/* <RemoteComponent text="cool!" /> */}
 
-      <React.Suspense fallback={<div>loading</div>}>
+      {/* <React.Suspense fallback={<div>loading</div>}>
         <div>
           <RemoteComponentTwo text="good!" />
         </div>
-      </React.Suspense>
+      </React.Suspense> */}
 
       <Button type="primary" onClick={showModal}>
         Open Modal

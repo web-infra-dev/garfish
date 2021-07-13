@@ -68,8 +68,6 @@ describe('Apis', () => {
   });
 
   it('execScript', () => {
-    const spy = jest.spyOn(sandbox, 'clearEffects');
-    // expect(sandbox.execScript.length).toBe(2);
     expect(sandbox.execScript('')).toBe(undefined);
     sandbox.close();
   });

@@ -1,3 +1,4 @@
+import { warn } from '@garfish/utils';
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
 import { sandboxMap, handlerParams } from '../utils';
@@ -38,11 +39,30 @@ function injector(current: Function, methodName: string) {
   };
 }
 
+// Handle `ownerDocument` to prevent elements created by `ownerDocument.createElement` from escaping
+function handleOwnerDocument() {
+  Object.defineProperty(window.Element.prototype, 'ownerDocument', {
+    get() {
+      const sandbox = this && sandboxMap.get(this);
+      const realValue = Reflect.get(
+        window.Node.prototype,
+        'ownerDocument',
+        this,
+      );
+      return sandbox ? sandbox.global.document : realValue;
+    },
+    set() {
+      __DEV__ && warn('"ownerDocument" is a read-only attribute.');
+    },
+  });
+}
+
 export function makeElInjector() {
   if ((makeElInjector as any).hasInject) return;
   (makeElInjector as any).hasInject = true;
 
   if (typeof window.Element === 'function') {
+    handleOwnerDocument();
     for (const name of mountElementMethods) {
       const fn = window.Element.prototype[name];
       if (typeof fn !== 'function' || fn[__domWrapper__]) {

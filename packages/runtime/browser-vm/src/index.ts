@@ -138,6 +138,11 @@ export default function BrowserVm() {
           // Rewrite `app.runCode`
           appInstance.runCode = (...args) => sandbox.execScript(...args);
 
+          // Use sandbox document
+          if (appInstance.entryManager.DOMApis) {
+            appInstance.entryManager.DOMApis.document = sandbox.global.document;
+          }
+
           // Use `Garfish.loader` instead of the `sandbox.loader`
           sandbox.loader = Garfish.loader;
         }
