@@ -1,13 +1,10 @@
-import { makeElInjector } from '../src/dynamicNode';
 import { Sandbox } from '../src/index';
 
-// Garfish使用Proxy对dom进行了劫持, 同时对调用dom的函数做了劫持, 修正dom节点的类型
-// 对调用dom的相关方法进行测试
-
+// Garfish 使用 Proxy 对 dom 进行了劫持, 同时对调用 dom 的函数做了劫持, 修正 dom 节点的类型
+// 对调用 dom 的相关方法进行测试
 describe('Sandbox:Dom & Bom', () => {
   let sandbox: Sandbox;
   window.dispatchEvent = () => true;
-  makeElInjector();
 
   const go = (code: string) => {
     return `
@@ -23,6 +20,7 @@ describe('Sandbox:Dom & Bom', () => {
     return new Sandbox({
       ...opts,
       namespace: 'app',
+      el: () => document.createElement('div'),
       modules: [
         () => ({
           recover() {},
@@ -37,7 +35,6 @@ describe('Sandbox:Dom & Bom', () => {
   };
 
   beforeEach(() => {
-    // 由于 proxy 是 polyfill 的性质，所以需要提前定义好才能拦截到
     sandbox = create();
   });
 
@@ -55,7 +52,7 @@ describe('Sandbox:Dom & Bom', () => {
     );
   });
 
-  it('MutationObserver can be used correctly', async () => {
+  it('MutationObserver can be used correctly', () => {
     sandbox.execScript(
       go(`
         // const cb = jest.fn();
@@ -73,7 +70,7 @@ describe('Sandbox:Dom & Bom', () => {
     );
   });
 
-  it('Number.isInteger can be used correctly', async () => {
+  it('Number.isInteger can be used correctly', () => {
     sandbox.execScript(
       go(`
         expect(Number.isInteger(5)).toBe(true);
@@ -82,11 +79,21 @@ describe('Sandbox:Dom & Bom', () => {
     );
   });
 
-  it('Static methods of Global Object can be used correctly', async () => {
+  it('Static methods of Global Object can be used correctly', () => {
     sandbox.execScript(
       go(`
         expect(Number.isInteger(5)).toBe(true);
         expect(window.Number.isInteger(5)).toBe(true);
+      `),
+    );
+  });
+
+  it('ownerDocument', () => {
+    sandbox.execScript(
+      go(`
+        const div = document.createElement('div');
+        expect(document.ownerDocument === null).toBe(true);
+        expect(div.ownerDocument === document).toBe(true);
       `),
     );
   });
