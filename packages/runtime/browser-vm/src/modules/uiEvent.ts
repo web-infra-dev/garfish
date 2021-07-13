@@ -1,4 +1,4 @@
-import { __extends } from '@garfish/utils';
+import { objectToString, __extends } from '@garfish/utils';
 
 __extends(MouseEventPatch, MouseEvent);
 
@@ -8,7 +8,7 @@ export function MouseEventPatch(
 ): void {
   if (
     mouseEventInit &&
-    Object.prototype.toString.call(mouseEventInit.view) === '[object Window]'
+    objectToString.call(mouseEventInit.view) === '[object Window]'
   ) {
     mouseEventInit.view = window;
   }
