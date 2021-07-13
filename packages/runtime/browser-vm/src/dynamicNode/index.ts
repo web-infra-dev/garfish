@@ -1,5 +1,6 @@
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
+import { wrapAttributes } from './specialAttributes';
 import { sandboxMap, handlerParams } from '../utils';
 import { DynamicNodeProcessor, rawElementMethods } from './processor';
 
@@ -41,6 +42,9 @@ function injector(current: Function, methodName: string) {
 export function makeElInjector() {
   if ((makeElInjector as any).hasInject) return;
   (makeElInjector as any).hasInject = true;
+
+  // `parentNode` and `ownerDocument`
+  wrapAttributes();
 
   if (typeof window.Element === 'function') {
     for (const name of mountElementMethods) {

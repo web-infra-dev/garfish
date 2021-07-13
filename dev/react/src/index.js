@@ -74,7 +74,6 @@ if (!window.__GARFISH__) {
   render({
     dom: document.body,
   });
-} else {
 }
 
 // let st = document.createElement('style');
