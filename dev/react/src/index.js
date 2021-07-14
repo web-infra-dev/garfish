@@ -7,6 +7,7 @@ import { setModuleConfig } from '@garfish/remote-module';
 setModuleConfig({
   externals: { React },
 });
+
 // setModuleAlias({
 //   testModule: 'http://localhost:3000/remoteComponent.js',
 // });
@@ -74,7 +75,6 @@ if (!window.__GARFISH__) {
   render({
     dom: document.body,
   });
-} else {
 }
 
 // let st = document.createElement('style');

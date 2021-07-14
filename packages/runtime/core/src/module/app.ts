@@ -4,7 +4,6 @@ import {
   assert,
   remove,
   Text,
-  DOMApis,
   isJs,
   isObject,
   isPromise,
@@ -230,7 +229,7 @@ export class App {
       await asyncJsProcess;
       if (!this.stopMountAndClearEffect()) return false;
     } catch (err) {
-      DOMApis.removeElement(this.appContainer);
+      this.entryManager.DOMApis.removeElement(this.appContainer);
       this.context.hooks.lifecycle.errorMountApp.call(err, this.appInfo);
       return false;
     } finally {
@@ -260,7 +259,7 @@ export class App {
       this.context.hooks.lifecycle.afterUnMount.call(this.appInfo, this);
     } catch (err) {
       remove(this.context.activeApps, this);
-      DOMApis.removeElement(this.appContainer);
+      this.entryManager.DOMApis.removeElement(this.appContainer);
       this.context.hooks.lifecycle.errorUnmountApp.call(err, this.appInfo);
       return false;
     } finally {
@@ -352,7 +351,7 @@ export class App {
       this.mounting = false;
       // Will have been added to the document flow on the container
       if (this.appContainer) {
-        DOMApis.removeElement(this.appContainer);
+        this.entryManager.DOMApis.removeElement(this.appContainer);
       }
       return false;
     }
@@ -376,7 +375,7 @@ export class App {
       dom: rootElement,
       appRenderInfo: { isUnmount },
     });
-    DOMApis.removeElement(appContainer);
+    this.entryManager.DOMApis.removeElement(appContainer);
   }
 
   // Create a container node and add in the document flow
@@ -389,7 +388,7 @@ export class App {
 
   private renderTemplate() {
     const { appInfo, entryManager, resources } = this;
-    const { url: baseUrl } = entryManager;
+    const { url: baseUrl, DOMApis } = entryManager;
     const { htmlNode, appContainer } = createAppContainer(appInfo.name);
 
     // Transformation relative path

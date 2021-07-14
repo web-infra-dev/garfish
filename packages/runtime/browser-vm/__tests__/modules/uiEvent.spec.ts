@@ -7,7 +7,7 @@ test('patch UIEvent', async () => {
   dom.onclick = dispatchEventAction;
 
   const evt = new MouseEventPatch('click', {
-    view: new Proxy(window, {}), // fackWindow can't use to MouseEventPatch
+    view: new Proxy(window, {}), // fakeWindow can't use to MouseEventPatch
     bubbles: true,
     cancelable: false,
   });
