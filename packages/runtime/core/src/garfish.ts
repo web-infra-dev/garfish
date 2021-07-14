@@ -107,6 +107,7 @@ export class Garfish implements interfaces.Garfish {
             return {
               ...app,
               hooks: hooks,
+              props: options?.props || this.options.props,
               sandbox: options?.sandbox || this.options.sandbox,
               basename: options?.basename || this.options.basename,
               domGetter: options?.domGetter || this.options.domGetter,
@@ -198,6 +199,7 @@ export class Garfish implements interfaces.Garfish {
       appInfo = {
         name: appName,
         entry: options,
+        basename: '/',
         props: this.options.props,
         domGetter: () => document.createElement('div'),
       };

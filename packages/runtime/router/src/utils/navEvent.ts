@@ -48,7 +48,7 @@ export const push = ({
   query?: { [key: string]: string };
   basename?: string;
 }) => {
-  if (!basename) basename = RouterConfig.basename;
+  if (!basename) basename = RouterConfig.basename || '/';
 
   let url = null;
   if (validURL(path)) {
@@ -73,7 +73,7 @@ export const replace = ({
   query?: { [key: string]: string };
   basename?: string;
 }) => {
-  if (!basename) basename = RouterConfig.basename;
+  if (!basename) basename = RouterConfig.basename || '/';
 
   let url = null;
   if (validURL(path)) {

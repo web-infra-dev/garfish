@@ -50,6 +50,7 @@ export default {
     GarfishInstance.run({
       basename: '/garfish_master/vue',
       nested: !!window.__GARFISH_PARENT__,
+      domGetter: ()=> document.querySelector('#vueApp'),
       apps: [
         {
           name: 'vueApp',
@@ -57,15 +58,13 @@ export default {
           basename: '/garfish_master/vue',
           activeWhen: '/vueApp',
           cache: true,
-          domGetter: ()=> document.querySelector('#vueApp')
         },
         {
           name: 'reactApp',
           entry: 'http://localhost:3000',
           basename: '/garfish_master/vue',
           activeWhen: '/reactApp',
-          cache: true,
-          domGetter: ()=> document.querySelector('#vueApp')
+          cache: true
         }
       ],
       async beforeLoad(appInfo) {

@@ -1,6 +1,7 @@
 <template>
   <div id="grandson">
     <div>sub app content</div>
+    <router-view />
   </div>
 </template>
 

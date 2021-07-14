@@ -1,10 +1,7 @@
-import { parseQuery, getAppRootPath } from './utils/urlUt';
-import { callCapturedEventListeners } from './utils/navEvent';
-import { asyncForEach, toMiddleWare, getPath, createEvent } from './utils';
+import { parseQuery } from './utils/urlUt';
+import { createEvent } from './utils';
 import {
   RouterConfig,
-  setRouterConfig,
-  RouterInfo,
   __GARFISH_ROUTER_UPDATE_FLAG__,
   __GARFISH_ROUTER_FLAG__,
   __GARFISH_BEFORE_ROUTER_EVENT__,
@@ -47,13 +44,13 @@ export const normalAgent = () => {
                 toRouterInfo: {
                   fullPath: urlAfter,
                   query: parseQuery(location.search),
-                  path: getPath(RouterConfig.basename!, urlAfter),
+                  path: urlAfter,
                   state: stateBefore,
                 },
                 fromRouterInfo: {
                   fullPath: urlBefore,
                   query: parseQuery(location.search),
-                  path: getPath(RouterConfig.basename!, urlBefore),
+                  path: urlAfter,
                   state: stateAfter,
                 },
                 eventType: type,
@@ -84,7 +81,7 @@ export const normalAgent = () => {
               toRouterInfo: {
                 fullPath: location.pathname,
                 query: parseQuery(location.search),
-                path: getPath(RouterConfig.basename!, location.pathname),
+                path: location.pathname,
               },
               fromRouterInfo: {
                 fullPath: RouterConfig.current!.fullPath,
@@ -108,7 +105,7 @@ export const initRedirect = () => {
   linkTo({
     toRouterInfo: {
       fullPath: location.pathname,
-      path: getPath(RouterConfig.basename!),
+      path: location.pathname,
       query: parseQuery(location.search),
       state: history.state,
     },

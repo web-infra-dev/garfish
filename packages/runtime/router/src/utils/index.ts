@@ -23,17 +23,6 @@ export function toMiddleWare(to, from, cb: RouterHook) {
   });
 }
 
-export function getPath(basename: string, pathname?: string) {
-  if (basename === '/' || basename === '') {
-    return pathname || location.pathname;
-  } else {
-    return (pathname || location.pathname).replace(
-      new RegExp(`^/?${basename}`),
-      '',
-    );
-  }
-}
-
 export function createEvent(type) {
   let e;
   // Compatible with ie

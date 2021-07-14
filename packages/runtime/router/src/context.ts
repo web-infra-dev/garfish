@@ -87,6 +87,7 @@ export interface RouterInterface {
     Apps: interfaces.AppInfo | Array<interfaces.AppInfo>,
   ) => void;
   routerChange: (hook: RouterChange) => void;
+  setRouterConfig: typeof setRouterConfig;
   listenRouterAndReDirect: ({
     apps,
     basename,
@@ -106,6 +107,7 @@ const Router: RouterInterface = {
   registerRouter,
   routerChange,
   listenRouterAndReDirect,
+  setRouterConfig,
   routerConfig: RouterConfig,
 };
 

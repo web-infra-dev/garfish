@@ -43,8 +43,20 @@ export function find(arr: Array<Function>, func: Function) {
   return null;
 }
 
-export function getAppRootPath(basename, path, appInfo: interfaces.AppInfo) {
-  let appRootPath = basename === '/' ? '' : basename;
+export function getPath(basename: string = '/', pathname?: string) {
+  if (basename === '/' || basename === '') {
+    return pathname || location.pathname;
+  } else {
+    return (pathname || location.pathname).replace(
+      new RegExp(`^/?${basename}`),
+      '',
+    );
+  }
+}
+
+export function getAppRootPath(appInfo: interfaces.AppInfo) {
+  const path = getPath(appInfo.basename, location.pathname);
+  let appRootPath = appInfo.basename === '/' ? '' : appInfo.basename;
   if (typeof appInfo.activeWhen === 'string') {
     appRootPath += appInfo.activeWhen;
   } else {
