@@ -81,8 +81,6 @@ export class App {
   ) {
     this.context = context;
     // Get app container dom
-    appInfo.domGetter = getRenderNode(appInfo.domGetter);
-
     this.appInfo = appInfo;
     this.name = appInfo.name;
     this.resources = resources;

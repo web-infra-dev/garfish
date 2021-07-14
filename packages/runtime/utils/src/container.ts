@@ -1,5 +1,5 @@
 import { interfaces } from '@garfish/core';
-import { assert, createKey } from './utils';
+import { assert, createKey, isPromise } from './utils';
 
 export function createAppContainer(name: string) {
   // Create a temporary node, which is destroyed by the module itself
@@ -16,16 +16,22 @@ export function createAppContainer(name: string) {
   };
 }
 
-export function getRenderNode(domGetter: interfaces.DomGetter): Element {
+export async function getRenderNode(
+  domGetter: interfaces.DomGetter,
+): Promise<Element> {
   assert(domGetter, `Invalid domGetter:\n ${domGetter}.`);
-  // prettier-ignore
-  const appWrapperNode =
-    typeof domGetter === 'string'
-      ? document.querySelector(domGetter)
-      : typeof domGetter === 'function'
-        ? domGetter()
-        : domGetter;
+
+  let appWrapperNode = domGetter;
+
+  if (typeof domGetter === 'string') {
+    appWrapperNode = document.querySelector(domGetter);
+  } else if (typeof domGetter === 'function') {
+    appWrapperNode = await domGetter();
+  } else if (typeof domGetter === 'object') {
+    appWrapperNode = domGetter;
+  }
+
   assert(appWrapperNode, `Invalid domGetter: ${domGetter}`);
 
-  return appWrapperNode;
+  return appWrapperNode as Element;
 }
