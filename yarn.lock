@@ -7283,7 +7283,7 @@ external-editor@^3.0.3:
   dependencies:
     chardet "^0.7.0"
     iconv-lite "^0.4.24"
-    tmp "^0.0.33"
+    tmp "^0.0.34"
 
 extglob@^2.0.4:
   version "2.0.4"
@@ -15522,9 +15522,9 @@ tinycolor2@^1.4.1:
   resolved "https://registry.npmjs.org/tinycolor2/-/tinycolor2-1.4.2.tgz#3f6a4d1071ad07676d7fa472e1fac40a719d8803"
   integrity sha512-vJhccZPs965sV/L2sU4oRQVAos0pQXwsvTLkWYdqJ+a8Q5kPFzJTuOFwy7UniPli44NKQGAglksjvOcpo95aZA==
 
-tmp@^0.0.33:
-  version "0.0.33"
-  resolved "https://registry.npmjs.org/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
+tmp@^0.0.34:
+  version "0.0.34"
+  resolved "https://registry.npmjs.org/tmp/-/tmp-0.0.34.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
   integrity sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==
   dependencies:
     os-tmpdir "~1.0.2"
