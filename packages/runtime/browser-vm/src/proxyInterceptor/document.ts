@@ -75,8 +75,9 @@ export function createGetter(sandbox: Sandbox) {
 }
 
 // document proxy setter
-export function createSetter() {
+export function createSetter(sandbox) {
   return (target: any, p: PropertyKey, value: any, receiver: any) => {
+    const rootNode = rootElm(sandbox);
     const verifyResult = verifySetterDescriptor(
       // prettier-ignore
       typeof p === 'string' && passedKey(p)
@@ -90,6 +91,11 @@ export function createSetter() {
     if (verifyResult > 0) {
       if (verifyResult === 1 || verifyResult === 2) return false;
       if (verifyResult === 3) return true;
+    }
+
+    // Application area of the ban on selected, if users want to ban the global need to set on the main application
+    if (p === 'onselectstart' && rootNode) {
+      return Reflect.set(rootNode, p, value);
     }
 
     return typeof p === 'string' && passedKey(p)

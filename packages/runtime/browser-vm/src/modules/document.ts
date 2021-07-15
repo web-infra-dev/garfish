@@ -69,7 +69,7 @@ export const documentModule = (sandbox: Sandbox) => {
       },
     }),
     {
-      set: createSetter(),
+      set: createSetter(sandbox),
       defineProperty: createDefineProperty(),
     },
   );
