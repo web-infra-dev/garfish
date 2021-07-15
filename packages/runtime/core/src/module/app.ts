@@ -518,6 +518,8 @@ export class App {
 
     // cjs exports
     if (cjsModules.exports) {
+      if (cjsModules.exports && isPromise(cjsModules.exports))
+        cjsModules.exports = await cjsModules.exports;
       // Is not set in the configuration of webpack library option
       if (cjsModules.exports.provider) provider = cjsModules.exports.provider;
     }
