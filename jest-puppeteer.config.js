@@ -6,3 +6,4 @@ module.exports = {
   },
   browserContext: 'default',
 };
+
