@@ -92,9 +92,10 @@ export default function Router(_args?: Options) {
           delete Garfish.apps[name];
         }
 
-        const appList = apps.filter(
-          (app) => app.activeWhen !== null && app.activeWhen !== undefined,
-        ) as Array<Required<interfaces.AppInfo>>;
+        const appList = apps.filter((app) => {
+          if (!app.basename) app.basename = basename;
+          return app.activeWhen !== null && app.activeWhen !== undefined;
+        }) as Array<Required<interfaces.AppInfo>>;
 
         if (appList.length === 0) return;
 

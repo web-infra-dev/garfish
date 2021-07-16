@@ -3,9 +3,20 @@ import GarfishInstance from 'garfish';
 (window as any).__GARFISH_PARENT__ = true;
 console.log(GarfishInstance);
 
+let asyncTime = function () {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, 3000);
+  });
+};
+
 GarfishInstance.run({
   basename: '/garfish_master',
-  domGetter: '#submoduleByRouter',
+  domGetter: async () => {
+    await asyncTime();
+    return document.querySelector('#submoduleByRouter');
+  },
   apps: [
     {
       name: 'react',
@@ -20,7 +31,7 @@ GarfishInstance.run({
       entry: 'http://localhost:9090',
     },
   ],
-  autoRefreshApp: false,
+  autoRefreshApp: true,
   // disablePreloadApp: true,
   sandbox: {
     open: true,

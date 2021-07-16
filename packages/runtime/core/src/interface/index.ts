@@ -10,7 +10,11 @@ import {
 import { AppInterface } from '../module/app';
 
 export namespace interfaces {
-  export type DomGetter = Element | (() => Element | null) | string;
+  export type DomGetter =
+    | Element
+    | (() => Element | null)
+    | string
+    | (() => Promise<Element>);
 
   export interface LoaderResult {
     mount: () => void;

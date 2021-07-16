@@ -1,6 +1,6 @@
-import { parseQuery, getAppRootPath } from './utils/urlUt';
+import { parseQuery, getAppRootPath, getPath } from './utils/urlUt';
 import { callCapturedEventListeners } from './utils/navEvent';
-import { asyncForEach, toMiddleWare, getPath } from './utils';
+import { asyncForEach, toMiddleWare } from './utils';
 import {
   RouterConfig,
   setRouterConfig,
@@ -14,6 +14,9 @@ import {
 const hasActive = (activeWhen: any, path: string) => {
   if (typeof activeWhen === 'string') {
     if (activeWhen[0] !== '/') activeWhen = `/${activeWhen}`;
+    // Set to the root path must be congruent
+    if (activeWhen === '/' && path === activeWhen) return true;
+
     const activeWhenArr = activeWhen.split('/');
     const pathArr = path.split('/');
     let flag: boolean = true;
@@ -29,6 +32,12 @@ const hasActive = (activeWhen: any, path: string) => {
 };
 
 // Overloading to specify the routing
+// 1. Applications for current needs to be destroyed
+// 2. Gets the current need to activate the application
+// 3. To acquire new need to activate the application
+// 4. Trigger function beforeEach, trigger in front of the destroyed all applications
+// 5. Trigger the need to destroy deactive function of application
+// 6. If there is no need to activate the application, by default, triggering popstate application component view child to update
 export const linkTo = async ({
   toRouterInfo,
   fromRouterInfo,
@@ -39,7 +48,6 @@ export const linkTo = async ({
   eventType: keyof History | 'popstate';
 }) => {
   const {
-    basename = '',
     current,
     apps,
     deactive,
@@ -50,13 +58,11 @@ export const linkTo = async ({
     autoRefreshApp,
   } = RouterConfig;
 
-  const path: string = getPath(basename, location.pathname);
-
   const deactiveApps = current!.matched.filter(
     (appInfo) =>
       !hasActive(
         appInfo.activeWhen,
-        getPath(appInfo.basename || basename, location.pathname),
+        getPath(appInfo.basename, location.pathname),
       ),
   );
 
@@ -64,7 +70,7 @@ export const linkTo = async ({
   const activeApps = apps.filter((appInfo) => {
     return hasActive(
       appInfo.activeWhen,
-      getPath(appInfo.basename || basename, location.pathname),
+      getPath(appInfo.basename, location.pathname),
     );
   });
 
@@ -74,13 +80,11 @@ export const linkTo = async ({
 
   // router infos
   const to = {
-    basename: basename,
     ...toRouterInfo,
     matched: needToActive,
   };
 
   const from = {
-    basename: basename,
     ...fromRouterInfo,
     matched: deactiveApps,
   };
@@ -92,32 +96,14 @@ export const linkTo = async ({
     await asyncForEach(
       deactiveApps,
       async (appInfo) =>
-        await deactive(
-          appInfo,
-          getPath(appInfo.basename || basename, location.pathname),
-        ),
+        await deactive(appInfo, getPath(appInfo.basename, location.pathname)),
     );
-  }
-
-  // save state
-  // Root routing is not loaded by default application
-  if (path === '/' || !path) {
-    setRouterConfig({
-      current: {
-        path: '/',
-        fullPath: basename + '/',
-        matched: [],
-        query: {},
-        state: {},
-      },
-    });
-    await toMiddleWare(to, from, afterEach!);
-    return;
   }
 
   setRouterConfig({
     current: {
-      path: getPath(RouterConfig.basename!),
+      // path: getPath(RouterConfig.basename!),
+      path: location.pathname,
       fullPath: location.pathname,
       matched: activeApps,
       state: history.state,
@@ -140,11 +126,11 @@ export const linkTo = async ({
 
   await asyncForEach(needToActive, async (appInfo) => {
     // Function using matches character and routing using string matching characters
-    const appRootPath = getAppRootPath(basename, path, appInfo);
+    const appRootPath = getAppRootPath(appInfo);
     await active(appInfo, appRootPath);
   });
 
-  if (activeApps.length === 0 && notMatch) notMatch(path);
+  if (activeApps.length === 0 && notMatch) notMatch(location.pathname);
 
   await toMiddleWare(to, from, afterEach!);
 };

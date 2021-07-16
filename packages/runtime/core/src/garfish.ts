@@ -9,6 +9,7 @@ import {
   transformUrl,
   isPlainObject,
   __GARFISH_FLAG__,
+  getRenderNode,
 } from '@garfish/utils';
 import { Hooks } from './hooks';
 import { App } from './module/app';
@@ -107,6 +108,7 @@ export class Garfish implements interfaces.Garfish {
             return {
               ...app,
               hooks: hooks,
+              props: options?.props || this.options.props,
               sandbox: options?.sandbox || this.options.sandbox,
               basename: options?.basename || this.options.basename,
               domGetter: options?.domGetter || this.options.domGetter,
@@ -198,10 +200,16 @@ export class Garfish implements interfaces.Garfish {
       appInfo = {
         name: appName,
         entry: options,
+        basename: this.options.basename || '/',
         props: this.options.props,
-        domGetter: () => document.createElement('div'),
+        domGetter:
+          this.options.domGetter || (() => document.createElement('div')),
       };
     }
+
+    // Initialize the mount point, support domGetter as promise, is advantageous for the compatibility
+    if (appInfo.domGetter)
+      appInfo.domGetter = await getRenderNode(appInfo.domGetter);
 
     const asyncLoadProcess = async () => {
       // Return not undefined type data directly to end loading

@@ -80,8 +80,6 @@ export class App {
   ) {
     this.context = context;
     // Get app container dom
-    appInfo.domGetter = getRenderNode(appInfo.domGetter);
-
     this.appInfo = appInfo;
     this.name = appInfo.name;
     this.resources = resources;
@@ -520,6 +518,8 @@ export class App {
 
     // cjs exports
     if (cjsModules.exports) {
+      if (isPromise(cjsModules.exports))
+        cjsModules.exports = await cjsModules.exports;
       // Is not set in the configuration of webpack library option
       if (cjsModules.exports.provider) provider = cjsModules.exports.provider;
     }
