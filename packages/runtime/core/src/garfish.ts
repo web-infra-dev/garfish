@@ -200,7 +200,7 @@ export class Garfish implements interfaces.Garfish {
       appInfo = {
         name: appName,
         entry: options,
-        basename: '/',
+        basename: this.options.basename || '/',
         props: this.options.props,
         domGetter:
           this.options.domGetter || (() => document.createElement('div')),

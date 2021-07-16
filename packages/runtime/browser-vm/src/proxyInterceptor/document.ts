@@ -94,8 +94,12 @@ export function createSetter(sandbox) {
     }
 
     // Application area of the ban on selected, if users want to ban the global need to set on the main application
-    if (p === 'onselectstart' && rootNode) {
-      return Reflect.set(rootNode, p, value);
+    if (p === 'onselectstart') {
+      if (rootNode) {
+        return Reflect.set(rootNode, p, value);
+      } else {
+        return Reflect.set(document, p, value);
+      }
     }
 
     return typeof p === 'string' && passedKey(p)
