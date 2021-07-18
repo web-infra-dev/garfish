@@ -129,19 +129,26 @@
           return false;
         }
 
-
-        function GarfishPluginForBeforeSend (ev) {
-          if (ev.ev_type === 'js_error') {
-            let isSubAppSource = computeErrorUrl(ev.payload.error,window.Garfish.apps.react.sourceList);
-            console.log('isSubAppSource #@@@@@@@@',ev,isSubAppSource);
-            if (!isSubAppSource) return ev;
+        function GarfishPluginForBeforeSend (appName) {
+          if (window.__GARFISH__) {
+            // let app = window.Garfish.apps.react.sourceList;
+            return function (ev) {
+              let apps = window.Garfish.activeApps.filter((app)=>app.appInfo.name === appName);
+              if (ev.ev_type === 'js_error' && apps[0] && apps[0].sourceList) {
+                let isSubAppSource = computeErrorUrl(ev.payload.error,apps[0].sourceList);
+                console.log('isSubAppSource #@@@@@@@@',ev,isSubAppSource);
+                if (!isSubAppSource) return ev;
+              }
+              return ev;
+            }
+          } else {
+            return (ev)=> ev;
           }
-          return ev;
         }
 
         window.Slardar('init', { bid: '121212' });
         window.Slardar('start');
-        window.Slardar('on', 'beforeSend', GarfishPluginForBeforeSend);
+        window.Slardar('on', 'beforeSend', GarfishPluginForBeforeSend('react'));
     </script>
     <title>React App</title>
   </head>
