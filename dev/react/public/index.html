@@ -117,9 +117,9 @@
 
           if (!urls) return false;
 
-          for(let j=0;j<urls.length;j++){
-            if (sourceList.indexOf(urls[j])!==-1) {
-              console.log('match SubApp sourceLink :',urls[j]);
+          for(let j=0;j<sourceList.length;j++){
+            if (urls.indexOf(sourceList[j].url)!==-1) {
+              console.log('match SubApp sourceLink :',sourceList[j].url);
               return true;
             }
           }
@@ -149,6 +149,7 @@
         GarfishPluginForSlardar(window.Slardar,'react');
         window.Slardar('on', 'beforeSend', (ev)=>console.log(ev.ev_type, ev));
 
+        // let onloadEvent = new Event("load", {"bubbles":false, "cancelable":false});
 
         setTimeout(()=>{
           const xhr = new XMLHttpRequest()
@@ -163,8 +164,15 @@
           }
           xhr.send(null)
           fetch('http://localhost:3000/fetch/subApp').then((res)=> {})
-          throw Error('subApp: unhandledrejection error');
+          // throw Error('subApp: unhandledrejection error');
         },2000);
+
+        window.addEventListener('load',function(){
+          console.log('触发了 onload');
+        });
+        // setTimeout(()=>{
+        //   window.dispatchEvent(onloadEvent);
+        // },3000);
     </script>
     <title>React App</title>
   </head>

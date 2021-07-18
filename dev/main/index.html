@@ -33,8 +33,13 @@
       }
       xhr.send(null)
       fetch('http://localhost:2333/fetch/mainApp').then((res)=> {});
-      throw Error('mainApp: unhandledrejection error');
-    },5000)
+      // throw Error('mainApp: unhandledrejection error');
+    },5000);
+
+
+    window.addEventListener('load',function(){
+      console.log('触发了 onload main');
+    });
   </script>
   <script>
       // window.addEventListener('unhandledrejection', event => {
