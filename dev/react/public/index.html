@@ -38,34 +38,8 @@
       ;(function installSlardar(w, d, u, b, n, pc, ga, ae, po, s, p, e, t, pp) {pc = 'precollect';ga = 'getAttribute';ae = 'addEventListener';po = 'PerformanceObserver';s = function (m) {p = [].slice.call(arguments);p.push(Date.now(), location.href);(m == pc ? s.p.a : s.q).push(p)};s.q = [];s.p = { a: [] };w[n] = s;e = document.createElement('script');e.src = u + '?bid=' + b + '&globalName=' + n;e.crossorigin = u.indexOf('cdn') > 0 ? 'anonymous' : 'use-credentials';d.getElementsByTagName('head')[0].appendChild(e);if (ae in w) {s.pcErr = function (e) {e = e || w.event;t = e.target || e.srcElement;if (t instanceof Element || t instanceof HTMLElement) {if (t[ga]('integrity')) {w[n](pc, 'sri', t[ga]('href') || t[ga]('src'))} else {w[n](pc, 'st', { tagName: t.tagName, url: t[ga]('href') || t[ga]('src') })}} else {w[n](pc, 'err', e.error)}};s.pcRej = function (e) {e = e || w.event;w[n](pc, 'err', String(e.reason || (e.detail && e.detail.reason)))};w[ae]('error', s.pcErr, true);w[ae]('unhandledrejection', s.pcRej, true);};if('PerformanceLongTaskTiming' in w) {pp = s.pp = { entries: [] };pp.observer = new PerformanceObserver(function (l) {pp.entries = pp.entries.concat(l.getEntries)});pp.observer.observe({ entryTypes: ['longtask', 'largest-contentful-paint','layout-shift'] })}})(window,document,'https://lf3-short.bytegoofy.com/slardar/fe/sdk-web/browser.cn.js','1212','Slardar')
     </script>
     <script>
-        // window.Slardar("init", {
-        //   plugins: {
-        //     sentry: {
-        //           beforeSend: (event, hint) => {
-        //             let sourceList = window.Garfishapps.react.vmSandbox.options.sourceList;
-        //             if (event.level === 'error') {
-        //               let frames = event.exception.values[0].stacktrace.frames;
-        //               try {
-        //                 for(let i = 0;i<frames.length;i++){
-        //                   if (frames.filename.indexOf(sourceList)!==-1) {
-        //                     console.log('^^^^^^^^^^^^^^^来自子应用 react',event);
-        //                     return event;
-        //                   }
-        //                 }
-        //               } catch(err){
-        //                 return event;
-        //               }
-        //             } else {
-        //               return event;
-        //             }
-        //           },
-        //           // beforeBreadcrumb: (breadcrumb, hint) => breadcrumb,
-        //       }
-        //   }
-        // });
+
         function computeStackTraceFromStackProp(ex) {
-
-
             if (!ex || !ex.stack) {
               return null;
             }
@@ -77,7 +51,9 @@
             let parts;
             let element;
             const chrome = /^\s*at (?:(.*?) ?\()?((?:file|https?|blob|chrome-extension|address|native|eval|webpack|<anonymous>|[-a-z]+:|.*bundle|\/).*?)(?::(\d+))?(?::(\d+))?\)?\s*$/i;
+            const gecko = /^\s*(.*?)(?:\((.*?)\))?(?:^|@)?((?:file|https?|blob|chrome|webpack|resource|moz-extension|capacitor).*?:\/.*?|\[native code\]|[^@]*(?:bundle|\d+\.js)|\/[\w\-. /=]+)(?::(\d+))?(?::(\d+))?\s*$/i;
             const winjs = /^\s*at (?:((?:\[object object\])?.+) )?\(?((?:file|ms-appx|https?|webpack|blob):.*?):(\d+)(?::(\d+))?\)?\s*$/i;
+            const geckoEval = /(\S+) line (\d+)(?: > eval line \d+)* > eval/i;
 
             for (let i = 0; i < lines.length; ++i) {
               if ((parts = chrome.exec(lines[i]))) {
@@ -114,36 +90,58 @@
             }
 
             return {
-              message: extractMessage(ex),
               name: ex.name,
               stack,
             };
-          }
-        function computeErrorUrl(ex) {
+        }
+
+        function computeErrorUrl(ex,sourceList) {
           if (ex && ex.filename) return ex.filename;
           const res = computeStackTraceFromStackProp(ex);
+          let urls;
           if (res) {
-            const urls = res.stack.map((item) => {
+            urls = res.stack.map((item) => {
               return item.url;
             });
-            return urls;
           } else if (ex && ex.target && ex.target.tagName) {
             const tagName = ex.target.tagName.toLowerCase();
-            if (sourceNode(tagName)) {
-              return [ex.target.src || ex.target.href];
+            if ([
+              'link',
+              'style',
+              'script',
+              'img',
+              'video',
+              'audio',
+            ].indexOf(tagName)!== -1) {
+              urls = [ex.target.src || ex.target.href];
             }
           }
-          return [];
+
+          if (!urls) return false;
+
+          for(let j=0;j<urls.length;j++){
+            if (sourceList.indexOf(urls[j])!==-1) {
+              console.log('match SubApp sourceLink :',urls[j]);
+              return true;
+            }
+          }
+
+          return false;
         }
-        window.Slardar('init', { bid: '121212' });
-        window.Slardar('start');
-        window.Slardar('on', 'beforeSend', (ev) => {
+
+
+        function GarfishPluginForBeforeSend (ev) {
           if (ev.ev_type === 'js_error') {
-            console.log('^^^^^^^^',ev, computeErrorUrl(ev.payload.error));
-            console.log('#@@@@@@@@',ev, computeErrorUrl(ev.payload.error));
+            let isSubAppSource = computeErrorUrl(ev.payload.error,window.Garfish.apps.react.sourceList);
+            console.log('isSubAppSource #@@@@@@@@',ev,isSubAppSource);
+            if (!isSubAppSource) return ev;
           }
           return ev;
-        });
+        }
+
+        window.Slardar('init', { bid: '121212' });
+        window.Slardar('start');
+        window.Slardar('on', 'beforeSend', GarfishPluginForBeforeSend);
     </script>
     <title>React App</title>
   </head>
