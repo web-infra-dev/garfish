@@ -136,7 +136,7 @@
               let apps = window.Garfish.activeApps.filter((app)=>app.appInfo.name === appName);
               if (ev.ev_type === 'js_error' && apps[0] && apps[0].sourceList) {
                 let isSubAppSource = computeErrorUrl(ev.payload.error,apps[0].sourceList);
-                console.log('isSubAppSource #@@@@@@@@',ev,isSubAppSource);
+                console.log('isSubAppSource error：',ev,isSubAppSource);
                 if (!isSubAppSource) return ev;
               }
               return ev;
