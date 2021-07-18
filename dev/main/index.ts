@@ -14,7 +14,7 @@ let asyncTime = function () {
 GarfishInstance.run({
   basename: '/garfish_master',
   domGetter: async () => {
-    await asyncTime();
+    // await asyncTime();
     return document.querySelector('#submoduleByRouter');
   },
   apps: [
