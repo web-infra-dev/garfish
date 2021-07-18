@@ -128,7 +128,7 @@
         }
 
         function GarfishPluginForSlardar (SlardarInstance,appName) {
-          if (!window.__GARFISH__) return false;
+          if (!window.__GARFISH__ || window.Garfish.options.sandbox && !window.Garfish.options.sandbox.open) return false;
           function getAppInstance () {
             let apps = window.Garfish.activeApps.filter((app)=>app.appInfo.name === appName);
             return apps[0];
@@ -140,7 +140,6 @@
               let isSubAppSource = computeErrorUrl(ev.payload.error,app.sourceList);
               if (!isSubAppSource) return false;
             }
-            console.log(ev.ev_type, ev);
             return ev;
           });
         }
@@ -148,6 +147,7 @@
         window.Slardar('init', { bid: '121212' });
         window.Slardar('start');
         GarfishPluginForSlardar(window.Slardar,'react');
+        window.Slardar('on', 'beforeSend', (ev)=>console.log(ev.ev_type, ev));
 
 
         setTimeout(()=>{
