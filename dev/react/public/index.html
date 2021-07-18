@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="garfish-remote-module" alias="Component" src="http://localhost:3000/remoteComponent.js">
     <meta
       name="description"
       content="Web site created using create-react-app"
@@ -15,7 +14,6 @@
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <script async>console.log('hello')</script>
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -129,26 +127,44 @@
           return false;
         }
 
-        function GarfishPluginForBeforeSend (appName) {
-          if (window.__GARFISH__) {
-            // let app = window.Garfish.apps.react.sourceList;
-            return function (ev) {
-              let apps = window.Garfish.activeApps.filter((app)=>app.appInfo.name === appName);
-              if (ev.ev_type === 'js_error' && apps[0] && apps[0].sourceList) {
-                let isSubAppSource = computeErrorUrl(ev.payload.error,apps[0].sourceList);
-                console.log('isSubAppSource error：',ev,isSubAppSource);
-                if (!isSubAppSource) return ev;
-              }
-              return ev;
-            }
-          } else {
-            return (ev)=> ev;
+        function GarfishPluginForSlardar (SlardarInstance,appName) {
+          if (!window.__GARFISH__) return false;
+          function getAppInstance () {
+            let apps = window.Garfish.activeApps.filter((app)=>app.appInfo.name === appName);
+            return apps[0];
           }
+
+          SlardarInstance('on', 'beforeSend', (ev)=>{
+            let app = getAppInstance();
+            if (ev.ev_type === 'js_error' && app && app.sourceList) {
+              let isSubAppSource = computeErrorUrl(ev.payload.error,app.sourceList);
+              if (!isSubAppSource) return false;
+            }
+            console.log(ev.ev_type, ev);
+            return ev;
+          });
         }
 
         window.Slardar('init', { bid: '121212' });
         window.Slardar('start');
-        window.Slardar('on', 'beforeSend', GarfishPluginForBeforeSend('react'));
+        GarfishPluginForSlardar(window.Slardar,'react');
+
+
+        setTimeout(()=>{
+          const xhr = new XMLHttpRequest()
+          xhr.open('get', 'http://localhost:3000/subApp', true);
+          xhr.onreadystatechange = function () {
+            if(xhr.readyState !== 4) {
+              return
+            }
+            if(xhr.status >= 200 && xhr.status < 300) {
+              console.log('subApp xhr')
+            }
+          }
+          xhr.send(null)
+          fetch('http://localhost:3000/fetch/subApp').then((res)=> {})
+          throw Error('subApp: unhandledrejection error');
+        },2000);
     </script>
     <title>React App</title>
   </head>
@@ -166,5 +182,4 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
-  <script type="module"></script>
 </html>

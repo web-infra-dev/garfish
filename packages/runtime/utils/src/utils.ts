@@ -375,3 +375,44 @@ export function __extends(d, b) {
     d.prototype = new fNOP();
   }
 }
+
+export function isFunction(what: unknown): what is Function {
+  return typeof what === 'function';
+}
+
+export const hookObjectProperty = <
+  T extends {},
+  K extends keyof T,
+  P extends any[]
+>(
+  obj: T,
+  key: K,
+  hookFunc: (origin: T[K], ...params: P) => T[K],
+) => {
+  return (...params: P) => {
+    if (!obj) {
+      return noop;
+    }
+    const origin = obj[key];
+    const hookedUnsafe = hookFunc(origin, ...params);
+    let hooked = hookedUnsafe;
+
+    // To method packages a layer of a try after all the hooks to catch
+    if (isFunction(hooked)) {
+      hooked = (function (this: any, ...args: any) {
+        try {
+          return (hookedUnsafe as any).apply(this, args);
+        } catch {
+          return isFunction(origin) && origin.apply(this, args);
+        }
+      } as any) as T[K];
+    }
+    obj[key] = hooked;
+
+    return (strict?: boolean) => {
+      if (!strict || hooked === obj[key]) {
+        obj[key] = origin;
+      }
+    };
+  };
+};

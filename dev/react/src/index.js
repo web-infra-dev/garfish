@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { setModuleConfig } from '@garfish/remote-module';
+// import { setModuleConfig } from '@garfish/remote-module';
 
-setModuleConfig({
-  externals: { React },
-});
+// setModuleConfig({
+//   externals: { React },
+// });
 
 // setModuleAlias({
 //   testModule: 'http://localhost:3000/remoteComponent.js',
