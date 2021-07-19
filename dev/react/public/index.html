@@ -130,8 +130,23 @@
         function GarfishPluginForSlardar (SlardarInstance,appName) {
           if (!window.__GARFISH__ || window.Garfish.options.sandbox && !window.Garfish.options.sandbox.open) return false;
           function getAppInstance () {
-            let apps = window.Garfish.activeApps.filter((app)=>app.appInfo.name === appName);
-            return apps[0];
+            // let apps = window.Garfish.activeApps.filter((app)=>app.appInfo.name === appName);
+            // return apps[0];
+            let app = window.Garfish.apps[appName];
+            return app;
+          }
+
+          // Statistical performance indicators
+          let appInstance = getAppInstance();
+
+          if (appInstance && appInstance.appPerformance) {
+            appInstance.appPerformance.subscribePerformanceData((subAppTimeData) => {
+              // subAppTimeData: 订阅的当前子应用的性能数据，详情看 interface 定义
+              // 子应用性能数据上报（根据业务或数据为度需求不同可自行调整）
+              // 以下代码是运营平台对子应用性能数据的上报代码，仅作为示例！
+
+              console.log(subAppTimeData)
+            });
           }
 
           SlardarInstance('on', 'beforeSend', (ev)=>{
@@ -164,7 +179,7 @@
           }
           xhr.send(null)
           fetch('http://localhost:3000/fetch/subApp').then((res)=> {})
-          throw Error('subApp: unhandledrejection error');
+          // throw Error('subApp: unhandledrejection error');
         },2000);
 
         // setTimeout(()=>{

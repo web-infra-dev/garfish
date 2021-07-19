@@ -19,6 +19,7 @@ import { fetchStaticResources } from './utils';
 import { GarfishHMRPlugin } from './plugins/fixHMR';
 import { GarfishOptionsLife } from './plugins/lifecycle';
 import { GarfishPreloadPlugin } from './plugins/preload';
+import { GarfishPerformance } from './plugins/performance';
 
 export class Garfish implements interfaces.Garfish {
   public hooks: Hooks;
@@ -49,7 +50,11 @@ export class Garfish implements interfaces.Garfish {
   }
 
   private injectOptionalPlugin(options?: interfaces.Options) {
-    const defaultPlugin = [GarfishHMRPlugin(), GarfishOptionsLife(options)];
+    const defaultPlugin = [
+      GarfishHMRPlugin(),
+      GarfishOptionsLife(options),
+      GarfishPerformance(),
+    ];
     // Preload plugin
     if (!options.disablePreloadApp) defaultPlugin.push(GarfishPreloadPlugin());
 
