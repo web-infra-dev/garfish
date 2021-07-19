@@ -33,7 +33,7 @@
       }
       xhr.send(null)
       fetch('http://localhost:2333/fetch/mainApp').then((res)=> {});
-      // throw Error('mainApp: unhandledrejection error');
+      throw Error('mainApp: unhandledrejection error');
     },5000);
 
 

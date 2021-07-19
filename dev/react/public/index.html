@@ -144,10 +144,10 @@
           });
         }
 
-        window.Slardar('init', { bid: '121212' });
-        window.Slardar('start');
         GarfishPluginForSlardar(window.Slardar,'react');
         window.Slardar('on', 'beforeSend', (ev)=>console.log(ev.ev_type, ev));
+        window.Slardar('init', { bid: '121212' });
+        window.Slardar('start');
 
         // let onloadEvent = new Event("load", {"bubbles":false, "cancelable":false});
 
@@ -164,12 +164,9 @@
           }
           xhr.send(null)
           fetch('http://localhost:3000/fetch/subApp').then((res)=> {})
-          // throw Error('subApp: unhandledrejection error');
+          throw Error('subApp: unhandledrejection error');
         },2000);
 
-        window.addEventListener('load',function(){
-          console.log('触发了 onload');
-        });
         // setTimeout(()=>{
         //   window.dispatchEvent(onloadEvent);
         // },3000);
