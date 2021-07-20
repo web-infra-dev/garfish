@@ -20,7 +20,7 @@ $ yarn add garfish #or npm i garfish -S
 
 ## Documentation
 
-[https://garfish.dev/](https://garfish.dev/)
+[https://garfish.top/](https://garfish.dev/)
 
 ## Functionality
 
