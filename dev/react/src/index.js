@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import GarfishPluginForSlardar from './garfishPlugin.js';
 // import { setModuleConfig } from '@garfish/remote-module';
 
 // setModuleConfig({
@@ -58,6 +59,29 @@ const render = ({ dom }) => {
 export const provider = (opts) => {
   return {
     render(...args) {
+      // window.Slardar('on', 'beforeSend', (ev)=>console.log(ev.ev_type, ev));
+      // window.Slardar('init', { bid: 'garfish_test' });
+      // GarfishPluginForSlardar(window.Slardar,'react');
+      // window.Slardar('start');
+
+      // // let onloadEvent = new Event("load", {"bubbles":false, "cancelable":false});
+
+      setTimeout(() => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('get', 'http://localhost:3000/subApp', true);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState !== 4) {
+            return;
+          }
+          if (xhr.status >= 200 && xhr.status < 300) {
+            console.log('subApp xhr');
+          }
+        };
+        xhr.send(null);
+        fetch('http://localhost:3000/fetch/subApp').then((res) => {});
+        throw Error('subApp: unhandledrejection error');
+      }, 2000);
+
       // preload('http://localhost:3000/remoteComponent.js').then(() => {
       render(...args);
       // });

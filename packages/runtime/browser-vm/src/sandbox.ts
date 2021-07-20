@@ -259,6 +259,7 @@ export class Sandbox {
       code += `\n${url ? `//# sourceURL=${url}\n` : ''}`;
       code = !useStrict ? `with(window) {;${this.optimizeCode + code}}` : code;
       this.tempEnvVariables = Object.keys(env);
+      console.log('********** evalWith', url);
       if (openSandbox) {
         evalWithEnv(code, {
           window: this.global,

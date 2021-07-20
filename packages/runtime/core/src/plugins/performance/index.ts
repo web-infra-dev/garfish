@@ -1,22 +1,5 @@
 import SubAppObserver from './subAppObserver';
-import { interfaces } from 'garfish';
-
-interface IPerformanceData {
-  resourceLoadTime: number; // 子应用资源下载时间
-  blankScreenTime: number; // 子应用白屏时间
-  firstScreenTime: number; // 子应用首屏加载完成时间
-  isFirstRender: boolean; // 子应用是否在主应用内首次加载
-  entry: string; // 子应用的入口地址
-  action: string; // 子应用首屏时间触发的action事件
-}
-
-declare module '@garfish/core' {
-  export namespace interfaces {
-    export interface App {
-      appPerformance?: SubAppObserver;
-    }
-  }
-}
+import { interfaces } from '../../index';
 
 // 在 Garfish 对应的生命周期中进行关键节点注册
 export function GarfishPerformance() {
@@ -25,7 +8,7 @@ export function GarfishPerformance() {
     const subAppMap = {};
     return {
       name: 'performance',
-      async beforeLoad(appInfo) {
+      async beforeLoad(appInfo: any) {
         if (!subAppMap[appInfo.name]) {
           // 运营平台子应用跟节点 id 为 'master-app'
           subAppMap[appInfo.name] = new SubAppObserver({
@@ -62,14 +45,14 @@ export function GarfishPerformance() {
         subAppMap[appInfo.name].subAppBeforeLoad(appInfo.entry);
         return true;
       },
-      afterLoad(appInfo, appInstance) {
+      afterLoad(appInfo, appInstance: any) {
         if (appInstance)
           appInstance.appPerformance = subAppMap[appInfo.name] as any;
       },
-      beforeMount(appInfo) {
+      beforeMount(appInfo: any) {
         subAppMap[appInfo.name].subAppBeforeMount(appInfo.entry);
       },
-      beforeUnMount(appInfo) {
+      beforeUnMount(appInfo: any) {
         subAppMap[appInfo.name].subAppUnMount(appInfo.entry);
       },
     };

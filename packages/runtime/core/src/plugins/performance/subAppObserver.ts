@@ -66,7 +66,7 @@ class SubAppObserver {
     this.config = { attributes: true, childList: true, subtree: true };
     this.targetSubscriber = [];
     this.timeLag = options.domObserverMaxTime || 3000;
-    this.reportTimeLag = options.waitSubAppNotifyMaxTime || 10000;
+    this.reportTimeLag = options.waitSubAppNotifyMaxTime || 6000;
     this.isRecordFinish = false;
     this.cbEntryList = [];
     this.isStartShowFlag = true;
@@ -87,6 +87,18 @@ class SubAppObserver {
     // console.warn('subscribe');
     try {
       this.targetSubscriber.push(callback);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  unsubscribePerformanceData(callback: ICallbackFunction): void {
+    // console.warn('subscribe');
+    try {
+      this.targetSubscriber = this.targetSubscriber.filter((sub) => {
+        if (sub === callback) return false;
+        return true;
+      });
     } catch (error) {
       console.error(error);
     }
