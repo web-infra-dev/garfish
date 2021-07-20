@@ -54,10 +54,10 @@ function computeStackTraceFromStackProp(ex) {
   };
 }
 
-function computeErrorUrl(ex, sourceList) {
+function computeErrorUrls(ex) {
   if (ex && ex.filename) return ex.filename;
   const res = computeStackTraceFromStackProp(ex);
-  let urls;
+  let urls = [];
   if (res) {
     urls = res.stack.map((item) => {
       return item.url;
@@ -71,25 +71,17 @@ function computeErrorUrl(ex, sourceList) {
       urls = [ex.target.src || ex.target.href];
     }
   }
-
-  if (!urls) return false;
-
-  for (let j = 0; j < sourceList.length; j++) {
-    if (urls.indexOf(sourceList[j].url) !== -1) {
-      console.log('match SubApp sourceLink :', sourceList[j].url);
-      return true;
-    }
-  }
-
-  return false;
+  return urls;
 }
 
 export default function GarfishPluginForSlardar(SlardarInstance, appName) {
   if (
     !window.__GARFISH__ ||
     (window.Garfish.options.sandbox && !window.Garfish.options.sandbox.open)
-  )
+  ) {
+    SlardarInstance('start');
     return false;
+  }
 
   function getAppInstance() {
     // let apps = window.Garfish.activeApps.filter((app)=>app.appInfo.name === appName);
@@ -113,20 +105,63 @@ export default function GarfishPluginForSlardar(SlardarInstance, appName) {
   ) {
     appInstance.appPerformance.subscribePerformanceData(reportTimeData);
     let originDestory = appInstance.provider.destroy;
-    debugger;
     appInstance.provider.destroy = function (...args) {
-      SlardarInstance && SlardarInstance.destroy();
-      originDestory.apply(this, ...args);
+      SlardarInstance && SlardarInstance('destroy');
+      originDestory.apply(this, args);
       appInstance.provider.destroy = originDestory;
     };
   }
 
+  SlardarInstance('on', 'beforeConfig', (config) => {
+    config.plugins = {
+      ...(config.plugins || {}),
+      resource: {
+        ignoreTypes: ['beacon'],
+      },
+    };
+  });
+
   SlardarInstance('on', 'beforeSend', (ev) => {
     let app = getAppInstance();
-    if (ev.ev_type === 'js_error' && app && app.sourceList) {
-      let isSubAppSource = computeErrorUrl(ev.payload.error, app.sourceList);
-      if (!isSubAppSource) return false;
+
+    function getUrl(url) {
+      for (let i = 0; i < app.sourceList.length; i++) {
+        if (app.sourceList[i].url === url) {
+          return app.sourceList[i];
+        }
+      }
+      return false;
     }
+
+    // The filtering error
+    if (ev.ev_type === 'js_error' && app && app.sourceList && ev.payload) {
+      let urls = computeErrorUrls(ev.payload.error);
+      if (urls.length === 0) return false;
+
+      for (let j = 0; j < urls; j++) {
+        // Not the current application of error block
+        if (!getUrl(urls[j])) {
+          return false;
+        } else {
+          return ev;
+        }
+      }
+    }
+
+    // Filter static resource
+    if (ev.ev_type === 'resource' && app && app.sourceList && ev.payload) {
+      let source = getUrl(ev.payload.name);
+      if (!source) return false;
+      if (
+        ev.payload.initiatorType === 'fetch' ||
+        ev.payload.initiatorType === 'xmlhttprequest'
+      ) {
+        Object.defineProperty(ev.payload, 'initiatorType', {
+          value: source.tagName.toLowerCase(),
+        });
+      }
+    }
+
     return ev;
   });
 
@@ -135,4 +170,5 @@ export default function GarfishPluginForSlardar(SlardarInstance, appName) {
       appInstance.appPerformance.unsubscribePerformanceData(reportTimeData);
     }
   });
+  SlardarInstance('start');
 }

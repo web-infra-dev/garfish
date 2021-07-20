@@ -174,7 +174,7 @@ export class App {
       url,
       options.async,
     );
-    code += url ? `//# sourceURL=${url}\n` : '';
+    code += url ? `\n//# sourceURL=${url}\n` : '';
     evalWithEnv(`;${code}`, env);
     revertCurrentScript();
   }

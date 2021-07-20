@@ -59,10 +59,18 @@ const render = ({ dom }) => {
 export const provider = (opts) => {
   return {
     render(...args) {
-      // window.Slardar('on', 'beforeSend', (ev)=>console.log(ev.ev_type, ev));
-      // window.Slardar('init', { bid: 'garfish_test' });
-      // GarfishPluginForSlardar(window.Slardar,'react');
-      // window.Slardar('start');
+      window.Slardar('init', {
+        bid: 'garfish_test',
+        plugins: {
+          resource: {
+            ignoreTypes: [],
+          },
+        },
+      });
+      window.Slardar('on', 'send', (ev) => console.log(ev.ev_type, ev));
+
+      GarfishPluginForSlardar(window.Slardar, 'react');
+      window.Slardar('start');
 
       // // let onloadEvent = new Event("load", {"bubbles":false, "cancelable":false});
 
