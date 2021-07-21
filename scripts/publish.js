@@ -24,6 +24,7 @@ function publish(canary) {
     ...opts,
     canary,
     bump: 'patch',
+    forcePublish: canary,
     _: ['publish'],
   });
 }
