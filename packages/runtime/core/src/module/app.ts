@@ -188,6 +188,7 @@ export class App {
     this.addContainer();
     this.callRender(provider, false);
     this.display = true;
+    this.context.activeApps.push(this);
     return true;
   }
 
@@ -202,6 +203,7 @@ export class App {
 
     this.callDestroy(provider, false);
     this.display = false;
+    remove(this.context.activeApps, this);
     return true;
   }
 
