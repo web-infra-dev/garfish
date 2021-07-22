@@ -87,7 +87,7 @@ export const provider = (opts) => {
         };
         xhr.send(null);
         fetch('http://localhost:3000/fetch/subApp').then((res) => {});
-        // throw Error('subApp: unhandledrejection error');
+        throw Error('subApp: unhandledrejection error');
       }, 2000);
 
       // preload('http://localhost:3000/remoteComponent.js').then(() => {

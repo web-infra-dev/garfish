@@ -55,12 +55,12 @@ function computeStackTraceFromStackProp(ex) {
 }
 
 function computeErrorUrls(ex) {
-  if (ex && ex.filename) return ex.filename;
+  if (ex && ex.filename) return [ex.filename];
   const res = computeStackTraceFromStackProp(ex);
-  let urlsMap = {};
+  let urls = [];
   if (res) {
-    res.stack.forEach((item) => {
-      return (urlsMap[item.url] = true);
+    urls = res.stack.map((item) => {
+      return item.url;
     });
   } else if (ex && ex.target && ex.target.tagName) {
     const tagName = ex.target.tagName.toLowerCase();
@@ -68,11 +68,10 @@ function computeErrorUrls(ex) {
       ['link', 'style', 'script', 'img', 'video', 'audio'].indexOf(tagName) !==
       -1
     ) {
-      let url = ex.target.src || ex.target.href;
-      url && (urlsMap[url] = true);
+      urls = [ex.target.src || ex.target.href];
     }
   }
-  return urlsMap;
+  return urls;
 }
 
 export default function GarfishPluginForSlardar(SlardarInstance, appName) {
@@ -135,37 +134,40 @@ export default function GarfishPluginForSlardar(SlardarInstance, appName) {
   SlardarInstance('on', 'beforeSend', (ev) => {
     let app = getAppInstance();
 
-    function getUrl(url) {
-      for (let i = 0; i < app.sourceList.length; i++) {
-        if (app.sourceList[i].url === url) {
-          return app.sourceList[i];
-        }
+    if (!(app && app.sourceList && ev.payload)) return ev;
+
+    const sourceList = app.sourceList;
+    let appSourceMapUrls = {};
+    for (let i = 0; i < sourceList.length; i++) {
+      if (sourceList[i].url) {
+        appSourceMapUrls[sourceList[i].url] = sourceList[i].tagName;
       }
-      return false;
     }
 
     // The filtering error
-    if (ev.ev_type === 'js_error' && app && app.sourceList && ev.payload) {
-      let urlsMap = computeErrorUrls(ev.payload.error);
-      if (Object.keys(urlsMap).length === 0) return false;
-      for (let i = 0; i < app.sourceList.length; i++) {
-        if (urlsMap[app.sourceList[i].url]) {
+    if (ev.ev_type === 'js_error') {
+      let urls = computeErrorUrls(ev.payload.error);
+      if (urls.length === 0) return ev;
+
+      for (let j = 0; j < urls.length; j++) {
+        if (appSourceMapUrls[urls[j]]) {
           return ev;
         }
       }
+
+      // Not the current application of error block
       return false;
     }
 
     // Filter static resource
-    if (ev.ev_type === 'resource' && app && app.sourceList && ev.payload) {
-      let source = getUrl(ev.payload.name);
-      if (!source) return false;
+    if (ev.ev_type === 'resource') {
+      if (!appSourceMapUrls[ev.payload.name]) return false;
       if (
         ev.payload.initiatorType === 'fetch' ||
         ev.payload.initiatorType === 'xmlhttprequest'
       ) {
         Object.defineProperty(ev.payload, 'initiatorType', {
-          value: source.tagName.toLowerCase(),
+          value: appSourceMapUrls[ev.payload.name].toLowerCase(),
         });
       }
     }
