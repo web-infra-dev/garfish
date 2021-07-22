@@ -94,7 +94,17 @@ export default function GarfishPluginForSlardar(SlardarInstance, appName) {
   let appInstance = getAppInstance();
 
   const reportTimeData = (subAppTimeData) => {
-    console.log(subAppTimeData);
+    SlardarInstance('sendEvent', {
+      name: 'micro-front-end-performance',
+      metrics: {
+        blankScreenTime: subAppTimeData.blankScreenTime,
+        resourceLoadTime: subAppTimeData.resourceLoadTime,
+        firstScreenTime: subAppTimeData.firstScreenTime,
+      },
+      categories: {
+        isFirstRender: String(subAppTimeData.isFirstRender),
+      },
+    });
   };
 
   if (
@@ -103,7 +113,7 @@ export default function GarfishPluginForSlardar(SlardarInstance, appName) {
     appInstance.provider &&
     typeof appInstance.provider.destroy === 'function'
   ) {
-    appInstance.appPerformance.subscribePerformanceData(reportTimeData);
+    appInstance.appPerformance.subscribePerformanceDataOnce(reportTimeData);
     let originDestory = appInstance.provider.destroy;
     appInstance.provider.destroy = function (...args) {
       SlardarInstance && SlardarInstance('destroy');
@@ -166,9 +176,8 @@ export default function GarfishPluginForSlardar(SlardarInstance, appName) {
   });
 
   SlardarInstance('on', 'beforeDestroy', () => {
-    if (appInstance && appInstance.appPerformance) {
-      appInstance.appPerformance.unsubscribePerformanceData(reportTimeData);
-    }
+    // if (appInstance && appInstance.appPerformance) {
+    //   appInstance.appPerformance.unsubscribePerformanceData(reportTimeData);
+    // }
   });
-  SlardarInstance('start');
 }
