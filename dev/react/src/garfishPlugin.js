@@ -57,10 +57,10 @@ function computeStackTraceFromStackProp(ex) {
 function computeErrorUrls(ex) {
   if (ex && ex.filename) return ex.filename;
   const res = computeStackTraceFromStackProp(ex);
-  let urls = [];
+  let urlsMap = {};
   if (res) {
-    urls = res.stack.map((item) => {
-      return item.url;
+    res.stack.forEach((item) => {
+      return (urlsMap[item.url] = true);
     });
   } else if (ex && ex.target && ex.target.tagName) {
     const tagName = ex.target.tagName.toLowerCase();
@@ -68,10 +68,11 @@ function computeErrorUrls(ex) {
       ['link', 'style', 'script', 'img', 'video', 'audio'].indexOf(tagName) !==
       -1
     ) {
-      urls = [ex.target.src || ex.target.href];
+      let url = ex.target.src || ex.target.href;
+      url && (urlsMap[url] = true);
     }
   }
-  return urls;
+  return urlsMap;
 }
 
 export default function GarfishPluginForSlardar(SlardarInstance, appName) {
@@ -145,17 +146,14 @@ export default function GarfishPluginForSlardar(SlardarInstance, appName) {
 
     // The filtering error
     if (ev.ev_type === 'js_error' && app && app.sourceList && ev.payload) {
-      let urls = computeErrorUrls(ev.payload.error);
-      if (urls.length === 0) return false;
-
-      for (let j = 0; j < urls; j++) {
-        // Not the current application of error block
-        if (!getUrl(urls[j])) {
-          return false;
-        } else {
+      let urlsMap = computeErrorUrls(ev.payload.error);
+      if (Object.keys(urlsMap).length === 0) return false;
+      for (let i = 0; i < app.sourceList.length; i++) {
+        if (urlsMap[app.sourceList[i].url]) {
           return ev;
         }
       }
+      return false;
     }
 
     // Filter static resource

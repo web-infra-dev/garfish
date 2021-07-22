@@ -59,6 +59,7 @@ const render = ({ dom }) => {
 export const provider = (opts) => {
   return {
     render(...args) {
+      GarfishPluginForSlardar(window.Slardar, 'react');
       window.Slardar('init', {
         bid: 'garfish_test',
         plugins: {
@@ -69,7 +70,6 @@ export const provider = (opts) => {
       });
 
       window.Slardar('on', 'send', (ev) => console.log(ev.ev_type, ev));
-      GarfishPluginForSlardar(window.Slardar, 'react');
       window.Slardar('start');
 
       // // let onloadEvent = new Event("load", {"bubbles":false, "cancelable":false});
