@@ -1,5 +1,11 @@
-import { parse } from './htmlParse';
-import { Node, Text, DOMApis, deepMerge, transformUrl } from '@garfish/utils';
+import {
+  Node,
+  Text,
+  DOMApis,
+  deepMerge,
+  transformUrl,
+  templateParse,
+} from '@garfish/utils';
 
 type Renderer = Record<string, (node: Node) => Element | Comment>;
 
@@ -12,10 +18,7 @@ export class TemplateManager {
   constructor(template: string, url?: string) {
     // The url is only base url, it may also be a js resource address.
     this.url = url || null;
-    // About 1M text parse takes about 100ms
-    console.time('parse');
-    this.astTree = template ? parse(template.repeat(261)) : [];
-    console.timeEnd('parse');
+    this.astTree = template ? templateParse(template) : [];
     // Pretreatment resource
     this.getNodesByTagName('meta', 'link', 'style', 'script');
   }

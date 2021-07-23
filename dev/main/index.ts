@@ -5,7 +5,7 @@ console.log(GarfishInstance);
 
 GarfishInstance.run({
   basename: '/garfish_master',
-  domGetter: async () => {
+  domGetter: () => {
     return new Promise((resolve) => {
       resolve(document.querySelector('#submoduleByRouter'));
     });

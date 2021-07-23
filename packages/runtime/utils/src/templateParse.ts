@@ -1,4 +1,4 @@
-import { warn } from '@garfish/utils';
+import { warn } from './utils';
 
 enum ElementType {
   ELEMENT = 1,
@@ -17,17 +17,18 @@ const collectionAttributes = (el: Element) => {
   const len = attrs.length;
 
   if (len > 0) {
-    // if (len === 1) {
-    //   list[0] = new Attributes(attrs[0]);
-    // } else if (len === 2) {
-    //   list[0] = new Attributes(attrs[0]);
-    //   list[1] = new Attributes(attrs[1]);
-    // } else {
-    for (let i = 0; i < len; i++) {
-      list[i] = new Attributes(attrs[i]);
+    // Optimize for the most common cases
+    if (len === 1) {
+      list[0] = new Attributes(attrs[0]);
+    } else if (len === 2) {
+      list[0] = new Attributes(attrs[0]);
+      list[1] = new Attributes(attrs[1]);
+    } else {
+      for (let i = 0; i < len; i++) {
+        list[i] = new Attributes(attrs[i]);
+      }
     }
   }
-  // }
   return list;
 };
 
@@ -56,7 +57,7 @@ const createElement = (el: Node) => {
 };
 
 // 1M text takes about time 60ms
-export function parse(code?: string) {
+export function templateParse(code?: string) {
   if (!code) return [];
   const htmlNode = document.createElement('html');
   htmlNode.innerHTML = code;
