@@ -6,16 +6,28 @@ enum ElementType {
   COMMENT = 8,
 }
 
+function Attributes({ name, value }) {
+  this.key = name;
+  this.value = value;
+}
+
 const collectionAttributes = (el: Element) => {
   const list = [];
-  const attributes = el.attributes;
-  for (let i = 0, l = attributes.length; i < l; i++) {
-    const node = attributes[i];
-    list[i] = {
-      key: node.name,
-      value: node.value,
-    };
+  const attrs = el.attributes;
+  const len = attrs.length;
+
+  if (len > 0) {
+    // if (len === 1) {
+    //   list[0] = new Attributes(attrs[0]);
+    // } else if (len === 2) {
+    //   list[0] = new Attributes(attrs[0]);
+    //   list[1] = new Attributes(attrs[1]);
+    // } else {
+    for (let i = 0; i < len; i++) {
+      list[i] = new Attributes(attrs[i]);
+    }
   }
+  // }
   return list;
 };
 

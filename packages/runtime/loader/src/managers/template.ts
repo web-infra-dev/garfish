@@ -13,7 +13,9 @@ export class TemplateManager {
     // The url is only base url, it may also be a js resource address.
     this.url = url || null;
     // About 1M text parse takes about 100ms
-    this.astTree = template ? parse(template) : [];
+    console.time('parse');
+    this.astTree = template ? parse(template.repeat(261)) : [];
+    console.timeEnd('parse');
     // Pretreatment resource
     this.getNodesByTagName('meta', 'link', 'style', 'script');
   }
