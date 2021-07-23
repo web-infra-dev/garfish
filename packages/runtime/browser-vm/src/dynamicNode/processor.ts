@@ -200,8 +200,10 @@ export class DynamicNodeProcessor {
     if (__DEV__ || (this.sandbox?.global as any).__GARFISH__DEV__) {
       // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
       if (tag === 'iframe' && typeof this.el.onload === 'function') {
-        def(this.el, 'contentWindow', this.sandbox.global);
-        def(this.el, 'contentDocument', this.sandbox.global.document);
+        // Iframe not loaded into the page does not exist when the window and document
+        setTimeout(() => {
+          def(this.el.contentWindow, 'parent', this.sandbox.global);
+        });
       }
     }
 
