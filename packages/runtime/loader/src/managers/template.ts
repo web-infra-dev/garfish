@@ -1,18 +1,7 @@
-import { parse } from 'himalaya';
+import { parse } from './htmlParse';
 import { Node, Text, DOMApis, deepMerge, transformUrl } from '@garfish/utils';
 
 type Renderer = Record<string, (node: Node) => Element | Comment>;
-
-// Convert irregular grammar to compliant grammar
-// 1M text takes about time:
-// 1. chrome 30ms
-// 2. safari: 25ms
-// 3. firefox: 25ms
-const transformCode = (code: string) => {
-  const node = document.createElement('html');
-  node.innerHTML = code;
-  return node.innerHTML;
-};
 
 export class TemplateManager {
   public url: string | null;
@@ -24,7 +13,7 @@ export class TemplateManager {
     // The url is only base url, it may also be a js resource address.
     this.url = url || null;
     // About 1M text parse takes about 100ms
-    this.astTree = template ? parse(transformCode(template)) : [];
+    this.astTree = template ? parse(template) : [];
     // Pretreatment resource
     this.getNodesByTagName('meta', 'link', 'style', 'script');
   }
