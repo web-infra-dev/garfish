@@ -213,7 +213,7 @@ export class Garfish implements interfaces.Garfish {
 
     const asyncLoadProcess = async () => {
       // Return not undefined type data directly to end loading
-      const stopLoad = await this.hooks.lifecycle.beforeLoad.promise(appInfo);
+      const stopLoad = await this.hooks.lifecycle.beforeLoad.call(appInfo);
       if (stopLoad === false) {
         warn(`Load ${appName} application is terminated by beforeLoad.`);
         return null;

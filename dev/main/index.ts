@@ -38,6 +38,13 @@ GarfishInstance.run({
     snapshot: false,
     modules: [],
   },
+  async beforeLoad(appInfo) {
+    console.log('#######', appInfo);
+    // if (appInfo.name === 'react') {
+    //   return false;
+    // }
+    return true;
+  },
 });
 
 const useRouterMode = true;

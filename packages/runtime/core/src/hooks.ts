@@ -1,4 +1,6 @@
-import { SyncHook, AsyncSeriesBailHook } from '@garfish/hooks';
+// import { AsyncSeriesBailHook } from '@garfish/hooks';
+import { SyncHook } from './hooks/synchook';
+import { AsyncSeriesBailHook } from './hooks/asyncSeriesBailHook';
 import { warn } from '@garfish/utils';
 import { interfaces } from './interface';
 
@@ -7,54 +9,82 @@ export function keys<O>(o: O) {
 }
 
 export class Hooks {
-  public lifecycle: interfaces.Lifecycle;
+  static globalHook = null;
+  // public lifecycle: interfaces.Lifecycle;
+  public lifecycle: any;
   public plugins: Array<interfaces.Plugin> = [];
 
   constructor(hasIntercept) {
     this.lifecycle = {
       // beforeInitialize: new SyncHook(['options']),
-      initialize: new SyncHook(['options']),
-      beforeBootstrap: new SyncHook(['options']),
-      bootstrap: new SyncHook(['options']),
-      beforeRegisterApp: new SyncHook(['appInfos']),
-      registerApp: new SyncHook(['appInfos']),
-      beforeLoad: new AsyncSeriesBailHook(['appInfo']),
-      afterLoad: new SyncHook(['appInfo', 'appInstance']),
-      processResource: new SyncHook(['appInfo', 'manager', 'resources']),
-      initializeApp: new AsyncSeriesBailHook([
-        'context',
-        'appInfo',
-        'entryResManager',
-        'resources',
-        'isHtmlMode',
-      ]),
-      beforeEval: new SyncHook([
-        'appInfo',
-        'code',
-        'env',
-        'sourceUrl',
-        'options',
-      ]),
-      afterEval: new SyncHook([
-        'appInfo',
-        'code',
-        'env',
-        'sourceUrl',
-        'options',
-      ]),
-      beforeMount: new SyncHook(['appInfo', 'appInstance']),
-      afterMount: new SyncHook(['appInfo', 'appInstance']),
-      beforeUnMount: new SyncHook(['appInfo', 'appInstance']),
-      afterUnMount: new SyncHook(['appInfo', 'appInstance']),
-      errorLoadApp: new SyncHook(['appInfo', 'error']),
-      errorMountApp: new SyncHook(['appInfo', 'error']),
-      errorUnmountApp: new SyncHook(['appInfo', 'error']),
-      errorExecCode: new SyncHook(['appInfo', 'error']),
+      // initialize: new SyncHook(['options']),
+      // beforeBootstrap: new SyncHook(['options']),
+      // bootstrap: new SyncHook(['options']),
+      // beforeRegisterApp: new SyncHook(['appInfos']),
+      // registerApp: new SyncHook(['appInfos']),
+      // beforeLoad: new AsyncSeriesBailHook(['appInfo']),
+      // afterLoad: new SyncHook(['appInfo', 'appInstance']),
+      // processResource: new SyncHook(['appInfo', 'manager', 'resources']),
+      // initializeApp: new AsyncSeriesBailHook([
+      //   'context',
+      //   'appInfo',
+      //   'entryResManager',
+      //   'resources',
+      //   'isHtmlMode',
+      // ]),
+      // beforeEval: new SyncHook([
+      //   'appInfo',
+      //   'code',
+      //   'env',
+      //   'sourceUrl',
+      //   'options',
+      // ]),
+      // afterEval: new SyncHook([
+      //   'appInfo',
+      //   'code',
+      //   'env',
+      //   'sourceUrl',
+      //   'options',
+      // ]),
+      // beforeMount: new SyncHook(['appInfo', 'appInstance']),
+      // afterMount: new SyncHook(['appInfo', 'appInstance']),
+      // beforeUnMount: new SyncHook(['appInfo', 'appInstance']),
+      // afterUnMount: new SyncHook(['appInfo', 'appInstance']),
+      // errorLoadApp: new SyncHook(['appInfo', 'error']),
+      // errorMountApp: new SyncHook(['appInfo', 'error']),
+      // errorUnmountApp: new SyncHook(['appInfo', 'error']),
+      // errorExecCode: new SyncHook(['appInfo', 'error']),
+      initialize: new SyncHook(),
+      beforeBootstrap: new SyncHook(),
+      bootstrap: new SyncHook(),
+      beforeRegisterApp: new SyncHook(),
+      registerApp: new SyncHook(),
+      beforeLoad: new AsyncSeriesBailHook(),
+      afterLoad: new SyncHook(),
+      processResource: new SyncHook(),
+      // initializeApp: new AsyncSeriesBailHook([
+      //   'context',
+      //   'appInfo',
+      //   'entryResManager',
+      //   'resources',
+      //   'isHtmlMode',
+      // ]),
+      beforeEval: new SyncHook(),
+      afterEval: new SyncHook(),
+      beforeMount: new SyncHook(),
+      afterMount: new SyncHook(),
+      beforeUnMount: new SyncHook(),
+      afterUnMount: new SyncHook(),
+      errorLoadApp: new SyncHook(),
+      errorMountApp: new SyncHook(),
+      errorUnmountApp: new SyncHook(),
+      errorExecCode: new SyncHook(),
     };
 
     if (hasIntercept) {
-      Object.keys(this.lifecycle).forEach((lifeKey) => {
-        this.lifecycle[lifeKey].intercept({
+      const globalHookLifecycle = Hooks.globalHook.lifecycle;
+      Object.keys(globalHookLifecycle).forEach((lifeKey) => {
+        globalHookLifecycle[lifeKey].intercept({
           async call(...args) {
             const appInfo = args[0];
             // hasAppInfo lifecycle
@@ -65,15 +95,16 @@ export class Hooks {
               appInfo.hooks.lifecycle[lifeKey]
             ) {
               const lifecycle = appInfo.hooks.lifecycle[lifeKey];
-              if (lifeKey === 'beforeLoad') {
-                await lifecycle.promise.apply(lifecycle, ...args);
-              } else {
-                lifecycle.call.apply(lifecycle, ...args);
-              }
+              return (
+                typeof lifecycle.call === 'function' &&
+                (await lifecycle.call(...args))
+              );
             }
           },
         });
       });
+    } else {
+      Hooks.globalHook = this;
     }
   }
 
@@ -90,13 +121,8 @@ export class Hooks {
       const pluginLife = plugin[key];
       if (!pluginLife) return;
 
-      const cst = this.lifecycle[key].constructor;
       // 区分不同的hooks类型，采用不同的注册策略
-      if (cst === AsyncSeriesBailHook) {
-        (this.lifecycle[key] as any).tapPromise(pluginName, pluginLife);
-      } else {
-        (this.lifecycle[key] as any).tap(pluginName, pluginLife);
-      }
+      (this.lifecycle[key] as any).tap(pluginName, pluginLife);
     });
   }
 }
