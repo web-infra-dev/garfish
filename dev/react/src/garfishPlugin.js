@@ -74,110 +74,117 @@ function computeErrorUrls(ex) {
   return urls;
 }
 
-export default function GarfishPluginForSlardar(SlardarInstance, appName) {
-  if (
-    !window.__GARFISH__ ||
-    (window.Garfish.options.sandbox && !window.Garfish.options.sandbox.open)
-  ) {
-    SlardarInstance('start');
-    return false;
-  }
-
-  function getAppInstance() {
-    // let apps = window.Garfish.activeApps.filter((app)=>app.appInfo.name === appName);
-    // return apps[0];
-    let app = window.Garfish.apps[appName];
-    return app;
-  }
-
-  // Statistical performance indicators
-  let appInstance = getAppInstance();
-
-  const reportTimeData = (subAppTimeData) => {
-    SlardarInstance('sendEvent', {
-      name: 'micro-front-end-performance',
-      metrics: {
-        blankScreenTime: subAppTimeData.blankScreenTime,
-        resourceLoadTime: subAppTimeData.resourceLoadTime,
-        firstScreenTime: subAppTimeData.firstScreenTime,
-      },
-      categories: {
-        isFirstRender: String(subAppTimeData.isFirstRender),
-      },
-    });
-  };
-
-  if (
-    appInstance &&
-    appInstance.appPerformance &&
-    appInstance.provider &&
-    typeof appInstance.provider.destroy === 'function'
-  ) {
-    appInstance.appPerformance.subscribePerformanceDataOnce(reportTimeData);
-    let originDestory = appInstance.provider.destroy;
-    appInstance.provider.destroy = function (...args) {
-      SlardarInstance && SlardarInstance('destroy');
-      originDestory.apply(this, args);
-      appInstance.provider.destroy = originDestory;
-    };
-  }
-
-  SlardarInstance('on', 'beforeConfig', (config) => {
-    config.plugins = {
-      ...(config.plugins || {}),
-      resource: {
-        ignoreTypes: ['beacon'],
-      },
-    };
+export default function GarfishPluginForSlardar(getSlardarInstance, appName) {
+  let SlardarOb = {};
+  Object.defineProperty(SlardarOb, 'SlardarInstance', {
+    get: getSlardarInstance,
   });
 
-  SlardarInstance('on', 'beforeSend', (ev) => {
-    let app = getAppInstance();
-
-    if (!(app && app.sourceList && ev.payload)) return ev;
-
-    const sourceList = app.sourceList;
-    let appSourceMapUrls = {};
-    for (let i = 0; i < sourceList.length; i++) {
-      if (sourceList[i].url) {
-        appSourceMapUrls[sourceList[i].url] = sourceList[i].tagName;
-      }
-    }
-
-    // The filtering error
-    if (ev.ev_type === 'js_error') {
-      let urls = computeErrorUrls(ev.payload.error);
-      if (urls.length === 0) return ev;
-
-      for (let j = 0; j < urls.length; j++) {
-        if (appSourceMapUrls[urls[j]]) {
-          return ev;
-        }
-      }
-
-      // Not the current application of error block
+  SlardarOb.SlardarInstance('on', 'init', () => {
+    if (
+      !window.__GARFISH__ ||
+      (window.Garfish.options.sandbox && !window.Garfish.options.sandbox.open)
+    ) {
+      SlardarOb.SlardarInstance('start');
       return false;
     }
 
-    // Filter static resource
-    if (ev.ev_type === 'resource') {
-      if (!appSourceMapUrls[ev.payload.name]) return false;
-      if (
-        ev.payload.initiatorType === 'fetch' ||
-        ev.payload.initiatorType === 'xmlhttprequest'
-      ) {
-        Object.defineProperty(ev.payload, 'initiatorType', {
-          value: appSourceMapUrls[ev.payload.name].toLowerCase(),
-        });
-      }
+    function getAppInstance() {
+      // let apps = window.Garfish.activeApps.filter((app)=>app.appInfo.name === appName);
+      // return apps[0];
+      let app = window.Garfish.apps[appName];
+      return app;
     }
 
-    return ev;
-  });
+    // Statistical performance indicators
+    let appInstance = getAppInstance();
 
-  SlardarInstance('on', 'beforeDestroy', () => {
-    // if (appInstance && appInstance.appPerformance) {
-    //   appInstance.appPerformance.unsubscribePerformanceData(reportTimeData);
-    // }
+    const reportTimeData = (subAppTimeData) => {
+      SlardarOb.SlardarInstance('sendEvent', {
+        name: 'micro-front-end-performance',
+        metrics: {
+          blankScreenTime: subAppTimeData.blankScreenTime,
+          resourceLoadTime: subAppTimeData.resourceLoadTime,
+          firstScreenTime: subAppTimeData.firstScreenTime,
+        },
+        categories: {
+          isFirstRender: String(subAppTimeData.isFirstRender),
+        },
+      });
+    };
+
+    if (
+      appInstance &&
+      appInstance.appPerformance &&
+      appInstance.provider &&
+      typeof appInstance.provider.destroy === 'function'
+    ) {
+      appInstance.appPerformance.subscribePerformanceDataOnce(reportTimeData);
+      let originDestory = appInstance.provider.destroy;
+      appInstance.provider.destroy = function (...args) {
+        SlardarOb.SlardarInstance && SlardarOb.SlardarInstance('destroy');
+        originDestory.apply(this, args);
+        appInstance.provider.destroy = originDestory;
+      };
+    }
+
+    SlardarOb.SlardarInstance('on', 'beforeConfig', (config) => {
+      config.plugins = {
+        ...(config.plugins || {}),
+        resource: {
+          ignoreTypes: ['beacon'],
+        },
+      };
+    });
+
+    SlardarOb.SlardarInstance('on', 'beforeSend', (ev) => {
+      let app = getAppInstance();
+
+      if (!(app && app.sourceList && ev.payload)) return ev;
+
+      const sourceList = app.sourceList;
+      let appSourceMapUrls = {};
+      for (let i = 0; i < sourceList.length; i++) {
+        if (sourceList[i].url) {
+          appSourceMapUrls[sourceList[i].url] = sourceList[i].tagName;
+        }
+      }
+
+      // The filtering error
+      if (ev.ev_type === 'js_error') {
+        let urls = computeErrorUrls(ev.payload.error);
+        if (urls.length === 0) return ev;
+
+        for (let j = 0; j < urls.length; j++) {
+          if (appSourceMapUrls[urls[j]]) {
+            return ev;
+          }
+        }
+
+        // Not the current application of error block
+        return false;
+      }
+
+      // Filter static resource
+      if (ev.ev_type === 'resource') {
+        if (!appSourceMapUrls[ev.payload.name]) return false;
+        if (
+          ev.payload.initiatorType === 'fetch' ||
+          ev.payload.initiatorType === 'xmlhttprequest'
+        ) {
+          Object.defineProperty(ev.payload, 'initiatorType', {
+            value: appSourceMapUrls[ev.payload.name].toLowerCase(),
+          });
+        }
+      }
+
+      return ev;
+    });
+
+    SlardarOb.SlardarInstance('on', 'beforeDestroy', () => {
+      // if (appInstance && appInstance.appPerformance) {
+      //   appInstance.appPerformance.unsubscribePerformanceData(reportTimeData);
+      // }
+    });
   });
 }

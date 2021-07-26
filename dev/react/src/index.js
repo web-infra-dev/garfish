@@ -59,15 +59,15 @@ const render = ({ dom }) => {
 export const provider = (opts) => {
   return {
     render(...args) {
-      GarfishPluginForSlardar(window.Slardar, 'react');
       window.Slardar('init', {
         bid: 'garfish_test',
         plugins: {
           resource: {
-            ignoreTypes: [],
+            // ignoreTypes: [],
           },
         },
       });
+      GarfishPluginForSlardar(() => window.Slardar, 'react');
 
       window.Slardar('on', 'send', (ev) => console.log(ev.ev_type, ev));
       window.Slardar('start');
