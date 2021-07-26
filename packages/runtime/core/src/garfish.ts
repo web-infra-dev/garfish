@@ -195,6 +195,7 @@ export class Garfish implements interfaces.Garfish {
       appInfo.props = hasOwn(tempInfo, 'props')
         ? tempInfo.props
         : this.options.props;
+      appInfo.hooks = hasOwn(tempInfo, 'hooks') ? tempInfo.hooks : null;
     } else if (typeof options === 'string') {
       // `Garfish.loadApp('appName', 'https://xx.html');`
       appInfo = {

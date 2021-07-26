@@ -8,8 +8,8 @@ export function keys<O>(o: O) {
   return Object.keys(o) as (keyof O)[];
 }
 
+let globalHook = null;
 export class Hooks {
-  static globalHook = null;
   // public lifecycle: interfaces.Lifecycle;
   public lifecycle: any;
   public plugins: Array<interfaces.Plugin> = [];
@@ -82,29 +82,25 @@ export class Hooks {
     };
 
     if (hasIntercept) {
-      const globalHookLifecycle = Hooks.globalHook.lifecycle;
+      const globalHookLifecycle = globalHook.lifecycle;
+      (window as any).globalHookLifecycle = globalHookLifecycle;
       Object.keys(globalHookLifecycle).forEach((lifeKey) => {
         globalHookLifecycle[lifeKey].intercept({
           async call(...args) {
             const appInfo = args[0];
             // hasAppInfo lifecycle
             if (
-              appInfo &&
-              appInfo.hooks &&
-              appInfo.hooks.lifecycle &&
-              appInfo.hooks.lifecycle[lifeKey]
+              appInfo?.hooks?.lifecycle[lifeKey] &&
+              typeof appInfo?.hooks?.lifecycle[lifeKey].call === 'function'
             ) {
               const lifecycle = appInfo.hooks.lifecycle[lifeKey];
-              return (
-                typeof lifecycle.call === 'function' &&
-                (await lifecycle.call(...args))
-              );
+              return await lifecycle.call(...args);
             }
           },
         });
       });
     } else {
-      Hooks.globalHook = this;
+      globalHook = this;
     }
   }
 
@@ -122,7 +118,7 @@ export class Hooks {
       if (!pluginLife) return;
 
       // 区分不同的hooks类型，采用不同的注册策略
-      (this.lifecycle[key] as any).tap(pluginName, pluginLife);
+      this.lifecycle[key].tap(pluginName, pluginLife);
     });
   }
 }

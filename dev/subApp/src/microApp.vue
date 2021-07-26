@@ -67,10 +67,10 @@ export default {
           cache: true
         }
       ],
-      // async beforeLoad(appInfo) {
-      //   console.log('开始加载了', appInfo);
-      //   // return Promise.resolve();
-      // },
+      async beforeLoad(appInfo) {
+        console.log('开始加载了', appInfo);
+        // return Promise.resolve();
+      },
     });
     // Can only be run once
   },
