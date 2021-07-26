@@ -231,8 +231,6 @@ export class DynamicNodeProcessor {
       ]);
       if (rootNode && rootNode.contains(el)) {
         return this.nativeRemove.call(rootNode, el);
-      } else {
-        return originProcess();
       }
     }
     return originProcess();
