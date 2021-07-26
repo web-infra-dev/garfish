@@ -224,11 +224,15 @@ export class DynamicNodeProcessor {
     const tag = el.tagName && el.tagName.toLowerCase();
     // The style node needs to be placed in the sandbox root container
     if (tag === 'style') {
-      rootNode = findTarget(rootNode, ['head', 'div[__garfishmockhead__]']);
+      rootNode = findTarget(rootNode, [
+        'head',
+        'div[__garfishmockhead__]',
+        'div[__garfishmockbody__]',
+      ]);
       if (rootNode && rootNode.contains(el)) {
-        this.nativeRemove.call(rootNode, el);
+        return this.nativeRemove.call(rootNode, el);
       } else {
-        originProcess();
+        return originProcess();
       }
     }
     return originProcess();
