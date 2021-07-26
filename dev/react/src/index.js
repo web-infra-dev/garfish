@@ -63,7 +63,7 @@ export const provider = (opts) => {
         bid: 'garfish_test',
         plugins: {
           resource: {
-            // ignoreTypes: [],
+            ignoreTypes: ['xmlhttprequest', 'beacon'],
           },
         },
       });
