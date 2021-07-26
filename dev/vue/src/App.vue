@@ -1,7 +1,7 @@
 <template>
   <div id="grandson">
     <div>sub app content</div>
-    <router-view />
+    <!-- <router-view /> -->
   </div>
 </template>
 

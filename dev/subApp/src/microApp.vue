@@ -14,7 +14,7 @@
 // 嵌套场景中
 import GarfishInstance from 'garfish';
 
-let hasInit = false;
+// let hasInit = false;
 export default {
   name: 'App',
   props: ['basename'],
@@ -45,8 +45,8 @@ export default {
     }
   },
   mounted () {
-    if (hasInit) return;
-    hasInit = true;
+    // if (hasInit) return;
+    // hasInit = true;
     GarfishInstance.run({
       basename: '/garfish_master/vue',
       nested: !!window.__GARFISH_PARENT__,

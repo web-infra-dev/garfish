@@ -3,18 +3,18 @@ import GarfishInstance from 'garfish';
 (window as any).__GARFISH_PARENT__ = true;
 console.log(GarfishInstance);
 
-let asyncTime = function () {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, 3000);
-  });
-};
+// let asyncTime = function () {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve(true);
+//     }, 3000);
+//   });
+// };
 
 GarfishInstance.run({
   basename: '/garfish_master',
-  domGetter: async () => {
-    await asyncTime();
+  domGetter: () => {
+    // await asyncTime();
     return document.querySelector('#submoduleByRouter');
   },
   apps: [
