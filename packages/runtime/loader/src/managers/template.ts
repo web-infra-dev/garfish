@@ -11,16 +11,23 @@ type Renderer = Record<string, (node: Node) => Element | Comment>;
 
 export class TemplateManager {
   public url: string | null;
-  public astTree: Array<Node>;
   public DOMApis = new DOMApis();
+  public astTree: Array<Node> = [];
   private pretreatmentStore: Record<string, Node[]> = {};
 
   constructor(template: string, url?: string) {
     // The url is only base url, it may also be a js resource address.
     this.url = url || null;
-    this.astTree = template ? templateParse(template) : [];
-    // Pretreatment resource
-    this.getNodesByTagName('meta', 'link', 'style', 'script');
+    if (template) {
+      const [astTree, collectionEls] = templateParse(template, [
+        'meta',
+        'link',
+        'style',
+        'script',
+      ]);
+      this.astTree = astTree;
+      this.pretreatmentStore = collectionEls;
+    }
   }
 
   getNodesByTagName<T>(...tags: Array<keyof T>) {

@@ -1,9 +1,10 @@
 import { warn } from './utils';
+import { Node as VNode } from './domApis';
 
 enum ElementType {
-  ELEMENT = 1,
   TEXT = 3,
   COMMENT = 8,
+  ELEMENT = 1,
 }
 
 function Attributes({ name, value }) {
@@ -11,7 +12,7 @@ function Attributes({ name, value }) {
   this.value = value;
 }
 
-const collectionAttributes = (el: Element) => {
+const generateAttributes = (el: Element) => {
   const list = [];
   const attrs = el.attributes;
   const len = attrs.length;
@@ -32,7 +33,7 @@ const collectionAttributes = (el: Element) => {
   return list;
 };
 
-const createElement = (el: Node) => {
+const createElement = (el: Element, filter: (el: VNode) => VNode) => {
   switch (el.nodeType) {
     case ElementType.TEXT:
       return {
@@ -45,21 +46,37 @@ const createElement = (el: Node) => {
         content: el.textContent,
       };
     case ElementType.ELEMENT:
-      return {
+      return filter({
         type: 'element',
-        tagName: (el as Element).tagName.toLowerCase(),
-        attributes: collectionAttributes(el as Element),
-        children: Array.from(el.childNodes).map(createElement),
-      };
+        tagName: el.tagName.toLowerCase(),
+        attributes: generateAttributes(el),
+        children: Array.from(el.childNodes).map((node) => {
+          return createElement(node as Element, filter);
+        }),
+      });
     default:
       __DEV__ && warn(`Invalid node type "${el.nodeType}"`);
   }
 };
 
 // 1M text takes about time 60ms
-export function templateParse(code?: string) {
-  if (!code) return [];
+export function templateParse(code?: string, tags?: Array<string>) {
+  let astTree: Array<VNode> = [];
   const htmlNode = document.createElement('html');
+  const collectionEls: Record<string, Array<VNode>> = {};
+  const filter = (el) => {
+    if (tags.includes(el.tagName)) {
+      collectionEls[el.tagName].push(el);
+    }
+    return el;
+  };
+
   htmlNode.innerHTML = code;
-  return Array.from(htmlNode.childNodes).map(createElement);
+  for (const tag of tags) {
+    collectionEls[tag] = [];
+  }
+  astTree = Array.from(htmlNode.childNodes).map((node) => {
+    return createElement(node as Element, filter);
+  });
+  return [astTree, collectionEls] as const;
 }
