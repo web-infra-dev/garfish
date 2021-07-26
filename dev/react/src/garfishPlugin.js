@@ -100,14 +100,27 @@ export default function GarfishPluginForSlardar(getSlardarInstance, appName) {
     let appInstance = getAppInstance();
 
     const reportTimeData = (subAppTimeData) => {
-      SlardarOb.SlardarInstance('sendEvent', {
-        name: 'micro-front-end-performance',
-        metrics: {
-          blankScreenTime: subAppTimeData.blankScreenTime,
-          resourceLoadTime: subAppTimeData.resourceLoadTime,
-          firstScreenTime: subAppTimeData.firstScreenTime,
+      SlardarOb.SlardarInstance('sendCustomPerfMetric', {
+        name: 'resourceLoadTime',
+        value: subAppTimeData.resourceLoadTime,
+        type: 'mf',
+        extra: {
+          isFirstRender: String(subAppTimeData.isFirstRender),
         },
-        categories: {
+      });
+      SlardarOb.SlardarInstance('sendCustomPerfMetric', {
+        name: 'blankScreenTime',
+        value: subAppTimeData.blankScreenTime,
+        type: 'mf',
+        extra: {
+          isFirstRender: String(subAppTimeData.isFirstRender),
+        },
+      });
+      SlardarOb.SlardarInstance('sendCustomPerfMetric', {
+        name: 'firstScreenTime',
+        value: subAppTimeData.firstScreenTime,
+        type: 'mf',
+        extra: {
           isFirstRender: String(subAppTimeData.isFirstRender),
         },
       });

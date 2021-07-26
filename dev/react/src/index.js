@@ -65,6 +65,14 @@ export const provider = (opts) => {
           resource: {
             ignoreTypes: ['xmlhttprequest', 'beacon'],
           },
+          performance: {
+            fp: false,
+            fcp: false,
+            fid: false,
+            mpfid: false,
+            lcp: false,
+            cls: false,
+          },
         },
       });
       GarfishPluginForSlardar(() => window.Slardar, 'react');
