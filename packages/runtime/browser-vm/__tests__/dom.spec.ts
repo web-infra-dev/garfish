@@ -11,7 +11,7 @@ describe('Sandbox:Dom & Bom', () => {
       const sandbox = unstable_sandbox;
       const Sandbox = sandbox.constructor;
       const nativeWindow = Sandbox.getNativeWindow();
-      document.body.innerHTML = '<div id="root">123</div><div __GarfishMockHead__></div>'
+      document.body.innerHTML = '<div id="root">123</div><div __garfishmockhead__></div>'
       ${code}
     `;
   };
