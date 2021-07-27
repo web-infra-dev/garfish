@@ -38,7 +38,7 @@ export function createGetter(sandbox: Sandbox) {
         };
       } else if (p === 'head') {
         return (
-          findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']) || value
+          findTarget(rootNode, ['head', 'div[__garfishmockhead__]']) || value
         );
       }
 
@@ -47,7 +47,7 @@ export function createGetter(sandbox: Sandbox) {
         if (p === 'body') {
           // When the node is inserted, if it is a pop-up scene,
           // it needs to be placed globally, so it is not placed outside by default.
-          return findTarget(rootNode, ['body', 'div[__GarfishMockBody__]']);
+          return findTarget(rootNode, ['body', 'div[__garfishmockbody__]']);
         } else if (queryFunctions(p)) {
           return p === 'getElementById'
             ? (id) => rootNode.querySelector(`#${id}`)
