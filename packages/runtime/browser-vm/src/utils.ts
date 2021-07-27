@@ -3,9 +3,8 @@ import { Sandbox } from './sandbox';
 import { __proxyNode__ } from './symbolTypes';
 
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object
-const esGlobalMethods = // Function properties of the global object
+const esGlobalMethods = // Function properties of the global object // Function properties of the global object
 (
-  // Function properties of the global object
   'eval,isFinite,isNaN,parseFloat,parseInt,' +
   // URL handling functions
   'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +

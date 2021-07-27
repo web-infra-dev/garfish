@@ -41,7 +41,7 @@ try {
       currentApp = app;
     }
     if (isObject(externals)) {
-      moduleConfig.externals = Object.assign(moduleConfig.externals, externals);
+      Object.assign(moduleConfig.externals, externals);
     }
     if (Array.isArray(remoteModulesCode)) {
       resourcesStore = resourcesStore.concat(remoteModulesCode);
