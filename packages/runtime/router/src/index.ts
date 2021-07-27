@@ -27,6 +27,7 @@ declare module '@garfish/core' {
       activeWhen?: string | ((path: string) => boolean); // 手动加载，可不填写路由
       active?: (appInfo: AppInfo, rootPath: string) => void;
       deactive?: (appInfo: AppInfo, rootPath: string) => void;
+      rootPath?: string;
       basename?: string;
     }
   }
@@ -57,6 +58,7 @@ export default function Router(_args?: Options) {
         async function active(appInfo: interfaces.AppInfo, rootPath: string) {
           const { name, cache, active } = appInfo;
           if (active) return active(appInfo, rootPath);
+          appInfo.rootPath = rootPath;
 
           const currentApp = (activeApp = createKey());
           const app = await Garfish.loadApp(appInfo.name, {
@@ -90,11 +92,31 @@ export default function Router(_args?: Options) {
           const unmount = unmounts[name];
           unmount && unmount();
           delete Garfish.apps[name];
+
+          // Nested scene to remove the current application of nested data
+          // To avoid the main application prior to application
+          const needToDeleteApps = router.routerConfig.apps.filter((app) => {
+            if (appInfo.rootPath === app.basename) return true;
+          });
+          if (needToDeleteApps.length > 0) {
+            needToDeleteApps.forEach((app) => {
+              delete Garfish.appInfos[app.name];
+              delete Garfish.cacheApps[app.name];
+            });
+            router.setRouterConfig({
+              apps: router.routerConfig.apps.filter((app) => {
+                return !needToDeleteApps.some(
+                  (needDelete) => app.name === needDelete.name,
+                );
+              }),
+            });
+          }
         }
 
-        const appList = apps.filter(
-          (app) => app.activeWhen !== null && app.activeWhen !== undefined,
-        ) as Array<Required<interfaces.AppInfo>>;
+        const appList = apps.filter((app) => {
+          if (!app.basename) app.basename = basename;
+          return app.activeWhen !== null && app.activeWhen !== undefined;
+        }) as Array<Required<interfaces.AppInfo>>;
 
         if (appList.length === 0) return;
 

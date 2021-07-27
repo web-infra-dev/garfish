@@ -1,5 +1,4 @@
 import { Sandbox } from '../src/sandbox';
-import { Hooks } from '../src/types';
 
 describe('Init', () => {
   let sandbox: Sandbox;
@@ -13,27 +12,10 @@ describe('Init', () => {
   it('init', () => {
     const opts = sandbox.options;
     expect(sandbox.closed).toBe(false);
-    ['el', 'hooks', 'modules', 'namespace', 'useStrict'].forEach((key) => {
+    ['el', 'modules', 'namespace', 'useStrict'].forEach((key) => {
       expect(key in opts).toBe(true);
     });
-    const hooksName = [
-      'onstart',
-      'onclose',
-      'onerror',
-      'onAppendNode',
-      'onClearEffect',
-      'onInvokeAfter',
-      'onInvokeBefore',
-      'onCreateContext',
-    ];
-    hooksName.forEach((key) => {
-      expect(key in opts.hooks!).toBe(true);
-      expect(hooksName.length).toBe(Object.keys(opts.hooks!).length);
-      expect(typeof (opts.hooks![key as keyof Hooks] as Function)).toBe(
-        'function',
-      );
-    });
-    expect(opts.modules).toEqual({});
+    expect(opts.modules).toEqual([]);
     expect(opts.useStrict).toBe(false);
     expect(opts.namespace).toBe('app');
     expect((opts.el as Function)()).toBe(null);
@@ -46,17 +28,16 @@ describe('Init', () => {
       'close',
       'reset',
       'optimizeGlobalMethod',
-      'callHook',
       'execScript',
-      'getOverrides',
+      'getModuleData',
       'clearEffects',
-      'createContext',
+      'createProxyWindow',
     ];
     const sandboxMethods = Object.getOwnPropertyNames(
       Object.getPrototypeOf(sandbox),
     ).filter((v) => v !== 'constructor');
     expect('closed' in sandbox).toBe(true);
-    expect('context' in sandbox).toBe(true);
+    expect('global' in sandbox).toBe(true);
     expect(methods.length).toBe(sandboxMethods.length);
     methods.forEach((m) => {
       expect(m in sandbox).toBe(true);
@@ -65,11 +46,9 @@ describe('Init', () => {
 
   // 检查 global 对象
   it('check global', () => {
-    const subGlobal = sandbox.context;
-    const baseGlobal = Sandbox.getGlobalObject();
+    const subGlobal = sandbox.global;
+    const baseGlobal = Sandbox.getNativeWindow();
     expect(typeof subGlobal).toBe('object');
-    expect(Sandbox.isBaseGlobal(subGlobal)).toBe(false);
-    expect(Sandbox.isBaseGlobal(baseGlobal)).toBe(true);
     expect(baseGlobal).toBe(
       subGlobal[Symbol.for('garfish.globalObject') as any],
     );

@@ -55,14 +55,22 @@ const processError = (
   error: string | Error,
   fn: (val: string | Error, isString: boolean) => void,
 ) => {
-  if (typeof error === 'string') {
-    error = `${warnPrefix}: ${error}\n\n`;
-    fn(error, true);
-  } else if (error instanceof Error) {
-    if (!error.message.startsWith(warnPrefix)) {
-      error.message = `${warnPrefix}: ${error.message}`;
+  try {
+    if (typeof error === 'string') {
+      error = `${warnPrefix}: ${error}\n\n`;
+      fn(error, true);
+    } else if (error instanceof Error) {
+      if (!error.message.startsWith(warnPrefix)) {
+        const message = error.message;
+        def(error, 'message', {
+          get: () => `${warnPrefix}: ${message}`,
+        });
+        // error.message = `${warnPrefix}: ${error.message}`;
+      }
+      fn(error, false);
     }
-    fn(error, false);
+  } catch (e) {
+    fn(error, typeof error === 'string');
   }
 };
 
@@ -112,11 +120,13 @@ export function internFunc(internalizeString) {
 
 export function evalWithEnv(code: string, params: Record<string, any>) {
   const keys = Object.keys(params);
+  const nativeWindow = (0, eval)('window;');
   // No random value can be used, otherwise it cannot be reused as a constant string
   const randomValKey = '__garfish__exec_temporary__';
   const vales = keys.map((k) => `window.${randomValKey}.${k}`);
+
   try {
-    window[randomValKey] = params;
+    nativeWindow[randomValKey] = params;
     const evalInfo = [
       `;(function(${keys.join(',')}){`,
       `\n}).call(${vales[0]},${vales.join(',')});`,
@@ -127,7 +137,7 @@ export function evalWithEnv(code: string, params: Record<string, any>) {
   } catch (e) {
     throw e;
   } finally {
-    delete window[randomValKey];
+    delete nativeWindow[randomValKey];
   }
 }
 
@@ -357,4 +367,19 @@ export function setDocCurrentScript(
 
   set(el);
   return () => set(null);
+}
+
+export function __extends(d, b) {
+  Object.setPrototypeOf(d, b);
+
+  function fNOP() {
+    this.constructor = d;
+  }
+
+  if (b === null) {
+    d.prototype = Object.create(b);
+  } else {
+    if (b.prototype) fNOP.prototype = b.prototype;
+    d.prototype = new fNOP();
+  }
 }

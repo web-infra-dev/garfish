@@ -2,6 +2,7 @@ const { exec } = require('child_process');
 
 [
   'garfish',
+  '@garfish/remote-module',
   // '@garfish/router',
   // '@garfish/browser-snapshot',
   // '@garfish/browser-vm',

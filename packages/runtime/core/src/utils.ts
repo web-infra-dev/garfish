@@ -43,12 +43,14 @@ export function markAndDerived() {
   };
 }
 
-// Fetch script and link elements
+// Fetch `script`, `link` and `module meta` elements
 export const fetchStaticResources = (
   appName: string,
   loader: Loader,
   entryManager: TemplateManager,
 ) => {
+  const isAsync = (val) => typeof val !== 'undefined' && val !== 'false';
+
   // Get all script elements
   const jsNodes = Promise.all(
     entryManager
@@ -69,9 +71,7 @@ export const fetchStaticResources = (
             .then(({ resourceManager: jsManager }) => {
               jsManager.setDep(node);
               jsManager.setMimeType(type);
-              jsManager.setAsyncAttribute(
-                typeof async !== 'undefined' && async !== 'false',
-              );
+              jsManager.setAsyncAttribute(isAsync(async));
               return jsManager;
             });
         } else if (node.children.length > 0) {
@@ -108,5 +108,28 @@ export const fetchStaticResources = (
       .filter(Boolean),
   );
 
-  return Promise.all([jsNodes, linkNodes]);
+  // Get all remote modules
+  const metaNodes = Promise.all(
+    entryManager
+      .findAllMetaNodes()
+      .map((node) => {
+        if (!entryManager.DOMApis.isRemoteModule(node)) return;
+        const async = entryManager.findAttributeValue(node, 'async');
+        const alias = entryManager.findAttributeValue(node, 'alias');
+        if (!isAsync(async)) {
+          const src = entryManager.findAttributeValue(node, 'src');
+          return loader
+            .loadModule(src)
+            .then(({ resourceManager: moduleManager }) => {
+              moduleManager.setAlias(alias);
+              return moduleManager;
+            });
+        } else if (alias) {
+          warn(`Asynchronous loading module, the alias "${alias}" is invalid.`);
+        }
+      })
+      .filter(Boolean),
+  );
+
+  return Promise.all([jsNodes, linkNodes, metaNodes]);
 };

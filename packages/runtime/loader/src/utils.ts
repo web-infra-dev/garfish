@@ -1,10 +1,10 @@
 import {
   error,
-  isPlainObject,
   isPrimitive,
+  isPlainObject,
   parseContentType,
 } from '@garfish/utils';
-import { Loader, LoadedPluginArgs } from './index';
+import { Manager, Loader, LoadedPluginArgs } from './index';
 
 export async function request(url: string, config: RequestInit) {
   const result = await fetch(url, config || {});
@@ -20,7 +20,7 @@ export async function request(url: string, config: RequestInit) {
 
 export function copyResult(result: LoadedPluginArgs<any>['value']) {
   if (result.resourceManager) {
-    result.resourceManager = result.resourceManager.clone();
+    result.resourceManager = (result.resourceManager as Manager).clone();
   }
   return result;
 }

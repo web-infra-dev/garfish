@@ -31,6 +31,7 @@ import {
   createDefineProperty,
   createDeleteProperty,
 } from './proxyInterceptor/global';
+import { UiEventOverride } from './modules/uiEvent';
 
 let id = 0;
 const defaultModules: Array<Module> = [
@@ -40,6 +41,7 @@ const defaultModules: Array<Module> = [
   documentModule,
   listenerModule,
   localStorageModule,
+  UiEventOverride,
 ];
 
 // Deal with hmr problem
@@ -69,10 +71,11 @@ export class Sandbox {
   public initComplete = false;
   public global?: Window;
   public options: SandboxOptions;
+  public tempEnvVariables: Array<PropertyKey> = [];
   public replaceGlobalVariables: ReplaceGlobalVariables;
+  public isExternalGlobalVariable: Set<PropertyKey> = new Set();
   public isProtectVariable: (p: PropertyKey) => boolean;
   public isInsulationVariable: (P: PropertyKey) => boolean;
-  public isExternalGlobalVariable: Set<PropertyKey> = new Set();
 
   private optimizeCode = ''; // To optimize the with statement
 
@@ -132,12 +135,13 @@ export class Sandbox {
   }
 
   close() {
-    if (!this.closed) return;
+    if (this.closed) return;
     this.clearEffects();
     this.closed = true;
     this.global = null;
     this.optimizeCode = '';
     this.initComplete = false;
+    this.tempEnvVariables = [];
     this.replaceGlobalVariables.createdList = [];
     this.replaceGlobalVariables.prepareList = [];
     this.replaceGlobalVariables.recoverList = [];
@@ -233,7 +237,7 @@ export class Sandbox {
     // Used to update the variables synchronously after `window.x = xx` is updated
     this.global[`${GARFISH_OPTIMIZE_NAME}Methods`] = methods;
     this.global[`${GARFISH_OPTIMIZE_NAME}UpdateStack`] = [];
-    code += `${GARFISH_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v")});`;
+    code += `window.${GARFISH_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v")});`;
     return code;
   }
 
@@ -254,6 +258,7 @@ export class Sandbox {
     try {
       code += `\n${url ? `//# sourceURL=${url}\n` : ''}`;
       code = !useStrict ? `with(window) {;${this.optimizeCode + code}}` : code;
+      this.tempEnvVariables = Object.keys(env);
       if (openSandbox) {
         evalWithEnv(code, {
           window: this.global,
@@ -261,23 +266,22 @@ export class Sandbox {
           ...env,
         });
       } else {
-        evalWithEnv(code, {
-          unstable_sandbox: this,
-          ...env,
-        });
+        evalWithEnv(code, env);
       }
     } catch (e) {
       // dispatch `window.onerror`
       const source = url || this.options.baseUrl;
       const message = e instanceof Error ? e.message : String(e);
       if (typeof this.global.onerror === 'function') {
-        const errorFn =
-          (this.global.onerror as any)._native || this.global.onerror;
+        // @ts-ignore
+        const errorFn = this.global.onerror._native || this.global.onerror;
         errorFn.call(window, message, source, null, null, e);
       }
       throw e;
+    } finally {
+      revertCurrentScript();
+      this.tempEnvVariables = [];
     }
-    revertCurrentScript();
   }
 
   static getNativeWindow() {

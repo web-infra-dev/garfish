@@ -36,17 +36,19 @@ export function createGetter(sandbox: Sandbox) {
           }
           return el;
         };
+      } else if (p === 'head') {
+        return (
+          findTarget(rootNode, ['head', 'div[__garfishmockhead__]']) || value
+        );
       }
 
       // rootNode is a Shadow dom
       if (strictIsolation) {
-        if (p === 'head') {
-          return findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
-        }
         if (p === 'body') {
-          return findTarget(rootNode, ['body', 'div[__GarfishMockBody__]']);
-        }
-        if (queryFunctions(p)) {
+          // When the node is inserted, if it is a pop-up scene,
+          // it needs to be placed globally, so it is not placed outside by default.
+          return findTarget(rootNode, ['body', 'div[__garfishmockbody__]']);
+        } else if (queryFunctions(p)) {
           return p === 'getElementById'
             ? (id) => rootNode.querySelector(`#${id}`)
             : rootNode[p].bind(rootNode);
@@ -73,8 +75,9 @@ export function createGetter(sandbox: Sandbox) {
 }
 
 // document proxy setter
-export function createSetter() {
+export function createSetter(sandbox) {
   return (target: any, p: PropertyKey, value: any, receiver: any) => {
+    const rootNode = rootElm(sandbox);
     const verifyResult = verifySetterDescriptor(
       // prettier-ignore
       typeof p === 'string' && passedKey(p)
@@ -88,6 +91,15 @@ export function createSetter() {
     if (verifyResult > 0) {
       if (verifyResult === 1 || verifyResult === 2) return false;
       if (verifyResult === 3) return true;
+    }
+
+    // Application area of the ban on selected, if users want to ban the global need to set on the main application
+    if (p === 'onselectstart') {
+      if (rootNode) {
+        return Reflect.set(rootNode, p, value);
+      } else {
+        return Reflect.set(document, p, value);
+      }
     }
 
     return typeof p === 'string' && passedKey(p)

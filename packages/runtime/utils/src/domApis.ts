@@ -43,18 +43,24 @@ function attributesString(attributes: Node['attributes']) {
   }, '');
 }
 
-export const DOMApis = {
+export class DOMApis {
+  public document: Document;
+
+  constructor(cusDocument?: Document) {
+    this.document = cusDocument || document;
+  }
+
   isText(node: Node | Text) {
     return node && node.type === 'text';
-  },
+  }
 
   isNode(node: Node | Text) {
     return node && node.type === 'element';
-  },
+  }
 
   isCommentNode(node: Node | Text) {
     return node && node.type === 'comment';
-  },
+  }
 
   isCssLinkNode(node: Node) {
     if (this.isNode(node) && node.tagName === 'link') {
@@ -63,7 +69,7 @@ export const DOMApis = {
       );
     }
     return false;
-  },
+  }
 
   isIconLinkNode(node: Node) {
     if (this.isNode(node) && node.tagName === 'link') {
@@ -72,7 +78,7 @@ export const DOMApis = {
       );
     }
     return false;
-  },
+  }
 
   isPrefetchJsLinkNode(node: Node) {
     if (!this.isNode(node) || node.tagName !== 'link') return false;
@@ -89,64 +95,83 @@ export const DOMApis = {
       }
     }
     return Boolean(hasRelAttr && hasAsAttr);
-  },
+  }
+
+  isRemoteModule(node: Node) {
+    if (!this.isNode(node) || node.tagName !== 'meta') return false;
+    let hasNameAttr, hasSrcAttr;
+    for (const { key, value } of node.attributes) {
+      if (key === 'name') {
+        hasNameAttr = true;
+        if (value !== 'garfish-remote-module') {
+          return false;
+        }
+      } else if (key === 'src') {
+        hasSrcAttr = true;
+        if (typeof value === 'undefined' || value === '') {
+          return false;
+        }
+      }
+    }
+    return Boolean(hasNameAttr && hasSrcAttr);
+  }
 
   removeElement(el: Element) {
     const parentNode = el && el.parentNode;
     if (parentNode) {
       parentNode.removeChild(el);
     }
-  },
+  }
 
   createElement(node: Node) {
     const { tagName, attributes } = node;
     const el = isSVG(tagName)
-      ? document.createElementNS(ns, tagName)
-      : document.createElement(tagName);
+      ? this.document.createElementNS(ns, tagName)
+      : this.document.createElement(tagName);
 
     this.applyAttributes(el, attributes);
     return el;
-  },
+  }
 
   createTextNode(node: Text) {
-    return document.createTextNode(node.content);
-  },
+    return this.document.createTextNode(node.content);
+  }
 
   createStyleNode(content: string) {
-    const el = document.createElement('style');
+    const el = this.document.createElement('style');
     content && (el.textContent = content);
     this.applyAttributes(el, [{ key: 'type', value: 'text/css' }]);
     return el;
-  },
+  }
 
   createLinkCommentNode(node: Node | string) {
-    if (this.isNode(node)) {
+    if (this.isNode(node as Node)) {
       const ps = attributesString((node as Node).attributes);
       return `<link ${ps.slice(0, -1)}></link>`;
     } else {
       node = node ? `src="${node}" ` : '';
-      return document.createComment(
+      return this.document.createComment(
         `<link ${node}execute by garfish(dynamic)></link>`,
       );
     }
-  },
+  }
 
   createScriptCommentNode(node: Node | { code: string; src?: string }) {
-    if (this.isNode(node)) {
+    if (this.isNode(node as Node)) {
       const { attributes, children } = node as Node;
       const ps = attributesString(attributes);
       const code = children?.[0] ? (children[0] as Text).content : '';
-      return document.createComment(
+      return this.document.createComment(
         `<script ${ps} execute by garfish>${code}</script>`,
       );
     } else {
       const { src, code } = node as any;
       const url = src ? `src="${src}" ` : '';
-      return document.createComment(
+      return this.document.createComment(
         `<script ${url}execute by garfish(dynamic)>${code}</script>`,
       );
     }
-  },
+  }
 
   applyAttributes(el: Element, attributes: Attributes) {
     if (!attributes || attributes.length === 0) return;
@@ -165,5 +190,5 @@ export const DOMApis = {
         }
       }
     }
-  },
-};
+  }
+}

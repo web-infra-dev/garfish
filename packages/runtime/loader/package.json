@@ -1,6 +1,6 @@
 {
   "name": "@garfish/loader",
-  "version": "0.0.30",
+  "version": "0.0.35-alpha.3",
   "description": "loader module.",
   "keywords": [
     "garfish",
@@ -31,15 +31,11 @@
     ]
   },
   "dependencies": {
-    "@garfish/utils": "^0.0.30",
-    "himalaya": "1.1.0"
-  },
-  "dependencies": {
     "himalaya": "1.1.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
   },
-  "gitHead": "65a4fb7ff7d6dad9507b1ff95664f55b6f86a2e2"
+  "gitHead": "9889121d59a7e404e9888a58de20dbe7e101b7a1"
 }

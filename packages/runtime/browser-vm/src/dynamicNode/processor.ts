@@ -21,8 +21,10 @@ export const rawElementMethods = Object.create(null);
 export class DynamicNodeProcessor {
   private el: any; // any Element
   private sandbox: Sandbox;
+  private DOMApis: DOMApis;
   private methodName: string;
   private nativeAppend: Function;
+  private nativeRemove: Function;
   private rootElement: Element | ShadowRoot | Document;
 
   constructor(el, sandbox, methodName) {
@@ -30,6 +32,8 @@ export class DynamicNodeProcessor {
     this.sandbox = sandbox;
     this.methodName = methodName;
     this.nativeAppend = rawElementMethods['appendChild'];
+    this.nativeRemove = rawElementMethods['removeChild'];
+    this.DOMApis = new DOMApis(sandbox.global.document);
     this.rootElement = rootElm(this.sandbox) || document;
   }
 
@@ -81,7 +85,7 @@ export class DynamicNodeProcessor {
         warn(`Invalid resource type "${type}", "${href}"`);
       }
     }
-    return DOMApis.createLinkCommentNode(href) as Comment;
+    return this.DOMApis.createLinkCommentNode(href) as Comment;
   }
 
   // Load dynamic js script
@@ -117,7 +121,7 @@ export class DynamicNodeProcessor {
         );
       }
     }
-    return DOMApis.createScriptCommentNode({ src, code });
+    return this.DOMApis.createScriptCommentNode({ src, code });
   }
 
   // When append an empty link node and then add href attribute
@@ -152,8 +156,9 @@ export class DynamicNodeProcessor {
     const tag = this.el.tagName && this.el.tagName.toLowerCase();
 
     this.sandbox.replaceGlobalVariables.recoverList.push(() => {
-      DOMApis.removeElement(this.el);
+      this.DOMApis.removeElement(this.el);
     });
+
     // Deal with some static resource nodes
     if (sourceListTags.includes(tag)) {
       this.fixResourceNodeUrl();
@@ -161,21 +166,23 @@ export class DynamicNodeProcessor {
 
     // Add dynamic script node by loader
     if (tag === 'script') {
-      rootNode = findTarget(rootNode, ['body', 'div[__GarfishMockBody__]']);
+      rootNode = findTarget(rootNode, ['body', 'div[__garfishmockbody__]']);
       convertedNode = this.addDynamicScriptNode();
     }
+
     // The style node needs to be placed in the sandbox root container
     if (tag === 'style') {
-      rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
+      rootNode = findTarget(rootNode, ['head', 'div[__garfishmockhead__]']);
       if (baseUrl) {
         const manager = new StyleManager(this.el.textContent, baseUrl);
         this.el.textContent = manager.styleCode;
       }
       convertedNode = this.el;
     }
+
     // The link node of the request css needs to be changed to style node
     if (tag === 'link') {
-      rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
+      rootNode = findTarget(rootNode, ['head', 'div[__garfishmockhead__]']);
       if (this.el.rel === 'stylesheet' && this.el.href) {
         convertedNode = this.addDynamicLinkNode((styleNode) =>
           this.nativeAppend.call(rootNode, styleNode),
@@ -185,6 +192,7 @@ export class DynamicNodeProcessor {
         this.monitorChangesOfLinkNode();
       }
     }
+
     if (__DEV__ || (this.sandbox?.global as any).__GARFISH__DEV__) {
       // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
       if (tag === 'iframe' && typeof this.el.onload === 'function') {
@@ -204,6 +212,24 @@ export class DynamicNodeProcessor {
         return originProcess();
       }
       return this.nativeAppend.call(rootNode, convertedNode);
+    }
+    return originProcess();
+  }
+
+  remove(context: Element, args: IArguments, originProcess: Function) {
+    let rootNode = this.rootElement;
+    const el = args[0];
+    const tag = el.tagName && el.tagName.toLowerCase();
+    // The style node needs to be placed in the sandbox root container
+    if (tag === 'style') {
+      rootNode = findTarget(rootNode, [
+        'head',
+        'div[__garfishmockhead__]',
+        'div[__garfishmockbody__]',
+      ]);
+      if (rootNode && rootNode.contains(el)) {
+        return this.nativeRemove.call(rootNode, el);
+      }
     }
     return originProcess();
   }

@@ -122,16 +122,10 @@ export default function BrowserVm() {
           const sandbox = new Sandbox({
             openSandbox: true,
             namespace: appInfo.name,
+            modules: config.modules || [],
+            sourceList: appInstance.sourceList,
             baseUrl: appInstance.entryManager.url,
             strictIsolation: appInstance.strictIsolation,
-            sourceList: appInstance.sourceList,
-            modules: [
-              () => ({
-                override: appInstance.getExecScriptEnv(false) || {},
-              }),
-              ...(config.modules || []),
-            ],
-
             el: () => appInstance.htmlNode,
             protectVariable: config.protectVariable,
             insulationVariable: () => {
@@ -141,10 +135,14 @@ export default function BrowserVm() {
 
           appInstance.vmSandbox = sandbox;
           appInstance.global = sandbox.global;
-          // Rewrite `app.execScript`
-          appInstance.execScript = (code, env, url, options) => {
-            sandbox.execScript(code, env, url, options);
-          };
+          // Rewrite `app.runCode`
+          appInstance.runCode = (...args) => sandbox.execScript(...args);
+
+          // Use sandbox document
+          if (appInstance.entryManager.DOMApis) {
+            appInstance.entryManager.DOMApis.document = sandbox.global.document;
+          }
+
           // Use `Garfish.loader` instead of the `sandbox.loader`
           sandbox.loader = Garfish.loader;
         }
@@ -152,8 +150,7 @@ export default function BrowserVm() {
 
       afterUnMount(appInfo, appInstance) {
         if (appInstance.vmSandbox) {
-          // If the app is uninstalled,
-          // the sandbox needs to clear all effects and then reset
+          // If the app is uninstalled, the sandbox needs to clear all effects and then reset
           appInstance.vmSandbox.reset();
         }
       },

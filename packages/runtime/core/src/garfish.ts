@@ -1,10 +1,5 @@
 import { EventEmitter } from 'events';
-import {
-  Loader,
-  TemplateManager,
-  ComponentManager,
-  JavaScriptManager,
-} from '@garfish/loader';
+import { Loader, TemplateManager, JavaScriptManager } from '@garfish/loader';
 import {
   warn,
   error,
@@ -14,16 +9,16 @@ import {
   transformUrl,
   isPlainObject,
   __GARFISH_FLAG__,
+  getRenderNode,
 } from '@garfish/utils';
 import { Hooks } from './hooks';
 import { App } from './module/app';
-import { Component } from './module/component';
 import { interfaces } from './interface';
+import { getDefaultOptions } from './config';
 import { fetchStaticResources } from './utils';
 import { GarfishHMRPlugin } from './plugins/fixHMR';
 import { GarfishOptionsLife } from './plugins/lifecycle';
-import { loadAppResource, GarfishPreloadPlugin } from './plugins/preload';
-import { defaultLoadComponentOptions, getDefaultOptions } from './config';
+import { GarfishPreloadPlugin } from './plugins/preload';
 
 export class Garfish implements interfaces.Garfish {
   public hooks: Hooks;
@@ -38,7 +33,6 @@ export class Garfish implements interfaces.Garfish {
   public activeApps: Array<interfaces.App> = [];
   public cacheApps: Record<string, interfaces.App> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
-  public cacheComponents: Record<string, interfaces.Component> = {};
   private loading: Record<string, Promise<any> | null> = {};
 
   constructor(options: interfaces.Options) {
@@ -84,8 +78,6 @@ export class Garfish implements interfaces.Garfish {
     assert(!this.running, 'Garfish is running, can`t set options');
     if (isPlainObject(options)) {
       this.options = deepMerge(this.options, options);
-      // register apps
-      this.registerApp(options.apps || []);
       // Index object can't deep copy otherwise unable to communicate
       if (hasOwn(options, 'props')) {
         this.options.props = options.props;
@@ -116,6 +108,7 @@ export class Garfish implements interfaces.Garfish {
             return {
               ...app,
               hooks: hooks,
+              props: options?.props || this.options.props,
               sandbox: options?.sandbox || this.options.sandbox,
               basename: options?.basename || this.options.basename,
               domGetter: options?.domGetter || this.options.domGetter,
@@ -137,6 +130,8 @@ export class Garfish implements interfaces.Garfish {
 
     this.setOptions(options);
     this.injectOptionalPlugin(this.options);
+    // register apps
+    this.registerApp(options.apps || []);
 
     this.running = true;
     this.hooks.lifecycle.bootstrap.call(this.options);
@@ -147,8 +142,9 @@ export class Garfish implements interfaces.Garfish {
     assert(nameOrExtObj, 'Invalid parameter.');
     if (typeof nameOrExtObj === 'object') {
       for (const key in nameOrExtObj) {
-        if (this.externals[key]) {
-          __DEV__ && warn(`The "${key}" will be overwritten in external.`);
+        if (__DEV__) {
+          this.externals[key] &&
+            warn(`The "${key}" will be overwritten in external.`);
         }
         this.externals[key] = nameOrExtObj[key];
       }
@@ -180,15 +176,6 @@ export class Garfish implements interfaces.Garfish {
     return this;
   }
 
-  preloadApp(name: string) {
-    const appInfo = this.appInfos[name];
-    assert(
-      appInfo && appInfo.entry,
-      `Can't preloadApp unexpected module "${name}".`,
-    );
-    loadAppResource(this.loader, appInfo);
-  }
-
   async loadApp(
     appName: string,
     options?: Partial<interfaces.LoadAppOptions> | string,
@@ -197,27 +184,31 @@ export class Garfish implements interfaces.Garfish {
 
     if (isPlainObject(options)) {
       // Deep clone app options
-      appInfo = deepMerge(appInfo || ({} as any), options);
+      const tempInfo = appInfo;
+      appInfo = deepMerge(tempInfo, options);
+      appInfo.props = hasOwn(tempInfo, 'props')
+        ? tempInfo.props
+        : this.options.props;
+      appInfo.hooks = hasOwn(tempInfo, 'hooks') ? tempInfo.hooks : null;
     } else if (typeof options === 'string') {
       // `Garfish.loadApp('appName', 'https://xx.html');`
       appInfo = {
         name: appName,
         entry: options,
-        cssScope: true,
-        domGetter: () => document.createElement('div'),
+        basename: this.options.basename || '/',
+        props: this.options.props,
+        domGetter:
+          this.options.domGetter || (() => document.createElement('div')),
       };
     }
 
-    // Does not support does not have remote resources and no registered application
-    assert(
-      !(!appInfo && !appInfo.entry),
-      `Can't load unexpected module "${appName}".` +
-        'Please provide the entry parameters or registered in advance of the app',
-    );
+    // Initialize the mount point, support domGetter as promise, is advantageous for the compatibility
+    if (appInfo.domGetter)
+      appInfo.domGetter = await getRenderNode(appInfo.domGetter);
 
     const asyncLoadProcess = async () => {
       // Return not undefined type data directly to end loading
-      const stopLoad = await this.hooks.lifecycle.beforeLoad.promise(appInfo);
+      const stopLoad = await this.hooks.lifecycle.beforeLoad.call(appInfo);
       if (stopLoad === false) {
         warn(`Load ${appName} application is terminated by beforeLoad.`);
         return null;
@@ -230,7 +221,7 @@ export class Garfish implements interfaces.Garfish {
       } else {
         try {
           let isHtmlMode, fakeEntryManager;
-          const resources = { js: [], link: [] }; // Default resources
+          const resources = { js: [], link: [], modules: [] }; // Default resources
           const { resourceManager: entryManager } = await this.loader.load(
             appName,
             transformUrl(location.href, appInfo.entry),
@@ -239,13 +230,14 @@ export class Garfish implements interfaces.Garfish {
           // Html entry
           if (entryManager instanceof TemplateManager) {
             isHtmlMode = true;
-            const [js, link] = await fetchStaticResources(
+            const [js, link, modules] = await fetchStaticResources(
               appName,
               this.loader,
               entryManager,
             );
             resources.js = js;
             resources.link = link;
+            resources.modules = modules;
           } else if (entryManager instanceof JavaScriptManager) {
             // Js entry
             isHtmlMode = false;
@@ -292,47 +284,5 @@ export class Garfish implements interfaces.Garfish {
       this.loading[appName] = asyncLoadProcess();
     }
     return this.loading[appName];
-  }
-
-  async loadComponent(
-    name: string,
-    options: interfaces.LoadComponentOptions,
-  ): Promise<interfaces.Component> {
-    options = deepMerge(defaultLoadComponentOptions, options || ({} as any));
-    const nameWithVersion = options?.version
-      ? `${name}@${options.version}`
-      : name;
-    const asyncLoadProcess = async () => {
-      // Existing cache caching logic
-      let result = null;
-      const cacheComponents = this.cacheComponents[nameWithVersion];
-      if (options.cache && cacheComponents) {
-        result = cacheComponents;
-      } else {
-        assert(
-          options.url,
-          `Missing url for loading "${name}" micro component`,
-        );
-
-        const { resourceManager: manager } = await this.loader.loadComponent<
-          ComponentManager
-        >(name, options.url);
-
-        try {
-          result = new Component(this, { name, ...options }, manager);
-          this.cacheComponents[nameWithVersion] = result;
-        } catch (e) {
-          __DEV__ && error(e);
-        } finally {
-          this.loading[nameWithVersion] = null;
-        }
-      }
-      return result;
-    };
-
-    if (!options.cache || !this.loading[nameWithVersion]) {
-      this.loading[nameWithVersion] = asyncLoadProcess();
-    }
-    return this.loading[nameWithVersion];
   }
 }

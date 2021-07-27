@@ -46,6 +46,11 @@ Vue.config.productionTip = false;
 // console.log(audio instanceof Audio);
 let vm;
 const render = ({ dom, basename = '/' }) => {
+  console.log(
+    '这里了basename 是多少呀 啊啊啊啊啊啊啊',
+    basename,
+    dom.querySelector('#app'),
+  );
   const router = new VueRouter({
     mode: 'history',
     base: basename,
@@ -59,7 +64,7 @@ const render = ({ dom, basename = '/' }) => {
 
   vm = new Vue({
     store,
-    router,
+    // router,
     render: (h) => h(App, { props: { basename } }),
   }).$mount();
 
@@ -81,6 +86,7 @@ export function provider({ basename, dom }) {
   return {
     render: () => render({ basename, dom }),
     destroy() {
+      console.log('执行了销毁嘛 啊啊啊啊啊啊啊', basename);
       vm.$destroy();
       vm.$el.parentNode && vm.$el.parentNode.removeChild(vm.$el);
     },

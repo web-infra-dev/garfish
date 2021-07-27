@@ -14,7 +14,7 @@
 // 嵌套场景中
 import GarfishInstance from 'garfish';
 
-let hasInit = false;
+// let hasInit = false;
 export default {
   name: 'App',
   props: ['basename'],
@@ -45,11 +45,12 @@ export default {
     }
   },
   mounted () {
-    if (hasInit) return;
-    hasInit = true;
+    // if (hasInit) return;
+    // hasInit = true;
     GarfishInstance.run({
       basename: '/garfish_master/vue',
       nested: !!window.__GARFISH_PARENT__,
+      domGetter: ()=> document.querySelector('#vueApp'),
       apps: [
         {
           name: 'vueApp',
@@ -57,15 +58,13 @@ export default {
           basename: '/garfish_master/vue',
           activeWhen: '/vueApp',
           cache: true,
-          domGetter: ()=> document.querySelector('#vueApp')
         },
         {
           name: 'reactApp',
           entry: 'http://localhost:3000',
           basename: '/garfish_master/vue',
           activeWhen: '/reactApp',
-          cache: true,
-          domGetter: ()=> document.querySelector('#vueApp')
+          cache: true
         }
       ],
       async beforeLoad(appInfo) {
