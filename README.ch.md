@@ -20,7 +20,7 @@ $ yarn add garfish   #或者 npm i garfish -S
 
 ## 文档
 
-[https://garfish.dev/](https://garfish.dev/)
+[https://garfish.top/](https://garfish.top/)
 
 ## 功能
 

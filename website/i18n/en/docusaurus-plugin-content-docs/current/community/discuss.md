@@ -1,5 +1,5 @@
 ---
-title: Garfish 社区
+title: Garfish community
 slug: /community/discuss
 order: 1
 ---

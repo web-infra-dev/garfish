@@ -203,6 +203,7 @@ export class Garfish implements interfaces.Garfish {
       appInfo.props = hasOwn(originOpts, 'props')
         ? originOpts.props
         : this.options.props;
+      appInfo.hooks = hasOwn(tempInfo, 'hooks') ? tempInfo.hooks : null;
     } else if (typeof options === 'string') {
       // `Garfish.loadApp('appName', 'https://xx.html');`
       appInfo = {
@@ -221,7 +222,7 @@ export class Garfish implements interfaces.Garfish {
 
     const asyncLoadProcess = async () => {
       // Return not undefined type data directly to end loading
-      const stopLoad = await this.hooks.lifecycle.beforeLoad.promise(appInfo);
+      const stopLoad = await this.hooks.lifecycle.beforeLoad.call(appInfo);
       if (stopLoad === false) {
         warn(`Load ${appName} application is terminated by beforeLoad.`);
         return null;

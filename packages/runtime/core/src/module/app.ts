@@ -122,7 +122,7 @@ export class App {
   }
 
   get rootElement() {
-    return findTarget(this.htmlNode, ['body', 'div[__GarfishMockBody__]']);
+    return findTarget(this.htmlNode, ['body', 'div[__garfishmockbody__]']);
   }
 
   execScript(
@@ -191,6 +191,7 @@ export class App {
     this.addContainer();
     this.callRender(provider, false);
     this.display = true;
+    this.context.activeApps.push(this);
     return true;
   }
 
@@ -205,6 +206,7 @@ export class App {
 
     this.callDestroy(provider, false);
     this.display = false;
+    remove(this.context.activeApps, this);
     return true;
   }
 
@@ -425,7 +427,7 @@ export class App {
           node = entryManager.cloneNode(node);
           node.tagName = 'div';
           node.attributes.push({
-            key: '__GarfishMockBody__',
+            key: '__garfishmockbody__',
             value: null,
           });
         }
@@ -437,7 +439,7 @@ export class App {
           node = entryManager.cloneNode(node);
           node.tagName = 'div';
           node.attributes.push({
-            key: '__GarfishMockHead__',
+            key: '__garfishmockhead__',
             value: null,
           });
         }

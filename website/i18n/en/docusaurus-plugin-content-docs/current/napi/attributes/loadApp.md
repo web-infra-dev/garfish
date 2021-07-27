@@ -1,19 +1,7 @@
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-
-## THE_END
-
+---
 title: loadApp
 slug: /napi/attributes/loadApp
 order: 5
-
 ---
 
 ### Garfish.loadApp(appName: string, opts?: LoadAppOptions)
