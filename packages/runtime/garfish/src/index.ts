@@ -1,5 +1,6 @@
 import { Garfish } from '@garfish/core';
 import GarfishRouter from '@garfish/router';
+import GarfishCssScope from '@garfish/css-scope';
 import GarfishBrowserVm from '@garfish/browser-vm';
 import GarfishBrowserSnapshot from '@garfish/browser-snapshot';
 import {
@@ -51,7 +52,12 @@ export function createContext(): Garfish {
     errorMountApp: (err) => error(err),
     errorUnmountApp: (err) => error(err),
     onNotMatchRouter: () => {},
-    plugins: [GarfishRouter(), GarfishBrowserVm(), GarfishBrowserSnapshot()],
+    plugins: [
+      GarfishRouter(),
+      GarfishCssScope(),
+      GarfishBrowserVm(),
+      GarfishBrowserSnapshot(),
+    ],
   });
 
   type globalValue = boolean | Garfish | Record<string, unknown>;

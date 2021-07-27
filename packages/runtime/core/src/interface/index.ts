@@ -38,7 +38,6 @@ export namespace interfaces {
     name: string;
     entry: string;
     cache?: boolean; // Whether the cache
-    cssScope?: boolean;
     activeWhen?: string | ((path: string) => boolean);
     hooks?: Hooks;
   }
@@ -85,7 +84,10 @@ export namespace interfaces {
 
   export interface Config {
     appID?: string;
+    nested?: boolean;
     basename?: string;
+    cssScope?: boolean;
+    domGetter?: DomGetter;
     apps?: Array<AppInfo>;
     sandbox?: SandboxConfig;
     plugins?: Array<(context: Garfish) => Plugin>;
@@ -94,8 +96,6 @@ export namespace interfaces {
     disablePreloadApp?: boolean;
     // onNotMatchRouter?: (path: string) => Promise<void> | void;
     // autoRefreshApp?: boolean;
-    domGetter?: DomGetter;
-    nested?: boolean;
   }
 
   export declare type MountLifeCycleFn = (

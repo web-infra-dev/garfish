@@ -10,7 +10,7 @@ export interface CssParserOptions {
   silent?: boolean;
 }
 
-// 1M 文本耗时约 150ms
+// 1M text takes about 150ms
 export function parse(css: string, options?: CssParserOptions) {
   options = options || {};
   let line = 1;

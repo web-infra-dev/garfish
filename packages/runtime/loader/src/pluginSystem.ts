@@ -48,7 +48,7 @@ export class PluginManager<T> {
         const tempResult = fn(result as any);
         if (fn._onceFlag === ONCE_FLAG) this.remove(fn);
         for (const key in result) {
-          if (!hasOwn(key, tempResult)) {
+          if (!hasOwn(tempResult, key)) {
             illegalResult = true;
             break;
           }

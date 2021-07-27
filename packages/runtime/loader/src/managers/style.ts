@@ -4,6 +4,17 @@ import { warn, Node, isAbsolute, transformUrl } from '@garfish/utils';
 // Match url in css
 const MATCH_CSS_URL = /url\(['"]?([^\)]+?)['"]?\)/g;
 
+const correctPath = (manager) => {
+  const { url, styleCode } = manager;
+  if (url && typeof styleCode === 'string') {
+    // The relative path is converted to an absolute path according to the path of the css file
+    manager.styleCode = styleCode.replace(MATCH_CSS_URL, (k1, k2) => {
+      if (isAbsolute(k2)) return k1;
+      return `url("${transformUrl(url, k2)}")`;
+    });
+  }
+};
+
 export class StyleManager {
   public url: string | null;
   public styleCode: string;
@@ -15,32 +26,7 @@ export class StyleManager {
     this.url = url || null;
     this.scopeString = '';
     this.styleCode = styleCode;
-    this.correctPath();
-  }
-
-  private correctPath() {
-    const { url, styleCode } = this;
-    if (url && typeof styleCode === 'string') {
-      // The relative path is converted to an absolute path according to the path of the css file
-      this.styleCode = styleCode.replace(MATCH_CSS_URL, (k1, k2) => {
-        if (isAbsolute(k2)) return k1;
-        return `url("${transformUrl(url, k2)}")`;
-      });
-    }
-  }
-
-  setScope(_scope: string) {
-    // if (scope !== this.scopeString) {
-    //   try {
-    //     const astTree = parse(this.styleCode, {
-    //       source: `Css parser: ${this.url}`,
-    //     });
-    //     this.styleCode = stringify(astTree, scope);
-    //     this.scopeString = scope;
-    //   } catch (err) {
-    //     warn(err);
-    //   }
-    // }
+    correctPath(this);
   }
 
   setDep(node: Node) {
@@ -51,15 +37,16 @@ export class StyleManager {
     return this.depsStack.has(node);
   }
 
+  getStyleCode() {
+    return this.styleCode;
+  }
+
   renderAsStyleElement(extraCode = '') {
+    const styleCode = this.getStyleCode();
     const node = document.createElement('style');
     node.setAttribute('type', 'text/css');
-    // prettier-ignore
-    node.textContent = extraCode + (
-      this.styleCode
-        ? this.styleCode
-        : '/**empty style**/'
-    );
+    node.textContent =
+      extraCode + (styleCode ? styleCode : '/**empty style**/');
     return node;
   }
 
