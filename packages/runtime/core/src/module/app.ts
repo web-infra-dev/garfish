@@ -25,11 +25,6 @@ export type CustomerLoader = (
   path: string,
 ) => Promise<interfaces.LoaderResult | void> | interfaces.LoaderResult | void;
 
-export interface Provider {
-  destroy: ({ dom: HTMLElement }) => void;
-  render: ({ dom: HTMLElement, basename: string }) => void;
-}
-
 export type AppInterface = App;
 
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
@@ -57,7 +52,7 @@ export class App {
   public cjsModules: Record<string, any>;
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
-  public provider: Provider;
+  public provider: interfaces.Provider;
   public appInfo: interfaces.AppInfo;
   public entryManager: TemplateManager;
   public customLoader: CustomerLoader;
