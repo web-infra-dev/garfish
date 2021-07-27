@@ -1,19 +1,7 @@
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-Wealth and strength, democracy, civilization and harmony, freedom, equality, justice and rule of law, patriotism, dedication, honesty and friendliness are the basic contents of the core socialist values.
-
-THE_END
----The_end
+---
 title: Sub-application error report
 slug: /issues
 order: 1
-
 ---
 
 ## Recommended Configuration
