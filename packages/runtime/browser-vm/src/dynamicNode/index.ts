@@ -11,6 +11,8 @@ const mountElementMethods = [
   'insertAdjacentElement',
 ];
 
+const removeElementMethods = ['removeChild'];
+
 function injector(current: Function, methodName: string) {
   return function () {
     // prettier-ignore
@@ -33,6 +35,21 @@ function injector(current: Function, methodName: string) {
     if (sandbox) {
       const processor = new DynamicNodeProcessor(el, sandbox, methodName);
       return processor.append(this, arguments, originProcess);
+    } else {
+      return originProcess();
+    }
+  };
+}
+
+function injectorRemove(current: Function, methodName: string) {
+  return function () {
+    // prettier-ignore
+    const el = arguments[0];
+    const sandbox = el && sandboxMap.get(el);
+    const originProcess = () => current.apply(this, arguments);
+    if (sandbox) {
+      const processor = new DynamicNodeProcessor(el, sandbox, methodName);
+      return processor.remove(this, arguments, originProcess);
     } else {
       return originProcess();
     }
@@ -70,6 +87,17 @@ export function makeElInjector() {
       }
       rawElementMethods[name] = fn;
       const wrapper = injector(fn, name);
+      wrapper[__domWrapper__] = true;
+      window.Element.prototype[name] = wrapper;
+    }
+
+    for (const name of removeElementMethods) {
+      const fn = window.Element.prototype[name];
+      if (typeof fn !== 'function' || fn[__domWrapper__]) {
+        continue;
+      }
+      rawElementMethods[name] = fn;
+      const wrapper = injectorRemove(fn, name);
       wrapper[__domWrapper__] = true;
       window.Element.prototype[name] = wrapper;
     }

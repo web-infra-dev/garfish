@@ -24,6 +24,7 @@ export class DynamicNodeProcessor {
   private DOMApis: DOMApis;
   private methodName: string;
   private nativeAppend: Function;
+  private nativeRemove: Function;
   private rootElement: Element | ShadowRoot | Document;
 
   constructor(el, sandbox, methodName) {
@@ -31,6 +32,7 @@ export class DynamicNodeProcessor {
     this.sandbox = sandbox;
     this.methodName = methodName;
     this.nativeAppend = rawElementMethods['appendChild'];
+    this.nativeRemove = rawElementMethods['removeChild'];
     this.DOMApis = new DOMApis(sandbox.global.document);
     this.rootElement = rootElm(this.sandbox) || document;
   }
@@ -165,13 +167,13 @@ export class DynamicNodeProcessor {
 
     // Add dynamic script node by loader
     if (tag === 'script') {
-      rootNode = findTarget(rootNode, ['body', 'div[__GarfishMockBody__]']);
+      rootNode = findTarget(rootNode, ['body', 'div[__garfishmockbody__]']);
       convertedNode = this.addDynamicScriptNode();
     }
 
     // The style node needs to be placed in the sandbox root container
     if (tag === 'style') {
-      rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
+      rootNode = findTarget(rootNode, ['head', 'div[__garfishmockhead__]']);
       if (baseUrl) {
         const manager = new StyleManager(this.el.textContent);
         manager.correctPath(baseUrl);
@@ -182,7 +184,7 @@ export class DynamicNodeProcessor {
 
     // The link node of the request css needs to be changed to style node
     if (tag === 'link') {
-      rootNode = findTarget(rootNode, ['head', 'div[__GarfishMockHead__]']);
+      rootNode = findTarget(rootNode, ['head', 'div[__garfishmockhead__]']);
       if (this.el.rel === 'stylesheet' && this.el.href) {
         convertedNode = this.addDynamicLinkNode((styleNode) =>
           this.nativeAppend.call(rootNode, styleNode),
@@ -212,6 +214,24 @@ export class DynamicNodeProcessor {
         return originProcess();
       }
       return this.nativeAppend.call(rootNode, convertedNode);
+    }
+    return originProcess();
+  }
+
+  remove(context: Element, args: IArguments, originProcess: Function) {
+    let rootNode = this.rootElement;
+    const el = args[0];
+    const tag = el.tagName && el.tagName.toLowerCase();
+    // The style node needs to be placed in the sandbox root container
+    if (tag === 'style') {
+      rootNode = findTarget(rootNode, [
+        'head',
+        'div[__garfishmockhead__]',
+        'div[__garfishmockbody__]',
+      ]);
+      if (rootNode && rootNode.contains(el)) {
+        return this.nativeRemove.call(rootNode, el);
+      }
     }
     return originProcess();
   }
