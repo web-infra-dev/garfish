@@ -49,7 +49,7 @@ function injectorRemove(current: Function, methodName: string) {
     const originProcess = () => current.apply(this, arguments);
     if (sandbox) {
       const processor = new DynamicNodeProcessor(el, sandbox, methodName);
-      return processor.removeChild(this, arguments, originProcess);
+      return processor.remove(this, arguments, originProcess);
     } else {
       return originProcess();
     }

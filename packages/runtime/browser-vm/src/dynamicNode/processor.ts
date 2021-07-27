@@ -218,7 +218,7 @@ export class DynamicNodeProcessor {
     return originProcess();
   }
 
-  removeChild(context: Element, args: IArguments, originProcess: Function) {
+  remove(context: Element, args: IArguments, originProcess: Function) {
     let rootNode = this.rootElement;
     const el = args[0];
     const tag = el.tagName && el.tagName.toLowerCase();
