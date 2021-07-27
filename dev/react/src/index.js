@@ -61,6 +61,10 @@ export const provider = (opts) => {
       // preload('http://localhost:3000/remoteComponent.js').then(() => {
       render(...args);
       // });
+
+      let style111 = document.createElement('style');
+      document.head.appendChild(style111);
+      document.head.removeChild(style111);
     },
     destroy({ isUnmount }) {
       if (isUnmount) {

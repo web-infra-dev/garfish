@@ -3,12 +3,19 @@ import GarfishInstance from 'garfish';
 (window as any).__GARFISH_PARENT__ = true;
 console.log(GarfishInstance);
 
+// let asyncTime = function () {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve(true);
+//     }, 3000);
+//   });
+// };
+
 GarfishInstance.run({
   basename: '/garfish_master',
   domGetter: () => {
-    return new Promise((resolve) => {
-      resolve(document.querySelector('#submoduleByRouter'));
-    });
+    // await asyncTime();
+    return document.querySelector('#submoduleByRouter');
   },
   apps: [
     {
@@ -25,12 +32,19 @@ GarfishInstance.run({
     },
   ],
   autoRefreshApp: true,
-  disablePreloadApp: true,
+  // disablePreloadApp: true,
   sandbox: {
     open: true,
     snapshot: false,
     modules: [],
   },
+  // async beforeLoad(appInfo) {
+  //   console.log('#######', appInfo);
+  //   // if (appInfo.name === 'react') {
+  //   //   return false;
+  //   // }
+  //   return true;
+  // },
 });
 
 const useRouterMode = true;

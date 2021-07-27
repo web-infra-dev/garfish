@@ -55,14 +55,22 @@ const processError = (
   error: string | Error,
   fn: (val: string | Error, isString: boolean) => void,
 ) => {
-  if (typeof error === 'string') {
-    error = `${warnPrefix}: ${error}\n\n`;
-    fn(error, true);
-  } else if (error instanceof Error) {
-    if (!error.message.startsWith(warnPrefix)) {
-      error.message = `${warnPrefix}: ${error.message}`;
+  try {
+    if (typeof error === 'string') {
+      error = `${warnPrefix}: ${error}\n\n`;
+      fn(error, true);
+    } else if (error instanceof Error) {
+      if (!error.message.startsWith(warnPrefix)) {
+        const message = error.message;
+        def(error, 'message', {
+          get: () => `${warnPrefix}: ${message}`,
+        });
+        // error.message = `${warnPrefix}: ${error.message}`;
+      }
+      fn(error, false);
     }
-    fn(error, false);
+  } catch (e) {
+    fn(error, typeof error === 'string');
   }
 };
 

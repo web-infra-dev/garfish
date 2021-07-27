@@ -116,7 +116,7 @@ export namespace interfaces {
   ) => void;
 
   export interface HooksLifecycle {
-    beforeLoad?: LoadLifeCycleFn<Promise<void | false> | void | false>;
+    beforeLoad?: LoadLifeCycleFn<Promise<void | boolean> | void | boolean>;
     afterLoad?: LoadLifeCycleFn<Promise<void> | void>;
     beforeMount?: MountLifeCycleFn;
     afterMount?: MountLifeCycleFn;
