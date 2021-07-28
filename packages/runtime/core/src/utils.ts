@@ -100,7 +100,6 @@ export const fetchStaticResources = (
             .load<StyleManager>(appName, fetchUrl)
             .then(({ resourceManager: styleManager }) => {
               styleManager.setDep(node);
-              // styleManager.setScope(appName);
               styleManager.correctPath();
               return styleManager;
             });

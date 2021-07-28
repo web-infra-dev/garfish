@@ -10,7 +10,8 @@ import {
   findTarget,
   evalWithEnv,
   transformUrl,
-  getRenderNode,
+  __MockBody__,
+  __MockHead__,
   sourceListTags,
   parseContentType,
   createAppContainer,
@@ -24,11 +25,6 @@ export type CustomerLoader = (
   appInfo: interfaces.AppInfo,
   path: string,
 ) => Promise<interfaces.LoaderResult | void> | interfaces.LoaderResult | void;
-
-export interface Provider {
-  destroy: ({ dom: HTMLElement }) => void;
-  render: ({ dom: HTMLElement, basename: string }) => void;
-}
 
 export type AppInterface = App;
 
@@ -57,7 +53,7 @@ export class App {
   public cjsModules: Record<string, any>;
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
-  public provider: Provider;
+  public provider: interfaces.Provider;
   public appInfo: interfaces.AppInfo;
   public entryManager: TemplateManager;
   public customLoader: CustomerLoader;
@@ -119,7 +115,7 @@ export class App {
   }
 
   get rootElement() {
-    return findTarget(this.htmlNode, ['body', 'div[__garfishmockbody__]']);
+    return findTarget(this.htmlNode, ['body', `div[${__MockBody__}]`]);
   }
 
   execScript(
@@ -424,7 +420,7 @@ export class App {
           node = entryManager.cloneNode(node);
           node.tagName = 'div';
           node.attributes.push({
-            key: '__garfishmockbody__',
+            key: __MockBody__,
             value: null,
           });
         }
@@ -436,7 +432,7 @@ export class App {
           node = entryManager.cloneNode(node);
           node.tagName = 'div';
           node.attributes.push({
-            key: '__garfishmockhead__',
+            key: __MockHead__,
             value: null,
           });
         }
@@ -481,8 +477,9 @@ export class App {
         if (text) {
           const styleManager = new StyleManager(text.content);
           styleManager.correctPath(baseUrl);
-          // styleManager.setScope(this.name);
-          return styleManager.renderAsStyleElement();
+          return entryManager.ignoreChildNodesCreation(
+            styleManager.renderAsStyleElement(),
+          );
         }
         return DOMApis.createElement(node);
       },
