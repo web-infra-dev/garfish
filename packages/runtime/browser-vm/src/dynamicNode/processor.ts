@@ -162,18 +162,25 @@ export class DynamicNodeProcessor {
     mutator.observe(this.el, { attributes: true });
   }
 
+  private findParentNodeInApp(parentNode: Element) {
+    if (parentNode === document.body) {
+      return findTarget(this.rootElement, [
+        'body',
+        `div[${__MockBody__}]`,
+      ]) as Element;
+    } else if (parentNode === document.head) {
+      return findTarget(this.rootElement, [
+        'head',
+        `div[${__MockHead__}]`,
+      ]) as Element;
+    }
+    return parentNode;
+  }
+
   append(context: Element, args: IArguments, originProcess: Function) {
     let convertedNode;
     let parentNode = context;
     const { baseUrl } = this.sandbox.options;
-    const changeParentNode = () => {
-      if (context === document.body) {
-        parentNode = findTarget(this.rootElement, [
-          'body',
-          `div[${__MockBody__}]`,
-        ]) as Element;
-      }
-    };
 
     this.sandbox.replaceGlobalVariables.recoverList.push(() => {
       this.DOMApis.removeElement(this.el);
@@ -181,12 +188,12 @@ export class DynamicNodeProcessor {
 
     // Add dynamic script node by loader
     if (this.is('script')) {
-      changeParentNode();
+      parentNode = this.findParentNodeInApp(context);
       convertedNode = this.addDynamicScriptNode();
     }
     // The style node needs to be placed in the sandbox root container
     else if (this.is('style')) {
-      changeParentNode();
+      parentNode = this.findParentNodeInApp(context);
       if (baseUrl) {
         const manager = new StyleManager(this.el.textContent);
         manager.correctPath(baseUrl);
@@ -196,7 +203,7 @@ export class DynamicNodeProcessor {
     }
     // The link node of the request css needs to be changed to style node
     else if (this.is('link')) {
-      changeParentNode();
+      parentNode = this.findParentNodeInApp(context);
       if (this.el.rel === 'stylesheet' && this.el.href) {
         convertedNode = this.addDynamicLinkNode((styleNode) =>
           this.nativeAppend.call(parentNode, styleNode),
@@ -230,14 +237,8 @@ export class DynamicNodeProcessor {
   }
 
   remove(context: Element, originProcess: Function) {
-    let parentNode = context;
     if (this.is('style') || this.is('link') || this.is('script')) {
-      if (context === document.body) {
-        parentNode = findTarget(this.rootElement, [
-          'body',
-          `div[${__MockBody__}]`,
-        ]) as Element;
-      }
+      const parentNode = this.findParentNodeInApp(context);
       return this.nativeRemove.call(parentNode, this.el);
     }
     return originProcess();
