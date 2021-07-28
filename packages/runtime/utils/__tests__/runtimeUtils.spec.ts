@@ -23,7 +23,6 @@ describe('Garfish shared runtimeUtils', () => {
   it('warn', () => {
     let calledCount = 0;
     (warn as any)._oncalled = function (msg: string) {
-      console.log(msg, 'chentao');
       calledCount++;
       expect(msg.includes('[Garfish warning]: test warn')).toBe(true);
     };
