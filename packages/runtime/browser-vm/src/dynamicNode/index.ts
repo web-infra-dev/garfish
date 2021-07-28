@@ -26,7 +26,7 @@ function injector(current: Function, methodName: string) {
       const baseUrl = sandbox && sandbox.options.baseUrl;
       if (baseUrl) {
         const manager = new StyleManager(el.textContent, baseUrl);
-        this.textContent = manager.styleCode;
+        this.textContent = manager.getStyleCode();
         return originProcess();
       }
     }

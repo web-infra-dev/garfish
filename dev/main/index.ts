@@ -32,6 +32,7 @@ GarfishInstance.run({
     },
   ],
   autoRefreshApp: true,
+  cssScope: true,
   // disablePreloadApp: true,
   sandbox: {
     open: true,

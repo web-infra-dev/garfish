@@ -1,5 +1,4 @@
-import { parse, stringify } from '@garfish/css-scope';
-import { warn, Node, isAbsolute, transformUrl } from '@garfish/utils';
+import { hasOwn, Node, isAbsolute, transformUrl } from '@garfish/utils';
 
 // Match url in css
 const MATCH_CSS_URL = /url\(['"]?([^\)]+?)['"]?\)/g;
@@ -17,8 +16,8 @@ const correctPath = (manager) => {
 
 export class StyleManager {
   public url: string | null;
-  public styleCode: string;
 
+  private styleCode: string;
   private scopeString: string;
   private depsStack = new Set();
 
@@ -37,12 +36,14 @@ export class StyleManager {
     return this.depsStack.has(node);
   }
 
+  // This method is used to rewrite the css scope plugin
   getStyleCode() {
     return this.styleCode;
   }
 
   renderAsStyleElement(extraCode = '') {
     const styleCode = this.getStyleCode();
+    console.log(styleCode, this, this.getStyleCode);
     const node = document.createElement('style');
     node.setAttribute('type', 'text/css');
     node.textContent =

@@ -13,8 +13,13 @@ export default function CssScope() {
 
       beforeBootstrap() {
         Garfish.loader.lifecycle.loaded.add((data) => {
-          if (data.value.fileType === 'css') {
+          if (data.value.fileType === 'css' && Garfish.options.cssScope) {
             const manager = data.value.resourceManager as StyleManager;
+            manager.getStyleCode = function () {
+              console.log(this);
+              return '';
+            };
+
             console.log(manager);
           }
           return data;
