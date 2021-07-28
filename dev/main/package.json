@@ -1,5 +1,6 @@
 {
-  "name": "main",
+  "name": "@garfish-dev/main",
+  "private": true,
   "version": "1.0.0",
   "description": "main template",
   "main": "index.js",
