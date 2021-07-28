@@ -10,6 +10,8 @@ import {
   findTarget,
   evalWithEnv,
   transformUrl,
+  __MockBody__,
+  __MockHead__,
   sourceListTags,
   parseContentType,
   createAppContainer,
@@ -113,7 +115,7 @@ export class App {
   }
 
   get rootElement() {
-    return findTarget(this.htmlNode, ['body', 'div[__garfishmockbody__]']);
+    return findTarget(this.htmlNode, ['body', `div[${__MockBody__}]`]);
   }
 
   execScript(
@@ -418,7 +420,7 @@ export class App {
           node = entryManager.cloneNode(node);
           node.tagName = 'div';
           node.attributes.push({
-            key: '__garfishmockbody__',
+            key: __MockBody__,
             value: null,
           });
         }
@@ -430,7 +432,7 @@ export class App {
           node = entryManager.cloneNode(node);
           node.tagName = 'div';
           node.attributes.push({
-            key: '__garfishmockhead__',
+            key: __MockHead__,
             value: null,
           });
         }
@@ -473,12 +475,10 @@ export class App {
       style: (node) => {
         const text = node.children[0] as Text;
         if (text) {
-          console.log(text.content, 'chentao');
-          const styleManager = new this.context.loader.StyleManager(
-            text.content,
-            baseUrl,
+          const styleManager = new StyleManager(text.content, baseUrl);
+          return entryManager.ignoreChildNodesCreation(
+            styleManager.renderAsStyleElement(),
           );
-          return styleManager.renderAsStyleElement();
         }
         return DOMApis.createElement(node);
       },

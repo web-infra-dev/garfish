@@ -7,6 +7,8 @@ import {
   DOMApis,
   makeMap,
   findTarget,
+  __MockBody__,
+  __MockHead__,
   transformUrl,
   sourceListTags,
   parseContentType,
@@ -20,6 +22,7 @@ export const rawElementMethods = Object.create(null);
 
 export class DynamicNodeProcessor {
   private el: any; // any Element
+  private tagName: string;
   private sandbox: Sandbox;
   private DOMApis: DOMApis;
   private methodName: string;
@@ -35,6 +38,16 @@ export class DynamicNodeProcessor {
     this.nativeRemove = rawElementMethods['removeChild'];
     this.DOMApis = new DOMApis(sandbox.global.document);
     this.rootElement = rootElm(this.sandbox) || document;
+    this.tagName = el.tagName ? el.tagName.toLowerCase() : '';
+
+    // Deal with some static resource nodes
+    if (sourceListTags.includes(this.tagName)) {
+      this.fixResourceNodeUrl();
+    }
+  }
+
+  private is(tag: string) {
+    return this.tagName === tag;
   }
 
   private fixResourceNodeUrl() {
@@ -95,10 +108,9 @@ export class DynamicNodeProcessor {
 
     if (!type || isJs(parseContentType(type))) {
       // The "src" higher priority
+      const { baseUrl, namespace = '' } = this.sandbox.options;
       if (src) {
-        const { baseUrl, namespace = '' } = this.sandbox.options;
         const fetchUrl = baseUrl ? transformUrl(baseUrl, src) : src;
-
         this.sandbox.loader
           .load<JavaScriptManager>(namespace, fetchUrl)
           .then(({ resourceManager: { url, scriptCode } }) => {
@@ -110,7 +122,7 @@ export class DynamicNodeProcessor {
             this.dispatchEvent('error');
           });
       } else if (code) {
-        this.sandbox.execScript(code, {}, '', { noEntry: true });
+        this.sandbox.execScript(code, {}, baseUrl, { noEntry: true });
       }
     } else {
       if (__DEV__) {
@@ -149,30 +161,38 @@ export class DynamicNodeProcessor {
     mutator.observe(this.el, { attributes: true });
   }
 
+  private findParentNodeInApp(parentNode: Element) {
+    if (parentNode === document.body) {
+      return findTarget(this.rootElement, [
+        'body',
+        `div[${__MockBody__}]`,
+      ]) as Element;
+    } else if (parentNode === document.head) {
+      return findTarget(this.rootElement, [
+        'head',
+        `div[${__MockHead__}]`,
+      ]) as Element;
+    }
+    return parentNode;
+  }
+
   append(context: Element, args: IArguments, originProcess: Function) {
     let convertedNode;
-    let rootNode = this.rootElement;
+    let parentNode = context;
     const { baseUrl } = this.sandbox.options;
-    const tag = this.el.tagName && this.el.tagName.toLowerCase();
 
     this.sandbox.replaceGlobalVariables.recoverList.push(() => {
       this.DOMApis.removeElement(this.el);
     });
 
-    // Deal with some static resource nodes
-    if (sourceListTags.includes(tag)) {
-      this.fixResourceNodeUrl();
-    }
-
     // Add dynamic script node by loader
-    if (tag === 'script') {
-      rootNode = findTarget(rootNode, ['body', 'div[__garfishmockbody__]']);
+    if (this.is('script')) {
+      parentNode = this.findParentNodeInApp(context);
       convertedNode = this.addDynamicScriptNode();
     }
-
     // The style node needs to be placed in the sandbox root container
-    if (tag === 'style') {
-      rootNode = findTarget(rootNode, ['head', 'div[__garfishmockhead__]']);
+    else if (this.is('style')) {
+      parentNode = this.findParentNodeInApp(context);
       if (baseUrl) {
         const manager = new this.sandbox.loader.StyleManager(
           this.el.textContent,
@@ -182,13 +202,12 @@ export class DynamicNodeProcessor {
       }
       convertedNode = this.el;
     }
-
     // The link node of the request css needs to be changed to style node
-    if (tag === 'link') {
-      rootNode = findTarget(rootNode, ['head', 'div[__garfishmockhead__]']);
+    else if (this.is('link')) {
+      parentNode = this.findParentNodeInApp(context);
       if (this.el.rel === 'stylesheet' && this.el.href) {
         convertedNode = this.addDynamicLinkNode((styleNode) =>
-          this.nativeAppend.call(rootNode, styleNode),
+          this.nativeAppend.call(parentNode, styleNode),
         );
       } else {
         convertedNode = this.el;
@@ -198,15 +217,14 @@ export class DynamicNodeProcessor {
 
     if (__DEV__ || (this.sandbox?.global as any).__GARFISH__DEV__) {
       // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
-      if (tag === 'iframe' && typeof this.el.onload === 'function') {
+      if (this.is('iframe') && typeof this.el.onload === 'function') {
         def(this.el, 'contentWindow', this.sandbox.global);
         def(this.el, 'contentDocument', this.sandbox.global.document);
       }
     }
 
     if (convertedNode) {
-      // If it is "insertBefore" or "insertAdjacentElement" method,
-      // No need to rewrite when added to the container
+      // If it is "insertBefore" or "insertAdjacentElement" method, no need to rewrite when added to the container
       if (
         isInsertMethod(this.methodName) &&
         this.rootElement.contains(context) &&
@@ -214,25 +232,15 @@ export class DynamicNodeProcessor {
       ) {
         return originProcess();
       }
-      return this.nativeAppend.call(rootNode, convertedNode);
+      return this.nativeAppend.call(parentNode, convertedNode);
     }
     return originProcess();
   }
 
-  remove(context: Element, args: IArguments, originProcess: Function) {
-    let rootNode = this.rootElement;
-    const el = args[0];
-    const tag = el.tagName && el.tagName.toLowerCase();
-    // The style node needs to be placed in the sandbox root container
-    if (tag === 'style') {
-      rootNode = findTarget(rootNode, [
-        'head',
-        'div[__garfishmockhead__]',
-        'div[__garfishmockbody__]',
-      ]);
-      if (rootNode && rootNode.contains(el)) {
-        return this.nativeRemove.call(rootNode, el);
-      }
+  remove(context: Element, originProcess: Function) {
+    if (this.is('style') || this.is('link') || this.is('script')) {
+      const parentNode = this.findParentNodeInApp(context);
+      return this.nativeRemove.call(parentNode, this.el);
     }
     return originProcess();
   }
