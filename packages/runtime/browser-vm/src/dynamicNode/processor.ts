@@ -174,7 +174,10 @@ export class DynamicNodeProcessor {
     if (tag === 'style') {
       rootNode = findTarget(rootNode, ['head', 'div[__garfishmockhead__]']);
       if (baseUrl) {
-        const manager = new StyleManager(this.el.textContent, baseUrl);
+        const manager = new this.sandbox.loader.StyleManager(
+          this.el.textContent,
+          baseUrl,
+        );
         this.el.textContent = manager.getStyleCode();
       }
       convertedNode = this.el;

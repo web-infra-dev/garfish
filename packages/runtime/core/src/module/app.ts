@@ -10,7 +10,6 @@ import {
   findTarget,
   evalWithEnv,
   transformUrl,
-  getRenderNode,
   sourceListTags,
   parseContentType,
   createAppContainer,
@@ -474,7 +473,11 @@ export class App {
       style: (node) => {
         const text = node.children[0] as Text;
         if (text) {
-          const styleManager = new StyleManager(text.content, baseUrl);
+          console.log(text.content, 'chentao');
+          const styleManager = new this.context.loader.StyleManager(
+            text.content,
+            baseUrl,
+          );
           return styleManager.renderAsStyleElement();
         }
         return DOMApis.createElement(node);

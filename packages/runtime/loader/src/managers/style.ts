@@ -3,17 +3,6 @@ import { hasOwn, Node, isAbsolute, transformUrl } from '@garfish/utils';
 // Match url in css
 const MATCH_CSS_URL = /url\(['"]?([^\)]+?)['"]?\)/g;
 
-const correctPath = (manager) => {
-  const { url, styleCode } = manager;
-  if (url && typeof styleCode === 'string') {
-    // The relative path is converted to an absolute path according to the path of the css file
-    manager.styleCode = styleCode.replace(MATCH_CSS_URL, (k1, k2) => {
-      if (isAbsolute(k2)) return k1;
-      return `url("${transformUrl(url, k2)}")`;
-    });
-  }
-};
-
 export class StyleManager {
   public url: string | null;
 
@@ -25,11 +14,27 @@ export class StyleManager {
     this.url = url || null;
     this.scopeString = '';
     this.styleCode = styleCode;
-    correctPath(this);
+    this.correctPath();
+    this.parseStyleCode();
+  }
+
+  private correctPath() {
+    const { url, styleCode } = this;
+    if (url && typeof styleCode === 'string') {
+      // The relative path is converted to an absolute path according to the path of the css file
+      this.styleCode = styleCode.replace(MATCH_CSS_URL, (k1, k2) => {
+        if (isAbsolute(k2)) return k1;
+        return `url("${transformUrl(url, k2)}")`;
+      });
+    }
   }
 
   setDep(node: Node) {
     this.depsStack.add(node);
+  }
+
+  parseStyleCode() {
+    // Not parse by default
   }
 
   isSameOrigin(node: Node) {
@@ -43,7 +48,6 @@ export class StyleManager {
 
   renderAsStyleElement(extraCode = '') {
     const styleCode = this.getStyleCode();
-    console.log(styleCode, this, this.getStyleCode);
     const node = document.createElement('style');
     node.setAttribute('type', 'text/css');
     node.textContent =
