@@ -42,7 +42,7 @@ $ yarn add garfish #or npm i garfish -S
 
 ## community
 
-[https://garfish.dev/community/discuss](https://garfish.dev/community/discuss)
+[https://garfish.top/community/discuss](https://garfish.top/community/discuss)
 
 ## LICENSE
 
