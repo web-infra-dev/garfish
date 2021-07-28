@@ -133,6 +133,6 @@ link.setAttribute('href', 'http://localhost:9090/css/xxx/xx.css');
 link.setAttribute('rel', 'stylesheet');
 
 const jsNode = document.createElement('script');
+jsNode.innerHTML = 'console.log("jsNode")';
 document.body.appendChild(jsNode);
-jsNode.innerHTML = 'console.log(1)';
 // jsNode.src = 'http://localhost:9090/async.js';
