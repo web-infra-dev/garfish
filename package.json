@@ -4,12 +4,13 @@
   "workspaces": {
     "packages": [
       "packages/runtime/*",
-      "website"
+      "website",
+      "dev/*"
     ]
   },
   "description": "a powerful micro front-end framework",
   "scripts": {
-    "dev": "node scripts/dev.js",
+    "dev": "lerna run start --stream --scope dev/*",
     "dev:core": "yarn dev core",
     "dev:docs": "yarn workspace garfish-docs start",
     "pkg": "node scripts/createPackage.js",
@@ -21,6 +22,7 @@
     "setup": "yarn reset && yarn install --registry=https://registry.npmjs.org",
     "changelog": "node scripts/changelog.js",
     "test": "node scripts/jestTest.js",
+    "e2e": "yarn run cypress open",
     "test:cover": "node scripts/jestTest.js --coverage",
     "ls-lint": "ls-lint",
     "lint": "eslint --ext .ts packages/*/*/src/**",
@@ -59,6 +61,8 @@
     "@babel/plugin-transform-regenerator": "^7.12.1",
     "@babel/preset-env": "^7.12.7",
     "@babel/preset-typescript": "^7.12.7",
+    "@lerna/publish": "^3.20.2",
+    "@lerna/version": "^3.20.2",
     "@ls-lint/ls-lint": "^1.9.2",
     "@microsoft/api-extractor": "^7.12.0",
     "@rollup/plugin-commonjs": "^13.0.0",
@@ -71,6 +75,7 @@
     "chalk": "^4.1.0",
     "codecov": "^3.8.1",
     "conventional-changelog-cli": "^2.1.1",
+    "cypress": "^8.0.0",
     "dir-parser": "^1.2.10",
     "eslint": "^7.14.0",
     "execa": "^4.1.0",
@@ -90,8 +95,7 @@
     "rollup-plugin-typescript2": "^0.27.3",
     "ts-jest": "^26.4.4",
     "typescript": "^3.9.5",
-    "@lerna/publish": "^3.20.2",
-    "@lerna/version": "^3.20.2"
+    "workspace-tools": "^0.16.2"
   },
   "version": "0.0.34"
 }
