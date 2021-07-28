@@ -39,6 +39,11 @@ export class DynamicNodeProcessor {
     this.DOMApis = new DOMApis(sandbox.global.document);
     this.rootElement = rootElm(this.sandbox) || document;
     this.tagName = el.tagName ? el.tagName.toLowerCase() : '';
+
+    // Deal with some static resource nodes
+    if (sourceListTags.includes(this.tagName)) {
+      this.fixResourceNodeUrl();
+    }
   }
 
   private is(tag: string) {
@@ -173,10 +178,6 @@ export class DynamicNodeProcessor {
     this.sandbox.replaceGlobalVariables.recoverList.push(() => {
       this.DOMApis.removeElement(this.el);
     });
-    // Deal with some static resource nodes
-    if (sourceListTags.includes(this.tagName)) {
-      this.fixResourceNodeUrl();
-    }
 
     // Add dynamic script node by loader
     if (this.is('script')) {
