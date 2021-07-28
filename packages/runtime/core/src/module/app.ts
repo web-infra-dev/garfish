@@ -477,8 +477,9 @@ export class App {
         if (text) {
           const styleManager = new StyleManager(text.content);
           styleManager.correctPath(baseUrl);
-          // styleManager.setScope(this.name);
-          return styleManager.renderAsStyleElement();
+          return entryManager.ignoreChildNodesCreation(
+            styleManager.renderAsStyleElement(),
+          );
         }
         return DOMApis.createElement(node);
       },
