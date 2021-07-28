@@ -43,13 +43,12 @@ function injector(current: Function, methodName: string) {
 
 function injectorRemove(current: Function, methodName: string) {
   return function () {
-    // prettier-ignore
     const el = arguments[0];
     const sandbox = el && sandboxMap.get(el);
     const originProcess = () => current.apply(this, arguments);
     if (sandbox) {
       const processor = new DynamicNodeProcessor(el, sandbox, methodName);
-      return processor.remove(this, arguments, originProcess);
+      return processor.remove(originProcess);
     } else {
       return originProcess();
     }
