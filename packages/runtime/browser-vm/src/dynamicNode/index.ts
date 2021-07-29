@@ -1,4 +1,4 @@
-import { makeMap, warn } from '@garfish/utils';
+import { warn } from '@garfish/utils';
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
 import { sandboxMap, handlerParams } from '../utils';
@@ -10,7 +10,6 @@ const mountElementMethods = [
   'insertBefore',
   'insertAdjacentElement',
 ];
-
 const removeElementMethods = ['removeChild'];
 
 function injector(current: Function, methodName: string) {
