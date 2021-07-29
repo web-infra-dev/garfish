@@ -1,6 +1,6 @@
 {
   "name": "@garfish/hooks",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "author": "zhoushaw",
   "description": "fork from tapable",
   "license": "MIT",
