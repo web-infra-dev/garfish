@@ -1,6 +1,6 @@
 {
   "name": "@garfish/browser-vm",
-  "version": "0.0.35",
+  "version": "0.0.36",
   "description": "vm-sandbox module.",
   "keywords": [
     "garfish",
@@ -31,10 +31,10 @@
     ]
   },
   "devDependencies": {
-    "@garfish/core": "^0.0.35"
+    "@garfish/core": "^0.0.36"
   },
   "dependencies": {
-    "@garfish/loader": "^0.0.35"
+    "@garfish/loader": "^0.0.36"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
