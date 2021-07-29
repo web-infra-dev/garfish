@@ -61,9 +61,7 @@ export function createContext(): Garfish {
         const next = () => {
           fresh = true;
           if (__DEV__) {
-            warn(
-              `"Window.${namespace}" will be overwritten by "@garfish/framework".`,
-            );
+            warn(`"Window.${namespace}" will be overwritten by "garfish".`);
           }
         };
         const desc = Object.getOwnPropertyDescriptor(window, namespace);
@@ -86,7 +84,9 @@ export function createContext(): Garfish {
   if (inBrowser()) {
     // Global flag
     set('Garfish');
+    set('Gar', true);
     set('__GARFISH__', true);
+    set('__PROWER_BY_GAR__', true);
   }
 
   if (fresh) {
