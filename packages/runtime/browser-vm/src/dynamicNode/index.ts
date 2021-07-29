@@ -79,27 +79,23 @@ export function makeElInjector() {
 
   if (typeof window.Element === 'function') {
     handleOwnerDocument();
-    for (const name of mountElementMethods) {
-      const fn = window.Element.prototype[name];
-      if (typeof fn !== 'function' || fn[__domWrapper__]) {
-        continue;
+    const rewrite = (
+      methods: Array<string>,
+      builder: typeof injector | typeof injectorRemove,
+    ) => {
+      for (const name of methods) {
+        const fn = window.Element.prototype[name];
+        if (typeof fn !== 'function' || fn[__domWrapper__]) {
+          continue;
+        }
+        rawElementMethods[name] = fn;
+        const wrapper = builder(fn, name);
+        wrapper[__domWrapper__] = true;
+        window.Element.prototype[name] = wrapper;
       }
-      rawElementMethods[name] = fn;
-      const wrapper = injector(fn, name);
-      wrapper[__domWrapper__] = true;
-      window.Element.prototype[name] = wrapper;
-    }
-
-    for (const name of removeElementMethods) {
-      const fn = window.Element.prototype[name];
-      if (typeof fn !== 'function' || fn[__domWrapper__]) {
-        continue;
-      }
-      rawElementMethods[name] = fn;
-      const wrapper = injectorRemove(fn, name);
-      wrapper[__domWrapper__] = true;
-      window.Element.prototype[name] = wrapper;
-    }
+    };
+    rewrite(mountElementMethods, injector);
+    rewrite(removeElementMethods, injectorRemove);
   }
 
   if (window.MutationObserver) {
