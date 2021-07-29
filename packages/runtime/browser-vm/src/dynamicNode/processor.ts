@@ -162,18 +162,43 @@ export class DynamicNodeProcessor {
     mutator.observe(this.el, { attributes: true });
   }
 
-  private findParentNodeInApp(parentNode: Element) {
+  private findParentNodeInApp(parentNode: Element, defaultInsert?: string) {
     if (parentNode === document.body) {
       return findTarget(this.rootElement, [
         'body',
         `div[${__MockBody__}]`,
       ]) as Element;
-    } else if (parentNode === document.head) {
+    }
+    if (parentNode === document.head) {
       return findTarget(this.rootElement, [
         'head',
         `div[${__MockHead__}]`,
       ]) as Element;
     }
+
+    // Add the location of the destination node is not a container to the container of the application
+    // Has not been added to the container, or cannot be searched through document in shadow dom
+    if (
+      this.rootElement.contains(parentNode) ||
+      !document.contains(parentNode)
+    ) {
+      return parentNode;
+    }
+
+    if (defaultInsert === 'head') {
+      return findTarget(this.rootElement, [
+        'head',
+        `div[${__MockHead__}]`,
+      ]) as Element;
+    }
+
+    if (defaultInsert === 'body') {
+      return findTarget(this.rootElement, [
+        'body',
+        `div[${__MockBody__}]`,
+      ]) as Element;
+    }
+
     return parentNode;
   }
 
@@ -188,12 +213,12 @@ export class DynamicNodeProcessor {
 
     // Add dynamic script node by loader
     if (this.is('script')) {
-      parentNode = this.findParentNodeInApp(context);
+      parentNode = this.findParentNodeInApp(context, 'body');
       convertedNode = this.addDynamicScriptNode();
     }
     // The style node needs to be placed in the sandbox root container
     else if (this.is('style')) {
-      parentNode = this.findParentNodeInApp(context);
+      parentNode = this.findParentNodeInApp(context, 'head');
       if (baseUrl) {
         const manager = new StyleManager(this.el.textContent);
         manager.correctPath(baseUrl);
@@ -203,7 +228,7 @@ export class DynamicNodeProcessor {
     }
     // The link node of the request css needs to be changed to style node
     else if (this.is('link')) {
-      parentNode = this.findParentNodeInApp(context);
+      parentNode = this.findParentNodeInApp(context, 'head');
       if (this.el.rel === 'stylesheet' && this.el.href) {
         convertedNode = this.addDynamicLinkNode((styleNode) =>
           this.nativeAppend.call(parentNode, styleNode),
@@ -238,8 +263,12 @@ export class DynamicNodeProcessor {
 
   remove(context: Element, originProcess: Function) {
     if (this.is('style') || this.is('link') || this.is('script')) {
-      const parentNode = this.findParentNodeInApp(context);
-      return this.nativeRemove.call(parentNode, this.el);
+      const parentNode = this.findParentNodeInApp(
+        context,
+        this.is('script') ? 'body' : 'head',
+      );
+      if (this.el.parentNode === parentNode)
+        return this.nativeRemove.call(parentNode, this.el);
     }
     return originProcess();
   }
