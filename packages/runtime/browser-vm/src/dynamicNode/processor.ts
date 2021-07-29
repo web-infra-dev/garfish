@@ -178,8 +178,12 @@ export class DynamicNodeProcessor {
 
     // Add the location of the destination node is not a container to the container of the application
     // Has not been added to the container, or cannot be searched through document in shadow dom
-    if (this.rootElement.contains(parentNode) || !document.contains(parentNode))
+    if (
+      this.rootElement.contains(parentNode) ||
+      !document.contains(parentNode)
+    ) {
       return parentNode;
+    }
 
     if (defaultInsert === 'head') {
       return findTarget(this.rootElement, [
