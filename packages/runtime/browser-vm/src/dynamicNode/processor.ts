@@ -168,8 +168,7 @@ export class DynamicNodeProcessor {
         'body',
         `div[${__MockBody__}]`,
       ]) as Element;
-    }
-    if (parentNode === document.head) {
+    } else if (parentNode === document.head) {
       return findTarget(this.rootElement, [
         'head',
         `div[${__MockHead__}]`,
@@ -190,15 +189,12 @@ export class DynamicNodeProcessor {
         'head',
         `div[${__MockHead__}]`,
       ]) as Element;
-    }
-
-    if (defaultInsert === 'body') {
+    } else if (defaultInsert === 'body') {
       return findTarget(this.rootElement, [
         'body',
         `div[${__MockBody__}]`,
       ]) as Element;
     }
-
     return parentNode;
   }
 
@@ -206,10 +202,13 @@ export class DynamicNodeProcessor {
     let convertedNode;
     let parentNode = context;
     const { baseUrl } = this.sandbox.options;
+    const parentNodeIsInRootNode = this.rootElement.contains(context);
 
-    this.sandbox.replaceGlobalVariables.recoverList.push(() => {
-      this.DOMApis.removeElement(this.el);
-    });
+    if (!parentNodeIsInRootNode && context !== this.rootElement) {
+      this.sandbox.deferClearEffects.add(() => {
+        this.DOMApis.removeElement(this.el);
+      });
+    }
 
     // Add dynamic script node by loader
     if (this.is('script')) {
@@ -251,7 +250,7 @@ export class DynamicNodeProcessor {
       // If it is "insertBefore" or "insertAdjacentElement" method, no need to rewrite when added to the container
       if (
         isInsertMethod(this.methodName) &&
-        this.rootElement.contains(context) &&
+        parentNodeIsInRootNode &&
         args[1]?.parentNode === context
       ) {
         return originProcess();
