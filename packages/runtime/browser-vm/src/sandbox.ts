@@ -275,12 +275,10 @@ export class Sandbox {
       }
     } catch (e) {
       // dispatch `window.onerror`
-      const source = url || this.options.baseUrl;
-      const message = e instanceof Error ? e.message : String(e);
       if (typeof this.global.onerror === 'function') {
-        // @ts-ignore
-        const errorFn = this.global.onerror._native || this.global.onerror;
-        errorFn.call(window, message, source, null, null, e);
+        const source = url || this.options.baseUrl;
+        const message = e instanceof Error ? e.message : String(e);
+        this.global.onerror.call(this.global, message, source, null, null, e);
       }
       throw e;
     } finally {
