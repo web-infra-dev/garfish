@@ -197,13 +197,6 @@ export class DynamicNodeProcessor {
     let convertedNode;
     let parentNode = context;
     const { baseUrl } = this.sandbox.options;
-    const parentNodeIsInRootNode = this.rootElement.contains(context);
-
-    if (!parentNodeIsInRootNode && context !== this.rootElement) {
-      this.sandbox.deferClearEffects.add(() => {
-        this.DOMApis.removeElement(this.el);
-      });
-    }
 
     // Deal with some static resource nodes
     if (sourceListTags.includes(this.tagName)) {
@@ -238,6 +231,15 @@ export class DynamicNodeProcessor {
       }
     }
 
+    // Collect nodes that escape the container node
+    if (!this.rootElement.contains(parentNode)) {
+      if (parentNode !== this.rootElement) {
+        this.sandbox.deferClearEffects.add(() => {
+          this.DOMApis.removeElement(this.el);
+        });
+      }
+    }
+
     if (__DEV__ || (this.sandbox?.global as any).__GARFISH__DEV__) {
       // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
       if (this.is('iframe') && typeof this.el.onload === 'function') {
@@ -250,7 +252,7 @@ export class DynamicNodeProcessor {
       // If it is "insertBefore" or "insertAdjacentElement" method, no need to rewrite when added to the container
       if (
         isInsertMethod(this.methodName) &&
-        parentNodeIsInRootNode &&
+        this.rootElement.contains(context) &&
         args[1]?.parentNode === context
       ) {
         return originProcess();
