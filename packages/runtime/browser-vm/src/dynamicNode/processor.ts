@@ -163,27 +163,37 @@ export class DynamicNodeProcessor {
   }
 
   private findParentNodeInApp(parentNode: Element, defaultInsert?: string) {
-    if (parentNode === document.body)
+    if (parentNode === document.body) {
       return findTarget(this.rootElement, [
         'body',
         `div[${__MockBody__}]`,
       ]) as Element;
-    if (parentNode === document.head)
+    }
+    if (parentNode === document.head) {
       return findTarget(this.rootElement, [
         'head',
         `div[${__MockHead__}]`,
       ]) as Element;
+    }
 
-    if (defaultInsert === 'head')
+    // Add the location of the destination node is not a container to the container of the application
+    // Has not been added to the container, or cannot be searched through document in shadow dom
+    if (this.rootElement.contains(parentNode) || !document.contains(parentNode))
+      return parentNode;
+
+    if (defaultInsert === 'head') {
       return findTarget(this.rootElement, [
         'head',
         `div[${__MockHead__}]`,
       ]) as Element;
-    if (defaultInsert === 'body')
+    }
+
+    if (defaultInsert === 'body') {
       return findTarget(this.rootElement, [
         'body',
         `div[${__MockBody__}]`,
       ]) as Element;
+    }
 
     return parentNode;
   }
@@ -235,14 +245,10 @@ export class DynamicNodeProcessor {
 
     if (convertedNode) {
       // If it is "insertBefore" or "insertAdjacentElement" method, no need to rewrite when added to the container
-      // Add the location of the destination node is not a container to the container of the application
-      // Has not been added to the container, or cannot be searched through document in shadow dom
       if (
-        this.rootElement.contains(context) ||
-        (isInsertMethod(this.methodName) &&
-          this.rootElement.contains(context) &&
-          args[1]?.parentNode === context) ||
-        !document.contains(this.el)
+        isInsertMethod(this.methodName) &&
+        this.rootElement.contains(context) &&
+        args[1]?.parentNode === context
       ) {
         return originProcess();
       }
