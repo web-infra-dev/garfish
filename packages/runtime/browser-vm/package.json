@@ -1,6 +1,6 @@
 {
   "name": "@garfish/browser-vm",
-  "version": "0.0.37",
+  "version": "0.0.38-alpha.0",
   "description": "vm-sandbox module.",
   "keywords": [
     "garfish",
