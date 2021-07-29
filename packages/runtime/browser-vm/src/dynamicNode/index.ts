@@ -32,7 +32,7 @@ function injector(current: Function, methodName: string) {
       }
     }
 
-    if (sandbox && document.contains(el)) {
+    if (sandbox) {
       const processor = new DynamicNodeProcessor(el, sandbox, methodName);
       return processor.append(this, arguments, originProcess);
     } else {
