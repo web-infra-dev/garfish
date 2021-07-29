@@ -1,4 +1,4 @@
-import { warn } from '@garfish/utils';
+import { makeMap, warn } from '@garfish/utils';
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
 import { sandboxMap, handlerParams } from '../utils';
@@ -32,7 +32,7 @@ function injector(current: Function, methodName: string) {
       }
     }
 
-    if (sandbox) {
+    if (sandbox && document.contains(el)) {
       const processor = new DynamicNodeProcessor(el, sandbox, methodName);
       return processor.append(this, arguments, originProcess);
     } else {

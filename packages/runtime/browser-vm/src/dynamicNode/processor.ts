@@ -235,10 +235,14 @@ export class DynamicNodeProcessor {
 
     if (convertedNode) {
       // If it is "insertBefore" or "insertAdjacentElement" method, no need to rewrite when added to the container
+      // Add the location of the destination node is not a container to the container of the application
+      // Has not been added to the container, or cannot be searched through document in shadow dom
       if (
-        isInsertMethod(this.methodName) &&
-        this.rootElement.contains(context) &&
-        args[1]?.parentNode === context
+        this.rootElement.contains(context) ||
+        (isInsertMethod(this.methodName) &&
+          this.rootElement.contains(context) &&
+          args[1]?.parentNode === context) ||
+        !document.contains(this.el)
       ) {
         return originProcess();
       }
