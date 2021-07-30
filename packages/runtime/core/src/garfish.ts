@@ -4,12 +4,11 @@ import {
   warn,
   error,
   assert,
-  hasOwn,
   deepMerge,
   transformUrl,
   isPlainObject,
-  __GARFISH_FLAG__,
   getRenderNode,
+  __GARFISH_FLAG__,
 } from '@garfish/utils';
 import { Hooks } from './hooks';
 import { App } from './module/app';
@@ -43,7 +42,7 @@ export class Garfish implements interfaces.Garfish {
     this.setOptions(options);
     // register plugins
     options?.plugins.forEach((pluginCb) => {
-      this.usePlugin(this.hooks, pluginCb, this);
+      this.usePlugin(this.hooks, pluginCb);
     });
     this.hooks.lifecycle.initialize.call(this.options);
   }
@@ -54,7 +53,7 @@ export class Garfish implements interfaces.Garfish {
     if (!options.disablePreloadApp) defaultPlugin.push(GarfishPreloadPlugin());
 
     defaultPlugin.forEach((pluginCb) => {
-      this.usePlugin(this.hooks, pluginCb, this);
+      this.usePlugin(this.hooks, pluginCb);
     });
   }
 
