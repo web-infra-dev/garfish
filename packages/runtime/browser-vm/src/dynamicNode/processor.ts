@@ -207,9 +207,9 @@ export class DynamicNodeProcessor {
     let parentNode = context;
     const { baseUrl } = this.sandbox.options;
 
-    this.sandbox.replaceGlobalVariables.recoverList.push(() => {
-      this.DOMApis.removeElement(this.el);
-    });
+    // this.sandbox.replaceGlobalVariables.recoverList.push(() => {
+    //   this.DOMApis.removeElement(this.el);
+    // });
 
     // Add dynamic script node by loader
     if (this.is('script')) {
