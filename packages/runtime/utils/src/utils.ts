@@ -61,11 +61,7 @@ const processError = (
       fn(error, true);
     } else if (error instanceof Error) {
       if (!error.message.startsWith(warnPrefix)) {
-        const message = error.message;
-        def(error, 'message', {
-          get: () => `${warnPrefix}: ${message}`,
-        });
-        // error.message = `${warnPrefix}: ${error.message}`;
+        error.message = `${warnPrefix}: ${error.message}`;
       }
       fn(error, false);
     }

@@ -1,4 +1,4 @@
-import { warn } from '@garfish/utils';
+import { makeMap, warn } from '@garfish/utils';
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
 import { sandboxMap, handlerParams } from '../utils';
@@ -43,13 +43,12 @@ function injector(current: Function, methodName: string) {
 
 function injectorRemove(current: Function, methodName: string) {
   return function () {
-    // prettier-ignore
     const el = arguments[0];
     const sandbox = el && sandboxMap.get(el);
     const originProcess = () => current.apply(this, arguments);
     if (sandbox) {
       const processor = new DynamicNodeProcessor(el, sandbox, methodName);
-      return processor.remove(this, arguments, originProcess);
+      return processor.remove(this, originProcess);
     } else {
       return originProcess();
     }

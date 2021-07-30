@@ -75,11 +75,13 @@ export class TemplateManager {
         }
         if (parentEl && el) parentEl.appendChild(el);
 
-        const nodeType = el && el.nodeType;
-        // Filter "comment" and "document" node
-        if (nodeType !== 8 && nodeType !== 10) {
-          for (const child of children) {
-            traverse(child, el);
+        if (el) {
+          const { nodeType, _ignoreChildNodes } = el;
+          // Filter "comment" and "document" node
+          if (!_ignoreChildNodes && nodeType !== 8 && nodeType !== 10) {
+            for (const child of children) {
+              traverse(child, el);
+            }
           }
         }
       }
@@ -100,6 +102,13 @@ export class TemplateManager {
     if (src) {
       src.value = transformUrl(baseUrl, src.value);
     }
+  }
+
+  ignoreChildNodesCreation(node: Element) {
+    if (node) {
+      (node as any)._ignoreChildNodes = true;
+    }
+    return node;
   }
 
   findAllMetaNodes() {
