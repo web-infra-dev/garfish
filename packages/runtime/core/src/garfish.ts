@@ -58,7 +58,58 @@ export class Garfish implements interfaces.Garfish {
     });
   }
 
-  public usePlugin(
+  private mergeAppOptions(
+    appName: string,
+    options?: Partial<interfaces.LoadAppOptions> | string,
+  ) {
+    // `Garfish.loadApp('appName', 'https://xx.html');`
+    if (typeof options === 'string') {
+      options = {
+        basename: '/',
+        entry: options,
+      };
+    }
+    let appInfo = this.appInfos[appName];
+    const tempInfo = Object.assign({}, appInfo);
+    const tempOpts = Object.assign({}, this.options);
+    const tempCurOptions = Object.assign({}, options);
+
+    delete tempInfo.props;
+    delete tempOpts.props;
+    delete tempCurOptions.props;
+
+    appInfo = deepMerge(tempOpts, deepMerge(tempInfo, tempCurOptions));
+    appInfo.props = options?.props || appInfo?.props || this.options.props;
+    appInfo.name = appName;
+
+    if (!appInfo.domGetter) {
+      appInfo.domGetter = document.createElement('div');
+    }
+
+    // Does not support does not have remote resources and no registered application
+    assert(
+      appInfo.entry,
+      `Can't load unexpected module "${appName}".` +
+        'Please provide the entry parameters or registered in advance of the app',
+    );
+    return appInfo;
+  }
+
+  private setOptions(options: Partial<interfaces.Options>) {
+    assert(!this.running, 'Garfish is running, can`t set options');
+    if (isPlainObject(options)) {
+      const tempCurOpts = Object.assign({}, options);
+      const tempOpts = Object.assign({}, this.options);
+      // Index object can't deep copy otherwise unable to communicate
+      delete tempOpts.props;
+      delete tempCurOpts.props;
+      this.options = deepMerge(tempOpts, tempCurOpts);
+      this.options.props = options.props || this.options.props;
+    }
+    return this;
+  }
+
+  usePlugin(
     hooks,
     plugin: (context: Garfish) => interfaces.Plugin,
     ...args: Array<any>
@@ -72,18 +123,6 @@ export class Garfish implements interfaces.Garfish {
     const res = plugin.apply(this, [this, ...args]);
     this.plugins.push(res);
     return hooks.usePlugins(res);
-  }
-
-  setOptions(options: Partial<interfaces.Options>) {
-    assert(!this.running, 'Garfish is running, can`t set options');
-    if (isPlainObject(options)) {
-      this.options = deepMerge(this.options, options);
-      // Index object can't deep copy otherwise unable to communicate
-      if (hasOwn(options, 'props')) {
-        this.options.props = options.props;
-      }
-    }
-    return this;
   }
 
   run(options?: interfaces.Options) {
@@ -178,39 +217,13 @@ export class Garfish implements interfaces.Garfish {
 
   async loadApp(
     appName: string,
-    options: Partial<interfaces.LoadAppOptions> | string,
+    options?: Partial<interfaces.LoadAppOptions> | string,
   ): Promise<interfaces.App | null> {
-    let appInfo = this.appInfos[appName];
-
-    if (isPlainObject(options)) {
-      // Does not support does not have remote resources and no registered application
-      assert(
-        !(!appInfo && !appInfo.entry),
-        `Can't load unexpected module "${appName}".` +
-          'Please provide the entry parameters or registered in advance of the app',
-      );
-      // Deep clone app options
-      const tempInfo = appInfo;
-      appInfo = deepMerge(tempInfo, options);
-      appInfo.props = hasOwn(tempInfo, 'props')
-        ? tempInfo.props
-        : this.options.props;
-      appInfo.hooks = hasOwn(tempInfo, 'hooks') ? tempInfo.hooks : null;
-    } else if (typeof options === 'string') {
-      // `Garfish.loadApp('appName', 'https://xx.html');`
-      appInfo = {
-        name: appName,
-        entry: options,
-        basename: this.options.basename || '/',
-        props: this.options.props,
-        domGetter:
-          this.options.domGetter || (() => document.createElement('div')),
-      };
-    }
-
+    const appInfo = this.mergeAppOptions(appName, options);
     // Initialize the mount point, support domGetter as promise, is advantageous for the compatibility
-    if (appInfo.domGetter)
+    if (appInfo.domGetter) {
       appInfo.domGetter = await getRenderNode(appInfo.domGetter);
+    }
 
     const asyncLoadProcess = async () => {
       // Return not undefined type data directly to end loading
