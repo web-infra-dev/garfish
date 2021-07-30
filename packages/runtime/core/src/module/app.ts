@@ -550,17 +550,15 @@ export class App {
     }
 
     // If you have customLoader, the dojo.provide by user
-    if (this.customLoader) {
-      const customLoader = await this.customLoader;
-      const hookRes = customLoader?.(provider, appInfo, basename);
-      if (hookRes) {
-        const { mount, unmount } = hookRes || ({} as any);
-        if (typeof mount === 'function' && typeof unmount === 'function') {
-          mount._custom = true;
-          unmount._custom = true;
-          provider.render = mount;
-          provider.destroy = unmount;
-        }
+    const customLoader = await this.customLoader;
+    const hookRes = customLoader?.(provider, appInfo, basename);
+    if (hookRes) {
+      const { mount, unmount } = hookRes || ({} as any);
+      if (typeof mount === 'function' && typeof unmount === 'function') {
+        mount._custom = true;
+        unmount._custom = true;
+        provider.render = mount;
+        provider.destroy = unmount;
       }
     }
 
