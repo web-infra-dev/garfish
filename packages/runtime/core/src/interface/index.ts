@@ -127,6 +127,7 @@ export namespace interfaces {
     errorLoadApp?: (err: Error | string, appInfo: AppInfo) => void;
     errorMountApp?: (err: Error | string, appInfo: AppInfo) => void;
     errorUnmountApp?: (err: Error | string, appInfo: AppInfo) => void;
+    /** @deprecated */
     customLoader?: (
       provider: Provider,
       appInfo: AppInfo,

@@ -1,19 +1,23 @@
-import { EventEmitter } from 'events';
-import { Loader, TemplateManager, JavaScriptManager } from '@garfish/loader';
 import {
   warn,
   error,
   assert,
-  deepMerge,
   transformUrl,
   isPlainObject,
   getRenderNode,
   __GARFISH_FLAG__,
 } from '@garfish/utils';
+import { EventEmitter } from 'events';
+import { Loader, TemplateManager, JavaScriptManager } from '@garfish/loader';
+import {
+  mergeConfig,
+  filterNestedConfig,
+  filterGlobalConfig,
+  createDefaultOptions,
+} from './config';
 import { Hooks } from './hooks';
-import { App } from './module/app';
 import { interfaces } from './interface';
-import { getDefaultOptions } from './config';
+import { App, AppInfo } from './module/app';
 import { fetchStaticResources } from './utils';
 import { GarfishHMRPlugin } from './plugins/fixHMR';
 import { GarfishOptionsLife } from './plugins/lifecycle';
@@ -26,7 +30,7 @@ export class Garfish implements interfaces.Garfish {
   public version = __VERSION__;
   public flag = __GARFISH_FLAG__; // A unique identifier
   public channel = new EventEmitter();
-  public options = getDefaultOptions();
+  public options = createDefaultOptions();
   public externals: Record<string, any> = {};
   public plugins: Array<interfaces.Plugin> = [];
   public activeApps: Array<interfaces.App> = [];
@@ -38,10 +42,10 @@ export class Garfish implements interfaces.Garfish {
     this.hooks = new Hooks(false);
     this.loader = new Loader();
 
-    // init Garfish options
+    // Init Garfish options
     this.setOptions(options);
-    // register plugins
-    options?.plugins.forEach((pluginCb) => {
+    // Register plugins
+    options?.plugins?.forEach((pluginCb) => {
       this.usePlugin(this.hooks, pluginCb);
     });
     this.hooks.lifecycle.initialize.call(this.options);
@@ -57,53 +61,46 @@ export class Garfish implements interfaces.Garfish {
     });
   }
 
-  private mergeAppOptions(
+  private async mergeAppOptions(
     appName: string,
     options?: Partial<interfaces.LoadAppOptions> | string,
   ) {
+    options = options || {};
     // `Garfish.loadApp('appName', 'https://xx.html');`
     if (typeof options === 'string') {
       options = {
-        basename: '/',
+        name: appName,
         entry: options,
-      };
+        basename: '/',
+      } as interfaces.AppInfo;
     }
+
     let appInfo = this.appInfos[appName];
-    const tempInfo = Object.assign({}, appInfo);
-    const tempOpts = Object.assign({}, this.options);
-    const tempCurOptions = Object.assign({}, options);
-
-    delete tempInfo.props;
-    delete tempOpts.props;
-    delete tempCurOptions.props;
-
-    appInfo = deepMerge(tempOpts, deepMerge(tempInfo, tempCurOptions));
-    appInfo.props = options?.props || appInfo?.props || this.options.props;
-    appInfo.name = appName;
-
-    if (!appInfo.domGetter) {
-      appInfo.domGetter = document.createElement('div');
+    if (appInfo) {
+      appInfo = mergeConfig(appInfo, options);
+    } else {
+      appInfo = mergeConfig(this.options, options);
+      filterGlobalConfig(appInfo);
     }
 
-    // Does not support does not have remote resources and no registered application
+    // Does not support does not have remote resources application
     assert(
       appInfo.entry,
-      `Can't load unexpected module "${appName}".` +
-        'Please provide the entry parameters or registered in advance of the app',
+      `Can't load unexpected child app "${appName}", ` +
+        'Please provide the entry parameters or registered in advance of the app.',
     );
-    return appInfo;
+    appInfo.name = appName;
+    // Initialize the mount point, support domGetter as promise, is advantageous for the compatibility
+    if (appInfo.domGetter) {
+      appInfo.domGetter = await getRenderNode(appInfo.domGetter);
+    }
+    return appInfo as AppInfo;
   }
 
   private setOptions(options: Partial<interfaces.Options>) {
     assert(!this.running, 'Garfish is running, can`t set options');
     if (isPlainObject(options)) {
-      const tempCurOpts = Object.assign({}, options);
-      const tempOpts = Object.assign({}, this.options);
-      // Index object can't deep copy otherwise unable to communicate
-      delete tempOpts.props;
-      delete tempCurOpts.props;
-      this.options = deepMerge(tempOpts, tempCurOpts);
-      this.options.props = options.props || this.options.props;
+      this.options = mergeConfig(this.options, options);
     }
     return this;
   }
@@ -126,37 +123,36 @@ export class Garfish implements interfaces.Garfish {
 
   run(options?: interfaces.Options) {
     if (this.running) {
-      // Nested scene can be repeated registration application, and basic information for the basename、domGetter、lifeCycle
+      // Nested scene can be repeated registration application
       if (options.nested) {
         const hooks = new Hooks(true);
-        this.usePlugin(hooks, GarfishOptionsLife(options));
-        [
-          'autoRefreshApp',
-          'disableStatistics',
-          'disablePreloadApp',
-          'sandbox',
-        ].forEach((key) => {
-          if (key in options)
-            __DEV__ &&
-              error(`Nested scene does not support the configuration ${key}`);
-        });
+        const mainOptions = createDefaultOptions(true);
+        options = filterNestedConfig(mergeConfig(mainOptions, options));
 
-        this.registerApp(
-          options.apps?.map((app) => {
-            return {
-              ...app,
-              hooks: hooks,
-              props: options?.props || this.options.props,
-              sandbox: options?.sandbox || this.options.sandbox,
-              basename: options?.basename || this.options.basename,
-              domGetter: options?.domGetter || this.options.domGetter,
-            };
-          }),
-        );
+        // Register plugins
+        options.plugins?.forEach((pluginCb) => {
+          this.usePlugin(hooks, pluginCb);
+        });
+        // Nested applications have independent life cycles
+        this.usePlugin(hooks, GarfishOptionsLife(options));
+
+        if (options.apps) {
+          // usage:
+          //  `Garfish.run({ apps: [{ props: Garfish.props }] })`
+          this.registerApp(
+            options.apps.map((app) => {
+              const appConf = mergeConfig(options, app);
+              filterGlobalConfig(appConf);
+              appConf.hooks = hooks;
+              appConf.sandbox = this.options.sandbox;
+              return appConf;
+            }),
+          );
+        }
         return this;
-      }
-      __DEV__ &&
+      } else if (__DEV__) {
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
+      }
     }
 
     // register plugins
@@ -165,14 +161,38 @@ export class Garfish implements interfaces.Garfish {
     });
 
     this.hooks.lifecycle.beforeBootstrap.call(this.options);
-
     this.setOptions(options);
     this.injectOptionalPlugin(this.options);
     // register apps
     this.registerApp(options.apps || []);
-
     this.running = true;
     this.hooks.lifecycle.bootstrap.call(this.options);
+    return this;
+  }
+
+  registerApp(list: interfaces.AppInfo | Array<interfaces.AppInfo>) {
+    this.hooks.lifecycle.beforeRegisterApp.call(list);
+    const currentAdds = {};
+    if (!Array.isArray(list)) list = [list];
+    for (let info of list) {
+      assert(info.name, 'Miss app.name.');
+      if (!this.appInfos[info.name]) {
+        assert(
+          info.entry,
+          `${info.name} application entry is not url: ${info.entry}`,
+        );
+        // Deep merge this.options
+        if (!info.nested) {
+          info = mergeConfig(this.options, info);
+          filterGlobalConfig(info);
+        }
+        currentAdds[info.name] = info;
+        this.appInfos[info.name] = info;
+      } else if (__DEV__) {
+        warn(`The "${info.name}" app is already registered.`);
+      }
+    }
+    this.hooks.lifecycle.registerApp.call(currentAdds);
     return this;
   }
 
@@ -191,38 +211,12 @@ export class Garfish implements interfaces.Garfish {
     }
   }
 
-  registerApp(list: interfaces.AppInfo | Array<interfaces.AppInfo>) {
-    this.hooks.lifecycle.beforeRegisterApp.call(list);
-    const adds = {};
-    if (!Array.isArray(list)) {
-      list = [list];
-    }
-    for (const info of list) {
-      assert(info.name, 'Miss app.name.');
-      if (this.appInfos[info.name]) {
-        __DEV__ && warn(`The "${info.name}" app is already registered.`);
-      } else {
-        assert(
-          info.entry,
-          `${info.name} application entry is not url: ${info.entry}`,
-        );
-        adds[info.name] = info;
-        this.appInfos[info.name] = info;
-      }
-    }
-    this.hooks.lifecycle.registerApp.call(this.appInfos);
-    return this;
-  }
-
   async loadApp(
     appName: string,
     options?: Partial<interfaces.LoadAppOptions> | string,
   ): Promise<interfaces.App | null> {
-    const appInfo = this.mergeAppOptions(appName, options);
-    // Initialize the mount point, support domGetter as promise, is advantageous for the compatibility
-    if (appInfo.domGetter) {
-      appInfo.domGetter = await getRenderNode(appInfo.domGetter);
-    }
+    assert(appName, 'Miss appName.');
+    const appInfo = await this.mergeAppOptions(appName, options);
 
     const asyncLoadProcess = async () => {
       // Return not undefined type data directly to end loading
@@ -267,11 +261,11 @@ export class Garfish implements interfaces.Garfish {
             entryManager.setDep(fakeEntryManager.findAllJsNodes()[0]);
             resources.js = [entryManager];
           } else {
-            // No other types of entrances are currently supported
             error(`Entrance wrong type of resource of "${appName}"`);
           }
 
           const manager = fakeEntryManager || entryManager;
+
           // Call lifecycle
           this.hooks.lifecycle.processResource.call(
             appInfo,

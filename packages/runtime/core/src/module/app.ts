@@ -28,6 +28,8 @@ export type CustomerLoader = (
 
 export type AppInterface = App;
 
+export type AppInfo = interfaces.AppInfo & { domGetter: Element };
+
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
 
@@ -53,9 +55,10 @@ export class App {
   public cjsModules: Record<string, any>;
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
+  public appInfo: AppInfo;
   public provider: interfaces.Provider;
-  public appInfo: interfaces.AppInfo;
   public entryManager: TemplateManager;
+  /** @deprecated */
   public customLoader: CustomerLoader;
 
   private active = false;
@@ -68,14 +71,13 @@ export class App {
 
   constructor(
     context: Garfish,
-    appInfo: interfaces.AppInfo,
+    appInfo: AppInfo,
     entryManager: TemplateManager,
     resources: interfaces.ResourceModules,
     isHtmlMode: boolean,
     customLoader: CustomerLoader,
   ) {
     this.context = context;
-    // Get app container dom
     this.appInfo = appInfo;
     this.name = appInfo.name;
     this.resources = resources;
@@ -379,8 +381,8 @@ export class App {
   // Create a container node and add in the document flow
   // domGetter Have been dealing with
   private addContainer() {
-    if (typeof (this.appInfo.domGetter as Element).appendChild === 'function') {
-      (this.appInfo.domGetter as Element).appendChild(this.appContainer);
+    if (typeof this.appInfo.domGetter.appendChild === 'function') {
+      this.appInfo.domGetter.appendChild(this.appContainer);
     }
   }
 
@@ -548,21 +550,21 @@ export class App {
     }
 
     // If you have customLoader, the dojo.provide by user
-    const hookRes =
-      (await this.customLoader) &&
-      this.customLoader(provider, appInfo, basename);
-
-    if (hookRes) {
-      const { mount, unmount } = hookRes || ({} as any);
-      if (typeof mount === 'function' && typeof unmount === 'function') {
-        mount._custom = true;
-        unmount._custom = true;
-        provider.render = mount;
-        provider.destroy = unmount;
+    if (this.customLoader) {
+      const customLoader = await this.customLoader;
+      const hookRes = customLoader?.(provider, appInfo, basename);
+      if (hookRes) {
+        const { mount, unmount } = hookRes || ({} as any);
+        if (typeof mount === 'function' && typeof unmount === 'function') {
+          mount._custom = true;
+          unmount._custom = true;
+          provider.render = mount;
+          provider.destroy = unmount;
+        }
       }
     }
 
-    assert(provider, `"provider" is "${typeof provider}".`);
+    assert(provider, `"provider" is "${provider}".`);
     // No need to use "hasOwn", because "render" may be on the prototype chain
     assert('render' in provider, '"render" is required in provider.');
     assert('destroy' in provider, '"destroy" is required in provider.');

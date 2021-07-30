@@ -48,11 +48,9 @@ export class Loader {
   public ModuleManager = ModuleManager;
   public TemplateManager = TemplateManager;
   public JavaScriptManager = JavaScriptManager;
-  /**
-   * @deprecated
-   */
-  public requestConfig: RequestInit | ((url: string) => RequestInit);
   public personalId = Symbol.for('garfish.loader');
+  /** @deprecated */
+  public requestConfig: RequestInit | ((url: string) => RequestInit);
   public lifecycle = {
     clear: new PluginManager<ClearPluginArgs>('clear'),
     loaded: new PluginManager<LoadedPluginArgs<Manager>>('loaded'),
