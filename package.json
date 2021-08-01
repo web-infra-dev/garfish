@@ -5,19 +5,22 @@
     "packages": [
       "packages/runtime/*",
       "website",
-      "dev/*"
+      "dev/subApp",
+      "dev/vue",
+      "dev/main",
+      "dev/react"
     ]
   },
   "description": "a powerful micro front-end framework",
   "scripts": {
-    "dev": "lerna run start --stream --scope dev/*",
+    "dev": "lerna exec --scope '{@garfish-dev/main,@garfish-dev/sub-react,@garfish-dev/sub-app,@garfish-dev/sub-vue}' -- yarn start",
     "dev:core": "yarn dev core",
     "dev:docs": "yarn workspace garfish-docs start",
     "pkg": "node scripts/createPackage.js",
     "build": "node scripts/build.js",
     "build:all": "node scripts/build.js -m -e",
     "build:docs": "lerna run build --stream --scope garfish-docs",
-    "build:watch": "lerna exec -- yarn link && node scripts/build.js -m -e  -f=esm-bundler -w",
+    "build:watch": "yarn link garfish && lerna exec -- yarn link && node scripts/build.js -m -e  -f=esm-bundler -w",
     "reset": "lerna clean --yes && rm -rf node_modules",
     "setup": "yarn reset && yarn install --registry=https://registry.npmjs.org",
     "prepublishOnly": "yarn test && yarn build:all",
@@ -96,7 +99,11 @@
     "rollup-plugin-typescript2": "^0.27.3",
     "ts-jest": "^26.4.4",
     "typescript": "^3.9.5",
-    "workspace-tools": "^0.16.2"
+    "workspace-tools": "^0.16.2",
+    "@vue/cli-plugin-babel": "~4.4.0",
+    "@vue/cli-plugin-eslint": "~4.4.0",
+    "@vue/cli-service": "~4.4.0",
+    "garfish": "^0.0.24"
   },
   "version": "0.0.34"
 }

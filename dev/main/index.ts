@@ -1,7 +1,7 @@
-import GarfishInstance from 'garfish';
+/// <reference types="cypress" />
+import GarfishInstance, { interfaces } from 'garfish';
 
 (window as any).__GARFISH_PARENT__ = true;
-console.log(GarfishInstance);
 
 // let asyncTime = function () {
 //   return new Promise((resolve) => {
@@ -10,8 +10,7 @@ console.log(GarfishInstance);
 //     }, 3000);
 //   });
 // };
-
-GarfishInstance.run({
+let defaultConfig: interfaces.Options = {
   basename: '/garfish_master',
   domGetter: () => {
     // await asyncTime();
@@ -28,7 +27,7 @@ GarfishInstance.run({
       name: 'vue',
       activeWhen: '/vue',
       // cache: true,
-      entry: 'http://localhost:8095',
+      entry: 'http://localhost:9090',
     },
   ],
   autoRefreshApp: true,
@@ -38,14 +37,17 @@ GarfishInstance.run({
     snapshot: false,
     modules: [],
   },
-  // async beforeLoad(appInfo) {
-  //   console.log('#######', appInfo);
-  //   // if (appInfo.name === 'react') {
-  //   //   return false;
-  //   // }
-  //   return true;
-  // },
-});
+};
+
+// The test environment into
+if (typeof Cypress !== 'undefined') {
+  defaultConfig = {
+    ...defaultConfig,
+    ...Cypress.env().garfishRunConfig,
+  };
+}
+
+GarfishInstance.run(defaultConfig);
 
 const useRouterMode = true;
 

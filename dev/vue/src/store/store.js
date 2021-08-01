@@ -1,11 +1,12 @@
 export default {
   state: {
     id: 1,
-    todos: [{ id: 1, text: 'write a vue mudole demo', done: false }],
+    todos: [{ id: 1, text: 'default todo', done: false }],
   },
   mutations: {
     done(state, id) {
-      state.todos.forEach((item) => item.id === id && (item.done = true));
+      // state.todos.forEach((item) => item.id === id && (item.done = true));
+      this.state.todos = this.state.todos.filter((item) => item.id !== id);
     },
     add(state, item) {
       state.id += 1;
@@ -22,6 +23,9 @@ export default {
     },
   },
   getters: {
-    doneTodos: (state) => state.todos.filter((todo) => todo.done),
+    doneTodos: (state) => {
+      if (state.todos && state.todos.length > 0)
+        return state.todos.filter((todo) => todo.done);
+    },
   },
 };

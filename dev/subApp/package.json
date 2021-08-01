@@ -1,5 +1,5 @@
 {
-  "name": "@garfish-dev/sub-app",
+  "name": "@garfish-dev/sub-vue",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -13,9 +13,6 @@
     "vue": "^2.6.11",
     "vue-router": "^3.4.3",
     "vuex": "^3.5.1",
-    "garfish": "0.0.24"
-  },
-  "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",
     "@vue/cli-plugin-eslint": "~4.4.0",
     "@vue/cli-service": "~4.4.0",

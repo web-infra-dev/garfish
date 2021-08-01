@@ -1,7 +1,14 @@
 <template>
-  <div id="grandson">
-    <div>sub app content</div>
-    <!-- <router-view /> -->
+  <div id="app">
+    <div>
+      <router-link to="/">Home </router-link><br />
+      <router-link to="/todo">todo</router-link><br />
+      <router-link to="/micro-app">Micro app</router-link><br />
+      <router-link to="/remote-component">Remote component</router-link><br />
+    </div>
+    <div class="view-content">
+      <router-view :basename="basename"/>
+    </div>
   </div>
 </template>
 
@@ -9,18 +16,14 @@
 
 export default {
   name: 'App',
-  props: ['basename'],
-  methods: {
-    loadApp () {
-      window.Garfish.router.push({ path: '/vueApp', basename: this.basename })
-    }
-  },
-  components: {
-  }
+  props: ['basename']
 }
 </script>
 
-<style>
+<style lang="less">
+body {
+  background-color: #7ed6df;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -28,5 +31,15 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.view-content {
+  padding: 60px;
+}
+
+a {
+  color: #4834d4;
+}
+h3 {
+  margin-bottom: 30px;
 }
 </style>

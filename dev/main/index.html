@@ -20,21 +20,21 @@
   //   }
   // </script> -->
   <script>
-    setTimeout(()=>{
-      const xhr = new XMLHttpRequest()
-      xhr.open('get', 'http://localhost:2333/mainApp', true);
-      xhr.onreadystatechange = function () {
-        if(xhr.readyState !== 4) {
-          return
-        }
-        if(xhr.status >= 200 && xhr.status < 300) {
-          console.log('main xhr')
-        }
-      }
-      xhr.send(null)
-      fetch('http://localhost:2333/fetch/mainApp').then((res)=> {});
-      throw Error('mainApp: unhandledrejection error');
-    },5000);
+    // setTimeout(()=>{
+    //   const xhr = new XMLHttpRequest()
+    //   xhr.open('get', 'http://localhost:2333/mainApp', true);
+    //   xhr.onreadystatechange = function () {
+    //     if(xhr.readyState !== 4) {
+    //       return
+    //     }
+    //     if(xhr.status >= 200 && xhr.status < 300) {
+    //       console.log('main xhr')
+    //     }
+    //   }
+    //   xhr.send(null)
+    //   fetch('http://localhost:2333/fetch/mainApp').then((res)=> {});
+    //   throw Error('mainApp: unhandledrejection error');
+    // },5000);
 
 
     window.addEventListener('load',function(){
@@ -55,7 +55,7 @@
   </script>
 </head>
 <body>
-  <div id="MainApp">
+  <div id="VueApp">
     <div>
       <h1 align="center">Main project</h1>
       <h2 align="center">

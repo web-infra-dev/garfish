@@ -1,0 +1,12 @@
+
+.App-logo {
+  height: 300px;
+  pointer-events: none;
+  background: url('/logo.svg')
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}

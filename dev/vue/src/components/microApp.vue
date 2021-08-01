@@ -1,12 +1,13 @@
 <template>
-  <div id="app">
-      <el-button plain @click="loadApp">
-        加载子应用
-      </el-button>
-      <el-button plain @click="loadAppReact">
-        加载 React 子应用
-      </el-button>
-    <div ref="vueApp" id="vueApp"></div>
+  <div id="micro-app">
+    <h3 data-test="title">Vue App micro App</h3>
+    <el-button plain @click="loadApp">
+      加载子应用
+    </el-button>
+    <el-button plain @click="loadAppReact">
+      加载 React 子应用
+    </el-button>
+    <div ref="vueApp" id="micro-app-container"></div>
   </div>
 </template>
 
@@ -14,7 +15,7 @@
 // 嵌套场景中
 import GarfishInstance from 'garfish';
 
-// let hasInit = false;
+let hasInit = false;
 export default {
   name: 'App',
   props: ['basename'],
@@ -28,7 +29,7 @@ export default {
       // });
       // await app.mount();
       // console.log(app);
-      Garfish.router.push({ path: '/vueApp', basename: this.basename })
+      // window.Garfish.router.push({ path: '/vueApp', basename: this.basename })
       // console.log(this.basename, GarfishInstance);
     },
     async loadAppReact () {
@@ -40,17 +41,18 @@ export default {
       // });
       // await app.mount();
       // console.log(app);
-      Garfish.router.push({ path: '/reactApp', basename: this.basename })
+      // Garfish.router.push({ path: '/reactApp', basename: this.basename })
       // console.log(this.basename, GarfishInstance);
     }
   },
   mounted () {
-    // if (hasInit) return;
-    // hasInit = true;
+    console.log(this.basename)
+    if (hasInit) return;
+    hasInit = true;
     GarfishInstance.run({
-      basename: '/garfish_master/vue',
+      basename: this.basename,
       nested: !!window.__GARFISH_PARENT__,
-      domGetter: ()=> document.querySelector('#vueApp'),
+      domGetter: ()=> document.querySelector('#micro-app-container'),
       apps: [
         {
           name: 'vueApp',
@@ -73,19 +75,6 @@ export default {
       },
     });
     // Can only be run once
-  },
-  components: {
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
