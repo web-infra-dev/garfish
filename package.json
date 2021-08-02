@@ -7,13 +7,14 @@
       "website",
       "dev/subApp",
       "dev/vue",
+      "dev/vue2",
       "dev/main",
       "dev/react"
     ]
   },
   "description": "a powerful micro front-end framework",
   "scripts": {
-    "dev": "lerna exec --scope '{@garfish-dev/main,@garfish-dev/sub-react,@garfish-dev/sub-app,@garfish-dev/sub-vue}' -- yarn start",
+    "dev": "lerna exec --scope '{@garfish-dev/main,@garfish-dev/sub-react,@garfish-dev/sub-app,@garfish-dev/sub-vue,@garfish-dev/sub-vue2}' -- yarn start",
     "dev:core": "yarn dev core",
     "dev:docs": "yarn workspace garfish-docs start",
     "pkg": "node scripts/createPackage.js",
@@ -103,6 +104,7 @@
     "@vue/cli-plugin-babel": "~4.4.0",
     "@vue/cli-plugin-eslint": "~4.4.0",
     "@vue/cli-service": "~4.4.0",
+    "eslint-plugin-vue": "^6.2.2",
     "garfish": "^0.0.24"
   },
   "version": "0.0.34"

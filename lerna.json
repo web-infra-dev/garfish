@@ -26,6 +26,7 @@
     "dev/react",
     "dev/subApp",
     "dev/vue",
+    "dev/vue2",
     "website"
   ]
 }

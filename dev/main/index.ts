@@ -29,6 +29,12 @@ let defaultConfig: interfaces.Options = {
       // cache: true,
       entry: 'http://localhost:9090',
     },
+    {
+      name: 'vue2',
+      activeWhen: '/vue2',
+      // cache: true,
+      entry: 'http://localhost:9099',
+    },
   ],
   autoRefreshApp: true,
   disablePreloadApp: true,
