@@ -2,7 +2,7 @@
 
 const basename = '/garfish-app';
 
-describe('browser-vm sandbox variable isolation', () => {
+describe('whole process popstate event', () => {
   beforeEach(() => {
     Cypress.env({
       garfishRunConfig: {
