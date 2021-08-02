@@ -15,7 +15,7 @@
     "react-shadow-dom-retarget-events": "^1.0.11"
   },
   "scripts": {
-    "start": "BROWSER=none react-app-rewired start",
+    "start": "PORT=2444 BROWSER=none react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"

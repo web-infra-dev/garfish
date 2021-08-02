@@ -5,7 +5,7 @@ const webpack = require('webpack');
 module.exports = {
   devServer: {
     open: false,
-    port: '9090',
+    port: '2666',
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': '*',
@@ -17,7 +17,7 @@ module.exports = {
     },
   },
 
-  publicPath: 'http://localhost:9090',
+  publicPath: 'http://localhost:2666',
   configureWebpack: (config) => {
     // config.output.library = `sub-app-garfish-exports`;
     config.output.jsonpFunction = `sub-app-jsonp`;

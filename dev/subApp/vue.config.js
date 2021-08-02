@@ -5,7 +5,7 @@ const webpack = require('webpack');
 module.exports = {
   devServer: {
     open: false,
-    port: '8000',
+    port: '2555',
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': '*',
@@ -13,7 +13,7 @@ module.exports = {
     historyApiFallback: true,
   },
 
-  publicPath: 'http://localhost:8000',
+  publicPath: 'http://localhost:2555',
   configureWebpack: (config) => {
     // config.output.library = `sub-app-garfish-exports`;
     config.output.jsonpFunction = `vue-app-jsonp`;
