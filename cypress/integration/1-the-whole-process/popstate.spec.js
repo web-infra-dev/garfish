@@ -17,6 +17,8 @@ describe('browser-vm sandbox variable isolation', () => {
 
   it('Switch to the Vue app', () => {
     const HomeTitle = 'Thank you for the vue applications use garfish';
+    const ReactHomeTitle = 'Thank you for the react applications use garfish';
+
     cy.visit('http://localhost:2333');
 
     cy.window().then((win) => {
@@ -29,27 +31,23 @@ describe('browser-vm sandbox variable isolation', () => {
         cy.contains('[data-test=title]', HomeTitle);
       };
 
-      win.history.pushState({}, 'vue', `${basename}/vue`);
-      cy.contains('[data-test=title]', HomeTitle)
-        .then(TodoListPage)
-        .then(() => expect(popstateTriggerTime).to.equal(0));
-    });
-  });
+      const ReactHomePage = () => {
+        win.Garfish.router.push({ path: '/react' });
+        cy.contains('[data-test=title]', ReactHomeTitle);
+      };
 
-  it('Switch to the React app use Garfish router ', () => {
-    cy.window().then((win) => {
-      const lazyComponent = () => {
+      const ReactLazyComponent = () => {
         // lazy component
         win.Garfish.router.push({ path: '/react/lazy-component' });
         cy.contains('[data-test=title]', 'React sub App lazyComponent');
       };
 
-      win.Garfish.router.push({ path: '/react' });
-      cy.contains(
-        '[data-test=title]',
-        'Thank you for the react applications use garfish',
-      )
-        .then(lazyComponent)
+      win.history.pushState({}, 'vue', `${basename}/vue`);
+      cy.contains('[data-test=title]', HomeTitle)
+        .then(TodoListPage)
+        .then(() => expect(popstateTriggerTime).to.equal(0))
+        .then(ReactHomePage)
+        .then(ReactLazyComponent)
         .then(() => expect(popstateTriggerTime).to.equal(1));
     });
   });
