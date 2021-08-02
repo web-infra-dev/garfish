@@ -52,7 +52,7 @@ describe('browser-vm sandbox variable isolation', () => {
       win.history.pushState({}, 'vue', `${basename}/vue`);
       cy.contains(
         '[data-test=title]',
-        'Thank you for using Garfish for Vue app',
+        'Thank you for the vue applications use garfish',
       )
         .then(TodoListPage)
         .then(RemoteComponent);
@@ -76,7 +76,7 @@ describe('browser-vm sandbox variable isolation', () => {
       win.Garfish.router.push({ path: '/react' });
       cy.contains(
         '[data-test=title]',
-        'Thank you for using Garfish for React App',
+        'Thank you for the react applications use garfish',
       )
         .then(lazyComponent)
         .then(RemoteComponent);
