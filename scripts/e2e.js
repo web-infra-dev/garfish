@@ -1,5 +1,4 @@
 const waitOn = require('wait-on');
-const sh = require('shell-exec');
 const { spawn, exec } = require('child_process');
 const killPort = require('kill-port');
 
@@ -12,16 +11,21 @@ const opts = {
   },
 };
 
+const args = require('minimist')(process.argv.slice(2));
+
 // Usage with promises
 Promise.all(ports.map((port) => killPort(port)))
   .then(() => waitOn(opts))
   .then(function () {
     // once here, all resources are available
-    const spawnInstance = spawn('yarn', ['cy:open']);
+    const spawnInstance = spawn('yarn', [
+      args.openWindow ? 'cy:open' : 'cy:run',
+    ]);
     spawnInstance.stdout.on('data', function (msg) {
       console.log(msg.toString());
     });
   })
   .catch(function (err) {
     console.error(err);
+    ports.forEach((port) => killPort(port));
   });
