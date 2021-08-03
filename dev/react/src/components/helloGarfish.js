@@ -1,6 +1,5 @@
-import logo from '../../assets/logo.svg';
+import logo from '../assets/logo.svg';
 import React from 'react';
-import './index.css';
 
 export default function HelloGarfish() {
   return (

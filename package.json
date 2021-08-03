@@ -100,7 +100,6 @@
     "kill-port": "^1.6.1",
     "lerna": "^3.22.1",
     "lint-staged": "^10.5.2",
-    "minimist": "^1.2.5",
     "open": "^7.3.0",
     "prettier": "~2.0.5",
     "prettier-eslint-cli": "^5.0.0",

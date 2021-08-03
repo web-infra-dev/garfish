@@ -39,7 +39,6 @@ let defaultConfig: interfaces.Options = {
   autoRefreshApp: true,
   disablePreloadApp: true,
   sandbox: {
-    open: false,
     snapshot: false,
     modules: [],
   },

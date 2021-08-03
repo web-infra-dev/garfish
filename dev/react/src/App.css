@@ -29,3 +29,9 @@
     transform: rotate(360deg);
   }
 }
+
+
+.App-logo {
+  height: 300px;
+  pointer-events: none;
+}

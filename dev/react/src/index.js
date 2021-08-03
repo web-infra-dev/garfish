@@ -3,10 +3,9 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import 'antd/dist/antd.css';
 import './index.css';
-import initSlardar from './initSlardar.js';
 
 const render = ({ dom, basename }) => {
-  initSlardar();
+  window.monitoringInit();
   ReactDOM.render(
     <React.StrictMode>
       <App basename={basename} />

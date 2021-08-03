@@ -1,12 +1,12 @@
 import React from 'react';
-import {
-  esModule,
-  loadModule,
-  cacheModules,
-  loadModuleSync,
-} from '@garfish/remote-module';
+// import {
+//   esModule,
+//   loadModule,
+//   cacheModules,
+//   loadModuleSync,
+// } from '@garfish/remote-module';
 
-console.log(cacheModules);
+// console.log(cacheModules);
 
 // const RemoteComponent = loadModuleSync('@Component.One', {
 //   externals: {

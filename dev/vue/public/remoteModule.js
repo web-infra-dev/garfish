@@ -1,5 +1,5 @@
-const loadModule = require('loadModule');
-console.log(loadModule);
+// const loadModule = require('loadModule');
+// console.log(loadModule);
 
 const components = {
   cmOne: {

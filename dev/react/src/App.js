@@ -1,13 +1,6 @@
 import React, { Suspense } from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useRouteMatch,
-  useParams,
-} from 'react-router-dom';
-import HelloGarfish from './components/helloGarfish/index.js';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import HelloGarfish from './components/helloGarfish.js';
 import RemoteComponent from './components/remoteComponent.js';
 import './App.css';
 const LazyComponent = React.lazy(() => import('./components/lazyComponent.js'));

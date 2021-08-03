@@ -11,8 +11,6 @@ const opts = {
   },
 };
 
-const args = require('minimist')(process.argv.slice(2));
-
 // Usage with promises
 Promise.all(ports.map((port) => killPort(port)))
   .then(() => waitOn(opts))
