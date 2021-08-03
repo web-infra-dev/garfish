@@ -8,7 +8,7 @@ module.exports = {
     config.devtool = 'source-map';
     config.output.publicPath = 'http://localhost:2444/';
     config.output.jsonpFunction = 'react-garfish-exports';
-    config.mode = 'development';
+    config.mode = process.env.TEST_ENV ? 'production' : 'development';
     config.optimization.minimize = true;
     config.plugins.push(
       new webpack.BannerPlugin({

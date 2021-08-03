@@ -86,17 +86,17 @@ describe('whole process app render', () => {
         cy.contains('[data-test=title]', LazyTitle);
       };
 
-      const RemoteComponent = () => {
-        // remote component
-        win.Garfish.router.push({ path: '/react/remote-component' });
-        cy.contains('[data-test=title]', RemoteComponentTitle);
-      };
+      // const RemoteComponent = () => {
+      //   // remote component
+      //   win.Garfish.router.push({ path: '/react/remote-component' });
+      //   cy.contains('[data-test=title]', RemoteComponentTitle);
+      // };
 
       win.Garfish.router.push({ path: '/react' });
       cy.contains('[data-test=title]', HomeTitle)
         .then(lazyComponent)
-        .then(RemoteComponent)
-        .then(() => expect(popstateTriggerTime).to.equal(5));
+        // .then(RemoteComponent)
+        .then(() => expect(popstateTriggerTime).to.equal(4));
     });
   });
 
@@ -113,7 +113,7 @@ describe('whole process app render', () => {
       win.history.pushState({}, 'vue2', `${basename}/vue2`);
       cy.contains('[data-test=title]', HomeTitle)
         .then(AboutPage)
-        .then(() => expect(popstateTriggerTime).to.equal(6));
+        .then(() => expect(popstateTriggerTime).to.equal(5));
     });
   });
 });

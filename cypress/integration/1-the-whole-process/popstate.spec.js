@@ -32,7 +32,7 @@ describe('whole process popstate event', () => {
       };
 
       const ReactHomePage = () => {
-        win.Garfish.router.push({ path: '/react' });
+        win.history.pushState({}, 'react', `${basename}/react`);
         cy.contains('[data-test=title]', ReactHomeTitle);
       };
 
@@ -44,9 +44,11 @@ describe('whole process popstate event', () => {
 
       win.history.pushState({}, 'vue', `${basename}/vue`);
       cy.contains('[data-test=title]', HomeTitle)
+        .then(() => expect(win.Garfish.options.autoRefreshApp).to.equal(false))
         .then(TodoListPage)
         .then(() => expect(popstateTriggerTime).to.equal(0))
         .then(ReactHomePage)
+        .then(() => expect(popstateTriggerTime).to.equal(0))
         .then(ReactLazyComponent)
         .then(() => expect(popstateTriggerTime).to.equal(1));
     });

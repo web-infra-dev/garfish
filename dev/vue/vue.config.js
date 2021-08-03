@@ -24,7 +24,7 @@ module.exports = {
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
     config.devtool = 'source-map';
-    config.mode = 'production';
+    config.mode = process.env.TEST_ENV ? 'production' : 'development';
     config.optimization.minimize = true;
 
     config.plugins = [

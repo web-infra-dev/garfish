@@ -19,7 +19,7 @@ Promise.all(ports.map((port) => killPort(port)))
   .then(function () {
     // once here, all resources are available
     const spawnInstance = spawn('yarn', [
-      args.openWindow ? 'cy:open' : 'cy:run',
+      process.env.TEST_ENV_OPEN ? 'cy:open' : 'cy:run',
     ]);
     spawnInstance.stdout.on('data', function (msg) {
       console.log(msg.toString());

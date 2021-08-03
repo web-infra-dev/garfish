@@ -44,7 +44,6 @@ let defaultConfig: interfaces.Options = {
     modules: [],
   },
 };
-
 // The test environment into
 if (typeof Cypress !== 'undefined') {
   defaultConfig = {

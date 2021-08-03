@@ -10,6 +10,7 @@ module.exports = {
   configureWebpack: () => {
     return {
       entry: './src/main.js',
+      mode: process.env.TEST_ENV ? 'production' : 'development',
       output: {
         filename: 'index.js',
         libraryTarget: 'umd',
