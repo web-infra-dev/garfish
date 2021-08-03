@@ -38,6 +38,7 @@ let defaultConfig: interfaces.Options = {
   ],
   autoRefreshApp: true,
   disablePreloadApp: true,
+  protectVariable: ['MonitoringInstance'],
   sandbox: {
     snapshot: false,
     modules: [],

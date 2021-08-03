@@ -14,7 +14,7 @@
   },
   "description": "a powerful micro front-end framework",
   "scripts": {
-    "dev": "lerna exec --scope '{@garfish-dev/main,@garfish-dev/sub-react,@garfish-dev/sub-app,@garfish-dev/sub-vue,@garfish-dev/sub-vue2}' -- yarn start",
+    "dev": "cross-env TEST_ENV=true lerna exec --scope '{@garfish-dev/main,@garfish-dev/sub-react,@garfish-dev/sub-app,@garfish-dev/sub-vue,@garfish-dev/sub-vue2}' -- yarn start",
     "dev:core": "yarn dev core",
     "dev:docs": "yarn workspace garfish-docs start",
     "test:e2e": "cross-env node scripts/e2e.js & cross-env TEST_ENV=true yarn dev --open=false",

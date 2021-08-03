@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import HelloGarfish from './components/helloGarfish.js';
 import RemoteComponent from './components/remoteComponent.js';
+import Monitoring from './components/monitoring.js';
 import './App.css';
 const LazyComponent = React.lazy(() => import('./components/lazyComponent.js'));
 
@@ -15,6 +16,9 @@ export default function App({ basename }) {
           </li>
           <li>
             <Link to="/lazy-component">Lazy Component</Link>
+          </li>
+          <li>
+            <Link to="/monitoring">monitoring Component</Link>
           </li>
           <li>
             <Link to="/remote-component">Remote Component</Link>
@@ -31,6 +35,9 @@ export default function App({ basename }) {
           </Route>
           <Route path="/remote-component">
             <RemoteComponent />
+          </Route>
+          <Route path="/monitoring">
+            <Monitoring />
           </Route>
         </Switch>
       </div>
