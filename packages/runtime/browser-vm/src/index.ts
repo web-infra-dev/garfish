@@ -51,14 +51,14 @@ if (__DEV__) {
 }
 
 // Compatible with old code
-const compatibleOldModulesType = (config): Array<Module> => {
-  if (isPlainObject(config.modules)) {
+const compatibleOldModulesType = (modules): Array<Module> => {
+  if (isPlainObject(modules)) {
     __DEV__ && warn('"vm sandbox" modules should be an array');
     const list = [];
-    for (const key in config.modules) {
-      list.push(config.modules[key]);
+    for (const key in modules) {
+      list.push(modules[key]);
     }
-    config.modules = list;
+    modules = list;
   }
   return [];
 };
@@ -96,8 +96,8 @@ export default function BrowserVm() {
         }
 
         config = {
-          openSandbox: Sandbox.canSupport() && !sandboxConfig.snapshot,
-          modules: compatibleOldModulesType(sandboxConfig.modules),
+          openSandbox: Sandbox.canSupport() && !sandboxConfig?.snapshot,
+          modules: compatibleOldModulesType(sandboxConfig?.modules),
 
           protectVariable: () => [
             ...(Garfish?.options?.protectVariable || []),

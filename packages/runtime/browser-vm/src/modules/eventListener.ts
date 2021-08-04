@@ -17,12 +17,12 @@ export function listenerModule(_sandbox: Sandbox) {
     rawAddEventListener.call(
       this,
       type,
-      filterAndWrapEventListener(
-        type,
-        listener,
-        _sandbox.options.sourceList.map((item) => item.url),
-      ),
-      // listener,
+      // filterAndWrapEventListener(
+      //   type,
+      //   listener,
+      //   _sandbox.options.sourceList.map((item) => item.url),
+      // ),
+      listener,
       options,
     );
   }

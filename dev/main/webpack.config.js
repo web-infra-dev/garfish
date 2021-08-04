@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    main: './index.ts',
+    main: './src/index.ts',
   },
   mode: process.env.TEST_ENV ? 'production' : 'development',
   output: {

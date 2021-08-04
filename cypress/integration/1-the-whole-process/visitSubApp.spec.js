@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-const basename = '/garfish-app';
+const basename = '/garfish_master';
 
 describe('whole process app render', () => {
   beforeEach(() => {
