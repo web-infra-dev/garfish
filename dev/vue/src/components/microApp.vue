@@ -37,14 +37,14 @@ export default {
     },
     async loadAppReact () {
       console.log(GarfishInstance);
-      // let app = await GarfishInstance.loadApp('vueApp',{
-      //   entry: 'http://localhost:8000',
-      //   basename: this.basename,
-      //   domGetter: ()=> this.$refs.vueApp
-      // });
-      // await app.mount();
+      let app = await GarfishInstance.loadApp('vueApp',{
+        entry: 'http://localhost:2444',
+        basename: this.basename,
+        domGetter: ()=> this.$refs.vueApp
+      });
+      await app.mount();
       // console.log(app);
-      // Garfish.router.push({ path: '/reactApp', basename: this.basename })
+      // window.Garfish.router.push({ path: '/garfish_master/vue/micro-app/reactApp', basename: '/' })
       // console.log(this.basename, GarfishInstance);
     }
   },
@@ -63,14 +63,14 @@ export default {
         {
           name: 'vueApp',
           entry: 'http://localhost:2666',
-          basename: '/garfish_master/vue',
+          basename: '/garfish_master/vue/micro-app',
           activeWhen: '/vueApp',
           cache: true,
         },
         {
           name: 'reactApp',
-          entry: 'http://localhost:3000',
-          basename: '/garfish_master/vue',
+          entry: 'http://localhost:2444',
+          basename: '/garfish_master/vue/micro-app',
           activeWhen: '/reactApp',
           cache: true
         }

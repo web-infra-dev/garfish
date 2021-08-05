@@ -78,7 +78,9 @@ const render = ({ dom, basename = '/' }) => {
 
 // 这能够让子应用独立运行起来
 if (!window.__GARFISH__) {
-  render({});
+  render({
+    dom: document,
+  });
 }
 
 export function provider({ basename, dom, fuckYou }) {
