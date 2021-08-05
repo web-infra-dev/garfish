@@ -5,7 +5,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   ignorePatterns: [
     '**/dist',
-    'dev',
+    'dev/',
     'api-extractor.json',
     'packages/runtime/*/dist',
   ],

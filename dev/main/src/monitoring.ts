@@ -1,6 +1,16 @@
+import { interfaces } from 'mocha';
 import ConfigCommon from '../../config.json';
 
-export function fetchM() {
+declare global {
+  interface Window {
+    fetchM: Function;
+    unhandledrejectionError: Function;
+    normalError: Function;
+    DynamicResource: Function;
+  }
+}
+
+window.fetchM = function fetchM() {
   const xhr = new XMLHttpRequest();
   xhr.open('get', `http://localhost:${ConfigCommon.mainPort}/mainApp`, true);
   xhr.onreadystatechange = function () {
@@ -16,19 +26,19 @@ export function fetchM() {
   fetch(
     `http://localhost:${ConfigCommon.mainPort}/fetch/mainApp`,
   ).then((res) => {});
-}
+};
 
-export function unhandledrejectionError() {
+window.unhandledrejectionError = function unhandledrejectionError() {
   setTimeout(() => {
     throw Error('mainApp: unhandledrejection error');
   }, 2000);
-}
+};
 
-export function normalError() {
+window.normalError = function normalError() {
   throw Error('mainApp: normal error');
-}
+};
 
-export function DynamicResource() {
+window.DynamicResource = function DynamicResource() {
   const sc = document.createElement('script');
   sc.src = `http://localhost:${ConfigCommon.mainPort}/monitoring/dynamicScript.js`;
   document.body.appendChild(sc);
@@ -36,4 +46,4 @@ export function DynamicResource() {
   const link = document.createElement('link');
   link.href = `http://localhost:${ConfigCommon.mainPort}/monitoring/dynamicLink.css`;
   document.body.appendChild(link);
-}
+};

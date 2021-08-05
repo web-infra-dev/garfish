@@ -3,12 +3,7 @@ import { Button } from 'antd';
 const reactPort = 2444;
 
 export default function () {
-  setTimeout(() => {
-    window.Garfish.props.normalError();
-  });
   function fetchM() {
-    // At the same time master application http request
-    if (window.__GARFISH__) window.Garfish.props.fetchM();
     const xhr = new XMLHttpRequest();
     xhr.open('get', `http://localhost:${reactPort}/subApp`, true);
     xhr.onreadystatechange = function () {
@@ -25,25 +20,16 @@ export default function () {
   }
 
   function unhandledrejectionError() {
-    if (window.__GARFISH__) window.Garfish.props.unhandledrejectionError();
-    // At the same time master application error
     setTimeout(() => {
       throw Error('subApp: unhandledrejection error');
     }, 2000);
   }
 
   function normalError() {
-    // setTimeout(()=>{
-    //   throw Error('subApp: normal error');
-    // })
-    // At the same time master application error
-    if (window.__GARFISH__) window.Garfish.props.normalError();
+    throw Error('subApp: normal error');
   }
 
   function DynamicResource() {
-    if (window.__GARFISH__) window.Garfish.props.DynamicResource();
-
-    // At the same time master application inject dynamicResource
     const sc = document.createElement('script');
     sc.src = `http://localhost:${reactPort}/monitoring/dynamicScript.js`;
     document.body.appendChild(sc);
@@ -66,7 +52,7 @@ export default function () {
       </Button>
       <br />
       <Button
-        data-test="click-fetch"
+        data-test="click-dynamic-resource"
         type="primary"
         onClick={() => DynamicResource()}
         style={{ marginBottom: '30px' }}

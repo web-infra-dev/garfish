@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import { matchAndMatch } from '../common';
+import { findMultiAndMatch } from '../common';
 
 const basename = '/garfish-app';
 
@@ -23,18 +23,43 @@ describe('monitoring the isolation', () => {
       win.Garfish.router.push({ path: '/react/monitoring' });
       cy.contains('[data-test=title]', MonitoringTitle);
       cy.get('[data-test=click-error]').click();
-      matchAndMatch(
-        1,
-        {
-          ev_type: 'js_error',
-        },
-        {
+      // cy.get('[data-test=main-click-error]').click();
+      cy.get('[data-test=click-unhandledrejection-error]').click();
+      // cy.get('[data-test=main-click-unhandledrejection-error]').click();
+
+      const errorPatch = {
+        ev_type: 'js_error',
+      };
+
+      const errorMessageMap = {
+        mainAppError: 'mainApp: normal error',
+        mainUnhandledrejectionError: 'mainApp: unhandledrejection error',
+        subAppError: 'subApp: normal error',
+        subUnhandledrejectionError: 'subApp: unhandledrejection error',
+      };
+
+      const errMsg = (msg) => {
+        return {
           payload: {
             error: {
-              message: 'mainApp: normal error1',
+              message: msg,
             },
           },
-        },
+        };
+      };
+
+      // matchAndMatch(0, errorPatch, errMsg(errorMessageMap.mainAppError));
+      // matchAndMatch(0, errorPatch, errMsg(errorMessageMap.mainUnhandledrejectionError));
+      // // react-error-overlay Make the same error trigger twice
+      // matchAndMatch(2, errorPatch, errMsg(errorMessageMap.subAppError));
+      findMultiAndMatch(2, errorPatch, errMsg(errorMessageMap.subAppError), {
+        'payload.error.message': errorMessageMap.subAppError,
+      });
+      findMultiAndMatch(
+        1,
+        errorPatch,
+        errMsg(errorMessageMap.subUnhandledrejectionError),
+        { 'payload.error.message': errorMessageMap.subUnhandledrejectionError },
       );
     });
   });
