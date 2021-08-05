@@ -1,4 +1,10 @@
 import GarfishInstance, { interfaces } from 'garfish';
+import {
+  fetchM,
+  unhandledrejectionError,
+  normalError,
+  DynamicResource,
+} from './monitoring';
 
 (window as any).__GARFISH_PARENT__ = true;
 
@@ -37,7 +43,13 @@ let defaultConfig: interfaces.Options = {
   ],
   autoRefreshApp: true,
   disablePreloadApp: true,
-  protectVariable: ['MonitoringInstance'],
+  protectVariable: ['MonitoringInstance', 'Garfish'],
+  props: {
+    fetchM,
+    unhandledrejectionError,
+    normalError,
+    DynamicResource,
+  },
   // sandbox: {
   //   snapshot: false
   // },

@@ -36,6 +36,10 @@ export class Garfish implements interfaces.Garfish {
   public appInfos: Record<string, interfaces.AppInfo> = {};
   private loading: Record<string, Promise<any> | null> = {};
 
+  get props(): Record<string, any> {
+    return (this.options && this.options.props) || {};
+  }
+
   constructor(options: interfaces.Options) {
     this.hooks = new Hooks(false);
     this.loader = new Loader();

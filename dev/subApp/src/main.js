@@ -81,8 +81,8 @@ if (!window.__GARFISH__) {
   render({});
 }
 
-export function provider({ basename, dom }) {
-  console.log(1111, 'provider');
+export function provider({ basename, dom, fuckYou }) {
+  console.log(1111, 'provider', basename, dom, fuckYou);
   return {
     render: () => render({ basename, dom }),
     destroy() {

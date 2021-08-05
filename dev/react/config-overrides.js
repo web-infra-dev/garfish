@@ -1,5 +1,5 @@
 const webpack = require('webpack');
-const configCommon = require('./src/config');
+const configCommon = require('../config.json');
 
 module.exports = {
   webpack(config, env) {
@@ -7,10 +7,10 @@ module.exports = {
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
     config.devtool = 'source-map';
-    config.output.publicPath = `http://localhost:${configCommon.port}/`;
+    config.output.publicPath = `http://localhost:${configCommon.reactPort}/`;
     config.output.jsonpFunction = 'react-garfish-exports';
-    config.mode = process.env.TEST_ENV ? 'production' : 'development';
-    config.optimization.minimize = true;
+    config.mode = 'production';
+    // config.optimization.minimize = true;
     config.plugins.push(
       new webpack.BannerPlugin({
         raw: true,
@@ -25,7 +25,7 @@ module.exports = {
     return (proxy, allowedHost) => {
       const config = configFunction(proxy, allowedHost);
       config.open = false;
-      // config.disableHostCheck = true;
+      config.disableHostCheck = true;
       // config.compress = true;
       config.overlay = false;
       // config.hot = true;
