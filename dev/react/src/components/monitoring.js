@@ -32,7 +32,7 @@ export default function () {
   function resourceError() {
     // resource error
     const sc = document.createElement('script');
-    sc.src = `http://localhost:0000/monitoring/xxxxx.js`;
+    sc.src = `http://localhost:1112/monitoring/xxxxx.js`;
     document.body.appendChild(sc);
   }
 

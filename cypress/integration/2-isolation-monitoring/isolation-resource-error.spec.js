@@ -31,7 +31,7 @@ describe('monitoring the isolation', () => {
 
   const resourceMessageMap = {
     mainJsResource: 'http://localhost:1111/monitoring/xxxxx.js',
-    subAppJsResource: 'http://localhost:0000/monitoring/xxxxx.js',
+    subAppJsResource: 'http://localhost:1112/monitoring/xxxxx.js',
   };
 
   it('subApp resource error isolation', () => {
