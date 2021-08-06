@@ -50,7 +50,7 @@ export const filterNestedConfig = (config: interfaces.Options) => {
 
 export const filterGlobalConfig = (config: interfaces.AppInfo) => {
   for (const key in config) {
-    if (lifecycle.includes(key as any) || globalConfigAttrs.includes(key)) {
+    if (globalConfigAttrs.includes(key)) {
       delete config[key];
     }
   }
@@ -58,7 +58,7 @@ export const filterGlobalConfig = (config: interfaces.AppInfo) => {
 };
 
 // Merge `oldConfig` and `newConfig`
-export const mergeConfig = (o, n) => {
+export const deepMergeConfig = (o, n) => {
   let tempO = o;
   let tempN = n;
   const oHasProps = o && hasOwn(o, 'props');

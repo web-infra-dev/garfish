@@ -1,5 +1,7 @@
 import { EventEmitter } from 'events';
 import { SyncHook, AsyncSeriesBailHook } from '@garfish/hooks';
+import { AppInterface } from '../module/app';
+import { createGlobalLifecycle } from '../hooks/lifecycle';
 import {
   Loader,
   StyleManager,
@@ -7,13 +9,12 @@ import {
   TemplateManager,
   JavaScriptManager,
 } from '@garfish/loader';
-import { AppInterface } from '../module/app';
 
 export namespace interfaces {
   export type DomGetter =
     | Element
-    | (() => Element | null)
     | string
+    | (() => Element | null)
     | (() => Promise<Element>);
 
   export interface LoaderResult {
@@ -47,7 +48,7 @@ export namespace interfaces {
     version: string;
     running: boolean;
     externals: Record<string, any>;
-    hooks: Hooks;
+    hooks: ReturnType<typeof createGlobalLifecycle>;
     loader: Loader;
     options: Options;
     channel: EventEmitter;

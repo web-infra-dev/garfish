@@ -379,3 +379,16 @@ export function __extends(d, b) {
     d.prototype = new fNOP();
   }
 }
+
+export function mapObject(
+  obj: Record<PropertyKey, any>,
+  fn: (key: PropertyKey, val: any) => any,
+) {
+  const destObject = {};
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      destObject[key] = fn(key, obj[key]);
+    }
+  }
+  return destObject;
+}

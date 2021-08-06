@@ -19,6 +19,7 @@ import {
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
+import { createAppLifecycle } from '../hooks/lifecycle';
 
 export type CustomerLoader = (
   provider: interfaces.Provider,
@@ -58,6 +59,7 @@ export class App {
   public appInfo: AppInfo;
   public provider: interfaces.Provider;
   public entryManager: TemplateManager;
+  public hooks = createAppLifecycle(false);
   /** @deprecated */
   public customLoader: CustomerLoader;
 
@@ -131,28 +133,16 @@ export class App {
       ...this.getExecScriptEnv(options?.noEntry),
     };
 
-    this.context.hooks.lifecycle.beforeEval.call(
-      this.appInfo,
-      code,
-      env,
-      url,
-      options,
-    );
+    this.hooks.lifecycle.beforeEval.call(this.appInfo, code, env, url, options);
 
     try {
       this.runCode(code, env, url, options);
     } catch (e) {
-      this.context.hooks.lifecycle.errorExecCode.call(e, this.appInfo);
+      this.hooks.lifecycle.errorExecCode.call(e, this.appInfo);
       throw e;
     }
 
-    this.context.hooks.lifecycle.afterEval.call(
-      this.appInfo,
-      code,
-      env,
-      url,
-      options,
-    );
+    this.hooks.lifecycle.afterEval.call(this.appInfo, code, env, url, options);
   }
 
   // `vm sandbox` can override this method
@@ -207,7 +197,7 @@ export class App {
 
   async mount() {
     if (!this.canMount()) return false;
-    this.context.hooks.lifecycle.beforeMount.call(this.appInfo, this);
+    this.hooks.lifecycle.beforeMount.call(this.appInfo, this);
 
     this.active = true;
     this.mounting = true;
@@ -224,13 +214,13 @@ export class App {
       this.display = true;
       this.mounted = true;
       this.context.activeApps.push(this);
-      this.context.hooks.lifecycle.afterMount.call(this.appInfo, this);
+      this.hooks.lifecycle.afterMount.call(this.appInfo, this);
 
       await asyncJsProcess;
       if (!this.stopMountAndClearEffect()) return false;
     } catch (err) {
       this.entryManager.DOMApis.removeElement(this.appContainer);
-      this.context.hooks.lifecycle.errorMountApp.call(err, this.appInfo);
+      this.hooks.lifecycle.errorMountApp.call(err, this.appInfo);
       return false;
     } finally {
       this.mounting = false;
@@ -249,18 +239,18 @@ export class App {
     }
     // This prevents the unmount of the current app from being called in "provider.destroy"
     this.unmounting = true;
-    this.context.hooks.lifecycle.beforeUnMount.call(this.appInfo, this);
+    this.hooks.lifecycle.beforeUnMount.call(this.appInfo, this);
 
     try {
       this.callDestroy(this.provider, true);
       this.display = false;
       this.mounted = false;
       remove(this.context.activeApps, this);
-      this.context.hooks.lifecycle.afterUnMount.call(this.appInfo, this);
+      this.hooks.lifecycle.afterUnMount.call(this.appInfo, this);
     } catch (err) {
       remove(this.context.activeApps, this);
       this.entryManager.DOMApis.removeElement(this.appContainer);
-      this.context.hooks.lifecycle.errorUnmountApp.call(err, this.appInfo);
+      this.hooks.lifecycle.errorUnmountApp.call(err, this.appInfo);
       return false;
     } finally {
       this.unmounting = false;
@@ -304,10 +294,7 @@ export class App {
                   },
                 );
               } catch (err) {
-                this.context.hooks.lifecycle.errorMountApp.call(
-                  err,
-                  this.appInfo,
-                );
+                this.hooks.lifecycle.errorMountApp.call(err, this.appInfo);
               }
             }
           }

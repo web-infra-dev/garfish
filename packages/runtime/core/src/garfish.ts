@@ -10,21 +10,20 @@ import {
 import { EventEmitter } from 'events';
 import { Loader, TemplateManager, JavaScriptManager } from '@garfish/loader';
 import {
-  mergeConfig,
+  deepMergeConfig,
   filterNestedConfig,
   filterGlobalConfig,
   createDefaultOptions,
 } from './config';
-import { Hooks } from './hooks';
 import { interfaces } from './interface';
 import { App, AppInfo } from './module/app';
 import { fetchStaticResources } from './utils';
+import { createGlobalLifecycle } from './hooks/lifecycle';
 import { GarfishHMRPlugin } from './plugins/fixHMR';
 import { GarfishOptionsLife } from './plugins/lifecycle';
 import { GarfishPreloadPlugin } from './plugins/preload';
 
 export class Garfish implements interfaces.Garfish {
-  public hooks: Hooks;
   public loader: Loader;
   public running = false;
   public version = __VERSION__;
@@ -34,31 +33,28 @@ export class Garfish implements interfaces.Garfish {
   public externals: Record<string, any> = {};
   public plugins: Array<interfaces.Plugin> = [];
   public activeApps: Array<interfaces.App> = [];
+  public hooks: ReturnType<typeof createGlobalLifecycle>;
   public cacheApps: Record<string, interfaces.App> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
+
+  private allApps: WeakSet<interfaces.App> = new WeakSet();
   private loading: Record<string, Promise<any> | null> = {};
 
   constructor(options: interfaces.Options) {
-    this.hooks = new Hooks(false);
     this.loader = new Loader();
+    this.hooks = createGlobalLifecycle(false);
 
     // Init Garfish options
     this.setOptions(options);
-    // Register plugins
-    options?.plugins?.forEach((pluginCb) => {
-      this.usePlugin(this.hooks, pluginCb);
-    });
-    this.hooks.lifecycle.initialize.call(this.options);
+    options?.plugins?.forEach((plugin) => this.usePlugin(plugin));
   }
 
   private injectOptionalPlugin(options?: interfaces.Options) {
     const defaultPlugin = [GarfishHMRPlugin(), GarfishOptionsLife(options)];
-    // Preload plugin
-    if (!options.disablePreloadApp) defaultPlugin.push(GarfishPreloadPlugin());
-
-    defaultPlugin.forEach((pluginCb) => {
-      this.usePlugin(this.hooks, pluginCb);
-    });
+    if (!options.disablePreloadApp) {
+      defaultPlugin.push(GarfishPreloadPlugin());
+    }
+    defaultPlugin.forEach((plugin) => this.usePlugin(plugin));
   }
 
   private async mergeAppOptions(
@@ -77,9 +73,9 @@ export class Garfish implements interfaces.Garfish {
 
     let appInfo = this.appInfos[appName];
     if (appInfo) {
-      appInfo = mergeConfig(appInfo, options);
+      appInfo = deepMergeConfig(appInfo, options);
     } else {
-      appInfo = mergeConfig(this.options, options);
+      appInfo = deepMergeConfig(this.options, options);
       filterGlobalConfig(appInfo);
     }
 
@@ -100,13 +96,12 @@ export class Garfish implements interfaces.Garfish {
   private setOptions(options: Partial<interfaces.Options>) {
     assert(!this.running, 'Garfish is running, can`t set options');
     if (isPlainObject(options)) {
-      this.options = mergeConfig(this.options, options);
+      this.options = deepMergeConfig(this.options, options);
     }
     return this;
   }
 
   usePlugin(
-    hooks,
     plugin: (context: Garfish) => interfaces.Plugin,
     ...args: Array<any>
   ) {
@@ -118,14 +113,15 @@ export class Garfish implements interfaces.Garfish {
     (plugin as any)._registered = true;
     const res = plugin.apply(this, [this, ...args]);
     this.plugins.push(res);
-    return hooks.usePlugins(res);
+
+    return this.hooks.usePlugins(res);
   }
 
   run(options?: interfaces.Options) {
     if (this.running) {
       // Nested scene can be repeated registration application
       if (options.nested) {
-        const hooks = new Hooks(true);
+        const hooks = createGlobalLifecycle(true);
         const mainOptions = createDefaultOptions(true);
         options = filterNestedConfig(mergeConfig(mainOptions, options));
 
@@ -141,7 +137,7 @@ export class Garfish implements interfaces.Garfish {
           //  `Garfish.run({ apps: [{ props: Garfish.props }] })`
           this.registerApp(
             options.apps.map((app) => {
-              const appConf = mergeConfig(options, app);
+              const appConf = deepMergeConfig(options, app);
               filterGlobalConfig(appConf);
               appConf.hooks = hooks;
               appConf.sandbox = this.options.sandbox;
@@ -156,9 +152,7 @@ export class Garfish implements interfaces.Garfish {
     }
 
     // register plugins
-    options?.plugins?.forEach((pluginCb) => {
-      this.usePlugin(this.hooks, pluginCb, this);
-    });
+    options?.plugins?.forEach((plugin) => this.usePlugin(plugin, this));
 
     this.hooks.lifecycle.beforeBootstrap.call(this.options);
     this.setOptions(options);
@@ -183,7 +177,7 @@ export class Garfish implements interfaces.Garfish {
         );
         // Deep merge this.options
         if (!info.nested) {
-          info = mergeConfig(this.options, info);
+          info = deepMergeConfig(this.options, info);
           filterGlobalConfig(info);
         }
         currentAdds[info.name] = info;
@@ -266,12 +260,6 @@ export class Garfish implements interfaces.Garfish {
 
           const manager = fakeEntryManager || entryManager;
 
-          // Call lifecycle
-          this.hooks.lifecycle.processResource.call(
-            appInfo,
-            manager,
-            resources,
-          );
           appInstance = new App(
             this,
             appInfo,
@@ -280,6 +268,8 @@ export class Garfish implements interfaces.Garfish {
             isHtmlMode,
             this.options.customLoader,
           );
+
+          this.allApps.add(appInstance);
           this.cacheApps[appName] = appInstance;
         } catch (e) {
           __DEV__ && error(e);
