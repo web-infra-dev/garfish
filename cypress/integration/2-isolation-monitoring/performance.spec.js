@@ -12,9 +12,9 @@ describe('monitoring the isolation', () => {
     cy.intercept('POST', '/monitor_browser/collect/batch/', {}).as('post');
   });
 
-  const MonitoringTitle = 'React sub App Monitoring';
+  const MonitoringTitle = 'Thank you for the react applications use garfish';
 
-  const resourceRequest = (msg) => {
+  const performanceRequest = (msg) => {
     return {
       payload: {
         name: msg,
@@ -22,45 +22,46 @@ describe('monitoring the isolation', () => {
     };
   };
 
-  const resourcePatch = {
-    ev_type: 'resource',
+  const performancePatch = {
+    ev_type: 'performance',
   };
 
-  const resourceMessageMap = {
-    mainJsResource: 'http://localhost:2333/monitoring/dynamicScript.js',
-    mainAppFetchRequest: 'http://localhost:2333/fetch/mainApp',
-    subAppJsResource: 'http://localhost:2444/monitoring/dynamicScript.js',
-    subAppFetchRequest: 'http://localhost:2444/fetch/subApp',
+  const performanceMessageMap = {
+    resourceLoadTime: 'resourceLoadTime',
+    blankScreenTime: 'resourceLoadTime',
+    firstScreenTime: 'resourceLoadTime',
   };
 
   it('subApp resource isolation', () => {
     cy.window().then((win) => {
       cy.contains('[data-test=title]', MonitoringTitle);
-      cy.get('[data-test=click-dynamic-resource]').click();
 
       findMultiAndMatch(
         1,
-        resourcePatch,
-        resourceRequest(resourceMessageMap.subAppJsResource),
+        performancePatch,
+        performanceRequest(performanceMessageMap.resourceLoadTime),
         {
-          'payload.name': resourceMessageMap.subAppJsResource,
+          'payload.name': performanceMessageMap.resourceLoadTime,
         },
+        4000,
       );
-    });
-  });
-
-  it('mainApp resource isolation', () => {
-    cy.window().then((win) => {
-      cy.contains('[data-test=title]', MonitoringTitle);
-      cy.get('[data-test=main-click-dynamic-resource]').click();
-
       findMultiAndMatch(
-        0,
-        resourcePatch,
-        resourceRequest(resourceMessageMap.mainJsResource),
+        1,
+        performancePatch,
+        performanceRequest(performanceMessageMap.blankScreenTime),
         {
-          'payload.name': resourceMessageMap.mainJsResource,
+          'payload.name': performanceMessageMap.blankScreenTime,
         },
+        4000,
+      );
+      findMultiAndMatch(
+        1,
+        performancePatch,
+        performanceRequest(performanceMessageMap.firstScreenTime),
+        {
+          'payload.name': performanceMessageMap.firstScreenTime,
+        },
+        4000,
       );
     });
   });
