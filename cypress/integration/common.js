@@ -6,9 +6,12 @@ export function findMultiAndMatch(count, findObj, matchObj, equalObj) {
     data = data.concat(
       body?.list?.filter(matches(findObj)).filter(matches(matchObj)) || [],
     );
-    if (count > 0 && data.length > 0)
-      expect(data[0]).to.nested.include(equalObj);
-    expect(data.length).to.be.equal(count);
+    if (data.length < count) {
+      cy.wait('@post', { timeout: 3000 }).its('request.body').then(assert);
+    } else {
+      data[0] && expect(data[0]).to.nested.include(equalObj);
+      expect(data.length).to.be.equal(count);
+    }
   }
   cy.wait('@post').its('request.body').then(assert);
 }

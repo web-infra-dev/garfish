@@ -31,7 +31,7 @@ window.fetchM = function fetchM() {
 window.unhandledrejectionError = function unhandledrejectionError() {
   setTimeout(() => {
     throw Error('mainApp: unhandledrejection error');
-  }, 2000);
+  }, 500);
 };
 
 window.normalError = function normalError() {

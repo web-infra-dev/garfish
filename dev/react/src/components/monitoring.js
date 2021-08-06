@@ -22,7 +22,7 @@ export default function () {
   function unhandledrejectionError() {
     setTimeout(() => {
       throw Error('subApp: unhandledrejection error');
-    }, 2000);
+    }, 500);
   }
 
   function normalError() {
@@ -61,7 +61,7 @@ export default function () {
       </Button>
       <br />
       <Button
-        data-test="click-error"
+        data-test="click-normal-error"
         type="primary"
         danger
         onClick={() => normalError()}
