@@ -1,19 +1,29 @@
 export class AsyncSeriesBailHook {
-  public hookList = [];
-  public interceptList = [];
+  hookList = [];
+  interceptList = [];
 
   intercept(intercept) {
     this.interceptList.push(intercept);
   }
 
-  public tap(name, callback) {
+  add(name, callback) {
     this.hookList.push({
       name,
       callback,
     });
   }
 
-  public async call(...args) {
+  remove(name, callback) {
+    const idx = this.hookList.findIndex((hook) => {
+      if (name !== hook.name) return false;
+      return callback ? callback === hook.callback : true;
+    });
+    if (idx > -1) {
+      this.hookList.splice(idx, 1);
+    }
+  }
+
+  async call(...args) {
     let stop = false;
     for (let i = 0; i < this.hookList.length; i++) {
       stop = await this.hookList[i].callback(...args);
@@ -24,7 +34,6 @@ export class AsyncSeriesBailHook {
       stop = await this.interceptList[i].call(...args);
       if (stop === false) return false;
     }
-
     return true;
   }
 }

@@ -1,19 +1,29 @@
 export class SyncHook {
-  public hookList = [];
-  public interceptList = [];
+  hookList = [];
+  interceptList = [];
 
   intercept(intercept) {
     this.interceptList.push(intercept);
   }
 
-  public tap(name, callback) {
+  add(name, callback) {
     this.hookList.push({
       name,
       callback,
     });
   }
 
-  public call(...args) {
+  remove(name, callback) {
+    const idx = this.hookList.findIndex((hook) => {
+      if (name !== hook.name) return false;
+      return callback ? callback === hook.callback : true;
+    });
+    if (idx > -1) {
+      this.hookList.splice(idx, 1);
+    }
+  }
+
+  call(...args) {
     this.hookList.forEach((hook) => {
       hook.callback.apply(null, args);
     });
