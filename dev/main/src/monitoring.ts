@@ -7,6 +7,7 @@ declare global {
     unhandledrejectionError: Function;
     normalError: Function;
     DynamicResource: Function;
+    resourceError: Function;
   }
 }
 
@@ -46,4 +47,11 @@ window.DynamicResource = function DynamicResource() {
   const link = document.createElement('link');
   link.href = `http://localhost:${ConfigCommon.mainPort}/monitoring/dynamicLink.css`;
   document.body.appendChild(link);
+};
+
+window.resourceError = function resourceError() {
+  // resource error
+  const sc = document.createElement('script');
+  sc.src = `http://localhost:1111/monitoring/xxxxx.js`;
+  document.body.appendChild(sc);
 };

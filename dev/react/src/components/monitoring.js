@@ -29,6 +29,13 @@ export default function () {
     throw Error('subApp: normal error');
   }
 
+  function resourceError() {
+    // resource error
+    const sc = document.createElement('script');
+    sc.src = `http://localhost:0000/monitoring/xxxxx.js`;
+    document.body.appendChild(sc);
+  }
+
   function DynamicResource() {
     const sc = document.createElement('script');
     sc.src = `http://localhost:${reactPort}/monitoring/dynamicScript.js`;
@@ -78,6 +85,16 @@ export default function () {
         style={{ marginBottom: '30px' }}
       >
         unhandledrejection error
+      </Button>
+      <br />
+      <Button
+        data-test="click-resource-error"
+        type="primary"
+        danger
+        onClick={() => resourceError()}
+        style={{ marginBottom: '30px' }}
+      >
+        resource error
       </Button>
       <br />
     </div>

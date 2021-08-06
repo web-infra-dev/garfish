@@ -73,6 +73,7 @@ export class DynamicNodeProcessor {
       event.garfish = true;
       Object.defineProperty(event, 'target', { value: this.el });
       this.el.dispatchEvent(event);
+      type === 'error' && window.dispatchEvent(event);
     });
   }
 
