@@ -1,13 +1,11 @@
 /// <reference types="cypress" />
 import { findMultiAndMatch } from '../common';
 
-const basename = '/garfish-app';
-
 describe('monitoring the isolation', () => {
   beforeEach(() => {
     Cypress.env({
       garfishRunConfig: {
-        basename: basename,
+        basename: '/garfish-app',
       },
     });
     cy.visit('http://localhost:2333/garfish-app/react/monitoring');
