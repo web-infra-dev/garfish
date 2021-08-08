@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 import './index.css';
 
 const render = ({ dom, basename }) => {
-  window.monitoringInit();
+  window.monitoringInit(); // from monitor script
   ReactDOM.render(
     <React.StrictMode>
       <App basename={basename} />

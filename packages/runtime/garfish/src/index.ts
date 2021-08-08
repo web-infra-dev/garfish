@@ -15,6 +15,7 @@ declare global {
   interface Window {
     Garfish: Garfish;
     __GARFISH__: boolean;
+    __PROWER_BY_GAR__: boolean;
   }
 }
 
@@ -84,7 +85,8 @@ export function createContext(): Garfish {
     // Global flag
     set('Garfish');
     set('Gar');
-    set('__GARFISH__', true);
+    set('Garfish');
+    set('__PROWER_BY_GAR__', true);
   }
 
   if (fresh) {
