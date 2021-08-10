@@ -1,4 +1,3 @@
-import { interfaces } from 'mocha';
 import ConfigCommon from '../../config.json';
 
 declare global {
