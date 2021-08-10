@@ -19,6 +19,7 @@ import {
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
+import SubAppObserver from '../plugins/performance/subAppObserver';
 
 export type CustomerLoader = (
   provider: interfaces.Provider,
@@ -57,6 +58,7 @@ export class App {
   public appInfo: interfaces.AppInfo;
   public entryManager: TemplateManager;
   public customLoader: CustomerLoader;
+  public appPerformance: SubAppObserver;
 
   private active = false;
   private mounting = false;

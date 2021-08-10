@@ -45,7 +45,7 @@ export function GarfishPerformance() {
         subAppMap[appInfo.name].subAppBeforeLoad(appInfo.entry);
         return true;
       },
-      afterLoad(appInfo, appInstance: any) {
+      afterLoad(appInfo, appInstance: interfaces.App) {
         if (appInstance)
           appInstance.appPerformance = subAppMap[appInfo.name] as any;
       },
