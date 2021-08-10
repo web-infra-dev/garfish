@@ -4,7 +4,7 @@ slug: /issues/router
 order: 4
 ---
 
-主应用路由目前仅支持为 `history` 模式，子应用路由的 `basename` 基于主应用，具体请参考[子应用 basename 配置](/napi/#basename)。
+主应用路由目前仅支持为 `history` 模式，子应用路由的 `basename` 基于主应用，具体请参考[子应用 basename 配置](/api/#basename)。
 
 ## 为什么主应用仅支持 history 模式？
 

@@ -1,12 +1,12 @@
 ---
 title: props
-slug: /napi/attributes/props
+slug: /api/attributes/props
 order: 2
 ---
 
-`Garfish.props` 用于获取主应用传递过来的公共内容，用起共享数据，或传递指定内容给子应用。可与 [mobx](https://cn.mobx.js.org) 搭配使用。
+`Garfish.props` is used to get the public content passed by the main application, to use shared data, or to pass specified content to child applications. Can be used with [mobx](https://cn.mobx.js.org).
 
-### 主应用共享数据
+### Master application shared data
 
 ```js
 import Garfish from 'garfish';
@@ -36,7 +36,7 @@ Garfish.run({
 });
 ```
 
-### 子应用获取数据
+### Sub-application fetching data
 
 ```js
 const store = window.Garfish.props.store;
@@ -45,7 +45,7 @@ const amount = store.amount;
 store.increment();
 ```
 
-### 或者在 provider 中获取
+### Or get it in the provider
 
 ```js
 export function provider({ dom, basename, store }) {

@@ -1,6 +1,6 @@
 ---
 title: API Reference
-slug: /napi/new
+slug: /api/new
 order: 2
 ---
 
@@ -217,4 +217,4 @@ Garfish.registerApp([
 
 `Garfish.loadApp(appName: string, options?: Options) : App | null`
 
-Manually loaded api, see [manual load app documentation] for more details on usage (... /napi/attributes/loadApp)
+Manually loaded api, see [manual load app documentation] for more details on usage (... /api/attributes/loadApp)

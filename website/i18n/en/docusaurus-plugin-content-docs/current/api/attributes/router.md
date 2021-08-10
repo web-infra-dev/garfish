@@ -1,6 +1,6 @@
 ---
 title: router
-slug: /napi/attributes/router
+slug: /api/attributes/router
 order: 3
 ---
 
