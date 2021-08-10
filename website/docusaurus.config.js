@@ -41,7 +41,7 @@ module.exports = {
           position: 'left',
         },
         {
-          to: 'napi/',
+          to: 'api/',
           label: 'API',
           position: 'left',
         },
@@ -88,7 +88,7 @@ module.exports = {
         language: ['en', 'zh'],
         docsRouteBasePath: [
           '/docs/',
-          '/napi/',
+          '/api/',
           '/issues',
           '/community',
           // '/blog/',

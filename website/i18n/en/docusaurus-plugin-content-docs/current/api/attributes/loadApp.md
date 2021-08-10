@@ -1,6 +1,6 @@
 ---
 title: loadApp
-slug: /napi/attributes/loadApp
+slug: /api/attributes/loadApp
 order: 5
 ---
 
