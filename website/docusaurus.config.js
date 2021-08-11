@@ -19,7 +19,7 @@ module.exports = {
       '包含构建微前端系统时所需要的基本能力，任意前端框架均可使用。接入简单，可轻松将多个前端应用组合成内聚的单个产品',
   },
   themeConfig: {
-    sidebarCollapsible: true,
+    // sidebarCollapsible: true,
     hideableSidebar: true,
     colorMode: {
       // defaultMode: 'dark',
