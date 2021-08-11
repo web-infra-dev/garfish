@@ -58,7 +58,11 @@ export class DynamicNodeProcessor {
       src && (this.el.src = transformUrl(baseUrl, src));
       href && (this.el.href = transformUrl(baseUrl, href));
       const url = this.el.src || this.el.href;
-      url && this.sandbox.options?.sourceList.push(url);
+      url &&
+        this.sandbox.options?.sourceList.push({
+          tagName: this.el.tagName,
+          url,
+        });
     }
   }
 
@@ -69,6 +73,7 @@ export class DynamicNodeProcessor {
       event.garfish = true;
       Object.defineProperty(event, 'target', { value: this.el });
       this.el.dispatchEvent(event);
+      type === 'error' && window.dispatchEvent(event);
     });
   }
 
@@ -239,13 +244,15 @@ export class DynamicNodeProcessor {
       }
     }
 
-    if (__DEV__ || (this.sandbox?.global as any).__GARFISH__DEV__) {
-      // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
-      if (this.is('iframe') && typeof this.el.onload === 'function') {
-        def(this.el, 'contentWindow', this.sandbox.global);
-        def(this.el, 'contentDocument', this.sandbox.global.document);
-      }
+    // if (__DEV__ || (this.sandbox?.global as any).__GARFISH__DEV__) {
+    // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
+    if (this.is('iframe') && typeof this.el.onload === 'function') {
+      // Iframe not loaded into the page does not exist when the window and document
+      setTimeout(() => {
+        def(this.el.contentWindow, 'parent', this.sandbox.global);
+      });
     }
+    // }
 
     if (convertedNode) {
       // If it is "insertBefore" or "insertAdjacentElement" method, no need to rewrite when added to the container

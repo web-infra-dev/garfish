@@ -19,6 +19,7 @@ import {
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
+import SubAppObserver from '../plugins/performance/subAppObserver';
 
 export type CustomerLoader = (
   provider: interfaces.Provider,
@@ -49,7 +50,7 @@ export class App {
   public global: any = window;
   public isHtmlMode: boolean;
   public appContainer: HTMLElement;
-  public sourceList: Array<string> = [];
+  public sourceList: Array<{ tagName: string; url: string }> = [];
   public cjsModules: Record<string, any>;
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
@@ -57,6 +58,7 @@ export class App {
   public appInfo: interfaces.AppInfo;
   public entryManager: TemplateManager;
   public customLoader: CustomerLoader;
+  public appPerformance: SubAppObserver;
 
   private active = false;
   private mounting = false;
@@ -107,11 +109,14 @@ export class App {
           entryManager.findAttributeValue(node, 'href') ||
           entryManager.findAttributeValue(node, 'src');
         if (url) {
-          this.sourceList.push(transformUrl(entryManager.url, url));
+          this.sourceList.push({
+            tagName: node.tagName,
+            url: transformUrl(entryManager.url, url),
+          });
         }
       });
     }
-    this.sourceList.push(this.appInfo.entry);
+    this.sourceList.push({ tagName: 'html', url: this.appInfo.entry });
   }
 
   get rootElement() {
@@ -167,7 +172,7 @@ export class App {
       url,
       options.async,
     );
-    code += url ? `//# sourceURL=${url}\n` : '';
+    code += url ? `\n//# sourceURL=${url}\n` : '';
     evalWithEnv(`;${code}`, env);
     revertCurrentScript();
   }

@@ -1,17 +1,9 @@
-.App {
+.ReactApp {
   text-align: center;
+  margin-top: 60px;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-  background: url('/logo.svg')
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.nav-bas {
+  margin-bottom: 60px;
 }
 
 .App-header {
@@ -26,7 +18,7 @@
 }
 
 .App-link {
-  color: #61dafb;
+  color: #4834d4;
 }
 
 @keyframes App-logo-spin {
@@ -36,4 +28,10 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+.App-logo {
+  height: 300px;
+  pointer-events: none;
 }

@@ -19,6 +19,7 @@ import { fetchStaticResources } from './utils';
 import { GarfishHMRPlugin } from './plugins/fixHMR';
 import { GarfishOptionsLife } from './plugins/lifecycle';
 import { GarfishPreloadPlugin } from './plugins/preload';
+import { GarfishPerformance } from './plugins/performance';
 
 export class Garfish implements interfaces.Garfish {
   public hooks: Hooks;
@@ -35,6 +36,10 @@ export class Garfish implements interfaces.Garfish {
   public appInfos: Record<string, interfaces.AppInfo> = {};
   private loading: Record<string, Promise<any> | null> = {};
 
+  get props(): Record<string, any> {
+    return (this.options && this.options.props) || {};
+  }
+
   constructor(options: interfaces.Options) {
     this.hooks = new Hooks(false);
     this.loader = new Loader();
@@ -49,7 +54,11 @@ export class Garfish implements interfaces.Garfish {
   }
 
   private injectOptionalPlugin(options?: interfaces.Options) {
-    const defaultPlugin = [GarfishHMRPlugin(), GarfishOptionsLife(options)];
+    const defaultPlugin = [
+      GarfishHMRPlugin(),
+      GarfishOptionsLife(options),
+      GarfishPerformance(),
+    ];
     // Preload plugin
     if (!options.disablePreloadApp) defaultPlugin.push(GarfishPreloadPlugin());
 
@@ -191,9 +200,12 @@ export class Garfish implements interfaces.Garfish {
       );
       // Deep clone app options
       const tempInfo = appInfo;
+      const originOpts = { ...(options as Partial<interfaces.LoadAppOptions>) };
+      delete (options as Partial<interfaces.LoadAppOptions>).props;
+
       appInfo = deepMerge(tempInfo, options);
-      appInfo.props = hasOwn(tempInfo, 'props')
-        ? tempInfo.props
+      appInfo.props = hasOwn(originOpts, 'props')
+        ? originOpts.props
         : this.options.props;
       appInfo.hooks = hasOwn(tempInfo, 'hooks') ? tempInfo.hooks : null;
     } else if (typeof options === 'string') {

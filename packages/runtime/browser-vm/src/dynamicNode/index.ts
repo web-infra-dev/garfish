@@ -1,8 +1,9 @@
 import { makeMap, warn } from '@garfish/utils';
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
-import { sandboxMap, handlerParams } from '../utils';
+import { sandboxMap, handlerParams, isInIframe } from '../utils';
 import { DynamicNodeProcessor, rawElementMethods } from './processor';
+import { injectHandlerParams } from './processparams';
 
 const mountElementMethods = [
   'append',
@@ -78,7 +79,9 @@ export function makeElInjector() {
   (makeElInjector as any).hasInject = true;
 
   if (typeof window.Element === 'function') {
-    handleOwnerDocument();
+    // iframe can read html container this can't point to proxyDocument has Illegal invocation error
+    if (!isInIframe()) handleOwnerDocument();
+
     for (const name of mountElementMethods) {
       const fn = window.Element.prototype[name];
       if (typeof fn !== 'function' || fn[__domWrapper__]) {
@@ -102,10 +105,5 @@ export function makeElInjector() {
     }
   }
 
-  if (window.MutationObserver) {
-    const rawObserver = window.MutationObserver.prototype.observe;
-    MutationObserver.prototype.observe = function () {
-      return rawObserver.apply(this, handlerParams(arguments));
-    };
-  }
+  injectHandlerParams();
 }

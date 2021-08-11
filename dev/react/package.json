@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "@garfish-dev/sub-react",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -15,7 +15,7 @@
     "react-shadow-dom-retarget-events": "^1.0.11"
   },
   "scripts": {
-    "start": "node linkdeps.js && BROWSER=none react-app-rewired start",
+    "start": "WDS_SOCKET_PORT=2444 PORT=2444 BROWSER=none react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"

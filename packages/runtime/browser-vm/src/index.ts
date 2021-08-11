@@ -21,13 +21,13 @@ declare module '@garfish/core' {
     }
 
     export interface SandboxConfig {
-      modules?: Array<Module>;
+      modules?: Array<Module> | Record<string, Module>;
     }
 
     export interface Config {
       protectVariable?: PropertyKey[];
       insulationVariable?: PropertyKey[];
-      sandbox?: SandboxConfig;
+      sandbox?: SandboxConfig | false;
     }
 
     export interface App {
@@ -51,15 +51,16 @@ if (__DEV__) {
 }
 
 // Compatible with old code
-const compatibleOldModulesType = (config) => {
-  if (isPlainObject(config.modules)) {
+const compatibleOldModulesType = (modules): Array<Module> => {
+  if (isPlainObject(modules)) {
     __DEV__ && warn('"vm sandbox" modules should be an array');
     const list = [];
-    for (const key in config.modules) {
-      list.push(config.modules[key]);
+    for (const key in modules) {
+      list.push(modules[key]);
     }
-    config.modules = list;
+    modules = list;
   }
+  return [];
 };
 
 // Default export Garfish plugin
@@ -91,33 +92,30 @@ export default function BrowserVm() {
         const sandboxConfig = appInfo.sandbox || Garfish?.options?.sandbox;
         if (sandboxConfig === false) {
           config.openSandbox = false;
+          return;
         }
 
-        if (sandboxConfig) {
-          config = {
-            openSandbox:
-              Sandbox.canSupport() &&
-              sandboxConfig.open &&
-              !sandboxConfig.snapshot,
-            modules: sandboxConfig.modules || [],
+        config = {
+          openSandbox: Sandbox.canSupport() && !sandboxConfig?.snapshot,
+          modules: compatibleOldModulesType(sandboxConfig?.modules),
 
-            protectVariable: () => [
-              ...(Garfish?.options?.protectVariable || []),
-              ...(appInfo.protectVariable || []),
-            ],
-            insulationVariable: () => [
-              ...(Garfish?.options?.insulationVariable || []),
-              ...(appInfo.insulationVariable || []),
-            ],
-          };
-        }
+          protectVariable: () => [
+            ...(Garfish?.options?.protectVariable || []),
+            ...(appInfo.protectVariable || []),
+          ],
+          insulationVariable: () => [
+            ...(Garfish?.options?.insulationVariable || []),
+            ...(appInfo.insulationVariable || []),
+          ],
+        };
+
         options.openVm = config.openSandbox;
 
         if (!config.openSandbox) return;
         if (appInstance) {
+          // Has been initialized sandbox don't need to initialize the again
           if (appInstance.vmSandbox) return;
 
-          compatibleOldModulesType(config);
           // Create sandbox instance
           const sandbox = new Sandbox({
             openSandbox: true,

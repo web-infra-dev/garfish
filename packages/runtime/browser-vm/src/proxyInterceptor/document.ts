@@ -24,6 +24,7 @@ export function createGetter(sandbox: Sandbox) {
       ? Reflect.get(target, p, receiver)
       : Reflect.get(document, p);
 
+    if (p === 'activeElement') return Reflect.get(document, p);
     if (rootNode) {
       if (p === 'createElement') {
         return function (tagName, options) {

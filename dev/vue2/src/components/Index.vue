@@ -1,9 +1,7 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-     Thank you for using Gar
-    </p>
+    <h3 data-test="title">Thank you for the vue2 applications use garfish</h3>
+    <img alt="Vue logo" src="../assets/logo.png">
   </div>
 </template>
 
@@ -16,8 +14,7 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 h3 {
   margin: 40px 0 0;
 }

@@ -5,7 +5,7 @@
         <input v-model="item.text" placeholder="task desc"/><button @click="add" >添加任务----来自调试的模块</button>
       </div>
       <div>
-        <ul>
+        <ul class="todo-list">
            <li v-for="todo in todos" :key="todo.id">
               {{ todo.text }}
               {{ todo.done ? 'done' : 'undergoing' }}
