@@ -1,6 +1,6 @@
 {
   "name": "@garfish-dev/sub-vue",
-  "version": "0.1.0",
+  "version": "0.0.38",
   "private": true,
   "scripts": {
     "start": "node linkdeps.js && vue-cli-service serve",
@@ -10,10 +10,10 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "element-ui": "^2.14.1",
+    "garfish": "0.0.24",
     "vue": "^2.6.11",
     "vue-router": "^3.4.3",
-    "vuex": "^3.5.1",
-    "garfish": "0.0.24"
+    "vuex": "^3.5.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",
