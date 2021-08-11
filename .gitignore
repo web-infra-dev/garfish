@@ -35,5 +35,5 @@ lerna-debug.log
 
 
 # lock files
-package-lock.json
-**/package-lock.json
+# package-lock.json
+# **/package-lock.json
