@@ -35,6 +35,9 @@
     "static/",
     ".docusaurus/"
   ],
+  "resolutions": {
+    "terser": "4.8.0"
+  },
   "browserslist": {
     "production": [
       ">0.5%",
