@@ -86,7 +86,7 @@ export function createContext(): Garfish {
     set('Garfish');
     set('Gar');
     set('Garfish');
-    set('__PROWER_BY_GAR__', true);
+    def(window, '__GARFISH__', true);
   }
 
   if (fresh) {
