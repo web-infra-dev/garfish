@@ -13,7 +13,7 @@ jobs:
         run: |
           cd ./website
           npm install
-          npm build
+          npm run build
           cd ../
 
       - name: Deploy
