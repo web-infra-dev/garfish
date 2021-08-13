@@ -13,7 +13,7 @@ describe('whole process popstate event', () => {
   });
 
   let popstateTriggerTime = 0;
-  let popstateCallback = () => (popstateTriggerTime += 1);
+  const popstateCallback = () => (popstateTriggerTime += 1);
 
   it('Switch to the Vue app', () => {
     const HomeTitle = 'Thank you for the vue applications use garfish';

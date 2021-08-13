@@ -17,7 +17,7 @@ describe('whole process app render', () => {
   });
 
   let popstateTriggerTime = 0;
-  let popstateCallback = () => (popstateTriggerTime += 1);
+  const popstateCallback = () => (popstateTriggerTime += 1);
 
   it('Switch to the Vue app', () => {
     cy.visit('http://localhost:2333');

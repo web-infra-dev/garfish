@@ -73,6 +73,7 @@ export class Sandbox {
   public options: SandboxOptions;
   public tempEnvVariables: Array<PropertyKey> = [];
   public replaceGlobalVariables: ReplaceGlobalVariables;
+  public deferClearEffects: Set<() => void> = new Set();
   public isExternalGlobalVariable: Set<PropertyKey> = new Set();
   public isProtectVariable: (p: PropertyKey) => boolean;
   public isInsulationVariable: (P: PropertyKey) => boolean;
@@ -144,6 +145,8 @@ export class Sandbox {
     this.optimizeCode = '';
     this.initComplete = false;
     this.tempEnvVariables = [];
+    this.deferClearEffects.clear();
+    this.isExternalGlobalVariable.clear();
     this.replaceGlobalVariables.createdList = [];
     this.replaceGlobalVariables.prepareList = [];
     this.replaceGlobalVariables.recoverList = [];
@@ -218,6 +221,8 @@ export class Sandbox {
 
   clearEffects() {
     this.replaceGlobalVariables.recoverList.forEach((fn) => fn && fn());
+    // `deferClearEffects` needs to be put at the end
+    this.deferClearEffects.forEach((fn) => fn && fn());
   }
 
   optimizeGlobalMethod() {
@@ -273,12 +278,10 @@ export class Sandbox {
       }
     } catch (e) {
       // dispatch `window.onerror`
-      const source = url || this.options.baseUrl;
-      const message = e instanceof Error ? e.message : String(e);
       if (typeof this.global.onerror === 'function') {
-        // @ts-ignore
-        const errorFn = this.global.onerror._native || this.global.onerror;
-        errorFn.call(window, message, source, null, null, e);
+        const source = url || this.options.baseUrl;
+        const message = e instanceof Error ? e.message : String(e);
+        this.global.onerror.call(this.global, message, source, null, null, e);
       }
       throw e;
     } finally {

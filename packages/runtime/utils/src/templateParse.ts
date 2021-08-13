@@ -1,4 +1,4 @@
-import { warn } from './utils';
+import { error } from './utils';
 import { Node as VNode } from './domApis';
 
 enum ElementType {
@@ -55,7 +55,7 @@ const createElement = (el: Element, filter: (el: VNode) => VNode) => {
         }),
       });
     default:
-      __DEV__ && warn(`Invalid node type "${el.nodeType}"`);
+      error(`Invalid node type "${el.nodeType}"`);
   }
 };
 

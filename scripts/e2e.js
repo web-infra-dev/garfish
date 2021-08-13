@@ -1,5 +1,5 @@
+const execa = require('execa');
 const waitOn = require('wait-on');
-const { spawn, exec } = require('child_process');
 const killPort = require('kill-port');
 
 const ports = [2333, 2444, 2555, 2666, 2777];
@@ -16,7 +16,7 @@ Promise.all(ports.map((port) => killPort(port)))
   .then(() => waitOn(opts))
   .then(function () {
     // once here, all resources are available
-    const spawnInstance = spawn('yarn', [
+    const spawnInstance = execa('yarn', [
       process.env.TEST_ENV_OPEN ? 'cy:open' : 'cy:run',
     ]);
     spawnInstance.stdout.on('data', function (msg) {

@@ -39,11 +39,6 @@ export class DynamicNodeProcessor {
     this.DOMApis = new DOMApis(sandbox.global.document);
     this.rootElement = rootElm(this.sandbox) || document;
     this.tagName = el.tagName ? el.tagName.toLowerCase() : '';
-
-    // Deal with some static resource nodes
-    if (sourceListTags.includes(this.tagName)) {
-      this.fixResourceNodeUrl();
-    }
   }
 
   private is(tag: string) {
@@ -173,8 +168,7 @@ export class DynamicNodeProcessor {
         'body',
         `div[${__MockBody__}]`,
       ]) as Element;
-    }
-    if (parentNode === document.head) {
+    } else if (parentNode === document.head) {
       return findTarget(this.rootElement, [
         'head',
         `div[${__MockHead__}]`,
@@ -195,15 +189,12 @@ export class DynamicNodeProcessor {
         'head',
         `div[${__MockHead__}]`,
       ]) as Element;
-    }
-
-    if (defaultInsert === 'body') {
+    } else if (defaultInsert === 'body') {
       return findTarget(this.rootElement, [
         'body',
         `div[${__MockBody__}]`,
       ]) as Element;
     }
-
     return parentNode;
   }
 
@@ -212,9 +203,10 @@ export class DynamicNodeProcessor {
     let parentNode = context;
     const { baseUrl } = this.sandbox.options;
 
-    // this.sandbox.replaceGlobalVariables.recoverList.push(() => {
-    //   this.DOMApis.removeElement(this.el);
-    // });
+    // Deal with some static resource nodes
+    if (sourceListTags.includes(this.tagName)) {
+      this.fixResourceNodeUrl();
+    }
 
     // Add dynamic script node by loader
     if (this.is('script')) {
@@ -241,6 +233,15 @@ export class DynamicNodeProcessor {
       } else {
         convertedNode = this.el;
         this.monitorChangesOfLinkNode();
+      }
+    }
+
+    // Collect nodes that escape the container node
+    if (!this.rootElement.contains(parentNode)) {
+      if (parentNode !== this.rootElement) {
+        this.sandbox.deferClearEffects.add(() => {
+          this.DOMApis.removeElement(this.el);
+        });
       }
     }
 

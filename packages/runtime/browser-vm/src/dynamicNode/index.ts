@@ -1,9 +1,9 @@
-import { makeMap, warn } from '@garfish/utils';
+import { warn } from '@garfish/utils';
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
-import { sandboxMap, handlerParams, isInIframe } from '../utils';
+import { sandboxMap, isInIframe } from '../utils';
+import { injectHandlerParams } from './processParams';
 import { DynamicNodeProcessor, rawElementMethods } from './processor';
-import { injectHandlerParams } from './processparams';
 
 const mountElementMethods = [
   'append',
@@ -11,7 +11,6 @@ const mountElementMethods = [
   'insertBefore',
   'insertAdjacentElement',
 ];
-
 const removeElementMethods = ['removeChild'];
 
 function injector(current: Function, methodName: string) {
@@ -81,28 +80,23 @@ export function makeElInjector() {
   if (typeof window.Element === 'function') {
     // iframe can read html container this can't point to proxyDocument has Illegal invocation error
     if (!isInIframe()) handleOwnerDocument();
-
-    for (const name of mountElementMethods) {
-      const fn = window.Element.prototype[name];
-      if (typeof fn !== 'function' || fn[__domWrapper__]) {
-        continue;
+    const rewrite = (
+      methods: Array<string>,
+      builder: typeof injector | typeof injectorRemove,
+    ) => {
+      for (const name of methods) {
+        const fn = window.Element.prototype[name];
+        if (typeof fn !== 'function' || fn[__domWrapper__]) {
+          continue;
+        }
+        rawElementMethods[name] = fn;
+        const wrapper = builder(fn, name);
+        wrapper[__domWrapper__] = true;
+        window.Element.prototype[name] = wrapper;
       }
-      rawElementMethods[name] = fn;
-      const wrapper = injector(fn, name);
-      wrapper[__domWrapper__] = true;
-      window.Element.prototype[name] = wrapper;
-    }
-
-    for (const name of removeElementMethods) {
-      const fn = window.Element.prototype[name];
-      if (typeof fn !== 'function' || fn[__domWrapper__]) {
-        continue;
-      }
-      rawElementMethods[name] = fn;
-      const wrapper = injectorRemove(fn, name);
-      wrapper[__domWrapper__] = true;
-      window.Element.prototype[name] = wrapper;
-    }
+    };
+    rewrite(mountElementMethods, injector);
+    rewrite(removeElementMethods, injectorRemove);
   }
 
   injectHandlerParams();
