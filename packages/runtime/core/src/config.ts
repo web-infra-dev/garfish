@@ -23,7 +23,6 @@ const defaultOptions: interfaces.Options = {
   basename: '',
   domGetter: () => null,
   sandbox: {
-    open: true,
     snapshot: false,
     useStrict: false,
     strictIsolation: false,

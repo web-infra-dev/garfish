@@ -127,3 +127,7 @@ export function microTaskHtmlProxyDocument(proxyDocument) {
     }
   }
 }
+
+export function isInIframe() {
+  return window?.parent?.__GARFISH__ !== window?.__GARFISH__;
+}

@@ -11,6 +11,12 @@ es/
 temp/
 /docs
 
+# test result
+cypress/screenshots
+cypress/videos
+cypress/downloads
+
+
 # Editor directories and files
 .idea
 *.suo

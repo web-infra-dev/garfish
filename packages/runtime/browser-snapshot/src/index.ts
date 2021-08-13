@@ -3,7 +3,6 @@ import { interfaces } from '@garfish/core';
 import './globalExtensions';
 
 export interface SandboxConfig {
-  open?: boolean;
   snapshot?: boolean;
   useStrict?: boolean;
   strictIsolation?: boolean;

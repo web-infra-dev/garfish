@@ -1,14 +1,6 @@
 const { exec } = require('child_process');
 
-[
-  '@garfish/core',
-  '@garfish/router',
-  '@garfish/browser-snapshot',
-  '@garfish/browser-vm',
-  '@garfish/core',
-  '@garfish/loader',
-  '@garfish/remote-module',
-].forEach((item) => {
+['garfish'].forEach((item) => {
   console.log(`link ${item}`);
   exec(`yarn link ${item}`, (error, stdout, stderr) => {
     if (error) {

@@ -1,1 +1,0 @@
-## Garfish project dev template

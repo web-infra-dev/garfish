@@ -1,6 +1,6 @@
 {
-  "name": "vue",
-  "version": "0.1.0",
+  "name": "@garfish-dev/sub-app",
+  "version": "0.0.40",
   "private": true,
   "scripts": {
     "start": "node linkdeps.js && vue-cli-service serve",
@@ -8,21 +8,18 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "core-js": "^3.6.5",
-    "element-ui": "^2.14.1",
-    "vue": "^2.6.11",
-    "vue-router": "^3.4.3",
-    "vuex": "^3.5.1",
-    "garfish": "0.0.24"
-  },
-  "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",
     "@vue/cli-plugin-eslint": "~4.4.0",
     "@vue/cli-service": "~4.4.0",
     "babel-eslint": "^10.1.0",
+    "core-js": "^3.6.5",
+    "element-ui": "^2.14.1",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-router": "^3.4.3",
+    "vue-template-compiler": "^2.6.11",
+    "vuex": "^3.5.1"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"

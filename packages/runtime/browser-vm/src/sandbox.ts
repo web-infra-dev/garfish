@@ -97,6 +97,8 @@ export class Sandbox {
     this.options = isPlainObject(options)
       ? deepMerge(defaultOptions, options)
       : defaultOptions;
+    // sourceUrl Using a reference type, make its can be changed
+    options.sourceList && (this.options.sourceList = options.sourceList);
 
     const { loaderOptions, protectVariable, insulationVariable } = this.options;
     this.loader = new Loader(loaderOptions);
@@ -264,6 +266,7 @@ export class Sandbox {
       code += `\n${url ? `//# sourceURL=${url}\n` : ''}`;
       code = !useStrict ? `with(window) {;${this.optimizeCode + code}}` : code;
       this.tempEnvVariables = Object.keys(env);
+
       if (openSandbox) {
         evalWithEnv(code, {
           window: this.global,

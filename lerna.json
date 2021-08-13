@@ -1,5 +1,5 @@
 {
-  "version": "0.0.37",
+  "version": "0.0.40",
   "npmClient": "yarn",
   "command": {
     "publish": {
@@ -22,6 +22,14 @@
   "packages": [
     "packages/runtime/*",
     "packages/tools/*",
+    "dev/main",
+    "dev/react",
+    "dev/subApp",
+    "dev/vue",
+    "dev/vue2",
     "website"
+  ],
+  "nohoist": [
+    "website/**"
   ]
 }
