@@ -32,7 +32,7 @@ export function createContext(): Garfish {
     domGetter: () => null,
     sandbox: {
       snapshot: false,
-      useStrict: false,
+      disableWith: false,
       strictIsolation: false,
     },
     autoRefreshApp: true,

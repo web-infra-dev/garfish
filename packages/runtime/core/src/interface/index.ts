@@ -77,7 +77,7 @@ export namespace interfaces {
 
   export interface SandboxConfig {
     snapshot?: boolean;
-    useStrict?: boolean;
+    disableWith?: boolean;
     strictIsolation?: boolean;
   }
 
