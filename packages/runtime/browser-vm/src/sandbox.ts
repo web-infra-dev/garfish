@@ -87,7 +87,7 @@ export class Sandbox {
       namespace: '',
       modules: [],
       sourceList: [],
-      useStrict: false,
+      disableWith: false,
       openSandbox: true,
       strictIsolation: false,
       el: () => null,
@@ -131,7 +131,7 @@ export class Sandbox {
     if (createdList) {
       createdList.forEach((fn) => fn(this.global));
     }
-    if (!this.options.useStrict) {
+    if (!this.options.disableWith) {
       this.optimizeCode = this.optimizeGlobalMethod();
     }
     this.initComplete = true;
@@ -250,7 +250,7 @@ export class Sandbox {
 
   execScript(code: string, env = {}, url = '', options?: ExecScriptOptions) {
     const { async } = options || {};
-    const { useStrict, openSandbox } = this.options;
+    const { disableWith, openSandbox } = this.options;
     const { prepareList, overrideList } = this.replaceGlobalVariables;
     if (prepareList) prepareList.forEach((fn) => fn && fn());
 
@@ -264,7 +264,9 @@ export class Sandbox {
 
     try {
       code += `\n${url ? `//# sourceURL=${url}\n` : ''}`;
-      code = !useStrict ? `with(window) {;${this.optimizeCode + code}}` : code;
+      code = !disableWith
+        ? `with(window) {;${this.optimizeCode + code}}`
+        : code;
       this.tempEnvVariables = Object.keys(env);
 
       if (openSandbox) {

@@ -4,7 +4,7 @@ import './globalExtensions';
 
 export interface SandboxConfig {
   snapshot?: boolean;
-  useStrict?: boolean;
+  disableWith?: boolean;
   strictIsolation?: boolean;
 }
 

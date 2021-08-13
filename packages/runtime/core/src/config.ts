@@ -24,7 +24,7 @@ const defaultOptions: interfaces.Options = {
   domGetter: () => null,
   sandbox: {
     snapshot: false,
-    useStrict: false,
+    disableWith: false,
     strictIsolation: false,
   },
   autoRefreshApp: true,
