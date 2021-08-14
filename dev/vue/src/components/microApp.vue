@@ -22,24 +22,24 @@ export default {
   methods: {
     async loadApp () {
       // console.log(GarfishInstance);
-      let app = await GarfishInstance.loadApp('vueApp',{
-        entry: 'http://localhost:2555',
-        basename: this.basename,
-        domGetter: ()=> this.$refs.vueApp,
-        props: {
-          fuckYou: 111
-        }
-      });
-      await app.mount();
+      // let app = await GarfishInstance.loadApp('vueApp',{
+      //   entry: 'http://localhost:2555',
+      //   basename: this.basename,
+      //   domGetter: ()=> this.$refs.vueApp,
+      //   props: {
+      //     fuckYou: 111
+      //   }
+      // });
+      // await app.mount();
       // console.log(app);
-      // window.Garfish.router.push({ path: '/garfish_master/vue/micro-app/vueApp', basename: '/' })
+      window.Garfish.router.push({ path: '/garfish_master/vue/micro-app/vueApp', basename: '/' })
       // console.log(this.basename, GarfishInstance);
     },
     async loadAppReact () {
       console.log(GarfishInstance);
-      let app = await GarfishInstance.loadApp('vueApp',{
+      let app = await GarfishInstance.loadApp('reactApp',{
         entry: 'http://localhost:2444',
-        basename: this.basename,
+        basename: '/garfish_master/vue/micro-app',
         domGetter: ()=> this.$refs.vueApp
       });
       await app.mount();
