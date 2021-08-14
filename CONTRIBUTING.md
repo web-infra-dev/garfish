@@ -106,7 +106,6 @@ tools 的包使用 tsc 来打包，`npm run build:tool` 打包所有 tool 下面
 
 ```shell
   # 调试 所有子包
-  $ lerna exec yarn link
   $ yarn build:watch
   $ yarn dev core
 ```
