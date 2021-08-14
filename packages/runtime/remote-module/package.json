@@ -1,6 +1,6 @@
 {
   "name": "@garfish/remote-module",
-  "version": "0.0.44",
+  "version": "0.0.45",
   "description": "remote-module module.",
   "keywords": [
     "garfish",
@@ -31,10 +31,10 @@
     ]
   },
   "devDependencies": {
-    "@garfish/core": "^0.0.44"
+    "@garfish/core": "^0.0.45"
   },
   "dependencies": {
-    "@garfish/loader": "^0.0.44"
+    "@garfish/loader": "^0.0.45"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
