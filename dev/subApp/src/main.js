@@ -81,6 +81,8 @@ if (!window.__GARFISH__) {
   render({
     dom: document,
   });
+} else {
+  __GARFISH_EXPORTS__.provider = provider;
 }
 
 export function provider({ basename, dom, fuckYou }) {

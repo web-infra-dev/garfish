@@ -75,6 +75,6 @@ describe('Router: test active and refreshApp', () => {
     Router.replace({ path: '/a' });
     await waitSwitchReady();
     expect(activeInfos.map((app) => app.name)).toEqual(['appA']);
-    expect(mockPopEventFn.mock.calls.length).toBe(0);
+    expect(mockPopEventFn.mock.calls.length).toBe(1);
   });
 });

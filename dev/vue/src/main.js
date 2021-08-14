@@ -23,7 +23,7 @@ const render = ({ dom, basename = '/' }) => {
     routes: [
       { path: '/', component: HelloGarfish },
       { path: '/todo', component: ToDoList },
-      { path: '/micro-app', component: MicroApp },
+      { path: '/micro-*', component: MicroApp },
       { path: '/remote-component', component: RemoteComponent },
       { path: '/test', component: Test },
     ],
