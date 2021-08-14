@@ -29,6 +29,5 @@ jobs:
       - name: install and build
         run: |
           yarn setup
-          yarn build:all
       - name: release
         run: yarn release
