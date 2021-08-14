@@ -1,7 +1,7 @@
 {
   "name": "@garfish-dev/main",
   "private": true,
-  "version": "0.0.43",
+  "version": "0.0.44",
   "description": "main template",
   "main": "index.js",
   "scripts": {
