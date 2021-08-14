@@ -23,7 +23,7 @@ export default {
     async loadApp () {
       // console.log(GarfishInstance);
       let app = await GarfishInstance.loadApp('vueApp',{
-        entry: 'http://localhost:8000',
+        entry: 'http://localhost:2555',
         basename: this.basename,
         domGetter: ()=> this.$refs.vueApp,
         props: {
@@ -49,7 +49,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.basename)
     if (hasInit) return;
     hasInit = true;
     GarfishInstance.run({

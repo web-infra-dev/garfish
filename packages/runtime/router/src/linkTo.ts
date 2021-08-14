@@ -117,10 +117,8 @@ export const linkTo = async ({
   // application will refresh when autoRefresh configuration to true
   const curState = window.history.state || {};
   if (
-    activeApps.length > 0 &&
     eventType !== 'popstate' &&
-    ((needToActive.length === 0 && curState[__GARFISH_ROUTER_UPDATE_FLAG__]) ||
-      (needToActive.length === 0 && autoRefreshApp))
+    (curState[__GARFISH_ROUTER_UPDATE_FLAG__] || autoRefreshApp)
   ) {
     callCapturedEventListeners(eventType);
   }
