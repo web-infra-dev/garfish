@@ -67,10 +67,11 @@ describe('whole process app render', () => {
 
       win.history.pushState({}, 'vue', `${basename}/vue`);
       cy.contains('[data-test=title]', HomeTitle)
+        .then(() => expect(popstateTriggerTime).to.equal(1))
         .then(TodoListPage)
         .then(backToHome)
         .then(RemoteComponent)
-        .then(() => expect(popstateTriggerTime).to.equal(3));
+        .then(() => expect(popstateTriggerTime).to.equal(4));
     });
   });
 
@@ -96,7 +97,7 @@ describe('whole process app render', () => {
       cy.contains('[data-test=title]', HomeTitle)
         .then(lazyComponent)
         // .then(RemoteComponent)
-        .then(() => expect(popstateTriggerTime).to.equal(4));
+        .then(() => expect(popstateTriggerTime).to.equal(6));
     });
   });
 
@@ -113,7 +114,7 @@ describe('whole process app render', () => {
       win.history.pushState({}, 'vue2', `${basename}/vue2`);
       cy.contains('[data-test=title]', HomeTitle)
         .then(AboutPage)
-        .then(() => expect(popstateTriggerTime).to.equal(5));
+        .then(() => expect(popstateTriggerTime).to.equal(8));
     });
   });
 });
