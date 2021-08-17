@@ -1,6 +1,6 @@
 {
   "name": "@garfish/core",
-  "version": "0.0.45",
+  "version": "0.0.46",
   "description": "core module.",
   "keywords": [
     "garfish",
@@ -32,9 +32,9 @@
     ]
   },
   "dependencies": {
-    "@garfish/hooks": "^0.0.45",
-    "@garfish/loader": "^0.0.45",
-    "@garfish/utils": "^0.0.45"
+    "@garfish/hooks": "^0.0.46",
+    "@garfish/loader": "^0.0.46",
+    "@garfish/utils": "^0.0.46"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
