@@ -124,10 +124,10 @@ export class Garfish implements interfaces.Garfish {
             };
           }),
         );
-        return this;
       }
       __DEV__ &&
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
+      return this;
     }
 
     // register plugins
