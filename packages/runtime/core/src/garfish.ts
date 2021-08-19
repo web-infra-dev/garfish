@@ -10,6 +10,7 @@ import {
   isPlainObject,
   __GARFISH_FLAG__,
   getRenderNode,
+  isPromise,
 } from '@garfish/utils';
 import { Hooks } from './hooks';
 import { App } from './module/app';
@@ -221,8 +222,18 @@ export class Garfish implements interfaces.Garfish {
     }
 
     // Initialize the mount point, support domGetter as promise, is advantageous for the compatibility
-    if (appInfo.domGetter)
-      appInfo.domGetter = await getRenderNode(appInfo.domGetter);
+    if (appInfo.domGetter) {
+      if (
+        typeof appInfo.domGetter === 'function' &&
+        isPromise(appInfo.domGetter)
+      ) {
+        appInfo.domGetter = await appInfo.domGetter();
+      }
+      const originDomGetter = appInfo.domGetter;
+      Object.defineProperty(appInfo, 'domGetter', {
+        get: () => getRenderNode(originDomGetter),
+      });
+    }
 
     const asyncLoadProcess = async () => {
       // Return not undefined type data directly to end loading
