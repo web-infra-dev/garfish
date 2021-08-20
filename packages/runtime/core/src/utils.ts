@@ -123,6 +123,9 @@ export const fetchStaticResources = (
             .then(({ resourceManager: moduleManager }) => {
               moduleManager.setAlias(alias);
               return moduleManager;
+            })
+            .catch((err: Error) => {
+              warn(err.message);
             });
         } else if (alias) {
           warn(`Asynchronous loading module, the alias "${alias}" is invalid.`);

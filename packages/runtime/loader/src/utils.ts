@@ -1,5 +1,5 @@
 import {
-  error,
+  warn,
   isPrimitive,
   isPlainObject,
   parseContentType,
@@ -8,14 +8,18 @@ import { Manager, Loader, LoadedPluginArgs } from './index';
 
 export async function request(url: string, config: RequestInit) {
   const result = await fetch(url, config || {});
-  // Response codes greater than "400" are regarded as errors
+  // Response codes greater than "400" are regarded as warns
   if (result.status >= 400) {
-    error(`"${url}" load failed with status "${result.status}"`);
+    warn(`"${url}" load failed with status "${result.status}"`);
   }
   const code = await result.text();
   const type = result.headers.get('content-type');
   const mimeType = parseContentType(type);
-  return { code, result, mimeType };
+  return {
+    code,
+    result,
+    mimeType,
+  };
 }
 
 export function copyResult(result: LoadedPluginArgs<any>['value']) {

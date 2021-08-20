@@ -253,7 +253,7 @@ export class Garfish implements interfaces.Garfish {
               this.loader,
               entryManager,
             );
-            resources.js = js;
+            resources.js = js.filter((v) => v);
             resources.link = link;
             resources.modules = modules;
           } else if (entryManager instanceof JavaScriptManager) {
