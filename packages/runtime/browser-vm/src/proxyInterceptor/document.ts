@@ -83,9 +83,7 @@ export function createSetter(sandbox) {
       // prettier-ignore
       typeof p === 'string' && passedKey(p)
         ? document
-        : receiver
-          ? receiver
-          : target,
+        : (receiver || target),
       p,
       value,
     );
