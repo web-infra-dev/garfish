@@ -1,6 +1,6 @@
 {
   "name": "@garfish/router",
-  "version": "0.0.57",
+  "version": "0.0.58",
   "description": "router module.",
   "keywords": [
     "garfish",
@@ -34,7 +34,7 @@
     "@garfish/core": "0.0.54"
   },
   "dependencies": {
-    "@garfish/utils": "0.0.57"
+    "@garfish/utils": "0.0.58"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
