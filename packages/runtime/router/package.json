@@ -31,10 +31,10 @@
     ]
   },
   "peerDependencies": {
-    "@garfish/core": "^0.0.23"
+    "@garfish/core": "0.0.54"
   },
   "dependencies": {
-    "@garfish/utils": "^0.0.54"
+    "@garfish/utils": "0.0.54"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

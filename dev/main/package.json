@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1",
-    "garfish": "^0.0.24",
+    "garfish": "0.0.54",
     "loader-utils": "^2.0.0",
     "mobx": "^6.0.1",
     "react": "^16.13.1",
