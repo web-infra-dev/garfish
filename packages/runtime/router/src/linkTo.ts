@@ -118,8 +118,7 @@ export const linkTo = async ({
   const curState = window.history.state || {};
   if (
     eventType !== 'popstate' &&
-    ((needToActive.length === 0 && curState[__GARFISH_ROUTER_UPDATE_FLAG__]) ||
-      (needToActive.length === 0 && autoRefreshApp))
+    (curState[__GARFISH_ROUTER_UPDATE_FLAG__] || autoRefreshApp)
   ) {
     callCapturedEventListeners(eventType);
   }

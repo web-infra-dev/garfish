@@ -35,6 +35,29 @@ export function verifyGetterDescriptor(
   return 0;
 }
 
+export function verifySetter(
+  proxyTarget: any,
+  target: any,
+  p: PropertyKey,
+  val: any,
+  receiver: any,
+) {
+  const verifyResult = verifySetterDescriptor(
+    // prettier-ignore
+    proxyTarget ? proxyTarget : (receiver || target),
+    p,
+    val,
+  );
+
+  let result;
+  if (verifyResult > 0) {
+    if (verifyResult === 1 || verifyResult === 2) result = false;
+    if (verifyResult === 3) result = true;
+  }
+
+  return result;
+}
+
 export function verifySetterDescriptor(
   target: any,
   p: PropertyKey,

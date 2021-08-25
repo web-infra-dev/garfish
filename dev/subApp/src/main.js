@@ -7,11 +7,10 @@ import HelloWorld from './components/HelloWorld.vue';
 import Test from './components/test.vue';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import { preload } from '@garfish/remote-module';
 
 // setTimeout(() => {
 //   let cur = document.querySelector('#app');
-//   console.log('^^^^^^^^^^^^^', cur, document);
+//   console.log(cur, document);
 //   while (cur !== document && cur) {
 //     cur = cur && cur.parentNode;
 //     console.log(cur);
@@ -43,17 +42,15 @@ Vue.use(VueRouter);
 // 查看父应用注入的 external 模块
 Vue.config.productionTip = false;
 
-// 这会一直加载 vue
-// setTimeout(() => {
-//   window.Garfish.loadApp('vue', {
-//     domGetter: '#vueApp',
-//   }).then(app => app.mount())
-// }, 1000)
-
 // const audio = new Audio();
 // console.log(audio instanceof Audio);
 let vm;
 const render = ({ dom, basename = '/' }) => {
+  console.log(
+    '这里了basename 是多少呀 啊啊啊啊啊啊啊',
+    basename,
+    dom.querySelector('#app'),
+  );
   const router = new VueRouter({
     mode: 'history',
     base: basename,
@@ -65,15 +62,13 @@ const render = ({ dom, basename = '/' }) => {
     ],
   });
 
-  preload('@Component').then(() => {
-    vm = new Vue({
-      store,
-      router,
-      render: (h) => h(App, { props: { basename } }),
-    }).$mount();
-    (dom || document).querySelector('#app').appendChild(vm.$el);
-  });
+  vm = new Vue({
+    store,
+    // router,
+    render: (h) => h(App, { props: { basename } }),
+  }).$mount();
 
+  (dom || document).querySelector('#app').appendChild(vm.$el);
   // console.log('#######', dom.querySelector('#app'));
   // document.addEventListener('resize', () => console.log(1));
   // window.addEventListener('resize', () => console.log(2));
@@ -81,12 +76,17 @@ const render = ({ dom, basename = '/' }) => {
 
 // console.log(document.body.contains(document.querySelector('#app')));
 
-// 没有运行表明，没有主应用执行 run，可以执行不在微前端环境下的渲染
-if (!window.__GARFISH_PARENT__) {
-  render({});
+// 这能够让子应用独立运行起来
+if (!window.__GARFISH__) {
+  render({
+    dom: document,
+  });
+} else {
+  __GARFISH_EXPORTS__.provider = provider;
 }
 
-export function provider({ basename, dom }) {
+export function provider({ basename, dom, fuckYou }) {
+  console.log(1111, 'provider', basename, dom, fuckYou);
   return {
     render: () => render({ basename, dom }),
     destroy() {
@@ -124,20 +124,3 @@ export function provider({ basename, dom }) {
 // }, 3000);
 
 // console.log(document.currentScript);
-
-const link = document.createElement('link');
-document.body.appendChild(link);
-// link.disabled = true
-// window.Garfish.getGlobalObject().l = link;
-link.setAttribute('href', 'http://localhost:9090/css/xxx/xx.css');
-link.setAttribute('rel', 'stylesheet');
-
-const jsNode = document.createElement('script');
-jsNode.innerHTML = 'console.log("jsNode")';
-document.body.appendChild(jsNode);
-// jsNode.src = 'http://localhost:9090/async.js';
-
-let style = document.createElement('style');
-style.setAttribute('id', 'style111111');
-let dom = document.querySelector('#app');
-dom.appendChild(style);

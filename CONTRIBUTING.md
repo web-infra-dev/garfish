@@ -7,7 +7,6 @@
 - 打包介绍
 - 调试流程
 
-
 Garfish 仓库使用 learn 和一些额外的构建脚本共同处理，这意味着，learn 的命令也都是可以用的
 
 ## 开发设置
@@ -107,7 +106,6 @@ tools 的包使用 tsc 来打包，`npm run build:tool` 打包所有 tool 下面
 
 ```shell
   # 调试 所有子包
-  $ lerna exec yarn link
   $ yarn build:watch
   $ yarn dev core
 ```

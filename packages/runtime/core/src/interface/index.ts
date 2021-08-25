@@ -77,9 +77,8 @@ export namespace interfaces {
   }
 
   export interface SandboxConfig {
-    open?: boolean;
     snapshot?: boolean;
-    useStrict?: boolean;
+    disableWith?: boolean;
     strictIsolation?: boolean;
   }
 
@@ -87,7 +86,7 @@ export namespace interfaces {
     appID?: string;
     basename?: string;
     apps?: Array<AppInfo>;
-    sandbox?: SandboxConfig;
+    sandbox?: SandboxConfig | false;
     plugins?: Array<(context: Garfish) => Plugin>;
     props?: Record<string, any>;
     disableStatistics?: boolean;

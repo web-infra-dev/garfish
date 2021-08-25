@@ -73,6 +73,7 @@ export class Sandbox {
   public options: SandboxOptions;
   public tempEnvVariables: Array<PropertyKey> = [];
   public replaceGlobalVariables: ReplaceGlobalVariables;
+  public deferClearEffects: Set<() => void> = new Set();
   public isExternalGlobalVariable: Set<PropertyKey> = new Set();
   public isProtectVariable: (p: PropertyKey) => boolean;
   public isInsulationVariable: (P: PropertyKey) => boolean;
@@ -86,7 +87,7 @@ export class Sandbox {
       namespace: '',
       modules: [],
       sourceList: [],
-      useStrict: false,
+      disableWith: false,
       openSandbox: true,
       strictIsolation: false,
       el: () => null,
@@ -96,6 +97,8 @@ export class Sandbox {
     this.options = isPlainObject(options)
       ? deepMerge(defaultOptions, options)
       : defaultOptions;
+    // sourceUrl Using a reference type, make its can be changed
+    options.sourceList && (this.options.sourceList = options.sourceList);
 
     const { loaderOptions, protectVariable, insulationVariable } = this.options;
     this.loader = new Loader(loaderOptions);
@@ -128,7 +131,7 @@ export class Sandbox {
     if (createdList) {
       createdList.forEach((fn) => fn(this.global));
     }
-    if (!this.options.useStrict) {
+    if (!this.options.disableWith) {
       this.optimizeCode = this.optimizeGlobalMethod();
     }
     this.initComplete = true;
@@ -142,6 +145,8 @@ export class Sandbox {
     this.optimizeCode = '';
     this.initComplete = false;
     this.tempEnvVariables = [];
+    this.deferClearEffects.clear();
+    this.isExternalGlobalVariable.clear();
     this.replaceGlobalVariables.createdList = [];
     this.replaceGlobalVariables.prepareList = [];
     this.replaceGlobalVariables.recoverList = [];
@@ -216,6 +221,8 @@ export class Sandbox {
 
   clearEffects() {
     this.replaceGlobalVariables.recoverList.forEach((fn) => fn && fn());
+    // `deferClearEffects` needs to be put at the end
+    this.deferClearEffects.forEach((fn) => fn && fn());
   }
 
   optimizeGlobalMethod() {
@@ -243,7 +250,7 @@ export class Sandbox {
 
   execScript(code: string, env = {}, url = '', options?: ExecScriptOptions) {
     const { async } = options || {};
-    const { useStrict, openSandbox } = this.options;
+    const { disableWith, openSandbox } = this.options;
     const { prepareList, overrideList } = this.replaceGlobalVariables;
     if (prepareList) prepareList.forEach((fn) => fn && fn());
 
@@ -257,8 +264,11 @@ export class Sandbox {
 
     try {
       code += `\n${url ? `//# sourceURL=${url}\n` : ''}`;
-      code = !useStrict ? `with(window) {;${this.optimizeCode + code}}` : code;
+      code = !disableWith
+        ? `with(window) {;${this.optimizeCode + code}}`
+        : code;
       this.tempEnvVariables = Object.keys(env);
+
       if (openSandbox) {
         evalWithEnv(code, {
           window: this.global,
@@ -270,12 +280,10 @@ export class Sandbox {
       }
     } catch (e) {
       // dispatch `window.onerror`
-      const source = url || this.options.baseUrl;
-      const message = e instanceof Error ? e.message : String(e);
       if (typeof this.global.onerror === 'function') {
-        // @ts-ignore
-        const errorFn = this.global.onerror._native || this.global.onerror;
-        errorFn.call(window, message, source, null, null, e);
+        const source = url || this.options.baseUrl;
+        const message = e instanceof Error ? e.message : String(e);
+        this.global.onerror.call(this.global, message, source, null, null, e);
       }
       throw e;
     } finally {

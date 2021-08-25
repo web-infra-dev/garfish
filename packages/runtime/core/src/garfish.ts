@@ -22,6 +22,7 @@ import { createGlobalLifecycle } from './hooks/lifecycle';
 import { GarfishHMRPlugin } from './plugins/fixHMR';
 import { GarfishOptionsLife } from './plugins/lifecycle';
 import { GarfishPreloadPlugin } from './plugins/preload';
+import { GarfishPerformance } from './plugins/performance';
 
 export class Garfish implements interfaces.Garfish {
   public loader: Loader;
@@ -40,6 +41,10 @@ export class Garfish implements interfaces.Garfish {
   private allApps: WeakSet<interfaces.App> = new WeakSet();
   private loading: Record<string, Promise<any> | null> = {};
 
+  get props(): Record<string, any> {
+    return (this.options && this.options.props) || {};
+  }
+
   constructor(options: interfaces.Options) {
     this.loader = new Loader();
     this.hooks = createGlobalLifecycle(false);
@@ -50,7 +55,11 @@ export class Garfish implements interfaces.Garfish {
   }
 
   private injectOptionalPlugin(options?: interfaces.Options) {
-    const defaultPlugin = [GarfishHMRPlugin(), GarfishOptionsLife(options)];
+    const defaultPlugin = [
+      GarfishHMRPlugin(),
+      GarfishOptionsLife(options),
+      GarfishPerformance(),
+    ];
     if (!options.disablePreloadApp) {
       defaultPlugin.push(GarfishPreloadPlugin());
     }

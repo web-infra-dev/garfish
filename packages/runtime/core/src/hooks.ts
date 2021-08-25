@@ -87,7 +87,7 @@ export class Hooks {
       Object.keys(globalHookLifecycle).forEach((lifeKey) => {
         globalHookLifecycle[lifeKey].intercept({
           async call(...args) {
-            const appInfo = args[0];
+            const appInfo = args[0].name ? args[0] : args[1];
             // hasAppInfo lifecycle
             if (
               appInfo?.hooks?.lifecycle[lifeKey] &&

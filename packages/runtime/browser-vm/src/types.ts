@@ -19,11 +19,11 @@ export interface ReplaceGlobalVariables {
 export interface SandboxOptions {
   namespace: string;
   baseUrl?: string;
-  useStrict?: boolean;
+  disableWith?: boolean;
   openSandbox?: boolean;
   strictIsolation?: boolean;
   modules?: Array<Module>;
-  sourceList?: Array<string>;
+  sourceList?: Array<{ tagName: string; url: string }>;
   loaderOptions?: LoaderOptions;
   el?: () => Element | ShadowRoot | null;
   protectVariable?: () => Array<PropertyKey>;

@@ -12,11 +12,11 @@ describe('Init', () => {
   it('init', () => {
     const opts = sandbox.options;
     expect(sandbox.closed).toBe(false);
-    ['el', 'modules', 'namespace', 'useStrict'].forEach((key) => {
+    ['el', 'modules', 'namespace', 'disableWith'].forEach((key) => {
       expect(key in opts).toBe(true);
     });
     expect(opts.modules).toEqual([]);
-    expect(opts.useStrict).toBe(false);
+    expect(opts.disableWith).toBe(false);
     expect(opts.namespace).toBe('app');
     expect((opts.el as Function)()).toBe(null);
   });

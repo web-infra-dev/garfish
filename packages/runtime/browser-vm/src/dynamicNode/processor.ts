@@ -39,11 +39,6 @@ export class DynamicNodeProcessor {
     this.DOMApis = new DOMApis(sandbox.global.document);
     this.rootElement = rootElm(this.sandbox) || document;
     this.tagName = el.tagName ? el.tagName.toLowerCase() : '';
-
-    // Deal with some static resource nodes
-    if (sourceListTags.includes(this.tagName)) {
-      this.fixResourceNodeUrl();
-    }
   }
 
   private is(tag: string) {
@@ -58,7 +53,11 @@ export class DynamicNodeProcessor {
       src && (this.el.src = transformUrl(baseUrl, src));
       href && (this.el.href = transformUrl(baseUrl, href));
       const url = this.el.src || this.el.href;
-      url && this.sandbox.options?.sourceList.push(url);
+      url &&
+        this.sandbox.options?.sourceList.push({
+          tagName: this.el.tagName,
+          url,
+        });
     }
   }
 
@@ -69,6 +68,7 @@ export class DynamicNodeProcessor {
       event.garfish = true;
       Object.defineProperty(event, 'target', { value: this.el });
       this.el.dispatchEvent(event);
+      type === 'error' && window.dispatchEvent(event);
     });
   }
 
@@ -168,8 +168,7 @@ export class DynamicNodeProcessor {
         'body',
         `div[${__MockBody__}]`,
       ]) as Element;
-    }
-    if (parentNode === document.head) {
+    } else if (parentNode === document.head) {
       return findTarget(this.rootElement, [
         'head',
         `div[${__MockHead__}]`,
@@ -190,15 +189,12 @@ export class DynamicNodeProcessor {
         'head',
         `div[${__MockHead__}]`,
       ]) as Element;
-    }
-
-    if (defaultInsert === 'body') {
+    } else if (defaultInsert === 'body') {
       return findTarget(this.rootElement, [
         'body',
         `div[${__MockBody__}]`,
       ]) as Element;
     }
-
     return parentNode;
   }
 
@@ -207,9 +203,10 @@ export class DynamicNodeProcessor {
     let parentNode = context;
     const { baseUrl } = this.sandbox.options;
 
-    // this.sandbox.replaceGlobalVariables.recoverList.push(() => {
-    //   this.DOMApis.removeElement(this.el);
-    // });
+    // Deal with some static resource nodes
+    if (sourceListTags.includes(this.tagName)) {
+      this.fixResourceNodeUrl();
+    }
 
     // Add dynamic script node by loader
     if (this.is('script')) {
@@ -239,13 +236,24 @@ export class DynamicNodeProcessor {
       }
     }
 
-    if (__DEV__ || (this.sandbox?.global as any).__GARFISH__DEV__) {
-      // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
-      if (this.is('iframe') && typeof this.el.onload === 'function') {
-        def(this.el, 'contentWindow', this.sandbox.global);
-        def(this.el, 'contentDocument', this.sandbox.global.document);
+    // Collect nodes that escape the container node
+    if (!this.rootElement.contains(parentNode)) {
+      if (parentNode !== this.rootElement) {
+        this.sandbox.deferClearEffects.add(() => {
+          this.DOMApis.removeElement(this.el);
+        });
       }
     }
+
+    // if (__DEV__ || (this.sandbox?.global as any).__GARFISH__DEV__) {
+    // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
+    if (this.is('iframe') && typeof this.el.onload === 'function') {
+      // Iframe not loaded into the page does not exist when the window and document
+      setTimeout(() => {
+        def(this.el.contentWindow, 'parent', this.sandbox.global);
+      });
+    }
+    // }
 
     if (convertedNode) {
       // If it is "insertBefore" or "insertAdjacentElement" method, no need to rewrite when added to the container

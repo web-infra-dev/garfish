@@ -91,9 +91,8 @@ export const createDefaultOptions = (nested = false) => {
     disableStatistics: false,
     disablePreloadApp: false,
     sandbox: {
-      open: true,
       snapshot: false,
-      useStrict: false,
+      disableWith: false,
       strictIsolation: false,
     },
     // Load hooks

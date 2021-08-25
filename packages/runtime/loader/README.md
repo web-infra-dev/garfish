@@ -3,7 +3,7 @@
 ## Usage
 
 ```js
-import Loader from '@garfish/loader';
+import { Loader } from '@garfish/loader';
 
 const loader = new Loader({
   maxSize: 10 * 1024 * 1024, // default number is "10 * 1024 * 1024"

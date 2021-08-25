@@ -308,9 +308,10 @@ export function isAbsolute(url: string) {
 }
 
 export function transformUrl(resolvePath: string, curPath: string) {
-  const baseUrl = new URL(resolvePath, location.href);
-  const realPath = new URL(curPath, baseUrl.href);
-  return realPath.href;
+  // const baseUrl = new URL(resolvePath, location.href);
+  // const realPath = new URL(curPath, baseUrl.href);
+  // return realPath.href;
+  return curPath;
 }
 
 export function findTarget(
@@ -392,3 +393,40 @@ export function mapObject(
   }
   return destObject;
 }
+
+export const hookObjectProperty = <
+  T extends {},
+  K extends keyof T,
+  P extends any[]
+>(
+  obj: T,
+  key: K,
+  hookFunc: (origin: T[K], ...params: P) => T[K],
+) => {
+  return (...params: P) => {
+    if (!obj) {
+      return noop;
+    }
+    const origin = obj[key];
+    const hookedUnsafe = hookFunc(origin, ...params);
+    let hooked = hookedUnsafe;
+
+    // To method packages a layer of a try after all the hooks to catch
+    if (typeof hooked === 'function') {
+      hooked = (function (this: any, ...args: any) {
+        try {
+          return (hookedUnsafe as any).apply(this, args);
+        } catch {
+          return typeof origin === 'function' && origin.apply(this, args);
+        }
+      } as any) as T[K];
+    }
+    obj[key] = hooked;
+
+    return (strict?: boolean) => {
+      if (!strict || hooked === obj[key]) {
+        obj[key] = origin;
+      }
+    };
+  };
+};

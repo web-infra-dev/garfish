@@ -5,7 +5,8 @@ export default {
   },
   mutations: {
     done(state, id) {
-      state.todos.forEach((item) => item.id === id && (item.done = true));
+      // state.todos.forEach((item) => item.id === id && (item.done = true));
+      this.state.todo = this.state.todo.filter((item) => item.id !== id);
     },
     add(state, item) {
       state.id += 1;

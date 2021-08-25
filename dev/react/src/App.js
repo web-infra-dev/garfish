@@ -1,98 +1,57 @@
-import React, { useState } from 'react';
-import { esModule, loadModule, cacheModules } from '@garfish/remote-module';
-import logo from './logo.svg';
+import React, { Suspense } from 'react';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import HelloGarfish from './components/helloGarfish.js';
+import RemoteComponent from './components/remoteComponent.js';
+import Monitoring from './components/monitoring.js';
+// sandbox
+import SetProxyVariable from './components/sandbox/setProxyVariable.js';
 import './App.css';
-import { Modal, Button } from 'antd';
-import 'antd/dist/antd.css';
+const LazyComponent = React.lazy(() => import('./components/lazyComponent.js'));
 
-console.log(cacheModules);
-
-function App() {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-  const fn = () => {
-    window.a.b.c = 1;
-  };
-
-  // const RemoteComponent = loadModuleSync('@Component.One', {
-  //   externals: {
-  //     a: 1,
-  //   },
-  // });
-  // const RemoteComponentTwo = React.lazy(() =>
-  //   esModule(loadModule('@Component.Two')),
-  // );
-
+export default function App({ basename }) {
   return (
-    <div className="App">
-      {/* <RemoteComponent text="cool!" /> */}
-
-      {/* <React.Suspense fallback={<div>loading</div>}>
-        <div>
-          <RemoteComponentTwo text="good!" />
-        </div>
-      </React.Suspense> */}
-
-      <Button type="primary" onClick={showModal}>
-        Open Modal
-      </Button>
-      <Modal
-        title="Basic Modal"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      </Modal>
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <button onClick={fn}>test error</button>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router basename={basename}>
+      <div className="ReactApp">
+        <ul className="nav-bas">
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/lazy-component">Lazy Component</Link>
+          </li>
+          <li>
+            <Link to="/monitoring">monitoring Component</Link>
+          </li>
+          <li>
+            <Link to="/remote-component">Remote Component</Link>
+          </li>
+        </ul>
+        <ul className="nav-bas">
+          <li>
+            <Link to="/set-proxy-variable">sandbox set proxy variable</Link>
+          </li>
+        </ul>
+        <Switch>
+          <Route exact path="/">
+            <HelloGarfish />
+          </Route>
+          <Route path="/lazy-component">
+            <Suspense fallback={<div>Loading...</div>}>
+              <LazyComponent />
+            </Suspense>
+          </Route>
+          <Route path="/remote-component">
+            <RemoteComponent />
+          </Route>
+          <Route path="/monitoring">
+            <Monitoring />
+          </Route>
+          {/* sandbox */}
+          <Route path="/set-proxy-variable">
+            <SetProxyVariable />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
-// console.log(document.createElement('div').contains(document.body));
-// console.log(window.a.a.b);
-// class MyComponent extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.myRef = React.createRef();
-//   }
-//   componentDidMount() {
-//     setTimeout(()=>{
-//       // console.log(this.myRef.current);
-//       console.log(this.myRef.current.contains(document.createElement('div')))
-//     }, 2000)
-//   }
-//   render() {
-//     return <div id="woshi" ref={this.myRef} >
-//       hello
-//     </div>;
-//   }
-// }
-// export default MyComponent;
-export default App;
