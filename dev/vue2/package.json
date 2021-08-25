@@ -1,6 +1,6 @@
 {
   "name": "@garfish-dev/sub-vue2",
-  "version": "0.0.55",
+  "version": "0.0.56",
   "private": true,
   "scripts": {
     "start": "vue-cli-service serve",
