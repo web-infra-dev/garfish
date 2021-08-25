@@ -366,7 +366,7 @@ export function setDocCurrentScript(
   return () => set(null);
 }
 
-export function __extends(d, b) {
+export function _extends(d, b) {
   Object.setPrototypeOf(d, b);
 
   function fNOP() {

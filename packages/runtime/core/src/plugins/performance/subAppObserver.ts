@@ -1,7 +1,6 @@
-//
-// 子应用性能监控工具类
-//
+import { warn } from '@garfish/utils';
 
+// Child app performance monitoring tools
 interface IPerformanceData {
   resourceLoadTime: number;
   blankScreenTime: number;
@@ -28,7 +27,7 @@ interface IOptions {
   observeConfig?: IConfig;
 }
 
-class SubAppObserver {
+export class SubAppObserver {
   private observer: MutationObserver;
   private timeLag: number;
   private reportTimeLag: number;
@@ -51,7 +50,6 @@ class SubAppObserver {
   private performanceData: IPerformanceData;
 
   constructor(options: IOptions) {
-    // 创建一个观察器实例并传入回调函数
     this.observer = new MutationObserver(
       this._mutationObserverCallback.bind(this),
     );
@@ -83,17 +81,15 @@ class SubAppObserver {
     };
   }
 
-  subscribePerformanceData(callback: ICallbackFunction): void {
-    // console.warn('subscribe');
+  subscribePerformanceData(callback: ICallbackFunction) {
     try {
       this.targetSubscriber.push(callback);
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      warn(e);
     }
   }
 
-  subscribePerformanceDataOnce(callback: ICallbackFunction): void {
-    // console.warn('subscribe');
+  subscribePerformanceDataOnce(callback: ICallbackFunction) {
     try {
       const wrapCallback = (performanceData) => {
         callback(performanceData);
@@ -101,25 +97,22 @@ class SubAppObserver {
       };
 
       this.targetSubscriber.push(wrapCallback);
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      warn(e);
     }
   }
 
-  unsubscribePerformanceData(callback: ICallbackFunction): void {
-    // console.warn('subscribe');
+  unsubscribePerformanceData(callback: ICallbackFunction) {
     try {
-      this.targetSubscriber = this.targetSubscriber.filter((sub) => {
-        if (sub === callback) return false;
-        return true;
-      });
-    } catch (error) {
-      console.error(error);
+      this.targetSubscriber = this.targetSubscriber.filter(
+        (sub) => sub === callback,
+      );
+    } catch (e) {
+      warn(e);
     }
   }
 
-  subAppBeforeLoad(entry: string): void {
-    // console.warn('subAppBeforeLoad');
+  subAppBeforeLoad(entry: string) {
     this.entry = entry;
     this.isRecordFinish = false;
     this.isSubAppNotifyFinish = false;
@@ -128,28 +121,25 @@ class SubAppObserver {
     this._handleSubscribeCallback(false);
   }
 
-  subAppBeforeMount(_entry?: string): void {
-    // console.warn('subAppBeforeMount');
+  subAppBeforeMount() {
     this.subAppBeforeMountTime = performance.now();
     this._subAppStartObserver();
   }
 
-  subAppUnMount(_entry?: string): void {
-    // console.warn('subAppUnMount');
+  subAppUnMount() {
     if (!this.isRecordFinish) {
       this._subAppEndObserver('SubAppUnMount');
     }
     this._handleSubscribeCallback(true);
   }
 
-  // 子应用主动通知首屏加载完成
-  afterRenderNotify(): void {
-    // console.warn('afterRenderNotify');
+  // The child app actively notifies the first screen loading is complete
+  afterRenderNotify() {
     if (!this.isRecordFinish) {
-      // 如果监测渲染还未结束,主动停止观察并处理数据
+      // If the monitoring rendering has not ended, actively stop the observation and process the data
       this._subAppEndObserver('SubAppRenderNotify');
     } else if (!this.isSubAppNotifyFinish) {
-      // 如果监测渲染已经结束,主动更新已处理数据
+      // If the monitoring rendering has ended, actively update the processed data
       this.isSubAppNotifyFinish = true;
       this.isRecordFinish = true;
       this.finishAction = 'SubAppRenderNotify';
@@ -158,14 +148,13 @@ class SubAppObserver {
   }
 
   private _mutationObserverCallback() {
-    // console.warn('mutationObserverCallback');
-    // 子应用容器内开始渲染元素记录打点
+    // Start rendering elements in the child app container to record the dot
     if (this.isStartShowFlag) {
       this.subAppStartPageShowTime = performance.now();
       this.isStartShowFlag = false;
     }
 
-    // 子应用容器内渲染元素一定时间内不再发生变化记录打点
+    // The rendering elements in the child app container no longer change for a certain period of time
     clearTimeout(this.observeTimer);
     this.observeTimer = (setTimeout(() => {
       clearTimeout(this.observeTimer);
@@ -176,7 +165,6 @@ class SubAppObserver {
   }
 
   private _subAppEndObserver(finishAction: string) {
-    // console.warn('subAppEndObserver');
     this.isRecordFinish = true;
     this.finishAction = finishAction;
     this.subAppPageShowTime = performance.now();
@@ -186,7 +174,6 @@ class SubAppObserver {
   }
 
   private _subAppStartObserver() {
-    // console.warn('subAppStartObserver');
     try {
       const targetNode =
         typeof this.domQuerySelector === 'string'
@@ -194,13 +181,12 @@ class SubAppObserver {
           : (this.domQuerySelector as HTMLElement);
       this.observer.observe(targetNode, this.config);
       this._subAppClickEventObserver(targetNode);
-    } catch (err) {
-      console.error(err);
+    } catch (e) {
+      warn(e);
     }
   }
 
   private _subAppPerformanceDataHandle() {
-    // console.warn('subAppPerformanceDataHandle');
     const timeDifference =
       this.finishAction === 'MutationObserver' ? this.timeLag : 0;
     this.performanceData = {
@@ -215,8 +201,7 @@ class SubAppObserver {
   }
 
   private _subAppClickEventObserver(targetNode: HTMLElement) {
-    // console.warn('subAppClickEventObserver');
-    const eventCallback = (_e: MouseEvent | KeyboardEvent) => {
+    const eventCallback = () => {
       clearTimeout(this.observeTimer);
       if (!this.isRecordFinish) {
         this._subAppEndObserver('UserEvent');
@@ -229,7 +214,6 @@ class SubAppObserver {
   }
 
   private _handleCallback() {
-    // console.warn('handleCallback');
     try {
       this.isCallBackFinish = true;
       this.targetSubscriber.forEach((callback) => {
@@ -247,20 +231,21 @@ class SubAppObserver {
           action &&
           entry
         ) {
-          console.warn('SUCCESS -> 子应用性能数据输出：', this.performanceData);
+          if (__DEV__) {
+            console.warn('SUCCESS: ', this.performanceData);
+          }
           this.cbEntryList.push(this.entry);
           callback(this.performanceData);
-        } else {
-          console.warn('ERROR -> 子应用性能数据输出：', this.performanceData);
+        } else if (__DEV__) {
+          console.warn('ERROR: ', this.performanceData);
         }
       });
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      warn(e);
     }
   }
 
   private _handleSubscribeCallback(isImmediately: boolean) {
-    // console.warn('handleSubscribeCallback');
     try {
       clearTimeout(this.dataTimer);
       if (isImmediately && !this.isCallBackFinish) {
@@ -270,9 +255,8 @@ class SubAppObserver {
           this._handleCallback();
         }, this.reportTimeLag) as unknown) as number;
       }
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      warn(e);
     }
   }
 }
-export default SubAppObserver;

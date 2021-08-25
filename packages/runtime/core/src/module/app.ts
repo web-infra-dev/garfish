@@ -20,7 +20,7 @@ import {
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
 import { createAppLifecycle } from '../hooks/lifecycle';
-import SubAppObserver from '../plugins/performance/subAppObserver';
+import { SubAppObserver } from '../plugins/performance/subAppObserver';
 
 export type CustomerLoader = (
   provider: interfaces.Provider,
