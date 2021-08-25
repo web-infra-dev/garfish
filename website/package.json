@@ -1,6 +1,6 @@
 {
   "name": "garfish-docs",
-  "version": "0.0.52",
+  "version": "0.0.53",
   "private": true,
   "scripts": {
     "setup": "npm run reset && yarn install",

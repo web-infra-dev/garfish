@@ -1,4 +1,4 @@
-import { warn } from '@garfish/utils';
+import { warn, __ELEMENT_DELETE_TAG__ } from '@garfish/utils';
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
 import { sandboxMap, isInIframe } from '../utils';
@@ -11,7 +11,7 @@ const mountElementMethods = [
   'insertBefore',
   'insertAdjacentElement',
 ];
-const removeElementMethods = ['removeChild'];
+const removeChildElementMethods = ['removeChild'];
 
 function injector(current: Function, methodName: string) {
   return function () {
@@ -41,14 +41,19 @@ function injector(current: Function, methodName: string) {
   };
 }
 
-function injectorRemove(current: Function, methodName: string) {
+function injectorRemoveChild(current: Function, methodName: string) {
   return function () {
     const el = arguments[0];
     const sandbox = el && sandboxMap.get(el);
-    const originProcess = () => current.apply(this, arguments);
+    const originProcess = () => {
+      // Sandbox may have applied sub dom side effects to delete
+      // by removeChild deleted by the tag determine whether have been removed
+      if (el && el[__ELEMENT_DELETE_TAG__]) return el;
+      return current.apply(this, arguments);
+    };
     if (sandbox) {
       const processor = new DynamicNodeProcessor(el, sandbox, methodName);
-      return processor.remove(this, originProcess);
+      return processor.removeChild(this, originProcess);
     } else {
       return originProcess();
     }
@@ -82,7 +87,7 @@ export function makeElInjector() {
     if (!isInIframe()) handleOwnerDocument();
     const rewrite = (
       methods: Array<string>,
-      builder: typeof injector | typeof injectorRemove,
+      builder: typeof injector | typeof injectorRemoveChild,
     ) => {
       for (const name of methods) {
         const fn = window.Element.prototype[name];
@@ -96,7 +101,7 @@ export function makeElInjector() {
       }
     };
     rewrite(mountElementMethods, injector);
-    rewrite(removeElementMethods, injectorRemove);
+    rewrite(removeChildElementMethods, injectorRemoveChild);
   }
 
   injectHandlerParams();
