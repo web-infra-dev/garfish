@@ -29,7 +29,6 @@ export class HooksSystem<
   usePlugins(plugin: interfaces.Plugin) {
     const pluginName = plugin.name;
     const { plugins, lifecycle } = this;
-    const lifecycleKeys = Object.keys(lifecycle);
 
     assert(pluginName, 'Plugin must provide a name');
     assert(isObject(plugin), 'Plugin must return object type.');

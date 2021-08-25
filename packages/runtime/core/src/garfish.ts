@@ -123,7 +123,7 @@ export class Garfish implements interfaces.Garfish {
       if (options.nested) {
         const hooks = createGlobalLifecycle(true);
         const mainOptions = createDefaultOptions(true);
-        options = filterNestedConfig(mergeConfig(mainOptions, options));
+        options = filterNestedConfig(deepMergeConfig(mainOptions, options));
 
         // Register plugins
         options.plugins?.forEach((pluginCb) => {
