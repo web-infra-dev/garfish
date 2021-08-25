@@ -34,6 +34,13 @@
       "umd"
     ]
   },
+  "dependencies": {
+    "@garfish/browser-snapshot": "^0.0.49",
+    "@garfish/browser-vm": "^0.0.49",
+    "@garfish/core": "^0.0.49",
+    "@garfish/router": "^0.0.49",
+    "@garfish/utils": "^0.0.49"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
