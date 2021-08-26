@@ -1,5 +1,5 @@
+import { LoaderPlugin } from '@garfish/hooks';
 import { isJs, isCss, isHtml } from '@garfish/utils';
-import { PluginManager } from './pluginSystem';
 import { request, copyResult, mergeConfig } from './utils';
 import { FileTypes, cachedDataSet, AppCacheContainer } from './appCache';
 import { StyleManager } from './managers/style';
@@ -52,9 +52,9 @@ export class Loader {
   /** @deprecated */
   public requestConfig: RequestInit | ((url: string) => RequestInit);
   public lifecycle = {
-    clear: new PluginManager<ClearPluginArgs>('clear'),
-    loaded: new PluginManager<LoadedPluginArgs<Manager>>('loaded'),
-    beforeLoad: new PluginManager<BeforeLoadPluginArgs>('beforeLoad'),
+    clear: new LoaderPlugin<ClearPluginArgs>('clear'),
+    loaded: new LoaderPlugin<LoadedPluginArgs<Manager>>('loaded'),
+    beforeLoad: new LoaderPlugin<BeforeLoadPluginArgs>('beforeLoad'),
   };
 
   private options: LoaderOptions;
@@ -74,7 +74,7 @@ export class Loader {
     const appCacheContainer = this.cacheStore[scope];
     if (appCacheContainer) {
       appCacheContainer.clear(fileType);
-      this.lifecycle.clear.run({ scope, fileType });
+      this.lifecycle.clear.emit({ scope, fileType });
     }
   }
 
@@ -125,7 +125,7 @@ export class Loader {
     }
 
     const requestConfig = mergeConfig(this, url);
-    const resOpts = this.lifecycle.beforeLoad.run({ url, requestConfig });
+    const resOpts = this.lifecycle.beforeLoad.emit({ url, requestConfig });
 
     loadingList[url] = request(resOpts.url, resOpts.requestConfig)
       .finally(() => {
@@ -155,7 +155,7 @@ export class Loader {
 
         // The results will be cached this time.
         // So, you can transform the request result.
-        const data = this.lifecycle.loaded.run({
+        const data = this.lifecycle.loaded.emit({
           result,
           value: {
             url,

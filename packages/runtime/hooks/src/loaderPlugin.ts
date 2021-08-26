@@ -2,12 +2,12 @@ import { warn, error, hasOwn } from '@garfish/utils';
 
 type Plugin<T extends any> = (result: T) => any;
 
-export class PluginManager<T> {
+export class LoaderPlugin<T> {
   public type: string;
   public onerror: (errMsg: string | Error) => void = error;
   private plugins: Set<Plugin<T>> = new Set();
 
-  constructor(type?: string) {
+  constructor(type: string) {
     this.type = type;
   }
 

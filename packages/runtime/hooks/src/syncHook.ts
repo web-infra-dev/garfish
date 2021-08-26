@@ -3,7 +3,12 @@ import { warn } from '@garfish/utils';
 type Callback = (...args: Array<any>) => void;
 
 export class SyncHook {
+  public type: string = '';
   public hooks: Array<{ name: string; fn: Callback }> = [];
+
+  constructor(type?: string) {
+    if (type) this.type = type;
+  }
 
   on(name: string, fn: Callback) {
     if (typeof name === 'string' && typeof fn === 'function') {

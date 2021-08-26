@@ -3,7 +3,12 @@ import { warn } from '@garfish/utils';
 type Callback = (...args: Array<any>) => void;
 
 export class Channel {
+  public type: string = '';
   private listeners = new Set<Callback>();
+
+  constructor(type?: string) {
+    if (type) this.type = type;
+  }
 
   on(fn: Callback) {
     if (typeof fn === 'function') {
