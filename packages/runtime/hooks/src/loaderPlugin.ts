@@ -3,7 +3,7 @@ import { warn, error, hasOwn } from '@garfish/utils';
 type Plugin<T extends any> = (result: T) => any;
 
 export class PluginManager<T> {
-  private _plugins: Set<Plugin<T>> = new Set();
+  private plugins: Set<Plugin<T>> = new Set();
 
   type: string;
   onerror: (errMsg: string | Error) => void = error;
@@ -13,11 +13,11 @@ export class PluginManager<T> {
   }
 
   on(plugin: Plugin<T>) {
-    if (this._plugins.has(plugin)) {
+    if (this.plugins.has(plugin)) {
       __DEV__ && warn('Repeat add plugin');
       return;
     }
-    this._plugins.add(plugin);
+    this.plugins.add(plugin);
   }
 
   once(plugin: Plugin<T>) {
@@ -29,7 +29,7 @@ export class PluginManager<T> {
   }
 
   emit<T extends Record<string, any>>(result: T) {
-    for (const plugin of this._plugins) {
+    for (const plugin of this.plugins) {
       try {
         let illegalResult = false;
         const tempResult = plugin(result as any);
@@ -56,12 +56,12 @@ export class PluginManager<T> {
   }
 
   remove(plugin: Plugin<T>) {
-    if (this._plugins.has(plugin)) {
-      this._plugins.delete(plugin);
+    if (this.plugins.has(plugin)) {
+      this.plugins.delete(plugin);
     }
   }
 
   removeAll() {
-    this._plugins.clear();
+    this.plugins.clear();
   }
 }
