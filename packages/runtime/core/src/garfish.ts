@@ -18,26 +18,26 @@ import {
 import { interfaces } from './interface';
 import { App, AppInfo } from './module/app';
 import { fetchStaticResources } from './utils';
-import { createGlobalLifecycle } from './hooks/lifecycle';
+import { globalLifecycle } from './hooks/lifecycle';
 import { GarfishHMRPlugin } from './plugins/fixHMR';
 import { GarfishOptionsLife } from './plugins/lifecycle';
 import { GarfishPreloadPlugin } from './plugins/preload';
 import { GarfishPerformance } from './plugins/performance';
 
 export class Garfish implements interfaces.Garfish {
-  public loader: Loader;
   public running = false;
   public version = __VERSION__;
   public flag = __GARFISH_FLAG__; // A unique identifier
+  public loader = new Loader();
+  public hooks = globalLifecycle();
   public channel = new EventEmitter();
   public options = createDefaultOptions();
   public externals: Record<string, any> = {};
-  public plugins: Array<interfaces.Plugin> = [];
   public activeApps: Array<interfaces.App> = [];
-  public hooks: ReturnType<typeof createGlobalLifecycle>;
   public cacheApps: Record<string, interfaces.App> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
 
+  private plugins = new WeakSet();
   private allApps: WeakSet<interfaces.App> = new WeakSet();
   private loading: Record<string, Promise<any> | null> = {};
 
@@ -46,24 +46,20 @@ export class Garfish implements interfaces.Garfish {
   }
 
   constructor(options: interfaces.Options) {
-    this.loader = new Loader();
-    this.hooks = createGlobalLifecycle(false);
-
-    // Init Garfish options
     this.setOptions(options);
     options?.plugins?.forEach((plugin) => this.usePlugin(plugin));
   }
 
   private injectOptionalPlugin(options?: interfaces.Options) {
-    const defaultPlugin = [
+    const defaultPlugins = [
       GarfishHMRPlugin(),
       GarfishOptionsLife(options),
       GarfishPerformance(),
     ];
     if (!options.disablePreloadApp) {
-      defaultPlugin.push(GarfishPreloadPlugin());
+      defaultPlugins.push(GarfishPreloadPlugin());
     }
-    defaultPlugin.forEach((plugin) => this.usePlugin(plugin));
+    defaultPlugins.forEach((plugin) => this.usePlugin(plugin));
   }
 
   private async mergeAppOptions(
@@ -121,23 +117,20 @@ export class Garfish implements interfaces.Garfish {
     }
     (plugin as any)._registered = true;
     const res = plugin.apply(this, [this, ...args]);
-    this.plugins.push(res);
-
-    return this.hooks.usePlugins(res);
+    this.plugins.add(res);
+    return this.hooks.usePlugin(res);
   }
 
   run(options?: interfaces.Options) {
     if (this.running) {
       // Nested scene can be repeated registration application
       if (options.nested) {
-        const hooks = createGlobalLifecycle(true);
+        const hooks = globalLifecycle();
         const mainOptions = createDefaultOptions(true);
         options = filterNestedConfig(deepMergeConfig(mainOptions, options));
 
         // Register plugins
-        options.plugins?.forEach((pluginCb) => {
-          this.usePlugin(pluginCb);
-        });
+        options.plugins?.forEach((plugin) => this.usePlugin(plugin));
         // Nested applications have independent life cycles
         this.usePlugin(GarfishOptionsLife(options));
 
@@ -163,18 +156,18 @@ export class Garfish implements interfaces.Garfish {
     // register plugins
     options?.plugins?.forEach((plugin) => this.usePlugin(plugin, this));
 
-    this.hooks.lifecycle.beforeBootstrap.call(this.options);
+    this.hooks.lifecycle.beforeBootstrap.emit(this.options);
     this.setOptions(options);
     this.injectOptionalPlugin(this.options);
     // register apps
     this.registerApp(options.apps || []);
     this.running = true;
-    this.hooks.lifecycle.bootstrap.call(this.options);
+    this.hooks.lifecycle.bootstrap.emit(this.options);
     return this;
   }
 
   registerApp(list: interfaces.AppInfo | Array<interfaces.AppInfo>) {
-    this.hooks.lifecycle.beforeRegisterApp.call(list);
+    this.hooks.lifecycle.beforeRegisterApp.emit(list);
     const currentAdds = {};
     if (!Array.isArray(list)) list = [list];
     for (let info of list) {
@@ -195,7 +188,7 @@ export class Garfish implements interfaces.Garfish {
         warn(`The "${info.name}" app is already registered.`);
       }
     }
-    this.hooks.lifecycle.registerApp.call(currentAdds);
+    this.hooks.lifecycle.registerApp.emit(currentAdds);
     return this;
   }
 
@@ -223,7 +216,7 @@ export class Garfish implements interfaces.Garfish {
 
     const asyncLoadProcess = async () => {
       // Return not undefined type data directly to end loading
-      const stopLoad = await this.hooks.lifecycle.beforeLoad.call(appInfo);
+      const stopLoad = await this.hooks.lifecycle.beforeLoad.emit(appInfo);
       if (stopLoad === false) {
         warn(`Load ${appName} application is terminated by beforeLoad.`);
         return null;
@@ -282,12 +275,12 @@ export class Garfish implements interfaces.Garfish {
           this.cacheApps[appName] = appInstance;
         } catch (e) {
           __DEV__ && error(e);
-          this.hooks.lifecycle.errorLoadApp.call(e, appInfo);
+          this.hooks.lifecycle.errorLoadApp.emit(e, appInfo);
         } finally {
           this.loading[appName] = null;
         }
       }
-      this.hooks.lifecycle.afterLoad.call(appInfo, appInstance);
+      this.hooks.lifecycle.afterLoad.emit(appInfo, appInstance);
       return appInstance;
     };
 

@@ -1,16 +1,15 @@
 import { assert, isObject } from '@garfish/utils';
-import { SyncHook } from './SyncHook';
-import { interfaces } from '../interface';
-import { AsyncSeriesBailHook } from './asyncSeriesBailHook';
+import { SyncHook, AsyncHook } from '@garfish/hooks';
 
-export class HooksSystem<
-  T extends Record<string, SyncHook | AsyncSeriesBailHook>
-> {
+type Plugin<T> = Partial<Record<keyof T, (...args: Array<any>) => void>> & {
+  name: string;
+};
+
+export class HooksSystem<T extends Record<string, SyncHook | AsyncHook>> {
   type: string;
   lifecycle: T;
-  plugins: Array<interfaces.Plugin> = [];
-
-  private lifecycleKeys: Array<keyof T>;
+  lifecycleKeys: Array<keyof T>;
+  registerPlugins = new WeakSet<Plugin<T>>();
 
   constructor(type: string, lifecycle: T) {
     this.type = type;
@@ -18,31 +17,30 @@ export class HooksSystem<
     this.lifecycleKeys = Object.keys(lifecycle);
   }
 
-  isApp(key: string) {
-    return this.type === 'app' && this.lifecycleKeys.includes(key);
-  }
-
-  isGlobal(key: string) {
-    return this.type === 'global' && this.lifecycleKeys.includes(key);
-  }
-
-  usePlugins(plugin: interfaces.Plugin) {
+  usePlugin(plugin: Plugin<T>) {
+    // Plugin name is required and unique
     const pluginName = plugin.name;
-    const { plugins, lifecycle } = this;
-
     assert(pluginName, 'Plugin must provide a name');
     assert(isObject(plugin), 'Plugin must return object type.');
 
-    if (!plugins.includes(plugin)) {
-      plugins.push(plugin);
-    }
+    if (!this.registerPlugins.has(plugin)) {
+      this.registerPlugins.add(plugin);
 
-    for (const key in lifecycle) {
-      const pluginLife = plugin[key as string];
-      if (pluginLife) {
-        // Differentiate different types of hooks and adopt different registration strategies
-        lifecycle[key].add(pluginName, pluginLife);
+      for (const key in this.lifecycle) {
+        const pluginLife = plugin[key as string];
+        if (pluginLife) {
+          // Differentiate different types of hooks and adopt different registration strategies
+          this.lifecycle[key].on(pluginName, pluginLife);
+        }
       }
+    }
+  }
+
+  removePlugin(plugin: Plugin<T>) {
+    const pluginName = plugin.name;
+    assert(pluginName, 'Plugin must provide a name');
+    for (const key in this.lifecycle) {
+      this.lifecycle[key].remove(pluginName, plugin[key as string]);
     }
   }
 }

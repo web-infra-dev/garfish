@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 // import { SyncHook, AsyncSeriesBailHook } from '@garfish/hooks';
 import { AppInterface } from '../module/app';
-import { createGlobalLifecycle } from '../hooks/lifecycle';
+import { globalLifecycle } from '../hooks/lifecycle';
 import {
   Loader,
   StyleManager,
@@ -48,12 +48,11 @@ export namespace interfaces {
     version: string;
     running: boolean;
     externals: Record<string, any>;
-    hooks: ReturnType<typeof createGlobalLifecycle>;
     loader: Loader;
     options: Options;
     channel: EventEmitter;
     activeApps: Array<interfaces.App>;
-    plugins: Array<interfaces.Plugin>;
+    hooks: ReturnType<typeof globalLifecycle>;
     cacheApps: Record<string, interfaces.App>;
     appInfos: Record<string, interfaces.AppInfo>;
     loadApp(

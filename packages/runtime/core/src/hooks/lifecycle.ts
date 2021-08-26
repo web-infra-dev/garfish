@@ -1,21 +1,21 @@
-import { SyncHook } from './syncHook';
 import { HooksSystem } from './hooksSystem';
-import { AsyncSeriesBailHook } from './asyncSeriesBailHook';
+import { SyncHook, AsyncHook } from '@garfish/hooks';
 
-export function createGlobalLifecycle(_hasIntercept: boolean) {
-  return new HooksSystem('global', {
+export function globalLifecycle() {
+  const hooks = {
     beforeBootstrap: new SyncHook(),
     bootstrap: new SyncHook(),
     beforeRegisterApp: new SyncHook(),
     registerApp: new SyncHook(),
-    beforeLoad: new AsyncSeriesBailHook(),
+    beforeLoad: new AsyncHook(),
     afterLoad: new SyncHook(),
     errorLoadApp: new SyncHook(),
-  });
+  };
+  return new HooksSystem('global', hooks);
 }
 
-export function createAppLifecycle(_hasIntercept: boolean) {
-  return new HooksSystem('app', {
+export function appLifecycle() {
+  const hooks = {
     beforeEval: new SyncHook(),
     afterEval: new SyncHook(),
     beforeMount: new SyncHook(),
@@ -25,5 +25,6 @@ export function createAppLifecycle(_hasIntercept: boolean) {
     errorMountApp: new SyncHook(),
     errorUnmountApp: new SyncHook(),
     errorExecCode: new SyncHook(),
-  });
+  };
+  return new HooksSystem('app', hooks);
 }

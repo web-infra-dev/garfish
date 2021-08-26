@@ -19,7 +19,7 @@ import {
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
-import { createAppLifecycle } from '../hooks/lifecycle';
+import { appLifecycle } from '../hooks/lifecycle';
 import { SubAppObserver } from '../plugins/performance/subAppObserver';
 
 export type CustomerLoader = (
@@ -58,9 +58,9 @@ export class App {
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
   public appInfo: AppInfo;
+  public hooks = appLifecycle();
   public provider: interfaces.Provider;
   public entryManager: TemplateManager;
-  public hooks = createAppLifecycle(false);
   /** @deprecated */
   public customLoader: CustomerLoader;
   public appPerformance: SubAppObserver;
@@ -88,7 +88,7 @@ export class App {
     this.isHtmlMode = isHtmlMode;
     this.entryManager = entryManager;
 
-    // garfish environment variables
+    // Garfish environment variables
     this.globalEnvVariables = {
       currentApp: this,
       loader: context.loader,
@@ -138,16 +138,16 @@ export class App {
       ...this.getExecScriptEnv(options?.noEntry),
     };
 
-    this.hooks.lifecycle.beforeEval.call(this.appInfo, code, env, url, options);
+    this.hooks.lifecycle.beforeEval.emit(this.appInfo, code, env, url, options);
 
     try {
       this.runCode(code, env, url, options);
     } catch (e) {
-      this.hooks.lifecycle.errorExecCode.call(e, this.appInfo);
+      this.hooks.lifecycle.errorExecCode.emit(e, this.appInfo);
       throw e;
     }
 
-    this.hooks.lifecycle.afterEval.call(this.appInfo, code, env, url, options);
+    this.hooks.lifecycle.afterEval.emit(this.appInfo, code, env, url, options);
   }
 
   // `vm sandbox` can override this method
@@ -202,7 +202,7 @@ export class App {
 
   async mount() {
     if (!this.canMount()) return false;
-    this.hooks.lifecycle.beforeMount.call(this.appInfo, this);
+    this.hooks.lifecycle.beforeMount.emit(this.appInfo, this);
 
     this.active = true;
     this.mounting = true;
@@ -219,13 +219,13 @@ export class App {
       this.display = true;
       this.mounted = true;
       this.context.activeApps.push(this);
-      this.hooks.lifecycle.afterMount.call(this.appInfo, this);
+      this.hooks.lifecycle.afterMount.emit(this.appInfo, this);
 
       await asyncJsProcess;
       if (!this.stopMountAndClearEffect()) return false;
     } catch (err) {
       this.entryManager.DOMApis.removeElement(this.appContainer);
-      this.hooks.lifecycle.errorMountApp.call(err, this.appInfo);
+      this.hooks.lifecycle.errorMountApp.emit(err, this.appInfo);
       return false;
     } finally {
       this.mounting = false;
@@ -244,18 +244,18 @@ export class App {
     }
     // This prevents the unmount of the current app from being called in "provider.destroy"
     this.unmounting = true;
-    this.hooks.lifecycle.beforeUnMount.call(this.appInfo, this);
+    this.hooks.lifecycle.beforeUnMount.emit(this.appInfo, this);
 
     try {
       this.callDestroy(this.provider, true);
       this.display = false;
       this.mounted = false;
       remove(this.context.activeApps, this);
-      this.hooks.lifecycle.afterUnMount.call(this.appInfo, this);
+      this.hooks.lifecycle.afterUnMount.emit(this.appInfo, this);
     } catch (err) {
       remove(this.context.activeApps, this);
       this.entryManager.DOMApis.removeElement(this.appContainer);
-      this.hooks.lifecycle.errorUnmountApp.call(err, this.appInfo);
+      this.hooks.lifecycle.errorUnmountApp.emit(err, this.appInfo);
       return false;
     } finally {
       this.unmounting = false;
@@ -299,7 +299,7 @@ export class App {
                   },
                 );
               } catch (err) {
-                this.hooks.lifecycle.errorMountApp.call(err, this.appInfo);
+                this.hooks.lifecycle.errorMountApp.emit(err, this.appInfo);
               }
             }
           }
