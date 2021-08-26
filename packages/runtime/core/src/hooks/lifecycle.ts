@@ -4,7 +4,6 @@ import { AsyncSeriesBailHook } from './asyncSeriesBailHook';
 
 export function createGlobalLifecycle(_hasIntercept: boolean) {
   return new HooksSystem('global', {
-    // initialize: new SyncHook(),
     beforeBootstrap: new SyncHook(),
     bootstrap: new SyncHook(),
     beforeRegisterApp: new SyncHook(),

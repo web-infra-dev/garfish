@@ -131,7 +131,7 @@ export class Loader {
       .finally(() => {
         loadingList[url] = null;
       })
-      .then(async ({ code, mimeType, result }) => {
+      .then(({ code, mimeType, result }) => {
         let managerCtor, fileType: FileTypes;
 
         if (isModule) {

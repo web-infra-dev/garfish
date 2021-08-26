@@ -147,7 +147,7 @@ function stdioPipe(child) {
 
 function writeToPkgJson(is, write) {
   if (is('package name')) {
-    write(`@garfish/garfish-${app}`);
+    write(`@garfish/${app}`);
   } else if (is('version')) {
     write('');
   } else if (is('description:')) {
