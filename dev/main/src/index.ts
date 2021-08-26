@@ -6,6 +6,11 @@ GarfishInstance.run(Config);
 
 const useRouterMode = true;
 
+GarfishInstance.registerApp({
+  name: 'hello',
+  entry: 'http://baidu.com',
+});
+
 document.getElementById('vueBtn').onclick = async () => {
   if (useRouterMode) {
     history.pushState({}, 'vue', '/garfish_master/vue'); // use router to load app
