@@ -3,10 +3,9 @@ import { warn, error, hasOwn } from '@garfish/utils';
 type Plugin<T extends any> = (result: T) => any;
 
 export class PluginManager<T> {
+  public type: string;
+  public onerror: (errMsg: string | Error) => void = error;
   private plugins: Set<Plugin<T>> = new Set();
-
-  type: string;
-  onerror: (errMsg: string | Error) => void = error;
 
   constructor(type?: string) {
     this.type = type;
