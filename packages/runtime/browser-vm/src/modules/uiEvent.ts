@@ -1,6 +1,6 @@
-import { objectToString, __extends } from '@garfish/utils';
+import { _extends, objectToString } from '@garfish/utils';
 
-__extends(MouseEventPatch, MouseEvent);
+_extends(MouseEventPatch, MouseEvent);
 
 export function MouseEventPatch(
   typeArg: string,

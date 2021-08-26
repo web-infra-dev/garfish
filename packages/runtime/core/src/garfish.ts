@@ -136,10 +136,10 @@ export class Garfish implements interfaces.Garfish {
 
         // Register plugins
         options.plugins?.forEach((pluginCb) => {
-          this.usePlugin(hooks, pluginCb);
+          this.usePlugin(pluginCb);
         });
         // Nested applications have independent life cycles
-        this.usePlugin(hooks, GarfishOptionsLife(options));
+        this.usePlugin(GarfishOptionsLife(options));
 
         if (options.apps) {
           // usage:

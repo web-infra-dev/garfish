@@ -134,6 +134,7 @@ export default function BrowserVm() {
           appInstance.vmSandbox = sandbox;
           appInstance.global = sandbox.global;
           // Rewrite `app.runCode`
+          // @ts-ignore
           appInstance.runCode = (...args) => sandbox.execScript(...args);
 
           // Use sandbox document

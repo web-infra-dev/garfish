@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { SyncHook, AsyncSeriesBailHook } from '@garfish/hooks';
+// import { SyncHook, AsyncSeriesBailHook } from '@garfish/hooks';
 import { AppInterface } from '../module/app';
 import { createGlobalLifecycle } from '../hooks/lifecycle';
 import {
@@ -165,73 +165,95 @@ export namespace interfaces {
 
   export interface Lifecycle {
     // beforeInitialize: SyncHook<Options, void>;
-    initialize: SyncHook<Options, void>;
-    beforeBootstrap: SyncHook<Options, void>;
-    bootstrap: SyncHook<Options, void>;
-    beforeRegisterApp: SyncHook<[AppInfo | Array<AppInfo>], void>;
-    registerApp: SyncHook<[Record<string, interfaces.AppInfo>], void>;
-    beforeLoad: AsyncSeriesBailHook<AppInfo, boolean | void | AppConstructor>; // 根据返回值决定是否继续执行后续代码 or return a constructor
-    initializeApp: AsyncSeriesBailHook<
-      [
-        Garfish,
-        AppInfo,
-        TemplateManagerInterface,
-        interfaces.ResourceModules,
-        boolean,
-      ],
-      App
-    >;
-    afterLoad: SyncHook<[AppInfo, App | void], void | boolean>;
-    processResource: SyncHook<
-      [AppInfo, TemplateManagerInterface, interfaces.ResourceModules],
-      void | boolean
-    >;
-    beforeEval: SyncHook<
-      [
-        AppInfo,
-        string,
-        Record<string, any>,
-        string,
-        { async?: boolean; noEntry?: boolean },
-      ],
-      void
-    >;
-    afterEval: SyncHook<
-      [
-        AppInfo,
-        string,
-        Record<string, any>,
-        string,
-        { async?: boolean; noEntry?: boolean },
-      ],
-      void
-    >;
-    beforeMount: SyncHook<[AppInfo, interfaces.App], void>;
-    afterMount: SyncHook<[AppInfo, interfaces.App], void>;
-    beforeUnMount: SyncHook<[AppInfo, interfaces.App], void>;
-    afterUnMount: SyncHook<[AppInfo, interfaces.App], void>;
-    errorLoadApp: SyncHook<[Error, AppInfo], void>;
-    errorMountApp: SyncHook<[Error, AppInfo], void>;
-    errorUnmountApp: SyncHook<[Error, AppInfo], void>;
-    errorExecCode: SyncHook<[Error, AppInfo], void>;
+    // initialize: SyncHook<Options, void>;
+    // beforeBootstrap: SyncHook<Options, void>;
+    // bootstrap: SyncHook<Options, void>;
+    // beforeRegisterApp: SyncHook<[AppInfo | Array<AppInfo>], void>;
+    // registerApp: SyncHook<[Record<string, interfaces.AppInfo>], void>;
+    // beforeLoad: AsyncSeriesBailHook<AppInfo, boolean | void | AppConstructor>; // 根据返回值决定是否继续执行后续代码 or return a constructor
+    // initializeApp: AsyncSeriesBailHook<
+    //   [
+    //     Garfish,
+    //     AppInfo,
+    //     TemplateManagerInterface,
+    //     interfaces.ResourceModules,
+    //     boolean,
+    //   ],
+    //   App
+    // >;
+    // afterLoad: SyncHook<[AppInfo, App | void], void | boolean>;
+    // processResource: SyncHook<
+    //   [AppInfo, TemplateManagerInterface, interfaces.ResourceModules],
+    //   void | boolean
+    // >;
+    // beforeEval: SyncHook<
+    //   [
+    //     AppInfo,
+    //     string,
+    //     Record<string, any>,
+    //     string,
+    //     { async?: boolean; noEntry?: boolean },
+    //   ],
+    //   void
+    // >;
+    // afterEval: SyncHook<
+    //   [
+    //     AppInfo,
+    //     string,
+    //     Record<string, any>,
+    //     string,
+    //     { async?: boolean; noEntry?: boolean },
+    //   ],
+    //   void
+    // >;
+    // beforeMount: SyncHook<[AppInfo, interfaces.App], void>;
+    // afterMount: SyncHook<[AppInfo, interfaces.App], void>;
+    // beforeUnMount: SyncHook<[AppInfo, interfaces.App], void>;
+    // afterUnMount: SyncHook<[AppInfo, interfaces.App], void>;
+    // errorLoadApp: SyncHook<[Error, AppInfo], void>;
+    // errorMountApp: SyncHook<[Error, AppInfo], void>;
+    // errorUnmountApp: SyncHook<[Error, AppInfo], void>;
+    // errorExecCode: SyncHook<[Error, AppInfo], void>;
+    nitialize: any;
+    beforeBootstrap: any;
+    bootstrap: any;
+    beforeRegisterApp: any;
+    registerApp: any;
+    beforeLoad: any; // 根据返回值决定是否继续执行后续代码 or return a constructor
+    initializeApp: any;
+    afterLoad: any;
+    processResource: any;
+    beforeEval: any;
+    afterEval: any;
+    beforeMount: any;
+    afterMount: any;
+    beforeUnMount: any;
+    afterUnMount: any;
+    errorLoadApp: any;
+    errorMountApp: any;
+    errorUnmountApp: any;
+    errorExecCode: any;
   }
 
-  type ConstructorParameters<T> = T extends SyncHook<any, any>
-    ? T extends {
-        tap: (options: any, fn: (...args: infer P) => infer R) => any;
-      }
-      ? (...args: P) => R
-      : never
-    : T extends {
-        tapPromise: (options: any, fn: (...args: infer A) => infer AR) => any;
-      }
-    ? (...args: A) => AR
-    : never;
+  // type ConstructorParameters<T> = T extends SyncHook<any, any>
+  //   ? T extends {
+  //       tap: (options: any, fn: (...args: infer P) => infer R) => any;
+  //     }
+  //     ? (...args: P) => R
+  //     : never
+  //   : T extends {
+  //       tapPromise: (options: any, fn: (...args: infer A) => infer AR) => any;
+  //     }
+  //   ? (...args: A) => AR
+  //   : never;
+
+  // type PickParam<T> = {
+  //   [k in keyof T]: ConstructorParameters<T[k]>;
+  // };
 
   type PickParam<T> = {
-    [k in keyof T]: ConstructorParameters<T[k]>;
+    [k in keyof T]: any;
   };
-
   export interface Plugin extends PickParam<Partial<interfaces.Lifecycle>> {
     name: string;
     version?: string;
