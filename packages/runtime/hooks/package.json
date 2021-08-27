@@ -1,6 +1,6 @@
 {
   "name": "@garfish/hooks",
-  "version": "0.0.52",
+  "version": "0.0.53-0.0.59-alpha.0.0",
   "description": "hooks module.",
   "keywords": [
     "garfish",
@@ -30,7 +30,6 @@
       "umd"
     ]
   },
-  "dependencies": {},
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   }
