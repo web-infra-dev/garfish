@@ -49,7 +49,7 @@ export default function Router(_args?: Options) {
       bootstrap(options: interfaces.Options) {
         let activeApp = null;
         const unmounts: Record<string, Function> = {};
-        const { apps, basename } = options;
+        const { basename } = options;
         const {
           autoRefreshApp = true,
           onNotMatchRouter = () => null,
@@ -112,6 +112,10 @@ export default function Router(_args?: Options) {
             });
           }
         }
+
+        const apps = Object.keys(Garfish.appInfos).map((key) => {
+          return Garfish.appInfos[key];
+        });
 
         const appList = apps.filter((app) => {
           if (!app.basename) app.basename = basename;

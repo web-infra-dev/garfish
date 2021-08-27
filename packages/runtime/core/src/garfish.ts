@@ -206,9 +206,13 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
       delete (options as Partial<interfaces.LoadAppOptions>).props;
 
       appInfo = deepMerge(tempInfo, options);
-      appInfo.props = hasOwn(originOpts, 'props')
-        ? originOpts.props
-        : this.options.props;
+      // If the options there is no use global props, props then with appInfo. Props to merge
+      appInfo.props = {
+        ...(appInfo.props || {}),
+        ...((hasOwn(originOpts, 'props')
+          ? originOpts.props
+          : this.options.props) || {}),
+      };
       appInfo.hooks = hasOwn(tempInfo, 'hooks') ? tempInfo.hooks : null;
     } else if (typeof options === 'string') {
       // `Garfish.loadApp('appName', 'https://xx.html');`

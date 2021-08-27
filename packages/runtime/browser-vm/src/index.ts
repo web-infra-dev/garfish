@@ -92,6 +92,7 @@ export default function BrowserVm() {
         const sandboxConfig = appInfo.sandbox || Garfish?.options?.sandbox;
         if (sandboxConfig === false || sandboxConfig.open === false) {
           config.openSandbox = false;
+          options.openVm = false;
           return;
         }
 
