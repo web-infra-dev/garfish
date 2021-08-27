@@ -14,7 +14,7 @@ export class SyncHook {
     if (typeof fn === 'function') {
       this.listeners.add(fn);
     } else if (__DEV__) {
-      warn('Invalid parameter');
+      warn('Invalid parameter in "Hook".');
     }
   }
 

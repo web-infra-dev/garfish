@@ -13,7 +13,7 @@ export class LoaderPlugin<T> {
 
   on(plugin: Plugin<T>) {
     if (this.plugins.has(plugin)) {
-      __DEV__ && warn('Repeat add plugin');
+      __DEV__ && warn('Repeat add plugin.');
       return;
     }
     this.plugins.add(plugin);

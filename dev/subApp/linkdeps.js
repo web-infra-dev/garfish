@@ -5,8 +5,8 @@ const { exec } = require('child_process');
   '@garfish/router',
   '@garfish/browser-snapshot',
   '@garfish/browser-vm',
-  '@garfish/core',
   '@garfish/loader',
+  '@garfish/hooks',
   '@garfish/remote-module',
 ].forEach((item) => {
   console.log(`link ${item}`);
