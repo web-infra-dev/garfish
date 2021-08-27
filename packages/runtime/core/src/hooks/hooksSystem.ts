@@ -9,7 +9,7 @@ export class HooksSystem<T extends Record<string, SyncHook | AsyncHook>> {
   type: string;
   lifecycle: T;
   lifecycleKeys: Array<keyof T>;
-  registerPlugins = new WeakSet<Plugin<T>>();
+  private registerPlugins = new WeakSet<Plugin<T>>();
 
   constructor(type: string, lifecycle: T) {
     this.type = type;

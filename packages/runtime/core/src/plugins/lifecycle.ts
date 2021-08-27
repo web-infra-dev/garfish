@@ -2,7 +2,7 @@ import { lifecycle } from '../config';
 import { interfaces } from '../interface';
 
 export function GarfishOptionsLife(options) {
-  return function (_Garfish: interfaces.Garfish): interfaces.Plugin {
+  return function (): interfaces.Plugin {
     const plugin = {
       name: 'default-life',
       version: __VERSION__,

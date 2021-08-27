@@ -37,7 +37,6 @@ export class Garfish implements interfaces.Garfish {
   public cacheApps: Record<string, interfaces.App> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
 
-  private plugins = new WeakSet();
   private allApps: WeakSet<interfaces.App> = new WeakSet();
   private loading: Record<string, Promise<any> | null> = {};
 
@@ -116,9 +115,9 @@ export class Garfish implements interfaces.Garfish {
       return this;
     }
     (plugin as any)._registered = true;
-    const res = plugin.apply(this, [this, ...args]);
-    this.plugins.add(res);
-    return this.hooks.usePlugin(res);
+    const allHooks = plugin.apply(this, [this, ...args]);
+    // Distinguish between xx and xxx, in order to be compatible with the old api
+    return this.hooks.usePlugin(allHooks);
   }
 
   run(options?: interfaces.Options) {
