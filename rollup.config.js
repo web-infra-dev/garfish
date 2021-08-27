@@ -114,21 +114,19 @@ function allExternal() {
 }
 
 function extractTsDeclare() {
-  let outputoptions;
   let pkgDir = '';
   let pkgName = '';
   return {
     name: 'garfish-extractTsDeclare',
     options(op) {
-      outputoptions = op;
       pkgDir = op.input.replace('/src/index.ts', '');
-      let splitPkg = pkgDir.split('/');
+      const splitPkg = pkgDir.split('/');
       pkgName = splitPkg[splitPkg.length - 1];
     },
     writeBundle() {
       if (!pkgName) return;
 
-      let tsTypeDir = path.resolve(
+      const tsTypeDir = path.resolve(
         pkgDir,
         `dist/packages/runtime/${pkgName}/src`,
       );
@@ -137,21 +135,12 @@ function extractTsDeclare() {
         if (!fs.existsSync(tsTypeDir)) return;
         fs.copySync(
           path.resolve(pkgDir, tsTypeDir),
-          path.resolve(pkgDir, `dist/`),
+          path.resolve(pkgDir, 'dist/'),
           {
             overwrite: true,
           },
         );
       }, 1000);
-      // setTimeout(() => {
-      //   const args = require('minimist')(process.argv.slice(2));
-      //   const watch = args.watch || args.w;
-      //   // if (!watch) {
-      //   fs.remove(path.resolve(pkgDir, `dist/packages`));
-      //   fs.remove(path.resolve(pkgDir, `dist/dist`));
-      //   fs.remove(path.resolve(pkgDir, `temp`));
-      //   // }
-      // }, 3000);
     },
   };
 }

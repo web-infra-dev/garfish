@@ -1,18 +1,16 @@
-import { assert, isObject } from '@garfish/utils';
 import { SyncHook, AsyncHook } from '@garfish/hooks';
+import { assert, isPlainObject } from '@garfish/utils';
 
 type Plugin<T> = Partial<Record<keyof T, (...args: Array<any>) => void>> & {
   name: string;
 };
 
 export class HooksSystem<T extends Record<string, SyncHook | AsyncHook>> {
-  type: string;
   lifecycle: T;
   lifecycleKeys: Array<keyof T>;
   private registerPlugins = new WeakSet<Plugin<T>>();
 
-  constructor(type: string, lifecycle: T) {
-    this.type = type;
+  constructor(lifecycle: T) {
     this.lifecycle = lifecycle;
     this.lifecycleKeys = Object.keys(lifecycle);
   }
@@ -21,7 +19,7 @@ export class HooksSystem<T extends Record<string, SyncHook | AsyncHook>> {
     // Plugin name is required and unique
     const pluginName = plugin.name;
     assert(pluginName, 'Plugin must provide a name');
-    assert(isObject(plugin), 'Plugin must return object type.');
+    assert(isPlainObject(plugin), 'Plugin must return object type.');
 
     if (!this.registerPlugins.has(plugin)) {
       this.registerPlugins.add(plugin);
@@ -30,17 +28,16 @@ export class HooksSystem<T extends Record<string, SyncHook | AsyncHook>> {
         const pluginLife = plugin[key as string];
         if (pluginLife) {
           // Differentiate different types of hooks and adopt different registration strategies
-          this.lifecycle[key].on(pluginName, pluginLife);
+          this.lifecycle[key].on(pluginLife);
         }
       }
     }
   }
 
   removePlugin(plugin: Plugin<T>) {
-    const pluginName = plugin.name;
-    assert(pluginName, 'Plugin must provide a name');
-    for (const key in this.lifecycle) {
-      this.lifecycle[key].remove(pluginName, plugin[key as string]);
+    assert(isPlainObject(plugin), 'Invalid plugin configuration');
+    for (const key in plugin) {
+      this.lifecycle[key].remove(plugin[key as string]);
     }
   }
 }

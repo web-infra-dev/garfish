@@ -3,49 +3,40 @@ import { warn } from '@garfish/utils';
 type Callback = (...args: Array<any>) => void;
 
 export class SyncHook {
-  public type: string = '';
-  public hooks: Array<{ name: string; fn: Callback }> = [];
+  type: string = '';
+  listeners = new Set<Callback>();
 
   constructor(type?: string) {
     if (type) this.type = type;
   }
 
-  on(name: string, fn: Callback) {
-    if (typeof name === 'string' && typeof fn === 'function') {
-      this.hooks.push({ name, fn });
+  on(fn: Callback) {
+    if (typeof fn === 'function') {
+      this.listeners.add(fn);
     } else if (__DEV__) {
       warn('Invalid parameter');
     }
   }
 
-  once(name: string, fn: Callback) {
+  once(fn: Function) {
     const self = this;
-    this.on(name, function wrapper(...args: Array<any>) {
-      self.remove(name, wrapper);
+    this.on(function wrapper(...args: Array<any>) {
+      self.remove(wrapper);
       fn(...args);
     });
   }
 
   emit(...data: Array<any>) {
-    if (this.hooks.length > 0) {
-      this.hooks.forEach((hook) => hook.fn.apply(null, data));
+    if (this.listeners.size > 0) {
+      this.listeners.forEach((fn) => fn.apply(null, data));
     }
   }
 
-  remove(name: string, fn: Callback) {
-    for (let i = 0; i < this.hooks.length; i++) {
-      const hook = this.hooks[i];
-      if (name === hook.name) {
-        if (fn && fn !== hook.fn) {
-          continue;
-        }
-        this.hooks.splice(i, 1);
-        i--;
-      }
-    }
+  remove(fn: Callback) {
+    return this.listeners.delete(fn);
   }
 
   removeAll() {
-    this.hooks.length = 0;
+    this.listeners.clear();
   }
 }

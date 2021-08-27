@@ -33,11 +33,11 @@ export class Garfish implements interfaces.Garfish {
   public channel = new EventEmitter();
   public options = createDefaultOptions();
   public externals: Record<string, any> = {};
+  public appInfos: Record<string, interfaces.AppInfo> = {};
   public activeApps: Array<interfaces.App> = [];
   public cacheApps: Record<string, interfaces.App> = {};
-  public appInfos: Record<string, interfaces.AppInfo> = {};
 
-  private allApps: WeakSet<interfaces.App> = new WeakSet();
+  private registeredPlugins = new WeakSet();
   private loading: Record<string, Promise<any> | null> = {};
 
   get props(): Record<string, any> {
@@ -110,14 +110,24 @@ export class Garfish implements interfaces.Garfish {
     ...args: Array<any>
   ) {
     assert(typeof plugin === 'function', 'Plugin must be a function.');
-    if ((plugin as any)._registered) {
+    if (this.registeredPlugins.has(plugin)) {
       __DEV__ && warn('Please do not register the plugin repeatedly.');
       return this;
     }
-    (plugin as any)._registered = true;
-    const allHooks = plugin.apply(this, [this, ...args]);
-    // Distinguish between xx and xxx, in order to be compatible with the old api
-    return this.hooks.usePlugin(allHooks);
+    this.registeredPlugins.add(plugin);
+    const pluginConfig = plugin.apply(this, [this, ...args]);
+
+    // Register app hooks, Compatible with the old api
+    this.activeApps.forEach((app) => app.hooks.usePlugin(pluginConfig));
+    for (const key in this.cacheApps) {
+      const app = this.cacheApps[key];
+      if (!this.activeApps.includes(app)) {
+        app.hooks.usePlugin(pluginConfig);
+      }
+    }
+    // Register global hooks
+    this.hooks.usePlugin(pluginConfig);
+    return this;
   }
 
   run(options?: interfaces.Options) {
@@ -204,6 +214,7 @@ export class Garfish implements interfaces.Garfish {
     } else {
       this.externals[nameOrExtObj] = value;
     }
+    return this;
   }
 
   async loadApp(
@@ -270,8 +281,9 @@ export class Garfish implements interfaces.Garfish {
             this.options.customLoader,
           );
 
-          this.allApps.add(appInstance);
-          this.cacheApps[appName] = appInstance;
+          if (appInfo.cache) {
+            this.cacheApps[appName] = appInstance;
+          }
         } catch (e) {
           __DEV__ && error(e);
           this.hooks.lifecycle.errorLoadApp.emit(e, appInfo);

@@ -1,5 +1,3 @@
-const path = require('path');
-const os = require('os');
 const lernaPublish = require('@lerna/publish');
 
 const opts = {
@@ -17,8 +15,7 @@ const opts = {
 };
 
 function publish(canary) {
-  // eslint-disable-next-line no-console
-  console.log(`publish ${canary ? `测试版本` : `正式版本`}\n`);
+  console.log(`publish ${canary ? '测试版本' : '正式版本'}\n`);
 
   return lernaPublish({
     ...opts,
