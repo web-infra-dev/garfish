@@ -49,7 +49,7 @@ export default function Router(_args?: Options) {
       bootstrap(options: interfaces.Options) {
         let activeApp = null;
         const unmounts: Record<string, Function> = {};
-        const { apps, basename } = options;
+        const { basename } = options;
         const {
           autoRefreshApp = true,
           onNotMatchRouter = () => null,
@@ -113,6 +113,8 @@ export default function Router(_args?: Options) {
           }
         }
 
+        const apps = Object.values(Garfish.appInfos);
+
         const appList = apps.filter((app) => {
           if (!app.basename) app.basename = basename;
           return !!app.activeWhen;
@@ -136,9 +138,7 @@ export default function Router(_args?: Options) {
         // Has been running after adding routing to trigger the redirection
         if (!Garfish.running) return;
 
-        const appList = Object.keys(appInfos).map((key) => {
-          return appInfos[key];
-        });
+        const appList = Object.values(appInfos);
 
         router.registerRouter(appList.filter((app) => !!app.activeWhen));
 
