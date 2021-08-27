@@ -112,5 +112,5 @@
     "wait-on": "^6.0.0",
     "workspace-tools": "^0.16.2"
   },
-  "version": "0.0.34"
+  "version": "0.0.58"
 }

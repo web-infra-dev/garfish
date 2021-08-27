@@ -113,9 +113,7 @@ export default function Router(_args?: Options) {
           }
         }
 
-        const apps = Object.keys(Garfish.appInfos).map((key) => {
-          return Garfish.appInfos[key];
-        });
+        const apps = Object.values(Garfish.appInfos);
 
         const appList = apps.filter((app) => {
           if (!app.basename) app.basename = basename;
@@ -140,9 +138,7 @@ export default function Router(_args?: Options) {
         // Has been running after adding routing to trigger the redirection
         if (!Garfish.running) return;
 
-        const appList = Object.keys(appInfos).map((key) => {
-          return appInfos[key];
-        });
+        const appList = Object.values(appInfos);
 
         router.registerRouter(appList.filter((app) => !!app.activeWhen));
 
