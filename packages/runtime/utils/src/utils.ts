@@ -308,10 +308,9 @@ export function isAbsolute(url: string) {
 }
 
 export function transformUrl(resolvePath: string, curPath: string) {
-  // const baseUrl = new URL(resolvePath, location.href);
-  // const realPath = new URL(curPath, baseUrl.href);
-  // return realPath.href;
-  return curPath;
+  const baseUrl = new URL(resolvePath, location.href);
+  const realPath = new URL(curPath, baseUrl.href);
+  return realPath.href;
 }
 
 export function findTarget(

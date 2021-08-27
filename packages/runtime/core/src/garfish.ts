@@ -21,7 +21,7 @@ import { GarfishOptionsLife } from './plugins/lifecycle';
 import { GarfishPreloadPlugin } from './plugins/preload';
 import { GarfishPerformance } from './plugins/performance';
 
-export class Garfish implements interfaces.Garfish {
+export class Garfish extends EventEmitter implements interfaces.Garfish {
   public hooks: Hooks;
   public loader: Loader;
   public running = false;
@@ -41,6 +41,8 @@ export class Garfish implements interfaces.Garfish {
   }
 
   constructor(options: interfaces.Options) {
+    super();
+
     this.hooks = new Hooks(false);
     this.loader = new Loader();
 

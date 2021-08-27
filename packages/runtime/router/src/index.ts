@@ -115,7 +115,7 @@ export default function Router(_args?: Options) {
 
         const appList = apps.filter((app) => {
           if (!app.basename) app.basename = basename;
-          return app.activeWhen !== null && app.activeWhen !== undefined;
+          return !!app.activeWhen;
         }) as Array<Required<interfaces.AppInfo>>;
 
         if (appList.length === 0) return;
@@ -139,7 +139,8 @@ export default function Router(_args?: Options) {
         const appList = Object.keys(appInfos).map((key) => {
           return appInfos[key];
         });
-        router.registerRouter(appList);
+
+        router.registerRouter(appList.filter((app) => !!app.activeWhen));
 
         // After completion of the registration application, trigger application mount
         initRedirect();
