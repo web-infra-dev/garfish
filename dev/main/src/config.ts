@@ -25,7 +25,7 @@ let defaultConfig: interfaces.Options = {
     },
     {
       name: 'vue2',
-      // activeWhen: '/vue2',
+      activeWhen: '/vue2',
       // cache: true,
       entry: 'http://localhost:2777',
     },
