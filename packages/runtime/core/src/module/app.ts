@@ -244,14 +244,14 @@ export class App {
     }
     // This prevents the unmount of the current app from being called in "provider.destroy"
     this.unmounting = true;
-    this.hooks.lifecycle.beforeUnMount.emit(this.appInfo, this);
+    this.hooks.lifecycle.beforeUnmount.emit(this.appInfo, this);
 
     try {
       this.callDestroy(this.provider, true);
       this.display = false;
       this.mounted = false;
       remove(this.context.activeApps, this);
-      this.hooks.lifecycle.afterUnMount.emit(this.appInfo, this);
+      this.hooks.lifecycle.afterUnmount.emit(this.appInfo, this);
     } catch (err) {
       remove(this.context.activeApps, this);
       this.entryManager.DOMApis.removeElement(this.appContainer);

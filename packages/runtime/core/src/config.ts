@@ -3,7 +3,7 @@ import { interfaces } from './interface';
 
 // Because of the addition of nested scenes, the configuration merging is too complicated
 export const lifecycle: Array<Exclude<
-  keyof interfaces.HooksLifecycle,
+  keyof interfaces.GlobalLifecycle,
   'customLoader'
 >> = [
   'beforeLoad',

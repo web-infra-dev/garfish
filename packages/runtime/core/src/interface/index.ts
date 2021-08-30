@@ -1,7 +1,5 @@
 import { EventEmitter } from 'events';
-// import { SyncHook, AsyncSeriesBailHook } from '@garfish/hooks';
-import { AppInterface } from '../module/app';
-import { globalLifecycle } from '../hooks/lifecycle';
+import { SyncHook, AsyncHook } from '@garfish/hooks';
 import {
   Loader,
   StyleManager,
@@ -9,6 +7,8 @@ import {
   TemplateManager,
   JavaScriptManager,
 } from '@garfish/loader';
+import { AppInterface } from '../module/app';
+import { appLifecycle, globalLifecycle } from '../hooks/lifecycle';
 
 export namespace interfaces {
   export type DomGetter =
@@ -42,6 +42,11 @@ export namespace interfaces {
     activeWhen?: string | ((path: string) => boolean);
     hooks?: Hooks;
   }
+
+  export interface StyleManagerInterface extends StyleManager {}
+  export interface ModuleManagerInterface extends ModuleManager {}
+  export interface TemplateManagerInterface extends TemplateManager {}
+  export interface JavaScriptManagerInterface extends JavaScriptManager {}
 
   export interface Garfish {
     flag: symbol;
@@ -114,7 +119,7 @@ export namespace interfaces {
     options: { async?: boolean; noEntry?: boolean },
   ) => void;
 
-  export interface HooksLifecycle {
+  export interface GlobalLifecycle {
     beforeLoad?: LoadLifeCycleFn<Promise<void | boolean> | void | boolean>;
     afterLoad?: LoadLifeCycleFn<Promise<void> | void>;
     beforeMount?: MountLifeCycleFn;
@@ -126,6 +131,7 @@ export namespace interfaces {
     errorLoadApp?: (err: Error | string, appInfo: AppInfo) => void;
     errorMountApp?: (err: Error | string, appInfo: AppInfo) => void;
     errorUnmountApp?: (err: Error | string, appInfo: AppInfo) => void;
+    errorExecCode?: (err: Error | string, appInfo: AppInfo) => void;
     /** @deprecated */
     customLoader?: (
       provider: Provider,
@@ -134,17 +140,21 @@ export namespace interfaces {
     ) => Promise<LoaderResult | void> | LoaderResult | void;
   }
 
-  export interface StyleManagerInterface extends StyleManager {}
-  export interface ModuleManagerInterface extends ModuleManager {}
-  export interface TemplateManagerInterface extends TemplateManager {}
-  export interface JavaScriptManagerInterface extends JavaScriptManager {}
-
-  export type Options = Config & HooksLifecycle;
-
-  export type LoadAppOptions = Pick<AppInfo, Exclude<keyof AppInfo, 'name'>> & {
-    entry?: string;
-    domGetter: DomGetter;
+  export type AppLifecycle = Pick<
+    GlobalLifecycle,
+    keyof ReturnType<typeof appLifecycle>['lifecycle']
+  >;
+  export type AppConfig = Pick<
+    Config,
+    'domGetter' | 'sandbox' | 'props' | 'basename' | 'protectVariable'
+  > & {
+    name: string;
+    entry: string;
+    cache?: boolean;
   };
+
+  export type Options = Config & GlobalLifecycle;
+  export type LoadAppOptions = AppConfig & AppLifecycle;
 
   export interface ResourceModules {
     js: Array<JavaScriptManager>;

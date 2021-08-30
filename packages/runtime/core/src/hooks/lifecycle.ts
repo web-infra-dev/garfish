@@ -19,9 +19,9 @@ export function appLifecycle() {
     afterEval: new SyncHook(),
     beforeMount: new SyncHook(),
     afterMount: new SyncHook(),
-    beforeUnMount: new SyncHook(),
-    afterUnMount: new SyncHook(),
     errorMountApp: new SyncHook(),
+    beforeUnmount: new SyncHook(),
+    afterUnmount: new SyncHook(),
     errorUnmountApp: new SyncHook(),
     errorExecCode: new SyncHook(),
   });

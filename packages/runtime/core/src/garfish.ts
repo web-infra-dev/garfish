@@ -24,6 +24,8 @@ import { GarfishOptionsLife } from './plugins/lifecycle';
 import { GarfishPreloadPlugin } from './plugins/preload';
 import { GarfishPerformance } from './plugins/performance';
 
+const DEFAULT_PROPS = new WeakMap();
+
 export class Garfish implements interfaces.Garfish {
   public running = false;
   public version = __VERSION__;
@@ -37,28 +39,26 @@ export class Garfish implements interfaces.Garfish {
   public activeApps: Array<interfaces.App> = [];
   public cacheApps: Record<string, interfaces.App> = {};
 
-  private registeredPlugins = new WeakSet();
+  private registeredPlugins = new Set();
   private loading: Record<string, Promise<any> | null> = {};
 
   get props(): Record<string, any> {
-    return (this.options && this.options.props) || {};
+    return (this.options && this.options.props) || DEFAULT_PROPS.get(this);
   }
 
   constructor(options: interfaces.Options) {
+    DEFAULT_PROPS.set(this, {});
     this.setOptions(options);
     options?.plugins?.forEach((plugin) => this.usePlugin(plugin));
   }
 
-  private injectOptionalPlugin(options?: interfaces.Options) {
-    const defaultPlugins = [
-      GarfishHMRPlugin(),
-      GarfishOptionsLife(options),
-      GarfishPerformance(),
-    ];
+  private registerDefaultPlugin(options?: interfaces.Options) {
+    this.usePlugin(GarfishHMRPlugin());
+    this.usePlugin(GarfishOptionsLife(options));
+    this.usePlugin(GarfishPerformance());
     if (!options.disablePreloadApp) {
-      defaultPlugins.push(GarfishPreloadPlugin());
+      this.usePlugin(GarfishPreloadPlugin());
     }
-    defaultPlugins.forEach((plugin) => this.usePlugin(plugin));
   }
 
   private async mergeAppOptions(
@@ -162,13 +162,14 @@ export class Garfish implements interfaces.Garfish {
       }
     }
 
-    // register plugins
+    this.setOptions(options);
+
+    // Register plugins
+    this.registerDefaultPlugin(this.options);
     options?.plugins?.forEach((plugin) => this.usePlugin(plugin, this));
 
+    // Emit hooks
     this.hooks.lifecycle.beforeBootstrap.emit(this.options);
-    this.setOptions(options);
-    this.injectOptionalPlugin(this.options);
-    // register apps
     this.registerApp(options.apps || []);
     this.running = true;
     this.hooks.lifecycle.bootstrap.emit(this.options);
