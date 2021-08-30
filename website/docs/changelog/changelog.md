@@ -1,7 +1,9 @@
-# Change Log
-
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+---
+title: 更新日志
+slug: /changelog
+collapsed: false
+order: 1
+---
 
 ## [0.0.59](https://github.com/modern-js-dev/garfish/compare/v0.0.58...v0.0.59) (2021-08-30)
 
@@ -30,9 +32,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 - child element had be delete can't repeat delete ([e57e817](https://github.com/modern-js-dev/garfish/commit/e57e817b006e33e075d3e5bf88b025aff2725f33))
 
-## [0.0.52](https://github.com/modern-js-dev/garfish/compare/v0.0.51...v0.0.52) (2021-08-23)
-
-## [0.0.51](https://github.com/modern-js-dev/garfish/compare/v0.0.50...v0.0.51) (2021-08-23)
+## [0.0.52](https://github.com/modern-js-dev/garfish/compare/v0.0.50...v0.0.52) (2021-08-23)
 
 ### Bug Fixes
 
@@ -44,9 +44,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 - can't set history scrollRestoration ([f26125d](https://github.com/modern-js-dev/garfish/commit/f26125de650198a93e2742f1de687c7b531febc9))
 
-## [0.0.47](https://github.com/modern-js-dev/garfish/compare/v0.0.46...v0.0.47) (2021-08-17)
-
-## [0.0.46](https://github.com/modern-js-dev/garfish/compare/v0.0.45...v0.0.46) (2021-08-17)
+## [0.0.47](https://github.com/modern-js-dev/garfish/compare/v0.0.45...v0.0.47) (2021-08-17)
 
 ### Bug Fixes
 
