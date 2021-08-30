@@ -8,7 +8,7 @@ type Plugin<T> = Partial<Record<keyof T, (...args: Array<any>) => void>> & {
 export class HooksSystem<T extends Record<string, SyncHook | AsyncHook>> {
   lifecycle: T;
   lifecycleKeys: Array<keyof T>;
-  private registerPlugins = new WeakSet<Plugin<T>>();
+  private registerPlugins: Record<string, Plugin<T>> = {};
 
   constructor(lifecycle: T) {
     this.lifecycle = lifecycle;
@@ -21,8 +21,8 @@ export class HooksSystem<T extends Record<string, SyncHook | AsyncHook>> {
     assert(pluginName, 'Plugin must provide a name');
     assert(isPlainObject(plugin), 'Plugin must return object type.');
 
-    if (!this.registerPlugins.has(plugin)) {
-      this.registerPlugins.add(plugin);
+    if (!this.registerPlugins[pluginName]) {
+      this.registerPlugins[pluginName] = plugin;
 
       for (const key in this.lifecycle) {
         const pluginLife = plugin[key as string];

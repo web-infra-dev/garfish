@@ -126,9 +126,9 @@ export class SubAppObserver {
     this._subAppStartObserver();
   }
 
-  subAppUnMount() {
+  subAppUnmount() {
     if (!this.isRecordFinish) {
-      this._subAppEndObserver('SubAppUnMount');
+      this._subAppEndObserver('subAppUnmount');
     }
     this._handleSubscribeCallback(true);
   }

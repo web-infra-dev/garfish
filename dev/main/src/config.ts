@@ -34,7 +34,7 @@ let defaultConfig: interfaces.Options = {
   disablePreloadApp: true,
   protectVariable: ['MonitoringInstance', 'Garfish'],
   sandbox: {
-    open: false,
+    open: true,
   },
 };
 

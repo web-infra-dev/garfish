@@ -237,8 +237,8 @@ export namespace interfaces {
     afterEval: any;
     beforeMount: any;
     afterMount: any;
-    beforeUnMount: any;
-    afterUnMount: any;
+    beforeUnmount: any;
+    afterUnmount: any;
     errorLoadApp: any;
     errorMountApp: any;
     errorUnmountApp: any;

@@ -39,7 +39,7 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
   public activeApps: Array<interfaces.App> = [];
   public cacheApps: Record<string, interfaces.App> = {};
 
-  private registeredPlugins = new Set();
+  private registeredPlugins = {};
   private loading: Record<string, Promise<any> | null> = {};
 
   get props(): Record<string, any> {
@@ -66,23 +66,26 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
     ...args: Array<any>
   ) {
     assert(typeof plugin === 'function', 'Plugin must be a function.');
-    if (this.registeredPlugins.has(plugin)) {
-      __DEV__ && warn('Please do not register the plugin repeatedly.');
-      return this;
-    }
-    this.registeredPlugins.add(plugin);
-    const pluginConfig = plugin.apply(this, [this, ...args]);
+    args.unshift(this);
+    const pluginConfig = plugin.apply(null, args) as interfaces.Plugin;
+    assert(pluginConfig.name, 'The plugin must have a name.');
 
-    // Register app hooks, Compatible with the old api
-    this.activeApps.forEach((app) => app.hooks.usePlugin(pluginConfig));
-    for (const key in this.cacheApps) {
-      const app = this.cacheApps[key];
-      if (!this.activeApps.includes(app)) {
-        app.hooks.usePlugin(pluginConfig);
+    if (!this.registeredPlugins[pluginConfig.name]) {
+      this.registeredPlugins[pluginConfig.name] = pluginConfig;
+
+      // Register app hooks, Compatible with the old api
+      this.activeApps.forEach((app) => app.hooks.usePlugin(pluginConfig));
+      for (const key in this.cacheApps) {
+        const app = this.cacheApps[key];
+        if (!this.activeApps.includes(app)) {
+          app.hooks.usePlugin(pluginConfig);
+        }
       }
+      // Register global hooks
+      this.hooks.usePlugin(pluginConfig);
+    } else if (__DEV__) {
+      warn('Please do not register the plugin repeatedly.');
     }
-    // Register global hooks
-    this.hooks.usePlugin(pluginConfig);
     return this;
   }
 
@@ -243,8 +246,13 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
             this.options.customLoader,
           );
 
+          // Cache app
           if (appInfo.cache) {
             this.cacheApps[appName] = appInstance;
+          }
+          // Register plugins
+          for (const key in this.registeredPlugins) {
+            appInstance.hooks.usePlugin(this.registeredPlugins[key]);
           }
         } catch (e) {
           __DEV__ && error(e);
