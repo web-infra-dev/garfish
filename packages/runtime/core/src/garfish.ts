@@ -50,7 +50,7 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
     super();
     DEFAULT_PROPS.set(this, {});
     this.setOptions(options);
-    options?.plugins?.forEach((plugin) => this.usePlugin(plugin));
+    this.options.plugins?.forEach((plugin) => this.usePlugin(plugin));
   }
 
   private setOptions(options: Partial<interfaces.Options>) {
@@ -86,37 +86,36 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
     return this;
   }
 
-  run(options?: interfaces.Options) {
+  run(options: interfaces.Options = {}) {
     if (this.running) {
       // Nested scene can be repeated registration application
       if (options.nested) {
-        const nestedHooks = globalLifecycle();
         const mainOptions = createDefaultOptions(true);
         options = deepMergeConfig(mainOptions, options);
         options = filterNestedConfig(options);
 
-        // Register plugins
-        options.plugins?.forEach((plugin) => this.usePlugin(plugin));
-
-        // Nested applications have independent life cycles
-        nestedHooks.usePlugin(GarfishOptionsLife(options));
+        // Isolate global app hooks
+        this.hooks.usePlugin(GarfishOptionsLife(options));
+        // Register plugins, nested applications have independent life cycles
+        options.plugins?.forEach((plugin) =>
+          this.hooks.usePlugin(plugin(this)),
+        );
 
         if (options.apps) {
-          // Usage:
-          //  `Garfish.run({ apps: [{ props: Garfish.props }] })`
           this.registerApp(
-            options.apps.map((app) => {
-              const appConf = deepMergeConfig(options, app);
-              appConf.hooks = nestedHooks;
+            options.apps.map((appInfo) => {
+              const appConf = deepMergeConfig(options, appInfo);
+              appConf.nested = true;
+              // Now we only allow the same sandbox configuration to be used globally
               appConf.sandbox = this.options.sandbox;
               return appConf;
             }),
           );
         }
-        return this;
       } else if (__DEV__) {
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
       }
+      return this;
     }
 
     this.setOptions(options);
@@ -125,10 +124,10 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
     this.usePlugin(GarfishHMRPlugin());
     this.usePlugin(GarfishOptionsLife(this.options));
     this.usePlugin(GarfishPerformance());
-    if (!options.disablePreloadApp) {
+    if (!this.options.disablePreloadApp) {
       this.usePlugin(GarfishPreloadPlugin());
     }
-    options?.plugins?.forEach((plugin) => this.usePlugin(plugin, this));
+    options.plugins?.forEach((plugin) => this.usePlugin(plugin, this));
 
     // Emit hooks and register apps
     this.hooks.lifecycle.beforeBootstrap.emit(this.options);
@@ -142,21 +141,22 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
     this.hooks.lifecycle.beforeRegisterApp.emit(list);
     const currentAdds = {};
     if (!Array.isArray(list)) list = [list];
-    for (let info of list) {
-      assert(info.name, 'Miss app.name.');
-      if (!this.appInfos[info.name]) {
+    for (let appInfo of list) {
+      assert(appInfo.name, 'Miss app.name.');
+      if (!this.appInfos[appInfo.name]) {
         assert(
-          info.entry,
-          `${info.name} application entry is not url: ${info.entry}`,
+          appInfo.entry,
+          `${appInfo.name} application entry is not url: ${appInfo.entry}`,
         );
+
         // Deep merge this.options
-        if (!info.nested) {
-          info = deepMergeConfig(this.options, info);
+        if (!appInfo.nested) {
+          appInfo = deepMergeConfig(this.options, appInfo);
         }
-        currentAdds[info.name] = info;
-        this.appInfos[info.name] = info;
+        currentAdds[appInfo.name] = appInfo;
+        this.appInfos[appInfo.name] = appInfo;
       } else if (__DEV__) {
-        warn(`The "${info.name}" app is already registered.`);
+        warn(`The "${appInfo.name}" app is already registered.`);
       }
     }
     this.hooks.lifecycle.registerApp.emit(currentAdds);
