@@ -22,7 +22,7 @@ export class SyncHook {
     const self = this;
     this.on(function wrapper(...args: Array<any>) {
       self.remove(wrapper);
-      fn(...args);
+      return fn.apply(null, args);
     });
   }
 

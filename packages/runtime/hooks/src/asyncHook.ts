@@ -1,19 +1,20 @@
 import { SyncHook } from './syncHook';
 
 export class AsyncHook extends SyncHook {
-  emit(...data: Array<any>): Promise<any> | void {
+  emit(...data: Array<any>) {
+    let result;
     const ls = Array.from(this.listeners);
     if (ls.length > 0) {
       let i = 0;
-      const call = (result?: any) => {
-        if (result === false) {
+      const call = (prev?: any) => {
+        if (prev === false) {
           return false; // Abort process
         } else if (i < ls.length) {
-          const result = ls[i++].apply(null, data);
-          return Promise.resolve(result).then(call);
+          return Promise.resolve(ls[i++].apply(null, data)).then(call);
         }
       };
-      return call();
+      result = call();
     }
+    return Promise.resolve(result);
   }
 }

@@ -1,4 +1,4 @@
-import GarfishInstance, { interfaces } from 'garfish';
+import { interfaces } from 'garfish';
 import './monitoring';
 
 (window as any).__GARFISH_PARENT__ = true;

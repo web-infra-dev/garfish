@@ -31,5 +31,3 @@ document.getElementById('reactBtn').onclick = async () => {
     await prevApp.mount();
   }
 };
-
-console.log(111);
