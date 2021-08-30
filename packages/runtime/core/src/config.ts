@@ -1,4 +1,12 @@
-import { deepMerge, error, hasOwn, warn } from '@garfish/utils';
+import {
+  warn,
+  error,
+  assert,
+  hasOwn,
+  deepMerge,
+  getRenderNode,
+} from '@garfish/utils';
+import { AppInfo } from './module/app';
 import { interfaces } from './interface';
 
 // Because of the addition of nested scenes, the configuration merging is too complicated
@@ -19,15 +27,6 @@ export const lifecycle: Array<Exclude<
   'errorUnmountApp',
 ];
 
-const globalConfigAttrs = [
-  'apps',
-  'plugins',
-  'autoRefreshApp',
-  'onNotMatchRouter',
-  'disableStatistics',
-  'disablePreloadApp',
-];
-
 const invalidNestedAttrs = [
   'sandbox',
   'autoRefreshApp',
@@ -40,19 +39,9 @@ export const filterNestedConfig = (config: interfaces.Options) => {
     invalidNestedAttrs.forEach((key) => {
       if (key in config) {
         delete config[key];
-        __DEV__ &&
-          warn(`Nested scene does not support the configuration ${key}`);
+        warn(`Nested scene does not support the configuration ${key}`);
       }
     });
-  }
-  return config;
-};
-
-export const filterGlobalConfig = (config: interfaces.AppInfo) => {
-  for (const key in config) {
-    if (globalConfigAttrs.includes(key)) {
-      delete config[key];
-    }
   }
   return config;
 };
@@ -96,7 +85,7 @@ export const createDefaultOptions = (nested = false) => {
       strictIsolation: false,
     },
     // Load hooks
-    beforeLoad: async () => {},
+    beforeLoad: () => {},
     afterLoad: () => {},
     // Code eval hooks
     beforeEval: () => {},
@@ -120,4 +109,39 @@ export const createDefaultOptions = (nested = false) => {
     invalidNestedAttrs.forEach((key) => delete config[key]);
   }
   return config;
+};
+
+export const generateAppOptions = async (
+  appName: string,
+  garfish: interfaces.Garfish,
+  appOpts: Partial<interfaces.LoadAppOptions> | string = {},
+) => {
+  let appInfo = garfish.appInfos[appName];
+
+  // `Garfish.loadApp('appName', 'https://xx.html');`
+  if (typeof appOpts === 'string') {
+    appOpts = {
+      name: appName,
+      entry: appOpts,
+      basename: '/',
+    } as interfaces.LoadAppOptions;
+  }
+
+  appInfo = appInfo
+    ? deepMergeConfig(appInfo, appOpts)
+    : deepMergeConfig(garfish.options, appOpts);
+
+  // Does not support does not have remote resources application
+  assert(
+    appInfo.entry,
+    `Can't load unexpected child app "${appName}", ` +
+      'Please provide the entry parameters or registered in advance of the app.',
+  );
+
+  appInfo.name = appName;
+  // Initialize the mount point, support domGetter as promise, is advantageous for the compatibility
+  if (appInfo.domGetter) {
+    appInfo.domGetter = await getRenderNode(appInfo.domGetter);
+  }
+  return appInfo as AppInfo;
 };

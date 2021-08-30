@@ -12,7 +12,7 @@ import { Loader, TemplateManager, JavaScriptManager } from '@garfish/loader';
 import {
   deepMergeConfig,
   filterNestedConfig,
-  filterGlobalConfig,
+  generateAppOptions,
   createDefaultOptions,
 } from './config';
 import { interfaces } from './interface';
@@ -52,51 +52,6 @@ export class Garfish implements interfaces.Garfish {
     options?.plugins?.forEach((plugin) => this.usePlugin(plugin));
   }
 
-  private registerDefaultPlugin(options?: interfaces.Options) {
-    this.usePlugin(GarfishHMRPlugin());
-    this.usePlugin(GarfishOptionsLife(options));
-    this.usePlugin(GarfishPerformance());
-    if (!options.disablePreloadApp) {
-      this.usePlugin(GarfishPreloadPlugin());
-    }
-  }
-
-  private async mergeAppOptions(
-    appName: string,
-    options?: Partial<interfaces.LoadAppOptions> | string,
-  ) {
-    options = options || {};
-    // `Garfish.loadApp('appName', 'https://xx.html');`
-    if (typeof options === 'string') {
-      options = {
-        name: appName,
-        entry: options,
-        basename: '/',
-      } as interfaces.AppInfo;
-    }
-
-    let appInfo = this.appInfos[appName];
-    if (appInfo) {
-      appInfo = deepMergeConfig(appInfo, options);
-    } else {
-      appInfo = deepMergeConfig(this.options, options);
-      filterGlobalConfig(appInfo);
-    }
-
-    // Does not support does not have remote resources application
-    assert(
-      appInfo.entry,
-      `Can't load unexpected child app "${appName}", ` +
-        'Please provide the entry parameters or registered in advance of the app.',
-    );
-    appInfo.name = appName;
-    // Initialize the mount point, support domGetter as promise, is advantageous for the compatibility
-    if (appInfo.domGetter) {
-      appInfo.domGetter = await getRenderNode(appInfo.domGetter);
-    }
-    return appInfo as AppInfo;
-  }
-
   private setOptions(options: Partial<interfaces.Options>) {
     assert(!this.running, 'Garfish is running, can`t set options');
     if (isPlainObject(options)) {
@@ -134,23 +89,24 @@ export class Garfish implements interfaces.Garfish {
     if (this.running) {
       // Nested scene can be repeated registration application
       if (options.nested) {
-        const hooks = globalLifecycle();
+        const nestedHooks = globalLifecycle();
         const mainOptions = createDefaultOptions(true);
-        options = filterNestedConfig(deepMergeConfig(mainOptions, options));
+        options = deepMergeConfig(mainOptions, options);
+        options = filterNestedConfig(options);
 
         // Register plugins
         options.plugins?.forEach((plugin) => this.usePlugin(plugin));
+
         // Nested applications have independent life cycles
-        this.usePlugin(GarfishOptionsLife(options));
+        nestedHooks.usePlugin(GarfishOptionsLife(options));
 
         if (options.apps) {
-          // usage:
+          // Usage:
           //  `Garfish.run({ apps: [{ props: Garfish.props }] })`
           this.registerApp(
             options.apps.map((app) => {
               const appConf = deepMergeConfig(options, app);
-              filterGlobalConfig(appConf);
-              appConf.hooks = hooks;
+              appConf.hooks = nestedHooks;
               appConf.sandbox = this.options.sandbox;
               return appConf;
             }),
@@ -165,10 +121,15 @@ export class Garfish implements interfaces.Garfish {
     this.setOptions(options);
 
     // Register plugins
-    this.registerDefaultPlugin(this.options);
+    this.usePlugin(GarfishHMRPlugin());
+    this.usePlugin(GarfishOptionsLife(this.options));
+    this.usePlugin(GarfishPerformance());
+    if (!options.disablePreloadApp) {
+      this.usePlugin(GarfishPreloadPlugin());
+    }
     options?.plugins?.forEach((plugin) => this.usePlugin(plugin, this));
 
-    // Emit hooks
+    // Emit hooks and register apps
     this.hooks.lifecycle.beforeBootstrap.emit(this.options);
     this.registerApp(options.apps || []);
     this.running = true;
@@ -190,7 +151,6 @@ export class Garfish implements interfaces.Garfish {
         // Deep merge this.options
         if (!info.nested) {
           info = deepMergeConfig(this.options, info);
-          filterGlobalConfig(info);
         }
         currentAdds[info.name] = info;
         this.appInfos[info.name] = info;
@@ -220,10 +180,10 @@ export class Garfish implements interfaces.Garfish {
 
   async loadApp(
     appName: string,
-    options?: Partial<interfaces.LoadAppOptions> | string,
+    options?: interfaces.LoadAppOptions | string,
   ): Promise<interfaces.App | null> {
     assert(appName, 'Miss appName.');
-    const appInfo = await this.mergeAppOptions(appName, options);
+    const appInfo = await generateAppOptions(appName, this, options);
 
     const asyncLoadProcess = async () => {
       // Return not undefined type data directly to end loading

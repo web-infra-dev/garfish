@@ -105,6 +105,9 @@ export class App {
     this.cjsModules.module = this.cjsModules;
     this.customLoader = customLoader;
 
+    // Register hooks
+    this.hooks.usePlugin(appInfo);
+
     // Save all the resources to address
     const nodes = entryManager.getNodesByTagName(...sourceListTags);
     for (const key in nodes) {
