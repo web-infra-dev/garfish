@@ -84,7 +84,7 @@ export function makeElInjector() {
 
   if (typeof window.Element === 'function') {
     // iframe can read html container this can't point to proxyDocument has Illegal invocation error
-    if (!isInIframe()) handleOwnerDocument();
+    // if (!isInIframe()) handleOwnerDocument();
     const rewrite = (
       methods: Array<string>,
       builder: typeof injector | typeof injectorRemoveChild,
