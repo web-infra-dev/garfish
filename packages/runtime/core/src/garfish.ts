@@ -188,7 +188,7 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
 
   async loadApp(
     appName: string,
-    options?: interfaces.LoadAppOptions | string,
+    options?: interfaces.AppInfo | string,
   ): Promise<interfaces.App | null> {
     assert(appName, 'Miss appName.');
     const appInfo = await generateAppOptions(appName, this, options);

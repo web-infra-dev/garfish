@@ -7,7 +7,7 @@ import {
   TemplateManager,
   JavaScriptManager,
 } from '@garfish/loader';
-import { AppInterface } from '../module/app';
+import { App, AppInterface } from '../module/app';
 import { appLifecycle, globalLifecycle } from '../hooks/lifecycle';
 
 export namespace interfaces {
@@ -23,25 +23,6 @@ export namespace interfaces {
   }
 
   export interface App extends AppInterface {}
-
-  export interface AppInfo
-    extends Exclude<
-      Options,
-      [
-        'apps',
-        'appID',
-        'plugins',
-        'disableStatistics',
-        'disablePreloadApp',
-        'plugins',
-      ]
-    > {
-    name: string;
-    entry: string;
-    cache?: boolean; // Whether the cache
-    activeWhen?: string | ((path: string) => boolean);
-    hooks?: Hooks;
-  }
 
   export interface StyleManagerInterface extends StyleManager {}
   export interface ModuleManagerInterface extends ModuleManager {}
@@ -62,7 +43,7 @@ export namespace interfaces {
     appInfos: Record<string, interfaces.AppInfo>;
     loadApp(
       name: string,
-      opts: Partial<interfaces.LoadAppOptions> | string,
+      opts: Partial<interfaces.AppInfo> | string,
     ): Promise<interfaces.App | null>;
   }
 
@@ -107,10 +88,7 @@ export namespace interfaces {
     app: interfaces.App,
   ) => Promise<void> | void;
 
-  export declare type LoadLifeCycleFn<T> = (
-    appInfo: AppInfo,
-    opts: LoadAppOptions,
-  ) => T;
+  export declare type LoadLifeCycleFn<T> = (appInfo: AppInfo) => T;
 
   export declare type EvalLifeCycleFn = (
     appInfo: AppInfo,
@@ -122,7 +100,7 @@ export namespace interfaces {
 
   export interface GlobalLifecycle {
     beforeLoad?: LoadLifeCycleFn<Promise<void | boolean> | void | boolean>;
-    afterLoad?: LoadLifeCycleFn<Promise<void> | void>;
+    afterLoad?: MountLifeCycleFn;
     beforeMount?: MountLifeCycleFn;
     afterMount?: MountLifeCycleFn;
     beforeUnmount?: MountLifeCycleFn;
@@ -141,6 +119,8 @@ export namespace interfaces {
     ) => Promise<LoaderResult | void> | LoaderResult | void;
   }
 
+  export type Options = Config & GlobalLifecycle;
+
   export type AppLifecycle = Pick<
     GlobalLifecycle,
     keyof ReturnType<typeof appLifecycle>['lifecycle']
@@ -152,10 +132,11 @@ export namespace interfaces {
     name: string;
     entry: string;
     cache?: boolean;
+    nested?: boolean;
   };
 
-  export type Options = Config & GlobalLifecycle;
-  export type LoadAppOptions = AppConfig & AppLifecycle;
+  type _AppInfo = AppLifecycle & AppConfig;
+  export interface AppInfo extends _AppInfo {}
 
   export interface ResourceModules {
     js: Array<JavaScriptManager>;
@@ -165,13 +146,7 @@ export namespace interfaces {
 
   export type BootStrapArgs = [Garfish, Options];
 
-  type AppConstructor = new (
-    context: Garfish,
-    appInfo: AppInfo,
-    entryResManager: TemplateManagerInterface,
-    resources: interfaces.ResourceModules,
-    isHtmlMode: boolean,
-  ) => any;
+  type AppConstructor = InstanceType<typeof App>;
 
   export interface Lifecycle {
     // beforeInitialize: SyncHook<Options, void>;
@@ -267,10 +242,5 @@ export namespace interfaces {
   export interface Plugin extends PickParam<Partial<interfaces.Lifecycle>> {
     name: string;
     version?: string;
-  }
-
-  export interface Hooks {
-    lifecycle: Lifecycle;
-    usePlugins(plugin: Plugin): void;
   }
 }

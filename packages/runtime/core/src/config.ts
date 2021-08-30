@@ -53,7 +53,7 @@ export const deepMergeConfig = (o, n) => {
 export const generateAppOptions = async (
   appName: string,
   garfish: interfaces.Garfish,
-  appOpts: Partial<interfaces.LoadAppOptions> | string = {},
+  appOpts: Partial<interfaces.AppInfo> | string = {},
 ) => {
   let appInfo = garfish.appInfos[appName];
 
@@ -63,7 +63,7 @@ export const generateAppOptions = async (
       name: appName,
       entry: appOpts,
       basename: '/',
-    } as interfaces.LoadAppOptions;
+    } as interfaces.AppInfo;
   }
 
   appInfo = appInfo
