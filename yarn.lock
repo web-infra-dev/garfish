@@ -1407,12 +1407,24 @@
   resolved "https://registry.npmjs.org/@garfish/browser-snapshot/-/browser-snapshot-0.0.24.tgz#c59ca8f25c4cfef46373d3af1899d887b743f0c8"
   integrity sha512-4XVHrZKdGdA6S1sWg91CtlGGRSTxM0gNPtgLeR6pxKR27EEcTrtIjqJR+Z553fSTsU3IRPsnoVe9v992GYF+Mg==
 
+"@garfish/browser-snapshot@^0.0.49":
+  version "0.0.49"
+  resolved "https://registry.npmjs.org/@garfish/browser-snapshot/-/browser-snapshot-0.0.49.tgz#cf40e7c88093453d505541bee8de81ea90457f20"
+  integrity sha512-/G7J//GbawWqnr+qb2otjpUy/XlJFUyIx4g486W3ZUo61TbS1srS0Vj1rIQV/vm2m8XjqZrvX6CnZJu/YmVv5Q==
+
 "@garfish/browser-vm@^0.0.24":
   version "0.0.24"
   resolved "https://registry.npmjs.org/@garfish/browser-vm/-/browser-vm-0.0.24.tgz#35996cc035994d97481b06bfb77ae5e462c0703a"
   integrity sha512-0AZJXrcjVfFQRAF/9/kjNDxOKlNFG6XFPGria1byQI5uU88BisA0FsclylH8A11xix8GSro108MkKD5Dr+Azbw==
   dependencies:
     "@garfish/loader" "^0.0.24"
+
+"@garfish/browser-vm@^0.0.49":
+  version "0.0.49"
+  resolved "https://registry.npmjs.org/@garfish/browser-vm/-/browser-vm-0.0.49.tgz#401bcaa1aa267da6bc8f0a6c6ff4968257755451"
+  integrity sha512-jtaPgfsy929lnH6m25Ar/6ufzwgk0xb3smgmzugAGYtIZ/mqHn5/PzODaR4MjkvwWtmkJVrk7Z7JPCel4/hRFA==
+  dependencies:
+    "@garfish/loader" "^0.0.49"
 
 "@garfish/core@^0.0.24":
   version "0.0.24"
@@ -1423,31 +1435,24 @@
     "@garfish/loader" "^0.0.24"
     "@garfish/utils" "^0.0.24"
 
-"@garfish/core@^0.0.58":
-  version "0.0.58"
-  resolved "https://registry.npmjs.org/@garfish/core/-/core-0.0.58.tgz#bccd06eee75cc053689a30dcd28e17b55d784c35"
-  integrity sha512-HafLK2paSuz9AyRHpnJx9TFBfzVHlYketQjH4dPGlE0EdZ2KTPWStSO8nwfIaEsjD8FC99O3gjS28O/oH94ZxA==
+"@garfish/core@^0.0.49":
+  version "0.0.49"
+  resolved "https://registry.npmjs.org/@garfish/core/-/core-0.0.49.tgz#a79c0ed7abf5292eaea61cb6125a4af42ed03541"
+  integrity sha512-V+ruOhEZo8zvj/9MoRo8l4xCigFlzI0vvZtmiTeLtxMZ2sEYjDcLPgUsz0TYLSN7kn2yRJf9fESLZ2ZvQQRZ7A==
   dependencies:
-    "@garfish/hooks" "0.0.58"
-    "@garfish/loader" "0.0.58"
-    "@garfish/utils" "0.0.58"
-
-"@garfish/hooks@0.0.58", "@garfish/hooks@^0.0.58":
-  version "0.0.58"
-  resolved "https://registry.npmjs.org/@garfish/hooks/-/hooks-0.0.58.tgz#fda5d4adb1dc6942d944743d24c42f2e1de769a6"
-  integrity sha512-t5XiQf56JjcVopsmsM9D0fxzR1kQSrJ7sXmBSiyiTCiUh3S16lEIVZ5D1M7a4SxQ5uli2+wEaw3VYk3nePKTqA==
+    "@garfish/hooks" "^0.0.49"
+    "@garfish/loader" "^0.0.49"
+    "@garfish/utils" "^0.0.49"
 
 "@garfish/hooks@^0.0.24":
   version "0.0.24"
   resolved "https://registry.npmjs.org/@garfish/hooks/-/hooks-0.0.24.tgz#f9a6c3e3e9cd617e95edb67caba55f98b542d2a7"
   integrity sha512-VZz1F+dPYockMkHZK5Tw252pLNwbdkAfrvITrq6Yk4PucLgXxVyso1JwT55/W0wk9Px/rWWGsYbF7smi4aBW4Q==
 
-"@garfish/loader@0.0.58", "@garfish/loader@^0.0.58":
-  version "0.0.58"
-  resolved "https://registry.npmjs.org/@garfish/loader/-/loader-0.0.58.tgz#988b9e37bb68c9dbb5ac836f123c485cf053fb25"
-  integrity sha512-6FETf9gNN+pVYY4b7rb5cqoMtkPqYFSNmdjP6o4ohn2LENnRO7v7CRvWOWrmYlXuWvbQZyHSxEIV9xC5ZT5New==
-  dependencies:
-    himalaya "1.1.0"
+"@garfish/hooks@^0.0.49":
+  version "0.0.49"
+  resolved "https://registry.npmjs.org/@garfish/hooks/-/hooks-0.0.49.tgz#a99fbe3a1c3b920d547963f81fc8f2644ff80233"
+  integrity sha512-yUGQ0oYG/1H77bGvLKhDk9bnmzqWE1QS84ceqaVBMrFSH+cTwjQQZ9qzrNztsDyjQpT6jUgvF8xntx2Lytolrg==
 
 "@garfish/loader@^0.0.24":
   version "0.0.24"
@@ -1457,6 +1462,13 @@
     "@garfish/utils" "^0.0.24"
     himalaya "1.1.0"
 
+"@garfish/loader@^0.0.49":
+  version "0.0.49"
+  resolved "https://registry.npmjs.org/@garfish/loader/-/loader-0.0.49.tgz#ee1c451802c545668bd3da39499e8f131d543801"
+  integrity sha512-he6DI2XAJgsFz5H4eXyWmRWiVoSrvc+jWtctbxWMR+GwNLgATLShov6s8P59jbeZSyO2qhxaBw0pSHwkzBVRwg==
+  dependencies:
+    himalaya "1.1.0"
+
 "@garfish/router@^0.0.24":
   version "0.0.24"
   resolved "https://registry.npmjs.org/@garfish/router/-/router-0.0.24.tgz#12d09f3394877b775e6d758e659ccc0a0ecc0013"
@@ -1464,15 +1476,22 @@
   dependencies:
     "@garfish/utils" "^0.0.24"
 
-"@garfish/utils@0.0.58", "@garfish/utils@^0.0.58":
-  version "0.0.58"
-  resolved "https://registry.npmjs.org/@garfish/utils/-/utils-0.0.58.tgz#cc72da607f9a2e7cd0a2156738102b9e6ab81918"
-  integrity sha512-j5UDi9d9+CctBNhMOMo6jh8EJkoiN1cSd5RTW1c+P8171QyvXXdjYEV9zn5EE3Yf1XSrGUcCDLY+0Wbnumg6kw==
+"@garfish/router@^0.0.49":
+  version "0.0.49"
+  resolved "https://registry.npmjs.org/@garfish/router/-/router-0.0.49.tgz#77eb5ebc5ac944a349758572dffd50af552f18f2"
+  integrity sha512-VIxi7Eaff0hNEnQ1oXJ0KKicqe/Fa71IGcWkB9lTmXiVOPw36e+pUHSyGgsKvbDYqNMCOJB87AwuyHAws43aRg==
+  dependencies:
+    "@garfish/utils" "^0.0.49"
 
 "@garfish/utils@^0.0.24":
   version "0.0.24"
   resolved "https://registry.npmjs.org/@garfish/utils/-/utils-0.0.24.tgz#0da22b22ef6a606e1231f9509f71e0a6670077c4"
   integrity sha512-gBvXFpSuSZdGs1Pf2gazbznX/xlUCSXlUrVQFRdbqjlvSBFi1k+yxbOpFippO6Fg2aKac5xhE1bcwOoRMjDuNw==
+
+"@garfish/utils@^0.0.49":
+  version "0.0.49"
+  resolved "https://registry.npmjs.org/@garfish/utils/-/utils-0.0.49.tgz#e21da159da707c7864b65dbc727a9ac7bb3542dc"
+  integrity sha512-J32/WTb+V5Pr1BE3BO+YyINvUSOJ1Ch/Go6FZMcXVOf2zKbZ3w5ay8vIumABvIVzWnDHt75shdHTwd8Vx5B9uQ==
 
 "@hapi/address@2.x.x":
   version "2.1.4"
@@ -9016,7 +9035,7 @@ functional-red-black-tree@^1.0.1:
   resolved "https://registry.npmjs.org/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
 
-garfish@0.0.24, garfish@^0.0.24:
+garfish@0.0.24:
   version "0.0.24"
   resolved "https://registry.npmjs.org/garfish/-/garfish-0.0.24.tgz#56ecd7b46996b5cd7614389b59d181e31532a30a"
   integrity sha512-5bZsJgKGMODvjhucJZeOXEUDVeE99bxtir9/j6TzVdTVwql+1shNa58vbqJr35mDECd6NZBKxSC+R489j8yhJg==
@@ -9026,6 +9045,17 @@ garfish@0.0.24, garfish@^0.0.24:
     "@garfish/core" "^0.0.24"
     "@garfish/router" "^0.0.24"
     "@garfish/utils" "^0.0.24"
+
+garfish@0.0.54:
+  version "0.0.54"
+  resolved "https://registry.npmjs.org/garfish/-/garfish-0.0.54.tgz#7b152adbaf225e796c255c7c1034d66ad4f3acb0"
+  integrity sha512-DrYgYbm85GPsKtk9qJ29JNEkV7Yv4sy3acweM8boCSHCTw0egCh4wS+ZeUsUEQgrNntCGXrJzH84ncXPtPSzpw==
+  dependencies:
+    "@garfish/browser-snapshot" "^0.0.49"
+    "@garfish/browser-vm" "^0.0.49"
+    "@garfish/core" "^0.0.49"
+    "@garfish/router" "^0.0.49"
+    "@garfish/utils" "^0.0.49"
 
 gauge@~2.7.3:
   version "2.7.4"

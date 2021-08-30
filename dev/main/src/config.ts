@@ -1,4 +1,4 @@
-import { interfaces } from 'garfish';
+import GarfishInstance, { interfaces } from 'garfish';
 import './monitoring';
 
 (window as any).__GARFISH_PARENT__ = true;
@@ -18,12 +18,6 @@ let defaultConfig: interfaces.Options = {
   },
   apps: [
     {
-      name: 'react',
-      activeWhen: '/react',
-      // cache: true,
-      entry: 'http://localhost:2444',
-    },
-    {
       name: 'vue',
       activeWhen: '/vue',
       // cache: true,
@@ -39,10 +33,19 @@ let defaultConfig: interfaces.Options = {
   autoRefreshApp: true,
   disablePreloadApp: true,
   protectVariable: ['MonitoringInstance', 'Garfish'],
-  // sandbox: {
-  //   snapshot: false
-  // },
+  sandbox: {
+    open: false,
+  },
 };
+
+GarfishInstance.registerApp({
+  name: 'react',
+  activeWhen: '/react',
+  entry: 'http://localhost:2444',
+  props: {
+    appName: 'react',
+  },
+});
 
 // The test environment into
 if (typeof Cypress !== 'undefined') {

@@ -90,8 +90,9 @@ export default function BrowserVm() {
       afterLoad(appInfo, appInstance) {
         // Support for instance configuration, to ensure that old versions compatible
         const sandboxConfig = appInfo.sandbox || Garfish?.options?.sandbox;
-        if (sandboxConfig === false) {
+        if (sandboxConfig === false || sandboxConfig.open === false) {
           config.openSandbox = false;
+          options.openVm = false;
           return;
         }
 

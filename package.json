@@ -27,7 +27,7 @@
     "build:watch": "yarn link garfish && lerna exec -- yarn link && node scripts/build.js -m -e  -f=esm-bundler -w",
     "reset": "lerna clean --yes && rm -rf node_modules",
     "setup": "yarn reset && yarn install --registry=https://registry.npmjs.org",
-    "prepublishOnly": "yarn test && yarn build:all",
+    "prepublishOnly": "yarn test && yarn build:all && yarn changelog",
     "changelog": "node scripts/changelog.js",
     "test": "node scripts/jestTest.js",
     "test:cover": "node scripts/jestTest.js --coverage",
@@ -92,7 +92,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "execa": "^4.1.0",
     "fs-extra": "^9.0.1",
-    "garfish": "^0.0.24",
+    "garfish": "0.0.54",
     "http-server": "^0.12.3",
     "husky": "^4.3.0",
     "jest": "^26.6.3",
@@ -112,5 +112,5 @@
     "wait-on": "^6.0.0",
     "workspace-tools": "^0.16.2"
   },
-  "version": "0.0.34"
+  "version": "0.0.58"
 }

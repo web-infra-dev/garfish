@@ -8,10 +8,11 @@ const opts = {
   message: 'chore(release): publish %s',
   push: false,
   includeMergedTags: true,
-  // v6 版本 deploy canary 暂时指定 tag 为 rc-canary
+  // 版本 deploy canary 暂时指定 tag 为 rc-canary
   preDistTag: 'rc-canary',
   verifyAccess: false,
   verifyRegistry: false,
+  exact: true,
   tagVersionPrefix: '',
 };
 

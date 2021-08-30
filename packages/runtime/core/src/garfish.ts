@@ -26,7 +26,7 @@ import { GarfishPerformance } from './plugins/performance';
 
 const DEFAULT_PROPS = new WeakMap();
 
-export class Garfish implements interfaces.Garfish {
+export class Garfish extends EventEmitter implements interfaces.Garfish {
   public running = false;
   public version = __VERSION__;
   public flag = __GARFISH_FLAG__; // A unique identifier
@@ -47,6 +47,7 @@ export class Garfish implements interfaces.Garfish {
   }
 
   constructor(options: interfaces.Options) {
+    super();
     DEFAULT_PROPS.set(this, {});
     this.setOptions(options);
     options?.plugins?.forEach((plugin) => this.usePlugin(plugin));

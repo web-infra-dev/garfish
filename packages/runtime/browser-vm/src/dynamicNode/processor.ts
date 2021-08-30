@@ -269,7 +269,7 @@ export class DynamicNodeProcessor {
     return originProcess();
   }
 
-  remove(context: Element, originProcess: Function) {
+  removeChild(context: Element, originProcess: Function) {
     if (this.is('style') || this.is('link') || this.is('script')) {
       const parentNode = this.findParentNodeInApp(
         context,

@@ -1,6 +1,6 @@
 {
   "name": "@garfish-dev/sub-app",
-  "version": "0.0.59-alpha.0.2",
+  "version": "0.0.59",
   "private": true,
   "scripts": {
     "start": "node linkdeps.js && vue-cli-service serve",
