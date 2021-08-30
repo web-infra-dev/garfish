@@ -5,6 +5,16 @@ collapsed: false
 order: 1
 ---
 
+# [0.1.0](https://github.com/modern-js-dev/garfish/compare/v0.1.0-alpha.0...v0.1.0) (2021-08-30)
+
+### Features
+
+- Support application by introducing external CDN and Repair dynamic script did not([ccb4212](https://github.com/modern-js-dev/garfish/commit/ccb4212ef5cbf2bafb333106a8af1401956c41b5))
+
+### Bug Fixes
+
+- child application environment variables ([ccb4212](https://github.com/modern-js-dev/garfish/commit/ccb4212ef5cbf2bafb333106a8af1401956c41b5))
+
 ## [0.0.59](https://github.com/modern-js-dev/garfish/compare/v0.0.58...v0.0.59) (2021-08-30)
 
 ### Bug Fixes
@@ -32,7 +42,9 @@ order: 1
 
 - child element had be delete can't repeat delete ([e57e817](https://github.com/modern-js-dev/garfish/commit/e57e817b006e33e075d3e5bf88b025aff2725f33))
 
-## [0.0.52](https://github.com/modern-js-dev/garfish/compare/v0.0.50...v0.0.52) (2021-08-23)
+## [0.0.52](https://github.com/modern-js-dev/garfish/compare/v0.0.51...v0.0.52) (2021-08-23)
+
+## [0.0.51](https://github.com/modern-js-dev/garfish/compare/v0.0.50...v0.0.51) (2021-08-23)
 
 ### Bug Fixes
 
@@ -44,7 +56,9 @@ order: 1
 
 - can't set history scrollRestoration ([f26125d](https://github.com/modern-js-dev/garfish/commit/f26125de650198a93e2742f1de687c7b531febc9))
 
-## [0.0.47](https://github.com/modern-js-dev/garfish/compare/v0.0.45...v0.0.47) (2021-08-17)
+## [0.0.47](https://github.com/modern-js-dev/garfish/compare/v0.0.46...v0.0.47) (2021-08-17)
+
+## [0.0.46](https://github.com/modern-js-dev/garfish/compare/v0.0.45...v0.0.46) (2021-08-17)
 
 ### Bug Fixes
 
