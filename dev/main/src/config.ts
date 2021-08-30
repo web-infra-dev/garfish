@@ -38,13 +38,15 @@ let defaultConfig: interfaces.Options = {
   },
 };
 
-GarfishInstance.registerApp({
-  name: 'react',
-  activeWhen: '/react',
-  entry: 'http://localhost:2444',
-  props: {
-    appName: 'react',
-  },
+setTimeout(() => {
+  GarfishInstance.registerApp({
+    name: 'react',
+    activeWhen: '/react',
+    entry: 'http://localhost:2444',
+    props: {
+      appName: 'react',
+    },
+  });
 });
 
 // The test environment into

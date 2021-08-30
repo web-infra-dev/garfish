@@ -4,7 +4,6 @@ import {
   assert,
   transformUrl,
   isPlainObject,
-  getRenderNode,
   __GARFISH_FLAG__,
 } from '@garfish/utils';
 import { EventEmitter } from 'events';
@@ -15,8 +14,8 @@ import {
   generateAppOptions,
   createDefaultOptions,
 } from './config';
+import { App } from './module/app';
 import { interfaces } from './interface';
-import { App, AppInfo } from './module/app';
 import { fetchStaticResources } from './utils';
 import { globalLifecycle } from './hooks/lifecycle';
 import { GarfishHMRPlugin } from './plugins/fixHMR';
@@ -134,16 +133,22 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
 
     // Emit hooks and register apps
     this.hooks.lifecycle.beforeBootstrap.emit(this.options);
-    this.registerApp(options.apps || []);
     this.running = true;
+    this.registerApp(this.options.apps || []);
     this.hooks.lifecycle.bootstrap.emit(this.options);
     return this;
   }
 
   registerApp(list: interfaces.AppInfo | Array<interfaces.AppInfo>) {
-    this.hooks.lifecycle.beforeRegisterApp.emit(list);
+    assert(
+      this.running,
+      '"AppInfo" can only be registered after Garfish is started.',
+    );
+
     const currentAdds = {};
+    this.hooks.lifecycle.beforeRegisterApp.emit(list);
     if (!Array.isArray(list)) list = [list];
+
     for (let appInfo of list) {
       assert(appInfo.name, 'Miss app.name.');
       if (!this.appInfos[appInfo.name]) {
@@ -151,7 +156,6 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
           appInfo.entry,
           `${appInfo.name} application entry is not url: ${appInfo.entry}`,
         );
-
         // Deep merge this.options
         if (!appInfo.nested) {
           appInfo = deepMergeConfig(this.options, appInfo);
@@ -246,13 +250,13 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
             this.options.customLoader,
           );
 
-          // Cache app
-          if (appInfo.cache) {
-            this.cacheApps[appName] = appInstance;
-          }
           // Register plugins
           for (const key in this.registeredPlugins) {
             appInstance.hooks.usePlugin(this.registeredPlugins[key]);
+          }
+          // Cache app
+          if (appInfo.cache) {
+            this.cacheApps[appName] = appInstance;
           }
         } catch (e) {
           __DEV__ && error(e);

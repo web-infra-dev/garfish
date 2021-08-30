@@ -1,5 +1,5 @@
-import toolApp from '../src/index';
+import { SyncHook } from '../src/index';
 
 describe('hooks', () => {
-  it('needs tests');
+  it('needs tests', () => {});
 });

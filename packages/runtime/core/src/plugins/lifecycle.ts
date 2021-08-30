@@ -1,17 +1,11 @@
-import { lifecycle } from '../config';
 import { interfaces } from '../interface';
 
 export function GarfishOptionsLife(options) {
   return function (): interfaces.Plugin {
-    const plugin = {
+    return {
       name: 'default-life',
       version: __VERSION__,
+      ...options,
     };
-    lifecycle.forEach((life) => {
-      if (options[life]) {
-        plugin[life] = options[life];
-      }
-    });
-    return plugin;
   };
 }
