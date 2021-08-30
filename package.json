@@ -28,6 +28,7 @@
     "reset": "lerna clean --yes && rm -rf node_modules",
     "setup": "yarn reset && yarn install --registry=https://registry.npmjs.org",
     "prepublishOnly": "yarn test && yarn build:all && yarn changelog",
+    "postpublish": "node scripts/asyncBnpm.js",
     "changelog": "node scripts/changelog.js",
     "test": "node scripts/jestTest.js",
     "test:cover": "node scripts/jestTest.js --coverage",
@@ -81,6 +82,7 @@
     "@vue/cli-plugin-babel": "~4.4.0",
     "@vue/cli-plugin-eslint": "~4.4.0",
     "@vue/cli-service": "~4.4.0",
+    "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0",
     "chalk": "^4.1.0",
     "codecov": "^3.8.1",
@@ -112,5 +114,5 @@
     "wait-on": "^6.0.0",
     "workspace-tools": "^0.16.2"
   },
-  "version": "0.0.58"
+  "version": "0.1.0"
 }

@@ -33,9 +33,6 @@ let defaultConfig: interfaces.Options = {
   autoRefreshApp: true,
   disablePreloadApp: true,
   protectVariable: ['MonitoringInstance', 'Garfish'],
-  sandbox: {
-    open: false,
-  },
 };
 
 GarfishInstance.registerApp({

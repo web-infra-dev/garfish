@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0](https://github.com/modern-js-dev/garfish/compare/v0.1.0-alpha.0...v0.1.0) (2021-08-30)
+
+### Features
+
+- Support application by introducing external CDN and Repair dynamic script did not([ccb4212](https://github.com/modern-js-dev/garfish/commit/ccb4212ef5cbf2bafb333106a8af1401956c41b5))
+
+### Bug Fixes
+
+- child application environment variables ([ccb4212](https://github.com/modern-js-dev/garfish/commit/ccb4212ef5cbf2bafb333106a8af1401956c41b5))
+
 ## [0.0.59](https://github.com/modern-js-dev/garfish/compare/v0.0.58...v0.0.59) (2021-08-30)
 
 ### Bug Fixes

@@ -134,8 +134,23 @@ export default function BrowserVm() {
 
           appInstance.vmSandbox = sandbox;
           appInstance.global = sandbox.global;
+          const originExecScript = sandbox.execScript;
+
           // Rewrite `app.runCode`
-          appInstance.runCode = (...args) => sandbox.execScript(...args);
+          appInstance.runCode = (...args) =>
+            originExecScript.call(sandbox, ...args);
+          sandbox.execScript = (code, env, url, options) =>
+            originExecScript.call(
+              sandbox,
+              code,
+              {
+                // For application of environment variables
+                ...env,
+                ...appInstance.getExecScriptEnv(false),
+              },
+              url,
+              options,
+            );
 
           // Use sandbox document
           if (appInstance.entryManager.DOMApis) {
