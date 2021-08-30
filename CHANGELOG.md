@@ -7,7 +7,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-- registerApp can't add to router map and appInfos's props unless ([efda316](https://github.com/modern-js-dev/garfish/commit/efda316d217c430a8d9d5968be7ea7b5aa22831e))
+- After missing props registerApp API registration application([efda316](https://github.com/modern-js-dev/garfish/commit/efda316d217c430a8d9d5968be7ea7b5aa22831e))
+- Not integrated eventEmit Garfish instance
+- The Sandbox config cannot control by the open Sandbox switch
 
 ## [0.0.58](https://github.com/modern-js-dev/garfish/compare/v0.0.57...v0.0.58) (2021-08-25)
 
