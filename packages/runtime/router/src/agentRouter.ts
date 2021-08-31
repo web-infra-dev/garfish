@@ -50,7 +50,7 @@ export const normalAgent = () => {
                 fromRouterInfo: {
                   fullPath: urlBefore,
                   query: parseQuery(location.search),
-                  path: urlAfter,
+                  path: urlBefore,
                   state: stateAfter,
                 },
                 eventType: type,
