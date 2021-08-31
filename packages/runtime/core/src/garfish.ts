@@ -97,7 +97,7 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
         options = filterNestedConfig(options);
 
         // Isolate global app hooks
-        this.hooks.usePlugin(GarfishOptionsLife(options));
+        this.hooks.usePlugin(GarfishOptionsLife(options)());
         // Register plugins, nested applications have independent life cycles
         options.plugins?.forEach((plugin) =>
           this.hooks.usePlugin(plugin(this)),
@@ -195,8 +195,8 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
 
     const asyncLoadProcess = async () => {
       // Return not undefined type data directly to end loading
-      const stopLoad = await this.hooks.lifecycle.beforeLoad.emit(appInfo);
-      if (stopLoad === false) {
+      const stop = await this.hooks.lifecycle.beforeLoad.emit(appInfo);
+      if (stop === false) {
         warn(`Load ${appName} application is terminated by beforeLoad.`);
         return null;
       }

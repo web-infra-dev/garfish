@@ -1,7 +1,10 @@
 import { SyncHook } from './syncHook';
 
-export class AsyncHook extends SyncHook {
-  emit(...data: Array<any>) {
+export class AsyncHook<T extends Array<any>, K extends any> extends SyncHook<
+  T,
+  K
+> {
+  emit(...data: T): Promise<void | false> {
     let result;
     const ls = Array.from(this.listeners);
     if (ls.length > 0) {

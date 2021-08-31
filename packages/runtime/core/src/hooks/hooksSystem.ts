@@ -5,7 +5,9 @@ type Plugin<T> = Partial<Record<keyof T, (...args: Array<any>) => void>> & {
   name: string;
 };
 
-export class HooksSystem<T extends Record<string, SyncHook | AsyncHook>> {
+export class HooksSystem<
+  T extends Record<string, SyncHook<any, any> | AsyncHook<any, any>>
+> {
   lifecycle: T;
   lifecycleKeys: Array<keyof T>;
   private registerPlugins: Record<string, Plugin<T>> = {};
