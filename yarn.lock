@@ -6381,7 +6381,7 @@ conventional-changelog-core@^3.1.6:
     read-pkg-up "^3.0.0"
     through2 "^3.0.0"
 
-conventional-changelog-core@^4.2.1:
+conventional-changelog-core@^4.2.1, conventional-changelog-core@^4.2.3:
   version "4.2.3"
   resolved "https://registry.npmjs.org/conventional-changelog-core/-/conventional-changelog-core-4.2.3.tgz#ce44d4bbba4032e3dc14c00fcd5b53fc00b66433"
   integrity sha512-MwnZjIoMRL3jtPH5GywVNqetGILC7g6RQFvdb8LRU/fA/338JbeWAku3PZ8yQ+mtVRViiISqJlb0sOz0htBZig==
