@@ -1,9 +1,15 @@
+## [0.1.5](https://github.com/modern-js-dev/garfish/compare/v0.1.4...v0.1.5) (2021-08-31)
+
+### Bug Fixes
+
+- Repair environment variables can't escape out of the sandbox ([798f7ff](https://github.com/modern-js-dev/garfish/commit/798f7ff4c8dde5efdd342c072ccc661f03d48032))
+
 ## [0.1.4](https://github.com/modern-js-dev/garfish/compare/v0.1.3...v0.1.4) (2021-08-31)
 
 ### Bug Fixes
 
-- Fixed routing guarding state
-- Fixed routing guard source routing is not normal
+- Fixed routing guard source routing is not normal ([ca6a939](https://github.com/modern-js-dev/garfish/commit/ca6a9395bf7503beb42ba3fc76a1ec672ed9e1db))
+- Fixed routing guarding state ([3e114bc](https://github.com/modern-js-dev/garfish/commit/3e114bc01a8d3ddf3fac93ea0a48349d17153a76))
 
 ## [0.1.3](https://github.com/modern-js-dev/garfish/compare/v0.1.2...v0.1.3) (2021-08-31)
 
