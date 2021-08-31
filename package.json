@@ -29,7 +29,7 @@
     "setup": "yarn reset && yarn install --registry=https://registry.npmjs.org",
     "prepublishOnly": "yarn test && yarn build:all && yarn changelog",
     "postpublish": "node scripts/asyncBnpm.js",
-    "changelog": "node scripts/changelog.js",
+    "changelog": "conventional-changelog --preset  angular --infile  CHANGELOG.md --same-file --skip-unstable",
     "test": "node scripts/jestTest.js",
     "test:cover": "node scripts/jestTest.js --coverage",
     "ls-lint": "ls-lint",
@@ -114,5 +114,8 @@
     "wait-on": "^6.0.0",
     "workspace-tools": "^0.16.2"
   },
-  "version": "0.1.0"
+  "version": "0.1.3",
+  "dependencies": {
+    "conventional-changelog-core": "^4.2.3"
+  }
 }
