@@ -5,6 +5,13 @@ collapsed: false
 order: 1
 ---
 
+## [0.1.4](https://github.com/modern-js-dev/garfish/compare/v0.1.4...v0.1.3) (2021-08-31)
+
+### Bug Fixes
+
+- Fixed routing guarding state
+- Fixed routing guard source routing is not normal
+
 ## [0.1.3](https://github.com/modern-js-dev/garfish/compare/v0.1.2...v0.1.3) (2021-08-31)
 
 ## [0.1.2](https://github.com/modern-js-dev/garfish/compare/v0.0.59...v0.1.2) (2021-08-31)
