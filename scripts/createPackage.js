@@ -241,7 +241,7 @@ async function updateAppContent(appDir) {
     import toolApp from '../src/index';
 
     describe('${app}', () => {
-      it('needs tests');
+      it('needs tests', () => {});
     });
   `;
 

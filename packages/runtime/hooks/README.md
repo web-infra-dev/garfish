@@ -5,7 +5,11 @@
 ## Usage
 
 ```js
-import @garfish/hooks from '@garfish/hooks';
+import { PluginSystem, SyncHook } from '@garfish/hooks';
 
-// TODO: DEMONSTRATE API
+const hooks = new PluginSystem({
+  a: new SyncHook(),
+});
+
+hooks.lifecycle.a.emit(1, 2);
 ```
