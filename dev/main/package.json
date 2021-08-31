@@ -1,7 +1,7 @@
 {
   "name": "@garfish-dev/main",
   "private": true,
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "main template",
   "main": "index.js",
   "scripts": {
@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1",
-    "garfish": "0.1.4",
+    "garfish": "0.1.5",
     "loader-utils": "^2.0.0",
     "mobx": "^6.0.1",
     "react": "^16.13.1",
