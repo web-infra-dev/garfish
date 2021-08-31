@@ -103,6 +103,8 @@ export default function BrowserVm() {
           protectVariable: () => [
             ...(Garfish?.options?.protectVariable || []),
             ...(appInfo.protectVariable || []),
+            ...(appInstance &&
+              Object.keys(appInstance.getExecScriptEnv(false) || [])),
           ],
           insulationVariable: () => [
             ...(Garfish?.options?.insulationVariable || []),
