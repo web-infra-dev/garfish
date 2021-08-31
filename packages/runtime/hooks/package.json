@@ -1,10 +1,16 @@
 {
   "name": "@garfish/hooks",
   "version": "0.0.59",
-  "author": "zhoushaw",
-  "description": "fork from tapable",
-  "license": "MIT",
-  "homepage": "https://github.com/webpack/tapable",
+  "description": "hooks module.",
+  "keywords": [
+    "garfish",
+    "hooks"
+  ],
+  "author": "chentao.arthur <chentao.arthur@bytedance.com>",
+  "homepage": "http://garfish.bytedance.com",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "module": "dist/hooks.esm-bundler.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
@@ -25,6 +31,7 @@
     ]
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org"
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
   }
 }

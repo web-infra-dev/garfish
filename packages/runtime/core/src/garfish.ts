@@ -188,10 +188,7 @@ export class Garfish extends EventEmitter {
 
   async loadApp(
     appName: string,
-    options?: Pick<
-      interfaces.AppInfo,
-      Exclude<keyof interfaces.AppInfo, 'name'>
-    >,
+    options?: Omit<interfaces.AppInfo, 'name'>,
   ): Promise<interfaces.App | null> {
     assert(appName, 'Miss appName.');
     const appInfo = await generateAppOptions(appName, this, options);
