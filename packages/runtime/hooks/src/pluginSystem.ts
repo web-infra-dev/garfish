@@ -4,7 +4,7 @@ type Plugin<T> = Partial<Record<keyof T, (...args: Array<any>) => void>> & {
   name: string;
 };
 
-export class HooksSystem<T extends Record<string, any>> {
+export class PluginSystem<T extends Record<string, any>> {
   lifecycle: T;
   lifecycleKeys: Array<keyof T>;
   private registerPlugins: Record<string, Plugin<T>> = {};
@@ -15,10 +15,10 @@ export class HooksSystem<T extends Record<string, any>> {
   }
 
   usePlugin(plugin: Plugin<T>) {
+    assert(isPlainObject(plugin), 'Invalid plugin configuration.');
     // Plugin name is required and unique
     const pluginName = plugin.name;
-    assert(pluginName, 'Plugin must provide a name');
-    assert(isPlainObject(plugin), 'Plugin must return object type.');
+    assert(pluginName, 'Plugin must provide a name.');
 
     if (!this.registerPlugins[pluginName]) {
       this.registerPlugins[pluginName] = plugin;
@@ -33,8 +33,11 @@ export class HooksSystem<T extends Record<string, any>> {
     }
   }
 
-  removePlugin(plugin: Plugin<T>) {
-    assert(isPlainObject(plugin), 'Invalid plugin configuration');
+  removePlugin(pluginName) {
+    assert(pluginName, 'Must provide a name.');
+    const plugin = this.registerPlugins[pluginName];
+    assert(plugin, `plugin "${pluginName}" is not registered.`);
+
     for (const key in plugin) {
       this.lifecycle[key].remove(plugin[key as string]);
     }

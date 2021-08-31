@@ -4,7 +4,7 @@ import {
   isPlainObject,
   parseContentType,
 } from '@garfish/utils';
-import { Manager, Loader, LoadedPluginArgs } from './index';
+import { Manager, Loader } from './index';
 
 export async function request(url: string, config: RequestInit) {
   const result = await fetch(url, config || {});
@@ -18,7 +18,7 @@ export async function request(url: string, config: RequestInit) {
   return { code, result, mimeType };
 }
 
-export function copyResult(result: LoadedPluginArgs<any>['value']) {
+export function copyResult(result) {
   if (result.resourceManager) {
     result.resourceManager = (result.resourceManager as Manager).clone();
   }

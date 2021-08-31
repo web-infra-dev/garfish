@@ -4,8 +4,8 @@ export type Callback<T, K> = (...args: ArgsType<T>) => K;
 export type ArgsType<T> = T extends Array<any> ? T : Array<any>;
 
 export class SyncHook<T, K> {
-  type: string = '';
-  listeners = new Set<Callback<T, K>>();
+  public type: string = '';
+  public listeners = new Set<Callback<T, K>>();
 
   constructor(type?: string) {
     if (type) this.type = type;

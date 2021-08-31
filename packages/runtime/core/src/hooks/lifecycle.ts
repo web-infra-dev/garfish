@@ -1,9 +1,8 @@
-import { HooksSystem } from './hooksSystem';
-import { SyncHook, AsyncHook } from '@garfish/hooks';
+import { SyncHook, AsyncHook, PluginSystem } from '@garfish/hooks';
 import { interfaces } from '../interface';
 
 export function globalLifecycle() {
-  return new HooksSystem({
+  return new PluginSystem({
     beforeBootstrap: new SyncHook<[interfaces.Options], void>(),
     bootstrap: new SyncHook<[interfaces.Options], void>(),
     beforeRegisterApp: new SyncHook<
@@ -21,7 +20,7 @@ export function globalLifecycle() {
 }
 
 export function appLifecycle() {
-  return new HooksSystem({
+  return new PluginSystem({
     beforeEval: new SyncHook<
       [
         interfaces.AppInfo,

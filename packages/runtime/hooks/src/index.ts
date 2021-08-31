@@ -1,3 +1,4 @@
 export { SyncHook } from './syncHook';
 export { AsyncHook } from './asyncHook';
-export { LoaderPlugin } from './loaderPlugin';
+export { LoaderHook } from './loaderHook';
+export { PluginSystem } from './pluginSystem';
