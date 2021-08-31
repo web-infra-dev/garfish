@@ -5,7 +5,7 @@ collapsed: false
 order: 1
 ---
 
-## [0.1.4](https://github.com/modern-js-dev/garfish/compare/v0.1.4...v0.1.3) (2021-08-31)
+## [0.1.4](https://github.com/modern-js-dev/garfish/compare/v0.1.3...v0.1.4) (2021-08-31)
 
 ### Bug Fixes
 
