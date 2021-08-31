@@ -1,14 +1,18 @@
-import { EventEmitter } from 'events';
-import { SyncHook, AsyncHook } from '@garfish/hooks';
 import {
-  Loader,
   StyleManager,
   ModuleManager,
   TemplateManager,
   JavaScriptManager,
 } from '@garfish/loader';
-import { AppInterface } from './module/app';
+import { Garfish as GarfishInterface } from './garfish';
+import { CustomerLoader, App as AppInterface } from './module/app';
 import { appLifecycle, globalLifecycle } from './hooks/lifecycle';
+
+type AppHooks = ReturnType<typeof appLifecycle>['lifecycle'];
+type Lifecycle = AppHooks & ReturnType<typeof globalLifecycle>['lifecycle'];
+type PluginLifecycle = {
+  [k in keyof Lifecycle]: Parameters<Lifecycle[k]['on']>[0];
+};
 
 export namespace interfaces {
   export interface StyleManagerInterface extends StyleManager {}
@@ -34,24 +38,7 @@ export namespace interfaces {
   }
 
   export interface App extends AppInterface {}
-
-  export interface Garfish {
-    flag: symbol;
-    version: string;
-    running: boolean;
-    externals: Record<string, any>;
-    loader: Loader;
-    options: Options;
-    channel: EventEmitter;
-    activeApps: Array<interfaces.App>;
-    hooks: ReturnType<typeof globalLifecycle>;
-    cacheApps: Record<string, interfaces.App>;
-    appInfos: Record<string, interfaces.AppInfo>;
-    loadApp(
-      name: string,
-      opts: Partial<interfaces.AppInfo> | string,
-    ): Promise<interfaces.App | null>;
-  }
+  export interface Garfish extends GarfishInterface {}
 
   export interface AppRenderInfo {
     isMount?: boolean;
@@ -67,6 +54,13 @@ export namespace interfaces {
     }) => void;
   }
 
+  export interface SandboxConfig {
+    open?: boolean;
+    snapshot?: boolean;
+    disableWith?: boolean;
+    strictIsolation?: boolean;
+  }
+
   export interface Config {
     appID?: string;
     nested?: boolean;
@@ -77,29 +71,15 @@ export namespace interfaces {
     disableStatistics?: boolean;
     disablePreloadApp?: boolean;
     plugins?: Array<(context: Garfish) => Plugin>;
-    sandbox?:
-      | false
-      | {
-          open?: boolean;
-          snapshot?: boolean;
-          disableWith?: boolean;
-          strictIsolation?: boolean;
-        };
+    sandbox?: false | SandboxConfig;
   }
 
   export interface GlobalLifecycle extends Partial<PluginLifecycle> {
     /** @deprecated */
-    customLoader?: (
-      provider: Provider,
-      appInfo: AppInfo,
-      path: string,
-    ) => Promise<LoaderResult | void> | LoaderResult | void;
+    customLoader?: CustomerLoader;
   }
 
-  export type AppLifecycle = Pick<
-    GlobalLifecycle,
-    keyof ReturnType<typeof appLifecycle>['lifecycle']
-  >;
+  export type AppLifecycle = Pick<GlobalLifecycle, keyof AppHooks>;
 
   export type AppConfig = Pick<
     Config,
@@ -119,15 +99,8 @@ export namespace interfaces {
   export interface Options extends Config, GlobalLifecycle {}
   export interface AppInfo extends AppConfig, AppLifecycle {}
 
-  type PluginLifecycle = {
-    [k in keyof Lifecycle]: Parameters<Lifecycle[k]['on']>[0];
-  };
-
   export interface Plugin extends Partial<PluginLifecycle> {
     name: string;
     version?: string;
   }
-
-  export type Lifecycle = ReturnType<typeof appLifecycle>['lifecycle'] &
-    ReturnType<typeof globalLifecycle>['lifecycle'];
 }

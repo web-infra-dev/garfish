@@ -25,7 +25,7 @@ import { GarfishPerformance } from './plugins/performance';
 
 const DEFAULT_PROPS = new WeakMap();
 
-export class Garfish extends EventEmitter implements interfaces.Garfish {
+export class Garfish extends EventEmitter {
   public running = false;
   public version = __VERSION__;
   public flag = __GARFISH_FLAG__; // A unique identifier
@@ -188,7 +188,10 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
 
   async loadApp(
     appName: string,
-    options?: interfaces.AppInfo | string,
+    options?: Pick<
+      interfaces.AppInfo,
+      Exclude<keyof interfaces.AppInfo, 'name'>
+    >,
   ): Promise<interfaces.App | null> {
     assert(appName, 'Miss appName.');
     const appInfo = await generateAppOptions(appName, this, options);

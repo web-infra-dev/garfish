@@ -22,13 +22,12 @@ import { interfaces } from '../interface';
 import { appLifecycle } from '../hooks/lifecycle';
 import { SubAppObserver } from '../plugins/performance/subAppObserver';
 
+/** @deprecated */
 export type CustomerLoader = (
   provider: interfaces.Provider,
   appInfo: interfaces.AppInfo,
   path: string,
 ) => Promise<interfaces.LoaderResult | void> | interfaces.LoaderResult | void;
-
-export type AppInterface = App;
 
 export type AppInfo = interfaces.AppInfo & { domGetter: Element };
 

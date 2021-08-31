@@ -1,13 +1,10 @@
-import { SyncHook, AsyncHook } from '@garfish/hooks';
 import { assert, isPlainObject } from '@garfish/utils';
 
 type Plugin<T> = Partial<Record<keyof T, (...args: Array<any>) => void>> & {
   name: string;
 };
 
-export class HooksSystem<
-  T extends Record<string, SyncHook<any, any> | AsyncHook<any, any>>
-> {
+export class HooksSystem<T extends Record<string, any>> {
   lifecycle: T;
   lifecycleKeys: Array<keyof T>;
   private registerPlugins: Record<string, Plugin<T>> = {};

@@ -1,8 +1,9 @@
 import { warn } from '@garfish/utils';
 
-type Callback<T extends Array<any>, K extends any> = (...args: T) => K;
+export type Callback<T, K> = (...args: ArgsType<T>) => K;
+export type ArgsType<T> = T extends Array<any> ? T : Array<any>;
 
-export class SyncHook<T extends Array<any>, K extends any> {
+export class SyncHook<T, K> {
   type: string = '';
   listeners = new Set<Callback<T, K>>();
 
@@ -26,7 +27,7 @@ export class SyncHook<T extends Array<any>, K extends any> {
     });
   }
 
-  emit(...data: T) {
+  emit(...data: ArgsType<T>) {
     if (this.listeners.size > 0) {
       this.listeners.forEach((fn) => fn.apply(null, data));
     }
