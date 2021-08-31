@@ -44,6 +44,11 @@ GarfishInstance.registerApp({
   },
 });
 
+GarfishInstance.router.afterEach((to, from, next) => {
+  console.log(to, from);
+  next();
+});
+
 // The test environment into
 if (typeof Cypress !== 'undefined') {
   defaultConfig = {
