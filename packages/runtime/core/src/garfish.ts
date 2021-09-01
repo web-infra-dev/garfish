@@ -147,10 +147,10 @@ export class Garfish extends EventEmitter {
   }
 
   registerApp(list: interfaces.AppInfo | Array<interfaces.AppInfo>) {
-    // assert(
-    //   this.running,
-    //   '"AppInfo" can only be registered after Garfish is started.',
-    // );
+    if (!this.running) {
+      // TODO: throw error
+      warn('"AppInfo" can only be registered after Garfish is started.');
+    }
 
     const currentAdds = {};
     this.hooks.lifecycle.beforeRegisterApp.emit(list);
