@@ -7,6 +7,7 @@ import {
   __GARFISH_FLAG__,
 } from '@garfish/utils';
 import { EventEmitter } from 'events';
+import { SyncHook, AsyncHook, PluginSystem } from '@garfish/hooks';
 import { Loader, TemplateManager, JavaScriptManager } from '@garfish/loader';
 import {
   deepMergeConfig,
@@ -25,15 +26,16 @@ import { GarfishPerformance } from './plugins/performance';
 
 let numberOfNesting = 0;
 const DEFAULT_PROPS = new WeakMap();
+const apis = { SyncHook, AsyncHook };
 
 export class Garfish extends EventEmitter {
   public running = false;
   public version = __VERSION__;
   public flag = __GARFISH_FLAG__; // A unique identifier
   public loader = new Loader();
+  public hooks = globalLifecycle();
   public channel = new EventEmitter();
   public options = createDefaultOptions();
-  public hooks: interfaces.GlobalHooks;
   public externals: Record<string, any> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
   public activeApps: Array<interfaces.App> = [];
@@ -48,7 +50,6 @@ export class Garfish extends EventEmitter {
 
   constructor(options: interfaces.Options) {
     super();
-    this.hooks = globalLifecycle();
     this.setOptions(options);
     DEFAULT_PROPS.set(this, {});
     this.options.plugins?.forEach((plugin) => this.usePlugin(plugin));
@@ -60,6 +61,14 @@ export class Garfish extends EventEmitter {
       this.options = deepMergeConfig(this.options, options);
     }
     return this;
+  }
+
+  createPluginSystem<
+    T extends (syncHook: typeof SyncHook, asyncHook: typeof AsyncHook) => any
+  >(callback: T) {
+    return new PluginSystem(callback(SyncHook, AsyncHook)) as PluginSystem<
+      ReturnType<T>
+    >;
   }
 
   usePlugin(
