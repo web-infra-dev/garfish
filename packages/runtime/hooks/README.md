@@ -5,10 +5,16 @@
 ## Usage
 
 ```js
-import { PluginSystem, SyncHook } from '@garfish/hooks';
+import { AsyncHook, PluginSystem } from '@garfish/hooks';
 
 const hooks = new PluginSystem({
-  a: new SyncHook(),
+  a: new AsyncHook(),
+});
+
+hooks.usePlugin({
+  async a(a, b) {
+    console.log(a, b);
+  },
 });
 
 hooks.lifecycle.a.emit(1, 2);
