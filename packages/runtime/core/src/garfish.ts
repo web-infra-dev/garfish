@@ -36,12 +36,12 @@ export class Garfish extends EventEmitter {
   public hooks = globalLifecycle();
   public channel = new EventEmitter();
   public options = createDefaultOptions();
+  public plugins: Record<string, any> = {};
   public externals: Record<string, any> = {};
-  public appInfos: Record<string, interfaces.AppInfo> = {};
   public activeApps: Array<interfaces.App> = [];
   public cacheApps: Record<string, interfaces.App> = {};
+  public appInfos: Record<string, interfaces.AppInfo> = {};
 
-  private registeredPlugins = {};
   private loading: Record<string, Promise<any> | null> = {};
 
   get props(): Record<string, any> {
@@ -77,8 +77,8 @@ export class Garfish extends EventEmitter {
     const pluginConfig = plugin.apply(null, args) as interfaces.Plugin;
     assert(pluginConfig.name, 'The plugin must have a name.');
 
-    if (!this.registeredPlugins[pluginConfig.name]) {
-      this.registeredPlugins[pluginConfig.name] = pluginConfig;
+    if (!this.plugins[pluginConfig.name]) {
+      this.plugins[pluginConfig.name] = pluginConfig;
 
       // TODO: use weakRef
       // Register app hooks, Compatible with the old api
@@ -264,8 +264,8 @@ export class Garfish extends EventEmitter {
           );
 
           // Register plugins to app
-          for (const key in this.registeredPlugins) {
-            appInstance.hooks.usePlugin(this.registeredPlugins[key]);
+          for (const key in this.plugins) {
+            appInstance.hooks.usePlugin(this.plugins[key]);
           }
           // Cache app
           if (appInfo.cache) {
