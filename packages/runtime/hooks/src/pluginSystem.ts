@@ -1,6 +1,8 @@
-import { assert, isPlainObject } from '@garfish/utils';
+import { warn, assert, isPlainObject } from '@garfish/utils';
 
-type Plugin<T> = Partial<Record<keyof T, (...args: Array<any>) => void>> & {
+type Plugin<T extends Record<string, any>> = {
+  [k in keyof T]?: Parameters<T[k]['on']>[0];
+} & {
   name: string;
 };
 
@@ -30,6 +32,8 @@ export class PluginSystem<T extends Record<string, any>> {
           this.lifecycle[key].on(pluginLife);
         }
       }
+    } else if (__DEV__) {
+      warn(`Repeat to register plugin hooks "${pluginName}".`);
     }
   }
 

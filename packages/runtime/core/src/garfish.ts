@@ -23,6 +23,7 @@ import { GarfishOptionsLife } from './plugins/lifecycle';
 import { GarfishPreloadPlugin } from './plugins/preload';
 import { GarfishPerformance } from './plugins/performance';
 
+let numberOfNesting = 0;
 const DEFAULT_PROPS = new WeakMap();
 
 export class Garfish extends EventEmitter {
@@ -47,8 +48,8 @@ export class Garfish extends EventEmitter {
 
   constructor(options: interfaces.Options) {
     super();
-    DEFAULT_PROPS.set(this, {});
     this.setOptions(options);
+    DEFAULT_PROPS.set(this, {});
     this.options.plugins?.forEach((plugin) => this.usePlugin(plugin));
   }
 
@@ -72,6 +73,7 @@ export class Garfish extends EventEmitter {
     if (!this.registeredPlugins[pluginConfig.name]) {
       this.registeredPlugins[pluginConfig.name] = pluginConfig;
 
+      // TODO: use weakRef
       // Register app hooks, Compatible with the old api
       this.activeApps.forEach((app) => app.hooks.usePlugin(pluginConfig));
       for (const key in this.cacheApps) {
@@ -97,8 +99,13 @@ export class Garfish extends EventEmitter {
         options = filterNestedConfig(options);
 
         // Isolate global app hooks
-        this.hooks.usePlugin(GarfishOptionsLife(options)());
-        // Register plugins, nested applications have independent life cycles
+        this.hooks.usePlugin(
+          GarfishOptionsLife(
+            options,
+            // pluginName is unique
+            `nested-lifecycle-${numberOfNesting++}`,
+          )(),
+        );
         options.plugins?.forEach((plugin) =>
           this.hooks.usePlugin(plugin(this)),
         );
@@ -121,11 +128,10 @@ export class Garfish extends EventEmitter {
     }
 
     this.setOptions(options);
-
     // Register plugins
     this.usePlugin(GarfishHMRPlugin());
-    this.usePlugin(GarfishOptionsLife(this.options));
     this.usePlugin(GarfishPerformance());
+    this.usePlugin(GarfishOptionsLife(this.options, 'global-lifecycle'));
     if (!this.options.disablePreloadApp) {
       this.usePlugin(GarfishPreloadPlugin());
     }
@@ -140,10 +146,10 @@ export class Garfish extends EventEmitter {
   }
 
   registerApp(list: interfaces.AppInfo | Array<interfaces.AppInfo>) {
-    assert(
-      this.running,
-      '"AppInfo" can only be registered after Garfish is started.',
-    );
+    // assert(
+    //   this.running,
+    //   '"AppInfo" can only be registered after Garfish is started.',
+    // );
 
     const currentAdds = {};
     this.hooks.lifecycle.beforeRegisterApp.emit(list);
@@ -250,7 +256,7 @@ export class Garfish extends EventEmitter {
             this.options.customLoader,
           );
 
-          // Register plugins
+          // Register plugins to app
           for (const key in this.registeredPlugins) {
             appInstance.hooks.usePlugin(this.registeredPlugins[key]);
           }

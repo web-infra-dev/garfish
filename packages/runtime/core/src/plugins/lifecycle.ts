@@ -1,9 +1,9 @@
 import { interfaces } from '../interface';
 
-export function GarfishOptionsLife(options) {
+export function GarfishOptionsLife(options, name: string) {
   return function (): interfaces.Plugin {
     return {
-      name: 'default-life',
+      name,
       version: __VERSION__,
       ...options,
     };
