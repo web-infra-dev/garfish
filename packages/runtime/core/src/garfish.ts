@@ -26,7 +26,7 @@ import { GarfishPerformance } from './plugins/performance';
 
 let numberOfNesting = 0;
 const DEFAULT_PROPS = new WeakMap();
-const apis = { SyncHook, AsyncHook };
+const HOOKS_API = { SyncHook, AsyncHook };
 
 export class Garfish extends EventEmitter {
   public running = false;
@@ -63,12 +63,9 @@ export class Garfish extends EventEmitter {
     return this;
   }
 
-  createPluginSystem<
-    T extends (syncHook: typeof SyncHook, asyncHook: typeof AsyncHook) => any
-  >(callback: T) {
-    return new PluginSystem(callback(SyncHook, AsyncHook)) as PluginSystem<
-      ReturnType<T>
-    >;
+  createPluginSystem<T extends (api: typeof HOOKS_API) => any>(callback: T) {
+    const hooks = callback(HOOKS_API);
+    return new PluginSystem<ReturnType<T>>(hooks);
   }
 
   usePlugin(

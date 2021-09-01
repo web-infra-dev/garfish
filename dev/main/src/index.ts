@@ -31,3 +31,20 @@ document.getElementById('reactBtn').onclick = async () => {
     await prevApp.mount();
   }
 };
+
+// Plugin test
+const hooks = GarfishInstance.createPluginSystem(({ SyncHook, AsyncHook }) => {
+  return {
+    create: new AsyncHook<[number], string>(),
+  };
+});
+
+hooks.usePlugin({
+  name: 'test',
+  create(a) {
+    console.log(a);
+    return '';
+  },
+});
+
+hooks.lifecycle.create.emit(123);
