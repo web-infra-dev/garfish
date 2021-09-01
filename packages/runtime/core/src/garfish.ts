@@ -31,9 +31,9 @@ export class Garfish extends EventEmitter {
   public version = __VERSION__;
   public flag = __GARFISH_FLAG__; // A unique identifier
   public loader = new Loader();
-  public hooks = globalLifecycle();
   public channel = new EventEmitter();
   public options = createDefaultOptions();
+  public hooks: interfaces.GlobalHooks;
   public externals: Record<string, any> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
   public activeApps: Array<interfaces.App> = [];
@@ -48,6 +48,7 @@ export class Garfish extends EventEmitter {
 
   constructor(options: interfaces.Options) {
     super();
+    this.hooks = globalLifecycle();
     this.setOptions(options);
     DEFAULT_PROPS.set(this, {});
     this.options.plugins?.forEach((plugin) => this.usePlugin(plugin));

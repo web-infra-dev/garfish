@@ -8,12 +8,6 @@ import { Garfish as GarfishInterface } from './garfish';
 import { CustomerLoader, App as AppInterface } from './module/app';
 import { appLifecycle, globalLifecycle } from './hooks/lifecycle';
 
-type AppHooks = ReturnType<typeof appLifecycle>['lifecycle'];
-type Lifecycle = AppHooks & ReturnType<typeof globalLifecycle>['lifecycle'];
-type PluginLifecycle = {
-  [k in keyof Lifecycle]: Parameters<Lifecycle[k]['on']>[0];
-};
-
 export namespace interfaces {
   export interface StyleManagerInterface extends StyleManager {}
   export interface ModuleManagerInterface extends ModuleManager {}
@@ -25,6 +19,14 @@ export namespace interfaces {
     modules: Array<ModuleManager>;
     link: Array<StyleManagerInterface>;
   }
+
+  export type AppHooks = ReturnType<typeof appLifecycle>;
+  export type GlobalHooks = ReturnType<typeof globalLifecycle>;
+
+  export type Lifecycle = AppHooks['lifecycle'] & GlobalHooks['lifecycle'];
+  export type PluginLifecycle = {
+    [k in keyof Lifecycle]: Parameters<Lifecycle[k]['on']>[0];
+  };
 
   export type DomGetter =
     | Element
@@ -79,7 +81,7 @@ export namespace interfaces {
     customLoader?: CustomerLoader;
   }
 
-  export type AppLifecycle = Pick<GlobalLifecycle, keyof AppHooks>;
+  export type AppLifecycle = Pick<GlobalLifecycle, keyof AppHooks['lifecycle']>;
 
   export type AppConfig = Pick<
     Config,

@@ -30,8 +30,8 @@ export const timeoutModule = () => {
   return {
     recover,
     override: {
-      setTimeout: setTimeout,
-      clearTimeout: clearTimeout,
+      setTimeout,
+      clearTimeout,
     },
   };
 };
@@ -63,8 +63,8 @@ export const intervalModule = () => {
   return {
     recover,
     override: {
-      setInterval: setInterval,
-      clearInterval: clearInterval,
+      setInterval,
+      clearInterval,
     },
   };
 };

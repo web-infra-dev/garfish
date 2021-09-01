@@ -1,11 +1,15 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+  devtool: 'source-map',
+
+  mode: process.env.TEST_ENV ? 'production' : 'development',
+
   entry: {
     main: './src/index.ts',
   },
-  mode: process.env.TEST_ENV ? 'production' : 'development',
+
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
@@ -13,34 +17,33 @@ module.exports = {
     globalObject: 'window',
     jsonpFunction: 'main-jsonp-function',
   },
-  devtool: 'source-map',
+
   devServer: {
-    port: '2333',
-    clientLogLevel: 'warning',
-    disableHostCheck: true,
-    compress: true,
     open: true,
+    port: '2333',
+    compress: true,
+    disableHostCheck: true,
+    historyApiFallback: true,
+    clientLogLevel: 'warning',
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
-    historyApiFallback: true,
-    overlay: { warnings: false, errors: true },
-    proxy: {
-      // '/img': 'http://localhost:9090',
-      // '/static': 'http://localhost:3000',
+    overlay: {
+      errors: true,
+      warnings: false,
     },
   },
+
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
+
   module: {
     rules: [
       {
         test: /\.ts(x)?$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'ts-loader',
-        },
+        use: { loader: 'ts-loader' },
       },
       {
         test: /\.(le|c)ss$/,
@@ -48,10 +51,11 @@ module.exports = {
       },
     ],
   },
+
   plugins: [
     new HtmlWebpackPlugin({
-      template: './index.html',
       inject: true,
+      template: './index.html',
     }),
   ],
 };

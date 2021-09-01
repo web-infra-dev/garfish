@@ -110,8 +110,10 @@ function allExternal() {
     }
     return deps;
   }
-  return [...base, ...deps];
+  return [...new Set(base, deps)];
 }
+
+console.log(allExternal(), 'xxx');
 
 function extractTsDeclare() {
   let pkgDir = '';

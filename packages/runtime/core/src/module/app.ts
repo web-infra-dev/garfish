@@ -57,7 +57,7 @@ export class App {
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
   public appInfo: AppInfo;
-  public hooks = appLifecycle();
+  public hooks: interfaces.AppHooks;
   public provider: interfaces.Provider;
   public entryManager: TemplateManager;
   /** @deprecated */
@@ -105,6 +105,7 @@ export class App {
     this.customLoader = customLoader;
 
     // Register hooks
+    this.hooks = appLifecycle();
     this.hooks.usePlugin(appInfo);
 
     // Save all the resources to address

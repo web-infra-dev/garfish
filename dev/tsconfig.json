@@ -4,23 +4,18 @@
     "rootDir": ".",
     "target": "es6",
     "outDir": "dist",
-    "module": "ESNext",
+    "module": "esnext",
     "lib": ["es6","dom"],
     "moduleResolution": "node",
-    "allowJs": true,
     "sourceMap": true,
     "declaration": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "paths": {
-      "@garfish/*": ["packages/runtime/*/src"]
-    }
   },
   "include": [
-    "packages/runtime/*/src",
-    "packages/runtime/*/__tests__",
-    "packages/runtime/global.d.ts"
+    "*/src",
+    "./config.json"
   ]
 }
