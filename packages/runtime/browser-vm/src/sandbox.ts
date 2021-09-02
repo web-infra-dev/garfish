@@ -71,7 +71,6 @@ export class Sandbox {
   public initComplete = false;
   public global?: Window;
   public options: SandboxOptions;
-  public tempEnvVariables: Array<PropertyKey> = [];
   public replaceGlobalVariables: ReplaceGlobalVariables;
   public deferClearEffects: Set<() => void> = new Set();
   public isExternalGlobalVariable: Set<PropertyKey> = new Set();
@@ -144,7 +143,6 @@ export class Sandbox {
     this.global = null;
     this.optimizeCode = '';
     this.initComplete = false;
-    this.tempEnvVariables = [];
     this.deferClearEffects.clear();
     this.isExternalGlobalVariable.clear();
     this.replaceGlobalVariables.createdList = [];
@@ -267,7 +265,6 @@ export class Sandbox {
       code = !disableWith
         ? `with(window) {;${this.optimizeCode + code}}`
         : code;
-      this.tempEnvVariables = Object.keys(env);
 
       if (openSandbox) {
         evalWithEnv(code, {
@@ -288,7 +285,6 @@ export class Sandbox {
       throw e;
     } finally {
       revertCurrentScript();
-      this.tempEnvVariables = [];
     }
   }
 

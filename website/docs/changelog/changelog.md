@@ -1,3 +1,10 @@
+---
+title: 更新日志
+slug: /changelog
+collapsed: false
+order: 1
+---
+
 ## [0.1.5](https://github.com/modern-js-dev/garfish/compare/v0.1.4...v0.1.5) (2021-08-31)
 
 ### Bug Fixes

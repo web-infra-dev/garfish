@@ -1,6 +1,7 @@
 {
   "name": "garfish-monorepo",
   "private": true,
+  "description": "a powerful micro front-end framework",
   "workspaces": {
     "packages": [
       "packages/runtime/*",
@@ -11,24 +12,24 @@
       "dev/react"
     ]
   },
-  "description": "a powerful micro front-end framework",
   "scripts": {
     "dev": "cross-env TEST_ENV=true lerna exec --scope '@garfish-dev/*' -- yarn start",
     "dev:core": "yarn dev core",
     "dev:docs": "yarn workspace garfish-docs start",
     "test:e2e": "cross-env node scripts/e2e.js & cross-env TEST_ENV=true yarn dev",
     "test:e2e:open": "cross-env TEST_ENV_OPEN=true node scripts/e2e.js & cross-env TEST_ENV=true yarn dev",
-    "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "pkg": "node scripts/createPackage.js",
+    "cy:open": "cypress open",
     "build": "node scripts/build.js",
     "build:all": "node scripts/build.js -m -e",
     "build:docs": "lerna run build --stream --scope garfish-docs",
     "build:watch": "yarn link garfish && lerna exec -- yarn link && node scripts/build.js -m -e  -f=esm-bundler -w",
+    "pkg": "node scripts/createPackage.js",
     "reset": "lerna clean --yes && rm -rf node_modules",
     "setup": "yarn reset && yarn install --registry=https://registry.npmjs.org",
-    "prepublishOnly": "yarn test && yarn build:all && yarn changelog",
-    "changelog": "node scripts/changelog.js",
+    "prepublishOnly": "yarn test && yarn build:al",
+    "postpublish": "yarn changelog && node scripts/asyncBnpm.js",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -p ",
     "test": "node scripts/jestTest.js",
     "test:cover": "node scripts/jestTest.js --coverage",
     "ls-lint": "ls-lint",
@@ -81,6 +82,7 @@
     "@vue/cli-plugin-babel": "~4.4.0",
     "@vue/cli-plugin-eslint": "~4.4.0",
     "@vue/cli-service": "~4.4.0",
+    "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0",
     "chalk": "^4.1.0",
     "codecov": "^3.8.1",
@@ -112,5 +114,8 @@
     "wait-on": "^6.0.0",
     "workspace-tools": "^0.16.2"
   },
-  "version": "0.0.58"
+  "version": "0.1.3",
+  "dependencies": {
+    "conventional-changelog-core": "^4.2.3"
+  }
 }

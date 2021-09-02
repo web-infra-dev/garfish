@@ -117,6 +117,8 @@ export default function BrowserVm() {
           protectVariable: () => [
             ...(Garfish?.options?.protectVariable || []),
             ...(appInfo.protectVariable || []),
+            ...(appInstance &&
+              Object.keys(appInstance.getExecScriptEnv(false) || [])),
           ],
           insulationVariable: () => [
             ...(Garfish?.options?.insulationVariable || []),
@@ -146,17 +148,31 @@ export default function BrowserVm() {
             },
           });
 
+          const originExecScript = sandbox.execScript;
+          sandbox.execScript = (code, env, url, options) => {
+            return originExecScript.call(
+              sandbox,
+              code,
+              {
+                // For application of environment variables
+                ...env,
+                ...appInstance.getExecScriptEnv(false),
+              },
+              url,
+              options,
+            );
+          };
+
           appInstance.vmSandbox = sandbox;
           appInstance.global = sandbox.global;
           // Rewrite `app.runCode`
-          // @ts-ignore
-          appInstance.runCode = (...args) => sandbox.execScript(...args);
-
+          appInstance.runCode = (...args) => {
+            return originExecScript.apply(sandbox, args);
+          };
           // Use sandbox document
           if (appInstance.entryManager.DOMApis) {
             appInstance.entryManager.DOMApis.document = sandbox.global.document;
           }
-
           // Use `Garfish.loader` instead of the `sandbox.loader`
           sandbox.loader = Garfish.loader;
         }
