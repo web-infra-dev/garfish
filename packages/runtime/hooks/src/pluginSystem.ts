@@ -37,7 +37,7 @@ export class PluginSystem<T extends Record<string, any>> {
     }
   }
 
-  removePlugin(pluginName) {
+  removePlugin(pluginName: string) {
     assert(pluginName, 'Must provide a name.');
     const plugin = this.registerPlugins[pluginName];
     assert(plugin, `plugin "${pluginName}" is not registered.`);

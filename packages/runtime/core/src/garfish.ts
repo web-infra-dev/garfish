@@ -36,10 +36,10 @@ export class Garfish extends EventEmitter {
   public hooks = globalLifecycle();
   public channel = new EventEmitter();
   public options = createDefaultOptions();
-  public plugins: Record<string, any> = {};
   public externals: Record<string, any> = {};
   public activeApps: Array<interfaces.App> = [];
   public cacheApps: Record<string, interfaces.App> = {};
+  public plugins: Record<string, interfaces.Plugin> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
 
   private loading: Record<string, Promise<any> | null> = {};
