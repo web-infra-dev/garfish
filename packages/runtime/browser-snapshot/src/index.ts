@@ -49,7 +49,7 @@ export default function BrowserSnapshot(op?: BrowserConfig) {
         if (!appInstance.snapshotSandbox) return;
         appInstance.snapshotSandbox.activate();
       },
-      afterUnMount(appInfo, appInstance) {
+      afterUnmount(appInfo, appInstance) {
         if (!appInstance.snapshotSandbox) return;
         appInstance.snapshotSandbox.deactivate();
       },
