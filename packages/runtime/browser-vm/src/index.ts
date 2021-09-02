@@ -1,7 +1,8 @@
 import { interfaces } from '@garfish/core';
+import type * as Hooks from '@garfish/hooks';
 import { warn, isPlainObject } from '@garfish/utils';
-import { Sandbox } from './sandbox';
 import { Module, SandboxOptions } from './types';
+import { Sandbox } from './sandbox';
 export { Sandbox } from './sandbox';
 
 // export declare module
@@ -37,6 +38,10 @@ declare module '@garfish/core' {
     export interface Plugin {
       openVm?: boolean;
     }
+
+    export interface Plugins {
+      'browser-vm': ReturnType<typeof createVMSandboxHooks>;
+    }
   }
 }
 
@@ -63,6 +68,12 @@ const compatibleOldModulesType = (modules): Array<Module> => {
   return [];
 };
 
+const createVMSandboxHooks = (Garfish: interfaces.Garfish) => {
+  return Garfish.createPluginSystem(({ SyncHook }) => ({
+    create: new SyncHook<[number], void>(),
+  }));
+};
+
 // Default export Garfish plugin
 export default function BrowserVm() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
@@ -80,9 +91,12 @@ export default function BrowserVm() {
       if (key in global) global[key] = value;
     };
 
+    const hooks = createVMSandboxHooks(Garfish);
     // Use the default Garfish instance attributes
     let config: Partial<SandboxOptions> = { openSandbox: true };
+
     const options: interfaces.Plugin = {
+      hooks,
       openVm: true,
       name: 'browser-vm',
       version: __VERSION__,

@@ -4,6 +4,7 @@ import {
   TemplateManager,
   JavaScriptManager,
 } from '@garfish/loader';
+import { PluginSystem } from '@garfish/hooks';
 import { Garfish as GarfishInterface } from './garfish';
 import { CustomerLoader, App as AppInterface } from './module/app';
 import { appLifecycle, globalLifecycle } from './hooks/lifecycle';
@@ -104,5 +105,9 @@ export namespace interfaces {
   export interface Plugin extends Partial<PluginLifecycle> {
     name: string;
     version?: string;
+    hooks?: PluginSystem<any>; // Plugin's own plugin
   }
+
+  // You can be extended plug-in type dynamic registration
+  export interface Plugins {}
 }

@@ -38,8 +38,8 @@ export class Garfish extends EventEmitter {
   public options = createDefaultOptions();
   public externals: Record<string, any> = {};
   public activeApps: Array<interfaces.App> = [];
+  public plugins: interfaces.Plugins = {} as any;
   public cacheApps: Record<string, interfaces.App> = {};
-  public plugins: Record<string, interfaces.Plugin> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
 
   private loading: Record<string, Promise<any> | null> = {};
