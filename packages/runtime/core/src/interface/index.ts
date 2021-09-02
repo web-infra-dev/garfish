@@ -207,8 +207,8 @@ export namespace interfaces {
     >;
     beforeMount: SyncHook<[AppInfo, interfaces.App], void>;
     afterMount: SyncHook<[AppInfo, interfaces.App], void>;
-    beforeUnMount: SyncHook<[AppInfo, interfaces.App], void>;
-    afterUnMount: SyncHook<[AppInfo, interfaces.App], void>;
+    beforeUnmount: SyncHook<[AppInfo, interfaces.App], void>;
+    afterUnmount: SyncHook<[AppInfo, interfaces.App], void>;
     errorLoadApp: SyncHook<[Error, AppInfo], void>;
     errorMountApp: SyncHook<[Error, AppInfo], void>;
     errorUnmountApp: SyncHook<[Error, AppInfo], void>;
