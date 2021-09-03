@@ -105,17 +105,11 @@ export class Garfish extends EventEmitter {
         options = deepMergeConfig(mainOptions, options);
         options = filterNestedConfig(options);
 
-        // Isolate global app hooks
-        this.hooks.usePlugin(
-          GarfishOptionsLife(
-            options,
-            // pluginName is unique
-            `nested-lifecycle-${numberOfNesting++}`,
-          )(),
+        // `pluginName` is unique
+        this.usePlugin(
+          GarfishOptionsLife(options, `nested-lifecycle-${numberOfNesting++}`),
         );
-        options.plugins?.forEach((plugin) =>
-          this.hooks.usePlugin(plugin(this)),
-        );
+        options.plugins?.forEach((plugin) => this.usePlugin(plugin));
 
         if (options.apps) {
           this.registerApp(
