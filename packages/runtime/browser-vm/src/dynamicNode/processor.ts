@@ -242,12 +242,12 @@ export class DynamicNodeProcessor {
       }
     }
 
+    // Fix the bug of react hmr
     if (this.is('iframe') && typeof this.el.onload === 'function') {
-      const self = this;
-      const originOnload = self.el.onload;
-      self.el.onload = function () {
-        // Fix the bug of react hmr
-        def(self.el.contentWindow, 'parent', self.sandbox.global);
+      const { el, sandbox } = this;
+      const originOnload = el.onload;
+      el.onload = function () {
+        def(el.contentWindow, 'parent', sandbox.global);
         return originOnload.apply(this, arguments);
       };
     }
