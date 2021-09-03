@@ -5,7 +5,6 @@ import { Module } from './types';
 import { Sandbox } from './sandbox';
 
 declare module '@garfish/core' {
-  // This type declaration is used to extend garfish core
   export interface Garfish {
     getGlobalObject: () => Window & typeof globalThis;
     setGlobalValue(key: string, value?: any): void;
@@ -62,21 +61,36 @@ function createHooks(Garfish: interfaces.Garfish) {
   }));
 }
 
-function expandGarfishAPI(Garfish: interfaces.Garfish) {
-  Garfish.getGlobalObject = function () {
-    return Sandbox.getNativeWindow();
+function rewriteAppAndSandbox(
+  Garfish: interfaces.Garfish,
+  app: interfaces.App,
+  sandbox: Sandbox,
+) {
+  const originExecScript = sandbox.execScript;
+  // Rewrite sandbox attributes
+  sandbox.loader = Garfish.loader;
+  sandbox.execScript = (code, env, url, options) => {
+    return originExecScript.call(
+      sandbox,
+      code,
+      {
+        // For application of environment variables
+        ...env,
+        ...app.getExecScriptEnv(false),
+      },
+      url,
+      options,
+    );
   };
-
-  Garfish.setGlobalValue = function (key, value) {
-    return (this.getGlobalObject()[key] = value);
+  // Rewrite app attributes
+  app.vmSandbox = sandbox;
+  app.global = sandbox.global;
+  app.runCode = function () {
+    return originExecScript.apply(sandbox, arguments);
   };
-
-  Garfish.clearEscapeEffect = function (key, value) {
-    const global = this.getGlobalObject();
-    if (key in global) {
-      global[key] = value;
-    }
-  };
+  if (app.entryManager.DOMApis) {
+    app.entryManager.DOMApis.document = sandbox.global.document;
+  }
 }
 
 function createOptions(Garfish: interfaces.Garfish) {
@@ -89,68 +103,39 @@ function createOptions(Garfish: interfaces.Garfish) {
     version: __VERSION__,
 
     afterLoad(appInfo, appInstance) {
-      // Support for instance configuration, to ensure that old versions compatible
-      const appSandboxConfig = appInfo.sandbox;
-
       if (
-        !canSupport ||
-        !appInstance ||
-        appSandboxConfig === false ||
-        appSandboxConfig.open === false ||
-        appSandboxConfig.snapshot
+        canSupport &&
+        appInstance &&
+        appInfo.sandbox !== false && // Ensure that old versions compatible
+        appInfo.sandbox.open !== false &&
+        appInfo.sandbox.snapshot
       ) {
-        return;
-      }
+        rewriteAppAndSandbox(
+          Garfish,
+          appInstance,
+          new Sandbox({
+            openSandbox: true,
+            namespace: appInfo.name,
+            sourceList: appInstance.sourceList,
+            baseUrl: appInstance.entryManager.url,
+            strictIsolation: appInstance.strictIsolation,
+            modules: compatibleOldModule(appInfo.sandbox.modules),
 
-      const sandbox = new Sandbox({
-        openSandbox: true,
-        namespace: appInfo.name,
-        sourceList: appInstance.sourceList,
-        baseUrl: appInstance.entryManager.url,
-        strictIsolation: appInstance.strictIsolation,
-        modules: compatibleOldModule(appSandboxConfig.modules),
+            el: () => appInstance.htmlNode,
 
-        el: () => appInstance.htmlNode,
+            insulationVariable: () => {
+              return webpackAttrs
+                .concat(appInfo.insulationVariable || [])
+                .filter(Boolean);
+            },
 
-        insulationVariable: () => {
-          return webpackAttrs
-            .concat(appInfo.insulationVariable || [])
-            .filter(Boolean);
-        },
-
-        protectVariable: () => [
-          ...(appInfo.protectVariable || []),
-          ...(appInstance &&
-            Object.keys(appInstance.getExecScriptEnv(false) || [])),
-        ],
-      });
-
-      const originExecScript = sandbox.execScript;
-
-      // // Rewrite sandbox attributes
-      sandbox.loader = Garfish.loader;
-      sandbox.execScript = (code, env, url, options) => {
-        return originExecScript.call(
-          sandbox,
-          code,
-          {
-            // For application of environment variables
-            ...env,
-            ...appInstance.getExecScriptEnv(false),
-          },
-          url,
-          options,
+            protectVariable: () => [
+              ...(appInfo.protectVariable || []),
+              ...(appInstance &&
+                Object.keys(appInstance.getExecScriptEnv(false) || [])),
+            ],
+          }),
         );
-      };
-
-      // Rewrite app attributes
-      appInstance.vmSandbox = sandbox;
-      appInstance.global = sandbox.global;
-      appInstance.runCode = function () {
-        return originExecScript.apply(sandbox, arguments);
-      };
-      if (appInstance.entryManager.DOMApis) {
-        appInstance.entryManager.DOMApis.document = sandbox.global.document;
       }
     },
 
@@ -172,10 +157,23 @@ function createOptions(Garfish: interfaces.Garfish) {
   return options;
 }
 
-// Default export Garfish plugin
+// Export Garfish plugin
 export function GarfishBrowserVm() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
-    expandGarfishAPI(Garfish);
+    Garfish.getGlobalObject = function () {
+      return Sandbox.getNativeWindow();
+    };
+
+    Garfish.setGlobalValue = function (key, value) {
+      return (this.getGlobalObject()[key] = value);
+    };
+
+    Garfish.clearEscapeEffect = function (key, value) {
+      const global = this.getGlobalObject();
+      if (key in global) {
+        global[key] = value;
+      }
+    };
     return createOptions(Garfish);
   };
 }
