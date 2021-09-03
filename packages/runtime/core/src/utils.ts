@@ -74,10 +74,7 @@ export const fetchStaticResources = (
               jsManager.setAsyncAttribute(isAsync(async));
               return jsManager;
             })
-            .catch((e) => {
-              __DEV__ && warn(e);
-              return null;
-            });
+            .catch(() => null);
         } else if (node.children.length > 0) {
           const code = (node.children[0] as Text).content;
           if (code) {
@@ -107,10 +104,7 @@ export const fetchStaticResources = (
               styleManager.correctPath();
               return styleManager;
             })
-            .catch((e) => {
-              __DEV__ && warn(e);
-              return null;
-            });
+            .catch(() => null);
         }
       })
       .filter(Boolean),
@@ -132,10 +126,7 @@ export const fetchStaticResources = (
               moduleManager.setAlias(alias);
               return moduleManager;
             })
-            .catch((e) => {
-              __DEV__ && warn(e);
-              return null;
-            });
+            .catch(() => null);
         } else if (alias) {
           warn(`Asynchronous loading module, the alias "${alias}" is invalid.`);
         }

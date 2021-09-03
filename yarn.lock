@@ -1444,11 +1444,6 @@
     "@garfish/loader" "^0.0.49"
     "@garfish/utils" "^0.0.49"
 
-"@garfish/hooks@0.1.5":
-  version "0.1.5"
-  resolved "https://registry.npmjs.org/@garfish/hooks/-/hooks-0.1.5.tgz#c13ec1d4f9bb0b80e270156c2cc002c1c8782bf5"
-  integrity sha512-K6u6B2a0xm8cAd8V7TOBrj9zOz+KyIuRd/3wL4BThC/8WapH0gix+hEr1RdOeydobz3Whqh2jgS6STIcZe/zeQ==
-
 "@garfish/hooks@^0.0.24":
   version "0.0.24"
   resolved "https://registry.npmjs.org/@garfish/hooks/-/hooks-0.0.24.tgz#f9a6c3e3e9cd617e95edb67caba55f98b542d2a7"
