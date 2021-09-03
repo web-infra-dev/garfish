@@ -9,13 +9,26 @@
       </div>
       <div>
         <ul class="todo-list">
-           <li v-for="todo in todos" :key="todo.id">{{todo.text}}<el-button type="danger" icon="el-icon-delete" size="mini" circle @click="done(todo.id)" v-if="!todo.done"></el-button></li>
+           <li v-for="todo in todos" :key="todo.id">
+            {{ todo.text }}
+            <el-button
+              circle
+              size="mini"
+              type="danger"
+              class="delete-btn"
+              icon="el-icon-delete"
+              v-if="!todo.done"
+              @click="done(todo.id)"
+            />
+          </li>
         </ul>
       </div>
     </div>
 </template>
+
 <script>
-import { mapState } from 'vuex'
+import { mapState } from 'vuex';
+
 export default {
   data() {
     return  {
@@ -51,7 +64,14 @@ export default {
     margin-bottom: 20px;
   }
   li {
+    width: 100%;
     padding-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    .delete-btn {
+      margin-right: 8px;
+    }
   }
 }
 .todo-add {
@@ -65,5 +85,4 @@ export default {
     margin-left: 10px;
   }
 }
-
 </style>

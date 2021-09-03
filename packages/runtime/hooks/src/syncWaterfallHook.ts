@@ -1,7 +1,7 @@
 import { warn, error } from '@garfish/utils';
 import { SyncHook } from './syncHook';
 
-export class LoaderHook<T> extends SyncHook<[T], T> {
+export class SyncWaterfallHook<T> extends SyncHook<[T], T> {
   public onerror: (errMsg: string | Error) => void = error;
 
   constructor(type: string) {

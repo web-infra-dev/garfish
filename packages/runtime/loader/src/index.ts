@@ -1,4 +1,4 @@
-import { SyncHook, LoaderHook, PluginSystem } from '@garfish/hooks';
+import { SyncHook, SyncWaterfallHook, PluginSystem } from '@garfish/hooks';
 import { warn, isJs, isCss, isHtml, __LOADER_FLAG__ } from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
@@ -40,12 +40,12 @@ export class Loader {
 
   public hooks = new PluginSystem({
     error: new SyncHook<[Error], void>(),
-    loaded: new LoaderHook<LoadedHookArgs<Manager>>('loaded'),
-    clear: new LoaderHook<{
+    loaded: new SyncWaterfallHook<LoadedHookArgs<Manager>>('loaded'),
+    clear: new SyncWaterfallHook<{
       scope: string;
       fileType?: FileTypes;
     }>('clear'),
-    beforeLoad: new LoaderHook<{
+    beforeLoad: new SyncWaterfallHook<{
       url: string;
       requestConfig: ResponseInit;
     }>('beforeLoad'),
