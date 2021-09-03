@@ -1,11 +1,12 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import Monitoring from './components/monitoring.js';
 import HelloGarfish from './components/helloGarfish.js';
 import RemoteComponent from './components/remoteComponent.js';
-import Monitoring from './components/monitoring.js';
 // sandbox
 import SetProxyVariable from './components/sandbox/setProxyVariable.js';
 import './App.css';
+
 const LazyComponent = React.lazy(() => import('./components/lazyComponent.js'));
 
 export default function App({ basename }) {
@@ -31,6 +32,7 @@ export default function App({ basename }) {
             <Link to="/set-proxy-variable">sandbox set proxy variable</Link>
           </li>
         </ul>
+
         <Switch>
           <Route exact path="/">
             <HelloGarfish />

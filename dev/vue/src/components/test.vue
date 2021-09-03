@@ -28,10 +28,12 @@ export default {
       }
     }
   },
+
   computed: mapState([
     // 映射 this.count 为 store.state.count
     'todos'
   ]),
+
   methods: {
     add() {
       this.$store.dispatch('add', this.item)

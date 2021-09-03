@@ -38,10 +38,12 @@ export default {
       }
     }
   },
+
   computed: mapState([
     // 映射 this.count 为 store.state.count
     'todos'
   ]),
+
   methods: {
     add() {
       this.$store.dispatch('add', this.item)
@@ -70,7 +72,7 @@ export default {
     align-items: center;
     justify-content: flex-end;
     .delete-btn {
-      margin-right: 8px;
+      margin-left: 8px;
     }
   }
 }

@@ -15,8 +15,7 @@ export default {
       window.Garfish.router.push({ path: '/vueApp', basename: this.basename })
     }
   },
-  components: {
-  }
+  components: {}
 }
 </script>
 

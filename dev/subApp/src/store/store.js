@@ -3,6 +3,7 @@ export default {
     id: 1,
     todos: [{ id: 1, text: 'write a vue mudole demo', done: false }],
   },
+
   mutations: {
     done(state, id) {
       // state.todos.forEach((item) => item.id === id && (item.done = true));
@@ -14,6 +15,7 @@ export default {
       state.todos.push(item);
     },
   },
+
   actions: {
     done(context, id) {
       context.commit('done', id);
@@ -22,6 +24,7 @@ export default {
       context.commit('add', item);
     },
   },
+
   getters: {
     doneTodos: (state) => state.todos.filter((todo) => todo.done),
   },
