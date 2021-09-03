@@ -17,17 +17,21 @@ declare module '@garfish/core' {
       getGlobalObject: () => Window & typeof globalThis;
       clearEscapeEffect: (key: string, value?: any) => void;
     }
+
     export interface SandboxConfig {
       modules?: Array<Module> | Record<string, Module>;
     }
+
     export interface Config {
       protectVariable?: PropertyKey[];
       insulationVariable?: PropertyKey[];
       sandbox?: false | SandboxConfig;
     }
+
     export interface App {
       vmSandbox?: Sandbox;
     }
+
     export interface Plugins {
       'browser-vm': ReturnType<typeof createHooks>;
     }
@@ -42,7 +46,6 @@ const webpackAttrs: PropertyKey[] = [
   __DEV__ ? 'webpackHotUpdate' : '',
 ];
 
-// Compatible old api
 function compatibleOldModule(modules) {
   if (isPlainObject(modules)) {
     __DEV__ && warn('"vm sandbox" modules should be an array');
@@ -104,39 +107,44 @@ function createOptions(Garfish: interfaces.Garfish) {
 
     afterLoad(appInfo, appInstance) {
       if (
-        canSupport &&
-        appInstance &&
-        appInfo.sandbox !== false && // Ensure that old versions compatible
-        appInfo.sandbox.open !== false &&
+        !canSupport ||
+        !appInstance ||
+        appInfo.sandbox === false || // Ensure that old versions compatible
+        appInfo.sandbox.open === false ||
         appInfo.sandbox.snapshot
       ) {
-        rewriteAppAndSandbox(
-          Garfish,
-          appInstance,
-          new Sandbox({
-            openSandbox: true,
-            namespace: appInfo.name,
-            sourceList: appInstance.sourceList,
-            baseUrl: appInstance.entryManager.url,
-            strictIsolation: appInstance.strictIsolation,
-            modules: compatibleOldModule(appInfo.sandbox.modules),
+        return;
+      }
 
-            el: () => appInstance.htmlNode,
+      rewriteAppAndSandbox(
+        Garfish,
+        appInstance,
+        new Sandbox({
+          openSandbox: true,
+          namespace: appInfo.name,
+          sourceList: appInstance.sourceList,
+          baseUrl: appInstance.entryManager.url,
+          strictIsolation: appInstance.strictIsolation,
+          modules: compatibleOldModule(appInfo.sandbox.modules),
 
-            insulationVariable: () => {
-              return webpackAttrs
-                .concat(appInfo.insulationVariable || [])
-                .filter(Boolean);
-            },
+          el: () => appInstance.htmlNode,
 
-            protectVariable: () => [
+          insulationVariable: () => {
+            return [
+              ...webpackAttrs,
+              ...(appInfo.insulationVariable || []),
+            ].filter(Boolean);
+          },
+
+          protectVariable: () => {
+            return [
               ...(appInfo.protectVariable || []),
               ...(appInstance &&
                 Object.keys(appInstance.getExecScriptEnv(false) || [])),
-            ],
-          }),
-        );
-      }
+            ].filter(Boolean);
+          },
+        }),
+      );
     },
 
     // If the app is uninstalled, the sandbox needs to clear all effects and then reset
