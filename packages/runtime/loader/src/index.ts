@@ -1,11 +1,11 @@
-import { LoaderHook, PluginSystem } from '@garfish/hooks';
-import { isJs, isCss, isHtml, __LOADER_FLAG__ } from '@garfish/utils';
-import { request, copyResult, mergeConfig } from './utils';
-import { FileTypes, cachedDataSet, AppCacheContainer } from './appCache';
+import { SyncHook, LoaderHook, PluginSystem } from '@garfish/hooks';
+import { warn, isJs, isCss, isHtml, __LOADER_FLAG__ } from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
 import { TemplateManager } from './managers/template';
 import { JavaScriptManager } from './managers/javascript';
+import { request, copyResult, mergeConfig } from './utils';
+import { FileTypes, cachedDataSet, AppCacheContainer } from './appCache';
 
 // Export types and manager constructor
 export * from './managers/style';
@@ -29,25 +29,8 @@ interface LoadedHookArgs<T extends Manager> {
   };
 }
 
-function createLifecycle() {
-  return new PluginSystem({
-    clear: new LoaderHook<{
-      scope: string;
-      fileType?: FileTypes;
-    }>('clear'),
-
-    loaded: new LoaderHook<LoadedHookArgs<Manager>>('loaded'),
-
-    beforeLoad: new LoaderHook<{
-      url: string;
-      requestConfig: ResponseInit;
-    }>('beforeLoad'),
-  });
-}
-
 export class Loader {
   public personalId = __LOADER_FLAG__;
-  public hooks = createLifecycle();
   public StyleManager = StyleManager;
   public ModuleManager = ModuleManager;
   public TemplateManager = TemplateManager;
@@ -55,9 +38,20 @@ export class Loader {
   /** @deprecated */
   public requestConfig: RequestInit | ((url: string) => RequestInit);
 
-  private options: {
-    maxSize?: number; // The unit is "b"
-  };
+  public hooks = new PluginSystem({
+    error: new SyncHook<[Error], void>(),
+    loaded: new LoaderHook<LoadedHookArgs<Manager>>('loaded'),
+    clear: new LoaderHook<{
+      scope: string;
+      fileType?: FileTypes;
+    }>('clear'),
+    beforeLoad: new LoaderHook<{
+      url: string;
+      requestConfig: ResponseInit;
+    }>('beforeLoad'),
+  });
+
+  private options: { maxSize?: number }; // The unit is "b"
   private loadingList: Record<string, Promise<any>>;
   private cacheStore: { [name: string]: AppCacheContainer };
 
@@ -128,9 +122,6 @@ export class Loader {
     });
 
     loadingList[url] = request(resOpts.url, resOpts.requestConfig)
-      .finally(() => {
-        loadingList[url] = null;
-      })
       .then(({ code, mimeType, result }) => {
         let managerCtor, fileType: FileTypes;
 
@@ -167,6 +158,14 @@ export class Loader {
 
         appCacheContainer.set(url, data.value, fileType);
         return copyResult(data.value as any);
+      })
+      .catch((e) => {
+        __DEV__ && warn(e);
+        this.hooks.lifecycle.error.emit(e);
+        throw e; // Let the upper application catch the error
+      })
+      .finally(() => {
+        loadingList[url] = null;
       });
     return loadingList[url] as any;
   }

@@ -6,7 +6,7 @@ import {
   JavaScriptManager,
 } from '@garfish/loader';
 
-const exportTag = '-garfish-exports';
+const exportTag = '__garfish_exports__';
 
 export function markAndDerived() {
   let historyTags = [];
@@ -73,6 +73,10 @@ export const fetchStaticResources = (
               jsManager.setMimeType(type);
               jsManager.setAsyncAttribute(isAsync(async));
               return jsManager;
+            })
+            .catch((e) => {
+              __DEV__ && warn(e);
+              return null;
             });
         } else if (node.children.length > 0) {
           const code = (node.children[0] as Text).content;
@@ -102,6 +106,10 @@ export const fetchStaticResources = (
               styleManager.setDep(node);
               styleManager.correctPath();
               return styleManager;
+            })
+            .catch((e) => {
+              __DEV__ && warn(e);
+              return null;
             });
         }
       })
@@ -123,6 +131,10 @@ export const fetchStaticResources = (
             .then(({ resourceManager: moduleManager }) => {
               moduleManager.setAlias(alias);
               return moduleManager;
+            })
+            .catch((e) => {
+              __DEV__ && warn(e);
+              return null;
             });
         } else if (alias) {
           warn(`Asynchronous loading module, the alias "${alias}" is invalid.`);
@@ -131,5 +143,7 @@ export const fetchStaticResources = (
       .filter(Boolean),
   );
 
-  return Promise.all([jsNodes, linkNodes, metaNodes]);
+  return Promise.all([jsNodes, linkNodes, metaNodes]).then((ls) =>
+    ls.map((ns) => ns.filter(Boolean)),
+  );
 };

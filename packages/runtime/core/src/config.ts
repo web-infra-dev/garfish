@@ -110,9 +110,9 @@ export const createDefaultOptions = (nested = false) => {
     beforeUnmount: () => {},
     afterUnmount: () => {},
     // Error hooks
-    errorLoadApp: (err) => error(err),
-    errorMountApp: (err) => error(err),
-    errorUnmountApp: (err) => error(err),
+    errorLoadApp: (e) => error(e),
+    errorMountApp: (e) => error(e),
+    errorUnmountApp: (e) => error(e),
     // Router
     onNotMatchRouter: () => {},
     // Use an empty div by default

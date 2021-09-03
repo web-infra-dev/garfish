@@ -27,9 +27,9 @@ export class LoaderHook<T> extends SyncHook<[T], T> {
         if (!illegalResult) {
           result = tempResult;
         }
-      } catch (err) {
-        __DEV__ && warn(err);
-        this.onerror(err);
+      } catch (e) {
+        __DEV__ && warn(e);
+        this.onerror(e);
       }
     }
     return result;

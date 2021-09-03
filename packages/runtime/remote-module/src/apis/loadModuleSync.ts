@@ -65,11 +65,11 @@ export function loadModuleSync(
       isPromise(exports) && throwWarn(alias, url);
       cacheModules[urlWithVersion] = exports;
       result = getValueInObject(exports, segments);
-    } catch (err) {
+    } catch (e) {
       if (typeof error === 'function') {
-        result = error(err, info, alias);
+        result = error(e, info, alias);
       } else {
-        throw prettifyError(err, alias, url);
+        throw prettifyError(e, alias, url);
       }
     }
   }

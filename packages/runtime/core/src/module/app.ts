@@ -227,9 +227,9 @@ export class App {
 
       await asyncJsProcess;
       if (!this.stopMountAndClearEffect()) return false;
-    } catch (err) {
+    } catch (e) {
       this.entryManager.DOMApis.removeElement(this.appContainer);
-      this.hooks.lifecycle.errorMountApp.emit(err, this.appInfo);
+      this.hooks.lifecycle.errorMountApp.emit(e, this.appInfo);
       return false;
     } finally {
       this.mounting = false;
@@ -256,10 +256,10 @@ export class App {
       this.mounted = false;
       remove(this.context.activeApps, this);
       this.hooks.lifecycle.afterUnmount.emit(this.appInfo, this);
-    } catch (err) {
+    } catch (e) {
       remove(this.context.activeApps, this);
       this.entryManager.DOMApis.removeElement(this.appContainer);
-      this.hooks.lifecycle.errorUnmountApp.emit(err, this.appInfo);
+      this.hooks.lifecycle.errorUnmountApp.emit(e, this.appInfo);
       return false;
     } finally {
       this.unmounting = false;
@@ -302,8 +302,8 @@ export class App {
                     noEntry: true,
                   },
                 );
-              } catch (err) {
-                this.hooks.lifecycle.errorMountApp.emit(err, this.appInfo);
+              } catch (e) {
+                this.hooks.lifecycle.errorMountApp.emit(e, this.appInfo);
               }
             }
           }
@@ -463,7 +463,7 @@ export class App {
           if (typeof async === 'undefined' || async === 'false') {
             const tipInfo = JSON.stringify(node, null, 2);
             warn(
-              `The current js node cannot be found, maybe this is a bug.\n\n ${tipInfo}`,
+              `Current js node cannot be found, the resource may not exist.\n\n ${tipInfo}`,
             );
           }
         }

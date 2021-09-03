@@ -87,7 +87,6 @@ export class DynamicNodeProcessor {
             this.dispatchEvent('load');
             styleManager.correctPath();
             callback(styleManager.renderAsStyleElement());
-            return;
           })
           .catch((e) => {
             __DEV__ && warn(e);

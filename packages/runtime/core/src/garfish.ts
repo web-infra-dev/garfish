@@ -243,7 +243,7 @@ export class Garfish extends EventEmitter {
             entryManager.setDep(fakeEntryManager.findAllJsNodes()[0]);
             resources.js = [entryManager];
           } else {
-            error(`Entrance wrong type of resource of "${appName}"`);
+            error(`Entrance wrong type of resource of "${appName}".`);
           }
 
           const manager = fakeEntryManager || entryManager;
@@ -266,7 +266,7 @@ export class Garfish extends EventEmitter {
             this.cacheApps[appName] = appInstance;
           }
         } catch (e) {
-          __DEV__ && error(e);
+          __DEV__ && warn(e);
           this.hooks.lifecycle.errorLoadApp.emit(e, appInfo);
         } finally {
           this.loading[appName] = null;
