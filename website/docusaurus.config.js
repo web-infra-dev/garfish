@@ -122,7 +122,7 @@ module.exports = {
         docs: {
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/bytedance/garfish',
+          editUrl: 'https://github.com/bytedance/garfish/tree/master/website',
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
         },
