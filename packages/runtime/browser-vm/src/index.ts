@@ -51,9 +51,7 @@ const webpackAttrs: PropertyKey[] = [
   'webpackjsonp',
   '__REACT_ERROR_OVERLAY_GLOBAL_HOOK__',
 ];
-if (__DEV__) {
-  webpackAttrs.push('webpackHotUpdate');
-}
+__DEV__ && webpackAttrs.push('webpackHotUpdate');
 
 // Compatible with old code
 const compatibleOldModulesType = (modules): Array<Module> => {
@@ -69,9 +67,7 @@ const compatibleOldModulesType = (modules): Array<Module> => {
 };
 
 const createVMSandboxHooks = (Garfish: interfaces.Garfish) => {
-  return Garfish.createPluginSystem(({ SyncHook }) => ({
-    create: new SyncHook<[number], void>(),
-  }));
+  return Garfish.createPluginSystem((_) => ({}));
 };
 
 // Default export Garfish plugin
