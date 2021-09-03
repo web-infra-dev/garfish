@@ -1,6 +1,8 @@
-import { SnapshotSandbox } from './sandbox';
+import { Sandbox } from './sandbox';
 import { interfaces } from '@garfish/core';
 import './globalExtensions';
+
+export default Sandbox;
 
 export interface SandboxConfig {
   snapshot?: boolean;
@@ -13,7 +15,7 @@ interface BrowserConfig {
   protectVariable?: PropertyKey[];
 }
 
-export default function BrowserSnapshot(op?: BrowserConfig) {
+export function GarfishBrowserSnapshot(op?: BrowserConfig) {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     const config: BrowserConfig = op || { open: true };
 
@@ -38,10 +40,7 @@ export default function BrowserSnapshot(op?: BrowserConfig) {
         if (appInstance) {
           // existing
           if (appInstance.snapshotSandbox) return;
-          const sandbox = new SnapshotSandbox(
-            appInfo.name,
-            config.protectVariable,
-          );
+          const sandbox = new Sandbox(appInfo.name, config.protectVariable);
           appInstance.snapshotSandbox = sandbox;
         }
       },
@@ -60,5 +59,3 @@ export default function BrowserSnapshot(op?: BrowserConfig) {
     return options;
   };
 }
-
-export { SnapshotSandbox } from './sandbox';

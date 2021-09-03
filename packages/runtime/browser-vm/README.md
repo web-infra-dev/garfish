@@ -3,11 +3,11 @@
 ## Usage
 
 ```js
-import { Sandbox } from '@garfish/vm-sandbox';
+import vmSandbox from '@garfish/vm-sandbox';
 
 let nameMap = { a: 'chen' };
 
-const sandbox = new Sandbox({
+const sandbox = new vmSandbox({
   namespace: 'app',
   el: () => document.body,
   modules: [
