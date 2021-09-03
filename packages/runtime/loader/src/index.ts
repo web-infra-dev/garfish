@@ -19,6 +19,10 @@ export type Manager =
   | TemplateManager
   | JavaScriptManager;
 
+export interface LoaderOptions {
+  maxSize?: number;
+}
+
 interface LoadedHookArgs<T extends Manager> {
   result: Response;
   value: {
@@ -51,11 +55,11 @@ export class Loader {
     }>('beforeLoad'),
   });
 
-  private options: { maxSize?: number }; // The unit is "b"
+  private options: LoaderOptions; // The unit is "b"
   private loadingList: Record<string, Promise<any>>;
   private cacheStore: { [name: string]: AppCacheContainer };
 
-  constructor(options?: { maxSize?: number }) {
+  constructor(options?: LoaderOptions) {
     this.options = options || {};
     this.loadingList = Object.create(null);
     this.cacheStore = Object.create(null);

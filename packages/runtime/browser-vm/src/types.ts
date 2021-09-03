@@ -1,5 +1,5 @@
 import { Sandbox } from './sandbox';
-import { LoaderOptions } from '@garfish/loader';
+import type { LoaderOptions } from '@garfish/loader';
 
 export type FakeWindow = Window & Record<PropertyKey, any>;
 export type Module = (sandbox: Sandbox) => OverridesData;
