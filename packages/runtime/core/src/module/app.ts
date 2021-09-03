@@ -267,7 +267,7 @@ export class App {
     return true;
   }
 
-  public getExecScriptEnv(noEntry: boolean) {
+  getExecScriptEnv(noEntry: boolean) {
     // The legacy of commonJS function support
     if (this.esModule) return {};
     if (noEntry) {

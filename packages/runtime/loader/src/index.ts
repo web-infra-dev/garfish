@@ -1,5 +1,5 @@
-import { isJs, isCss, isHtml } from '@garfish/utils';
 import { LoaderHook, PluginSystem } from '@garfish/hooks';
+import { isJs, isCss, isHtml, __LOADER_FLAG__ } from '@garfish/utils';
 import { request, copyResult, mergeConfig } from './utils';
 import { FileTypes, cachedDataSet, AppCacheContainer } from './appCache';
 import { StyleManager } from './managers/style';
@@ -46,12 +46,12 @@ function createLifecycle() {
 }
 
 export class Loader {
+  public personalId = __LOADER_FLAG__;
   public hooks = createLifecycle();
   public StyleManager = StyleManager;
   public ModuleManager = ModuleManager;
   public TemplateManager = TemplateManager;
   public JavaScriptManager = JavaScriptManager;
-  public personalId = Symbol.for('garfish.loader');
   /** @deprecated */
   public requestConfig: RequestInit | ((url: string) => RequestInit);
 

@@ -65,7 +65,7 @@ const compatibleOldModulesType = (modules): Array<Module> => {
     }
     modules = list;
   }
-  return [];
+  return modules;
 };
 
 const createVMSandboxHooks = (Garfish: interfaces.Garfish) => {
