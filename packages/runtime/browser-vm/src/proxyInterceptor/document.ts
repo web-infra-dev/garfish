@@ -115,3 +115,11 @@ export function createDefineProperty() {
       : Reflect.defineProperty(target, p, descriptor);
   };
 }
+
+// document proxy has
+export function createHas() {
+  return (target: any, p: PropertyKey) => {
+    if (p === 'activeElement') return Reflect.has(document, p);
+    return hasOwn(target, p) || Reflect.has(document, p);
+  };
+}
