@@ -5,6 +5,7 @@ import {
   createGetter,
   createSetter,
   createDefineProperty,
+  createHas,
 } from '../proxyInterceptor/document';
 
 const rawDocumentCtor = Document;
@@ -19,6 +20,7 @@ export const documentModule = (sandbox: Sandbox) => {
       microTaskHtmlProxyDocument(proxyDocument);
       return getter(...args);
     },
+    has: createHas(),
   });
 
   const fakeDocumentCtor = function Document() {
