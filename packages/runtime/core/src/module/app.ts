@@ -281,7 +281,7 @@ export class App {
     return true;
   }
 
-  public getExecScriptEnv(noEntry: boolean) {
+  getExecScriptEnv(noEntry: boolean) {
     // The legacy of commonJS function support
     if (this.esModule) return {};
     if (noEntry) {
@@ -294,7 +294,7 @@ export class App {
   }
 
   // Performs js resources provided by the module, finally get the content of the export
-  private compileAndRenderContainer() {
+  compileAndRenderContainer() {
     // Render the application node
     // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
     this.renderTemplate();
@@ -576,10 +576,12 @@ export class App {
       }
     }
 
-    assert(provider, `"provider" is "${typeof provider}".`);
-    // No need to use "hasOwn", because "render" may be on the prototype chain
-    assert('render' in provider, '"render" is required in provider.');
-    assert('destroy' in provider, '"destroy" is required in provider.');
+    if (!appInfo.noCheckProvider) {
+      assert(provider, `"provider" is "${typeof provider}".`);
+      // No need to use "hasOwn", because "render" may be on the prototype chain
+      assert('render' in provider, '"render" is required in provider.');
+      assert('destroy' in provider, '"destroy" is required in provider.');
+    }
 
     this.provider = provider;
     return provider;
