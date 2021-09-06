@@ -38,6 +38,7 @@ export namespace interfaces {
     name: string;
     entry: string;
     cache?: boolean; // Whether the cache
+    noCheckProvider?: boolean;
     activeWhen?: string | ((path: string) => boolean);
     hooks?: Hooks;
   }
