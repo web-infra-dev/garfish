@@ -124,6 +124,12 @@ export class App {
     return findTarget(this.htmlNode, ['body', `div[${__MockBody__}]`]);
   }
 
+  getProvider() {
+    return this.provider
+      ? Promise.resolve(this.provider)
+      : this.checkAndGetProvider();
+  }
+
   execScript(
     code: string,
     env: Record<string, any>,
@@ -220,7 +226,7 @@ export class App {
       const asyncJsProcess = this.compileAndRenderContainer();
 
       // Good provider is set at compile time
-      const provider = await this.checkAndGetProvider();
+      const provider = await this.getProvider();
       // Existing asynchronous functions need to decide whether the application has been unloaded
       if (!this.stopMountAndClearEffect()) return false;
 
@@ -259,6 +265,9 @@ export class App {
       this.callDestroy(this.provider, true);
       this.display = false;
       this.mounted = false;
+      this.provider = null;
+      this.customExports = {};
+      this.cjsModules.exports = {};
       remove(this.context.activeApps, this);
       this.context.hooks.lifecycle.afterUnmount.call(this.appInfo, this);
     } catch (err) {
@@ -554,9 +563,8 @@ export class App {
     }
 
     // If you have customLoader, the dojo.provide by user
-    const hookRes =
-      (await this.customLoader) &&
-      this.customLoader(provider, appInfo, basename);
+    const hookRes = await (this.customLoader &&
+      this.customLoader(provider, appInfo, basename));
 
     if (hookRes) {
       const { mount, unmount } = hookRes || ({} as any);
