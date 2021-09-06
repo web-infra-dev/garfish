@@ -53,7 +53,6 @@ export function createContext(): Garfish {
 
   if (inBrowser()) {
     // Global flag
-    set('Garfish');
     set('Gar');
     set('Garfish');
     def(window, '__GARFISH__', true);
