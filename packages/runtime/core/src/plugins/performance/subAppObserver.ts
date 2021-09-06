@@ -1,7 +1,7 @@
 import { warn } from '@garfish/utils';
 
 // Child app performance monitoring tools
-interface IPerformanceData {
+interface PerformanceData {
   resourceLoadTime: number;
   blankScreenTime: number;
   firstScreenTime: number;
@@ -10,11 +10,11 @@ interface IPerformanceData {
   action: string;
 }
 
-interface ICallbackFunction {
-  (performanceData: IPerformanceData): void;
+interface CallbackFunction {
+  (performanceData: PerformanceData): void;
 }
 
-interface IConfig {
+interface Config {
   attributes: boolean;
   childList: boolean;
   subtree: boolean;
@@ -24,7 +24,7 @@ interface IOptions {
   subAppRootSelector: Element | string;
   domObserverMaxTime?: number;
   waitSubAppNotifyMaxTime?: number;
-  observeConfig?: IConfig;
+  observeConfig?: Config;
 }
 
 export class SubAppObserver {
@@ -40,14 +40,14 @@ export class SubAppObserver {
   private subAppPageShowTime: number;
   private domQuerySelector: Element | string;
   private finishAction: string;
-  private config: IConfig;
+  private config: Config;
   private isRecordFinish: boolean;
   private isCallBackFinish: boolean;
   private isStartShowFlag: boolean;
   private isSubAppNotifyFinish: boolean;
-  private targetSubscriber: ICallbackFunction[];
+  private targetSubscriber: CallbackFunction[];
   private cbEntryList: string[];
-  private performanceData: IPerformanceData;
+  private performanceData: PerformanceData;
 
   constructor(options: IOptions) {
     this.observer = new MutationObserver(
@@ -81,7 +81,7 @@ export class SubAppObserver {
     };
   }
 
-  subscribePerformanceData(callback: ICallbackFunction) {
+  subscribePerformanceData(callback: CallbackFunction) {
     try {
       this.targetSubscriber.push(callback);
     } catch (e) {
@@ -89,7 +89,7 @@ export class SubAppObserver {
     }
   }
 
-  subscribePerformanceDataOnce(callback: ICallbackFunction) {
+  subscribePerformanceDataOnce(callback: CallbackFunction) {
     try {
       const wrapCallback = (performanceData) => {
         callback(performanceData);
@@ -102,7 +102,7 @@ export class SubAppObserver {
     }
   }
 
-  unsubscribePerformanceData(callback: ICallbackFunction) {
+  unsubscribePerformanceData(callback: CallbackFunction) {
     try {
       this.targetSubscriber = this.targetSubscriber.filter(
         (sub) => sub === callback,

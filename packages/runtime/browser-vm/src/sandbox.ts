@@ -40,8 +40,8 @@ const defaultModules: Array<Module> = [
   historyModule,
   documentModule,
   listenerModule,
-  localStorageModule,
   UiEventOverride,
+  localStorageModule,
 ];
 
 // Deal with hmr problem

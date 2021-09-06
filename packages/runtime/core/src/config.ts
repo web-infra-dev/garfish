@@ -6,7 +6,7 @@ import {
   deepMerge,
   getRenderNode,
 } from '@garfish/utils';
-import { AppInfo } from './module/app';
+import { AppInfo } from './app';
 import { interfaces } from './interface';
 
 const invalidNestedAttrs = [

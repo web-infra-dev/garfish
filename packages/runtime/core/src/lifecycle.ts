@@ -1,5 +1,5 @@
 import { SyncHook, AsyncHook, PluginSystem } from '@garfish/hooks';
-import { interfaces } from '../interface';
+import { interfaces } from './interface';
 
 export function globalLifecycle() {
   return new PluginSystem({

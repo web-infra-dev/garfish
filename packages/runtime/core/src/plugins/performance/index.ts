@@ -7,6 +7,7 @@ export function GarfishPerformance() {
     const subAppMap = {};
     return {
       name: 'performance',
+
       async beforeLoad(appInfo) {
         if (!subAppMap[appInfo.name]) {
           subAppMap[appInfo.name] = new SubAppObserver({

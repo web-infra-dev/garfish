@@ -15,10 +15,10 @@ import {
   generateAppOptions,
   createDefaultOptions,
 } from './config';
-import { App } from './module/app';
+import { App } from './app';
 import { interfaces } from './interface';
+import { globalLifecycle } from './lifecycle';
 import { fetchStaticResources } from './utils';
-import { globalLifecycle } from './hooks/lifecycle';
 import { GarfishHMRPlugin } from './plugins/fixHMR';
 import { GarfishOptionsLife } from './plugins/lifecycle';
 import { GarfishPreloadPlugin } from './plugins/preload';

@@ -1,5 +1,5 @@
 import { interfaces } from '@garfish/core';
-import { assert, createKey, isPromise } from './utils';
+import { assert, createKey } from './utils';
 
 export function createAppContainer(name: string) {
   // Create a temporary node, which is destroyed by the module itself

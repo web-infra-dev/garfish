@@ -17,10 +17,10 @@ import {
   createAppContainer,
   setDocCurrentScript,
 } from '@garfish/utils';
-import { Garfish } from '../garfish';
-import { interfaces } from '../interface';
-import { appLifecycle } from '../hooks/lifecycle';
-import { SubAppObserver } from '../plugins/performance/subAppObserver';
+import { Garfish } from './garfish';
+import { interfaces } from './interface';
+import { appLifecycle } from './lifecycle';
+import { SubAppObserver } from './plugins/performance/subAppObserver';
 
 /** @deprecated */
 export type CustomerLoader = (
