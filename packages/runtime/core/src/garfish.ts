@@ -251,13 +251,12 @@ export class Garfish extends EventEmitter {
           );
 
           this.allApps.add(appInstance);
+          if (appInfo.cache) {
+            this.cacheApps[appName] = appInstance;
+          }
           // Register plugins to app
           for (const key in this.plugins) {
             appInstance.hooks.usePlugin(this.plugins[key]);
-          }
-          // Cache app
-          if (appInfo.cache) {
-            this.cacheApps[appName] = appInstance;
           }
         } catch (e) {
           __DEV__ && warn(e);
