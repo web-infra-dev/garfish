@@ -38,8 +38,7 @@ declare module '@garfish/core' {
   }
 }
 
-// Strongly isolated webpack attributes
-const webpackAttrs: PropertyKey[] = [
+const specialExternalVariables = [
   'onerror',
   'webpackjsonp',
   '__REACT_ERROR_OVERLAY_GLOBAL_HOOK__',
@@ -131,7 +130,7 @@ function createOptions(Garfish: interfaces.Garfish) {
 
           insulationVariable: () => {
             return [
-              ...webpackAttrs,
+              ...specialExternalVariables,
               ...(appInfo.insulationVariable || []),
             ].filter(Boolean);
           },
