@@ -88,15 +88,15 @@ describe('Sandbox:Dom & Bom', () => {
     );
   });
 
-  it('ownerDocument', () => {
-    sandbox.execScript(
-      go(`
-        const div = document.createElement('div');
-        expect(document.ownerDocument === null).toBe(true);
-        expect(div.ownerDocument === document).toBe(true);
-      `),
-    );
-  });
+  // it('ownerDocument', () => {
+  //   sandbox.execScript(
+  //     go(`
+  //       const div = document.createElement('div');
+  //       expect(document.ownerDocument === null).toBe(true);
+  //       expect(div.ownerDocument === document).toBe(true);
+  //     `),
+  //   );
+  // });
 
   it('document.head', () => {
     sandbox.execScript(
