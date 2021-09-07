@@ -1,6 +1,6 @@
 {
   "name": "@garfish/core",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "description": "core module.",
   "keywords": [
     "garfish",
@@ -40,5 +40,5 @@
     "registry": "https://registry.npmjs.org",
     "access": "public"
   },
-  "gitHead": "e8bf48ea8ca8db408a4a0a1cdab8ce4a50ab279b"
+  "gitHead": "4108eb52625a551e2e8028428aaefc0b9f944150"
 }

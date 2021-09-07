@@ -28,7 +28,7 @@
     "pkg": "node scripts/createPackage.js",
     "reset": "lerna clean --yes && rm -rf node_modules",
     "setup": "yarn reset && yarn install --registry=https://registry.npmjs.org",
-    "prepublishOnly": "yarn test && yarn build:al",
+    "prepublishOnly": "yarn test && yarn build:all",
     "postpublish": "yarn changelog && node scripts/asyncBnpm.js",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -p ",
     "test": "node scripts/jestTest.js",

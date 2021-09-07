@@ -97,6 +97,7 @@ export namespace interfaces {
     entry: string;
     cache?: boolean;
     nested?: boolean;
+    noCheckProvider?: boolean;
   };
 
   export interface Options extends Config, GlobalLifecycle {}
