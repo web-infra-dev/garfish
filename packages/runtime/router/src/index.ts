@@ -38,7 +38,7 @@ interface Options {
   onNotMatchRouter?: (path: string) => Promise<void> | void;
 }
 
-export default function Router(_args?: Options) {
+export function GarfishRouter(_args?: Options) {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     Garfish.apps = {};
     Garfish.router = router;

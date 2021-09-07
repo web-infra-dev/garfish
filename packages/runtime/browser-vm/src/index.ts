@@ -2,7 +2,7 @@ import { interfaces } from '@garfish/core';
 import { warn, isPlainObject } from '@garfish/utils';
 import { Sandbox } from './sandbox';
 import { Module, SandboxOptions } from './types';
-export { Sandbox } from './sandbox';
+export { Sandbox as default } from './sandbox';
 
 // export declare module
 declare module '@garfish/core' {
@@ -64,7 +64,7 @@ const compatibleOldModulesType = (modules): Array<Module> => {
 };
 
 // Default export Garfish plugin
-export default function BrowserVm() {
+export function GarfishBrowserVm() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     // Garfish apis
     Garfish.getGlobalObject = () => {

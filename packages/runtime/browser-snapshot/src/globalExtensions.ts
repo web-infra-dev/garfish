@@ -1,4 +1,4 @@
-import { SnapshotSandbox } from './sandbox';
+import { Sandbox } from './sandbox';
 
 declare module '@garfish/core' {
   export namespace interfaces {
@@ -9,7 +9,7 @@ declare module '@garfish/core' {
     }
 
     export interface App {
-      snapshotSandbox?: SnapshotSandbox;
+      snapshotSandbox?: Sandbox;
     }
 
     export interface Plugin {
