@@ -11,6 +11,10 @@
   "license": "Apache-2.0",
   "main": "index.js",
   "module": "dist/remote-module.esm-bundler.js",
+  "files": [
+    "dist",
+    "index.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
