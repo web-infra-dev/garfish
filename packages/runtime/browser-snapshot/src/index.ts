@@ -2,7 +2,7 @@ import { Sandbox } from './sandbox';
 import { interfaces } from '@garfish/core';
 import './globalExtensions';
 
-export default Sandbox;
+export { Sandbox as default } from './sandbox';
 
 export interface SandboxConfig {
   snapshot?: boolean;
