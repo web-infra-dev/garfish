@@ -42,7 +42,6 @@ export class Garfish extends EventEmitter {
   public cacheApps: Record<string, interfaces.App> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
 
-  private allApps = new Set<interfaces.App>(); // TODO: use WeakRef
   private loading: Record<string, Promise<any> | null> = {};
 
   get props(): Record<string, any> {
@@ -83,7 +82,6 @@ export class Garfish extends EventEmitter {
 
       // Register hooks, Compatible with the old api
       this.hooks.usePlugin(pluginConfig);
-      this.allApps.forEach((app) => app.hooks.usePlugin(pluginConfig));
     } else if (__DEV__) {
       warn('Please do not register the plugin repeatedly.');
     }
@@ -250,7 +248,6 @@ export class Garfish extends EventEmitter {
             this.options.customLoader,
           );
 
-          this.allApps.add(appInstance);
           if (appInfo.cache) {
             this.cacheApps[appName] = appInstance;
           }
