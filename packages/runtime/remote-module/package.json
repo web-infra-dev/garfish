@@ -1,6 +1,6 @@
 {
   "name": "@garfish/remote-module",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "remote-module module.",
   "keywords": [
     "garfish",
@@ -31,7 +31,7 @@
     ]
   },
   "devDependencies": {
-    "@garfish/core": "^0.1.7"
+    "@garfish/core": "^0.1.8"
   },
   "dependencies": {
     "@garfish/loader": "0.1.5"
