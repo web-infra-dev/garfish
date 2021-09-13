@@ -29,7 +29,10 @@ export type CustomerLoader = (
   path: string,
 ) => Promise<interfaces.LoaderResult | void> | interfaces.LoaderResult | void;
 
-export type AppInfo = interfaces.AppInfo & { domGetter: Element };
+export type AppInfo = interfaces.AppInfo & {
+  appId: number;
+  domGetter: Element;
+};
 
 let appId = 0;
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
@@ -45,7 +48,7 @@ const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
  * 5. Trigger the destruction: Perform the destroy function of child application, and applies the child node is removed from the document flow.
  */
 export class App {
-  public id = appId++;
+  public appId = appId++;
   public display = false;
   public mounted = false;
   public esModule = false;
@@ -62,9 +65,9 @@ export class App {
   public hooks: interfaces.AppHooks;
   public provider: interfaces.Provider;
   public entryManager: TemplateManager;
+  public appPerformance: SubAppObserver;
   /** @deprecated */
   public customLoader: CustomerLoader;
-  public appPerformance: SubAppObserver;
 
   private active = false;
   private mounting = false;
@@ -88,6 +91,9 @@ export class App {
     this.resources = resources;
     this.isHtmlMode = isHtmlMode;
     this.entryManager = entryManager;
+
+    // `appInfo` is completely independent and can be associated with `appId`
+    this.appInfo.appId = this.appId;
 
     // Garfish environment variables
     this.globalEnvVariables = {
