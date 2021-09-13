@@ -13,11 +13,6 @@ declare module '@garfish/core' {
   }
 
   export namespace interfaces {
-    export interface Garfish {
-      router: RouterInterface;
-      apps: Record<string, interfaces.App>;
-    }
-
     export interface Config {
       autoRefreshApp?: boolean;
       onNotMatchRouter?: (path: string) => Promise<void> | void;

@@ -12,12 +12,6 @@ declare module '@garfish/core' {
   }
 
   export namespace interfaces {
-    export interface Garfish {
-      setGlobalValue(key: string, value?: any): void;
-      getGlobalObject: () => Window & typeof globalThis;
-      clearEscapeEffect: (key: string, value?: any) => void;
-    }
-
     export interface SandboxConfig {
       modules?: Array<Module> | Record<string, Module>;
     }
