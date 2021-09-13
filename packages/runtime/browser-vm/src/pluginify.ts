@@ -19,7 +19,6 @@ declare module '@garfish/core' {
     export interface Config {
       protectVariable?: PropertyKey[];
       insulationVariable?: PropertyKey[];
-      sandbox?: false | SandboxConfig;
     }
 
     export interface App {

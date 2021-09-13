@@ -38,15 +38,13 @@ let appId = 0;
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
 
-/**
- * Have the ability to App instance
- * 1. Provide static resource, the structure of the HTML, CSS, js.
- * 2. Can be extracted in the js CJS through scope __GARFISH_EXPORTS__ namespace or get child application provider is deduced.
- * 3. Through execCode incoming environment variables such as CJS specification of the module, the require, exports to realize external sharing
- * 4. Trigger rendering：Application related nodes placed in the document flow, which in turn perform application scripts, final render function,
- *    perform the son application provides complete application independent runtime execution.
- * 5. Trigger the destruction: Perform the destroy function of child application, and applies the child node is removed from the document flow.
- */
+// Have the ability to App instance
+// 1. Provide static resource, the structure of the HTML, CSS, js.
+// 2. Can be extracted in the js CJS through scope __GARFISH_EXPORTS__ namespace or get child application provider is deduced.
+// 3. Through execCode incoming environment variables such as CJS specification of the module, the require, exports to realize external sharing
+// 4. Trigger rendering：Application related nodes placed in the document flow, which in turn perform application scripts, final render function,
+//    perform the son application provides complete application independent runtime execution.
+// 5. Trigger the destruction: Perform the destroy function of child application, and applies the child node is removed from the document flow.
 export class App {
   public appId = appId++;
   public display = false;

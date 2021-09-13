@@ -116,13 +116,11 @@ function transferProps(o: Function, n: Function) {
   }
 }
 
-/**
- * 1. This points to the context of the fn target function
- * 2. Assure the goal after the bind function prototype method be replaced after the prototype method would not be affected
- * 3. Assure the objective function after the bind instanceof in line with expectations
- * 4. Ensure that bind after the objective function of normal static methods available
- * 5. After the bind after the objective function is new to instantiate, pointing to their own
- */
+// 1. This points to the context of the fn target function
+// 2. Assure the goal after the bind function prototype method be replaced after the prototype method would not be affected
+// 3. Assure the objective function after the bind instanceof in line with expectations
+// 4. Ensure that bind after the objective function of normal static methods available
+// 5. After the bind after the objective function is new to instantiate, pointing to their own
 export function bind(fn, context: any) {
   const fNOP = function () {};
   function bound() {
