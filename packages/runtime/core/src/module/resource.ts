@@ -1,50 +1,14 @@
-import { warn, Text, transformUrl } from '@garfish/utils';
+import { warn, error, Text, transformUrl } from '@garfish/utils';
 import {
   Loader,
   StyleManager,
   TemplateManager,
   JavaScriptManager,
 } from '@garfish/loader';
-
-const exportTag = '__garfish_exports__';
-
-export function markAndDerived() {
-  let historyTags = [];
-  let curringAddTags = [];
-
-  return {
-    markExport(global) {
-      historyTags = [];
-      curringAddTags = [];
-      for (const p in global) {
-        if (p.indexOf(exportTag) !== -1) {
-          historyTags.push(p);
-        }
-      }
-    },
-
-    getExport(global) {
-      for (const p in global) {
-        if (p.indexOf(exportTag) !== -1) {
-          if (historyTags.indexOf(p) < 0) {
-            curringAddTags.push(p);
-          }
-        }
-      }
-      if (curringAddTags.length > 1) {
-        const tagString = curringAddTags.concat(',');
-        warn(`Access to export the contents of two or more： ${tagString}`);
-      }
-      if (global[curringAddTags[0]]) {
-        return global[curringAddTags[0]];
-      }
-      return null;
-    },
-  };
-}
+import { AppInfo } from './app';
 
 // Fetch `script`, `link` and `module meta` elements
-export function fetchStaticResources(
+function fetchStaticResources(
   appName: string,
   loader: Loader,
   entryManager: TemplateManager,
@@ -137,4 +101,37 @@ export function fetchStaticResources(
   return Promise.all([jsNodes, linkNodes, metaNodes]).then((ls) =>
     ls.map((ns) => ns.filter(Boolean)),
   );
+}
+
+export async function processAppResources(loader: Loader, appInfo: AppInfo) {
+  let isHtmlMode: Boolean, fakeEntryManager;
+  const resources = { js: [], link: [], modules: [] }; // Default resources
+  const { resourceManager: entryManager } = await loader.load(
+    appInfo.name,
+    transformUrl(location.href, appInfo.entry),
+  );
+
+  // Html entry
+  if (entryManager instanceof TemplateManager) {
+    isHtmlMode = true;
+    const [js, link, modules] = await fetchStaticResources(
+      appInfo.name,
+      loader,
+      entryManager,
+    );
+    resources.js = js;
+    resources.link = link;
+    resources.modules = modules;
+  } else if (entryManager instanceof JavaScriptManager) {
+    // Js entry
+    isHtmlMode = false;
+    const mockTemplateCode = `<script src="${entryManager.url}"></script>`;
+    fakeEntryManager = new TemplateManager(mockTemplateCode, entryManager.url);
+    entryManager.setDep(fakeEntryManager.findAllJsNodes()[0]);
+    resources.js = [entryManager];
+  } else {
+    error(`Entrance wrong type of resource of "${appInfo.name}".`);
+  }
+
+  return [fakeEntryManager || entryManager, resources, isHtmlMode];
 }

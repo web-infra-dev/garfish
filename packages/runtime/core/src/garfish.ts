@@ -1,24 +1,17 @@
-import {
-  warn,
-  error,
-  assert,
-  transformUrl,
-  isPlainObject,
-  __GARFISH_FLAG__,
-} from '@garfish/utils';
+import { warn, assert, isPlainObject, __GARFISH_FLAG__ } from '@garfish/utils';
 import { EventEmitter } from 'events';
+import { Loader } from '@garfish/loader';
 import { SyncHook, AsyncHook, PluginSystem } from '@garfish/hooks';
-import { Loader, TemplateManager, JavaScriptManager } from '@garfish/loader';
 import {
   deepMergeConfig,
   filterNestedConfig,
   generateAppOptions,
   createDefaultOptions,
 } from './config';
-import { App } from './app';
+import { App } from './module/app';
 import { interfaces } from './interface';
 import { globalLifecycle } from './lifecycle';
-import { fetchStaticResources } from './utils';
+import { processAppResources } from './module/resource';
 import { GarfishHMRPlugin } from './plugins/fixHMR';
 import { GarfishOptionsLife } from './plugins/lifecycle';
 import { GarfishPreloadPlugin } from './plugins/preload';
@@ -205,42 +198,15 @@ export class Garfish extends EventEmitter {
         appInstance = cacheApp;
       } else {
         try {
-          let isHtmlMode, fakeEntryManager;
-          const resources = { js: [], link: [], modules: [] }; // Default resources
-          const { resourceManager: entryManager } = await this.loader.load(
-            appName,
-            transformUrl(location.href, appInfo.entry),
+          const [manager, resources, isHtmlMode] = await processAppResources(
+            this.loader,
+            appInfo,
           );
-
-          // Html entry
-          if (entryManager instanceof TemplateManager) {
-            isHtmlMode = true;
-            const [js, link, modules] = await fetchStaticResources(
-              appName,
-              this.loader,
-              entryManager,
-            );
-            resources.js = js;
-            resources.link = link;
-            resources.modules = modules;
-          } else if (entryManager instanceof JavaScriptManager) {
-            // Js entry
-            isHtmlMode = false;
-            const mockTemplateCode = `<script src="${entryManager.url}"></script>`;
-            fakeEntryManager = new TemplateManager(
-              mockTemplateCode,
-              entryManager.url,
-            );
-            entryManager.setDep(fakeEntryManager.findAllJsNodes()[0]);
-            resources.js = [entryManager];
-          } else {
-            error(`Entrance wrong type of resource of "${appName}".`);
-          }
 
           appInstance = new App(
             this,
             appInfo,
-            fakeEntryManager || entryManager,
+            manager,
             resources,
             isHtmlMode,
             this.options.customLoader,

@@ -6,8 +6,8 @@ import {
 } from '@garfish/loader';
 import { PluginSystem } from '@garfish/hooks';
 import { Garfish as GarfishInterface } from './garfish';
-import { CustomerLoader, App as AppInterface } from './app';
 import { appLifecycle, globalLifecycle } from './lifecycle';
+import { CustomerLoader, App as AppInterface } from './module/app';
 
 export namespace interfaces {
   export interface StyleManagerInterface extends StyleManager {}
