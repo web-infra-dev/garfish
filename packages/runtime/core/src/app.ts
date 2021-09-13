@@ -155,17 +155,16 @@ export class App {
       ...(env || {}),
       ...this.getExecScriptEnv(options?.noEntry),
     };
+    const args = [this.appInfo, code, env, url, options] as const;
 
-    this.hooks.lifecycle.beforeEval.emit(this.appInfo, code, env, url, options);
-
+    this.hooks.lifecycle.beforeEval.emit(...args);
     try {
       this.runCode(code, env, url, options);
     } catch (e) {
-      this.hooks.lifecycle.errorExecCode.emit(e, this.appInfo);
+      this.hooks.lifecycle.errorExecCode.emit(e, ...args);
       throw e;
     }
-
-    this.hooks.lifecycle.afterEval.emit(this.appInfo, code, env, url, options);
+    this.hooks.lifecycle.afterEval.emit(...args);
   }
 
   // `vm sandbox` can override this method

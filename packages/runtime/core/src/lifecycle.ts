@@ -47,6 +47,16 @@ export function appLifecycle() {
     beforeUnmount: new SyncHook<[interfaces.AppInfo, interfaces.App], void>(),
     afterUnmount: new SyncHook<[interfaces.AppInfo, interfaces.App], void>(),
     errorUnmountApp: new SyncHook<[Error, interfaces.AppInfo], void>(),
-    errorExecCode: new SyncHook<[Error, interfaces.AppInfo], void>(),
+    errorExecCode: new SyncHook<
+      [
+        Error,
+        interfaces.AppInfo,
+        string,
+        Record<string, any>,
+        string,
+        { async?: boolean; noEntry?: boolean },
+      ],
+      void
+    >(),
   });
 }
