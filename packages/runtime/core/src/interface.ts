@@ -1,25 +1,24 @@
-import {
-  StyleManager,
-  ModuleManager,
-  TemplateManager,
-  JavaScriptManager,
-} from '@garfish/loader';
 import { PluginSystem } from '@garfish/hooks';
+import * as LoaderInterface from '@garfish/loader';
 import { Garfish as GarfishInterface } from './garfish';
-import { appLifecycle, globalLifecycle } from './lifecycle';
 import { CustomerLoader, App as AppInterface } from './module/app';
+import { appLifecycle, globalLifecycle } from './lifecycle';
 
 export namespace interfaces {
-  export interface StyleManagerInterface extends StyleManager {}
-  export interface ModuleManagerInterface extends ModuleManager {}
-  export interface TemplateManagerInterface extends TemplateManager {}
-  export interface JavaScriptManagerInterface extends JavaScriptManager {}
+  export interface StyleManager extends LoaderInterface.StyleManager {}
+  export interface ModuleManager extends LoaderInterface.ModuleManager {}
+  export interface TemplateManager extends LoaderInterface.TemplateManager {}
+  export interface JavaScriptManager
+    extends LoaderInterface.JavaScriptManager {}
 
   export interface ResourceModules {
+    link: Array<StyleManager>;
     js: Array<JavaScriptManager>;
     modules: Array<ModuleManager>;
-    link: Array<StyleManagerInterface>;
   }
+
+  export interface App extends AppInterface {}
+  export interface Garfish extends GarfishInterface {}
 
   export type AppHooks = ReturnType<typeof appLifecycle>;
   export type GlobalHooks = ReturnType<typeof globalLifecycle>;
@@ -39,9 +38,6 @@ export namespace interfaces {
     mount: () => void;
     unmount: () => void;
   }
-
-  export interface App extends AppInterface {}
-  export interface Garfish extends GarfishInterface {}
 
   export interface AppRenderInfo {
     isMount?: boolean;

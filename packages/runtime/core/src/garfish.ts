@@ -1,7 +1,7 @@
-import { warn, assert, isPlainObject, __GARFISH_FLAG__ } from '@garfish/utils';
 import { EventEmitter } from 'events';
 import { Loader } from '@garfish/loader';
 import { SyncHook, AsyncHook, PluginSystem } from '@garfish/hooks';
+import { warn, assert, isPlainObject, __GARFISH_FLAG__ } from '@garfish/utils';
 import {
   deepMergeConfig,
   filterNestedConfig,
