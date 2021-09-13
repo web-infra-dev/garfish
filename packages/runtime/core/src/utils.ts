@@ -44,11 +44,11 @@ export function markAndDerived() {
 }
 
 // Fetch `script`, `link` and `module meta` elements
-export const fetchStaticResources = (
+export function fetchStaticResources(
   appName: string,
   loader: Loader,
   entryManager: TemplateManager,
-) => {
+) {
   const isAsync = (val) => typeof val !== 'undefined' && val !== 'false';
 
   // Get all script elements
@@ -137,4 +137,4 @@ export const fetchStaticResources = (
   return Promise.all([jsNodes, linkNodes, metaNodes]).then((ls) =>
     ls.map((ns) => ns.filter(Boolean)),
   );
-};
+}

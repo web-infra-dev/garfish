@@ -115,7 +115,10 @@ export class App {
 
     // Register hooks
     this.hooks = appLifecycle();
-    this.hooks.usePlugin(appInfo);
+    this.hooks.usePlugin({
+      ...appInfo,
+      name: `${appInfo.name}-lifecycle`,
+    });
 
     // Save all the resources to address
     const nodes = entryManager.getNodesByTagName(...sourceListTags);

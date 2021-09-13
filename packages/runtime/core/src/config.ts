@@ -53,21 +53,21 @@ export const deepMergeConfig = (o, n) => {
 export const generateAppOptions = async (
   appName: string,
   garfish: interfaces.Garfish,
-  appOpts: Partial<interfaces.AppInfo> | string = {},
+  appOptions: Partial<interfaces.AppInfo> | string = {},
 ) => {
   let appInfo = garfish.appInfos[appName];
   // `Garfish.loadApp('appName', 'https://xx.html');`
-  if (typeof appOpts === 'string') {
-    appOpts = {
+  if (typeof appOptions === 'string') {
+    appOptions = {
       name: appName,
-      entry: appOpts,
       basename: '/',
+      entry: appOptions,
     } as interfaces.AppInfo;
   }
 
   appInfo = appInfo
-    ? deepMergeConfig(appInfo, appOpts)
-    : deepMergeConfig(garfish.options, appOpts);
+    ? deepMergeConfig(appInfo, appOptions)
+    : deepMergeConfig(garfish.options, appOptions);
   // Does not support does not have remote resources application
   assert(
     appInfo.entry,

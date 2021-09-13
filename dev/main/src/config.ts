@@ -36,6 +36,10 @@ let defaultConfig: interfaces.Options = {
   sandbox: {
     open: true,
   },
+
+  beforeMount(appInfo) {
+    console.log('beforeMount', appInfo);
+  },
 };
 
 setTimeout(() => {

@@ -199,7 +199,7 @@ export class Garfish extends EventEmitter {
         return null;
       }
       // Existing cache caching logic
-      let appInstance = null;
+      let appInstance: interfaces.App = null;
       const cacheApp = this.cacheApps[appName];
       if (appInfo.cache && cacheApp) {
         appInstance = cacheApp;
@@ -237,23 +237,21 @@ export class Garfish extends EventEmitter {
             error(`Entrance wrong type of resource of "${appName}".`);
           }
 
-          const manager = fakeEntryManager || entryManager;
-
           appInstance = new App(
             this,
             appInfo,
-            manager,
+            fakeEntryManager || entryManager,
             resources,
             isHtmlMode,
             this.options.customLoader,
           );
 
-          if (appInfo.cache) {
-            this.cacheApps[appName] = appInstance;
-          }
-          // Register plugins to app
+          // The registration hook will automatically remove the duplication
           for (const key in this.plugins) {
             appInstance.hooks.usePlugin(this.plugins[key]);
+          }
+          if (appInfo.cache) {
+            this.cacheApps[appName] = appInstance;
           }
         } catch (e) {
           __DEV__ && warn(e);
