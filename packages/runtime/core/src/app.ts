@@ -31,6 +31,7 @@ export type CustomerLoader = (
 
 export type AppInfo = interfaces.AppInfo & { domGetter: Element };
 
+let appId = 0;
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
 
@@ -44,18 +45,19 @@ const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
  * 5. Trigger the destruction: Perform the destroy function of child application, and applies the child node is removed from the document flow.
  */
 export class App {
+  public id = appId++;
   public display = false;
   public mounted = false;
   public esModule = false;
   public strictIsolation = false;
   public name: string;
-  public global: any = window;
   public isHtmlMode: boolean;
+  public global: any = window;
   public appContainer: HTMLElement;
-  public sourceList: Array<{ tagName: string; url: string }> = [];
   public cjsModules: Record<string, any>;
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
+  public sourceList: Array<{ tagName: string; url: string }> = [];
   public appInfo: AppInfo;
   public hooks: interfaces.AppHooks;
   public provider: interfaces.Provider;
