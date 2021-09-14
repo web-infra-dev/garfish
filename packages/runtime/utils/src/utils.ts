@@ -412,7 +412,7 @@ export const hookObjectProperty = <
 
     // To method packages a layer of a try after all the hooks to catch
     if (typeof hooked === 'function') {
-      hooked = (function (this: any, ...args: any) {
+      hooked = (function (...args: any) {
         try {
           return (hookedUnsafe as any).apply(this, args);
         } catch {
