@@ -16,11 +16,8 @@ export function createAppContainer(name: string) {
   };
 }
 
-export async function getRenderNode(
-  domGetter: interfaces.DomGetter,
-): Promise<Element> {
+export async function getRenderNode(domGetter: interfaces.DomGetter) {
   assert(domGetter, `Invalid domGetter:\n ${domGetter}.`);
-
   let appWrapperNode = domGetter;
 
   if (typeof domGetter === 'string') {
@@ -32,6 +29,5 @@ export async function getRenderNode(
   }
 
   assert(appWrapperNode, `Invalid domGetter: ${domGetter}`);
-
   return appWrapperNode as Element;
 }
