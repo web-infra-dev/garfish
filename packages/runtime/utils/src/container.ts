@@ -1,13 +1,14 @@
 import { interfaces } from '@garfish/core';
+import { __MockHtml__ } from './garfish';
 import { assert, createKey } from './utils';
 
 export function createAppContainer(name: string) {
   // Create a temporary node, which is destroyed by the module itself
-  const appContainer = document.createElement('div');
   const htmlNode = document.createElement('div');
+  const appContainer = document.createElement('div');
 
-  appContainer.id = `garfish_app_for_${name || 'unknow'}_${createKey()}`;
-  htmlNode.setAttribute('__GarfishMockHtml__', '');
+  htmlNode.setAttribute(__MockHtml__, '');
+  appContainer.id = `garfish_app_for_${name}_${createKey()}`;
   appContainer.appendChild(htmlNode);
 
   return {
