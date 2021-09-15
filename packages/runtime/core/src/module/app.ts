@@ -468,6 +468,10 @@ export class App {
         if (jsManager) {
           if (jsManager.isModule()) {
             // EsModule cannot use eval and new Function to execute the code
+            warn(
+              'Garfish does not support "esmodule" at the moment,' +
+                'if you use "vite", please switch to other build tools.',
+            );
             return DOMApis.createElement(node);
           }
           const { url, scriptCode } = jsManager;
