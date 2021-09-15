@@ -137,6 +137,14 @@ export function evalWithEnv(code: string, params: Record<string, any>) {
   }
 }
 
+export function safeWrapper(callback: (...args: Array<any>) => any) {
+  try {
+    callback();
+  } catch (e) {
+    __DEV__ && warn(e);
+  }
+}
+
 export function nextTick(cb: () => void): void {
   Promise.resolve().then(cb);
 }

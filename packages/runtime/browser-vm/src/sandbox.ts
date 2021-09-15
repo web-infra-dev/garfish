@@ -6,6 +6,7 @@ import {
   isObject,
   deepMerge,
   evalWithEnv,
+  safeWrapper,
   isPlainObject,
   setDocCurrentScript,
 } from '@garfish/utils';
@@ -183,8 +184,12 @@ export class Sandbox {
     proxy.window = subProxy;
     proxy.globalThis = subProxy;
     proxy.unstable_sandbox = this; // This attribute is used for debugger
-    proxy.top = window.top === window ? subProxy : window.top;
-    proxy.parent = window.parent === window ? subProxy : window.top;
+    safeWrapper(() => {
+      // Cross-domain errors may occur during access
+      proxy.top = window.top === window ? subProxy : window.top;
+      proxy.parent = window.parent === window ? subProxy : window.top;
+    });
+
     addProxyWindowType(proxy, window);
     return proxy;
   }

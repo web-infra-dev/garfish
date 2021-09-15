@@ -1,5 +1,10 @@
 import { Loader, ModuleManager } from '@garfish/loader';
-import { isObject, deepMerge, __LOADER_FLAG__ } from '@garfish/utils';
+import {
+  isObject,
+  deepMerge,
+  safeWrapper,
+  __LOADER_FLAG__,
+} from '@garfish/utils';
 import { loadModule } from './apis/loadModule';
 
 export type ModuleConfig = Required<
@@ -30,7 +35,8 @@ export const moduleConfig: ModuleConfig = {
 
 // If garfish has pre-prepared data
 let garfishGlobalEnv;
-try {
+
+safeWrapper(() => {
   // @ts-ignore
   garfishGlobalEnv = __GARFISH_GLOBAL_ENV__;
 
@@ -52,7 +58,7 @@ try {
       });
     }
   }
-} catch {}
+});
 
 export const loader: Loader = (() => {
   if (isObject(garfishGlobalEnv)) {
