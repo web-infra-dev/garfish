@@ -239,7 +239,7 @@ export class Sandbox {
     if (methods.length === 0) return code;
 
     code = methods.reduce((prevCode, name) => {
-      // You can only use let, if you use var,
+      // You can only use `let`, if you use `var`,
       // declaring the characteristics in advance will cause you to fetch from with,
       // resulting in a recursive loop
       return `${prevCode} let ${name} = window.${name};`;
