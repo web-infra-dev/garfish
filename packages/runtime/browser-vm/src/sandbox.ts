@@ -285,7 +285,9 @@ export class Sandbox {
       if (typeof this.global.onerror === 'function') {
         const source = url || this.options.baseUrl;
         const message = e instanceof Error ? e.message : String(e);
-        this.global.onerror.call(this.global, message, source, null, null, e);
+        safeWrapper(() => {
+          this.global.onerror.call(this.global, message, source, null, null, e);
+        });
       }
       throw e;
     } finally {
