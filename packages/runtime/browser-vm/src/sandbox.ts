@@ -187,7 +187,7 @@ export class Sandbox {
     safeWrapper(() => {
       // Cross-domain errors may occur during access
       proxy.top = window.top === window ? subProxy : window.top;
-      proxy.parent = window.parent === window ? subProxy : window.top;
+      proxy.parent = window.parent === window ? subProxy : window.parent;
     });
 
     addProxyWindowType(proxy, window);
