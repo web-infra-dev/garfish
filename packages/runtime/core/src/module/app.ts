@@ -180,6 +180,14 @@ export class App {
       options.async,
     );
     code += url ? `\n//# sourceURL=${url}\n` : '';
+
+    if (!env['window']) {
+      env = {
+        window: this.global,
+        ...env,
+      };
+    }
+
     evalWithEnv(`;${code}`, env);
     revertCurrentScript();
   }
