@@ -215,7 +215,7 @@ export class Garfish extends EventEmitter {
             manager,
             resources,
             isHtmlMode,
-            this.options.customLoader,
+            appInfo.customLoader,
           );
 
           // The registration hook will automatically remove the duplication

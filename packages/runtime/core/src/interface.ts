@@ -78,7 +78,13 @@ export namespace interfaces {
     customLoader?: CustomerLoader;
   }
 
-  export type AppLifecycle = Pick<GlobalLifecycle, keyof AppHooks['lifecycle']>;
+  export type AppLifecycle = Pick<
+    GlobalLifecycle,
+    keyof AppHooks['lifecycle']
+  > & {
+    /** @deprecated */
+    customLoader?: CustomerLoader;
+  };
 
   export type AppConfig = Pick<
     Config,
@@ -90,13 +96,14 @@ export namespace interfaces {
     | 'insulationVariable'
   > & {
     name: string;
-    entry: string;
+    entry?: string;
     cache?: boolean;
     nested?: number;
     noCheckProvider?: boolean;
   };
 
   export interface Options extends Config, GlobalLifecycle {}
+
   export interface AppInfo extends AppConfig, AppLifecycle {}
 
   export interface Plugin extends Partial<PluginLifecycle> {

@@ -40,6 +40,8 @@ let defaultConfig: interfaces.Options = {
   beforeMount(appInfo) {
     console.log('beforeMount', appInfo);
   },
+
+  customLoader() {},
 };
 
 setTimeout(() => {
