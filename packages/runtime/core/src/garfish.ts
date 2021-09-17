@@ -35,6 +35,7 @@ export class Garfish extends EventEmitter {
   public cacheApps: Record<string, interfaces.App> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
 
+  private nestedPluginSwitch = false;
   private loading: Record<string, Promise<any> | null> = {};
 
   get props(): Record<string, any> {
@@ -65,7 +66,9 @@ export class Garfish extends EventEmitter {
     plugin: (context: Garfish) => interfaces.Plugin,
     ...args: Array<any>
   ) {
-    assert(this.running, '');
+    if (!this.nestedPluginSwitch) {
+      assert(!this.running, 'Cannot register plugin after Garfish is started.');
+    }
     assert(typeof plugin === 'function', 'Plugin must be a function.');
     args.unshift(this);
     const pluginConfig = plugin.apply(null, args) as interfaces.Plugin;
@@ -73,7 +76,6 @@ export class Garfish extends EventEmitter {
 
     if (!this.plugins[pluginConfig.name]) {
       this.plugins[pluginConfig.name] = pluginConfig;
-
       // Register hooks, Compatible with the old api
       this.hooks.usePlugin(pluginConfig);
     } else if (__DEV__) {
@@ -91,11 +93,13 @@ export class Garfish extends EventEmitter {
         options = deepMergeConfig(mainOptions, options);
         options = filterNestedConfig(this, options, numberOfNesting);
 
+        this.nestedPluginSwitch = true;
         // `pluginName` is unique
         this.usePlugin(
           GarfishOptionsLife(options, `nested-lifecycle-${numberOfNesting}`),
         );
         options.plugins?.forEach((plugin) => this.usePlugin(plugin));
+        this.nestedPluginSwitch = false;
 
         if (options.apps) {
           this.registerApp(

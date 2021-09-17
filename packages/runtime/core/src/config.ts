@@ -34,7 +34,8 @@ export const filterNestedConfig = (
   garfish.hooks.lifecycleKeys.forEach((key) => {
     const fn = config[key];
     const canCall = (info) => (info.nested = id);
-    const isInfo = (info) => isPlainObject(info) && hasOwn(info, 'name');
+    const isInfo = (info) =>
+      isPlainObject(info) && hasOwn(info, 'name') && hasOwn(info, 'entry');
 
     if (typeof fn === 'function') {
       config[key] = function (...args) {
