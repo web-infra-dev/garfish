@@ -5,7 +5,7 @@ import { PatchInterval } from './patchers/interval';
 import { PatchGlobalVal } from './patchers/variable';
 import { PatchWebpackJsonp } from './patchers/webpackjsonp';
 
-export class SnapshotSandbox {
+export class Sandbox {
   public type = 'snapshot';
   public isRunning: Boolean = false;
   private patchList: Array<

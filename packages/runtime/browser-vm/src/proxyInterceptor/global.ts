@@ -140,8 +140,7 @@ export function createDeleteProperty(sandbox: Sandbox) {
 // window proxy has
 export function createHas(sandbox: Sandbox) {
   return (_target: Window, p: PropertyKey) => {
-    return (
-      !sandbox.isProtectVariable(p) && !sandbox.tempEnvVariables.includes(p)
-    );
+    if (sandbox.isProtectVariable(p)) return false;
+    return true;
   };
 }

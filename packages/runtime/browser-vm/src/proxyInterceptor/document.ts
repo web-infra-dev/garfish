@@ -83,9 +83,7 @@ export function createSetter(sandbox) {
       // prettier-ignore
       typeof p === 'string' && passedKey(p)
         ? document
-        : receiver
-          ? receiver
-          : target,
+        : (receiver || target),
       p,
       value,
     );
@@ -115,5 +113,13 @@ export function createDefineProperty() {
     return passedKey(p)
       ? Reflect.defineProperty(document, p, descriptor)
       : Reflect.defineProperty(target, p, descriptor);
+  };
+}
+
+// document proxy has
+export function createHas() {
+  return (target: any, p: PropertyKey) => {
+    if (p === 'activeElement') return Reflect.has(document, p);
+    return hasOwn(target, p) || Reflect.has(document, p);
   };
 }

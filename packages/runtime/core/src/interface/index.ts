@@ -38,6 +38,7 @@ export namespace interfaces {
     name: string;
     entry: string;
     cache?: boolean; // Whether the cache
+    noCheckProvider?: boolean;
     activeWhen?: string | ((path: string) => boolean);
     hooks?: Hooks;
   }
@@ -76,6 +77,7 @@ export namespace interfaces {
   }
 
   export interface SandboxConfig {
+    open?: boolean;
     snapshot?: boolean;
     disableWith?: boolean;
     strictIsolation?: boolean;
@@ -206,8 +208,8 @@ export namespace interfaces {
     >;
     beforeMount: SyncHook<[AppInfo, interfaces.App], void>;
     afterMount: SyncHook<[AppInfo, interfaces.App], void>;
-    beforeUnMount: SyncHook<[AppInfo, interfaces.App], void>;
-    afterUnMount: SyncHook<[AppInfo, interfaces.App], void>;
+    beforeUnmount: SyncHook<[AppInfo, interfaces.App], void>;
+    afterUnmount: SyncHook<[AppInfo, interfaces.App], void>;
     errorLoadApp: SyncHook<[Error, AppInfo], void>;
     errorMountApp: SyncHook<[Error, AppInfo], void>;
     errorUnmountApp: SyncHook<[Error, AppInfo], void>;

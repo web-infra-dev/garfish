@@ -1,6 +1,6 @@
 {
   "name": "@garfish-dev/sub-react",
-  "version": "0.0.49",
+  "version": "0.1.5",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",

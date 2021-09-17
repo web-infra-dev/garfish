@@ -1,4 +1,4 @@
-import { SnapshotSandbox } from '../src/sandbox';
+import { Sandbox } from '../src/sandbox';
 
 describe('test sandbox ', () => {
   it('dom sandbox', () => {
@@ -12,7 +12,7 @@ describe('test sandbox ', () => {
       some: 'test delete',
     };
 
-    const sb = new SnapshotSandbox('app1', [], obj);
+    const sb = new Sandbox('app1', [], obj);
 
     const st = document.createElement('style');
     st.style.cssText = 'background: red;';

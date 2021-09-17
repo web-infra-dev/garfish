@@ -25,7 +25,7 @@ export function GarfishPerformance() {
       beforeMount(appInfo) {
         subAppMap[appInfo.name].subAppBeforeMount(appInfo.entry);
       },
-      beforeUnMount(appInfo) {
+      beforeUnmount(appInfo) {
         subAppMap[appInfo.name].subAppUnMount(appInfo.entry);
       },
     };

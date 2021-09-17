@@ -51,6 +51,11 @@ module.exports = {
           position: 'left',
         },
         {
+          to: 'changelog/',
+          label: '更新日志',
+          position: 'left',
+        },
+        {
           to: 'community/discuss',
           label: '社区',
           position: 'left',
@@ -117,7 +122,7 @@ module.exports = {
         docs: {
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/bytedance/garfish',
+          editUrl: 'https://github.com/bytedance/garfish/tree/master/website',
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
         },

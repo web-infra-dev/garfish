@@ -2,7 +2,7 @@ import { interfaces } from '@garfish/core';
 import { warn, isPlainObject } from '@garfish/utils';
 import { Sandbox } from './sandbox';
 import { Module, SandboxOptions } from './types';
-export { Sandbox } from './sandbox';
+export { Sandbox as default } from './sandbox';
 
 // export declare module
 declare module '@garfish/core' {
@@ -60,11 +60,11 @@ const compatibleOldModulesType = (modules): Array<Module> => {
     }
     modules = list;
   }
-  return [];
+  return modules;
 };
 
 // Default export Garfish plugin
-export default function BrowserVm() {
+export function GarfishBrowserVm() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     // Garfish apis
     Garfish.getGlobalObject = () => {
@@ -90,8 +90,9 @@ export default function BrowserVm() {
       afterLoad(appInfo, appInstance) {
         // Support for instance configuration, to ensure that old versions compatible
         const sandboxConfig = appInfo.sandbox || Garfish?.options?.sandbox;
-        if (sandboxConfig === false) {
+        if (sandboxConfig === false || sandboxConfig.open === false) {
           config.openSandbox = false;
+          options.openVm = false;
           return;
         }
 
@@ -102,6 +103,8 @@ export default function BrowserVm() {
           protectVariable: () => [
             ...(Garfish?.options?.protectVariable || []),
             ...(appInfo.protectVariable || []),
+            ...(appInstance &&
+              Object.keys(appInstance.getExecScriptEnv(false) || [])),
           ],
           insulationVariable: () => [
             ...(Garfish?.options?.insulationVariable || []),
@@ -133,8 +136,23 @@ export default function BrowserVm() {
 
           appInstance.vmSandbox = sandbox;
           appInstance.global = sandbox.global;
+          const originExecScript = sandbox.execScript;
+
           // Rewrite `app.runCode`
-          appInstance.runCode = (...args) => sandbox.execScript(...args);
+          appInstance.runCode = (...args) =>
+            originExecScript.call(sandbox, ...args);
+          sandbox.execScript = (code, env, url, options) =>
+            originExecScript.call(
+              sandbox,
+              code,
+              {
+                // For application of environment variables
+                ...env,
+                ...appInstance.getExecScriptEnv(false),
+              },
+              url,
+              options,
+            );
 
           // Use sandbox document
           if (appInstance.entryManager.DOMApis) {
@@ -146,7 +164,7 @@ export default function BrowserVm() {
         }
       },
 
-      afterUnMount(appInfo, appInstance) {
+      afterUnmount(appInfo, appInstance) {
         if (appInstance.vmSandbox) {
           // If the app is uninstalled, the sandbox needs to clear all effects and then reset
           appInstance.vmSandbox.reset();

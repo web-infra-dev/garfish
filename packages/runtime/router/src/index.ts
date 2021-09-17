@@ -38,7 +38,7 @@ interface Options {
   onNotMatchRouter?: (path: string) => Promise<void> | void;
 }
 
-export default function Router(_args?: Options) {
+export function GarfishRouter(_args?: Options) {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     Garfish.apps = {};
     Garfish.router = router;
@@ -49,7 +49,7 @@ export default function Router(_args?: Options) {
       bootstrap(options: interfaces.Options) {
         let activeApp = null;
         const unmounts: Record<string, Function> = {};
-        const { apps, basename } = options;
+        const { basename } = options;
         const {
           autoRefreshApp = true,
           onNotMatchRouter = () => null,
@@ -113,9 +113,11 @@ export default function Router(_args?: Options) {
           }
         }
 
+        const apps = Object.values(Garfish.appInfos);
+
         const appList = apps.filter((app) => {
           if (!app.basename) app.basename = basename;
-          return app.activeWhen !== null && app.activeWhen !== undefined;
+          return !!app.activeWhen;
         }) as Array<Required<interfaces.AppInfo>>;
 
         if (appList.length === 0) return;
@@ -136,10 +138,9 @@ export default function Router(_args?: Options) {
         // Has been running after adding routing to trigger the redirection
         if (!Garfish.running) return;
 
-        const appList = Object.keys(appInfos).map((key) => {
-          return appInfos[key];
-        });
-        router.registerRouter(appList);
+        const appList = Object.values(appInfos);
+
+        router.registerRouter(appList.filter((app) => !!app.activeWhen));
 
         // After completion of the registration application, trigger application mount
         initRedirect();

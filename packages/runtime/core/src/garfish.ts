@@ -22,7 +22,7 @@ import { GarfishOptionsLife } from './plugins/lifecycle';
 import { GarfishPreloadPlugin } from './plugins/preload';
 import { GarfishPerformance } from './plugins/performance';
 
-export class Garfish implements interfaces.Garfish {
+export class Garfish extends EventEmitter implements interfaces.Garfish {
   public hooks: Hooks;
   public loader: Loader;
   public running = false;
@@ -42,6 +42,8 @@ export class Garfish implements interfaces.Garfish {
   }
 
   constructor(options: interfaces.Options) {
+    super();
+
     this.hooks = new Hooks(false);
     this.loader = new Loader();
 
@@ -205,9 +207,13 @@ export class Garfish implements interfaces.Garfish {
       delete (options as Partial<interfaces.LoadAppOptions>).props;
 
       appInfo = deepMerge(tempInfo, options);
-      appInfo.props = hasOwn(originOpts, 'props')
-        ? originOpts.props
-        : this.options.props;
+      // If the options there is no use global props, props then with appInfo. Props to merge
+      appInfo.props = {
+        ...(appInfo.props || {}),
+        ...((hasOwn(originOpts, 'props')
+          ? originOpts.props
+          : this.options.props) || {}),
+      };
       appInfo.hooks = hasOwn(tempInfo, 'hooks') ? tempInfo.hooks : null;
     } else if (typeof options === 'string') {
       // `Garfish.loadApp('appName', 'https://xx.html');`

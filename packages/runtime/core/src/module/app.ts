@@ -94,7 +94,8 @@ export class App {
     this.cjsModules = {
       exports: {},
       module: null,
-      require: (key: string) => context.externals[key],
+      require: (key: string) =>
+        context.externals[key] || this.global[key] || window[key],
       [__GARFISH_EXPORTS__]: this.customExports,
       [__GARFISH_GLOBAL_ENV__]: this.globalEnvVariables,
     };
@@ -121,6 +122,12 @@ export class App {
 
   get rootElement() {
     return findTarget(this.htmlNode, ['body', `div[${__MockBody__}]`]);
+  }
+
+  getProvider() {
+    return this.provider
+      ? Promise.resolve(this.provider)
+      : this.checkAndGetProvider();
   }
 
   execScript(
@@ -219,7 +226,7 @@ export class App {
       const asyncJsProcess = this.compileAndRenderContainer();
 
       // Good provider is set at compile time
-      const provider = await this.checkAndGetProvider();
+      const provider = await this.getProvider();
       // Existing asynchronous functions need to decide whether the application has been unloaded
       if (!this.stopMountAndClearEffect()) return false;
 
@@ -252,14 +259,17 @@ export class App {
     }
     // This prevents the unmount of the current app from being called in "provider.destroy"
     this.unmounting = true;
-    this.context.hooks.lifecycle.beforeUnMount.call(this.appInfo, this);
+    this.context.hooks.lifecycle.beforeUnmount.call(this.appInfo, this);
 
     try {
       this.callDestroy(this.provider, true);
       this.display = false;
       this.mounted = false;
+      this.provider = null;
+      this.customExports = {};
+      this.cjsModules.exports = {};
       remove(this.context.activeApps, this);
-      this.context.hooks.lifecycle.afterUnMount.call(this.appInfo, this);
+      this.context.hooks.lifecycle.afterUnmount.call(this.appInfo, this);
     } catch (err) {
       remove(this.context.activeApps, this);
       this.entryManager.DOMApis.removeElement(this.appContainer);
@@ -271,7 +281,7 @@ export class App {
     return true;
   }
 
-  private getExecScriptEnv(noEntry: boolean) {
+  getExecScriptEnv(noEntry: boolean) {
     // The legacy of commonJS function support
     if (this.esModule) return {};
     if (noEntry) {
@@ -284,7 +294,7 @@ export class App {
   }
 
   // Performs js resources provided by the module, finally get the content of the export
-  private compileAndRenderContainer() {
+  compileAndRenderContainer() {
     // Render the application node
     // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
     this.renderTemplate();
@@ -553,9 +563,8 @@ export class App {
     }
 
     // If you have customLoader, the dojo.provide by user
-    const hookRes =
-      (await this.customLoader) &&
-      this.customLoader(provider, appInfo, basename);
+    const hookRes = await (this.customLoader &&
+      this.customLoader(provider, appInfo, basename));
 
     if (hookRes) {
       const { mount, unmount } = hookRes || ({} as any);
@@ -567,10 +576,12 @@ export class App {
       }
     }
 
-    assert(provider, `"provider" is "${typeof provider}".`);
-    // No need to use "hasOwn", because "render" may be on the prototype chain
-    assert('render' in provider, '"render" is required in provider.');
-    assert('destroy' in provider, '"destroy" is required in provider.');
+    if (!appInfo.noCheckProvider) {
+      assert(provider, `"provider" is "${typeof provider}".`);
+      // No need to use "hasOwn", because "render" may be on the prototype chain
+      assert('render' in provider, '"render" is required in provider.');
+      assert('destroy' in provider, '"destroy" is required in provider.');
+    }
 
     this.provider = provider;
     return provider;

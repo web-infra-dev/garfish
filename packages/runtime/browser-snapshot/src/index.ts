@@ -1,6 +1,8 @@
-import { SnapshotSandbox } from './sandbox';
+import { Sandbox } from './sandbox';
 import { interfaces } from '@garfish/core';
 import './globalExtensions';
+
+export { Sandbox as default } from './sandbox';
 
 export interface SandboxConfig {
   snapshot?: boolean;
@@ -13,7 +15,7 @@ interface BrowserConfig {
   protectVariable?: PropertyKey[];
 }
 
-export default function BrowserSnapshot(op?: BrowserConfig) {
+export function GarfishBrowserSnapshot(op?: BrowserConfig) {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     const config: BrowserConfig = op || { open: true };
 
@@ -23,7 +25,8 @@ export default function BrowserSnapshot(op?: BrowserConfig) {
       openBrowser: false,
       afterLoad(appInfo, appInstance) {
         const sandboxConfig = appInfo.sandbox || Garfish?.options?.sandbox;
-        if (sandboxConfig === false) config.open = false;
+        if (sandboxConfig === false || sandboxConfig.open === false)
+          config.open = false;
         if (sandboxConfig) {
           config.open = sandboxConfig?.open && sandboxConfig?.snapshot === true;
           config.protectVariable = [
@@ -36,10 +39,7 @@ export default function BrowserSnapshot(op?: BrowserConfig) {
         if (appInstance) {
           // existing
           if (appInstance.snapshotSandbox) return;
-          const sandbox = new SnapshotSandbox(
-            appInfo.name,
-            config.protectVariable,
-          );
+          const sandbox = new Sandbox(appInfo.name, config.protectVariable);
           appInstance.snapshotSandbox = sandbox;
         }
       },
@@ -48,7 +48,7 @@ export default function BrowserSnapshot(op?: BrowserConfig) {
         if (!appInstance.snapshotSandbox) return;
         appInstance.snapshotSandbox.activate();
       },
-      afterUnMount(appInfo, appInstance) {
+      afterUnmount(appInfo, appInstance) {
         if (!appInstance.snapshotSandbox) return;
         appInstance.snapshotSandbox.deactivate();
       },
@@ -56,5 +56,3 @@ export default function BrowserSnapshot(op?: BrowserConfig) {
     return options;
   };
 }
-
-export { SnapshotSandbox } from './sandbox';

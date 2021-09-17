@@ -1,4 +1,4 @@
-import { Sandbox } from '../src/index';
+import { Sandbox } from '../src/sandbox';
 
 // Garfish 使用 Proxy 对 dom 进行了劫持, 同时对调用 dom 的函数做了劫持, 修正 dom 节点的类型
 // 对调用 dom 的相关方法进行测试
@@ -88,15 +88,15 @@ describe('Sandbox:Dom & Bom', () => {
     );
   });
 
-  it('ownerDocument', () => {
-    sandbox.execScript(
-      go(`
-        const div = document.createElement('div');
-        expect(document.ownerDocument === null).toBe(true);
-        expect(div.ownerDocument === document).toBe(true);
-      `),
-    );
-  });
+  // it('ownerDocument', () => {
+  //   sandbox.execScript(
+  //     go(`
+  //       const div = document.createElement('div');
+  //       expect(document.ownerDocument === null).toBe(true);
+  //       expect(div.ownerDocument === document).toBe(true);
+  //     `),
+  //   );
+  // });
 
   it('document.head', () => {
     sandbox.execScript(
