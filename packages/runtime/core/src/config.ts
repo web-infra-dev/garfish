@@ -39,7 +39,7 @@ export const filterNestedConfig = (
 
     if (typeof fn === 'function') {
       config[key] = function (...args) {
-        const info = args.find((v) => isInfo(v));
+        const info = args.find(isInfo);
         if (!info) return fn.apply(this, args);
         if (canCall(info)) return fn.apply(this, args);
       };
