@@ -65,6 +65,7 @@ export class Garfish extends EventEmitter {
     plugin: (context: Garfish) => interfaces.Plugin,
     ...args: Array<any>
   ) {
+    assert(this.running, '');
     assert(typeof plugin === 'function', 'Plugin must be a function.');
     args.unshift(this);
     const pluginConfig = plugin.apply(null, args) as interfaces.Plugin;
@@ -85,13 +86,14 @@ export class Garfish extends EventEmitter {
     if (this.running) {
       // Nested scene can be repeated registration application
       if (options.nested) {
+        numberOfNesting++;
         const mainOptions = createDefaultOptions(true);
         options = deepMergeConfig(mainOptions, options);
-        options = filterNestedConfig(options);
+        options = filterNestedConfig(this, options, numberOfNesting);
 
         // `pluginName` is unique
         this.usePlugin(
-          GarfishOptionsLife(options, `nested-lifecycle-${numberOfNesting++}`),
+          GarfishOptionsLife(options, `nested-lifecycle-${numberOfNesting}`),
         );
         options.plugins?.forEach((plugin) => this.usePlugin(plugin));
 
@@ -99,7 +101,7 @@ export class Garfish extends EventEmitter {
           this.registerApp(
             options.apps.map((appInfo) => {
               const appConf = deepMergeConfig(options, appInfo);
-              appConf.nested = true;
+              appConf.nested = numberOfNesting;
               // Now we only allow the same sandbox configuration to be used globally
               appConf.sandbox = this.options.sandbox;
               return appConf;

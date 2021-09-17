@@ -5,6 +5,7 @@ import {
   hasOwn,
   deepMerge,
   getRenderNode,
+  isPlainObject,
 } from '@garfish/utils';
 import { AppInfo } from './module/app';
 import { interfaces } from './interface';
@@ -16,7 +17,11 @@ const invalidNestedAttrs = [
   'disablePreloadApp',
 ];
 
-export const filterNestedConfig = (config: interfaces.Options) => {
+export const filterNestedConfig = (
+  garfish: interfaces.Garfish,
+  config: interfaces.Options,
+  id: number,
+) => {
   if (config.nested) {
     invalidNestedAttrs.forEach((key) => {
       if (key in config) {
@@ -25,6 +30,20 @@ export const filterNestedConfig = (config: interfaces.Options) => {
       }
     });
   }
+
+  garfish.hooks.lifecycleKeys.forEach((key) => {
+    const fn = config[key];
+    const canCall = (info) => (info.nested = id);
+    const isInfo = (info) => isPlainObject(info) && hasOwn(info, 'name');
+
+    if (typeof fn === 'function') {
+      config[key] = function (...args) {
+        const info = args.find((v) => isInfo(v));
+        if (!info) return fn.apply(this, args);
+        if (canCall(info)) return fn.apply(this, args);
+      };
+    }
+  });
   return config;
 };
 
@@ -85,7 +104,6 @@ export const generateAppOptions = async (
 // Each main application needs to generate a new configuration
 export const createDefaultOptions = (nested = false) => {
   const config: interfaces.Options = {
-    nested,
     apps: [],
     props: {},
     basename: '/',
