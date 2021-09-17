@@ -261,6 +261,14 @@ export class DynamicNodeProcessor {
       ) {
         return originProcess();
       }
+
+      // Emit sandbox `appendNode` event
+      this.sandbox.hooks.lifecycle.appendNode.emit(
+        parentNode,
+        this.el,
+        convertedNode,
+        this.tagName,
+      );
       return this.nativeAppend.call(parentNode, convertedNode);
     }
     return originProcess();

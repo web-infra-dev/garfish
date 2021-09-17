@@ -119,13 +119,13 @@ export function evalWithEnv(code: string, params: Record<string, any>) {
   const nativeWindow = (0, eval)('window;');
   // No random value can be used, otherwise it cannot be reused as a constant string
   const randomValKey = '__garfish__exec_temporary__';
-  const vales = keys.map((k) => `window.${randomValKey}.${k}`);
+  const values = keys.map((k) => `window.${randomValKey}.${k}`);
 
   try {
     nativeWindow[randomValKey] = params;
     const evalInfo = [
       `;(function(${keys.join(',')}){`,
-      `\n}).call(${vales[0]},${vales.join(',')});`,
+      `\n}).call(${values[0]},${values.join(',')});`,
     ];
     const internalizeString = internFunc(evalInfo[0] + code + evalInfo[1]);
     // (0, eval) This expression makes the eval under the global scope

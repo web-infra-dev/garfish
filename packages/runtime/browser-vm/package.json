@@ -34,6 +34,7 @@
     "@garfish/core": "^0.1.8"
   },
   "dependencies": {
+    "@garfish/hooks": "0.1.5",
     "@garfish/loader": "0.1.5"
   },
   "publishConfig": {

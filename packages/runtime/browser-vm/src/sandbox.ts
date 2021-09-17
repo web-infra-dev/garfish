@@ -1,4 +1,5 @@
 import { Loader } from '@garfish/loader';
+import type * as Hooks from '@garfish/hooks';
 import {
   warn,
   hasOwn,
@@ -10,21 +11,23 @@ import {
   isPlainObject,
   setDocCurrentScript,
 } from '@garfish/utils';
+import { historyModule } from './modules/history';
+import { documentModule } from './modules/document';
+import { UiEventOverride } from './modules/uiEvent';
+import { XMLHttpRequestModule } from './modules/xhr';
+import { localStorageModule } from './modules/storage';
+import { listenerModule } from './modules/eventListener';
+import { timeoutModule, intervalModule } from './modules/timer';
+import { makeElInjector } from './dynamicNode';
+import { sandboxLifecycle } from './lifecycle';
+import { optimizeMethods, createFakeObject } from './utils';
+import { __garfishGlobal__, GARFISH_OPTIMIZE_NAME } from './symbolTypes';
 import {
   Module,
   SandboxOptions,
   ExecScriptOptions,
   ReplaceGlobalVariables,
 } from './types';
-import { historyModule } from './modules/history';
-import { documentModule } from './modules/document';
-import { XMLHttpRequestModule } from './modules/xhr';
-import { localStorageModule } from './modules/storage';
-import { listenerModule } from './modules/eventListener';
-import { timeoutModule, intervalModule } from './modules/timer';
-import { makeElInjector } from './dynamicNode';
-import { optimizeMethods, createFakeObject } from './utils';
-import { __garfishGlobal__, GARFISH_OPTIMIZE_NAME } from './symbolTypes';
 import {
   createHas,
   createGetter,
@@ -32,7 +35,6 @@ import {
   createDefineProperty,
   createDeleteProperty,
 } from './proxyInterceptor/global';
-import { UiEventOverride } from './modules/uiEvent';
 
 let id = 0;
 const defaultModules: Array<Module> = [
@@ -72,6 +74,7 @@ export class Sandbox {
   public initComplete = false;
   public global?: Window;
   public options: SandboxOptions;
+  public hooks = sandboxLifecycle();
   public replaceGlobalVariables: ReplaceGlobalVariables;
   public deferClearEffects: Set<() => void> = new Set();
   public isExternalGlobalVariable: Set<PropertyKey> = new Set();
@@ -97,7 +100,7 @@ export class Sandbox {
     this.options = isPlainObject(options)
       ? deepMerge(defaultOptions, options)
       : defaultOptions;
-    // sourceUrl Using a reference type, make its can be changed
+    // SourceUrl Using a reference type, make its can be changed
     options.sourceList && (this.options.sourceList = options.sourceList);
 
     const { loaderOptions, protectVariable, insulationVariable } = this.options;
@@ -111,7 +114,7 @@ export class Sandbox {
       recoverList: [],
       overrideList: {},
     };
-    // inject Global capture
+    // Inject Global capture
     makeElInjector();
     // The default startup sandbox
     this.start();
@@ -223,9 +226,11 @@ export class Sandbox {
   }
 
   clearEffects() {
+    this.hooks.lifecycle.beforeClearEffect.emit();
     this.replaceGlobalVariables.recoverList.forEach((fn) => fn && fn());
     // `deferClearEffects` needs to be put at the end
     this.deferClearEffects.forEach((fn) => fn && fn());
+    this.hooks.lifecycle.afterClearEffect.emit();
   }
 
   optimizeGlobalMethod() {
@@ -255,7 +260,12 @@ export class Sandbox {
     const { async } = options || {};
     const { disableWith, openSandbox } = this.options;
     const { prepareList, overrideList } = this.replaceGlobalVariables;
-    if (prepareList) prepareList.forEach((fn) => fn && fn());
+
+    this.hooks.lifecycle.beforeInvoke.emit(url, env, options);
+
+    if (prepareList) {
+      prepareList.forEach((fn) => fn && fn());
+    }
 
     const revertCurrentScript = setDocCurrentScript(
       this.global.document,
@@ -281,6 +291,7 @@ export class Sandbox {
         evalWithEnv(code, env);
       }
     } catch (e) {
+      this.hooks.lifecycle.invokeError.emit(e, url, env, options);
       // dispatch `window.onerror`
       if (typeof this.global.onerror === 'function') {
         const source = url || this.options.baseUrl;
@@ -293,6 +304,7 @@ export class Sandbox {
     } finally {
       revertCurrentScript();
     }
+    this.hooks.lifecycle.afterInvoke.emit(url, env, options);
   }
 
   static getNativeWindow() {
