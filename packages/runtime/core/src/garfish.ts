@@ -8,7 +8,7 @@ import {
   generateAppOptions,
   createDefaultOptions,
 } from './config';
-import { App } from './module/app';
+import { App, AppInfo } from './module/app';
 import { interfaces } from './interface';
 import { globalLifecycle } from './lifecycle';
 import { processAppResources } from './module/resource';
@@ -104,7 +104,7 @@ export class Garfish extends EventEmitter {
         if (options.apps) {
           this.registerApp(
             options.apps.map((appInfo) => {
-              const appConf = deepMergeConfig(options, appInfo);
+              const appConf = deepMergeConfig<AppInfo>(options, appInfo);
               appConf.nested = numberOfNesting;
               // Now we only allow the same sandbox configuration to be used globally
               appConf.sandbox = this.options.sandbox;

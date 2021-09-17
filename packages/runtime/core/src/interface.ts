@@ -62,7 +62,7 @@ export namespace interfaces {
 
   export interface Config {
     appID?: string;
-    nested?: number;
+    nested?: boolean;
     basename?: string;
     apps?: Array<AppInfo>;
     domGetter?: DomGetter;
@@ -92,7 +92,7 @@ export namespace interfaces {
     name: string;
     entry: string;
     cache?: boolean;
-    nested?: boolean;
+    nested?: number;
     noCheckProvider?: boolean;
   };
 

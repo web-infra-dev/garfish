@@ -49,7 +49,7 @@ export const filterNestedConfig = (
 };
 
 // Merge `oldConfig` and `newConfig`
-export const deepMergeConfig = (o, n) => {
+export const deepMergeConfig = <T>(o, n) => {
   let tempO = o;
   let tempN = n;
   const oHasProps = o && hasOwn(o, 'props');
@@ -67,7 +67,7 @@ export const deepMergeConfig = (o, n) => {
   if (oHasProps || nHasProps) {
     result.props = n.props || o.props;
   }
-  return result;
+  return result as T;
 };
 
 export const generateAppOptions = async (
