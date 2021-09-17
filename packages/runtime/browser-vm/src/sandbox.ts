@@ -66,13 +66,13 @@ const addProxyWindowType = (module: Window, parentModule: Window) => {
 };
 
 export class Sandbox {
-  public version = __VERSION__;
   public id = id++;
   public type = 'vm';
   public closed = true;
-  public loader: Loader;
   public initComplete = false;
+  public version = __VERSION__;
   public global?: Window;
+  public loader: Loader;
   public options: SandboxOptions;
   public hooks = sandboxLifecycle();
   public replaceGlobalVariables: ReplaceGlobalVariables;
@@ -138,6 +138,7 @@ export class Sandbox {
       this.optimizeCode = this.optimizeGlobalMethod();
     }
     this.initComplete = true;
+    this.hooks.lifecycle.stared.emit(this.global);
   }
 
   close() {
@@ -153,6 +154,7 @@ export class Sandbox {
     this.replaceGlobalVariables.prepareList = [];
     this.replaceGlobalVariables.recoverList = [];
     this.replaceGlobalVariables.overrideList = [];
+    this.hooks.lifecycle.closed.emit();
   }
 
   reset() {

@@ -46,6 +46,8 @@ const sandbox = new vmSandbox({
 });
 
 sandbox.hooks.usePlugin({
+  stared(fakeWindow) {},
+  closed() {},
   beforeClearEffect() {},
   afterClearEffect() {},
   beforeInvoke(url, env, options) {},
