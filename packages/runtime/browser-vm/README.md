@@ -1,9 +1,9 @@
-# `@garfish/vm-sandbox`
+# `@garfish/browser-vm`
 
 ## Usage
 
 ```js
-import vmSandbox from '@garfish/vm-sandbox';
+import vmSandbox from '@garfish/browser-vm';
 
 let nameMap = { a: 'chen' };
 

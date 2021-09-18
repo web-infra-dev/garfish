@@ -1,9 +1,11 @@
 import { hasOwn, makeMap, nextTick } from '@garfish/utils';
 import { Sandbox } from './sandbox';
-import { __proxyNode__ } from './symbolTypes';
+import { FakeWindow } from './types';
+import { __proxyNode__, __sandboxMap__ } from './symbolTypes';
 
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object
-const esGlobalMethods = ( // Function properties of the global object // Function properties of the global object
+const esGlobalMethods = // Function properties of the global object // Function properties of the global object
+(
   'eval,isFinite,isNaN,parseFloat,parseInt,' +
   // URL handling functions
   'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +
@@ -22,6 +24,26 @@ export const isEsGlobalMethods = makeMap(esGlobalMethods);
 // Can't filter document, eval keywords, such as document in handling parentNode useful
 export const optimizeMethods = [...esGlobalMethods].filter((v) => v !== 'eval');
 
+// The sandbox may be used alone, to ensure that the `sandboxMap` is globally unique,
+// because we will only rewrite `appendChild` once
+export const sandboxMap = (() => {
+  if (!(window as FakeWindow)[__sandboxMap__]) {
+    (window as FakeWindow)[__sandboxMap__] = {
+      deps: new WeakMap(),
+
+      get(element: Element): Sandbox {
+        return this.deps.get(element);
+      },
+
+      set(element: Element, sandbox: Sandbox) {
+        if (this.deps.get(element)) return;
+        this.deps.set(element, sandbox);
+      },
+    };
+  }
+  return (window as FakeWindow)[__sandboxMap__];
+})();
+
 export function handlerParams(args: IArguments | Array<any>) {
   args = Array.isArray(args) ? args : Array.from(args);
   return args.map((v) => {
@@ -35,18 +57,9 @@ export function rootElm(sandbox: Sandbox) {
   return container && container();
 }
 
-export const sandboxMap = {
-  deps: new WeakMap(),
-
-  get(element: Element): Sandbox {
-    return this.deps.get(element);
-  },
-
-  set(element: Element, sandbox: Sandbox) {
-    if (this.deps.get(element)) return;
-    this.deps.set(element, sandbox);
-  },
-};
+export function isInIframe() {
+  return window?.parent?.__GARFISH__ !== window?.__GARFISH__;
+}
 
 // Copy "window" and "document"
 export function createFakeObject(
@@ -125,8 +138,4 @@ export function microTaskHtmlProxyDocument(proxyDocument) {
       });
     }
   }
-}
-
-export function isInIframe() {
-  return window?.parent?.__GARFISH__ !== window?.__GARFISH__;
 }
