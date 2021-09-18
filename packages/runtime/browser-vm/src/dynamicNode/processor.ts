@@ -60,13 +60,23 @@ export class DynamicNodeProcessor {
   }
 
   // Put it in the next macro task to ensure that the current synchronization script is executed
-  private dispatchEvent(type: string) {
+  private dispatchEvent(type: string, errInfo?: ErrorEventInit) {
     setTimeout(() => {
-      const event: Event & { garfish?: boolean } = new Event(type);
-      event.garfish = true;
+      const isError = type === 'error';
+      let event: Event & { __byGarfish__?: boolean };
+
+      if (isError) {
+        event = new ErrorEvent(type, {
+          ...errInfo,
+          message: errInfo.error.message,
+        });
+      } else {
+        event = new Event(type);
+      }
+      event.__byGarfish__ = true;
       Object.defineProperty(event, 'target', { value: this.el });
       this.el.dispatchEvent(event);
-      type === 'error' && window.dispatchEvent(event);
+      isError && window.dispatchEvent(event);
     });
   }
 
@@ -88,7 +98,10 @@ export class DynamicNodeProcessor {
           })
           .catch((e) => {
             __DEV__ && warn(e);
-            this.dispatchEvent('error');
+            this.dispatchEvent('error', {
+              error: e,
+              filename: fetchUrl,
+            });
           });
       }
     } else {
@@ -112,12 +125,18 @@ export class DynamicNodeProcessor {
         this.sandbox.loader
           .load<JavaScriptManager>(namespace, fetchUrl)
           .then(({ resourceManager: { url, scriptCode } }) => {
-            this.dispatchEvent('load');
-            this.sandbox.execScript(scriptCode, {}, url, { noEntry: true });
+            // It is necessary to ensure that the code execution error cannot trigger the `el.onerror` event
+            setTimeout(() => {
+              this.dispatchEvent('load');
+              this.sandbox.execScript(scriptCode, {}, url, { noEntry: true });
+            });
           })
           .catch((e) => {
             __DEV__ && warn(e);
-            this.dispatchEvent('error');
+            this.dispatchEvent('error', {
+              error: e,
+              filename: fetchUrl,
+            });
           });
       } else if (code) {
         this.sandbox.execScript(code, {}, baseUrl, { noEntry: true });
