@@ -94,11 +94,11 @@ export class Garfish extends EventEmitter {
         options = filterNestedConfig(this, options, numberOfNesting);
 
         this.nestedPluginSwitch = true;
+        options.plugins?.forEach((plugin) => this.usePlugin(plugin));
         // `pluginName` is unique
         this.usePlugin(
           GarfishOptionsLife(options, `nested-lifecycle-${numberOfNesting}`),
         );
-        options.plugins?.forEach((plugin) => this.usePlugin(plugin));
         this.nestedPluginSwitch = false;
 
         if (options.apps) {
@@ -122,11 +122,12 @@ export class Garfish extends EventEmitter {
     // Register plugins
     this.usePlugin(GarfishHMRPlugin());
     this.usePlugin(GarfishPerformance());
-    this.usePlugin(GarfishOptionsLife(this.options, 'global-lifecycle'));
     if (!this.options.disablePreloadApp) {
       this.usePlugin(GarfishPreloadPlugin());
     }
     options.plugins?.forEach((plugin) => this.usePlugin(plugin, this));
+    // Put the lifecycle plugin at the end, so that you can get the changes of other plugins
+    this.usePlugin(GarfishOptionsLife(this.options, 'global-lifecycle'));
 
     // Emit hooks and register apps
     this.hooks.lifecycle.beforeBootstrap.emit(this.options);

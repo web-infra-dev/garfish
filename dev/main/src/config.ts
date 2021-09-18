@@ -41,6 +41,10 @@ let defaultConfig: interfaces.Options = {
     console.log('beforeMount', appInfo);
   },
 
+  afterLoad(info, app) {
+    console.log(app.vmSandbox);
+  },
+
   customLoader() {},
 };
 
