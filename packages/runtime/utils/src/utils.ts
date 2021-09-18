@@ -108,7 +108,7 @@ export function validURL(str) {
 // it will be attempted to be transformed into a constant version to avoid repeated caching by the browser
 export function internFunc(internalizeString) {
   // Don't consider "Hash-collision，https://en.wikipedia.org/wiki/Collision_(computer_science)"
-  // v8貌似在 16383 长度时会发生 hash-collision，经过测试后发现正常
+  // v8 貌似在 16383 长度时会发生 hash-collision 经过测试后发现正常
   const temporaryOb = {};
   temporaryOb[internalizeString] = true;
   return Object.keys(temporaryOb)[0];
