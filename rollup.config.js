@@ -121,9 +121,8 @@ function extractTsDeclare() {
     name: 'garfish-extractTsDeclare',
     options(op) {
       outputoptions = op;
-      pkgDir = op.input.replace('/src/index.ts', '');
-      let splitPkg = pkgDir.split('/');
-      pkgName = splitPkg[splitPkg.length - 1];
+      pkgDir = path.resolve(op.input, '../..');
+      pkgName = path.basename(pkgDir);
     },
     writeBundle() {
       if (!pkgName) return;
