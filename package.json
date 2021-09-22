@@ -58,6 +58,7 @@
     "@babel/plugin-transform-regenerator": "^7.12.1",
     "@babel/preset-env": "^7.12.7",
     "@babel/preset-typescript": "^7.12.7",
+    "@jsdevtools/version-bump-prompt": "^6.1.0",
     "@ls-lint/ls-lint": "^1.9.2",
     "@microsoft/api-extractor": "^7.12.0",
     "@rollup/plugin-commonjs": "^13.0.0",

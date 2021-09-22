@@ -1,44 +1,50 @@
-const { join } = require('path');
 const execa = require('execa');
-const fs = require('fs');
-const { execSync } = require('child_process');
+const path = require('path');
+const bumpPrompt = require('@jsdevtools/version-bump-prompt');
 
-function objectMap(obj, fn) {
-  return Object.fromEntries(
-    Object.entries(obj)
-      .map(([k, v]) => fn(k, v))
-      .filter(notNullish),
-  );
-}
+const bin = (name) => path.resolve(__dirname, '../node_modules/.bin/' + name);
+const run = (bin, args, opts = {}) => {
+  return execa(bin, args, { stdio: 'inherit', ...opts });
+};
+const step = (msg) => {
+  console.log(chalk.cyan(msg));
+};
 
-execSync('npx bumpp package.json packages/*/package.json', {
-  stdio: 'inherit',
-});
+async function main() {
+  // run tests before release
+  step('\nRunning tests...');
 
-const templates = [
-  'packages/create-app/template',
-  'packages/create-theme/template',
-];
+  // build all packages with types
+  step('\nBuilding all packages...');
+  await build();
 
-const { version } = await fs.readJSON('package.json');
-
-for (const template of templates) {
-  const path = join(template, 'package.json');
-  const pkg = await fs.readJSON(path);
-  const deps = ['dependencies', 'devDependencies'];
-  for (const name of deps) {
-    if (!pkg[name]) continue;
-    pkg[name] = objectMap(pkg[name], (k, v) => {
-      if (k.startsWith('@slidev/') && !k.startsWith('@slidev/theme'))
-        return [k, `^${version}`];
-      return [k, v];
-    });
+  // build all packages with types
+  step('\nSelect bumpVersion...');
+  const selectVersion = await bumpVersion();
+  if (selectVersion) {
+    console.log(selectVersion);
+    // build all packages with types
+    step('\npublishing...');
+    // await publish();
   }
-  await fs.writeJSON(path, pkg, { spaces: 2 });
 }
 
-await $`git add .`;
-await $`git commit -m "chore: release v${version}"`;
-await $`git tag v${version}`;
-await $`git push`;
-await $`git push origin --tags`;
+async function build() {
+  await run('pnpm', ['build']);
+}
+
+async function bumpVersion() {
+  return await bumpPrompt({
+    commit: 'chore(publish): release v',
+    push: true,
+    tag: true,
+  });
+}
+
+async function publish() {
+  await run('pnpm', ['publish']);
+}
+
+main().catch((err) => {
+  console.error(err);
+});
