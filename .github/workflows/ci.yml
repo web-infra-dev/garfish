@@ -38,7 +38,7 @@ jobs:
         with:
           # we have already installed all dependencies above
           install: true
-          start: lerna exec -- yarn link && cross-env TEST_ENV=true yarn dev
+          start: lerna exec -- yarn link && yarn dev
           wait-on: 'http://localhost:2333,http://localhost:2444,http://localhost:2555,http://localhost:2666,http://localhost:2777'
           wait-on-timeout: 120
           browser: chrome
