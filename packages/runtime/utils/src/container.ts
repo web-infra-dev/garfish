@@ -16,7 +16,7 @@ export function createAppContainer(name: string) {
   };
 }
 
-export function getRenderNode(domGetter: interfaces.DomGetter): Element {
+export async function getRenderNode(domGetter: interfaces.DomGetter) {
   assert(domGetter, `Invalid domGetter:\n ${domGetter}.`);
 
   let appWrapperNode = domGetter;
@@ -24,7 +24,7 @@ export function getRenderNode(domGetter: interfaces.DomGetter): Element {
   if (typeof domGetter === 'string') {
     appWrapperNode = document.querySelector(domGetter);
   } else if (typeof domGetter === 'function') {
-    appWrapperNode = (domGetter as () => Element)();
+    appWrapperNode = await (domGetter as () => Element)();
   } else if (typeof domGetter === 'object') {
     appWrapperNode = domGetter;
   }
