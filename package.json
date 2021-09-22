@@ -104,7 +104,7 @@
     "wait-on": "^6.0.0",
     "workspace-tools": "^0.16.2"
   },
-  "version": "0.1.7-beta.1",
+  "version": "0.1.8-beta.1",
   "dependencies": {
     "@changesets/cli": "^2.17.0",
     "conventional-changelog-core": "^4.2.3"
