@@ -29,6 +29,10 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 14.17.0
+      - name: install and build
+        run: |
+          yarn setup
+          yarn build
       - name: Run cypress test
         uses: cypress-io/github-action@v2
         with:
