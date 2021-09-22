@@ -31,10 +31,10 @@
     ]
   },
   "devDependencies": {
-    "@garfish/core": "^0.1.8"
+    "@garfish/core": "workspace:*"
   },
   "dependencies": {
-    "@garfish/loader": "0.1.5"
+    "@garfish/loader": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

@@ -5,7 +5,7 @@
   "description": "main template",
   "main": "index.js",
   "scripts": {
-    "start": "node linkdeps.js && webpack-dev-server"
+    "start": "webpack-dev-server"
   },
   "author": "Bytedance",
   "license": "MIT",
@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1",
-    "garfish": "^0.1.8",
+    "garfish": "workspace:*",
     "loader-utils": "^2.0.0",
     "mobx": "^6.0.1",
     "react": "^16.13.1",

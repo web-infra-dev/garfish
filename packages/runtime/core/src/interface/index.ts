@@ -93,7 +93,7 @@ export namespace interfaces {
     disableStatistics?: boolean;
     disablePreloadApp?: boolean;
     // onNotMatchRouter?: (path: string) => Promise<void> | void;
-    // autoRefreshApp?: boolean;
+    autoRefreshApp?: boolean;
     domGetter?: DomGetter;
     nested?: boolean;
   }

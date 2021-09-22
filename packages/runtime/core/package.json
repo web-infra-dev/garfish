@@ -32,9 +32,9 @@
     ]
   },
   "dependencies": {
-    "@garfish/hooks": "0.1.5",
-    "@garfish/loader": "0.1.5",
-    "@garfish/utils": "0.1.5"
+    "@garfish/hooks": "workspace:*",
+    "@garfish/loader": "workspace:*",
+    "@garfish/utils": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

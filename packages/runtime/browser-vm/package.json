@@ -34,7 +34,7 @@
     "@garfish/core": "^0.1.8"
   },
   "dependencies": {
-    "@garfish/loader": "0.1.5"
+    "@garfish/loader": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

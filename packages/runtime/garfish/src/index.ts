@@ -104,3 +104,4 @@ export function createContext(): Garfish {
 export { interfaces } from '@garfish/core';
 export { Garfish } from '@garfish/core';
 export default createContext();
+console.log('hello world111');
