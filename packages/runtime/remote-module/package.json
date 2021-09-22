@@ -1,6 +1,6 @@
 {
   "name": "@garfish/remote-module",
-  "version": "0.1.13-beta.4",
+  "version": "0.1.13-beta.8",
   "description": "remote-module module.",
   "keywords": [
     "garfish",
@@ -30,10 +30,8 @@
       "umd"
     ]
   },
-  "devDependencies": {
-    "@garfish/core": "workspace:*"
-  },
   "dependencies": {
+    "@garfish/core": "workspace:*",
     "@garfish/loader": "workspace:*"
   },
   "publishConfig": {

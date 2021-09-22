@@ -275,16 +275,18 @@ importers:
       vue-template-compiler: 2.6.14
 
   packages/runtime/browser-snapshot:
-    specifiers: {}
+    specifiers:
+      '@garfish/core': workspace:*
+    dependencies:
+      '@garfish/core': link:../core
 
   packages/runtime/browser-vm:
     specifiers:
-      '@garfish/core': ^0.1.8
+      '@garfish/core': workspace:*
       '@garfish/loader': workspace:*
     dependencies:
-      '@garfish/loader': link:../loader
-    devDependencies:
       '@garfish/core': link:../core
+      '@garfish/loader': link:../loader
 
   packages/runtime/core:
     specifiers:
@@ -337,18 +339,22 @@ importers:
       '@garfish/core': workspace:*
       '@garfish/loader': workspace:*
     dependencies:
-      '@garfish/loader': link:../loader
-    devDependencies:
       '@garfish/core': link:../core
+      '@garfish/loader': link:../loader
 
   packages/runtime/router:
     specifiers:
+      '@garfish/core': workspace:*
       '@garfish/utils': workspace:*
     dependencies:
+      '@garfish/core': link:../core
       '@garfish/utils': link:../utils
 
   packages/runtime/utils:
-    specifiers: {}
+    specifiers:
+      '@garfish/core': workspace:*
+    dependencies:
+      '@garfish/core': link:../core
 
   website:
     specifiers:
@@ -7597,7 +7603,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.4.6_typescript@3.9.10
+      '@vue/cli-service': 4.4.6_559daba3497a876383561af73426cb00
       '@vue/cli-shared-utils': 4.5.13
 
   /@vue/cli-plugin-router/4.5.13_@vue+cli-service@4.5.13:
@@ -7614,7 +7620,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.4.6_typescript@3.9.10
+      '@vue/cli-service': 4.4.6_559daba3497a876383561af73426cb00
 
   /@vue/cli-plugin-vuex/4.5.13_@vue+cli-service@4.5.13:
     resolution: {integrity: sha512-I1S9wZC7iI0Wn8kw8Zh+A2Qkf6s1M6vTGBkx8boXjuzfwEEyEHRxadsVCecZc8Mkpydo0nykj+MyYF96TKFuVA==}
@@ -9062,7 +9068,7 @@ packages:
       loader-utils: 1.4.0
       make-dir: 3.1.0
       schema-utils: 2.7.1
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   /babel-plugin-apply-mdx-type-prop/1.6.22_@babel+core@7.12.9:
     resolution: {integrity: sha1-0hbo/Q3pHePxR47zIx4FRGvIcFs=}
@@ -11018,7 +11024,7 @@ packages:
       postcss-value-parser: 4.1.0
       schema-utils: 2.7.1
       semver: 6.3.0
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   /css-loader/5.2.7_webpack@5.53.0:
     resolution: {integrity: sha512-Q7mOvpBNBG7YrVGMxRxcBJZFL75o+cH2abNASdibkj/fffYD8qWbInZrD0S9ccI6vZclF3DsHE7njGlLtaHbhg==}
@@ -14372,7 +14378,7 @@ packages:
       tapable: 1.1.3
       toposort: 1.0.7
       util.promisify: 1.0.0
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   /html-webpack-plugin/4.0.0-beta.11_webpack@4.42.0:
     resolution: {integrity: sha512-4Xzepf0qWxf8CGg7/WQM5qBB2Lc/NFI7MhU59eUDTkuQp3skZczH4UA1d6oQyDEIoMDgERVhRyTdtUPZ5s5HBg==}
@@ -24705,7 +24711,7 @@ packages:
       mime: 2.5.2
       mkdirp: 0.5.5
       range-parser: 1.2.1
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
       webpack-log: 2.0.0
 
   /webpack-dev-middleware/3.7.3_webpack@5.53.0:

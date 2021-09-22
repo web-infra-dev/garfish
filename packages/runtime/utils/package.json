@@ -1,6 +1,6 @@
 {
   "name": "@garfish/utils",
-  "version": "0.1.13-beta.4",
+  "version": "0.1.13-beta.8",
   "description": "utils module.",
   "keywords": [
     "garfish",
@@ -30,7 +30,7 @@
       "umd"
     ]
   },
-  "peerDependencies": {
+  "dependencies": {
     "@garfish/core": "workspace:*"
   },
   "publishConfig": {

@@ -3,6 +3,7 @@ const path = require('path');
 const bumpPrompt = require('@jsdevtools/version-bump-prompt');
 const chalk = require('chalk');
 const fs = require('fs');
+const args = require('minimist')(process.argv.slice(2));
 
 const bin = (name) => path.resolve(__dirname, '../node_modules/.bin/' + name);
 const run = (bin, args, opts = {}) => {
@@ -31,7 +32,7 @@ async function main() {
 
   // build all packages with types
   step('\nBuilding all packages...');
-  await build();
+  // await build();
 
   const { stdout } = await run('git', ['diff'], { stdio: 'pipe' });
   if (stdout) {
@@ -46,17 +47,11 @@ async function main() {
   if (selectVersion) {
     step('\npublishing...');
   }
-  await publish();
+  await publish(selectVersion.newVersion);
 
   // push to GitHub
   step('\nPushing to GitHub...');
-  await run('git', ['tag', `v${selectVersion.newVersion}`]);
-  await run('git', [
-    'push',
-    'origin',
-    `refs/tags/v${selectVersion.newVersion}`,
-  ]);
-  await run('git', ['push']);
+  await pushToGithub(selectVersion);
 }
 
 async function build() {
@@ -76,12 +71,34 @@ async function bumpVersion() {
   });
 }
 
-async function commitAndPush() {
-  await run('pnpm', ['build']);
+async function pushToGithub(selectVersion) {
+  // push to GitHub
+  await run('git', ['tag', `v${selectVersion.newVersion}`]);
+  await run('git', [
+    'push',
+    'origin',
+    `refs/tags/v${selectVersion.newVersion}`,
+  ]);
+  await run('git', ['push']);
 }
 
-async function publish() {
-  await run('pnpm', ['-r', 'publish', '--access', 'public', '--no-git-checks']);
+async function publish(version) {
+  let releaseTag = null;
+  if (args.tag) {
+    releaseTag = args.tag;
+  } else if (version.includes('alpha')) {
+    releaseTag = 'alpha';
+  } else if (version.includes('beta')) {
+    releaseTag = 'beta';
+  } else if (version.includes('rc')) {
+    releaseTag = 'rc';
+  }
+  let publishArgs = ['-r', 'publish', '--access', 'public', '--no-git-checks'];
+  if (version) {
+    publishArgs = publishArgs.concat(['--tag', releaseTag]);
+  }
+
+  await run('pnpm', publishArgs);
 }
 
 main().catch((err) => {

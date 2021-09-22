@@ -1,6 +1,6 @@
 {
   "name": "@garfish/browser-vm",
-  "version": "0.1.13-beta.4",
+  "version": "0.1.13-beta.8",
   "description": "vm-sandbox module.",
   "keywords": [
     "garfish",
@@ -30,11 +30,9 @@
       "umd"
     ]
   },
-  "devDependencies": {
-    "@garfish/core": "^0.1.8"
-  },
   "dependencies": {
-    "@garfish/loader": "workspace:*"
+    "@garfish/loader": "workspace:*",
+    "@garfish/core": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
