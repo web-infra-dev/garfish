@@ -1,0 +1,49 @@
+name: 'ci'
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set node version to 14
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.17.0
+      - name: install and build
+        run: |
+          yarn setup
+      - name: Run unit tests
+        run: yarn test
+
+  e2e-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set node version to 14
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.17.0
+      - name: Run cypress test
+        uses: cypress-io/github-action@v2
+        with:
+          # we have already installed all dependencies above
+          install: true
+          start: yarn test:e2e
+          wait-on: 'http://localhost:2333'
+          wait-on-timeout: 120
+          browser: chrome
+          record: true
+          parallel: true
+          group: 'UI - Chrome'
+          spec: cypress/integration/**
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          # Recommended: pass the GitHub token lets this action correctly
+          # determine the unique run id necessary to re-run the checks
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
