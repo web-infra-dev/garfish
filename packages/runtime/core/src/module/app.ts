@@ -224,7 +224,7 @@ export class App {
     this.mounting = true;
     try {
       // add container and compile js with cjs
-      const asyncJsProcess = this.compileAndRenderContainer();
+      const asyncJsProcess = await this.compileAndRenderContainer();
 
       // Good provider is set at compile time
       const provider = await this.getProvider();
