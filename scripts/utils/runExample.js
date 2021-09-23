@@ -46,19 +46,21 @@ function runAllExample() {
     Promise.all(ports.map((port) => killPort(port)))
       // dev all example
       .then(() => {
-        if (!process.env.E2E_TEST_ENV) {
-          return run('npx cross-env TEST_ENV=true pnpm dev');
+        if (!process.env.CI_TEST_ENV) {
+          return run(
+            'npx cross-env TEST_ENV=true pnpm start --filter @garfish-dev/*  --parallel',
+          );
         }
       })
       // build all demo
       .then(() => {
-        if (process.env.E2E_TEST_ENV) {
+        if (process.env.CI_TEST_ENV) {
           return run('pnpm run build --parallel --filter @garfish-dev/*');
         }
       })
       // http-server all demo
       .then(() => {
-        if (process.env.E2E_TEST_ENV) {
+        if (process.env.CI_TEST_ENV) {
           Object.keys(portMap).forEach((pkgPath) => {
             let command = `pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} `;
             // historyapifallback
