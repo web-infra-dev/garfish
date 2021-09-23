@@ -37,7 +37,7 @@ jobs:
         run: npm i -g pnpm
       - name: install and build
         run: |
-          pnpm install --filter "@garfish/*"
+          pnpm install --filter "@garfish*"
           pnpm build --filter "@garfish/*"
       - name: Run cypress test
         uses: cypress-io/github-action@v2
