@@ -61,9 +61,7 @@ packages
     utils/                     - common utils
 ```
 
-## 打包介绍
-
-### Core
+## Packaging is introduced
 
 Garfish runtime related packages use the rollup to build and use the same script to build each package, of course, also can be differentiated configuration, in a package under the add below, he has the following fields, the packaging file will be generated to the next, use can be packaged all the core package below
 
@@ -92,7 +90,7 @@ We in this piece garfish package, for example to introduce packaging process
 - `-m`: mergetypes，After the completion of the packaging field is a combined type declaration documents
 - `-e`: noExternal，garfish Used within the package into a file
 
-#### 打包后的文件介绍
+#### After packaging file is introduced
 
 - `dist/garfish.cjs.js`: cjs Inside the bag, contain all the warning and prompt information
 - `dist/garfish.cjs.prod.js`: cjs Package, all warning messages have been deleted
@@ -101,33 +99,33 @@ We in this piece garfish package, for example to introduce packaging process
 - `dist/garfish.umd.js`: umd Package, compatible with a variety of formats, package dependence were scored
   `
 
-## 常见的操作
+## The operation of the common
 
 ```shell
-# 调试 core/garfish 子包
+# Debug core/garfish package
 $ pnpm dev
 
-# 调试 core/sandbox 子包，并在浏览器中打开调试页面
+# Debug core/sandbox package, and open the debug page in your browser
 $ pnpm dev sandbox -o
 
-# 单独打包 core/garfish 子包，并把相关的依赖的子包打进去，实时监听文件的变动打包
+# Separate packing core/garfish son packages, and the relevant dependent child bag inside, packing real-time monitoring file changes
 $ pnpm build garfish -e -w
 
-#  单独打包 core/garfish 子包，并把相关的依赖的子包打进去，合并打包后的 .d.ts
+#  Separate packing core/garfish son packages, and the relevant dependent child bag in, after the merger packaging. Which s
 $ pnpm build garfish -e -m
 
-# 打包所有的 core 下面的子包
+# Pack all the core below package
 $ pnpm build:core
 
-# 打包 core 和 tool 下面所有的子包
+# The core and tool below all of the packages
 $ pnpm build:all
 
-# 在 core 下创建一个新的子包工程
+# Under the core to create a new project
 $ pnpm pkg <pkgName>
 
-# 在 tool 下创建一个新的子包工程
+# Under the tool to create a new project
 $ pnpm pkg <pkgName> -t=tool
 
-# 发布一个 latest 的包（beta，alpha 同理）
+# Release a latest package (beta, alpha in the same way)
 $ pnpm release
 ```
