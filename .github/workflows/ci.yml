@@ -37,6 +37,8 @@ jobs:
         run: |
           pnpm install
           pnpm build
+      - name: Hack Cypress
+        run: cp pnpm-lock.yaml package-lock.json
       - name: Run cypress test
         uses: cypress-io/github-action@v2
         with:
