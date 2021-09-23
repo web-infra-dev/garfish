@@ -39,11 +39,10 @@ jobs:
         run: |
           pnpm install --filter "@garfish/*"
           pnpm build --filter "@garfish/*"
-      - name: Hack Cypress
-        run: cp pnpm-lock.yaml package-lock.json
       - name: Run cypress test
         uses: cypress-io/github-action@v2
         with:
+          install: false
           start: pnpm dev
           wait-on: 'http://localhost:2333,http://localhost:2444,http://localhost:2555,http://localhost:2666,http://localhost:2777'
           wait-on-timeout: 120
