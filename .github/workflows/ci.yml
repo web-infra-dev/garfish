@@ -18,8 +18,9 @@ jobs:
       - name: Setup
         run: npm i -g pnpm
       - name: install and build
+          # ignore website docs
         run: |
-          pnpm install
+          pnpm install --filter "@garfish/*"
       - name: Run unit tests
         run: pnpm test
 
@@ -34,8 +35,9 @@ jobs:
       - name: Setup
         run: npm i -g pnpm
       - name: install and build
+          # ignore website docs
         run: |
-          pnpm install
+          pnpm install --filter "@garfish/*"
           pnpm build
       - name: Hack Cypress
         run: cp pnpm-lock.yaml package-lock.json
