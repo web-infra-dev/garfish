@@ -7,6 +7,7 @@ describe('whole process popstate event', () => {
     Cypress.env({
       garfishRunConfig: {
         basename: basename,
+        disablePreloadApp: true,
         autoRefreshApp: false, // Don't trigger popstate
       },
     });

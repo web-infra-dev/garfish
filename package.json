@@ -5,7 +5,7 @@
     "dev": "node scripts/dev.js",
     "dev:core": "pnpm dev core",
     "dev:docs": "pnpm run start --filter garfish-docs",
-    "test:e2e": "node scripts/e2e.js",
+    "test:e2e": "zx scripts/e2e.js",
     "test:e2e:open": "cross-env TEST_ENV_OPEN=true node scripts/e2e.js & cross-env TEST_ENV=true pnpm dev",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
@@ -102,7 +102,8 @@
     "tslib": "^2.3.1",
     "typescript": "^3.9.5",
     "wait-on": "^6.0.0",
-    "workspace-tools": "^0.16.2"
+    "workspace-tools": "^0.16.2",
+    "zx": "^4.2.0"
   },
   "version": "0.1.13-beta.9",
   "dependencies": {

@@ -1,7 +1,9 @@
+#!/usr/bin/env zx
 const execa = require('execa');
 const waitOn = require('wait-on');
 const killPort = require('kill-port');
 const chalk = require('chalk');
+const { $ } = require('zx');
 
 const portMap = {
   'dev/main': {
@@ -53,16 +55,14 @@ function runAllExample() {
       .then(() => {
         if (!process.env.CI_TEST_ENV) {
           step('\n run dev project...');
-          return run(
-            "npx cross-env TEST_ENV=true pnpm start --filter '@garfish-dev/*'  --parallel",
-          );
+          return $`npx cross-env TEST_ENV=true pnpm start --filter \'@garfish-dev/*\'  --parallel`;
         }
       })
       // build all demo
       .then(() => {
         if (process.env.CI_TEST_ENV) {
           step('\n building dev project...');
-          return run('pnpm run build --parallel --filter "@garfish-dev/*"');
+          return $`pnpm run build --parallel --filter "@garfish-dev/*"`;
         }
       })
       // http-server all demo
@@ -70,11 +70,12 @@ function runAllExample() {
         if (process.env.CI_TEST_ENV) {
           step('\n http-server dev dist...');
           Object.keys(portMap).forEach((pkgPath) => {
-            let command = `pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} `;
             // historyapifallback
-            if (pkgPath === 'dev/main')
-              command += `--proxy http://localhost:${portMap['dev/main'].port}?`;
-            run(command);
+            if (pkgPath === 'dev/main') {
+              $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} --proxy http://localhost:${portMap['dev/main'].port}?`;
+            } else {
+              $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port}`;
+            }
           });
         }
       })
