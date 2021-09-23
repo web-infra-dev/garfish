@@ -55,7 +55,7 @@ function runAllExample() {
       .then(() => {
         if (!process.env.CI_TEST_ENV) {
           step('\n run dev project...');
-          return $`npx cross-env TEST_ENV=true pnpm start --filter \'@garfish-dev/*\'  --parallel`;
+          return $`npx cross-env TEST_ENV=true pnpm start --filter "@garfish-dev/*"  --parallel`;
         }
       })
       // build all demo
