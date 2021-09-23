@@ -4,7 +4,7 @@ const chalk = require('chalk');
 
 runAllExample().then(function () {
   // once here, all resources are available
-  const spawnInstance = execa('yarn', [
+  const spawnInstance = execa('pnpm', [
     process.env.TEST_ENV_OPEN ? 'cy:open' : 'cy:run',
   ]);
   spawnInstance.stdout.on('data', function (msg) {
