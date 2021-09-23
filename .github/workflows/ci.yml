@@ -50,7 +50,7 @@ jobs:
         key: ${{ runner.os }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
     - name: Install pnpm
       run: curl -f https://get.pnpm.io/v6.14.js | node - add --global pnpm@6
-    - name: install
+    - name: install and build
       run: |
         pnpm install
         pnpm build:all
