@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const configCommon = require('../config.json');
+const path = require('path');
 
 module.exports = {
   webpack(config, env) {

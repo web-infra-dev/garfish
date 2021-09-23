@@ -5,7 +5,6 @@ const chalk = require('chalk');
 const fs = require('fs');
 const args = require('minimist')(process.argv.slice(2));
 
-const bin = (name) => path.resolve(__dirname, '../node_modules/.bin/' + name);
 const run = (bin, args, opts = {}) => {
   return execa(bin, args, { stdio: 'inherit', ...opts });
 };

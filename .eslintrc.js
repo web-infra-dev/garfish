@@ -47,7 +47,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['scripts/*', '*.config.js', '.eslintrc.js', '**/__tests__/**'],
+      files: ['scripts/**', '*.config.js', '.eslintrc.js', '**/__tests__/**'],
       rules: {
         'object-curly-newline': 'off',
         'no-restricted-globals': 'off',
