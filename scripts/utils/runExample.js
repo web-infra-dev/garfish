@@ -48,14 +48,14 @@ function runAllExample() {
       .then(() => {
         if (!process.env.CI_TEST_ENV) {
           return run(
-            'npx cross-env TEST_ENV=true pnpm start --filter @garfish-dev/*  --parallel',
+            'npx cross-env TEST_ENV=true pnpm start --filter "@garfish-dev/*"  --parallel',
           );
         }
       })
       // build all demo
       .then(() => {
         if (process.env.CI_TEST_ENV) {
-          return run('pnpm run build --parallel --filter @garfish-dev/*');
+          return run('pnpm run build --parallel --filter "@garfish-dev/*"');
         }
       })
       // http-server all demo
