@@ -47,6 +47,7 @@ jobs:
           wait-on: 'http://localhost:2333,http://localhost:2444,http://localhost:2555,http://localhost:2666,http://localhost:2777'
           wait-on-timeout: 120
           parallel: true
+          record: true
           spec: cypress/integration/**
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
