@@ -104,10 +104,11 @@ export class App {
     this.cjsModules = {
       exports: {},
       module: null,
-      require: (key: string) =>
-        context.externals[key] || this.global[key] || window[key],
       [__GARFISH_EXPORTS__]: this.customExports,
       [__GARFISH_GLOBAL_ENV__]: this.globalEnvVariables,
+      require: (key: string) => {
+        return context.externals[key] || this.global[key] || window[key];
+      },
     };
     this.cjsModules.module = this.cjsModules;
     this.customLoader = customLoader;
