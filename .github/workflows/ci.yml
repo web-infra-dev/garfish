@@ -28,7 +28,7 @@ jobs:
     - name: Install pnpm
       run: curl -f https://get.pnpm.io/v6.14.js | node - add --global pnpm@6
     - name: install dependency
-      run: pnpm install
+      run: pnpm install --filter=\!garfish-docs
     - name: Run unit tests
       run: pnpm test
 
@@ -51,7 +51,7 @@ jobs:
     - name: Install pnpm
       run: curl -f https://get.pnpm.io/v6.14.js | node - add --global pnpm@6
     - name: install dependency
-      run:  pnpm install
+      run: pnpm install --filter=\!garfish-docs
     - name: build
       run:  pnpm build:all
     - name: Run cypress test
