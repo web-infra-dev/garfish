@@ -1,7 +1,7 @@
 name: release canary
 on: workflow_dispatch
 jobs:
-  release:
+  release-canary:
     runs-on: ubuntu-latest
     env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
