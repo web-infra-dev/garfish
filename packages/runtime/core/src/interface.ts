@@ -86,14 +86,16 @@ export namespace interfaces {
     customLoader?: CustomerLoader;
   };
 
-  export type AppConfig = Pick<
-    Config,
-    | 'domGetter'
-    | 'sandbox'
-    | 'props'
-    | 'basename'
-    | 'protectVariable'
-    | 'insulationVariable'
+  export type AppConfig = Partial<
+    Pick<
+      Config,
+      | 'domGetter'
+      | 'sandbox'
+      | 'props'
+      | 'basename'
+      | 'protectVariable'
+      | 'insulationVariable'
+    >
   > & {
     name: string;
     entry?: string;

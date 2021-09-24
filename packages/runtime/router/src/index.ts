@@ -62,7 +62,7 @@ export function GarfishRouter(_args?: Options) {
           const app = await Garfish.loadApp(appInfo.name, {
             basename: rootPath,
             entry: appInfo.entry,
-            domGetter: appInfo.domGetter || options.domGetter,
+            domGetter: appInfo.domGetter,
           });
 
           const call = (app: interfaces.App, isRender: boolean) => {
