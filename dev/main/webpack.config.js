@@ -43,6 +43,11 @@ module.exports = {
         },
       },
       {
+        type: 'javascript/auto',
+        test: /\.mjs$/,
+        use: [],
+      },
+      {
         test: /\.(le|c)ss$/,
         use: ['style-loader', 'css-loader', 'less-loader'],
       },

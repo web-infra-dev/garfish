@@ -26,12 +26,11 @@ module.exports = {
     config.devtool = 'source-map';
     config.mode = process.env.TEST_ENV ? 'production' : 'development';
     config.optimization.minimize = true;
-    config.module // fixes https://github.com/graphql/graphql-js/issues/1272
-      .rule('mjs$')
-      .test(/\.mjs$/)
-      .include.add(/node_modules/)
-      .end()
-      .type('javascript/auto');
+    config.module.rules.push({
+      type: 'javascript/auto',
+      test: /\.mjs$/,
+      use: [],
+    });
     config.plugins = [
       ...config.plugins,
       new webpack.BannerPlugin('garfish'),
