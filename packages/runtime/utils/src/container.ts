@@ -1,6 +1,10 @@
-import { interfaces } from '@garfish/core';
 import { assert, createKey, isPromise } from './utils';
 
+type DomGetter =
+  | Element
+  | (() => Element | null)
+  | string
+  | (() => Promise<Element>);
 export function createAppContainer(name: string) {
   // Create a temporary node, which is destroyed by the module itself
   const appContainer = document.createElement('div');
@@ -16,7 +20,7 @@ export function createAppContainer(name: string) {
   };
 }
 
-export async function getRenderNode(domGetter: interfaces.DomGetter) {
+export async function getRenderNode(domGetter: DomGetter) {
   assert(domGetter, `Invalid domGetter:\n ${domGetter}.`);
 
   let appWrapperNode = domGetter;
