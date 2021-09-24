@@ -22,7 +22,7 @@ export const tsup: Options = {
     replace({
       __VERSION__: `'${pkg.version}'`,
       __DEV__:
-        '(process && process.env && process.env.NODE_ENV ? (process.env.NODE_ENV !== "production") : false)',
+        '(typeof process !== "undefined" && process.env && process.env.NODE_ENV ? (process.env.NODE_ENV !== "production") : false)',
       __TEST__: 'false',
     }),
   ],
