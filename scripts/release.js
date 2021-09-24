@@ -22,35 +22,32 @@ async function main() {
     );
   }
 
-  // build all packages with types
-  step('\nSelect bumpVersion...');
-
   // run tests before release
   step('\nRunning tests...');
   await test();
 
   // build all packages with types
-  step('\nBuilding all packages...');
-  await build();
+  // step('\nBuilding all packages...');
+  // await build();
 
-  const { stdout } = await run('git', ['diff'], { stdio: 'pipe' });
-  if (stdout) {
-    step('\nCommitting changes...');
-    await run('git', ['add', '-A']);
-    await run('git', ['commit', '-m', `release: v${selectVersion.newVersion}`]);
-  } else {
-    console.log('No changes to commit.');
-  }
+  // const { stdout } = await run('git', ['diff'], { stdio: 'pipe' });
+  // if (stdout) {
+  //   step('\nCommitting changes...');
+  //   await run('git', ['add', '-A']);
+  //   await run('git', ['commit', '-m', `release: v${selectVersion.newVersion}`]);
+  // } else {
+  //   console.log('No changes to commit.');
+  // }
 
-  // step('\nPublishing...');
-  if (selectVersion) {
-    step('\npublishing...');
-  }
-  await publish(selectVersion.newVersion);
+  // // step('\nPublishing...');
+  // if (selectVersion) {
+  //   step('\npublishing...');
+  // }
+  // await publish(selectVersion.newVersion);
 
-  // push to GitHub
-  step('\nPushing to GitHub...');
-  await pushToGithub(selectVersion);
+  // // push to GitHub
+  // step('\nPushing to GitHub...');
+  // await pushToGithub(selectVersion);
 }
 
 async function build() {
@@ -65,6 +62,7 @@ async function bumpVersion() {
   return await bumpPrompt({
     // commit: 'chore(publish): release v',
     files: ['package.json', 'packages/runtime/*/package.json'],
+    release: args.tag || '',
     push: false,
     tag: false,
   });

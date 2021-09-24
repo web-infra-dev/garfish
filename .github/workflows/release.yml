@@ -14,20 +14,24 @@ jobs:
     env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
+      runs-on: ubuntu-20.04
+      strategy:
+        matrix:
+          node-version: [14]
+      steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
         with:
-          node-version: '14'
-          cache: 'yarn'
-          registry-url: https://registry.npmjs.org/
-          always-auth: true
-      - name: Configure Git User
-        run: |
-          git config --global user.email "codingzx@gmail.com"
-          git config --global user.name "garfish-ci"
-      - uses: actions/checkout@v2
-      - name: install and build
-        run: |
-          yarn setup
+          node-version: ${{ matrix.node-version }}
+      - name: Cache .pnpm-store
+        uses: actions/cache@v1
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+      - name: Install pnpm
+        run: curl -f https://get.pnpm.io/v6.14.js | node - add --global pnpm@6
+      - name: install dependency
+        run: pnpm install --filter=\!garfish-docs
       - name: release
-        run: yarn release
+        run: node ./scripts/release.js --tag=patch
