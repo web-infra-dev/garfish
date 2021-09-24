@@ -40,9 +40,6 @@
       "umd"
     ]
   },
-  "dependencies": {
-    "@garfish/core": "workspace:*"
-  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"

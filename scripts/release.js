@@ -22,9 +22,6 @@ async function main() {
     );
   }
 
-  // build all packages with types
-  step('\nSelect bumpVersion...');
-
   // run tests before release
   step('\nRunning tests...');
   await test();
@@ -65,6 +62,7 @@ async function bumpVersion() {
   return await bumpPrompt({
     // commit: 'chore(publish): release v',
     files: ['package.json', 'packages/runtime/*/package.json'],
+    release: args.tag || '',
     push: false,
     tag: false,
   });

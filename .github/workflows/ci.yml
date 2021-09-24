@@ -58,7 +58,7 @@ jobs:
       uses: cypress-io/github-action@v2
       with:
         install: false
-        start: npx cross-env CI_TEST_ENV=true pnpm dev
+        start: npx cross-env CI_TEST_ENV=true node scripts/dev.js
         wait-on: 'http://localhost:2333,http://localhost:2444,http://localhost:2555,http://localhost:2666,http://localhost:2777'
         wait-on-timeout: 120
         parallel: true
