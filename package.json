@@ -2,7 +2,7 @@
   "private": true,
   "description": "a powerful micro front-end framework",
   "scripts": {
-    "dev": "node scripts/dev.js",
+    "dev": "pnpm build:watch & node scripts/dev.js",
     "dev:core": "pnpm dev core",
     "dev:docs": "pnpm run start --filter garfish-docs",
     "test:e2e": "zx scripts/e2e.js",
@@ -14,7 +14,7 @@
     "build": "pnpm run build --parallel --filter @garfish/* --filter garfish",
     "build:all": "pnpm run build --parallel --filter @garfish/* --filter garfish",
     "build:docs": "pnpm run build --filter garfish-docs",
-    "build:watch": "cross-env watch=true pnpm build",
+    "build:watch": "cross-env WATCH=true pnpm build",
     "reset": "pnpm -r exec -- rm -rf node_modules && rm -rf node_modules",
     "setup": "pnpm install",
     "prepublishOnly": "pnpm test && pnpm build:all",

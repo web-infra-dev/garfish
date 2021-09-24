@@ -5,7 +5,8 @@ import minimist from 'minimist';
 
 const args = minimist(process.argv.slice(2));
 const targets = args._;
-const watch = args.watch || args.w;
+// const watch = args.watch || args.w;
+const watch = process.env.WATCH;
 const formats = args.formats || args.f;
 const noCheck = args.nocheck || args.n;
 const sourceMap = args.sourcemap || args.s;
@@ -16,7 +17,7 @@ export const tsup: Options = {
   sourcemap: sourceMap,
   clean: true,
   dts: true,
-  watch: !!watch,
+  watch: watch ? 'src/' : false,
   format: ['cjs', 'esm'],
   esbuildPlugins: [
     replace({
