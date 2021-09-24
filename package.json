@@ -108,7 +108,7 @@
     "workspace-tools": "^0.16.2",
     "zx": "^4.2.0"
   },
-  "version": "0.1.9",
+  "version": "0.1.10-beta.1",
   "dependencies": {
     "@changesets/cli": "^2.17.0",
     "conventional-changelog-core": "^4.2.3"
