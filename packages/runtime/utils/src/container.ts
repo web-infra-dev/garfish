@@ -24,7 +24,7 @@ export async function getRenderNode(domGetter: interfaces.DomGetter) {
   if (typeof domGetter === 'string') {
     appWrapperNode = document.querySelector(domGetter);
   } else if (typeof domGetter === 'function') {
-    appWrapperNode = await domGetter();
+    appWrapperNode = await (domGetter as () => Element)();
   } else if (typeof domGetter === 'object') {
     appWrapperNode = domGetter;
   }

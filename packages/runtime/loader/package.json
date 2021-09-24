@@ -1,6 +1,6 @@
 {
   "name": "@garfish/loader",
-  "version": "0.1.5",
+  "version": "0.1.11",
   "description": "loader module.",
   "keywords": [
     "garfish",
@@ -9,8 +9,6 @@
   "author": "chentao.arthur <chentao.arthur@bytedance.com>",
   "homepage": "http://garfish.bytedance.com",
   "license": "Apache-2.0",
-  "main": "index.js",
-  "module": "dist/loader.esm-bundler.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
@@ -18,8 +16,20 @@
   "bugs": {
     "url": "https://github.com/bytedance/garfish/issues"
   },
-  "scripts": {},
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsup src/index.ts",
+    "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
   "buildOptions": {
     "name": "Loader",
     "devTemplate": "module",

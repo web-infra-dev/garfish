@@ -36,6 +36,7 @@ if (!window.__GARFISH__) {
     dom: document,
   });
 } else {
+  // eslint-disable-next-line no-undef
   __GARFISH_EXPORTS__.provider = provider;
 }
 

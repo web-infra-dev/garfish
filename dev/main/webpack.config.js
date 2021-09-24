@@ -35,7 +35,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    extensions: ['.js', '.mjs', '.jsx', '.ts', '.tsx'],
   },
 
   module: {
@@ -44,6 +44,11 @@ module.exports = {
         test: /\.ts(x)?$/,
         exclude: /node_modules/,
         use: { loader: 'ts-loader' },
+      },
+      {
+        type: 'javascript/auto',
+        test: /\.mjs$/,
+        use: [],
       },
       {
         test: /\.(le|c)ss$/,

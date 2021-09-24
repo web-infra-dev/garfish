@@ -1,6 +1,6 @@
 {
   "name": "garfish",
-  "version": "0.1.8",
+  "version": "0.1.11",
   "description": "garfish module.",
   "keywords": [
     "garfish",
@@ -13,8 +13,6 @@
   "author": "zhoushaw <codingzx@gmail.com>",
   "homepage": "https://github.com/bytedance/garfish",
   "license": "Apache-2.0",
-  "main": "index.js",
-  "module": "dist/garfish.esm-bundler.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
@@ -22,8 +20,20 @@
   "bugs": {
     "url": "https://github.com/bytedance/garfish/issues"
   },
-  "scripts": {},
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "./index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsup src/index.ts",
+    "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
   "buildOptions": {
     "name": "Garfish",
     "devTemplate": "module",
@@ -35,11 +45,11 @@
     ]
   },
   "dependencies": {
-    "@garfish/browser-snapshot": "^0.1.8",
-    "@garfish/browser-vm": "^0.1.8",
-    "@garfish/core": "^0.1.8",
-    "@garfish/router": "^0.1.8",
-    "@garfish/utils": "0.1.5"
+    "@garfish/browser-snapshot": "workspace:*",
+    "@garfish/browser-vm": "workspace:*",
+    "@garfish/core": "workspace:*",
+    "@garfish/router": "workspace:*",
+    "@garfish/utils": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

@@ -10,8 +10,13 @@ export function GarfishPerformance() {
 
       async beforeLoad(appInfo) {
         if (!subAppMap[appInfo.name]) {
+          let appDomGetter = appInfo.domGetter;
+          if (typeof appInfo.domGetter === 'function') {
+            appDomGetter = await appInfo.domGetter();
+          }
+          // 运营平台子应用跟节点 id 为 'master-app'
           subAppMap[appInfo.name] = new SubAppObserver({
-            subAppRootSelector: appInfo.domGetter as Element,
+            subAppRootSelector: appDomGetter as Element,
           });
         }
         subAppMap[appInfo.name].subAppBeforeLoad(appInfo.entry);

@@ -7,6 +7,7 @@ describe('whole process app render', () => {
     Cypress.env({
       garfishRunConfig: {
         basename: basename,
+        disablePreloadApp: true,
         autoRefreshApp: true, // Trigger popstate event
         async beforeLoad(appInfo) {
           console.log('start load app', appInfo);

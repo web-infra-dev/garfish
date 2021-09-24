@@ -2,185 +2,151 @@
 //  yarn: `$ yarn dev gar -n`
 //  npm: `$ npm run dev gar -- -n`
 // Why npm need add `--`, reason is here: https://docs.npmjs.com/cli/run-script
+const { runAllExample, ports } = require('./utils/runExample.js');
 
-const path = require('path');
-const chalk = require('chalk');
-const fs = require('fs-extra');
-const execa = require('execa');
-const {
-  sleep,
-  clearConsole,
-  fuzzyMatchTarget,
-  toCamelCase,
-} = require('./utils');
+runAllExample();
 
-const args = require('minimist')(process.argv.slice(2));
-const target = fuzzyMatchTarget(args._)[0];
-const open = args.open || args.o;
-const clear = args.clear || args.c;
-const noCheck = args.nocheck || args.n;
-const formats = args.formats || args.f || 'esm-browser';
+// const path = require('path');
+// const chalk = require('chalk');
+// const fs = require('fs-extra');
+// const execa = require('execa');
+// const
+// const {
+//   sleep,
+//   clearConsole,
+//   fuzzyMatchTarget,
+//   toCamelCase,
+// } = require('./utils');
 
-const pkgDir = path.resolve(`packages/runtime/${target}`);
-const pkg = require(path.resolve(pkgDir, './package.json'));
+// const args = require('minimist')(process.argv.slice(2));
+// const target = fuzzyMatchTarget(args._)[0];
+// const open = args.open || args.o;
+// const clear = args.clear || args.c;
+// const noCheck = args.nocheck || args.n;
+// const formats = args.formats || args.f || 'esm-browser';
 
-const devTemplate = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>#name dev</title>
-</head>
-<body>
-  <div id="root"></div>
-  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
-  <script src="#module"></script>
-  <script type="text/babel">
-    console.log('#name', #name);
-    const { useState } = React;
+// const pkgDir = path.resolve(`packages/runtime/${target}`);
+// const pkg = require(path.resolve(pkgDir, './package.json'));
 
-    function App() {
-      const [count, setCount] = useState(0)
-      return (
-        <div>
-          <p>Clicked {count} times</p>
-          <button onClick={() => setCount(count + 1)}>Click me</button>
-        </div>
-      )
-    }
-    ReactDOM.render(<App />, document.getElementById('root'));
-  </script>
-</body>
-</html>
-`;
+// const devTemplate = `
+// <!DOCTYPE html>
+// <html lang="en">
+// <head>
+//   <title>#name dev</title>
+// </head>
+// <body>
+//   <div id="root"></div>
+//   <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+//   <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+//   <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+//   <script src="#module"></script>
+//   <script type="text/babel">
+//     console.log('#name', #name);
+//     const { useState } = React;
 
-run();
+//     function App() {
+//       const [count, setCount] = useState(0)
+//       return (
+//         <div>
+//           <p>Clicked {count} times</p>
+//           <button onClick={() => setCount(count + 1)}>Click me</button>
+//         </div>
+//       )
+//     }
+//     ReactDOM.render(<App />, document.getElementById('root'));
+//   </script>
+// </body>
+// </html>
+// `;
 
-async function run() {
-  // garfish 的包用 rollup
-  const buildOptions = pkg.buildOptions || {};
-  const pkgDevDir =
-    buildOptions.devTemplate === 'module'
-      ? path.resolve(pkgDir, './dev')
-      : path.resolve('dev');
+// run();
 
-  if (!buildOptions.devTemplate) {
-    console.log(
-      chalk.red.bold('Need to specify the "devTemplate" in "buildOptions"'),
-    );
-    process.exit(1);
-  }
+// async function run() {
+//   // garfish 的包用 rollup
+//   // const buildOptions = pkg.buildOptions || {};
+//   // const pkgDevDir =
+//   //   buildOptions.devTemplate === 'module'
+//   //     ? path.resolve(pkgDir, './dev')
+//   //     : path.resolve('dev');
 
-  // install all deps
-  await transfer(pkgDir, pkgDevDir, buildOptions);
-  await sleep(100);
+//   // if (!buildOptions.devTemplate) {
+//   //   console.log(
+//   //     chalk.red.bold('Need to specify the "devTemplate" in "buildOptions"'),
+//   //   );
+//   //   process.exit(1);
+//   // }
 
-  if (buildOptions.devTemplate === 'module') {
-    devServer(pkgDevDir);
-  } else {
-    await sleep(2000);
-    multipleServer(pkgDevDir);
-  }
-}
+//   // // install all deps
+//   // await transfer(pkgDir, pkgDevDir, buildOptions);
+//   // await sleep(100);
 
-async function eachApps(pkgDevDir, fn) {
-  for (const f of fs.readdirSync(pkgDevDir)) {
-    const cwd = path.resolve(pkgDevDir, f);
-    if (
-      fs.statSync(cwd).isDirectory() &&
-      fs.existsSync(path.resolve(cwd, './package.json'))
-    ) {
-      await fn(cwd, path.basename(cwd));
-    }
-  }
-}
+//   // if (buildOptions.devTemplate === 'module') {
+//   //   devServer(pkgDevDir);
+//   // } else {
+//   //   await sleep(2000);
+//   //   multipleServer(pkgDevDir);
+//   // }
+//   await multipleServer(pkgDevDir);
+// }
 
-async function transfer(pkgDir, pkgDevDir, buildOptions) {
-  const isModuleDev = buildOptions.devTemplate === 'module';
+// async function eachApps(pkgDevDir, fn) {
+//   for (const f of fs.readdirSync(pkgDevDir)) {
+//     const cwd = path.resolve(pkgDevDir, f);
+//     if (
+//       fs.statSync(cwd).isDirectory() &&
+//       fs.existsSync(path.resolve(cwd, './package.json'))
+//     ) {
+//       await fn(cwd, path.basename(cwd));
+//     }
+//   }
+// }
 
-  const installDeps = async () => {
-    await eachApps(pkgDevDir, async (cwd, n) => {
-      clearConsole(
-        chalk.blue.bold(
-          `🧺 ${chalk.underline(
-            chalk.green.bold(n),
-          )} project dependencies installing, This might take a while...`,
-        ),
-      );
-      console.log();
+// async function transfer(pkgDir, pkgDevDir, buildOptions) {
+//   const isModuleDev = buildOptions.devTemplate === 'module';
 
-      await execa(
-        'yarn',
-        ['install', '--registry=https://registry.npmjs.org'],
-        {
-          cwd,
-          stdio: 'inherit',
-        },
-      );
-    });
-  };
-  await installDeps();
-}
+//   const installDeps = async () => {
+//     await eachApps(pkgDevDir, async (cwd, n) => {
+//       clearConsole(
+//         chalk.blue.bold(
+//           `🧺 ${chalk.underline(
+//             chalk.green.bold(n),
+//           )} project dependencies installing, This might take a while...`,
+//         ),
+//       );
+//       console.log();
 
-function devServer(pkgDevDir) {
-  if (pkgDevDir) {
-    const child = execa('http-server', [
-      pkgDevDir,
-      open ? '-o/index.html' : '',
-    ]);
+//       await execa(
+//         'yarn',
+//         ['install', '--registry=https://registry.npmjs.org'],
+//         {
+//           cwd,
+//           stdio: 'inherit',
+//         },
+//       );
+//     });
+//   };
+//   await installDeps();
+// }
 
-    child.on('close', () => {
-      console.log(chalk.yellow.bold('Dev server closed.'));
-    });
+// function devServer(pkgDevDir) {
+//   if (pkgDevDir) {
+//     const child = execa('http-server', [
+//       pkgDevDir,
+//       open ? '-o/index.html' : '',
+//     ]);
 
-    child.on('error', (err) => {
-      console.error(chalk.red.bold('Dev server obtain error:'), err);
-      process.exit(1);
-    });
-  }
-}
+//     child.on('close', () => {
+//       console.log(chalk.yellow.bold('Dev server closed.'));
+//     });
 
-// main 下面的工程统一用 webpack 来调试
-async function multipleServer(pkgDevDir) {
-  const starts = [];
+//     child.on('error', (err) => {
+//       console.error(chalk.red.bold('Dev server obtain error:'), err);
+//       process.exit(1);
+//     });
+//   }
+// }
 
-  eachApps(pkgDevDir, async (cwd, n) => {
-    const child = execa('npm', ['start'], {
-      cwd,
-    });
-
-    process.on('error', (err) => console.log(err));
-    process.on('beforeExit', (err) => {
-      console.log(err);
-      child.kill('SIGKILL');
-    });
-
-    // https://github.com/vuejs/vue-cli/issues/4389
-    child.stderr.on('data', async (buf) => {
-      const str = buf.toString();
-      if (
-        /(warning|browserslist|\d+\%)/.test(str) ||
-        new RegExp(`./${target}.${formats}.{1}js`).test(str)
-      ) {
-        return;
-      }
-
-      console.log(chalk.red.bold(str));
-      await sleep(10);
-    });
-
-    if (open) {
-      starts.push(
-        new Promise((resolve) => {
-          child.stdout.on('data', (buf) => {
-            const str = buf.toString().trim();
-            if (str.includes('Compiled successfully')) {
-              resolve(n === 'main' ? `*${cwd}` : '');
-            }
-          });
-        }),
-      );
-    }
-  });
-}
+// // main 下面的工程统一用 webpack 来调试
+// async function multipleServer() {
+//   await runAllExample();
+// }

@@ -1,6 +1,6 @@
 {
   "name": "@garfish/core",
-  "version": "0.1.8",
+  "version": "0.1.11",
   "description": "core module.",
   "keywords": [
     "garfish",
@@ -10,8 +10,6 @@
   "author": "zhouxiao<codingzx@gmail.com>",
   "homepage": "https://github.com/bytedance/garfish",
   "license": "Apache-2.0",
-  "main": "src/index.ts",
-  "module": "dist/core.esm-bundler.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
@@ -19,8 +17,20 @@
   "bugs": {
     "url": "https://github.com/bytedance/garfish/issues"
   },
-  "scripts": {},
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsup src/index.ts",
+    "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
   "buildOptions": {
     "name": "Core",
     "devTemplate": "complete",
@@ -32,9 +42,9 @@
     ]
   },
   "dependencies": {
-    "@garfish/hooks": "0.1.5",
-    "@garfish/loader": "0.1.5",
-    "@garfish/utils": "0.1.5"
+    "@garfish/hooks": "workspace:*",
+    "@garfish/loader": "workspace:*",
+    "@garfish/utils": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

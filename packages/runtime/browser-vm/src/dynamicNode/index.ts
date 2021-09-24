@@ -2,7 +2,7 @@ import { warn, __ELEMENT_DELETE_TAG__ } from '@garfish/utils';
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
 import { sandboxMap, isInIframe } from '../utils';
-import { injectHandlerParams } from './processParams';
+import { injectHandlerParams } from './processparams';
 import { DynamicNodeProcessor, rawElementMethods } from './processor';
 
 const mountElementMethods = [
