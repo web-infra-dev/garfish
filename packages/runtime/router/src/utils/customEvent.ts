@@ -1,6 +1,7 @@
 // copy from https://github.com/webmodules/custom-event
 
-const NativeCustomEvent = (global as any)?.CustomEvent;
+const NativeCustomEvent =
+  typeof global !== 'undefined' ? (global as any)?.CustomEvent : null;
 
 function useNative() {
   try {
@@ -12,7 +13,7 @@ function useNative() {
 
 let CustomEvent: any;
 
-if (useNative()) {
+if (NativeCustomEvent && useNative()) {
   CustomEvent = NativeCustomEvent;
 } else if (
   'undefined' !== typeof document &&
