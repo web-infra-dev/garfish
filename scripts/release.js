@@ -1,16 +1,7 @@
-const execa = require('execa');
-const path = require('path');
 const bumpPrompt = require('@jsdevtools/version-bump-prompt');
-const chalk = require('chalk');
-const fs = require('fs');
-const args = require('minimist')(process.argv.slice(2));
+const { run, step } = require('./utils');
 
-const run = (bin, args, opts = {}) => {
-  return execa(bin, args, { stdio: 'inherit', ...opts });
-};
-const step = (msg) => {
-  console.log(chalk.cyan(msg));
-};
+const args = require('minimist')(process.argv.slice(2));
 
 async function main() {
   // build all packages with types

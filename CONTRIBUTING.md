@@ -2,6 +2,10 @@
 
 😁 Excited to hear that you are interested in contributing to this project! Thanks!
 
+## Requirement
+
+`Node.js >= 14.13.0`
+
 ## Setup (locally)
 
 This project uses pnpm to manage the dependencies, install it if you haven't via
@@ -67,26 +71,11 @@ packages
 # Debug core/garfish package
 $ pnpm dev
 
-# Debug core/sandbox package, and open the debug page in your browser
-$ pnpm dev sandbox -o
+# Pack all package
+$ pnpm build
 
-# Separate packing core/garfish son packages, and the relevant dependent child bag inside, packing real-time monitoring file changes
-$ pnpm build garfish -e -w
-
-#  Separate packing core/garfish son packages, and the relevant dependent child bag in, after the merger packaging. Which s
-$ pnpm build garfish -e -m
-
-# Pack all the core below package
-$ pnpm build:core
-
-# The core and tool below all of the packages
-$ pnpm build:all
-
-# Under the core to create a new project
-$ pnpm pkg <pkgName>
-
-# Under the tool to create a new project
-$ pnpm pkg <pkgName> -t=tool
+# Run unit tests
+$ pnpm test
 
 # Release a latest package (beta, alpha in the same way)
 $ pnpm release

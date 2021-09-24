@@ -1,4 +1,5 @@
 const lernaPublish = require('@lerna/publish');
+const { step } = require('./utils');
 
 const opts = {
   yes: Boolean(process.env.CI), // 自动升级版本
@@ -15,7 +16,7 @@ const opts = {
 };
 
 function publish(canary) {
-  console.log(`publish ${canary ? '测试版本' : '正式版本'}\n`);
+  step(`publish ${canary ? '测试版本' : '正式版本'}\n`);
 
   return lernaPublish({
     ...opts,

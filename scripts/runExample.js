@@ -1,9 +1,7 @@
-#!/usr/bin/env zx
-const execa = require('execa');
+const { $ } = require('zx');
 const waitOn = require('wait-on');
 const killPort = require('kill-port');
-const chalk = require('chalk');
-const { $ } = require('zx');
+const { step } = require('./utils');
 
 const portMap = {
   'dev/main': {
@@ -32,19 +30,9 @@ const ports = Object.keys(portMap).map((pkgPath) => portMap[pkgPath].port);
 
 const opts = {
   resources: ports.map((port) => `http://localhost:${port}`),
-  validateStatus: function (status) {
+  validateStatus(status) {
     return status >= 200 && status < 300; // default if not provided
   },
-};
-const run = (command, opts = {}) => {
-  command = command.split(' ');
-  const bin = command.shift();
-  const args = command;
-  return execa(bin, args, { stdio: 'inherit', ...opts });
-};
-
-const step = (msg) => {
-  console.log(chalk.cyan(msg));
 };
 
 function runAllExample() {
@@ -80,7 +68,7 @@ function runAllExample() {
         }
       })
       .then(() => waitOn(opts))
-      .catch(function (err) {
+      .catch((err) => {
         console.error(err);
         ports.forEach((port) => killPort(port));
       })
@@ -88,6 +76,6 @@ function runAllExample() {
 }
 
 module.exports = {
-  runAllExample,
   ports,
+  runAllExample,
 };

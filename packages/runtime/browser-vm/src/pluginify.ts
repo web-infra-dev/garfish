@@ -20,6 +20,11 @@ declare module '@garfish/core' {
       insulationVariable?: PropertyKey[];
     }
 
+    export interface AppInfo {
+      protectVariable?: PropertyKey[];
+      insulationVariable?: PropertyKey[];
+    }
+
     export interface App {
       vmSandbox?: Sandbox;
     }

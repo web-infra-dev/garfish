@@ -30,16 +30,6 @@
     "build": "rimraf dist && tsup src/index.ts",
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
-  "buildOptions": {
-    "name": "SpSandbox",
-    "devTemplate": "module",
-    "formats": [
-      "esm-bundler",
-      "esm-browser",
-      "cjs",
-      "umd"
-    ]
-  },
   "dependencies": {
     "@garfish/core": "workspace:*"
   },

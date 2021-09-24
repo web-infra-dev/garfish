@@ -5,6 +5,7 @@ import { Config } from './config';
 GarfishInstance.run(Config);
 
 const useRouterMode = true;
+console.log(1);
 
 document.getElementById('vueBtn').onclick = async () => {
   if (useRouterMode) {

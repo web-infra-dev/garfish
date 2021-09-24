@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
 const lernaVersion = require('@lerna/version');
+const { step } = require('./utils');
 
 const opts = {
   push: false,
@@ -43,7 +43,7 @@ function bump(mode) {
   }
 }
 
-console.log(
+step(
   [
     'beta: 升级为beta版本',
     'manual: 手动选择升级版本',

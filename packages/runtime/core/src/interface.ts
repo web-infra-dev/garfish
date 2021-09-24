@@ -1,7 +1,7 @@
 import { PluginSystem } from '@garfish/hooks';
 import * as LoaderInterface from '@garfish/loader';
-import { Garfish as GarfishInterface } from './garfish';
-import { CustomerLoader, App as AppInterface } from './module/app';
+import * as AppInterface from './module/app';
+import * as GarfishInterface from './garfish';
 import { appLifecycle, globalLifecycle } from './lifecycle';
 
 export namespace interfaces {
@@ -17,8 +17,8 @@ export namespace interfaces {
     modules: Array<ModuleManager>;
   }
 
-  export interface App extends AppInterface {}
-  export interface Garfish extends GarfishInterface {}
+  export interface App extends AppInterface.App {}
+  export interface Garfish extends GarfishInterface.Garfish {}
 
   export type AppHooks = ReturnType<typeof appLifecycle>;
   export type GlobalHooks = ReturnType<typeof globalLifecycle>;
@@ -75,7 +75,7 @@ export namespace interfaces {
 
   export interface GlobalLifecycle extends Partial<PluginLifecycle> {
     /** @deprecated */
-    customLoader?: CustomerLoader;
+    customLoader?: AppInterface.CustomerLoader;
   }
 
   export type AppLifecycle = Pick<
@@ -83,19 +83,11 @@ export namespace interfaces {
     keyof AppHooks['lifecycle']
   > & {
     /** @deprecated */
-    customLoader?: CustomerLoader;
+    customLoader?: AppInterface.CustomerLoader;
   };
 
   export type AppConfig = Partial<
-    Pick<
-      Config,
-      | 'domGetter'
-      | 'sandbox'
-      | 'props'
-      | 'basename'
-      | 'protectVariable'
-      | 'insulationVariable'
-    >
+    Pick<Config, 'domGetter' | 'sandbox' | 'props' | 'basename'>
   > & {
     name: string;
     entry?: string;

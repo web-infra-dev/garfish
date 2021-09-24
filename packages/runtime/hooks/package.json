@@ -20,16 +20,6 @@
   },
   "scripts": {},
   "types": "dist/index.d.ts",
-  "buildOptions": {
-    "name": "Hooks",
-    "devTemplate": "module",
-    "formats": [
-      "esm-bundler",
-      "esm-browser",
-      "cjs",
-      "umd"
-    ]
-  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"

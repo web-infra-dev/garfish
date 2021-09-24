@@ -36,25 +36,24 @@ if (argv.includes('--startMockServer')) {
         return;
       }
 
-      // prettier-ignore
       const resource = pathname.includes('index.html')
         ? indexHtml
         : pathname.includes('index.js')
-          ? indexJs
-          : pathname.includes('index.css')
-            ? indexCss
-            : '';
+        ? indexJs
+        : pathname.includes('index.css')
+        ? indexCss
+        : '';
 
       res.end(resource);
     })
     .listen(port);
 } else {
-  const chalk = require('chalk');
-  const execa = require('execa');
+  const { run, step } = require('./utils');
   const childProcess = require('child_process');
 
   console.clear();
-  console.log(chalk.blue.bold('🔎 Jest testing...'));
+  step('🔎 Jest testing...');
+
   const serverProcess = childProcess.spawn(
     'node',
     ['./scripts/jestTest.js', '--startMockServer'],
@@ -63,10 +62,7 @@ if (argv.includes('--startMockServer')) {
       detached: true,
     },
   );
-
-  const testProcess = execa('jest', argv.slice(2, argv.length), {
-    stdio: 'inherit',
-  });
+  const testProcess = run('jest', argv.slice(2, argv.length));
 
   process.on('SIGINT', () => serverProcess.kill());
   process.on('SIGHUP', () => serverProcess.kill());

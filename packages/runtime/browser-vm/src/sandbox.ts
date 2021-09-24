@@ -1,5 +1,4 @@
 import { Loader } from '@garfish/loader';
-import type * as Hooks from '@garfish/hooks';
 import {
   warn,
   hasOwn,
