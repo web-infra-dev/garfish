@@ -18,7 +18,7 @@ export const tsup: Options = {
   clean: true,
   dts: true,
   watch: watch ? 'src/' : false,
-  format: ['cjs', 'esm'],
+  format: ['cjs', 'esm', 'iife'],
   esbuildPlugins: [
     replace({
       __VERSION__: `'${pkg.version}'`,
