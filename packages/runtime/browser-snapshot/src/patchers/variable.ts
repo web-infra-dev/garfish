@@ -1,4 +1,8 @@
-import { hasOwn } from '@garfish/utils';
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+function hasOwn(obj: any, key: PropertyKey): boolean {
+  return hasOwnProperty.call(obj, key);
+}
+
 export class PatchGlobalVal {
   public snapshotOriginal = new Map();
   private snapshotMutated: any = new Map();

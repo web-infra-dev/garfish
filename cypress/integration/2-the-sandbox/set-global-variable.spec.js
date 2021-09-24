@@ -7,6 +7,7 @@ describe('whole process app render', () => {
     Cypress.env({
       garfishRunConfig: {
         basename: basename,
+        disablePreloadApp: true,
         sandbox: {
           snapshot: false,
         },

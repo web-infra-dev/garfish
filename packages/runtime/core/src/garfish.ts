@@ -227,20 +227,6 @@ export class Garfish extends EventEmitter implements interfaces.Garfish {
       };
     }
 
-    // Initialize the mount point, support domGetter as promise, is advantageous for the compatibility
-    if (appInfo.domGetter) {
-      if (
-        typeof appInfo.domGetter === 'function' &&
-        isPromise(appInfo.domGetter)
-      ) {
-        appInfo.domGetter = await appInfo.domGetter();
-      }
-      const originDomGetter = appInfo.domGetter;
-      Object.defineProperty(appInfo, 'domGetter', {
-        get: () => getRenderNode(originDomGetter),
-      });
-    }
-
     const asyncLoadProcess = async () => {
       // Return not undefined type data directly to end loading
       const stopLoad = await this.hooks.lifecycle.beforeLoad.call(appInfo);

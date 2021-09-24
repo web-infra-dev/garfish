@@ -16,6 +16,7 @@ import {
   parseContentType,
   createAppContainer,
   setDocCurrentScript,
+  getRenderNode,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
@@ -180,11 +181,19 @@ export class App {
       options.async,
     );
     code += url ? `\n//# sourceURL=${url}\n` : '';
+
+    if (!env['window']) {
+      env = {
+        window: this.global,
+        ...env,
+      };
+    }
+
     evalWithEnv(`;${code}`, env);
     revertCurrentScript();
   }
 
-  show() {
+  async show() {
     this.active = true;
     const { display, mounted, provider } = this;
     if (display) return false;
@@ -193,7 +202,7 @@ export class App {
       return false;
     }
 
-    this.addContainer();
+    await this.addContainer();
     this.callRender(provider, false);
     this.display = true;
     this.context.activeApps.push(this);
@@ -223,7 +232,7 @@ export class App {
     this.mounting = true;
     try {
       // add container and compile js with cjs
-      const asyncJsProcess = this.compileAndRenderContainer();
+      const asyncJsProcess = await this.compileAndRenderContainer();
 
       // Good provider is set at compile time
       const provider = await this.getProvider();
@@ -294,10 +303,10 @@ export class App {
   }
 
   // Performs js resources provided by the module, finally get the content of the export
-  compileAndRenderContainer() {
+  async compileAndRenderContainer() {
     // Render the application node
     // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
-    this.renderTemplate();
+    await this.renderTemplate();
 
     // Execute asynchronous script
     return new Promise<void>((resolve) => {
@@ -393,13 +402,16 @@ export class App {
 
   // Create a container node and add in the document flow
   // domGetter Have been dealing with
-  private addContainer() {
-    if (typeof (this.appInfo.domGetter as Element).appendChild === 'function') {
-      (this.appInfo.domGetter as Element).appendChild(this.appContainer);
+  private async addContainer() {
+    // Initialize the mount point, support domGetter as promise, is advantageous for the compatibility
+    const domGetter = await getRenderNode(this.appInfo.domGetter);
+
+    if (typeof domGetter.appendChild === 'function') {
+      domGetter.appendChild(this.appContainer);
     }
   }
 
-  private renderTemplate() {
+  private async renderTemplate() {
     const { appInfo, entryManager, resources } = this;
     const { url: baseUrl, DOMApis } = entryManager;
     const { htmlNode, appContainer } = createAppContainer(appInfo.name);
@@ -409,7 +421,7 @@ export class App {
     this.appContainer = appContainer;
 
     // To append to the document flow, recursive again create the contents of the HTML or execute the script
-    this.addContainer();
+    await this.addContainer();
 
     const customRenderer: Parameters<typeof entryManager.createElements>[0] = {
       meta: () => null,

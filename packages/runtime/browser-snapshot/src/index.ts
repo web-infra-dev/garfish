@@ -25,10 +25,14 @@ export function GarfishBrowserSnapshot(op?: BrowserConfig) {
       openBrowser: false,
       afterLoad(appInfo, appInstance) {
         const sandboxConfig = appInfo.sandbox || Garfish?.options?.sandbox;
-        if (sandboxConfig === false || sandboxConfig.open === false)
+        if (
+          sandboxConfig === false ||
+          sandboxConfig.open === false ||
+          sandboxConfig?.snapshot === false
+        ) {
           config.open = false;
+        }
         if (sandboxConfig) {
-          config.open = sandboxConfig?.open && sandboxConfig?.snapshot === true;
           config.protectVariable = [
             ...(Garfish?.options.protectVariable || []),
             ...(appInfo.protectVariable || []),

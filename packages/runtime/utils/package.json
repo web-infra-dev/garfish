@@ -1,6 +1,6 @@
 {
   "name": "@garfish/utils",
-  "version": "0.1.5",
+  "version": "0.1.13-beta.12",
   "description": "utils module.",
   "keywords": [
     "garfish",
@@ -9,8 +9,6 @@
   "author": "zhouxiao <codingzx@gmail.com>",
   "homepage": "https://github.com/bytedance/garfish",
   "license": "Apache-2.0",
-  "main": "index.js",
-  "module": "dist/utils.esm-bundler.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
@@ -18,8 +16,20 @@
   "bugs": {
     "url": "https://github.com/bytedance/garfish/issues"
   },
-  "scripts": {},
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsup src/index.ts",
+    "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
   "buildOptions": {
     "name": "Utils",
     "devTemplate": "module",
@@ -30,8 +40,8 @@
       "umd"
     ]
   },
-  "peerDependencies": {
-    "@garfish/core": "^0.0.23"
+  "dependencies": {
+    "@garfish/core": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
