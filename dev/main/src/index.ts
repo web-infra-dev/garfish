@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import GarfishInstance, { interfaces } from 'garfish';
+import GarfishInstance from 'garfish';
 import { Config } from './config';
 
 GarfishInstance.run(Config);

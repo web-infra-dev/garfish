@@ -1,7 +1,0 @@
-{
-  "extends": "../../../api-extractor.json",
-  "mainEntryPointFilePath": "./dist/packages/runtime/garfish/src/index.d.ts",
-  "dtsRollup": {
-    "publicTrimmedFilePath": "./dist/index.d.ts"
-  }
-}

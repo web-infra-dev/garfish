@@ -31,7 +31,7 @@ module.exports = {
     },
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    extensions: ['.js', '.mjs', '.jsx', '.ts', '.tsx'],
   },
   module: {
     rules: [

@@ -10,7 +10,6 @@ module.exports = {
   globals: {
     __DEV__: true,
     __TEST__: true,
-    __BROWSER__: false,
     __VERSION__: '"unknow"',
   },
   preset: 'ts-jest',
@@ -26,5 +25,3 @@ module.exports = {
     '@garfish/(.*)': '<rootDir>packages/runtime/$1/src',
   },
 };
-
-

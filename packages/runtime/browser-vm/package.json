@@ -9,8 +9,6 @@
   "author": "zhouxiao.shaw <codingzx@gmail.com>",
   "homepage": "https://github.com/bytedance/garfish",
   "license": "Apache-2.0",
-  "main": "index.js",
-  "module": "dist/browser-vm.esm-bundler.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
@@ -18,8 +16,20 @@
   "bugs": {
     "url": "https://github.com/bytedance/garfish/issues"
   },
-  "scripts": {},
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsup src/index.ts",
+    "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
   "buildOptions": {
     "name": "VmSandbox",
     "devTemplate": "module",
