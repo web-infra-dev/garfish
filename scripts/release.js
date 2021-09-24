@@ -82,7 +82,7 @@ async function pushToGithub(selectVersion) {
 }
 
 async function publish(version) {
-  let releaseTag = null;
+  let releaseTag = 'latest';
   if (args.tag) {
     releaseTag = args.tag;
   } else if (version.includes('alpha')) {
