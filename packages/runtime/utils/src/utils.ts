@@ -114,18 +114,24 @@ export function internFunc(internalizeString) {
   return Object.keys(temporaryOb)[0];
 }
 
-export function evalWithEnv(code: string, params: Record<string, any>) {
+export function evalWithEnv(
+  code: string,
+  params: Record<string, any>,
+  context: any,
+) {
   const keys = Object.keys(params);
   const nativeWindow = (0, eval)('window;');
   // No random value can be used, otherwise it cannot be reused as a constant string
   const randomValKey = '__garfish__exec_temporary__';
   const values = keys.map((k) => `window.${randomValKey}.${k}`);
+  const contextKey = '__garfish__exec_temporary__context__';
 
   try {
     nativeWindow[randomValKey] = params;
+    nativeWindow[contextKey] = context;
     const evalInfo = [
       `;(function(${keys.join(',')}){`,
-      `\n}).call(${values[0]},${values.join(',')});`,
+      `\n}).call(window.${contextKey},${values.join(',')});`,
     ];
     const internalizeString = internFunc(evalInfo[0] + code + evalInfo[1]);
     // (0, eval) This expression makes the eval under the global scope
@@ -134,6 +140,7 @@ export function evalWithEnv(code: string, params: Record<string, any>) {
     throw e;
   } finally {
     delete nativeWindow[randomValKey];
+    delete nativeWindow[contextKey];
   }
 }
 

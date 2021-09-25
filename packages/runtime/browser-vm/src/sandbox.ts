@@ -283,13 +283,17 @@ export class Sandbox {
         : code;
 
       if (openSandbox) {
-        evalWithEnv(code, {
-          window: this.global,
-          ...overrideList,
-          ...env,
-        });
+        evalWithEnv(
+          code,
+          {
+            window: this.global,
+            ...overrideList,
+            ...env,
+          },
+          this.global,
+        );
       } else {
-        evalWithEnv(code, env);
+        evalWithEnv(code, env, window);
       }
     } catch (e) {
       this.hooks.lifecycle.invokeError.emit(e, url, env, options);

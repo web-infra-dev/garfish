@@ -193,7 +193,7 @@ export class App {
       };
     }
 
-    evalWithEnv(`;${code}`, env);
+    evalWithEnv(`;${code}`, env, this.global);
     revertCurrentScript();
   }
 

@@ -23,7 +23,7 @@ export class Actuator {
       currentApp.execScript(moduleCode, this.env, url, { noEntry: true });
     } else {
       const sourceUrl = `\n${url ? `//# sourceURL=${url}\n` : ''}`;
-      evalWithEnv(`;${moduleCode}\n${sourceUrl}`, this.env);
+      evalWithEnv(`;${moduleCode}\n${sourceUrl}`, this.env, window);
     }
     return this.env;
   }
