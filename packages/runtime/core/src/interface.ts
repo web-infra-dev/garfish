@@ -1,8 +1,11 @@
 import { PluginSystem } from '@garfish/hooks';
 import * as LoaderInterface from '@garfish/loader';
-import { App as AppInterface, CustomerLoader } from './module/app';
-import * as GarfishInterface from './garfish';
+import { Garfish } from './garfish';
+import { App, CustomerLoader } from './module/app';
 import { appLifecycle, globalLifecycle } from './lifecycle';
+
+type AppInterface = App;
+type GarfishInterface = Garfish;
 
 export namespace interfaces {
   export interface StyleManager extends LoaderInterface.StyleManager {}
@@ -18,7 +21,7 @@ export namespace interfaces {
   }
 
   export interface App extends AppInterface {}
-  export interface Garfish extends GarfishInterface.Garfish {}
+  export interface Garfish extends GarfishInterface {}
 
   export type AppHooks = ReturnType<typeof appLifecycle>;
   export type GlobalHooks = ReturnType<typeof globalLifecycle>;
