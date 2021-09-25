@@ -1,6 +1,6 @@
 {
   "private": true,
-  "description": "a powerful micro front-end framework",
+  "description": "A powerful micro front-end framework",
   "scripts": {
     "dev": "pnpm build:watch & node scripts/dev.js",
     "dev:docs": "pnpm run start --filter garfish-docs",
@@ -12,7 +12,6 @@
     "cy:run": "cypress run",
     "changeset": "npx changeset",
     "build": "pnpm run build --parallel --filter @garfish/* --filter garfish",
-    "build:all": "pnpm run build --parallel --filter @garfish/* --filter garfish",
     "build:docs": "pnpm run build --filter garfish-docs",
     "build:watch": "cross-env WATCH=true pnpm build",
     "reset": "pnpm -r exec -- rm -rf node_modules && rm -rf node_modules",
