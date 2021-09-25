@@ -12,7 +12,7 @@ const portMap = {
     pkgName: '@garfish-dev/react',
     port: 2444,
   },
-  'dev/vueSub': {
+  'dev/vue-sub': {
     pkgName: '@garfish-dev/vue-sub',
     port: 2555,
   },
