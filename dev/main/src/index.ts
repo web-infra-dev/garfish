@@ -16,7 +16,7 @@ document.getElementById('vueBtn').onclick = async () => {
       domGetter: '#submoduleByCunstom',
     });
     console.log(prevApp);
-    await prevApp.mount();
+    prevApp && (await prevApp.mount());
   }
 };
 
@@ -29,7 +29,7 @@ document.getElementById('reactBtn').onclick = async () => {
       domGetter: '#submoduleByCunstom',
     });
     console.log(prevApp);
-    await prevApp.mount();
+    prevApp && (await prevApp.mount());
   }
 };
 

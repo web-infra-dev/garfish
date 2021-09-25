@@ -1,6 +1,6 @@
 import { PluginSystem } from '@garfish/hooks';
 import * as LoaderInterface from '@garfish/loader';
-import * as AppInterface from './module/app';
+import { App as AppInterface, CustomerLoader } from './module/app';
 import * as GarfishInterface from './garfish';
 import { appLifecycle, globalLifecycle } from './lifecycle';
 
@@ -17,7 +17,7 @@ export namespace interfaces {
     modules: Array<ModuleManager>;
   }
 
-  export interface App extends AppInterface.App {}
+  export interface App extends AppInterface {}
   export interface Garfish extends GarfishInterface.Garfish {}
 
   export type AppHooks = ReturnType<typeof appLifecycle>;
@@ -75,7 +75,7 @@ export namespace interfaces {
 
   export interface GlobalLifecycle extends Partial<PluginLifecycle> {
     /** @deprecated */
-    customLoader?: AppInterface.CustomerLoader;
+    customLoader?: CustomerLoader;
   }
 
   export type AppLifecycle = Pick<
@@ -83,7 +83,7 @@ export namespace interfaces {
     keyof AppHooks['lifecycle']
   > & {
     /** @deprecated */
-    customLoader?: AppInterface.CustomerLoader;
+    customLoader?: CustomerLoader;
   };
 
   export type AppConfig = Partial<

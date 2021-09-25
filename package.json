@@ -19,7 +19,6 @@
     "setup": "pnpm install",
     "prepublishOnly": "pnpm test && pnpm build:all",
     "postpublish": "node scripts/asyncBnpm.js",
-
     "ls-lint": "ls-lint",
     "lint": "eslint --ext .ts packages/*/*/src/**",
     "reset-gittag": "git tag -l | xargs git tag -d && git fetch --prune",

@@ -1,5 +1,5 @@
 {
-  "name": "@garfish-dev/sub-app",
+  "name": "@garfish-dev/vue-sub",
   "version": "0.1.5",
   "private": true,
   "scripts": {
