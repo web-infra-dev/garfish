@@ -48,25 +48,17 @@ export const filterNestedConfig = (
   return config;
 };
 
-// Merge `oldConfig` and `newConfig`
+// `props` may be responsive data
 export const deepMergeConfig = <T>(o, n) => {
-  let tempO = o;
-  let tempN = n;
-  const oHasProps = o && hasOwn(o, 'props');
-  const nHasProps = n && hasOwn(n, 'props');
-
-  if (oHasProps) {
-    tempO = Object.assign({}, o);
-    delete tempO.props;
+  const props = n.props || o.props;
+  if (props) {
+    o = { ...o };
+    n = { ...n };
+    delete o.props;
+    delete n.props;
   }
-  if (nHasProps) {
-    tempN = Object.assign({}, n);
-    delete tempN.props;
-  }
-  const result = deepMerge(tempO, tempN);
-  if (oHasProps || nHasProps) {
-    result.props = n.props || o.props;
-  }
+  const result = deepMerge(o, n);
+  if (props) result.props = props;
   return result as T;
 };
 
