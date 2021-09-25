@@ -16,7 +16,7 @@
     "build:watch": "cross-env WATCH=true pnpm build",
     "reset": "pnpm -r exec -- rm -rf node_modules && rm -rf node_modules",
     "setup": "pnpm install",
-    "prepublishOnly": "pnpm test && pnpm build:all",
+    "prepublishOnly": "pnpm test && pnpm build",
     "postpublish": "node scripts/asyncBnpm.js",
     "ls-lint": "ls-lint",
     "lint": "eslint --ext .ts packages/*/*/src/**",
