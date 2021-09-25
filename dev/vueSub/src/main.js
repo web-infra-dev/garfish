@@ -12,6 +12,7 @@ Vue.use(ElementUI);
 Vue.use(VueRouter);
 Vue.config.productionTip = false;
 
+let vm;
 const render = ({ dom, basename = '/' }) => {
   const router = new VueRouter({
     mode: 'history',
