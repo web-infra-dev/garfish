@@ -1,6 +1,8 @@
 import GarfishInstance, { interfaces } from 'garfish';
 import './monitoring';
 
+declare const Cypress: any;
+
 (window as any).__GARFISH_PARENT__ = true;
 
 // let asyncTime = function () {
@@ -48,15 +50,13 @@ let defaultConfig: interfaces.Options = {
   customLoader() {},
 };
 
-setTimeout(() => {
-  GarfishInstance.registerApp({
-    name: 'react',
-    activeWhen: '/react',
-    entry: 'http://localhost:2444',
-    props: {
-      appName: 'react',
-    },
-  });
+GarfishInstance.registerApp({
+  name: 'react',
+  activeWhen: '/react',
+  entry: 'http://localhost:2444',
+  props: {
+    appName: 'react',
+  },
 });
 
 // The test environment into
