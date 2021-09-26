@@ -123,7 +123,7 @@ export const generateAppOptions = (
   }
 
   // merge register appInfo config and loadApp config
-  if (typeof appOptionsOrUrl === 'object') {
+  if (appOptionsOrUrl && typeof appOptionsOrUrl === 'object') {
     appInfo = getAppConfig(appInfo, appOptionsOrUrl);
   }
 
