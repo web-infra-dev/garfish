@@ -12,8 +12,8 @@ const render = function ({ basename, dom }) {
     mode: 'history',
     base: basename,
     routes: [
-      { path: '/about', component: About },
       { path: '/', component: Index },
+      { path: '/about', component: About },
     ],
   });
 

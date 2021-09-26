@@ -1,6 +1,8 @@
 import GarfishInstance, { interfaces } from 'garfish';
 import './monitoring';
 
+declare const Cypress: any;
+
 (window as any).__GARFISH_PARENT__ = true;
 
 // let asyncTime = function () {
@@ -29,20 +31,45 @@ let defaultConfig: interfaces.Options = {
       // cache: true,
       entry: 'http://localhost:2777',
     },
+    // {
+    //   name: 'react',
+    //   activeWhen: '/react',
+    //   entry: 'http://localhost:2444',
+    //   props: {
+    //     appName: 'react',
+    //   },
+    // },
   ],
-  autoRefreshApp: true,
+  autoRefreshApp: false,
   disablePreloadApp: true,
   protectVariable: ['MonitoringInstance', 'Garfish'],
+  sandbox: {
+    open: true,
+  },
+
+  // beforeMount(appInfo) {
+  //   console.log('beforeMount', appInfo);
+  // },
+
+  // afterLoad(info, app) {
+  //   console.log(app.vmSandbox);
+  // },
+
+  customLoader() {},
 };
 
+// setTimeout(()=>{
 GarfishInstance.registerApp({
   name: 'react',
   activeWhen: '/react',
+  // basename: '/garfish_master',
   entry: 'http://localhost:2444',
+  // domGetter: ()=>document.querySelector('#submoduleByRouter'),
   props: {
     appName: 'react',
   },
 });
+// })
 
 // The test environment into
 if (typeof Cypress !== 'undefined') {

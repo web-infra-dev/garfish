@@ -1,48 +1,37 @@
 {
   "name": "@garfish/hooks",
   "version": "0.1.11",
-  "author": "zhoushaw",
-  "description": "fork from tapable",
-  "license": "MIT",
-  "homepage": "https://github.com/webpack/tapable",
+  "description": "hooks module.",
+  "keywords": [
+    "garfish",
+    "hooks"
+  ],
+  "author": "chentao.arthur <chentao.arthur@bytedance.com>",
+  "homepage": "http://garfish.bytedance.com",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsup src/index.ts",
+    "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
   "repository": {
     "type": "git",
-    "url": "http://github.com/webpack/tapable.git"
+    "url": "git+https://github.com/bytedance/garfish.git"
   },
-  "devDependencies": {
-    "@babel/core": "^7.4.4",
-    "@babel/preset-env": "^7.4.4",
-    "babel-jest": "^24.8.0",
-    "codecov": "^3.5.0",
-    "jest": "^24.8.0",
-    "prettier": "^1.17.1"
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
   },
-  "engines": {
-    "node": ">=6"
-  },
-  "files": [
-    "lib",
-    "src",
-    "!lib/__tests__",
-    "index.d.ts"
-  ],
-  "main": "./src/index.js",
-  "module": "./src/index.js",
-  "types": "./index.d.ts",
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
-  },
-  "scripts": {
-    "test": "jest",
-    "travis": "yarn pretty-lint && jest --coverage && codecov",
-    "pretty-lint": "prettier --check lib/*.js lib/__tests__/*.js",
-    "pretty": "prettier --loglevel warn --write lib/*.js lib/__tests__/*.js"
-  },
-  "jest": {
-    "transform": {
-      "__tests__[\\\\/].+\\.js$": "babel-jest"
-    }
-  },
-  "gitHead": "e8bf48ea8ca8db408a4a0a1cdab8ce4a50ab279b"
+  }
 }

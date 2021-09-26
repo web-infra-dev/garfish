@@ -20,46 +20,52 @@ import {
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
-import SubAppObserver from '../plugins/performance/subAppObserver';
+import { appLifecycle } from '../lifecycle';
+import { SubAppObserver } from '../plugins/performance/subAppObserver';
 
+/** @deprecated */
 export type CustomerLoader = (
   provider: interfaces.Provider,
   appInfo: interfaces.AppInfo,
   path: string,
 ) => Promise<interfaces.LoaderResult | void> | interfaces.LoaderResult | void;
 
-export type AppInterface = App;
+export type AppInfo = interfaces.AppInfo & {
+  appId?: number;
+};
 
+let appId = 0;
 const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
 
-/**
- * Have the ability to App instance
- * 1. Provide static resource, the structure of the HTML, CSS, js.
- * 2. Can be extracted in the js CJS through scope __GARFISH_EXPORTS__ namespace or get child application provider is deduced.
- * 3. Through execCode incoming environment variables such as CJS specification of the module, the require, exports to realize external sharing
- * 4. Trigger rendering：Application related nodes placed in the document flow, which in turn perform application scripts, final render function,
- *    perform the son application provides complete application independent runtime execution.
- * 5. Trigger the destruction: Perform the destroy function of child application, and applies the child node is removed from the document flow.
- */
+// Have the ability to App instance
+// 1. Provide static resource, the structure of the HTML, CSS, js.
+// 2. Can be extracted in the js CJS through scope __GARFISH_EXPORTS__ namespace or get child application provider is deduced.
+// 3. Through execCode incoming environment variables such as CJS specification of the module, the require, exports to realize external sharing
+// 4. Trigger rendering：Application related nodes placed in the document flow, which in turn perform application scripts, final render function,
+//    perform the son application provides complete application independent runtime execution.
+// 5. Trigger the destruction: Perform the destroy function of child application, and applies the child node is removed from the document flow.
 export class App {
+  public appId = appId++;
   public display = false;
   public mounted = false;
   public esModule = false;
   public strictIsolation = false;
   public name: string;
-  public global: any = window;
   public isHtmlMode: boolean;
+  public global: any = window;
   public appContainer: HTMLElement;
-  public sourceList: Array<{ tagName: string; url: string }> = [];
   public cjsModules: Record<string, any>;
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
+  public sourceList: Array<{ tagName: string; url: string }> = [];
+  public appInfo: AppInfo;
+  public hooks: interfaces.AppHooks;
   public provider: interfaces.Provider;
-  public appInfo: interfaces.AppInfo;
   public entryManager: TemplateManager;
-  public customLoader: CustomerLoader;
   public appPerformance: SubAppObserver;
+  /** @deprecated */
+  public customLoader: CustomerLoader;
 
   private active = false;
   private mounting = false;
@@ -71,21 +77,23 @@ export class App {
 
   constructor(
     context: Garfish,
-    appInfo: interfaces.AppInfo,
+    appInfo: AppInfo,
     entryManager: TemplateManager,
     resources: interfaces.ResourceModules,
     isHtmlMode: boolean,
     customLoader: CustomerLoader,
   ) {
     this.context = context;
-    // Get app container dom
     this.appInfo = appInfo;
     this.name = appInfo.name;
     this.resources = resources;
     this.isHtmlMode = isHtmlMode;
     this.entryManager = entryManager;
 
-    // garfish environment variables
+    // `appInfo` is completely independent and can be associated with `appId`
+    this.appInfo.appId = this.appId;
+
+    // Garfish environment variables
     this.globalEnvVariables = {
       currentApp: this,
       loader: context.loader,
@@ -95,13 +103,21 @@ export class App {
     this.cjsModules = {
       exports: {},
       module: null,
-      require: (key: string) =>
-        context.externals[key] || this.global[key] || window[key],
       [__GARFISH_EXPORTS__]: this.customExports,
       [__GARFISH_GLOBAL_ENV__]: this.globalEnvVariables,
+      require: (key: string) => {
+        return context.externals[key] || this.global[key] || window[key];
+      },
     };
     this.cjsModules.module = this.cjsModules;
     this.customLoader = customLoader;
+
+    // Register hooks
+    this.hooks = appLifecycle();
+    this.hooks.usePlugin({
+      ...appInfo,
+      name: `${appInfo.name}-lifecycle`,
+    });
 
     // Save all the resources to address
     const nodes = entryManager.getNodesByTagName(...sourceListTags);
@@ -141,29 +157,16 @@ export class App {
       ...(env || {}),
       ...this.getExecScriptEnv(options?.noEntry),
     };
+    const args = [this.appInfo, code, env, url, options] as const;
 
-    this.context.hooks.lifecycle.beforeEval.call(
-      this.appInfo,
-      code,
-      env,
-      url,
-      options,
-    );
-
+    this.hooks.lifecycle.beforeEval.emit(...args);
     try {
       this.runCode(code, env, url, options);
     } catch (e) {
-      this.context.hooks.lifecycle.errorExecCode.call(e, this.appInfo);
+      this.hooks.lifecycle.errorExecCode.emit(e, ...args);
       throw e;
     }
-
-    this.context.hooks.lifecycle.afterEval.call(
-      this.appInfo,
-      code,
-      env,
-      url,
-      options,
-    );
+    this.hooks.lifecycle.afterEval.emit(...args);
   }
 
   // `vm sandbox` can override this method
@@ -189,7 +192,7 @@ export class App {
       };
     }
 
-    evalWithEnv(`;${code}`, env);
+    evalWithEnv(`;${code}`, env, this.global);
     revertCurrentScript();
   }
 
@@ -226,7 +229,7 @@ export class App {
 
   async mount() {
     if (!this.canMount()) return false;
-    this.context.hooks.lifecycle.beforeMount.call(this.appInfo, this);
+    this.hooks.lifecycle.beforeMount.emit(this.appInfo, this);
 
     this.active = true;
     this.mounting = true;
@@ -243,13 +246,13 @@ export class App {
       this.display = true;
       this.mounted = true;
       this.context.activeApps.push(this);
-      this.context.hooks.lifecycle.afterMount.call(this.appInfo, this);
+      this.hooks.lifecycle.afterMount.emit(this.appInfo, this);
 
       await asyncJsProcess;
       if (!this.stopMountAndClearEffect()) return false;
-    } catch (err) {
+    } catch (e) {
       this.entryManager.DOMApis.removeElement(this.appContainer);
-      this.context.hooks.lifecycle.errorMountApp.call(err, this.appInfo);
+      this.hooks.lifecycle.errorMountApp.emit(e, this.appInfo);
       return false;
     } finally {
       this.mounting = false;
@@ -268,7 +271,7 @@ export class App {
     }
     // This prevents the unmount of the current app from being called in "provider.destroy"
     this.unmounting = true;
-    this.context.hooks.lifecycle.beforeUnmount.call(this.appInfo, this);
+    this.hooks.lifecycle.beforeUnmount.emit(this.appInfo, this);
 
     try {
       this.callDestroy(this.provider, true);
@@ -278,11 +281,11 @@ export class App {
       this.customExports = {};
       this.cjsModules.exports = {};
       remove(this.context.activeApps, this);
-      this.context.hooks.lifecycle.afterUnmount.call(this.appInfo, this);
-    } catch (err) {
+      this.hooks.lifecycle.afterUnmount.emit(this.appInfo, this);
+    } catch (e) {
       remove(this.context.activeApps, this);
       this.entryManager.DOMApis.removeElement(this.appContainer);
-      this.context.hooks.lifecycle.errorUnmountApp.call(err, this.appInfo);
+      this.hooks.lifecycle.errorUnmountApp.emit(e, this.appInfo);
       return false;
     } finally {
       this.unmounting = false;
@@ -325,11 +328,8 @@ export class App {
                     noEntry: true,
                   },
                 );
-              } catch (err) {
-                this.context.hooks.lifecycle.errorMountApp.call(
-                  err,
-                  this.appInfo,
-                );
+              } catch (e) {
+                this.hooks.lifecycle.errorMountApp.emit(e, this.appInfo);
               }
             }
           }
@@ -404,10 +404,9 @@ export class App {
   // domGetter Have been dealing with
   private async addContainer() {
     // Initialize the mount point, support domGetter as promise, is advantageous for the compatibility
-    const domGetter = await getRenderNode(this.appInfo.domGetter);
-
-    if (typeof domGetter.appendChild === 'function') {
-      domGetter.appendChild(this.appContainer);
+    const wrapperNode = await getRenderNode(this.appInfo.domGetter);
+    if (typeof wrapperNode.appendChild === 'function') {
+      wrapperNode.appendChild(this.appContainer);
     }
   }
 
@@ -480,6 +479,10 @@ export class App {
         if (jsManager) {
           if (jsManager.isModule()) {
             // EsModule cannot use eval and new Function to execute the code
+            warn(
+              'Garfish does not support "esmodule" at the moment,' +
+                'if you use "vite", please switch to other build tools.',
+            );
             return DOMApis.createElement(node);
           }
           const { url, scriptCode } = jsManager;
@@ -492,7 +495,7 @@ export class App {
           if (typeof async === 'undefined' || async === 'false') {
             const tipInfo = JSON.stringify(node, null, 2);
             warn(
-              `The current js node cannot be found, maybe this is a bug.\n\n ${tipInfo}`,
+              `Current js node cannot be found, the resource may not exist.\n\n ${tipInfo}`,
             );
           }
         }

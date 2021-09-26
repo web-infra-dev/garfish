@@ -8,6 +8,7 @@ export function GarfishHMRPlugin() {
     return {
       name: 'fix-hmr',
       version: __VERSION__,
+
       bootstrap() {
         if (hasInit) return;
         hasInit = true;

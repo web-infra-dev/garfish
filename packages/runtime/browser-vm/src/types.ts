@@ -1,8 +1,9 @@
 import { Sandbox } from './sandbox';
-import { LoaderOptions } from '@garfish/loader';
+import type { LoaderOptions } from '@garfish/loader';
 
 export type FakeWindow = Window & Record<PropertyKey, any>;
 export type Module = (sandbox: Sandbox) => OverridesData;
+
 export interface OverridesData {
   recover?: () => void;
   prepare?: () => void;
@@ -34,36 +35,3 @@ export interface ExecScriptOptions {
   async?: boolean;
   noEntry?: boolean;
 }
-
-// interface InvokeBeforeRefs {
-//   url: string;
-//   code: string;
-//   context: FakeWindow;
-// }
-
-// hooks
-// type onclose = (sandbox: Sandbox) => void;
-// type onstart = (sandbox: Sandbox) => void;
-// type onerror = (err: Error | string) => void;
-// type onClearEffect = (sandbox: Sandbox) => void;
-// type onCreateContext = (sandbox: Sandbox) => void;
-// type onInvokeAfter = (sandbox: Sandbox, refs: InvokeBeforeRefs) => void;
-// type onInvokeBefore = (sandbox: Sandbox, refs: InvokeBeforeRefs) => void;
-// type onAppendNode = (
-//   sandbox: Sandbox,
-//   rootEl: Element,
-//   newEl: Element,
-//   tag: string,
-//   oldEl: Element,
-// ) => void;
-
-// export interface Hooks {
-//   onstart?: onstart | Array<onstart>;
-//   onclose?: onclose | Array<onclose>;
-//   onerror?: onerror | Array<onerror>;
-//   onAppendNode?: onAppendNode | Array<onAppendNode>;
-//   onClearEffect?: onClearEffect | Array<onClearEffect>;
-//   onInvokeAfter?: onInvokeAfter | Array<onInvokeAfter>;
-//   onInvokeBefore?: onInvokeBefore | Array<onInvokeBefore>;
-//   onCreateContext?: onCreateContext | Array<onCreateContext>;
-// }

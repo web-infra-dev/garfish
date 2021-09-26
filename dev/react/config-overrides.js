@@ -4,14 +4,12 @@ const path = require('path');
 
 module.exports = {
   webpack(config, env) {
-    // config.output.library = `react-garfish-exports`;
+    config.devtool = 'source-map';
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
-    config.devtool = 'source-map';
-    config.output.publicPath = `http://localhost:${configCommon.reactPort}/`;
     config.output.jsonpFunction = 'react-garfish-exports';
-    config.mode = 'production';
-    // config.optimization.minimize = true;
+    (config.mode = process.env.TEST_ENV ? 'production' : 'development'),
+      (config.output.publicPath = `http://localhost:${configCommon.reactPort}/`);
     config.plugins.push(
       new webpack.BannerPlugin({
         raw: true,
@@ -26,10 +24,8 @@ module.exports = {
     return (proxy, allowedHost) => {
       const config = configFunction(proxy, allowedHost);
       config.open = false;
-      config.disableHostCheck = true;
-      // config.compress = true;
       config.overlay = false;
-      // config.hot = true;
+      config.disableHostCheck = true;
       config.headers = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': '*',

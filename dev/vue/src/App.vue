@@ -13,7 +13,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'App',
   props: ['basename']
@@ -35,7 +34,6 @@ body {
 .view-content {
   padding: 60px;
 }
-
 a {
   color: #4834d4;
 }

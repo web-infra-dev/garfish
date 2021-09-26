@@ -3,9 +3,9 @@ export default {
     id: 1,
     todos: [{ id: 1, text: 'default todo', done: false }],
   },
+
   mutations: {
     done(state, id) {
-      // state.todos.forEach((item) => item.id === id && (item.done = true));
       this.state.todos = this.state.todos.filter((item) => item.id !== id);
     },
     add(state, item) {
@@ -14,6 +14,7 @@ export default {
       state.todos.push(item);
     },
   },
+
   actions: {
     done(context, id) {
       context.commit('done', id);
@@ -22,10 +23,12 @@ export default {
       context.commit('add', item);
     },
   },
+
   getters: {
     doneTodos: (state) => {
-      if (state.todos && state.todos.length > 0)
+      if (state.todos && state.todos.length > 0) {
         return state.todos.filter((todo) => todo.done);
+      }
     },
   },
 };

@@ -26,18 +26,16 @@ export class DynamicNodeProcessor {
   private sandbox: Sandbox;
   private DOMApis: DOMApis;
   private methodName: string;
-  private nativeAppend: Function;
-  private nativeRemove: Function;
   private rootElement: Element | ShadowRoot | Document;
+  private nativeAppend = rawElementMethods['appendChild'];
+  private nativeRemove = rawElementMethods['removeChild'];
 
   constructor(el, sandbox, methodName) {
     this.el = el;
     this.sandbox = sandbox;
     this.methodName = methodName;
-    this.nativeAppend = rawElementMethods['appendChild'];
-    this.nativeRemove = rawElementMethods['removeChild'];
+    this.rootElement = rootElm(sandbox) || document;
     this.DOMApis = new DOMApis(sandbox.global.document);
-    this.rootElement = rootElm(this.sandbox) || document;
     this.tagName = el.tagName ? el.tagName.toLowerCase() : '';
   }
 
@@ -62,13 +60,23 @@ export class DynamicNodeProcessor {
   }
 
   // Put it in the next macro task to ensure that the current synchronization script is executed
-  private dispatchEvent(type: string) {
+  private dispatchEvent(type: string, errInfo?: ErrorEventInit) {
     setTimeout(() => {
-      const event: Event & { garfish?: boolean } = new Event(type);
-      event.garfish = true;
+      const isError = type === 'error';
+      let event: Event & { __byGarfish__?: boolean };
+
+      if (isError) {
+        event = new ErrorEvent(type, {
+          ...errInfo,
+          message: errInfo.error.message,
+        });
+      } else {
+        event = new Event(type);
+      }
+      event.__byGarfish__ = true;
       Object.defineProperty(event, 'target', { value: this.el });
       this.el.dispatchEvent(event);
-      type === 'error' && window.dispatchEvent(event);
+      isError && window.dispatchEvent(event);
     });
   }
 
@@ -87,11 +95,13 @@ export class DynamicNodeProcessor {
             this.dispatchEvent('load');
             styleManager.correctPath();
             callback(styleManager.renderAsStyleElement());
-            return;
           })
           .catch((e) => {
             __DEV__ && warn(e);
-            this.dispatchEvent('error');
+            this.dispatchEvent('error', {
+              error: e,
+              filename: fetchUrl,
+            });
           });
       }
     } else {
@@ -115,12 +125,18 @@ export class DynamicNodeProcessor {
         this.sandbox.loader
           .load<JavaScriptManager>(namespace, fetchUrl)
           .then(({ resourceManager: { url, scriptCode } }) => {
-            this.dispatchEvent('load');
-            this.sandbox.execScript(scriptCode, {}, url, { noEntry: true });
+            // It is necessary to ensure that the code execution error cannot trigger the `el.onerror` event
+            setTimeout(() => {
+              this.dispatchEvent('load');
+              this.sandbox.execScript(scriptCode, {}, url, { noEntry: true });
+            });
           })
           .catch((e) => {
             __DEV__ && warn(e);
-            this.dispatchEvent('error');
+            this.dispatchEvent('error', {
+              error: e,
+              filename: fetchUrl,
+            });
           });
       } else if (code) {
         this.sandbox.execScript(code, {}, baseUrl, { noEntry: true });
@@ -245,15 +261,15 @@ export class DynamicNodeProcessor {
       }
     }
 
-    // if (__DEV__ || (this.sandbox?.global as any).__GARFISH__DEV__) {
-    // The "window" on the iframe tags created inside the sandbox all use the "proxy window" of the current sandbox
+    // Fix the bug of react hmr
     if (this.is('iframe') && typeof this.el.onload === 'function') {
-      // Iframe not loaded into the page does not exist when the window and document
-      setTimeout(() => {
-        def(this.el.contentWindow, 'parent', this.sandbox.global);
-      });
+      const { el, sandbox } = this;
+      const originOnload = el.onload;
+      el.onload = function () {
+        def(el.contentWindow, 'parent', sandbox.global);
+        return originOnload.apply(this, arguments);
+      };
     }
-    // }
 
     if (convertedNode) {
       // If it is "insertBefore" or "insertAdjacentElement" method, no need to rewrite when added to the container
@@ -264,6 +280,14 @@ export class DynamicNodeProcessor {
       ) {
         return originProcess();
       }
+
+      // Emit sandbox `appendNode` event
+      this.sandbox.hooks.lifecycle.appendNode.emit(
+        parentNode,
+        this.el,
+        convertedNode,
+        this.tagName,
+      );
       return this.nativeAppend.call(parentNode, convertedNode);
     }
     return originProcess();

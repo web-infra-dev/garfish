@@ -24,14 +24,17 @@ setModuleConfig({
 export default {
   name: 'remoteComponent',
   props: ['basename'],
+
   data: () => ({
     text: 'old text',
   }),
+
   methods: {
     changeData() {
       this.text = this.text === 'old text' ? 'new text' : 'old text'
     }
   },
+
   components: {
     cmOne: () => loadModule('@Component.cmOne'),
     cmTwo: () => loadModule('@Component.cmTwo'),

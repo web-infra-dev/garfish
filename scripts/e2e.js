@@ -1,19 +1,11 @@
-#!/usr/bin/env zx
-const { runAllExample, ports } = require('./utils/runExample.js');
-const execa = require('execa');
-const chalk = require('chalk');
+const { run, step } = require('./utils');
+const { runAllExample } = require('./runExample');
 
-const step = (msg) => {
-  console.log(chalk.cyan(msg));
-};
-
-runAllExample().then(function () {
+runAllExample().then(() => {
   // once here, all resources are available
   step('\n start e2e test...');
-  const spawnInstance = execa('pnpm', [
+  const spawnInstance = run('pnpm', [
     process.env.TEST_ENV_OPEN ? 'cy:open' : 'cy:run',
   ]);
-  spawnInstance.stdout.on('data', function (msg) {
-    console.log(chalk.cyan(msg.toString()));
-  });
+  spawnInstance.stdout.on('data', (msg) => step(msg.toString()));
 });

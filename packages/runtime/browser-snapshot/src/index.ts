@@ -20,9 +20,10 @@ export function GarfishBrowserSnapshot(op?: BrowserConfig) {
     const config: BrowserConfig = op || { open: true };
 
     const options = {
-      name: 'browser-snapshot',
-      version: __VERSION__,
       openBrowser: false,
+      version: __VERSION__,
+      name: 'browser-snapshot',
+
       afterLoad(appInfo, appInstance) {
         const sandboxConfig = appInfo.sandbox || Garfish?.options?.sandbox;
         if (
@@ -47,11 +48,13 @@ export function GarfishBrowserSnapshot(op?: BrowserConfig) {
           appInstance.snapshotSandbox = sandbox;
         }
       },
+
       beforeMount(appInfo, appInstance) {
         // existing
         if (!appInstance.snapshotSandbox) return;
         appInstance.snapshotSandbox.activate();
       },
+
       afterUnmount(appInfo, appInstance) {
         if (!appInstance.snapshotSandbox) return;
         appInstance.snapshotSandbox.deactivate();

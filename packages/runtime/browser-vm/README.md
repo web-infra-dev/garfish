@@ -1,13 +1,13 @@
-# `@garfish/vm-sandbox`
+# `@garfish/browser-vm`
 
 ## Usage
 
 ```js
-import { Sandbox } from '@garfish/vm-sandbox';
+import vmSandbox from '@garfish/browser-vm';
 
 let nameMap = { a: 'chen' };
 
-const sandbox = new Sandbox({
+const sandbox = new vmSandbox({
   namespace: 'app',
   el: () => document.body,
   modules: [
@@ -35,4 +35,24 @@ console.log(nameMap); // { a: 'chen' }
 
 // If clear all effects
 sandbox.reset();
+```
+
+## Hooks
+
+```js
+const sandbox = new vmSandbox({
+  namespace: 'app',
+  el: () => document.body,
+});
+
+sandbox.hooks.usePlugin({
+  stared(fakeWindow) {},
+  closed() {},
+  beforeClearEffect() {},
+  afterClearEffect() {},
+  beforeInvoke(url, env, options) {},
+  afterInvoke(url, env, options) {},
+  invokeError(err, url, env, options) {},
+  appendNode(parentNode, oldNode, convertedNode, tagName) {},
+});
 ```

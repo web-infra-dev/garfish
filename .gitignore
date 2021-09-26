@@ -35,6 +35,8 @@ test.js
 lerna-debug.log
 
 
-# lock files
-# package-lock.json
-# **/package-lock.json
+# use pnpm ignore lock files
+package-lock.json
+yarn.lock
+**/package-lock.json
+**/yarn.lock

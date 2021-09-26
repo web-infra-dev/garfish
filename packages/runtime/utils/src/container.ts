@@ -1,17 +1,14 @@
-import { assert, createKey, isPromise } from './utils';
+import { interfaces } from '@garfish/core';
+import { __MockHtml__ } from './garfish';
+import { assert, createKey } from './utils';
 
-type DomGetter =
-  | Element
-  | (() => Element | null)
-  | string
-  | (() => Promise<Element>);
 export function createAppContainer(name: string) {
   // Create a temporary node, which is destroyed by the module itself
-  const appContainer = document.createElement('div');
   const htmlNode = document.createElement('div');
+  const appContainer = document.createElement('div');
 
-  appContainer.id = `garfish_app_for_${name || 'unknow'}_${createKey()}`;
-  htmlNode.setAttribute('__GarfishMockHtml__', '');
+  htmlNode.setAttribute(__MockHtml__, '');
+  appContainer.id = `garfish_app_for_${name}_${createKey()}`;
   appContainer.appendChild(htmlNode);
 
   return {
@@ -20,9 +17,8 @@ export function createAppContainer(name: string) {
   };
 }
 
-export async function getRenderNode(domGetter: DomGetter) {
+export async function getRenderNode(domGetter: interfaces.DomGetter) {
   assert(domGetter, `Invalid domGetter:\n ${domGetter}.`);
-
   let appWrapperNode = domGetter;
 
   if (typeof domGetter === 'string') {
@@ -34,6 +30,5 @@ export async function getRenderNode(domGetter: DomGetter) {
   }
 
   assert(appWrapperNode, `Invalid domGetter: ${domGetter}`);
-
   return appWrapperNode as Element;
 }

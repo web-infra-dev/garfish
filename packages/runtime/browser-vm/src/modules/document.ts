@@ -2,10 +2,10 @@ import { Sandbox } from '../sandbox';
 import { __proxyNode__ } from '../symbolTypes';
 import { createFakeObject, microTaskHtmlProxyDocument } from '../utils';
 import {
+  createHas,
   createGetter,
   createSetter,
   createDefineProperty,
-  createHas,
 } from '../proxyInterceptor/document';
 
 const rawDocumentCtor = Document;

@@ -1,10 +1,11 @@
-import { __extends, transformUrl, hookObjectProperty } from '@garfish/utils';
+import { _extends, transformUrl, hookObjectProperty } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 
 // When dealing with hot updates, "ho-update.json" requires a proxy across domains
 export function XMLHttpRequestModule(sandbox: Sandbox) {
-  const baseUrl = sandbox.options.baseUrl;
   let restoreOpen = null;
+  const baseUrl = sandbox.options.baseUrl;
+
   class XMLHttpRequestPatch extends XMLHttpRequest {
     constructor() {
       super();

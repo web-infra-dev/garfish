@@ -6,24 +6,27 @@ import {
   isObject,
   deepMerge,
   evalWithEnv,
+  safeWrapper,
   isPlainObject,
   setDocCurrentScript,
 } from '@garfish/utils';
+import { historyModule } from './modules/history';
+import { documentModule } from './modules/document';
+import { UiEventOverride } from './modules/uiEvent';
+import { XMLHttpRequestModule } from './modules/xhr';
+import { localStorageModule } from './modules/storage';
+import { listenerModule } from './modules/eventListener';
+import { timeoutModule, intervalModule } from './modules/timer';
+import { makeElInjector } from './dynamicNode';
+import { sandboxLifecycle } from './lifecycle';
+import { optimizeMethods, createFakeObject } from './utils';
+import { __garfishGlobal__, GARFISH_OPTIMIZE_NAME } from './symbolTypes';
 import {
   Module,
   SandboxOptions,
   ExecScriptOptions,
   ReplaceGlobalVariables,
 } from './types';
-import { historyModule } from './modules/history';
-import { documentModule } from './modules/document';
-import { XMLHttpRequestModule } from './modules/xhr';
-import { localStorageModule } from './modules/storage';
-import { listenerModule } from './modules/eventListener';
-import { timeoutModule, intervalModule } from './modules/timer';
-import { makeElInjector } from './dynamicNode';
-import { optimizeMethods, createFakeObject } from './utils';
-import { __garfishGlobal__, GARFISH_OPTIMIZE_NAME } from './symbolTypes';
 import {
   createHas,
   createGetter,
@@ -31,7 +34,6 @@ import {
   createDefineProperty,
   createDeleteProperty,
 } from './proxyInterceptor/global';
-import { UiEventOverride } from './modules/uiEvent';
 
 let id = 0;
 const defaultModules: Array<Module> = [
@@ -40,8 +42,8 @@ const defaultModules: Array<Module> = [
   historyModule,
   documentModule,
   listenerModule,
-  localStorageModule,
   UiEventOverride,
+  localStorageModule,
 ];
 
 // Deal with hmr problem
@@ -63,14 +65,15 @@ const addProxyWindowType = (module: Window, parentModule: Window) => {
 };
 
 export class Sandbox {
-  public version = __VERSION__;
   public id = id++;
   public type = 'vm';
   public closed = true;
-  public loader: Loader;
   public initComplete = false;
+  public version = __VERSION__;
   public global?: Window;
+  public loader: Loader;
   public options: SandboxOptions;
+  public hooks = sandboxLifecycle();
   public replaceGlobalVariables: ReplaceGlobalVariables;
   public deferClearEffects: Set<() => void> = new Set();
   public isExternalGlobalVariable: Set<PropertyKey> = new Set();
@@ -96,7 +99,7 @@ export class Sandbox {
     this.options = isPlainObject(options)
       ? deepMerge(defaultOptions, options)
       : defaultOptions;
-    // sourceUrl Using a reference type, make its can be changed
+    // SourceUrl Using a reference type, make its can be changed
     options.sourceList && (this.options.sourceList = options.sourceList);
 
     const { loaderOptions, protectVariable, insulationVariable } = this.options;
@@ -110,7 +113,7 @@ export class Sandbox {
       recoverList: [],
       overrideList: {},
     };
-    // inject Global capture
+    // Inject Global capture
     makeElInjector();
     // The default startup sandbox
     this.start();
@@ -134,6 +137,7 @@ export class Sandbox {
       this.optimizeCode = this.optimizeGlobalMethod();
     }
     this.initComplete = true;
+    this.hooks.lifecycle.stared.emit(this.global);
   }
 
   close() {
@@ -149,6 +153,7 @@ export class Sandbox {
     this.replaceGlobalVariables.prepareList = [];
     this.replaceGlobalVariables.recoverList = [];
     this.replaceGlobalVariables.overrideList = [];
+    this.hooks.lifecycle.closed.emit();
   }
 
   reset() {
@@ -183,8 +188,12 @@ export class Sandbox {
     proxy.window = subProxy;
     proxy.globalThis = subProxy;
     proxy.unstable_sandbox = this; // This attribute is used for debugger
-    proxy.top = window.top === window ? subProxy : window.top;
-    proxy.parent = window.parent === window ? subProxy : window.top;
+    safeWrapper(() => {
+      // Cross-domain errors may occur during access
+      proxy.top = window.top === window ? subProxy : window.top;
+      proxy.parent = window.parent === window ? subProxy : window.parent;
+    });
+
     addProxyWindowType(proxy, window);
     return proxy;
   }
@@ -218,9 +227,11 @@ export class Sandbox {
   }
 
   clearEffects() {
+    this.hooks.lifecycle.beforeClearEffect.emit();
     this.replaceGlobalVariables.recoverList.forEach((fn) => fn && fn());
     // `deferClearEffects` needs to be put at the end
     this.deferClearEffects.forEach((fn) => fn && fn());
+    this.hooks.lifecycle.afterClearEffect.emit();
   }
 
   optimizeGlobalMethod() {
@@ -234,7 +245,7 @@ export class Sandbox {
     if (methods.length === 0) return code;
 
     code = methods.reduce((prevCode, name) => {
-      // You can only use let, if you use var,
+      // You can only use `let`, if you use `var`,
       // declaring the characteristics in advance will cause you to fetch from with,
       // resulting in a recursive loop
       return `${prevCode} let ${name} = window.${name};`;
@@ -250,7 +261,12 @@ export class Sandbox {
     const { async } = options || {};
     const { disableWith, openSandbox } = this.options;
     const { prepareList, overrideList } = this.replaceGlobalVariables;
-    if (prepareList) prepareList.forEach((fn) => fn && fn());
+
+    this.hooks.lifecycle.beforeInvoke.emit(url, env, options);
+
+    if (prepareList) {
+      prepareList.forEach((fn) => fn && fn());
+    }
 
     const revertCurrentScript = setDocCurrentScript(
       this.global.document,
@@ -267,25 +283,33 @@ export class Sandbox {
         : code;
 
       if (openSandbox) {
-        evalWithEnv(code, {
-          window: this.global,
-          ...overrideList,
-          ...env,
-        });
+        evalWithEnv(
+          code,
+          {
+            window: this.global,
+            ...overrideList,
+            ...env,
+          },
+          this.global,
+        );
       } else {
-        evalWithEnv(code, env);
+        evalWithEnv(code, env, window);
       }
     } catch (e) {
+      this.hooks.lifecycle.invokeError.emit(e, url, env, options);
       // dispatch `window.onerror`
       if (typeof this.global.onerror === 'function') {
         const source = url || this.options.baseUrl;
         const message = e instanceof Error ? e.message : String(e);
-        this.global.onerror.call(this.global, message, source, null, null, e);
+        safeWrapper(() => {
+          this.global.onerror.call(this.global, message, source, null, null, e);
+        });
       }
       throw e;
     } finally {
       revertCurrentScript();
     }
+    this.hooks.lifecycle.afterInvoke.emit(url, env, options);
   }
 
   static getNativeWindow() {

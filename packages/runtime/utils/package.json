@@ -30,15 +30,8 @@
     "build": "rimraf dist && tsup src/index.ts",
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
-  "buildOptions": {
-    "name": "Utils",
-    "devTemplate": "module",
-    "formats": [
-      "esm-bundler",
-      "esm-browser",
-      "cjs",
-      "umd"
-    ]
+  "devDependencies": {
+    "@garfish/core": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

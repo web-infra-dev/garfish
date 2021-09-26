@@ -2,8 +2,8 @@ import { interfaces } from '@garfish/core';
 import { createKey } from '@garfish/utils';
 import router, {
   initRedirect,
-  listenRouterAndReDirect,
   RouterInterface,
+  listenRouterAndReDirect,
 } from './context';
 
 declare module '@garfish/core' {
@@ -13,11 +13,6 @@ declare module '@garfish/core' {
   }
 
   export namespace interfaces {
-    export interface Garfish {
-      router: RouterInterface;
-      apps: Record<string, interfaces.App>;
-    }
-
     export interface Config {
       autoRefreshApp?: boolean;
       onNotMatchRouter?: (path: string) => Promise<void> | void;
@@ -33,6 +28,8 @@ declare module '@garfish/core' {
   }
 }
 
+export { RouterInterface } from './context';
+
 interface Options {
   autoRefreshApp?: boolean;
   onNotMatchRouter?: (path: string) => Promise<void> | void;
@@ -46,6 +43,7 @@ export function GarfishRouter(_args?: Options) {
     return {
       name: 'router',
       version: __VERSION__,
+
       bootstrap(options: interfaces.Options) {
         let activeApp = null;
         const unmounts: Record<string, Function> = {};
@@ -64,7 +62,7 @@ export function GarfishRouter(_args?: Options) {
           const app = await Garfish.loadApp(appInfo.name, {
             basename: rootPath,
             entry: appInfo.entry,
-            domGetter: appInfo.domGetter || options.domGetter,
+            domGetter: appInfo.domGetter,
           });
 
           const call = (app: interfaces.App, isRender: boolean) => {
@@ -130,23 +128,18 @@ export function GarfishRouter(_args?: Options) {
           notMatch: onNotMatchRouter,
           apps: appList,
         };
-
         listenRouterAndReDirect(listenOptions);
       },
 
       registerApp(appInfos) {
+        const appList = Object.values(appInfos);
+        // @ts-ignore
+        router.registerRouter(appList.filter((app) => !!app.activeWhen));
+        // After completion of the registration application, trigger application mount
         // Has been running after adding routing to trigger the redirection
         if (!Garfish.running) return;
-
-        const appList = Object.values(appInfos);
-
-        router.registerRouter(appList.filter((app) => !!app.activeWhen));
-
-        // After completion of the registration application, trigger application mount
         initRedirect();
       },
     };
   };
 }
-
-export { RouterInterface } from './context';

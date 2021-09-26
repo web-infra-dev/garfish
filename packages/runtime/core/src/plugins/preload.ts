@@ -173,10 +173,12 @@ export function GarfishPreloadPlugin() {
     return {
       name: 'preload',
       version: __VERSION__,
+
       beforeLoad(appInfo) {
         setRanking(appInfo.name);
         return Promise.resolve(true);
       },
+
       registerApp(appInfos) {
         setTimeout(
           () => {

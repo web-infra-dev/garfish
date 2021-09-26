@@ -12,23 +12,23 @@
 </template>
 
 <script>
-// 嵌套场景中
+// 嵌套场景
 import GarfishInstance from 'garfish';
 
 let hasInit = false;
 export default {
   name: 'App',
   props: ['basename'],
+
   methods: {
     async loadApp () {
-      // console.log(GarfishInstance);
       // let app = await GarfishInstance.loadApp('vueApp',{
       //   entry: 'http://localhost:2555',
       //   basename: this.basename,
       //   domGetter: ()=> this.$refs.vueApp,
       //   props: {
-      //     fuckYou: 111
-      //   }
+      //     fuckYou: 111,
+      //   },
       // });
       // await app.mount();
       // console.log(app);
@@ -36,11 +36,10 @@ export default {
       // console.log(this.basename, GarfishInstance);
     },
     async loadAppReact () {
-      // console.log(GarfishInstance);
       // let app = await GarfishInstance.loadApp('reactApp',{
       //   entry: 'http://localhost:2444',
       //   basename: '/garfish_master/vue/micro-app',
-      //   domGetter: ()=> this.$refs.vueApp
+      //   domGetter: ()=> this.$refs.vueApp,
       // });
       // await app.mount();
       // console.log(app);
@@ -48,9 +47,11 @@ export default {
       // console.log(this.basename, GarfishInstance);
     }
   },
+
   mounted () {
     if (hasInit) return;
     hasInit = true;
+
     GarfishInstance.run({
       basename: '/garfish_master/vue/micro-app',
       nested: !!window.__GARFISH_PARENT__,

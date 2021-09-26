@@ -108,24 +108,30 @@ export function validURL(str) {
 // it will be attempted to be transformed into a constant version to avoid repeated caching by the browser
 export function internFunc(internalizeString) {
   // Don't consider "Hash-collision，https://en.wikipedia.org/wiki/Collision_(computer_science)"
-  // v8貌似在 16383 长度时会发生 hash-collision，经过测试后发现正常
+  // v8 貌似在 16383 长度时会发生 hash-collision 经过测试后发现正常
   const temporaryOb = {};
   temporaryOb[internalizeString] = true;
   return Object.keys(temporaryOb)[0];
 }
 
-export function evalWithEnv(code: string, params: Record<string, any>) {
+export function evalWithEnv(
+  code: string,
+  params: Record<string, any>,
+  context: any,
+) {
   const keys = Object.keys(params);
   const nativeWindow = (0, eval)('window;');
   // No random value can be used, otherwise it cannot be reused as a constant string
   const randomValKey = '__garfish__exec_temporary__';
-  const vales = keys.map((k) => `window.${randomValKey}.${k}`);
+  const values = keys.map((k) => `window.${randomValKey}.${k}`);
+  const contextKey = '__garfish__exec_temporary__context__';
 
   try {
     nativeWindow[randomValKey] = params;
+    nativeWindow[contextKey] = context;
     const evalInfo = [
       `;(function(${keys.join(',')}){`,
-      `\n}).call(${vales[0]},${vales.join(',')});`,
+      `\n}).call(window.${contextKey},${values.join(',')});`,
     ];
     const internalizeString = internFunc(evalInfo[0] + code + evalInfo[1]);
     // (0, eval) This expression makes the eval under the global scope
@@ -134,6 +140,15 @@ export function evalWithEnv(code: string, params: Record<string, any>) {
     throw e;
   } finally {
     delete nativeWindow[randomValKey];
+    delete nativeWindow[contextKey];
+  }
+}
+
+export function safeWrapper(callback: (...args: Array<any>) => any) {
+  try {
+    callback();
+  } catch (e) {
+    __DEV__ && warn(e);
   }
 }
 
@@ -365,7 +380,7 @@ export function setDocCurrentScript(
   return () => set(null);
 }
 
-export function __extends(d, b) {
+export function _extends(d, b) {
   Object.setPrototypeOf(d, b);
 
   function fNOP() {
@@ -380,8 +395,17 @@ export function __extends(d, b) {
   }
 }
 
-export function isFunction(what: unknown): what is Function {
-  return typeof what === 'function';
+export function mapObject(
+  obj: Record<PropertyKey, any>,
+  fn: (key: PropertyKey, val: any) => any,
+) {
+  const destObject = {};
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      destObject[key] = fn(key, obj[key]);
+    }
+  }
+  return destObject;
 }
 
 export const hookObjectProperty = <
@@ -402,12 +426,12 @@ export const hookObjectProperty = <
     let hooked = hookedUnsafe;
 
     // To method packages a layer of a try after all the hooks to catch
-    if (isFunction(hooked)) {
-      hooked = (function (this: any, ...args: any) {
+    if (typeof hooked === 'function') {
+      hooked = (function (...args: any) {
         try {
           return (hookedUnsafe as any).apply(this, args);
         } catch {
-          return isFunction(origin) && origin.apply(this, args);
+          return typeof origin === 'function' && origin.apply(this, args);
         }
       } as any) as T[K];
     }

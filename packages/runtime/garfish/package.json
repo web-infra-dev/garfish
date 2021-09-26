@@ -34,16 +34,6 @@
     "build": "rimraf dist && tsup src/index.ts",
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
-  "buildOptions": {
-    "name": "Garfish",
-    "devTemplate": "module",
-    "formats": [
-      "esm-bundler",
-      "esm-browser",
-      "cjs",
-      "umd"
-    ]
-  },
   "dependencies": {
     "@garfish/browser-snapshot": "workspace:*",
     "@garfish/browser-vm": "workspace:*",

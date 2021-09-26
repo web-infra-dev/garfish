@@ -18,13 +18,16 @@ const queryFunctions = makeMap([
 // document proxy getter
 export function createGetter(sandbox: Sandbox) {
   return (target: any, p: PropertyKey, receiver?: any) => {
+    if (p === 'activeElement') {
+      return Reflect.get(document, p);
+    }
+
     const rootNode = rootElm(sandbox);
     const strictIsolation = sandbox.options.strictIsolation;
     const value = hasOwn(target, p)
       ? Reflect.get(target, p, receiver)
       : Reflect.get(document, p);
 
-    if (p === 'activeElement') return Reflect.get(document, p);
     if (rootNode) {
       if (p === 'createElement') {
         return function (tagName, options) {

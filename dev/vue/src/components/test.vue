@@ -2,7 +2,8 @@
     <div>
       <span >test</span>
       <div>
-        <input v-model="item.text" placeholder="task desc"/><button @click="add" >添加任务----来自调试的模块</button>
+        <input v-model="item.text" placeholder="task desc"/>
+        <button @click="add">添加任务 ---- 来自调试的模块</button>
       </div>
       <div>
         <ul>
@@ -15,6 +16,7 @@
       </div>
     </div>
 </template>
+
 <script>
 import { mapState } from 'vuex'
 export default {
@@ -26,10 +28,12 @@ export default {
       }
     }
   },
+
   computed: mapState([
     // 映射 this.count 为 store.state.count
     'todos'
   ]),
+
   methods: {
     add() {
       this.$store.dispatch('add', this.item)
@@ -46,5 +50,4 @@ export default {
 li {
   list-style-type: none;
 }
-
 </style>

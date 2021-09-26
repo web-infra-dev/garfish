@@ -1,11 +1,11 @@
-import { isJs, isCss, isHtml } from '@garfish/utils';
-import { PluginManager } from './pluginSystem';
-import { request, copyResult, mergeConfig } from './utils';
-import { FileTypes, cachedDataSet, AppCacheContainer } from './appCache';
+import { SyncHook, SyncWaterfallHook, PluginSystem } from '@garfish/hooks';
+import { warn, isJs, isCss, isHtml, __LOADER_FLAG__ } from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
 import { TemplateManager } from './managers/template';
 import { JavaScriptManager } from './managers/javascript';
+import { request, copyResult, mergeConfig } from './utils';
+import { FileTypes, cachedDataSet, AppCacheContainer } from './appCache';
 
 // Export types and manager constructor
 export * from './managers/style';
@@ -20,15 +20,10 @@ export type Manager =
   | JavaScriptManager;
 
 export interface LoaderOptions {
-  maxSize?: number; // The unit is "b"
+  maxSize?: number;
 }
 
-export interface ClearPluginArgs {
-  scope: string;
-  fileType?: FileTypes;
-}
-
-export interface LoadedPluginArgs<T> {
+interface LoadedHookArgs<T extends Manager> {
   result: Response;
   value: {
     url: string;
@@ -38,33 +33,31 @@ export interface LoadedPluginArgs<T> {
   };
 }
 
-export interface BeforeLoadPluginArgs {
-  url: string;
-  requestConfig: ResponseInit;
-}
-
 export class Loader {
+  public personalId = __LOADER_FLAG__;
   public StyleManager = StyleManager;
   public ModuleManager = ModuleManager;
   public TemplateManager = TemplateManager;
   public JavaScriptManager = JavaScriptManager;
-  /**
-   * @deprecated
-   */
+  /** @deprecated */
   public requestConfig: RequestInit | ((url: string) => RequestInit);
-  public personalId = Symbol.for('garfish.loader');
-  public lifecycle = {
-    clear: new PluginManager<ClearPluginArgs>('clear'),
-    loaded: new PluginManager<LoadedPluginArgs<Manager>>('loaded'),
-    beforeLoad: new PluginManager<BeforeLoadPluginArgs>('beforeLoad'),
-  };
 
-  private options: LoaderOptions;
+  public hooks = new PluginSystem({
+    error: new SyncHook<[Error], void>(),
+    loaded: new SyncWaterfallHook<LoadedHookArgs<Manager>>('loaded'),
+    clear: new SyncWaterfallHook<{
+      scope: string;
+      fileType?: FileTypes;
+    }>('clear'),
+    beforeLoad: new SyncWaterfallHook<{
+      url: string;
+      requestConfig: ResponseInit;
+    }>('beforeLoad'),
+  });
+
+  private options: LoaderOptions; // The unit is "b"
+  private loadingList: Record<string, Promise<any>>;
   private cacheStore: { [name: string]: AppCacheContainer };
-  private loadingList: Record<
-    string,
-    Promise<LoadedPluginArgs<Manager>['value']>
-  >;
 
   constructor(options?: LoaderOptions) {
     this.options = options || {};
@@ -76,7 +69,7 @@ export class Loader {
     const appCacheContainer = this.cacheStore[scope];
     if (appCacheContainer) {
       appCacheContainer.clear(fileType);
-      this.lifecycle.clear.run({ scope, fileType });
+      this.hooks.lifecycle.clear.emit({ scope, fileType });
     }
   }
 
@@ -95,7 +88,7 @@ export class Loader {
     scope: string,
     url: string,
     isModule = false,
-  ): Promise<LoadedPluginArgs<T>['value']> {
+  ): Promise<LoadedHookArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
 
     if (loadingList[url]) {
@@ -127,13 +120,13 @@ export class Loader {
     }
 
     const requestConfig = mergeConfig(this, url);
-    const resOpts = this.lifecycle.beforeLoad.run({ url, requestConfig });
+    const resOpts = this.hooks.lifecycle.beforeLoad.emit({
+      url,
+      requestConfig,
+    });
 
     loadingList[url] = request(resOpts.url, resOpts.requestConfig)
-      .finally(() => {
-        loadingList[url] = null;
-      })
-      .then(async ({ code, mimeType, result }) => {
+      .then(({ code, mimeType, result }) => {
         let managerCtor, fileType: FileTypes;
 
         if (isModule) {
@@ -157,7 +150,7 @@ export class Loader {
 
         // The results will be cached this time.
         // So, you can transform the request result.
-        const data = this.lifecycle.loaded.run({
+        const data = this.hooks.lifecycle.loaded.emit({
           result,
           value: {
             url,
@@ -169,6 +162,14 @@ export class Loader {
 
         appCacheContainer.set(url, data.value, fileType);
         return copyResult(data.value as any);
+      })
+      .catch((e) => {
+        __DEV__ && warn(e);
+        this.hooks.lifecycle.error.emit(e);
+        throw e; // Let the upper application catch the error
+      })
+      .finally(() => {
+        loadingList[url] = null;
       });
     return loadingList[url] as any;
   }

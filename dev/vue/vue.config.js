@@ -1,8 +1,8 @@
-// const SlardarWebpackPlugin = require('@slardar/webpack-plugin');
-// const GarfishPlugin = require('../../packages/tool/webpack-plugin');s
 const webpack = require('webpack');
 
 module.exports = {
+  publicPath: 'http://localhost:2666',
+
   devServer: {
     open: false,
     port: '2666',
@@ -17,13 +17,12 @@ module.exports = {
     },
   },
 
-  publicPath: 'http://localhost:2666',
   configureWebpack: (config) => {
-    // config.output.library = `sub-app-garfish-exports`;
-    config.output.jsonpFunction = `sub-app-jsonp`;
+    config.optimization.minimize = true;
+    config.devtool = 'source-map';
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
-    config.devtool = 'source-map';
+    config.output.jsonpFunction = `sub-app-jsonp`;
     config.mode = process.env.TEST_ENV ? 'production' : 'development';
     config.optimization.minimize = true;
     config.module.rules.push({
@@ -31,13 +30,6 @@ module.exports = {
       test: /\.mjs$/,
       use: [],
     });
-    config.plugins = [
-      ...config.plugins,
-      new webpack.BannerPlugin('garfish'),
-      // new GarfishPlugin({
-      //   webpackInstance: webpack,
-      //   appId: 'vue_app',
-      // }),
-    ];
+    config.plugins = [...config.plugins, new webpack.BannerPlugin('garfish')];
   },
 };
