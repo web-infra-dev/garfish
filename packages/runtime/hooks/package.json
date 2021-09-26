@@ -11,13 +11,13 @@
   "license": "Apache-2.0",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
+      "import": "./dist/esm/index.js",
       "require": "./dist/index.js"
     },
     "./*": "./*"
   },
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "module": "./dist/esm/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rimraf dist && tsup src/index.ts",

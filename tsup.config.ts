@@ -13,6 +13,7 @@ export const tsup: Options = {
   dts: true,
   watch: watch ? 'src/' : false,
   format: ['cjs', 'esm'],
+  legacyOutput: true,
   esbuildPlugins: [
     replace({
       __VERSION__: `'${pkg.version}'`,
