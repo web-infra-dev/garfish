@@ -66,13 +66,17 @@ export namespace interfaces {
   export interface Config {
     appID?: string;
     nested?: boolean;
-    basename?: string;
     apps?: Array<AppInfo>;
-    domGetter?: DomGetter;
-    props?: Record<string, any>;
     disableStatistics?: boolean;
     disablePreloadApp?: boolean;
     plugins?: Array<(context: Garfish) => Plugin>;
+  }
+
+  export interface AppGlobalConfig extends AppLifecycle {
+    basename?: string;
+    nested?: boolean;
+    domGetter?: DomGetter;
+    props?: Record<string, any>;
     sandbox?: false | SandboxConfig;
   }
 
@@ -89,17 +93,15 @@ export namespace interfaces {
     customLoader?: CustomerLoader;
   };
 
-  export type AppConfig = Partial<
-    Pick<Config, 'domGetter' | 'sandbox' | 'props' | 'basename'>
-  > & {
+  export type AppConfig = Partial<AppGlobalConfig> & {
     name: string;
     entry?: string;
     cache?: boolean;
-    nested?: number;
+    nested?: any;
     noCheckProvider?: boolean;
   };
 
-  export interface Options extends Config, GlobalLifecycle {}
+  export interface Options extends Config, AppGlobalConfig, GlobalLifecycle {}
 
   export interface AppInfo extends AppConfig, AppLifecycle {}
 

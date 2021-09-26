@@ -48,6 +48,27 @@ export const filterNestedConfig = (
   return config;
 };
 
+const appConfigList = [
+  'name',
+  'basename',
+  'domGetter',
+  'props',
+  'sandbox',
+  'cache',
+  'nested',
+];
+const appHooksList = [
+  'beforeEval',
+  'afterEval',
+  'beforeMount',
+  'afterMount',
+  'errorMountApp',
+  'beforeUnmount',
+  'afterUnmount',
+  'errorUnmountApp',
+  'errorExecCode',
+];
+
 // `props` may be responsive data
 export const deepMergeConfig = <T>(o, n) => {
   const props = n.props || o.props;
@@ -62,56 +83,90 @@ export const deepMergeConfig = <T>(o, n) => {
   return result as T;
 };
 
-export const generateAppOptions = async (
+export const getAppConfig = <T>(globalConfig, localConfig) => {
+  // TODO: Automatically retrieve configuration in the type declaration
+  const appGlobalConfig = [...appConfigList, ...appHooksList].reduce(
+    (localConfig, valueKey) => {
+      // Need to merge
+      if (valueKey === 'props') {
+        localConfig.props = {
+          ...(globalConfig.props || {}),
+          ...(localConfig.props || {}),
+        };
+      }
+      // Global configuration priority is lower
+      if (
+        typeof localConfig[valueKey] === 'undefined' &&
+        typeof globalConfig[valueKey] !== 'undefined'
+      ) {
+        localConfig[valueKey] = globalConfig[valueKey];
+      }
+      return localConfig;
+    },
+    localConfig,
+  );
+  return appGlobalConfig as T;
+};
+
+export const generateAppOptions = (
   appName: string,
   garfish: interfaces.Garfish,
-  appOptions: Partial<interfaces.AppInfo> | string = {},
-) => {
+  appOptionsOrUrl: Partial<interfaces.AppInfo> | string = {},
+): AppInfo => {
   let appInfo = garfish.appInfos[appName];
+  // Load the unregistered applications
   // `Garfish.loadApp('appName', 'https://xx.html');`
-  if (typeof appOptions === 'string') {
-    appOptions = {
+  if (!appInfo && typeof appOptionsOrUrl === 'string') {
+    appInfo = {
       name: appName,
       basename: '/',
-      entry: appOptions,
-    } as interfaces.AppInfo;
+      entry: appOptionsOrUrl,
+    };
   }
 
-  appInfo = appInfo
-    ? deepMergeConfig(appInfo, appOptions)
-    : deepMergeConfig(garfish.options, appOptions);
-  // Does not support does not have remote resources application
+  // merge register appInfo config and loadApp config
+  if (typeof appOptionsOrUrl === 'object') {
+    appInfo = getAppConfig(appInfo, appOptionsOrUrl);
+  }
+
+  // merge globalConfig with localConfig
+  appInfo = getAppConfig(garfish.options, appInfo);
+
   assert(
     appInfo.entry,
     `Can't load unexpected child app "${appName}", ` +
       'Please provide the entry parameters or registered in advance of the app.',
   );
   appInfo.name = appName;
-  // Initialize the mount point, support domGetter as promise, is advantageous for the compatibility
-  if (appInfo.domGetter) {
-    appInfo.domGetter = await getRenderNode(appInfo.domGetter);
-  }
-  return appInfo as AppInfo;
+  return appInfo;
 };
 
 // Each main application needs to generate a new configuration
 export const createDefaultOptions = (nested = false) => {
   const config: interfaces.Options = {
+    // global config
+    appID: '',
     apps: [],
-    props: {},
-    basename: '/',
-    customLoader: null, // deprecated
     autoRefreshApp: true,
     disableStatistics: false,
     disablePreloadApp: false,
+    // app config
+    basename: '/',
+    props: {},
+    // Use an empty div by default
+    domGetter: () => document.createElement('div'),
     sandbox: {
       snapshot: false,
       disableWith: false,
       strictIsolation: false,
     },
-    // Load hooks
+    // global hooks
     beforeLoad: () => {},
     afterLoad: () => {},
+    errorLoadApp: (e) => error(e),
+    // Router
+    onNotMatchRouter: () => {},
+    // app hooks
     // Code eval hooks
     beforeEval: () => {},
     afterEval: () => {},
@@ -121,13 +176,9 @@ export const createDefaultOptions = (nested = false) => {
     beforeUnmount: () => {},
     afterUnmount: () => {},
     // Error hooks
-    errorLoadApp: (e) => error(e),
     errorMountApp: (e) => error(e),
     errorUnmountApp: (e) => error(e),
-    // Router
-    onNotMatchRouter: () => {},
-    // Use an empty div by default
-    domGetter: () => document.createElement('div'),
+    customLoader: null, // deprecated
   };
 
   if (nested) {

@@ -104,7 +104,10 @@ export class Garfish extends EventEmitter {
         if (options.apps) {
           this.registerApp(
             options.apps.map((appInfo) => {
-              const appConf = deepMergeConfig<AppInfo>(options, appInfo);
+              const appConf = deepMergeConfig<interfaces.AppInfo>(
+                options,
+                appInfo,
+              );
               appConf.nested = numberOfNesting;
               // Now we only allow the same sandbox configuration to be used globally
               appConf.sandbox = this.options.sandbox;
@@ -147,7 +150,7 @@ export class Garfish extends EventEmitter {
     this.hooks.lifecycle.beforeRegisterApp.emit(list);
     if (!Array.isArray(list)) list = [list];
 
-    for (let appInfo of list) {
+    for (const appInfo of list) {
       assert(appInfo.name, 'Miss app.name.');
       if (!this.appInfos[appInfo.name]) {
         assert(
@@ -155,9 +158,9 @@ export class Garfish extends EventEmitter {
           `${appInfo.name} application entry is not url: ${appInfo.entry}`,
         );
         // Deep merge this.options
-        if (!appInfo.nested) {
-          appInfo = deepMergeConfig(this.options, appInfo);
-        }
+        // if (!appInfo.nested) {
+        //   appInfo = deepMergeConfig(this.options, appInfo);
+        // }
         currentAdds[appInfo.name] = appInfo;
         this.appInfos[appInfo.name] = appInfo;
       } else if (__DEV__) {
@@ -186,10 +189,10 @@ export class Garfish extends EventEmitter {
 
   async loadApp(
     appName: string,
-    options?: Omit<interfaces.AppInfo, 'name'>,
+    optionsOrUrl?: Omit<interfaces.AppInfo, 'name'>,
   ): Promise<interfaces.App | null> {
     assert(appName, 'Miss appName.');
-    const appInfo = await generateAppOptions(appName, this, options);
+    const appInfo = generateAppOptions(appName, this, optionsOrUrl);
 
     const asyncLoadProcess = async () => {
       // Return not undefined type data directly to end loading

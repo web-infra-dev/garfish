@@ -31,8 +31,7 @@ export type CustomerLoader = (
 ) => Promise<interfaces.LoaderResult | void> | interfaces.LoaderResult | void;
 
 export type AppInfo = interfaces.AppInfo & {
-  appId: number;
-  domGetter: Element;
+  appId?: number;
 };
 
 let appId = 0;

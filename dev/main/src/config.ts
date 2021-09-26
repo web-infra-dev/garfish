@@ -31,14 +31,14 @@ let defaultConfig: interfaces.Options = {
       // cache: true,
       entry: 'http://localhost:2777',
     },
-    {
-      name: 'react',
-      activeWhen: '/react',
-      entry: 'http://localhost:2444',
-      props: {
-        appName: 'react',
-      },
-    },
+    // {
+    //   name: 'react',
+    //   activeWhen: '/react',
+    //   entry: 'http://localhost:2444',
+    //   props: {
+    //     appName: 'react',
+    //   },
+    // },
   ],
   autoRefreshApp: false,
   disablePreloadApp: true,
@@ -59,15 +59,16 @@ let defaultConfig: interfaces.Options = {
 };
 
 // setTimeout(()=>{
-//   GarfishInstance.registerApp({
-//     name: 'react',
-//     activeWhen: '/react',
-//     basename: '/garfish_master',
-//     entry: 'http://localhost:2444',
-//     props: {
-//       appName: 'react',
-//     },
-//   });
+GarfishInstance.registerApp({
+  name: 'react',
+  activeWhen: '/react',
+  // basename: '/garfish_master',
+  entry: 'http://localhost:2444',
+  // domGetter: ()=>document.querySelector('#submoduleByRouter'),
+  props: {
+    appName: 'react',
+  },
+});
 // })
 
 // The test environment into
