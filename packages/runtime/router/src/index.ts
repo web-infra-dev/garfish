@@ -132,12 +132,12 @@ export function GarfishRouter(_args?: Options) {
       },
 
       registerApp(appInfos) {
-        // Has been running after adding routing to trigger the redirection
-        if (!Garfish.running) return;
         const appList = Object.values(appInfos);
         // @ts-ignore
         router.registerRouter(appList.filter((app) => !!app.activeWhen));
         // After completion of the registration application, trigger application mount
+        // Has been running after adding routing to trigger the redirection
+        if (!Garfish.running) return;
         initRedirect();
       },
     };

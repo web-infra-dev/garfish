@@ -5,7 +5,6 @@ import { Config } from './config';
 GarfishInstance.run(Config);
 
 const useRouterMode = true;
-console.log(1);
 
 document.getElementById('vueBtn').onclick = async () => {
   if (useRouterMode) {
@@ -40,12 +39,12 @@ const hooks = GarfishInstance.createPluginSystem(({ SyncHook, AsyncHook }) => {
   };
 });
 
-hooks.usePlugin({
-  name: 'test',
-  create(a) {
-    console.log(a);
-    return '';
-  },
-});
+// hooks.usePlugin({
+//   name: 'test',
+//   create(a) {
+//     console.log(a);
+//     return '';
+//   },
+// });
 
 hooks.lifecycle.create.emit(123);

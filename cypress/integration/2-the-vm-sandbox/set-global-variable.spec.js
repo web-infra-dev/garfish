@@ -2,7 +2,7 @@
 
 const basename = '/garfish_master';
 
-describe('whole process app render', () => {
+describe('whole process vm sandbox set variable', () => {
   beforeEach(() => {
     Cypress.env({
       garfishRunConfig: {

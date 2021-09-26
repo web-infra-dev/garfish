@@ -42,7 +42,10 @@ describe('whole process app render', () => {
         cy.get('.todo-list li')
           .should('have.length', 2)
           .last()
-          .should('have.text', newItem);
+          .should(($div) => {
+            const n = $div.text().trim();
+            expect(n).to.equal(newItem);
+          });
 
         cy.get('.todo-list li').last().find('button').click();
         cy.get('.todo-list li').last().find('button').click();

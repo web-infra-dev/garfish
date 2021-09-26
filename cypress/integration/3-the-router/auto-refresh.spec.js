@@ -8,7 +8,7 @@ describe('whole process popstate event', () => {
       garfishRunConfig: {
         basename: basename,
         disablePreloadApp: true,
-        autoRefreshApp: false, // Don't trigger popstate
+        autoRefreshApp: true, // trigger popstate
       },
     });
   });
@@ -17,7 +17,8 @@ describe('whole process popstate event', () => {
   const popstateCallback = () => (popstateTriggerTime += 1);
 
   it('Switch to the Vue app', () => {
-    const HomeTitle = 'Thank you for the vue applications use garfish';
+    const VueHomeTitle = 'Thank you for the vue applications use garfish';
+    const VueTodoTitle = 'Vue App todo list';
     const ReactHomeTitle = 'Thank you for the react applications use garfish';
 
     cy.visit('http://localhost:2333');
@@ -27,9 +28,8 @@ describe('whole process popstate event', () => {
       win.addEventListener('popstate', popstateCallback);
 
       const TodoListPage = () => {
-        // autoRefreshApp is false can't refreshApp
         win.history.pushState({}, 'vue', `${basename}/vue/todo`);
-        cy.contains('[data-test=title]', HomeTitle);
+        cy.contains('[data-test=title]', VueTodoTitle);
       };
 
       const ReactHomePage = () => {
@@ -44,14 +44,15 @@ describe('whole process popstate event', () => {
       };
 
       win.history.pushState({}, 'vue', `${basename}/vue`);
-      cy.contains('[data-test=title]', HomeTitle)
-        .then(() => expect(win.Garfish.options.autoRefreshApp).to.equal(false))
+      cy.contains('[data-test=title]', VueHomeTitle)
+        .then(() => expect(win.Garfish.options.autoRefreshApp).to.equal(true))
+        .then(() => expect(popstateTriggerTime).to.equal(1))
         .then(TodoListPage)
-        .then(() => expect(popstateTriggerTime).to.equal(0))
+        .then(() => expect(popstateTriggerTime).to.equal(2))
         .then(ReactHomePage)
-        .then(() => expect(popstateTriggerTime).to.equal(0))
+        .then(() => expect(popstateTriggerTime).to.equal(3))
         .then(ReactLazyComponent)
-        .then(() => expect(popstateTriggerTime).to.equal(1));
+        .then(() => expect(popstateTriggerTime).to.equal(4));
     });
   });
 });
