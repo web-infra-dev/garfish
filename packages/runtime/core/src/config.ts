@@ -50,6 +50,7 @@ export const filterNestedConfig = (
 
 const appConfigList = [
   'name',
+  'entry',
   'basename',
   'domGetter',
   'props',
@@ -95,10 +96,7 @@ export const getAppConfig = <T>(globalConfig, localConfig) => {
         };
       }
       // Global configuration priority is lower
-      if (
-        typeof localConfig[valueKey] === 'undefined' &&
-        typeof globalConfig[valueKey] !== 'undefined'
-      ) {
+      if (!(valueKey in localConfig) && valueKey in globalConfig) {
         localConfig[valueKey] = globalConfig[valueKey];
       }
       return localConfig;
