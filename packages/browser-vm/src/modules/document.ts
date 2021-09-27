@@ -80,6 +80,7 @@ export const documentModule = (sandbox: Sandbox) => {
     override: {
       document: proxyDocument,
       Document: fakeDocumentCtor,
+      HTMLDocument: fakeDocumentCtor, // In general, we can simply assign the Document to HTMLDocument
     },
   };
 };
