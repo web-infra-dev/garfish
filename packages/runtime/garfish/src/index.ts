@@ -70,6 +70,6 @@ export function createContext(): Garfish {
   return GarfishInstance;
 }
 
-export { interfaces } from '@garfish/core';
+export type { interfaces } from '@garfish/core';
 export { Garfish } from '@garfish/core';
 export default createContext();
