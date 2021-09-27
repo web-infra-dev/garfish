@@ -48,17 +48,20 @@ export const filterNestedConfig = (
   return config;
 };
 
-const appConfigList = [
+const appConfigList: Array<keyof interfaces.AppConfig | 'activeWhen'> = [
   'name',
   'entry',
+  'activeWhen',
   'basename',
   'domGetter',
   'props',
   'sandbox',
   'cache',
   'nested',
+  'noCheckProvider',
 ];
-const appHooksList = [
+
+const appHooksList: Array<keyof interfaces.AppLifecycle> = [
   'beforeEval',
   'afterEval',
   'beforeMount',
@@ -68,6 +71,7 @@ const appHooksList = [
   'afterUnmount',
   'errorUnmountApp',
   'errorExecCode',
+  'customLoader',
 ];
 
 // `props` may be responsive data
@@ -92,7 +96,7 @@ export const getAppConfig = <T>(globalConfig, localConfig) => {
   const filterConfigList = [...appConfigList, ...appHooksList];
   Object.keys(mergeConfig).forEach((mergeKey) => {
     if (
-      filterConfigList.indexOf(mergeKey) === -1 ||
+      filterConfigList.indexOf(mergeKey as any) === -1 ||
       typeof mergeConfig[mergeKey] === 'undefined'
     ) {
       delete mergeConfig[mergeKey];
