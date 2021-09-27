@@ -71,39 +71,34 @@ const appHooksList = [
 ];
 
 // `props` may be responsive data
-export const deepMergeConfig = <T>(o, n) => {
-  const props = n.props || o.props;
-  if (props) {
-    o = { ...o };
-    n = { ...n };
-    delete o.props;
-    delete n.props;
+export const deepMergeConfig = <T>(globalConfig, localConfig) => {
+  const globalProps = globalConfig.props;
+  const localProps = localConfig.props;
+  if (globalProps || localProps) {
+    globalConfig = { ...globalConfig };
+    localConfig = { ...localConfig };
+    delete globalConfig.props;
+    delete localConfig.props;
   }
-  const result = deepMerge(o, n);
-  if (props) result.props = props;
+  const result = deepMerge(globalConfig, localConfig);
+  if (globalProps) result.props = { ...globalProps };
+  if (localProps) result.props = { ...localProps };
   return result as T;
 };
 
 export const getAppConfig = <T>(globalConfig, localConfig) => {
   // TODO: Automatically retrieve configuration in the type declaration
-  const appGlobalConfig = [...appConfigList, ...appHooksList].reduce(
-    (localConfig, valueKey) => {
-      // Need to merge
-      if (valueKey === 'props') {
-        localConfig.props = {
-          ...(globalConfig.props || {}),
-          ...(localConfig.props || {}),
-        };
-      }
-      // Global configuration priority is lower
-      if (!(valueKey in localConfig) && valueKey in globalConfig) {
-        localConfig[valueKey] = globalConfig[valueKey];
-      }
-      return localConfig;
-    },
-    localConfig,
-  );
-  return appGlobalConfig as T;
+  const mergeConfig = deepMergeConfig(globalConfig, localConfig);
+  const filterConfigList = [...appConfigList, ...appHooksList];
+  Object.keys(mergeConfig).forEach((mergeKey) => {
+    if (
+      filterConfigList.indexOf(mergeKey) === -1 ||
+      typeof mergeConfig[mergeKey] === 'undefined'
+    ) {
+      delete mergeConfig[mergeKey];
+    }
+  });
+  return mergeConfig as T;
 };
 
 export const generateAppOptions = (
