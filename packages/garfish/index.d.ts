@@ -4,6 +4,5 @@
 export * from './dist/index';
 import defaultInstance from './dist/index';
 
-export { interfaces } from '@garfish/core';
-export { Garfish } from '@garfish/core';
+export * from '@garfish/core';
 export default defaultInstance;
