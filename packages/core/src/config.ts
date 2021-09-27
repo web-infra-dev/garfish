@@ -82,7 +82,7 @@ export const deepMergeConfig = <T>(globalConfig, localConfig) => {
   }
   const result = deepMerge(globalConfig, localConfig);
   if (globalProps) result.props = { ...globalProps };
-  if (localProps) result.props = { ...localProps };
+  if (localProps) result.props = { ...(result.props || {}), ...localProps };
   return result as T;
 };
 
