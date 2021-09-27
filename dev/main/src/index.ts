@@ -33,11 +33,11 @@ document.getElementById('reactBtn').onclick = async () => {
 };
 
 // Plugin test
-const hooks = GarfishInstance.createPluginSystem(({ SyncHook, AsyncHook }) => {
-  return {
-    create: new AsyncHook<[number], string>(),
-  };
-});
+// const hooks = GarfishInstance.createPluginSystem(({ SyncHook, AsyncHook }) => {
+//   return {
+//     create: new AsyncHook<[number], string>(),
+//   };
+// });
 
 // hooks.usePlugin({
 //   name: 'test',
@@ -47,4 +47,4 @@ const hooks = GarfishInstance.createPluginSystem(({ SyncHook, AsyncHook }) => {
 //   },
 // });
 
-hooks.lifecycle.create.emit(123);
+// hooks.lifecycle.create.emit(123);

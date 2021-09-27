@@ -53,16 +53,15 @@ We use monorepo to manage multiple packages
 ```js
 website
 packages
-  runtime
-    browser-snapshot/          - snapshot sandbox
-    browser-vm/                - vm sandbox
-    core/                      - core module with sandbox、loader、hooks、router
-    garfish/
-    hooks/                     - hooks
-    loader/                    - loader
-    remote-module/
-    router/                    - router
-    utils/                     - common utils
+  browser-snapshot/          - snapshot sandbox
+  browser-vm/                - vm sandbox
+  core/                      - core module with sandbox、loader、hooks、router
+  garfish/
+  hooks/                     - hooks
+  loader/                    - loader
+  remote-module/
+  router/                    - router
+  utils/                     - common utils
 ```
 
 ## The operation of the common
