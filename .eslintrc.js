@@ -3,12 +3,7 @@ const NodeGlobals = ['module', 'require'];
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
-  ignorePatterns: [
-    '**/dist',
-    'dev/',
-    'api-extractor.json',
-    'packages/runtime/*/dist',
-  ],
+  ignorePatterns: ['**/dist', 'dev/', 'api-extractor.json', 'packages/*/dist'],
   parserOptions: {
     sourceType: 'module',
   },

@@ -112,7 +112,7 @@ importers:
       webpack-dev-server: ^3.9.0
     dependencies:
       '@babel/runtime': 7.15.4
-      garfish: link:../../packages/runtime/garfish
+      garfish: link:../../packages/garfish
       loader-utils: 2.0.0
       mobx: 6.3.3
       react: 16.14.0
@@ -180,10 +180,10 @@ importers:
       vue-template-compiler: ^2.6.11
       vuex: ^3.5.1
     dependencies:
-      '@garfish/remote-module': link:../../packages/runtime/remote-module
+      '@garfish/remote-module': link:../../packages/remote-module
       core-js: 3.18.0
       element-ui: 2.15.6_vue@2.6.14
-      garfish: link:../../packages/runtime/garfish
+      garfish: link:../../packages/garfish
       regenerator-runtime: 0.13.9
       vue: 2.6.14
       vue-router: 3.5.2
@@ -251,13 +251,13 @@ importers:
       eslint-plugin-vue: 6.2.2_eslint@6.8.0
       vue-template-compiler: 2.6.14
 
-  packages/runtime/browser-snapshot:
+  packages/browser-snapshot:
     specifiers:
       '@garfish/core': workspace:*
     dependencies:
       '@garfish/core': link:../core
 
-  packages/runtime/browser-vm:
+  packages/browser-vm:
     specifiers:
       '@garfish/core': workspace:*
       '@garfish/hooks': workspace:*
@@ -267,7 +267,7 @@ importers:
       '@garfish/hooks': link:../hooks
       '@garfish/loader': link:../loader
 
-  packages/runtime/core:
+  packages/core:
     specifiers:
       '@garfish/hooks': workspace:*
       '@garfish/loader': workspace:*
@@ -277,7 +277,7 @@ importers:
       '@garfish/loader': link:../loader
       '@garfish/utils': link:../utils
 
-  packages/runtime/garfish:
+  packages/garfish:
     specifiers:
       '@garfish/browser-snapshot': workspace:*
       '@garfish/browser-vm': workspace:*
@@ -291,10 +291,10 @@ importers:
       '@garfish/router': link:../router
       '@garfish/utils': link:../utils
 
-  packages/runtime/hooks:
+  packages/hooks:
     specifiers: {}
 
-  packages/runtime/loader:
+  packages/loader:
     specifiers:
       '@garfish/hooks': workspace:*
       '@garfish/utils': workspace:*
@@ -302,7 +302,7 @@ importers:
       '@garfish/hooks': link:../hooks
       '@garfish/utils': link:../utils
 
-  packages/runtime/remote-module:
+  packages/remote-module:
     specifiers:
       '@garfish/core': workspace:*
       '@garfish/loader': workspace:*
@@ -310,7 +310,7 @@ importers:
       '@garfish/core': link:../core
       '@garfish/loader': link:../loader
 
-  packages/runtime/router:
+  packages/router:
     specifiers:
       '@garfish/core': workspace:*
       '@garfish/utils': workspace:*
@@ -318,7 +318,7 @@ importers:
       '@garfish/core': link:../core
       '@garfish/utils': link:../utils
 
-  packages/runtime/utils:
+  packages/utils:
     specifiers:
       '@garfish/core': workspace:*
     devDependencies:
