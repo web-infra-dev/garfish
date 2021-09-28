@@ -119,18 +119,18 @@ export const generateAppOptions = (
 
   // Merge register appInfo config and loadApp config
   if (isObject(appOptionsOrUrl)) {
-    appInfo = getAppConfig(appInfo, appOptionsOrUrl);
+    appInfo = getAppConfig(appInfo || {}, appOptionsOrUrl);
   }
 
   // Merge globalConfig with localConfig
   appInfo = getAppConfig(garfish.options, appInfo || {});
+  appInfo.name = appName;
 
   assert(
     appInfo.entry,
     `Can't load unexpected child app "${appName}", ` +
       'Please provide the entry parameters or registered in advance of the app.',
   );
-  appInfo.name = appName;
   return appInfo;
 };
 
