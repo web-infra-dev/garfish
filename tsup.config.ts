@@ -1,7 +1,7 @@
 import type { Options } from 'tsup';
-import pkg from './package.json';
 import minimist from 'minimist';
 import { replace } from 'esbuild-plugin-replace';
+import pkg from './package.json';
 
 const args = minimist(process.argv.slice(2));
 const watch = process.env.WATCH;

@@ -4,8 +4,7 @@ import { FakeWindow } from './types';
 import { __proxyNode__, __sandboxMap__ } from './symbolTypes';
 
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object
-const esGlobalMethods = // Function properties of the global object // Function properties of the global object
-(
+const esGlobalMethods = ( // Function properties of the global object // Function properties of the global object
   'eval,isFinite,isNaN,parseFloat,parseInt,' +
   // URL handling functions
   'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +

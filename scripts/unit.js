@@ -36,13 +36,14 @@ if (argv.includes('--startMockServer')) {
         return;
       }
 
+      // prettier-ignore
       const resource = pathname.includes('index.html')
         ? indexHtml
         : pathname.includes('index.js')
-        ? indexJs
-        : pathname.includes('index.css')
-        ? indexCss
-        : '';
+          ? indexJs
+          : pathname.includes('index.css')
+            ? indexCss
+            : '';
 
       res.end(resource);
     })
