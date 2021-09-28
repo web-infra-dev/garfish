@@ -12,11 +12,11 @@ import {
   transformUrl,
   __MockBody__,
   __MockHead__,
+  getRenderNode,
   sourceListTags,
   parseContentType,
   createAppContainer,
   setDocCurrentScript,
-  getRenderNode,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';

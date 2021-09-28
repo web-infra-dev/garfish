@@ -72,7 +72,7 @@ export namespace interfaces {
     plugins?: Array<(context: Garfish) => Plugin>;
   }
 
-  export interface AppGlobalConfig extends AppLifecycle {
+  export interface AppGlobalConfig {
     basename?: string;
     nested?: boolean;
     domGetter?: DomGetter;
