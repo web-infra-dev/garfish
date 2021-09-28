@@ -51,7 +51,6 @@ async function test() {
 
 async function bumpVersion() {
   return await bumpPrompt({
-    // commit: 'chore(publish): release v',
     files: ['package.json', 'packages/*/package.json'],
     release: args.tag || '',
     push: false,

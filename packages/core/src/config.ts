@@ -3,12 +3,28 @@ import {
   error,
   assert,
   hasOwn,
+  isObject,
   deepMerge,
-  getRenderNode,
   isPlainObject,
 } from '@garfish/utils';
 import { AppInfo } from './module/app';
 import { interfaces } from './interface';
+import { appLifecycle } from './lifecycle';
+
+const appConfigList: Array<keyof interfaces.AppInfo | 'activeWhen'> = [
+  'name',
+  'entry',
+  'activeWhen',
+  'basename',
+  'domGetter',
+  'props',
+  'sandbox',
+  'cache',
+  'nested',
+  'noCheckProvider',
+  'customLoader',
+  ...appLifecycle().lifecycleKeys,
+];
 
 const invalidNestedAttrs = [
   'sandbox',
@@ -48,32 +64,6 @@ export const filterNestedConfig = (
   return config;
 };
 
-const appConfigList: Array<keyof interfaces.AppConfig | 'activeWhen'> = [
-  'name',
-  'entry',
-  'activeWhen',
-  'basename',
-  'domGetter',
-  'props',
-  'sandbox',
-  'cache',
-  'nested',
-  'noCheckProvider',
-];
-
-const appHooksList: Array<keyof interfaces.AppLifecycle> = [
-  'beforeEval',
-  'afterEval',
-  'beforeMount',
-  'afterMount',
-  'errorMountApp',
-  'beforeUnmount',
-  'afterUnmount',
-  'errorUnmountApp',
-  'errorExecCode',
-  'customLoader',
-];
-
 // `props` may be responsive data
 export const deepMergeConfig = <T>(globalConfig, localConfig) => {
   const globalProps = globalConfig.props;
@@ -93,13 +83,12 @@ export const deepMergeConfig = <T>(globalConfig, localConfig) => {
 export const getAppConfig = <T>(globalConfig, localConfig) => {
   // TODO: Automatically retrieve configuration in the type declaration
   const mergeConfig = deepMergeConfig(globalConfig, localConfig);
-  const filterConfigList = [...appConfigList, ...appHooksList];
-  Object.keys(mergeConfig).forEach((mergeKey) => {
+  Object.keys(mergeConfig).forEach((key) => {
     if (
-      filterConfigList.indexOf(mergeKey as any) === -1 ||
-      typeof mergeConfig[mergeKey] === 'undefined'
+      !appConfigList.includes(key as any) ||
+      typeof mergeConfig[key] === 'undefined'
     ) {
-      delete mergeConfig[mergeKey];
+      delete mergeConfig[key];
     }
   });
   return mergeConfig as T;
@@ -113,28 +102,35 @@ export const generateAppOptions = (
   let appInfo = garfish.appInfos[appName];
   // Load the unregistered applications
   // `Garfish.loadApp('appName', 'https://xx.html');`
-  if (!appInfo && typeof appOptionsOrUrl === 'string') {
-    appInfo = {
-      name: appName,
-      basename: '/',
-      entry: appOptionsOrUrl,
-    };
+  if (typeof appOptionsOrUrl === 'string') {
+    if (appInfo) {
+      appInfo = {
+        ...appInfo,
+        entry: appOptionsOrUrl,
+      };
+    } else {
+      appInfo = {
+        name: appName,
+        basename: '/',
+        entry: appOptionsOrUrl,
+      };
+    }
   }
 
-  // merge register appInfo config and loadApp config
-  if (appOptionsOrUrl && typeof appOptionsOrUrl === 'object') {
-    appInfo = getAppConfig(appInfo, appOptionsOrUrl);
+  // Merge register appInfo config and loadApp config
+  if (isObject(appOptionsOrUrl)) {
+    appInfo = getAppConfig(appInfo || {}, appOptionsOrUrl);
   }
 
-  // merge globalConfig with localConfig
-  appInfo = getAppConfig(garfish.options, appInfo);
+  // Merge globalConfig with localConfig
+  appInfo = getAppConfig(garfish.options, appInfo || {});
+  appInfo.name = appName;
 
   assert(
     appInfo.entry,
     `Can't load unexpected child app "${appName}", ` +
       'Please provide the entry parameters or registered in advance of the app.',
   );
-  appInfo.name = appName;
   return appInfo;
 };
 

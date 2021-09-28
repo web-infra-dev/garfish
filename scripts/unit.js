@@ -1,12 +1,13 @@
 // Start a server first, and then pass the jest test
-const argv = process.argv;
+const { run, step } = require('./utils');
 
-if (argv.includes('--startMockServer')) {
+function startMockServer() {
   const port = 3333;
   const url = require('url');
   const http = require('http');
 
-  const indexHtml = `
+  const css = 'div { color: "#000" }';
+  const html = `
     <!DOCTYPE html>
     <html>
       <link rel="stylesheet" href="./index.css">
@@ -14,57 +15,53 @@ if (argv.includes('--startMockServer')) {
       <script src="./index.js"></script>
     </html>
   `;
-
-  const indexCss = 'div { color: "#000" }';
-
-  const indexJs = `
-    exports.provider = () => ({
+  const js = `
+    exports.provider = {
       render() {},
       destroy() {},
-    });
+    };
   `;
 
   http
     .createServer((req, res) => {
+      let code = '';
       const { pathname } = url.parse(req.url || '');
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Access-Control-Allow-Methods', 'GET');
 
       if (pathname.includes('error')) {
         res.statusCode = 400;
-        res.end('');
-        return;
+      } else {
+        if (pathname.includes('index.html')) {
+          code = html;
+        } else if (pathname.includes('index.js')) {
+          code = js;
+        } else if (pathname.includes('index.css')) {
+          code = css;
+        }
       }
-
-      const resource = pathname.includes('index.html')
-        ? indexHtml
-        : pathname.includes('index.js')
-        ? indexJs
-        : pathname.includes('index.css')
-        ? indexCss
-        : '';
-
-      res.end(resource);
+      res.end(code);
     })
     .listen(port);
-} else {
-  const { run, step } = require('./utils');
-  const childProcess = require('child_process');
+}
 
-  console.clear();
-  step('🔎 Jest testing...');
-
-  const serverProcess = childProcess.spawn(
+function startUnitTest() {
+  const serverProcess = run(
     'node',
-    ['./scripts/jestTest.js', '--startMockServer'],
-    {
-      stdio: 'ignore',
-      detached: true,
-    },
+    ['./scripts/unit.js', '--startMockServer'],
+    { detached: true },
   );
-  const testProcess = run('jest', argv.slice(2, argv.length));
+
+  const testProcess = run('jest', process.argv.slice(2, process.argv.length));
 
   process.on('SIGINT', () => serverProcess.kill());
   process.on('SIGHUP', () => serverProcess.kill());
   testProcess.on('close', () => serverProcess.kill());
+}
+
+if (process.argv.includes('--startMockServer')) {
+  startMockServer();
+} else {
+  step('🔎 Unit testing...');
+  startUnitTest();
 }

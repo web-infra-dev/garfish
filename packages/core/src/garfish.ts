@@ -8,7 +8,7 @@ import {
   generateAppOptions,
   createDefaultOptions,
 } from './config';
-import { App, AppInfo } from './module/app';
+import { App } from './module/app';
 import { interfaces } from './interface';
 import { globalLifecycle } from './lifecycle';
 import { processAppResources } from './module/resource';
@@ -157,10 +157,6 @@ export class Garfish extends EventEmitter {
           appInfo.entry,
           `${appInfo.name} application entry is not url: ${appInfo.entry}`,
         );
-        // Deep merge this.options
-        // if (!appInfo.nested) {
-        //   appInfo = deepMergeConfig(this.options, appInfo);
-        // }
         currentAdds[appInfo.name] = appInfo;
         this.appInfos[appInfo.name] = appInfo;
       } else if (__DEV__) {
