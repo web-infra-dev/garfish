@@ -136,7 +136,7 @@ function createOptions(Garfish: interfaces.Garfish) {
     // If the app is uninstalled, the sandbox needs to clear all effects and then reset
     afterUnmount(_, appInstance) {
       if (!appInstance.vmSandbox) return;
-      appInstance.vmSandbox.reset();
+      appInstance.vmSandbox.close();
       sandboxMap.del(appInstance.vmSandbox);
     },
 
