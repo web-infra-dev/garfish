@@ -158,6 +158,7 @@ export class Garfish extends EventEmitter {
           `${appInfo.name} application entry is not url: ${appInfo.entry}`,
         );
         currentAdds[appInfo.name] = appInfo;
+        if (!('cache' in appInfo)) appInfo.cache = true;
         this.appInfos[appInfo.name] = appInfo;
       } else if (__DEV__) {
         warn(`The "${appInfo.name}" app is already registered.`);
