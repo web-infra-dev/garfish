@@ -8,8 +8,8 @@ module.exports = {
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
     config.output.jsonpFunction = 'react-garfish-exports';
-    (config.mode = process.env.TEST_ENV ? 'production' : 'development'),
-      (config.output.publicPath = `http://localhost:${configCommon.reactPort}/`);
+    config.mode = process.env.TEST_ENV ? 'production' : 'development';
+    config.output.publicPath = `http://localhost:${configCommon.reactPort}/`;
     config.plugins.push(
       new webpack.BannerPlugin({
         raw: true,

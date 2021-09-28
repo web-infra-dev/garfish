@@ -2,7 +2,7 @@
   "private": true,
   "description": "A powerful micro front-end framework",
   "scripts": {
-    "dev": "pnpm build:watch & node scripts/dev.js",
+    "dev": "npx cross-env TEST_ENV=true node scripts/dev.js",
     "dev:docs": "pnpm run start --filter garfish-docs",
     "test:e2e": "zx scripts/e2e.js",
     "test:e2e:open": "cross-env TEST_ENV_OPEN=true zx scripts/e2e.js",
