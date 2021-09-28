@@ -22,11 +22,12 @@ let defaultConfig: interfaces.Options = {
     {
       name: 'vue',
       activeWhen: '/vue',
-      // cache: true,
+      cache: false,
       entry: 'http://localhost:2666',
     },
     {
       name: 'vue2',
+      cache: false,
       activeWhen: '/vue2',
       entry: 'http://localhost:2777',
     },
@@ -61,6 +62,7 @@ let defaultConfig: interfaces.Options = {
 GarfishInstance.registerApp({
   name: 'react',
   activeWhen: '/react',
+  cache: false,
   // basename: '/garfish_master',
   entry: 'http://localhost:2444',
   // domGetter: ()=>document.querySelector('#submoduleByRouter'),
