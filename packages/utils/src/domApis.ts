@@ -121,7 +121,7 @@ export class DOMApis {
     const parentNode = el && el.parentNode;
     if (parentNode) {
       parentNode.removeChild(el);
-      // el[__ELEMENT_DELETE_TAG__] = true;
+      el[__ELEMENT_DELETE_TAG__] = true;
     }
   }
 
