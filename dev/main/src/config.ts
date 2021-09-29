@@ -45,6 +45,7 @@ let defaultConfig: interfaces.Options = {
   protectVariable: ['MonitoringInstance', 'Garfish'],
   sandbox: {
     open: true,
+    strictIsolation: true,
   },
 
   // beforeMount(appInfo) {
