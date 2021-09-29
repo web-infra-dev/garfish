@@ -24,7 +24,7 @@ importers:
       eslint-plugin-vue: ^6.2.2
       execa: ^4.1.0
       fs-extra: ^9.0.1
-      http-server: ^0.12.3
+      http-server: 0.13.0
       husky: ^4.3.0
       install: ^0.13.0
       jest: ^26.6.3
@@ -64,7 +64,7 @@ importers:
       eslint-plugin-vue: 6.2.2_eslint@7.32.0
       execa: 4.1.0
       fs-extra: 9.1.0
-      http-server: 0.12.3
+      http-server: 0.13.0
       husky: 4.3.8
       install: 0.13.0
       jest: 26.6.3
@@ -6407,7 +6407,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.4.6_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.4.6_typescript@4.4.3
       '@vue/cli-shared-utils': 4.5.13
 
   /@vue/cli-plugin-router/4.5.13_@vue+cli-service@4.5.13:
@@ -6424,7 +6424,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.4.6_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.4.6_typescript@4.4.3
 
   /@vue/cli-plugin-vuex/4.5.13_@vue+cli-service@4.5.13:
     resolution: {integrity: sha512-I1S9wZC7iI0Wn8kw8Zh+A2Qkf6s1M6vTGBkx8boXjuzfwEEyEHRxadsVCecZc8Mkpydo0nykj+MyYF96TKFuVA==}
@@ -7669,7 +7669,7 @@ packages:
   /axios/0.21.4:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.14.4
+      follow-redirects: 1.14.4_debug@4.3.2
     transitivePeerDependencies:
       - debug
 
@@ -8144,7 +8144,8 @@ packages:
     engines: {node: '>=8'}
 
   /bindings/1.5.0:
-    resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/bindings/-/bindings-1.5.0.tgz}
+    resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
+    requiresBuild: true
     dependencies:
       file-uri-to-path: 1.0.0
     optional: true
@@ -10386,17 +10387,6 @@ packages:
       jsbn: 0.1.1
       safer-buffer: 2.1.2
 
-  /ecstatic/3.3.2:
-    resolution: {integrity: sha512-fLf9l1hnwrHI2xn9mEDT7KIi22UDqA2jaCwyCbSUJh9a1V+LEUSL/JO/6TIz/QyuBURWUHrFL5Kg2TtO1bkkog==}
-    deprecated: This package is unmaintained and deprecated. See the GH Issue 259.
-    hasBin: true
-    dependencies:
-      he: 1.2.0
-      mime: 1.6.0
-      minimist: 1.2.5
-      url-join: 2.0.5
-    dev: true
-
   /ee-first/1.1.1:
     resolution: {integrity: sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz}
 
@@ -11533,7 +11523,8 @@ packages:
     dev: false
 
   /file-uri-to-path/1.0.0:
-    resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz}
+    resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
+    requiresBuild: true
     optional: true
 
   /filesize/3.6.1:
@@ -11723,6 +11714,18 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: true
+
+  /follow-redirects/1.14.4_debug@4.3.2:
+    resolution: {integrity: sha512-zwGkiSXC1MUJG/qmeIFH2HBJx9u0V46QGUe3YR1fXG8bXQxq7fLj0RjLZQ5nubr9qNJUZrH+xUcwXEoXNpfS+g==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dependencies:
+      debug: 4.3.2
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/for-each/-/for-each-0.3.3.tgz}
@@ -12755,26 +12758,28 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.4
+      follow-redirects: 1.14.4_debug@4.3.2
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
 
-  /http-server/0.12.3:
-    resolution: {integrity: sha512-be0dKG6pni92bRjq0kvExtj/NrrAd28/8fCXkaI/4piTwQMSDSLMhWyW0NI1V+DBI3aa1HMlQu46/HjVLfmugA==}
+  /http-server/0.13.0:
+    resolution: {integrity: sha512-/MjH9k/y470zbtXzKLkP8vioIVvxRArTkz8f9UX1ztkLZzr6S0hg6BW8h6MBn/HUfwjlTQvIe9DRknorN2u20Q==}
     engines: {node: '>=6'}
     hasBin: true
     dependencies:
       basic-auth: 1.1.0
       colors: 1.4.0
       corser: 2.0.1
-      ecstatic: 3.3.2
+      he: 1.2.0
       http-proxy: 1.18.1
+      mime: 1.6.0
       minimist: 1.2.5
       opener: 1.5.2
       portfinder: 1.0.28
       secure-compare: 3.0.1
       union: 0.5.0
+      url-join: 2.0.5
     transitivePeerDependencies:
       - debug
     dev: true
@@ -15751,7 +15756,8 @@ packages:
       thenify-all: 1.6.0
 
   /nan/2.15.0:
-    resolution: {integrity: sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/nan/-/nan-2.15.0.tgz}
+    resolution: {integrity: sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==}
+    requiresBuild: true
     optional: true
 
   /nanocolors/0.1.12:
@@ -21447,7 +21453,7 @@ packages:
     resolution: {integrity: sha512-N6uOhuW6zO95P3Mel2I2zMsbsanvvtgn6jVqJv4vbVcz/JN0OkL9suomjQGmWtxJQXOCqUJvquc1sMeNz/IwlA==}
     engines: {node: '>= 0.8.0'}
     dependencies:
-      qs: 6.7.0
+      qs: 6.10.1
     dev: true
 
   /uniq/1.0.1:
