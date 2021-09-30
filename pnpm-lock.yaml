@@ -103,7 +103,7 @@ importers:
       react: 16.14.0
       react-dom: 16.14.0
       style-loader: 3.3.0
-      ts-loader: 8.3.0
+      ts-loader: 9.2.6
       vue: 2.6.14
       vue-router: 3.5.2
       vuex: 3.6.2
@@ -117,7 +117,7 @@ importers:
       mobx: 6.3.3
       react: 16.14.0
       react-dom: 16.14.0_react@16.14.0
-      ts-loader: 8.3.0_typescript@4.4.3+webpack@4.46.0
+      ts-loader: 9.2.6_typescript@4.4.3+webpack@4.46.0
       vue: 2.6.14
       vue-router: 3.5.2
       vuex: 3.6.2_vue@2.6.14
@@ -6044,7 +6044,7 @@ packages:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
       eslint: '>= 1.6.0 < 7.0.0'
     dependencies:
-      '@vue/cli-service': 4.5.13_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.5.13_typescript@4.4.3
       '@vue/cli-shared-utils': 4.5.13
       eslint: 7.32.0
       eslint-loader: 2.2.1_eslint@7.32.0+webpack@4.46.0
@@ -6061,7 +6061,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.13_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.5.13_typescript@4.4.3
       '@vue/cli-shared-utils': 4.5.13
 
   /@vue/cli-plugin-vuex/4.5.13_@vue+cli-service@4.5.13:
@@ -6069,7 +6069,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.13_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.5.13_typescript@4.4.3
 
   /@vue/cli-service/4.5.13_daaec740214156bd7a1b7d7855d908a4:
     resolution: {integrity: sha512-CKAZN4iokMMsaUyJRU22oUAz3oS/X9sVBSKAF2/shFBV5xh3jqAlKl8OXZYz4cXGFLA6djNuYrniuLAo7Ku97A==}
@@ -11297,7 +11297,7 @@ packages:
       debug:
         optional: true
     dependencies:
-      debug: 4.3.2_supports-color@6.1.0
+      debug: 4.3.2
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -20768,16 +20768,15 @@ packages:
       yargs-parser: 20.2.9
     dev: true
 
-  /ts-loader/8.3.0_typescript@4.4.3+webpack@4.46.0:
-    resolution: {integrity: sha512-MgGly4I6cStsJy27ViE32UoqxPTN9Xly4anxxVyaIWR+9BGxboV4EyJBGfR3RePV7Ksjj3rHmPZJeIt+7o4Vag==}
-    engines: {node: '>=10.0.0'}
+  /ts-loader/9.2.6_typescript@4.4.3+webpack@4.46.0:
+    resolution: {integrity: sha512-QMTC4UFzHmu9wU2VHZEmWWE9cUajjfcdcws+Gh7FhiO+Dy0RnR1bNz0YCHqhI0yRowCE9arVnNxYHqELOy9Hjw==}
+    engines: {node: '>=12.0.0'}
     peerDependencies:
       typescript: '*'
-      webpack: '*'
+      webpack: ^5.0.0
     dependencies:
       chalk: 4.1.2
-      enhanced-resolve: 4.5.0
-      loader-utils: 2.0.0
+      enhanced-resolve: 5.8.3
       micromatch: 4.0.4
       semver: 7.3.5
       typescript: 4.4.3
