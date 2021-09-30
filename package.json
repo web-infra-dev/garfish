@@ -55,7 +55,7 @@
     "@jsdevtools/version-bump-prompt": "6.1.0",
     "@ls-lint/ls-lint": "1.10.0",
     "@types/jest": "27.0.2",
-    "@typescript-eslint/parser": "3.10.1",
+    "@typescript-eslint/parser": "4.32.0",
     "@vue/cli-plugin-babel": "4.5.13",
     "@vue/cli-plugin-eslint": "4.5.13",
     "@vue/cli-service": "4.5.13",
