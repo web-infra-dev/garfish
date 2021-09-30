@@ -29,7 +29,7 @@ importers:
       install: 0.13.0
       jest: 26.6.3
       kill-port: 1.6.1
-      lint-staged: 10.5.4
+      lint-staged: 11.1.2
       lodash: 4.17.21
       minimist: 1.2.5
       pnpm: 6.16.0
@@ -69,7 +69,7 @@ importers:
       install: 0.13.0
       jest: 26.6.3
       kill-port: 1.6.1
-      lint-staged: 10.5.4
+      lint-staged: 11.1.2
       lodash: 4.17.21
       minimist: 1.2.5
       pnpm: 6.16.0
@@ -8747,11 +8747,11 @@ packages:
   /commander/6.2.1:
     resolution: {integrity: sha512-U7VdrJFnJgo4xjrHpTzu0yrHPGImdsmD95ZlgYSEajAn2JKzDhDTPG9kBTefmObL2w/ngeZnilk+OV9CG3d7UA==}
     engines: {node: '>= 6'}
+    dev: false
 
   /commander/7.2.0:
     resolution: {integrity: sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==}
     engines: {node: '>= 10'}
-    dev: false
 
   /common-tags/1.8.0:
     resolution: {integrity: sha512-6P6g0uetGpW/sdyUy/iQQCbFF0kWVMSIVSyYz7Zgjcgh8mgw8PQzDNZeyZ5DQ2gM7LBoZPHmnjz8rUthkBG5tw==}
@@ -9679,10 +9679,6 @@ packages:
     dependencies:
       mimic-response: 2.1.0
     dev: false
-
-  /dedent/0.7.0:
-    resolution: {integrity: sha1-JJXduvbrh0q7Dhvp3yLS5aVEMmw=}
-    dev: true
 
   /deep-equal/1.1.1:
     resolution: {integrity: sha512-yd9c5AdiqVcR+JjcwUQb9DkhJc8ngNr0MahEBGvDiJw8puWab2yZlh+nkasOnZP+EGTAP6rRp2JzJhJZzvNF8g==}
@@ -14568,18 +14564,17 @@ packages:
   /lines-and-columns/1.1.6:
     resolution: {integrity: sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=}
 
-  /lint-staged/10.5.4:
-    resolution: {integrity: sha512-EechC3DdFic/TdOPgj/RB3FicqE6932LTHCUm0Y2fsD9KGlLB+RwJl2q1IYBIvEsKzDOgn0D4gll+YxG5RsrKg==}
+  /lint-staged/11.1.2:
+    resolution: {integrity: sha512-6lYpNoA9wGqkL6Hew/4n1H6lRqF3qCsujVT0Oq5Z4hiSAM7S6NksPJ3gnr7A7R52xCtiZMcEUNNQ6d6X5Bvh9w==}
     hasBin: true
     dependencies:
       chalk: 4.1.2
       cli-truncate: 2.1.0
-      commander: 6.2.1
+      commander: 7.2.0
       cosmiconfig: 7.0.1
       debug: 4.3.2
-      dedent: 0.7.0
       enquirer: 2.3.6
-      execa: 4.1.0
+      execa: 5.1.1
       listr2: 3.12.2_enquirer@2.3.6
       log-symbols: 4.1.0
       micromatch: 4.0.4
