@@ -18,9 +18,9 @@
     "vuex": "3.6.2"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "4.4.6",
-    "@vue/cli-plugin-eslint": "4.4.6",
-    "@vue/cli-service": "4.4.6",
+    "@vue/cli-plugin-babel": "4.5.13",
+    "@vue/cli-plugin-eslint": "4.5.13",
+    "@vue/cli-service": "4.5.13",
     "eslint": "7.32.0",
     "eslint-plugin-vue": "6.2.2",
     "vue-template-compiler": "2.6.14"
