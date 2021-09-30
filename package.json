@@ -68,7 +68,7 @@
     "eslint": "7.32.0",
     "eslint-plugin-vue": "6.2.2",
     "execa": "4.1.0",
-    "fs-extra": "9.1.0",
+    "fs-extra": "10.0.0",
     "http-server": "13.0.2",
     "husky": "4.3.8",
     "install": "0.13.0",
