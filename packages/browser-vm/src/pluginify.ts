@@ -110,7 +110,7 @@ function createOptions(Garfish: interfaces.Garfish) {
           namespace: appInfo.name,
           sourceList: appInstance.sourceList,
           baseUrl: appInstance.entryManager.url,
-          strictIsolation: appInstance.strictIsolation,
+          strictIsolation: appInfo.sandbox?.strictIsolation,
           modules: compatibleOldModule(appInfo.sandbox.modules),
 
           el: () => appInstance.htmlNode,
