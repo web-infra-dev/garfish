@@ -88,6 +88,7 @@ export class Loader {
     scope: string,
     url: string,
     isModule = false,
+    isScript = false, // Is from a dynamical script node
   ): Promise<LoadedHookArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
 
@@ -135,7 +136,7 @@ export class Loader {
         } else if (isHtml(mimeType) || /\.html/.test(result.url)) {
           fileType = FileTypes.template;
           managerCtor = TemplateManager;
-        } else if (isJs(mimeType) || /\.js/.test(result.url)) {
+        } else if (isScript || isJs(mimeType) || /\.js/.test(result.url)) {
           fileType = FileTypes.js;
           managerCtor = JavaScriptManager;
         } else if (isCss(mimeType) || /\.css/.test(result.url)) {

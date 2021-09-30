@@ -123,7 +123,7 @@ export class DynamicNodeProcessor {
       if (src) {
         const fetchUrl = baseUrl ? transformUrl(baseUrl, src) : src;
         this.sandbox.loader
-          .load<JavaScriptManager>(namespace, fetchUrl)
+          .load<JavaScriptManager>(namespace, fetchUrl, false, true) // Fix the response mimeType of javascript request my not be application/javascript
           .then(({ resourceManager: { url, scriptCode } }) => {
             // It is necessary to ensure that the code execution error cannot trigger the `el.onerror` event
             setTimeout(() => {
