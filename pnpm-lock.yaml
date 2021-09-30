@@ -6408,7 +6408,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.4.6_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.4.6_typescript@4.4.3
       '@vue/cli-shared-utils': 4.5.13
 
   /@vue/cli-plugin-router/4.5.13_@vue+cli-service@4.5.13:
@@ -6425,7 +6425,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.4.6_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.4.6_typescript@4.4.3
 
   /@vue/cli-plugin-vuex/4.5.13_@vue+cli-service@4.5.13:
     resolution: {integrity: sha512-I1S9wZC7iI0Wn8kw8Zh+A2Qkf6s1M6vTGBkx8boXjuzfwEEyEHRxadsVCecZc8Mkpydo0nykj+MyYF96TKFuVA==}
