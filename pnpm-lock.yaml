@@ -97,7 +97,7 @@ importers:
       css-loader: ^3.2.0
       garfish: workspace:*
       html-webpack-plugin: ^3.2.0
-      less-loader: ^6.2.0
+      less-loader: 10.0.1
       loader-utils: ^2.0.0
       mobx: ^6.0.1
       react: ^16.13.1
@@ -131,7 +131,7 @@ importers:
       babel-loader: 8.2.2_99877201e3f6dd5396b321f0a88244ea
       css-loader: 3.6.0_webpack@4.46.0
       html-webpack-plugin: 3.2.0_webpack@4.46.0
-      less-loader: 6.2.0_webpack@4.46.0
+      less-loader: 10.0.1_webpack@4.46.0
       style-loader: 1.3.0_webpack@4.46.0
       webpack: 4.46.0_webpack-cli@3.3.12
       webpack-cli: 3.3.12_webpack@4.46.0
@@ -8144,7 +8144,8 @@ packages:
     engines: {node: '>=8'}
 
   /bindings/1.5.0:
-    resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/bindings/-/bindings-1.5.0.tgz}
+    resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
+    requiresBuild: true
     dependencies:
       file-uri-to-path: 1.0.0
     optional: true
@@ -8929,11 +8930,6 @@ packages:
     resolution: {integrity: sha1-2jCcwmPfFZlMaIypAheco8fNfH4=, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/clone/-/clone-1.0.4.tgz}
     engines: {node: '>=0.8'}
 
-  /clone/2.1.2:
-    resolution: {integrity: sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18=}
-    engines: {node: '>=0.8'}
-    dev: true
-
   /clsx/1.1.1:
     resolution: {integrity: sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==}
     engines: {node: '>=6'}
@@ -9202,12 +9198,6 @@ packages:
   /cookie/0.4.0:
     resolution: {integrity: sha512-+Hp8fLp57wnUSt0tY0tHEXh4voZRDnoIrZPqlo3DPiI4y9lwg/jqx+1Om94/W6ZaPDOUbnjOt/99w66zk+l1Xg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/cookie/-/cookie-0.4.0.tgz}
     engines: {node: '>= 0.6'}
-
-  /copy-anything/2.0.3:
-    resolution: {integrity: sha512-GK6QUtisv4fNS+XcI7shX0Gx9ORg7QqIznyfho79JTnX1XhLiyZHfftvGiziqzRiEi/Bjhgpi+D2o7HxJFPnDQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/copy-anything/-/copy-anything-2.0.3.tgz}
-    dependencies:
-      is-what: 3.14.1
-    dev: true
 
   /copy-concurrently/1.0.5:
     resolution: {integrity: sha512-f2domd9fsVDFtaFcbaRZuYXwtdmnzqbADSwhSWYxYB/Q8zsdUUFMXVRwXGDMWmbEzAn1kdRrtI1T/KTFOL4X2A==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/copy-concurrently/-/copy-concurrently-1.0.5.tgz}
@@ -11533,7 +11523,8 @@ packages:
     dev: false
 
   /file-uri-to-path/1.0.0:
-    resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz}
+    resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
+    requiresBuild: true
     optional: true
 
   /filesize/3.6.1:
@@ -11723,6 +11714,17 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+
+  /follow-redirects/1.14.4_debug@4.3.2:
+    resolution: {integrity: sha512-zwGkiSXC1MUJG/qmeIFH2HBJx9u0V46QGUe3YR1fXG8bXQxq7fLj0RjLZQ5nubr9qNJUZrH+xUcwXEoXNpfS+g==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dependencies:
+      debug: 4.3.2_supports-color@6.1.0
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/for-each/-/for-each-0.3.3.tgz}
@@ -12755,7 +12757,7 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.4
+      follow-redirects: 1.14.4_debug@4.3.2
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -12874,14 +12876,6 @@ packages:
     resolution: {integrity: sha1-/IQJlmRGC5DKhi2TALa/u7+/gFY=, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/image-q/-/image-q-1.1.1.tgz}
     engines: {node: '>=0.9.0'}
     dev: false
-
-  /image-size/0.5.5:
-    resolution: {integrity: sha1-Cd/Uq50g4p6xw+gLiZA3jfnjy5w=}
-    engines: {node: '>=0.10.0'}
-    hasBin: true
-    requiresBuild: true
-    dev: true
-    optional: true
 
   /immediate/3.3.0:
     resolution: {integrity: sha512-HR7EVodfFUdQCTIeySw+WDRFJlPcLOJbXfwwZ7Oom6tjsvZ3bOkCDJHehQC3nxJrv7+f9XecwazynjU8e4Vw3Q==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/immediate/-/immediate-3.3.0.tgz}
@@ -13453,10 +13447,6 @@ packages:
   /is-unicode-supported/0.1.0:
     resolution: {integrity: sha512-knxG2q4UC3u8stRGyAVJCOdxFmv5DZiRcdlIaAQXAbSfJya+OhopNotLQrstBhququ4ZpuKbDc/8S6mgXgPFPw==}
     engines: {node: '>=10'}
-    dev: true
-
-  /is-what/3.14.1:
-    resolution: {integrity: sha512-sNxgpk9793nzSs7bA6JQJGeIuRBQhAaNGG77kzYQgMkrID+lS6SlK07K5LaptscDlSaIgH+GPFzf+d75FVxozA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/is-what/-/is-what-3.14.1.tgz}
     dev: true
 
   /is-whitespace-character/1.0.4:
@@ -14771,7 +14761,6 @@ packages:
   /klona/2.0.4:
     resolution: {integrity: sha512-ZRbnvdg/NxqzC7L9Uyqzf4psi1OM4Cuc+sJAkQPjO6XkQIJTNbfK2Rsmbw8fx1p2mkZdp2FZYo2+LwXYY/uwIA==}
     engines: {node: '>= 8'}
-    dev: false
 
   /last-call-webpack-plugin/3.0.0:
     resolution: {integrity: sha512-7KI2l2GIZa9p2spzPIVZBYyNKkN+e/SQPpnjlTiPhdbDW3F86tdKKELxKpzJ5sgU19wQWsACULZmpTPYHeWO5w==}
@@ -14825,34 +14814,15 @@ packages:
     deprecated: use String.prototype.padStart()
     dev: false
 
-  /less-loader/6.2.0_webpack@4.46.0:
-    resolution: {integrity: sha512-Cl5h95/Pz/PWub/tCBgT1oNMFeH1WTD33piG80jn5jr12T4XbxZcjThwNXDQ7AG649WEynuIzO4b0+2Tn9Qolg==}
-    engines: {node: '>= 10.13.0'}
+  /less-loader/10.0.1_webpack@4.46.0:
+    resolution: {integrity: sha512-Crln//HpW9M5CbtdfWm3IO66Cvx1WhZQvNybXgfB2dD/6Sav9ppw+IWqs/FQKPBFO4B6X0X28Z0WNznshgwUzA==}
+    engines: {node: '>= 12.13.0'}
     peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
+      less: ^3.5.0 || ^4.0.0
+      webpack: ^5.0.0
     dependencies:
-      clone: 2.1.2
-      less: 3.13.1
-      loader-utils: 2.0.0
-      schema-utils: 2.7.1
+      klona: 2.0.4
       webpack: 4.46.0_webpack-cli@3.3.12
-    dev: true
-
-  /less/3.13.1:
-    resolution: {integrity: sha512-SwA1aQXGUvp+P5XdZslUOhhLnClSLIjWvJhmd+Vgib5BFIr9lMNlQwmwUNOjXThF/A0x+MCYYPeWEfeWiLRnTw==}
-    engines: {node: '>=6'}
-    hasBin: true
-    dependencies:
-      copy-anything: 2.0.3
-      tslib: 1.14.1
-    optionalDependencies:
-      errno: 0.1.8
-      graceful-fs: 4.2.8
-      image-size: 0.5.5
-      make-dir: 2.1.0
-      mime: 1.6.0
-      native-request: 1.1.0
-      source-map: 0.6.1
     dev: true
 
   /leven/3.1.0:
@@ -15751,7 +15721,8 @@ packages:
       thenify-all: 1.6.0
 
   /nan/2.15.0:
-    resolution: {integrity: sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/nan/-/nan-2.15.0.tgz}
+    resolution: {integrity: sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==}
+    requiresBuild: true
     optional: true
 
   /nanocolors/0.1.12:
@@ -15782,12 +15753,6 @@ packages:
   /napi-build-utils/1.0.2:
     resolution: {integrity: sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/napi-build-utils/-/napi-build-utils-1.0.2.tgz}
     dev: false
-
-  /native-request/1.1.0:
-    resolution: {integrity: sha512-uZ5rQaeRn15XmpgE0xoPL8YWqcX90VtCFglYwAgkvKM5e8fog+vePLAhHxuuv/gRkrQxIeh5U3q9sMNUrENqWw==}
-    requiresBuild: true
-    dev: true
-    optional: true
 
   /natural-compare/1.4.0:
     resolution: {integrity: sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=}
