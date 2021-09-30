@@ -329,7 +329,7 @@ importers:
       '@docusaurus/core': 2.0.0-beta.6
       '@docusaurus/plugin-ideal-image': 2.0.0-beta.6
       '@docusaurus/preset-classic': 2.0.0-beta.6
-      '@easyops-cn/docusaurus-search-local': 0.16.3
+      '@easyops-cn/docusaurus-search-local': 0.19.1
       '@mdx-js/react': 1.6.22
       cld: 2.7.0
       clsx: 1.1.1
@@ -343,7 +343,7 @@ importers:
       '@docusaurus/core': 2.0.0-beta.6_react-dom@16.14.0+react@16.14.0
       '@docusaurus/plugin-ideal-image': 2.0.0-beta.6_react-dom@16.14.0+react@16.14.0
       '@docusaurus/preset-classic': 2.0.0-beta.6_react-dom@16.14.0+react@16.14.0
-      '@easyops-cn/docusaurus-search-local': 0.16.3_nodejieba@2.5.2
+      '@easyops-cn/docusaurus-search-local': 0.19.1_nodejieba@2.5.2
       '@mdx-js/react': 1.6.22_react@16.14.0
       cld: 2.7.0
       clsx: 1.1.1
@@ -4237,8 +4237,8 @@ packages:
       immediate: 3.3.0
     dev: false
 
-  /@easyops-cn/docusaurus-search-local/0.16.3_nodejieba@2.5.2:
-    resolution: {integrity: sha512-dy7l4NNsN0Pt3zc2f/Ev7OT70MizZQjouENagKiJ8cLUb0ugLSNyQo98mQWbvntD4i1JHWVraZjx/l4b0GAKZQ==}
+  /@easyops-cn/docusaurus-search-local/0.19.1_nodejieba@2.5.2:
+    resolution: {integrity: sha512-iBtFxP7y/eLuUABa7ODqn/RNcrWiao/LW5HiEjM56RR5hlOXjML5GmDwVdcazZHuPhR8K0sOjZE33vLRUFdCog==}
     engines: {node: '>=12'}
     peerDependencies:
       nodejieba: ^2.4.1
