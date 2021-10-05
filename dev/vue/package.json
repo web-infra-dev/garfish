@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@garfish/remote-module": "workspace:*",
-    "core-js": "3.18.1",
+    "core-js": "3.18.2",
     "element-ui": "2.15.6",
     "garfish": "workspace:*",
     "regenerator-runtime": "0.13.9",
