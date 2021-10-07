@@ -76,6 +76,7 @@ function rewriteAppAndSandbox(
   // Rewrite app attributes
   app.vmSandbox = sandbox;
   app.global = sandbox.global;
+  app.strictIsolation = sandbox.options.strictIsolation;
   app.runCode = function () {
     return originExecScript.apply(sandbox, arguments);
   };
