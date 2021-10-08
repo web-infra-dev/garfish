@@ -134,8 +134,8 @@ export class Garfish extends EventEmitter {
 
     // Emit hooks and register apps
     this.hooks.lifecycle.beforeBootstrap.emit(this.options);
-    this.registerApp(this.options.apps || []);
     this.running = true;
+    this.registerApp(this.options.apps || []);
     this.hooks.lifecycle.bootstrap.emit(this.options);
     return this;
   }
