@@ -2,29 +2,7 @@ const { $ } = require('zx');
 const waitOn = require('wait-on');
 const killPort = require('kill-port');
 const { step } = require('./utils');
-
-const portMap = {
-  'cypress/project/main': {
-    pkgName: '@garfish-cypress/main',
-    port: 2333,
-  },
-  'cypress/project/react': {
-    pkgName: '@garfish-cypress/react',
-    port: 2444,
-  },
-  'cypress/project/vue-sub': {
-    pkgName: '@garfish-cypress/vue-sub',
-    port: 2555,
-  },
-  'cypress/project/vue': {
-    pkgName: '@garfish-cypress/vue',
-    port: 2666,
-  },
-  'cypress/project/vue2': {
-    pkgName: '@garfish-cypress/vue2',
-    port: 2777,
-  },
-};
+const portMap = require('../cypress/project/config.json');
 
 const ports = Object.keys(portMap).map((pkgPath) => portMap[pkgPath].port);
 
@@ -55,8 +33,8 @@ function runAllExample() {
           step('\n http-server dev dist...');
           Object.keys(portMap).forEach((pkgPath) => {
             // historyapifallback
-            if (pkgPath === 'dev/main') {
-              $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} --proxy http://localhost:${portMap['dev/main'].port}?`;
+            if (pkgPath === 'cypress/project/main') {
+              $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} --proxy http://localhost:${portMap[pkgPath].port}?`;
             } else {
               $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port}`;
             }
