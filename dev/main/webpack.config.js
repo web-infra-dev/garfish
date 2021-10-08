@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const portInfo = require('../config.json')['cypress/project/main'];
 
 module.exports = {
   devtool: 'source-map',
@@ -20,7 +21,7 @@ module.exports = {
 
   devServer: {
     open: true,
-    port: '2333',
+    port: portInfo.port,
     compress: true,
     disableHostCheck: true,
     historyApiFallback: true,

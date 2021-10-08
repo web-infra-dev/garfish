@@ -1,5 +1,7 @@
+const portInfo = require('../config.json')['cypress/project/vue2'];
+
 module.exports = {
-  publicPath: 'http://localhost:2777',
+  publicPath: `http://localhost:${portInfo.port}`,
 
   css: { extract: false },
 
@@ -7,7 +9,7 @@ module.exports = {
     inline: true,
     hot: true,
     host: '0.0.0.0',
-    port: 2777,
+    port: portInfo.port,
     headers: {
       'Access-Control-Allow-Origin': '*',
     },

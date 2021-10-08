@@ -1,11 +1,12 @@
 const webpack = require('webpack');
+const portInfo = require('../config.json')['cypress/project/vue'];
 
 module.exports = {
-  publicPath: 'http://localhost:2666',
+  publicPath: `http://localhost:${portInfo.port}`,
 
   devServer: {
     open: false,
-    port: '2666',
+    port: portInfo.port,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': '*',
