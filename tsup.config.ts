@@ -12,7 +12,7 @@ export const tsup: Options = {
   clean: true,
   dts: true,
   watch: watch ? 'src/' : false,
-  format: ['esm', 'cjs'],
+  format: ['esm', 'cjs', 'iife'],
   legacyOutput: true,
   esbuildPlugins: [
     replace({
