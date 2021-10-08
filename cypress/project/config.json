@@ -1,9 +1,4 @@
 {
-  "mainPort": 2333,
-  "reactPort": 2444,
-  "subAppPort": 2555,
-  "vue": 2666,
-  "vue2": 2777,
   "cypress/project/main": {
     "pkgName": "@garfish-cypress/main",
     "port": 2333
