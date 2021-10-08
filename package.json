@@ -50,7 +50,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@babel/plugin-transform-regenerator": "7.14.5",
-    "@babel/preset-env": "7.15.6",
+    "@babel/preset-env": "7.15.8",
     "@babel/preset-typescript": "7.15.0",
     "@jsdevtools/version-bump-prompt": "6.1.0",
     "@ls-lint/ls-lint": "1.10.0",
