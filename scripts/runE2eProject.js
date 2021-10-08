@@ -4,24 +4,24 @@ const killPort = require('kill-port');
 const { step } = require('./utils');
 
 const portMap = {
-  'dev/main': {
-    pkgName: '@garfish-dev/main',
+  'cypress/project/main': {
+    pkgName: '@garfish-cypress/main',
     port: 2333,
   },
-  'dev/react': {
-    pkgName: '@garfish-dev/react',
+  'cypress/project/react': {
+    pkgName: '@garfish-cypress/react',
     port: 2444,
   },
-  'dev/vue-sub': {
-    pkgName: '@garfish-dev/vue-sub',
+  'cypress/project/vue-sub': {
+    pkgName: '@garfish-cypress/vue-sub',
     port: 2555,
   },
-  'dev/vue': {
-    pkgName: '@garfish-dev/vue',
+  'cypress/project/vue': {
+    pkgName: '@garfish-cypress/vue',
     port: 2666,
   },
-  'dev/vue2': {
-    pkgName: '@garfish-dev/vue2',
+  'cypress/project/vue2': {
+    pkgName: '@garfish-cypress/vue2',
     port: 2777,
   },
 };
@@ -43,14 +43,14 @@ function runAllExample() {
       .then(() => {
         if (!process.env.CI_TEST_ENV) {
           step('\n run dev project...');
-          return $`npx cross-env TEST_ENV=true pnpm start --filter "@garfish-dev/*" --parallel`;
+          return $`npx cross-env TEST_ENV=true pnpm start --filter "@garfish-cypress/*" --parallel`;
         }
       })
       // build all demo
       .then(() => {
         if (process.env.CI_TEST_ENV) {
           step('\n building dev project...');
-          return $`pnpm run build --parallel --filter "@garfish-dev/*"`;
+          return $`pnpm run build --parallel --filter "@garfish-cypress/*"`;
         }
       })
       // http-server all demo
