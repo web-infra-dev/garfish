@@ -51,11 +51,6 @@ module.exports = {
           position: 'left',
         },
         {
-          to: 'changelog/',
-          label: '更新日志',
-          position: 'left',
-        },
-        {
           to: 'community/discuss',
           label: '社区',
           position: 'left',
