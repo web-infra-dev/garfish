@@ -92,6 +92,5 @@ module.exports = {
   guide: listDocIds('guide'),
   api: listDocIds('api'),
   issues: listDocIds('issues'),
-  changelog: listDocIds('changelog'),
   community: listDocIds('community'),
 };
