@@ -39,23 +39,19 @@ function runAllExample() {
   // Usage with promises
   return (
     Promise.all(ports.map((port) => killPort(port)))
-      // dev all example
+      // build all demo or dev all example
       .then(() => {
-        if (!process.env.CI_TEST_ENV) {
+        if (process.env.CI) {
+          step('\n building dev project...');
+          return $`pnpm run build --parallel --filter "@garfish-cypress/*"`;
+        } else {
           step('\n run dev project...');
           return $`npx cross-env TEST_ENV=true pnpm start --filter "@garfish-cypress/*" --parallel`;
         }
       })
-      // build all demo
-      .then(() => {
-        if (process.env.CI_TEST_ENV) {
-          step('\n building dev project...');
-          return $`pnpm run build --parallel --filter "@garfish-cypress/*"`;
-        }
-      })
       // http-server all demo
       .then(() => {
-        if (process.env.CI_TEST_ENV) {
+        if (process.env.CI) {
           step('\n http-server dev dist...');
           Object.keys(portMap).forEach((pkgPath) => {
             // historyapifallback

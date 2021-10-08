@@ -10,7 +10,7 @@ const sourceMap = args.sourcemap || args.s;
 export const tsup: Options = {
   sourcemap: sourceMap,
   clean: true,
-  dts: true,
+  dts: process.env.CI ? false : true, // github ci env don't need to build dts file
   watch: watch ? 'src/' : false,
   format: ['esm', 'cjs'],
   legacyOutput: true,
