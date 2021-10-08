@@ -28,7 +28,7 @@
     "puppeteer": "10.4.0",
     "react": "16.14.0",
     "react-dom": "16.14.0",
-    "swiper": "6.8.4"
+    "swiper": "7.0.8"
   },
   "eslintIgnore": [
     "node_modules/",
