@@ -15,7 +15,7 @@
     "core-js": "^3.6.5",
     "element-ui": "^2.14.1",
     "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^6.2.2",
+    "eslint-plugin-vue": "7.19.1",
     "vue": "^2.6.11",
     "vue-router": "^3.4.3",
     "vue-template-compiler": "^2.6.11",
