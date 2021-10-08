@@ -7,8 +7,11 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
+  plugins: ['@typescript-eslint'],
   rules: {
-    'no-unused-vars': [
+    'no-unused-vars': 'off',
+    // Fix "no-unused-vars" check on function parameters within TypeScript Types/Interfaces
+    '@typescript-eslint/no-unused-vars': [
       'error',
       // we are only using this rule to check for unused arguments since TS
       // catches unused variables but not args.
