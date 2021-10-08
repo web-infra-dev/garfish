@@ -1,4 +1,4 @@
-const portInfo = require('../config.json')['cypress/project/vue2'];
+const portInfo = require('../config.json')['dev/vue2'];
 
 module.exports = {
   publicPath: `http://localhost:${portInfo.port}`,

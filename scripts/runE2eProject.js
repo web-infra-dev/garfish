@@ -33,7 +33,7 @@ function runAllExample() {
           step('\n http-server dev dist...');
           Object.keys(portMap).forEach((pkgPath) => {
             // historyapifallback
-            if (pkgPath === 'cypress/project/main') {
+            if (pkgPath === 'dev/main') {
               $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} --proxy http://localhost:${portMap[pkgPath].port}?`;
             } else {
               $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port}`;

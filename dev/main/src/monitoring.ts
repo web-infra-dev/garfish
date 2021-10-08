@@ -1,6 +1,6 @@
 import ConfigCommon from '../../config.json';
 
-const mainPort = ConfigCommon['cypress/project/main'].port;
+const mainPort = ConfigCommon['dev/main'].port;
 
 declare global {
   interface Window {

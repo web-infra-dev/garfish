@@ -1,5 +1,5 @@
 const webpack = require('webpack');
-const portInfo = require('../config.json')['cypress/project/react'];
+const portInfo = require('../config.json')['dev/react'];
 
 module.exports = {
   webpack(config, env) {
