@@ -14,7 +14,7 @@ importers:
       '@vue/cli-plugin-babel': 4.5.13
       '@vue/cli-plugin-eslint': 4.5.13
       '@vue/cli-service': 4.5.13
-      axios: 0.21.4
+      axios: 0.22.0
       babel-polyfill: 6.26.0
       chalk: 4.1.2
       cross-env: 7.0.3
@@ -54,7 +54,7 @@ importers:
       '@vue/cli-plugin-babel': 4.5.13_@vue+cli-service@4.5.13
       '@vue/cli-plugin-eslint': 4.5.13_d1fc8462f3ba80b86b66bf192b30a86e
       '@vue/cli-service': 4.5.13_typescript@4.4.3
-      axios: 0.21.4
+      axios: 0.22.0
       babel-polyfill: 6.26.0
       chalk: 4.1.2
       cross-env: 7.0.3
@@ -6139,7 +6139,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.13_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.5.13_typescript@4.4.3
       '@vue/cli-shared-utils': 4.5.13
     dev: true
 
@@ -6155,7 +6155,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.13_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.5.13_typescript@4.4.3
     dev: true
 
   /@vue/cli-service/4.4.6_daaec740214156bd7a1b7d7855d908a4:
@@ -7409,6 +7409,14 @@ packages:
       follow-redirects: 1.14.4
     transitivePeerDependencies:
       - debug
+
+  /axios/0.22.0:
+    resolution: {integrity: sha512-Z0U3uhqQeg1oNcihswf4ZD57O3NrR1+ZXhxaROaWpDmsDTx7T2HNBV2ulBtie2hwJptu8UvgnJoK+BIqdzh/1w==}
+    dependencies:
+      follow-redirects: 1.14.4
+    transitivePeerDependencies:
+      - debug
+    dev: true
 
   /axobject-query/2.2.0:
     resolution: {integrity: sha512-Td525n+iPOOyUQIeBfcASuG6uJsDOITl7Mds5gFyerkWiX7qhUTdYUBlSgNMyVqtSJqwpt1kXGLdUt6SykLMRA==}
