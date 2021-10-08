@@ -141,11 +141,6 @@ export class Garfish extends EventEmitter {
   }
 
   registerApp(list: interfaces.AppInfo | Array<interfaces.AppInfo>) {
-    if (!this.running) {
-      // TODO: throw error
-      warn('"AppInfo" can only be registered after Garfish is started.');
-    }
-
     const currentAdds = {};
     this.hooks.lifecycle.beforeRegisterApp.emit(list);
     if (!Array.isArray(list)) list = [list];
@@ -158,6 +153,7 @@ export class Garfish extends EventEmitter {
           `${appInfo.name} application entry is not url: ${appInfo.entry}`,
         );
         currentAdds[appInfo.name] = appInfo;
+        // if (!('cache' in appInfo)) appInfo.cache = true;
         this.appInfos[appInfo.name] = appInfo;
       } else if (__DEV__) {
         warn(`The "${appInfo.name}" app is already registered.`);

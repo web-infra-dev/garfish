@@ -34,6 +34,7 @@ function injector(current: Function, methodName: string) {
 
     if (sandbox) {
       const processor = new DynamicNodeProcessor(el, sandbox, methodName);
+      if (el[__ELEMENT_DELETE_TAG__]) delete el[__ELEMENT_DELETE_TAG__];
       return processor.append(this, arguments, originProcess);
     } else {
       return originProcess();

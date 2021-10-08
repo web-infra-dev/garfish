@@ -2,6 +2,7 @@ import { interfaces } from '@garfish/core';
 import { warn, isPlainObject } from '@garfish/utils';
 import { Module } from './types';
 import { Sandbox } from './sandbox';
+import { sandboxMap } from './utils';
 
 declare module '@garfish/core' {
   export interface Garfish {
@@ -56,6 +57,7 @@ function rewriteAppAndSandbox(
   sandbox: Sandbox,
 ) {
   const originExecScript = sandbox.execScript;
+  sandboxMap.set(sandbox);
   // Rewrite sandbox attributes
   sandbox.loader = Garfish.loader;
   sandbox.execScript = (code, env, url, options) => {
@@ -74,6 +76,7 @@ function rewriteAppAndSandbox(
   // Rewrite app attributes
   app.vmSandbox = sandbox;
   app.global = sandbox.global;
+  app.strictIsolation = sandbox.options.strictIsolation;
   app.runCode = function () {
     return originExecScript.apply(sandbox, arguments);
   };
@@ -108,7 +111,7 @@ function createOptions(Garfish: interfaces.Garfish) {
           namespace: appInfo.name,
           sourceList: appInstance.sourceList,
           baseUrl: appInstance.entryManager.url,
-          strictIsolation: appInstance.strictIsolation,
+          strictIsolation: appInfo.sandbox?.strictIsolation,
           modules: compatibleOldModule(appInfo.sandbox.modules),
 
           el: () => appInstance.htmlNode,
@@ -135,6 +138,7 @@ function createOptions(Garfish: interfaces.Garfish) {
     afterUnmount(_, appInstance) {
       if (!appInstance.vmSandbox) return;
       appInstance.vmSandbox.reset();
+      sandboxMap.del(appInstance.vmSandbox);
     },
 
     afterMount(_, appInstance) {

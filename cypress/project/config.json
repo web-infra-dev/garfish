@@ -1,0 +1,22 @@
+{
+  "cypress/project/main": {
+    "pkgName": "@garfish-cypress/main",
+    "port": 2333
+  },
+  "cypress/project/react": {
+    "pkgName": "@garfish-cypress/react",
+    "port": 2444
+  },
+  "cypress/project/vue-sub": {
+    "pkgName": "@garfish-cypress/vue-sub",
+    "port": 2555
+  },
+  "cypress/project/vue": {
+    "pkgName": "@garfish-cypress/vue",
+    "port": 2666
+  },
+  "cypress/project/vue2": {
+    "pkgName": "@garfish-cypress/vue2",
+    "port": 2777
+  }
+}

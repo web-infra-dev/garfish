@@ -33,7 +33,7 @@ export function createGetter(sandbox: Sandbox) {
         return function (tagName, options) {
           const el = value.call(document, tagName, options);
           if (isObject(el)) {
-            sandboxMap.set(el, sandbox);
+            sandboxMap.setElementTag(el, sandbox);
             if (__DEV__) {
               el.__SANDBOX__ = true;
             }

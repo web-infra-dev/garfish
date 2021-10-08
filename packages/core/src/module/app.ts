@@ -413,7 +413,7 @@ export class App {
   private async renderTemplate() {
     const { appInfo, entryManager, resources } = this;
     const { url: baseUrl, DOMApis } = entryManager;
-    const { htmlNode, appContainer } = createAppContainer(appInfo.name);
+    const { htmlNode, appContainer } = createAppContainer(appInfo);
 
     // Transformation relative path
     this.htmlNode = htmlNode;
