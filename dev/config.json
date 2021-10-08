@@ -1,7 +1,22 @@
 {
-  "mainPort": 2333,
-  "reactPort": 2444,
-  "subAppPort": 2555,
-  "vue": 2666,
-  "vue2": 2777
+  "dev/main": {
+    "pkgName": "@garfish-dev/main",
+    "port": 2333
+  },
+  "dev/react": {
+    "pkgName": "@garfish-dev/react",
+    "port": 2444
+  },
+  "dev/vue-sub": {
+    "pkgName": "@garfish-dev/vue-sub",
+    "port": 2555
+  },
+  "dev/vue": {
+    "pkgName": "@garfish-dev/vue",
+    "port": 2666
+  },
+  "dev/vue2": {
+    "pkgName": "@garfish-dev/vue2",
+    "port": 2777
+  }
 }

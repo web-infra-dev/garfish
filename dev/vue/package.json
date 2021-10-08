@@ -9,21 +9,21 @@
   },
   "dependencies": {
     "@garfish/remote-module": "workspace:*",
-    "core-js": "3.18.2",
-    "element-ui": "2.15.6",
+    "core-js": "^3.6.5",
+    "element-ui": "^2.14.1",
     "garfish": "workspace:*",
-    "regenerator-runtime": "0.13.9",
-    "vue": "2.6.14",
-    "vue-router": "3.5.2",
-    "vuex": "3.6.2"
+    "regenerator-runtime": "^0.13.9",
+    "vue": "^2.6.11",
+    "vue-router": "^3.4.3",
+    "vuex": "^3.5.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "4.5.13",
-    "@vue/cli-plugin-eslint": "4.5.13",
-    "@vue/cli-service": "4.5.13",
-    "eslint": "7.32.0",
-    "eslint-plugin-vue": "7.18.0",
-    "vue-template-compiler": "2.6.14"
+    "@vue/cli-plugin-babel": "~4.4.0",
+    "@vue/cli-plugin-eslint": "~4.4.0",
+    "@vue/cli-service": "~4.4.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "vue-template-compiler": "^2.6.11"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"

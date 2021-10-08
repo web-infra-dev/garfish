@@ -1,5 +1,7 @@
 import ConfigCommon from '../../config.json';
 
+const mainPort = ConfigCommon['dev/main'].port;
+
 declare global {
   interface Window {
     fetchM: Function;
@@ -12,7 +14,7 @@ declare global {
 
 window.fetchM = function fetchM() {
   const xhr = new XMLHttpRequest();
-  xhr.open('get', `http://localhost:${ConfigCommon.mainPort}/mainApp`, true);
+  xhr.open('get', `http://localhost:${mainPort}/mainApp`, true);
   xhr.onreadystatechange = function () {
     if (xhr.readyState !== 4) {
       return;
@@ -23,9 +25,7 @@ window.fetchM = function fetchM() {
   };
   xhr.send(null);
 
-  fetch(
-    `http://localhost:${ConfigCommon.mainPort}/fetch/mainApp`,
-  ).then((res) => {});
+  fetch(`http://localhost:${mainPort}/fetch/mainApp`).then((_res) => {});
 };
 
 window.unhandledrejectionError = function unhandledrejectionError() {
@@ -40,17 +40,17 @@ window.normalError = function normalError() {
 
 window.DynamicResource = function DynamicResource() {
   const sc = document.createElement('script');
-  sc.src = `http://localhost:${ConfigCommon.mainPort}/monitoring/dynamicScript.js`;
+  sc.src = `http://localhost:${mainPort}/monitoring/dynamicScript.js`;
   document.body.appendChild(sc);
 
   const link = document.createElement('link');
-  link.href = `http://localhost:${ConfigCommon.mainPort}/monitoring/dynamicLink.css`;
+  link.href = `http://localhost:${mainPort}/monitoring/dynamicLink.css`;
   document.body.appendChild(link);
 };
 
 window.resourceError = function resourceError() {
   // resource error
   const sc = document.createElement('script');
-  sc.src = `http://localhost:1111/monitoring/xxxxx.js`;
+  sc.src = 'http://localhost:1111/monitoring/xxxxx.js';
   document.body.appendChild(sc);
 };

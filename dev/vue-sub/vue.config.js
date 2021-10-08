@@ -1,11 +1,12 @@
 const webpack = require('webpack');
+const portInfo = require('../config.json')['dev/vue-sub'];
 
 module.exports = {
-  publicPath: 'http://localhost:2555',
+  publicPath: `http://localhost:${portInfo.port}`,
 
   devServer: {
     open: false,
-    port: '2555',
+    port: portInfo.port,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': '*',
