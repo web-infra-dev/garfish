@@ -14,7 +14,7 @@
     "babel-eslint": "^10.1.0",
     "core-js": "^3.6.5",
     "element-ui": "^2.14.1",
-    "eslint": "^6.7.2",
+    "eslint": "8.0.0",
     "eslint-plugin-vue": "^6.2.2",
     "vue": "^2.6.11",
     "vue-router": "^3.4.3",
