@@ -1,6 +1,6 @@
 {
   "name": "@garfish/loader",
-  "version": "1.0.0",
+  "version": "1.0.1-beta.1",
   "description": "loader module.",
   "keywords": [
     "garfish",
