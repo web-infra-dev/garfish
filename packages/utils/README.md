@@ -1,6 +1,6 @@
 # `@garfish/utils`
 
-> TODO: description
+[![NPM version](https://img.shields.io/npm/v/@garfish/utils.svg?style=flat-square)](https://www.npmjs.com/package/@garfish/utils)
 
 ## Usage
 
