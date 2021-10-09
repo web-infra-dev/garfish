@@ -2,7 +2,7 @@
   "private": true,
   "description": "A powerful micro front-end framework",
   "scripts": {
-    "dev": "npx cross-env TEST_ENV=true pnpm run start --parallel --filter @garfish-dev/*",
+    "dev": "pnpm run start --parallel --filter @garfish-dev/*",
     "dev:docs": "pnpm run start --filter garfish-docs",
     "build": "pnpm run build --parallel --filter @garfish/* --filter garfish",
     "build:docs": "pnpm run build --filter garfish-docs",

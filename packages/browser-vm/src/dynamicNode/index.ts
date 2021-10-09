@@ -1,4 +1,4 @@
-import { warn, __ELEMENT_DELETE_TAG__ } from '@garfish/utils';
+import { warn } from '@garfish/utils';
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
 import { sandboxMap, isInIframe } from '../utils';
@@ -34,7 +34,6 @@ function injector(current: Function, methodName: string) {
 
     if (sandbox) {
       const processor = new DynamicNodeProcessor(el, sandbox, methodName);
-      if (el[__ELEMENT_DELETE_TAG__]) delete el[__ELEMENT_DELETE_TAG__];
       return processor.append(this, arguments, originProcess);
     } else {
       return originProcess();
@@ -49,12 +48,7 @@ function injectorRemoveChild(current: Function, methodName: string) {
     const originProcess = () => {
       // Sandbox may have applied sub dom side effects to delete
       // by removeChild deleted by the tag determine whether have been removed
-      try {
-        return current.apply(this, arguments);
-      } catch(err) {
-        if (el[__ELEMENT_DELETE_TAG__]) return el;
-        throw err;
-      }
+      return current.apply(this, arguments);
     };
     if (sandbox) {
       const processor = new DynamicNodeProcessor(el, sandbox, methodName);

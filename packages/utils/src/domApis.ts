@@ -1,4 +1,3 @@
-import { __ELEMENT_DELETE_TAG__ } from './garfish';
 import { makeMap } from './utils';
 
 export interface Text {
@@ -121,7 +120,6 @@ export class DOMApis {
     const parentNode = el && el.parentNode;
     if (parentNode) {
       parentNode.removeChild(el);
-      el[__ELEMENT_DELETE_TAG__] = true;
     }
   }
 
