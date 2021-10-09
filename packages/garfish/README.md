@@ -5,9 +5,9 @@
 ## Usage
 
 ```js
-import Garfish from 'garfish';
+import GarfishInstance from 'garfish';
 
-Garfish.run({
+GarfishInstance.run({
   domGetter: '#AppContainer',
   apps: [
     {

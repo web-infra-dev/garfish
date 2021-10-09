@@ -156,12 +156,12 @@ export class SubAppObserver {
 
     // The rendering elements in the child app container no longer change for a certain period of time
     clearTimeout(this.observeTimer);
-    this.observeTimer = (setTimeout(() => {
+    this.observeTimer = setTimeout(() => {
       clearTimeout(this.observeTimer);
       if (!this.isRecordFinish) {
         this._subAppEndObserver('MutationObserver');
       }
-    }, this.timeLag) as unknown) as number;
+    }, this.timeLag) as unknown as number;
   }
 
   private _subAppEndObserver(finishAction: string) {
@@ -251,9 +251,9 @@ export class SubAppObserver {
       if (isImmediately && !this.isCallBackFinish) {
         this._handleCallback();
       } else {
-        this.dataTimer = (setTimeout(() => {
+        this.dataTimer = setTimeout(() => {
           this._handleCallback();
-        }, this.reportTimeLag) as unknown) as number;
+        }, this.reportTimeLag) as unknown as number;
       }
     } catch (e) {
       warn(e);

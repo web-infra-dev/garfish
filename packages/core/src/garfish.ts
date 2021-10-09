@@ -35,7 +35,7 @@ export class Garfish extends EventEmitter {
   public cacheApps: Record<string, interfaces.App> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
 
-  private nestedPluginSwitch = false;
+  private nestedSwitch = false;
   private loading: Record<string, Promise<any> | null> = {};
 
   get props(): Record<string, any> {
@@ -66,7 +66,7 @@ export class Garfish extends EventEmitter {
     plugin: (context: Garfish) => interfaces.Plugin,
     ...args: Array<any>
   ) {
-    if (!this.nestedPluginSwitch) {
+    if (!this.nestedSwitch) {
       assert(!this.running, 'Cannot register plugin after Garfish is started.');
     }
     assert(typeof plugin === 'function', 'Plugin must be a function.');
@@ -93,13 +93,13 @@ export class Garfish extends EventEmitter {
         options = deepMergeConfig(mainOptions, options);
         options = filterNestedConfig(this, options, numberOfNesting);
 
-        this.nestedPluginSwitch = true;
+        this.nestedSwitch = true;
         options.plugins?.forEach((plugin) => this.usePlugin(plugin));
         // `pluginName` is unique
         this.usePlugin(
           GarfishOptionsLife(options, `nested-lifecycle-${numberOfNesting}`),
         );
-        this.nestedPluginSwitch = false;
+        this.nestedSwitch = false;
 
         if (options.apps) {
           this.registerApp(
@@ -153,7 +153,6 @@ export class Garfish extends EventEmitter {
           `${appInfo.name} application entry is not url: ${appInfo.entry}`,
         );
         currentAdds[appInfo.name] = appInfo;
-        // if (!('cache' in appInfo)) appInfo.cache = true;
         this.appInfos[appInfo.name] = appInfo;
       } else if (__DEV__) {
         warn(`The "${appInfo.name}" app is already registered.`);

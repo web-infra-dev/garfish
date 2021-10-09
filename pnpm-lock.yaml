@@ -254,18 +254,22 @@ importers:
   packages/browser-snapshot:
     specifiers:
       '@garfish/core': workspace:*
+      '@garfish/utils': workspace:*
     dependencies:
       '@garfish/core': link:../core
+      '@garfish/utils': link:../utils
 
   packages/browser-vm:
     specifiers:
       '@garfish/core': workspace:*
       '@garfish/hooks': workspace:*
       '@garfish/loader': workspace:*
+      '@garfish/utils': workspace:*
     dependencies:
       '@garfish/core': link:../core
       '@garfish/hooks': link:../hooks
       '@garfish/loader': link:../loader
+      '@garfish/utils': link:../utils
 
   packages/core:
     specifiers:
@@ -304,11 +308,11 @@ importers:
 
   packages/remote-module:
     specifiers:
-      '@garfish/core': workspace:*
       '@garfish/loader': workspace:*
+      '@garfish/utils': workspace:*
     dependencies:
-      '@garfish/core': link:../core
       '@garfish/loader': link:../loader
+      '@garfish/utils': link:../utils
 
   packages/router:
     specifiers:
@@ -4572,7 +4576,7 @@ packages:
       terminal-link: 2.1.1
       v8-to-istanbul: 7.1.2
     optionalDependencies:
-      node-notifier: 8.0.2
+      node-notifier: registry.npmjs.org/node-notifier/8.0.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5662,13 +5666,6 @@ packages:
       '@types/yargs-parser': 20.2.1
     dev: true
 
-  /@types/yauzl/2.9.2:
-    resolution: {integrity: sha512-8uALY5LTvSuHgloDVUvWP3pIauILm+8/0pDMokuDYIoNsOkSwd5AiHBTSEJjKTDcZr5z8UpgOWZkxBF4iJftoA==}
-    requiresBuild: true
-    dependencies:
-      '@types/node': 16.9.6
-    optional: true
-
   /@typescript-eslint/eslint-plugin/2.34.0_aa16b1eb3aaaed81b09e6a22dab0b884:
     resolution: {integrity: sha512-4zY3Z88rEE99+CNvTbXSyovv2z9PNOVffTWD2W8QF5s2prBQtwN2zadqERcrHpcR7O/+KMI3fcTAmUUhK/iQcQ==}
     engines: {node: ^8.10.0 || ^10.13.0 || >=11.10.1}
@@ -6139,7 +6136,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.13_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.5.13_typescript@4.4.3
       '@vue/cli-shared-utils': 4.5.13
     dev: true
 
@@ -6155,7 +6152,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.13_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.5.13_typescript@4.4.3
     dev: true
 
   /@vue/cli-service/4.4.6_daaec740214156bd7a1b7d7855d908a4:
@@ -6327,7 +6324,7 @@ packages:
       webpack-dev-server: 3.11.2_webpack@4.46.0
       webpack-merge: 4.2.2
     optionalDependencies:
-      vue-loader-v16: /vue-loader/16.8.1_webpack@4.46.0
+      vue-loader-v16: registry.npmjs.org/vue-loader/16.8.1_webpack@4.46.0
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -6419,7 +6416,7 @@ packages:
       webpack-dev-server: 3.11.2_webpack@4.46.0
       webpack-merge: 4.2.2
     optionalDependencies:
-      vue-loader-v16: /vue-loader/16.8.1_webpack@4.46.0
+      vue-loader-v16: registry.npmjs.org/vue-loader/16.8.1_webpack@4.46.0
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -11075,7 +11072,7 @@ packages:
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
-      '@types/yauzl': 2.9.2
+      '@types/yauzl': registry.npmjs.org/@types/yauzl/2.9.2
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -11089,7 +11086,7 @@ packages:
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
-      '@types/yauzl': 2.9.2
+      '@types/yauzl': registry.npmjs.org/@types/yauzl/2.9.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -11629,15 +11626,6 @@ packages:
     dependencies:
       bindings: 1.5.0
       nan: 2.15.0
-    optional: true
-
-  /fsevents/2.1.2:
-    resolution: {integrity: sha512-R4wDiBwZ0KzpgOWetKDug1FZcYhqYnUYKtfZYt4mD5SBz76q0KR4Q9o7GIPamsVPGmW3EYPPJ0dOOjvx32ldZA==}
-    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
-    os: [darwin]
-    deprecated: '"Please update to latest v2.3 or v2.2"'
-    requiresBuild: true
-    dev: false
     optional: true
 
   /fsevents/2.3.2:
@@ -15642,19 +15630,6 @@ packages:
       which: 1.3.1
     dev: false
 
-  /node-notifier/8.0.2:
-    resolution: {integrity: sha512-oJP/9NAdd9+x2Q+rfphB2RJCHjod70RcRLjosiPMMu5gjIfwVnOUGq2nbTjTUbmy0DJ/tFIVT30+Qe3nzl4TJg==}
-    requiresBuild: true
-    dependencies:
-      growly: 1.3.0
-      is-wsl: 2.2.0
-      semver: 7.3.5
-      shellwords: 0.1.1
-      uuid: 8.3.2
-      which: 2.0.2
-    dev: true
-    optional: true
-
   /node-releases/1.1.76:
     resolution: {integrity: sha512-9/IECtNr8dXNmPWmFXepT0/7o5eolGesHUa3mtr0KlgnCvnZxwh2qensKL42JJY2vQKC3nIBXetFAqR+PW1CmA==}
 
@@ -18760,7 +18735,7 @@ packages:
       webpack-manifest-plugin: 2.2.0_webpack@4.42.0
       workbox-webpack-plugin: 4.3.1_webpack@4.42.0
     optionalDependencies:
-      fsevents: 2.1.2
+      fsevents: registry.npmjs.org/fsevents/2.1.2
     transitivePeerDependencies:
       - fibers
       - node-sass
@@ -21657,19 +21632,6 @@ packages:
       vue-template-compiler: 2.6.14
       webpack: 4.46.0
 
-  /vue-loader/16.8.1_webpack@4.46.0:
-    resolution: {integrity: sha512-V53TJbHmzjBhCG5OYI2JWy/aYDspz4oVHKxS43Iy212GjGIG1T3EsB3+GWXFm/1z5VwjdjLmdZUFYM70y77vtQ==}
-    requiresBuild: true
-    peerDependencies:
-      webpack: ^4.1.0 || ^5.0.0-0
-    dependencies:
-      chalk: 4.1.2
-      hash-sum: 2.0.0
-      loader-utils: 2.0.0
-      webpack: 4.46.0
-    dev: true
-    optional: true
-
   /vue-router/3.5.2:
     resolution: {integrity: sha512-807gn82hTnjCYGrnF3eNmIw/dk7/GE4B5h69BlyCK9KHASwSloD1Sjcn06zg9fVG4fYH2DrsNBZkpLtb25WtaQ==}
     dev: false
@@ -22865,3 +22827,162 @@ packages:
       ps-tree: 1.2.0
       which: 2.0.2
     dev: true
+
+  registry.npmjs.org/@types/yauzl/2.9.2:
+    resolution: {integrity: sha512-8uALY5LTvSuHgloDVUvWP3pIauILm+8/0pDMokuDYIoNsOkSwd5AiHBTSEJjKTDcZr5z8UpgOWZkxBF4iJftoA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@types/yauzl/-/yauzl-2.9.2.tgz}
+    name: '@types/yauzl'
+    version: 2.9.2
+    requiresBuild: true
+    dependencies:
+      '@types/node': 16.9.6
+    optional: true
+
+  registry.npmjs.org/ansi-styles/4.3.0:
+    resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/ansi-styles/-/ansi-styles-4.3.0.tgz}
+    name: ansi-styles
+    version: 4.3.0
+    engines: {node: '>=8'}
+    dependencies:
+      color-convert: registry.npmjs.org/color-convert/2.0.1
+    dev: true
+    optional: true
+
+  registry.npmjs.org/big.js/5.2.2:
+    resolution: {integrity: sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/big.js/-/big.js-5.2.2.tgz}
+    name: big.js
+    version: 5.2.2
+    dev: true
+    optional: true
+
+  registry.npmjs.org/chalk/4.1.2:
+    resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz}
+    name: chalk
+    version: 4.1.2
+    engines: {node: '>=10'}
+    dependencies:
+      ansi-styles: registry.npmjs.org/ansi-styles/4.3.0
+      supports-color: registry.npmjs.org/supports-color/7.2.0
+    dev: true
+    optional: true
+
+  registry.npmjs.org/color-convert/2.0.1:
+    resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/color-convert/-/color-convert-2.0.1.tgz}
+    name: color-convert
+    version: 2.0.1
+    engines: {node: '>=7.0.0'}
+    dependencies:
+      color-name: registry.npmjs.org/color-name/1.1.4
+    dev: true
+    optional: true
+
+  registry.npmjs.org/color-name/1.1.4:
+    resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/color-name/-/color-name-1.1.4.tgz}
+    name: color-name
+    version: 1.1.4
+    dev: true
+    optional: true
+
+  registry.npmjs.org/emojis-list/3.0.0:
+    resolution: {integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/emojis-list/-/emojis-list-3.0.0.tgz}
+    name: emojis-list
+    version: 3.0.0
+    engines: {node: '>= 4'}
+    dev: true
+    optional: true
+
+  registry.npmjs.org/fsevents/2.1.2:
+    resolution: {integrity: sha512-R4wDiBwZ0KzpgOWetKDug1FZcYhqYnUYKtfZYt4mD5SBz76q0KR4Q9o7GIPamsVPGmW3EYPPJ0dOOjvx32ldZA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/fsevents/-/fsevents-2.1.2.tgz}
+    name: fsevents
+    version: 2.1.2
+    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
+    os: [darwin]
+    deprecated: '"Please update to latest v2.3 or v2.2"'
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  registry.npmjs.org/has-flag/4.0.0:
+    resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/has-flag/-/has-flag-4.0.0.tgz}
+    name: has-flag
+    version: 4.0.0
+    engines: {node: '>=8'}
+    dev: true
+    optional: true
+
+  registry.npmjs.org/hash-sum/2.0.0:
+    resolution: {integrity: sha512-WdZTbAByD+pHfl/g9QSsBIIwy8IT+EsPiKDs0KNX+zSHhdDLFKdZu0BQHljvO+0QI/BasbMSUa8wYNCZTvhslg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/hash-sum/-/hash-sum-2.0.0.tgz}
+    name: hash-sum
+    version: 2.0.0
+    dev: true
+    optional: true
+
+  registry.npmjs.org/json5/2.2.0:
+    resolution: {integrity: sha512-f+8cldu7X/y7RAJurMEJmdoKXGB/X550w2Nr3tTbezL6RwEE/iMcm+tZnXeoZtKuOq6ft8+CqzEkrIgx1fPoQA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/json5/-/json5-2.2.0.tgz}
+    name: json5
+    version: 2.2.0
+    engines: {node: '>=6'}
+    hasBin: true
+    dependencies:
+      minimist: registry.npmjs.org/minimist/1.2.5
+    dev: true
+    optional: true
+
+  registry.npmjs.org/loader-utils/2.0.0:
+    resolution: {integrity: sha512-rP4F0h2RaWSvPEkD7BLDFQnvSf+nK+wr3ESUjNTyAGobqrijmW92zc+SO6d4p4B1wh7+B/Jg1mkQe5NYUEHtHQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/loader-utils/-/loader-utils-2.0.0.tgz}
+    name: loader-utils
+    version: 2.0.0
+    engines: {node: '>=8.9.0'}
+    dependencies:
+      big.js: registry.npmjs.org/big.js/5.2.2
+      emojis-list: registry.npmjs.org/emojis-list/3.0.0
+      json5: registry.npmjs.org/json5/2.2.0
+    dev: true
+    optional: true
+
+  registry.npmjs.org/minimist/1.2.5:
+    resolution: {integrity: sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/minimist/-/minimist-1.2.5.tgz}
+    name: minimist
+    version: 1.2.5
+    dev: true
+    optional: true
+
+  registry.npmjs.org/node-notifier/8.0.2:
+    resolution: {integrity: sha512-oJP/9NAdd9+x2Q+rfphB2RJCHjod70RcRLjosiPMMu5gjIfwVnOUGq2nbTjTUbmy0DJ/tFIVT30+Qe3nzl4TJg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/node-notifier/-/node-notifier-8.0.2.tgz}
+    name: node-notifier
+    version: 8.0.2
+    requiresBuild: true
+    dependencies:
+      growly: 1.3.0
+      is-wsl: 2.2.0
+      semver: 7.3.5
+      shellwords: 0.1.1
+      uuid: 8.3.2
+      which: 2.0.2
+    dev: true
+    optional: true
+
+  registry.npmjs.org/supports-color/7.2.0:
+    resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/supports-color/-/supports-color-7.2.0.tgz}
+    name: supports-color
+    version: 7.2.0
+    engines: {node: '>=8'}
+    dependencies:
+      has-flag: registry.npmjs.org/has-flag/4.0.0
+    dev: true
+    optional: true
+
+  registry.npmjs.org/vue-loader/16.8.1_webpack@4.46.0:
+    resolution: {integrity: sha512-V53TJbHmzjBhCG5OYI2JWy/aYDspz4oVHKxS43Iy212GjGIG1T3EsB3+GWXFm/1z5VwjdjLmdZUFYM70y77vtQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/vue-loader/-/vue-loader-16.8.1.tgz}
+    id: registry.npmjs.org/vue-loader/16.8.1
+    name: vue-loader
+    version: 16.8.1
+    requiresBuild: true
+    peerDependencies:
+      webpack: ^4.1.0 || ^5.0.0-0
+    dependencies:
+      chalk: registry.npmjs.org/chalk/4.1.2
+      hash-sum: registry.npmjs.org/hash-sum/2.0.0
+      loader-utils: registry.npmjs.org/loader-utils/2.0.0
+      webpack: 4.46.0
+    dev: true
+    optional: true

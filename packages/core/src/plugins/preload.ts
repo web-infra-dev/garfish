@@ -9,9 +9,10 @@ import { interfaces } from '../interface';
 
 const storageKey = '__garfishPreloadApp__';
 
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-  navigator.userAgent,
-);
+const isMobile =
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent,
+  );
 
 const isSlowNetwork = () =>
   (navigator as any).connection

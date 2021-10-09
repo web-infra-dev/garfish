@@ -94,10 +94,10 @@ export function error(error: string | Error) {
 export function validURL(str) {
   const pattern = new RegExp(
     '^(https?:\\/\\/)?' + // protocol
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-    '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-    '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
       '(\\#[-a-z\\d_]*)?$',
     'i',
   ); // fragment locator
@@ -411,7 +411,7 @@ export function mapObject(
 export const hookObjectProperty = <
   T extends {},
   K extends keyof T,
-  P extends any[]
+  P extends any[],
 >(
   obj: T,
   key: K,
@@ -427,13 +427,13 @@ export const hookObjectProperty = <
 
     // To method packages a layer of a try after all the hooks to catch
     if (typeof hooked === 'function') {
-      hooked = (function (...args: any) {
+      hooked = function (...args: any) {
         try {
           return (hookedUnsafe as any).apply(this, args);
         } catch {
           return typeof origin === 'function' && origin.apply(this, args);
         }
-      } as any) as T[K];
+      } as any as T[K];
     }
     obj[key] = hooked;
 
