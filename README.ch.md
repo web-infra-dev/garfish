@@ -16,7 +16,7 @@ Garfish 是一套微前端解决方案，主要用于解决现代 web 应用在�
 ## 安装
 
 ```bash
-$ yarn add garfish   #或者 npm i garfish -S
+$ yarn add garfish # 或者 npm i garfish
 ```
 
 ## 文档

@@ -15,7 +15,7 @@ To compose multiple independently delivered front-end applications into a whole,
 ## Installation
 
 ```bash
-$ yarn add garfish #or npm i garfish -S
+$ yarn add garfish # or npm i garfish
 ```
 
 ## Documentation
