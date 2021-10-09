@@ -1,13 +1,11 @@
 import type { Options } from 'tsup';
-import minimist from 'minimist';
 import { replace } from 'esbuild-plugin-replace';
 
-const args = minimist(process.argv.slice(2));
 const watch = process.env.WATCH;
-const sourceMap = args.sourcemap || args.s;
+const sourcemap = Boolean(process.env.SOURCEMAP);
 
 export const baseTsup = (pkg): Options => ({
-  sourcemap: sourceMap,
+  sourcemap,
   clean: true,
   dts: true,
   watch: watch ? 'src/' : false,
