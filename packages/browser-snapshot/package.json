@@ -31,7 +31,8 @@
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
   "dependencies": {
-    "@garfish/core": "workspace:*"
+    "@garfish/core": "workspace:*",
+    "@garfish/utils": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

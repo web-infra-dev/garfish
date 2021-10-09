@@ -7,7 +7,7 @@ $ yarn add @garfish/core @garfish/cjs-app @garfish/router @garfish/browser-vm @g
 ```
 
 ```js
-import Garfish from '@garfish/core';
+import { Garfish } from '@garfish/core';
 import { GarfishRouter } from '@garfish/router';
 import { GarfishBrowserVm } from '@garfish/browser-vm';
 import { GarfishBrowserSnapshot } from '@garfish/browser-snapshot';
@@ -21,7 +21,7 @@ const GarfishInstance = new Garfish({
 ## loadApp
 
 ```js
-import Garfish from '@garfish/core';
+import { Garfish } from '@garfish/core';
 import { GarfishBrowserVm } from '@garfish/browser-vm';
 
 const GarfishInstance = new Garfish({

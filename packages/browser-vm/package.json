@@ -33,7 +33,8 @@
   "dependencies": {
     "@garfish/loader": "workspace:*",
     "@garfish/core": "workspace:*",
-    "@garfish/hooks": "workspace:*"
+    "@garfish/hooks": "workspace:*",
+    "@garfish/utils": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
