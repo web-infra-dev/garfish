@@ -48,10 +48,8 @@ export function GarfishRouter(_args?: Options) {
         let activeApp = null;
         const unmounts: Record<string, Function> = {};
         const { basename } = options;
-        const {
-          autoRefreshApp = true,
-          onNotMatchRouter = () => null,
-        } = Garfish.options;
+        const { autoRefreshApp = true, onNotMatchRouter = () => null } =
+          Garfish.options;
 
         async function active(appInfo: interfaces.AppInfo, rootPath: string) {
           const { name, cache, active } = appInfo;
