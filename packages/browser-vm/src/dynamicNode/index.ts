@@ -49,8 +49,12 @@ function injectorRemoveChild(current: Function, methodName: string) {
     const originProcess = () => {
       // Sandbox may have applied sub dom side effects to delete
       // by removeChild deleted by the tag determine whether have been removed
-      if (el && el[__ELEMENT_DELETE_TAG__]) return el;
-      return current.apply(this, arguments);
+      try {
+        return current.apply(this, arguments);
+      } catch(err) {
+        if (el[__ELEMENT_DELETE_TAG__]) return el;
+        throw err;
+      }
     };
     if (sandbox) {
       const processor = new DynamicNodeProcessor(el, sandbox, methodName);
