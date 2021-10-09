@@ -1,4 +1,4 @@
-import { Garfish } from '@garfish/core';
+import Garfish from '@garfish/core';
 import { GarfishRouter } from '@garfish/router';
 import { GarfishBrowserVm } from '@garfish/browser-vm';
 import { GarfishBrowserSnapshot } from '@garfish/browser-snapshot';
@@ -12,7 +12,7 @@ declare global {
 }
 
 // Initialize the Garfish, currently existing environment to allow only one instance (export to is for test)
-export function createContext(): Garfish {
+function createContext(): Garfish {
   let fresh = false;
   // Existing garfish instance, direct return
   if (inBrowser() && window['__GARFISH__'] && window['Garfish']) {
@@ -69,5 +69,5 @@ export function createContext(): Garfish {
 }
 
 export type { interfaces } from '@garfish/core';
-export { Garfish } from '@garfish/core';
+export { default as Garfish } from '@garfish/core';
 export default createContext();

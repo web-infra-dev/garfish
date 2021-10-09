@@ -7,7 +7,7 @@ import router, {
 } from './context';
 
 declare module '@garfish/core' {
-  export interface Garfish {
+  export default interface Garfish {
     router: RouterInterface;
     apps: Record<string, interfaces.App>;
   }
