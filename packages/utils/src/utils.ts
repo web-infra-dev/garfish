@@ -65,7 +65,7 @@ const processError = (
       }
       fn(error, false);
     }
-  } catch (e) {
+  } catch {
     fn(error, typeof error === 'string');
   }
 };
@@ -124,7 +124,7 @@ export function evalWithEnv(
   // No random value can be used, otherwise it cannot be reused as a constant string
   const randomValKey = '__garfish__exec_temporary__';
   const values = keys.map((k) => `window.${randomValKey}.${k}`);
-  const contextKey = '__garfish__exec_temporary__context__';
+  const contextKey = '__garfish_exec_temporary_context__';
 
   try {
     nativeWindow[randomValKey] = params;

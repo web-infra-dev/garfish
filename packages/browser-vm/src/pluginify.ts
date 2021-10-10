@@ -127,7 +127,7 @@ function createOptions(Garfish: interfaces.Garfish) {
             return [
               ...(appInfo.protectVariable || []),
               ...(appInstance &&
-                Object.keys(appInstance.getExecScriptEnv(false) || [])),
+                Object.keys(appInstance.getExecScriptEnv(false) || {})),
             ].filter(Boolean);
           },
         }),
