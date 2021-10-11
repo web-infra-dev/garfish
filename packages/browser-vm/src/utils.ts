@@ -83,8 +83,8 @@ export function isInIframe() {
 // Copy "window" and "document"
 export function createFakeObject(
   target: Record<PropertyKey, any>,
-  filter?: (PropertyKey) => boolean,
-  isWritable?: (PropertyKey) => boolean,
+  filter?: (key: PropertyKey) => boolean,
+  isWritable?: (key: PropertyKey) => boolean,
 ) {
   const fakeObject = {};
   const propertyMap = {};
