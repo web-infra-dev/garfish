@@ -15,6 +15,7 @@ export function preload(urls: string | Array<string>) {
       );
       return loader.loadModule(url).then((data) => {
         resourcesStore.push(data.resourceManager);
+        return data;
       });
     }),
   );
