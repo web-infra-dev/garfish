@@ -1,12 +1,14 @@
 import { StyleManager, TemplateManager } from '@garfish/loader';
 import {
+  Text,
   warn,
   assert,
+  hasOwn,
   remove,
-  Text,
   isJs,
   isObject,
   isPromise,
+  toBoolean,
   findTarget,
   evalWithEnv,
   transformUrl,
@@ -181,14 +183,14 @@ export class App {
       code,
       true,
       url,
-      options.async,
+      options?.async,
     );
     code += url ? `\n//# sourceURL=${url}\n` : '';
 
-    if (!env['window']) {
+    if (!hasOwn(env, 'window')) {
       env = {
-        window: this.global,
         ...env,
+        window: this.global,
       };
     }
 
@@ -298,6 +300,7 @@ export class App {
     if (this.esModule) return {};
     if (noEntry) {
       return {
+        require: this.cjsModules.require,
         [__GARFISH_EXPORTS__]: this.customExports,
         [__GARFISH_GLOBAL_ENV__]: this.globalEnvVariables,
       };
@@ -488,7 +491,7 @@ export class App {
           const { url, scriptCode } = jsManager;
           this.execScript(scriptCode, {}, url || this.appInfo.entry, {
             async: false,
-            noEntry: Boolean(entryManager.findAttributeValue(node, 'no-entry')),
+            noEntry: toBoolean(entryManager.findAttributeValue(node, 'no-entry')),
           });
         } else if (__DEV__) {
           const async = entryManager.findAttributeValue(node, 'async');

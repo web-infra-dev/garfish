@@ -163,7 +163,9 @@ export function assert(condition: any, msg?: string | Error) {
 }
 
 export function toBoolean(val: any) {
-  return val === 'false' ? false : Boolean(val);
+  if (val === '') return true;
+  if (val === 'false') return false;
+  return Boolean(val);
 }
 
 export function remove<T>(list: Array<T> | Set<T>, el: T) {

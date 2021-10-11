@@ -67,7 +67,7 @@ function rewriteAppAndSandbox(
       {
         // For application of environment variables
         ...env,
-        ...app.getExecScriptEnv(false),
+        ...app.getExecScriptEnv(options?.noEntry),
       },
       url,
       options,
