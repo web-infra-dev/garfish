@@ -135,13 +135,13 @@ function createOptions(Garfish: interfaces.Garfish) {
     },
 
     // If the app is uninstalled, the sandbox needs to clear all effects and then reset
-    afterUnmount(_, appInstance) {
+    afterUnmount(appInfo, appInstance) {
       if (!appInstance.vmSandbox) return;
       appInstance.vmSandbox.reset();
       sandboxMap.del(appInstance.vmSandbox);
     },
 
-    afterMount(_, appInstance) {
+    afterMount(appInfo, appInstance) {
       if (!appInstance.vmSandbox) return;
       appInstance.vmSandbox.execScript(`
         if (typeof window.onload === 'function') {
