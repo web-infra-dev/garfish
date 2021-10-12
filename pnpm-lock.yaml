@@ -344,7 +344,7 @@ importers:
       puppeteer: 10.4.0
       react: 16.14.0
       react-dom: 16.14.0
-      swiper: 6.8.4
+      swiper: 7.0.8
     dependencies:
       '@docusaurus/core': 2.0.0-beta.6_react-dom@16.14.0+react@16.14.0
       '@docusaurus/plugin-ideal-image': 2.0.0-beta.6_react-dom@16.14.0+react@16.14.0
@@ -358,7 +358,7 @@ importers:
       puppeteer: 10.4.0
       react: 16.14.0
       react-dom: 16.14.0_react@16.14.0
-      swiper: 6.8.4
+      swiper: 7.0.8
 
 packages:
 
@@ -10110,10 +10110,10 @@ packages:
     resolution: {integrity: sha512-6QvTW9mrGeIegrFXdtQi9pk7O/nSK6lSdXW2eqUspN5LWD7UTji2Fqw5V2YLjBpHEoU9Xl/eUWNpDeZvoyOv2w==}
     dev: false
 
-  /dom7/3.0.0:
-    resolution: {integrity: sha512-oNlcUdHsC4zb7Msx7JN3K0Nro1dzJ48knvBOnDPKJ2GV9wl1i5vydJZUSyOfrkKFDZEud/jBsTk92S/VGSAe/g==}
+  /dom7/4.0.0:
+    resolution: {integrity: sha512-xOJ0LAHFwktyj8Xljz4R2wzRI+Y9mR0plkMP0WlqtwqAkqn/vbdAyRifiW/w8mXe17LGktntcAwsQ5fKVDBNYg==}
     dependencies:
-      ssr-window: 3.0.0
+      ssr-window: 4.0.0
     dev: false
 
   /domain-browser/1.2.0:
@@ -20279,8 +20279,8 @@ packages:
       safer-buffer: 2.1.2
       tweetnacl: 0.14.5
 
-  /ssr-window/3.0.0:
-    resolution: {integrity: sha512-q+8UfWDg9Itrg0yWK7oe5p/XRCJpJF9OBtXfOPgSJl+u3Xd5KI328RUEvUqSMVM9CiQUEf1QdBzJMkYGErj9QA==}
+  /ssr-window/4.0.0:
+    resolution: {integrity: sha512-qCg6wJNeGNTVcPK2KFNfwtHU1gA3UZDZdxogu+Ys5+Ue5PMOENxUb7sscpAWWo4mWOBkJRCwQ50IlyA7qZ0hxw==}
     dev: false
 
   /ssri/6.0.2:
@@ -20710,13 +20710,13 @@ packages:
       stable: 0.1.8
     dev: false
 
-  /swiper/6.8.4:
-    resolution: {integrity: sha512-O+buF9Q+sMA0H7luMS8R59hCaJKlpo8PXhQ6ZYu6Rn2v9OsFd4d1jmrv14QvxtQpKAvL/ZiovEeANI/uDGet7g==}
+  /swiper/7.0.8:
+    resolution: {integrity: sha512-1IpWjHam98eTNiysi9MauvPHdLgrLesSYGd7JXvQEJkvW/NvI9gogMfRfbv+7jCK3+nIWuCpVnJmKCOBtJi4JA==}
     engines: {node: '>= 4.7.0'}
     requiresBuild: true
     dependencies:
-      dom7: 3.0.0
-      ssr-window: 3.0.0
+      dom7: 4.0.0
+      ssr-window: 4.0.0
     dev: false
 
   /symbol-tree/3.2.4:
