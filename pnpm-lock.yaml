@@ -143,7 +143,7 @@ importers:
     specifiers:
       '@testing-library/jest-dom': ^4.2.4
       '@testing-library/react': ^9.3.2
-      '@testing-library/user-event': ^7.1.2
+      '@testing-library/user-event': 13.3.0
       antd: ^4.9.4
       classnames: ^2.3.1
       react: ^16.13.1
@@ -155,7 +155,7 @@ importers:
     dependencies:
       '@testing-library/jest-dom': 4.2.4
       '@testing-library/react': 9.5.0_react-dom@16.14.0+react@16.14.0
-      '@testing-library/user-event': 7.2.1
+      '@testing-library/user-event': 13.3.0
       antd: 4.16.13_react-dom@16.14.0+react@16.14.0
       classnames: 2.3.1
       react: 16.14.0
@@ -5291,10 +5291,13 @@ packages:
       react-dom: 16.14.0_react@16.14.0
     dev: false
 
-  /@testing-library/user-event/7.2.1:
-    resolution: {integrity: sha512-oZ0Ib5I4Z2pUEcoo95cT1cr6slco9WY7yiPpG+RGNkj8YcYgJnM7pXmYmorNOReh8MIGcKSqXyeGjxnr8YiZbA==}
+  /@testing-library/user-event/13.3.0:
+    resolution: {integrity: sha512-f8AJ8ybUna88Lmx3l5fuPMhzyyrcopQk/vgVDHVKOnOf2kkjfVSb0Px77iduHmh6uFUcXsD/z6qp4G13rObVrw==}
+    engines: {node: '>=10', npm: '>=6'}
     peerDependencies:
-      '@testing-library/dom': '>=5'
+      '@testing-library/dom': '>=7.21.4'
+    dependencies:
+      '@babel/runtime': 7.15.4
     dev: false
 
   /@tootallnate/once/1.1.2:
