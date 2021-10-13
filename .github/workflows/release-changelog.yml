@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - 'v*'
-    tags-ignore:
-      - .*(alpha|beta).*
 
 jobs:
   release:
