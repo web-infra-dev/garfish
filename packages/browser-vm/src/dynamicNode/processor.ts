@@ -127,8 +127,8 @@ export class DynamicNodeProcessor {
           .then(({ resourceManager: { url, scriptCode } }) => {
             // It is necessary to ensure that the code execution error cannot trigger the `el.onerror` event
             setTimeout(() => {
-              this.dispatchEvent('load');
               this.sandbox.execScript(scriptCode, {}, url, { noEntry: true });
+              this.dispatchEvent('load');
             });
           })
           .catch((e) => {
