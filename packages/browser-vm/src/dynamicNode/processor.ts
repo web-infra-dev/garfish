@@ -13,6 +13,7 @@ import {
   sourceListTags,
   parseContentType,
   __REMOVE_NODE__,
+  maybeIsJsonpScript,
 } from '@garfish/utils';
 import { rootElm } from '../utils';
 import { Sandbox } from '../sandbox';
@@ -121,7 +122,7 @@ export class DynamicNodeProcessor {
     const { src, type } = this.el;
     const code = this.el.textContent || this.el.text || '';
 
-    if (!type || isJs(parseContentType(type))) {
+    if (!type || isJs(parseContentType(type)) || maybeIsJsonpScript(type,src)) {
       // The "src" higher priority
       const { baseUrl, namespace = '' } = this.sandbox.options;
       if (src) {
@@ -296,7 +297,6 @@ export class DynamicNodeProcessor {
         convertedNode,
         this.tagName,
       );
-      console.log(parentNode,convertedNode);
       return this.nativeAppend.call(parentNode, convertedNode);
     }
     return originProcess();
