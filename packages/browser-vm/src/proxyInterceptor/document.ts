@@ -1,4 +1,11 @@
-import { hasOwn, makeMap, isObject, findTarget, __MockBody__, __MockHead__ } from '@garfish/utils';
+import {
+  hasOwn,
+  makeMap,
+  isObject,
+  findTarget,
+  __MockBody__,
+  __MockHead__,
+} from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 import { rootElm, sandboxMap } from '../utils';
 import { __documentBind__ } from '../symbolTypes';
@@ -41,9 +48,7 @@ export function createGetter(sandbox: Sandbox) {
           return el;
         };
       } else if (p === 'head') {
-        return (
-          findTarget(rootNode, ['head', `div[${__MockHead__}]`]) || value
-        );
+        return findTarget(rootNode, ['head', `div[${__MockHead__}]`]) || value;
       }
 
       // rootNode is a Shadow dom

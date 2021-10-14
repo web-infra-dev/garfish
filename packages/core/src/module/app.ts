@@ -491,7 +491,9 @@ export class App {
           const { url, scriptCode } = jsManager;
           this.execScript(scriptCode, {}, url || this.appInfo.entry, {
             async: false,
-            noEntry: toBoolean(entryManager.findAttributeValue(node, 'no-entry')),
+            noEntry: toBoolean(
+              entryManager.findAttributeValue(node, 'no-entry'),
+            ),
           });
         } else if (__DEV__) {
           const async = entryManager.findAttributeValue(node, 'async');

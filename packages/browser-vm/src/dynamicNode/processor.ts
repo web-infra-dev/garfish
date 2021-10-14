@@ -113,7 +113,8 @@ export class DynamicNodeProcessor {
     }
     // To ensure the processing node to normal has been removed
     const linkCommentNode = this.DOMApis.createLinkCommentNode(href) as Comment;
-    this.el[__REMOVE_NODE__] = ()=> linkCommentNode.parentNode.removeChild(linkCommentNode);
+    this.el[__REMOVE_NODE__] = () =>
+      linkCommentNode.parentNode.removeChild(linkCommentNode);
     return linkCommentNode;
   }
 
@@ -122,7 +123,11 @@ export class DynamicNodeProcessor {
     const { src, type } = this.el;
     const code = this.el.textContent || this.el.text || '';
 
-    if (!type || isJs(parseContentType(type)) || maybeIsJsonpScript(type,src)) {
+    if (
+      !type ||
+      isJs(parseContentType(type)) ||
+      maybeIsJsonpScript(type, src)
+    ) {
       // The "src" higher priority
       const { baseUrl, namespace = '' } = this.sandbox.options;
       if (src) {
@@ -147,8 +152,12 @@ export class DynamicNodeProcessor {
         this.sandbox.execScript(code, {}, baseUrl, { noEntry: true });
       }
       // To ensure the processing node to normal has been removed
-      const scriptCommentNode = this.DOMApis.createScriptCommentNode({ src, code });
-      this.el[__REMOVE_NODE__] = ()=> scriptCommentNode.parentNode.removeChild(scriptCommentNode);
+      const scriptCommentNode = this.DOMApis.createScriptCommentNode({
+        src,
+        code,
+      });
+      this.el[__REMOVE_NODE__] = () =>
+        scriptCommentNode.parentNode.removeChild(scriptCommentNode);
       return scriptCommentNode;
     } else {
       if (__DEV__) {
