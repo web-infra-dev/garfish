@@ -60,7 +60,9 @@ async function bumpVersion() {
 
 async function pushToGithub(selectVersion) {
   // push to GitHub
-  await run('git', ['tag', `v${selectVersion.newVersion}`]);
+  if (!selectVersion.newVersion.includes('alpha','beta')) {
+    await run('git', ['tag', `v${selectVersion.newVersion}`]);
+  }
   await run('git', [
     'push',
     'origin',
