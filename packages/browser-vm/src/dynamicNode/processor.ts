@@ -125,7 +125,7 @@ export class DynamicNodeProcessor {
     if (
       !type ||
       isJs(parseContentType(type)) ||
-      isJsonp(type, src)
+      isJsonp(parseContentType(type), src)
     ) {
       // The "src" higher priority
       const { baseUrl, namespace = '' } = this.sandbox.options;
