@@ -83,14 +83,18 @@ export function isJs(mt: mimeType) {
 
 export function isJsonp(mt: mimeType, src: string) {
   const callbackRegExp = /callback/;
-  const search = new URL(src).search;
-  const { type, subtype } = mt || {};
-  if (
-    type === 'application' &&
-    subtype === 'json' &&
-    callbackRegExp.test(search)
-  ) {
-    return true;
+  try {
+    const search = new URL(src).search;
+    const { type, subtype } = mt || {};
+    if (
+      type === 'application' &&
+      subtype === 'json' &&
+      callbackRegExp.test(search)
+    ) {
+      return true;
+    }
+  } catch {
+    return false;
   }
   return false;
 }
