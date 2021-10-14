@@ -5,7 +5,7 @@ import {
   isCss,
   isHtml,
   __LOADER_FLAG__,
-  maybeIsJsonpScript,
+  isJsonp,
 } from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
@@ -145,7 +145,7 @@ export class Loader {
         } else if (
           isJs(mimeType) ||
           /\.js/.test(result.url) ||
-          maybeIsJsonpScript(mimeType, result.url)
+          isJsonp(mimeType, result.url)
         ) {
           fileType = FileTypes.js;
           managerCtor = JavaScriptManager;

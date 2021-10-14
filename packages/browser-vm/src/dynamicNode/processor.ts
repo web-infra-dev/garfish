@@ -13,7 +13,7 @@ import {
   sourceListTags,
   parseContentType,
   __REMOVE_NODE__,
-  maybeIsJsonpScript,
+  isJsonp,
 } from '@garfish/utils';
 import { rootElm } from '../utils';
 import { Sandbox } from '../sandbox';
@@ -113,8 +113,7 @@ export class DynamicNodeProcessor {
     }
     // To ensure the processing node to normal has been removed
     const linkCommentNode = this.DOMApis.createLinkCommentNode(href) as Comment;
-    this.el[__REMOVE_NODE__] = () =>
-      linkCommentNode.parentNode.removeChild(linkCommentNode);
+    this.el[__REMOVE_NODE__] = () => this.DOMApis.removeElement(linkCommentNode);
     return linkCommentNode;
   }
 
@@ -126,7 +125,7 @@ export class DynamicNodeProcessor {
     if (
       !type ||
       isJs(parseContentType(type)) ||
-      maybeIsJsonpScript(type, src)
+      isJsonp(type, src)
     ) {
       // The "src" higher priority
       const { baseUrl, namespace = '' } = this.sandbox.options;
@@ -156,8 +155,7 @@ export class DynamicNodeProcessor {
         src,
         code,
       });
-      this.el[__REMOVE_NODE__] = () =>
-        scriptCommentNode.parentNode.removeChild(scriptCommentNode);
+      this.el[__REMOVE_NODE__] = () => this.DOMApis.removeElement(scriptCommentNode)
       return scriptCommentNode;
     } else {
       if (__DEV__) {

@@ -18,7 +18,7 @@ describe('whole process vm sandbox set variable', () => {
   it('set global history variable', () => {
     cy.visit(`http://localhost:2333${basename}/react/vm-sandbox`);
 
-    const ProxyVariableTitle = 'set proxy variable';
+    const ProxyVariableTitle = 'vm sandbox';
 
     cy.window().then((win) => {
       cy.contains('[data-test=title]', ProxyVariableTitle)

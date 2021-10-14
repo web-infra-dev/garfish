@@ -22,14 +22,10 @@ describe('whole process vm sandbox set variable', () => {
         protectVariable: ['dynamicScriptOnloadTag','dynamicScriptOnerrorTag'],
       },
     });
-    cy.on('uncaught:exception', () => {
-      return false;
-    });
+    cy.visit(`http://localhost:2333${basename}/react/vm-sandbox`);
   });
 
-  it('add script onload and onerror event', () => {
-    cy.visit(`http://localhost:2333${basename}/react/vm-sandbox`);
-
+  it('add script onload event', () => {
     const ProxyVariableTitle = 'vm sandbox';
 
     cy.window().then((win) => {
@@ -41,7 +37,16 @@ describe('whole process vm sandbox set variable', () => {
       .then(() => {
         expect(win.dynamicScriptOnloadTag).to.equal(true);
       });
+    });
+  });
 
+  it('add script onerror event', () => {
+    cy.on('uncaught:exception', () => {
+      return false;
+    });
+
+    const ProxyVariableTitle = 'vm sandbox';
+    cy.window().then((win) => {
       cy.contains('[data-test=title]', ProxyVariableTitle)
       .then(() => {
         return cy.get('[data-test=click-set-add-dynamic-script-onerror]').click();

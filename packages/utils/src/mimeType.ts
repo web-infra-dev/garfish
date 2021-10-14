@@ -81,7 +81,7 @@ export function isJs(mt: mimeType) {
   }
 }
 
-export function maybeIsJsonpScript(mt: mimeType, src: string) {
+export function isJsonp(mt: mimeType, src: string) {
   const callbackRegExp = /callback/;
   const { type, subtype } = mt || {};
   if (

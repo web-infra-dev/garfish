@@ -18,6 +18,7 @@ export default function () {
     sc.src = dynamicScriptUrl
     sc.onload = function () {
       window.dynamicScriptOnloadTag = true;
+      document.head.removeChild(sc);
     }
     document.head.appendChild(sc);
   }
