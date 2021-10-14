@@ -1,4 +1,4 @@
-import { hasOwn, makeMap, isObject, findTarget } from '@garfish/utils';
+import { hasOwn, makeMap, isObject, findTarget, __MockBody__, __MockHead__ } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 import { rootElm, sandboxMap } from '../utils';
 import { __documentBind__ } from '../symbolTypes';
@@ -42,7 +42,7 @@ export function createGetter(sandbox: Sandbox) {
         };
       } else if (p === 'head') {
         return (
-          findTarget(rootNode, ['head', 'div[__garfishmockhead__]']) || value
+          findTarget(rootNode, ['head', `div[${__MockHead__}]`]) || value
         );
       }
 
@@ -51,7 +51,7 @@ export function createGetter(sandbox: Sandbox) {
         if (p === 'body') {
           // When the node is inserted, if it is a pop-up scene,
           // it needs to be placed globally, so it is not placed outside by default.
-          return findTarget(rootNode, ['body', 'div[__garfishmockbody__]']);
+          return findTarget(rootNode, ['body', `div[${__MockBody__}]`]);
         } else if (queryFunctions(p)) {
           return p === 'getElementById'
             ? (id) => rootNode.querySelector(`#${id}`)

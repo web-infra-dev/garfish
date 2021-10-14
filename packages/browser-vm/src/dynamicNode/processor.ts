@@ -12,6 +12,7 @@ import {
   transformUrl,
   sourceListTags,
   parseContentType,
+  __REMOVE_NODE__,
 } from '@garfish/utils';
 import { rootElm } from '../utils';
 import { Sandbox } from '../sandbox';
@@ -109,7 +110,10 @@ export class DynamicNodeProcessor {
         warn(`Invalid resource type "${type}", "${href}"`);
       }
     }
-    return this.DOMApis.createLinkCommentNode(href) as Comment;
+    // To ensure the processing node to normal has been removed
+    const linkCommentNode = this.DOMApis.createLinkCommentNode(href) as Comment;
+    this.el[__REMOVE_NODE__] = ()=> linkCommentNode.parentNode.removeChild(linkCommentNode);
+    return linkCommentNode;
   }
 
   // Load dynamic js script
@@ -150,7 +154,10 @@ export class DynamicNodeProcessor {
         );
       }
     }
-    return this.DOMApis.createScriptCommentNode({ src, code });
+    // To ensure the processing node to normal has been removed
+    const scriptCommentNode = this.DOMApis.createScriptCommentNode({ src, code });
+    this.el[__REMOVE_NODE__] = ()=> scriptCommentNode.parentNode.removeChild(scriptCommentNode);
+    return scriptCommentNode;
   }
 
   // When append an empty link node and then add href attribute
@@ -288,12 +295,19 @@ export class DynamicNodeProcessor {
         convertedNode,
         this.tagName,
       );
+      console.log(parentNode,convertedNode);
       return this.nativeAppend.call(parentNode, convertedNode);
     }
     return originProcess();
   }
 
   removeChild(context: Element, originProcess: Function) {
+    // remove comment node and return the real node
+    if (typeof this.el[__REMOVE_NODE__] === 'function') {
+      this.el[__REMOVE_NODE__]();
+      return this.el;
+    }
+
     if (this.is('style') || this.is('link') || this.is('script')) {
       const parentNode = this.findParentNodeInApp(
         context,
