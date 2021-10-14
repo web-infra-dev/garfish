@@ -11,6 +11,7 @@ import { AppInfo } from './module/app';
 import { interfaces } from './interface';
 import { appLifecycle } from './lifecycle';
 
+// TODO: Infer the contents and check
 const appConfigList: Array<keyof interfaces.AppInfo | 'activeWhen'> = [
   'name',
   'entry',
@@ -22,6 +23,7 @@ const appConfigList: Array<keyof interfaces.AppInfo | 'activeWhen'> = [
   'cache',
   'nested',
   'noCheckProvider',
+  'protectVariable',
   'customLoader',
   ...appLifecycle().lifecycleKeys,
 ];

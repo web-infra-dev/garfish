@@ -1,5 +1,5 @@
 const { run, step } = require('./utils');
-const { runAllExample } = require('./runExample');
+const { runAllExample } = require('./runE2eProject');
 
 runAllExample().then(() => {
   // once here, all resources are available
