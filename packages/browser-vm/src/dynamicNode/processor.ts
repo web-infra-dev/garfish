@@ -12,6 +12,8 @@ import {
   transformUrl,
   sourceListTags,
   parseContentType,
+  __REMOVE_NODE__,
+  isJsonp,
 } from '@garfish/utils';
 import { rootElm } from '../utils';
 import { Sandbox } from '../sandbox';
@@ -109,7 +111,10 @@ export class DynamicNodeProcessor {
         warn(`Invalid resource type "${type}", "${href}"`);
       }
     }
-    return this.DOMApis.createLinkCommentNode(href) as Comment;
+    // To ensure the processing node to normal has been removed
+    const linkCommentNode = this.DOMApis.createLinkCommentNode(href) as Comment;
+    this.el[__REMOVE_NODE__] = () => this.DOMApis.removeElement(linkCommentNode);
+    return linkCommentNode;
   }
 
   // Load dynamic js script
@@ -117,7 +122,11 @@ export class DynamicNodeProcessor {
     const { src, type } = this.el;
     const code = this.el.textContent || this.el.text || '';
 
-    if (!type || isJs(parseContentType(type))) {
+    if (
+      !type ||
+      isJs(parseContentType(type)) ||
+      isJsonp(parseContentType(type), src)
+    ) {
       // The "src" higher priority
       const { baseUrl, namespace = '' } = this.sandbox.options;
       if (src) {
@@ -141,6 +150,13 @@ export class DynamicNodeProcessor {
       } else if (code) {
         this.sandbox.execScript(code, {}, baseUrl, { noEntry: true });
       }
+      // To ensure the processing node to normal has been removed
+      const scriptCommentNode = this.DOMApis.createScriptCommentNode({
+        src,
+        code,
+      });
+      this.el[__REMOVE_NODE__] = () => this.DOMApis.removeElement(scriptCommentNode)
+      return scriptCommentNode;
     } else {
       if (__DEV__) {
         warn(
@@ -150,7 +166,7 @@ export class DynamicNodeProcessor {
         );
       }
     }
-    return this.DOMApis.createScriptCommentNode({ src, code });
+    return this.el;
   }
 
   // When append an empty link node and then add href attribute
@@ -294,6 +310,12 @@ export class DynamicNodeProcessor {
   }
 
   removeChild(context: Element, originProcess: Function) {
+    // remove comment node and return the real node
+    if (typeof this.el[__REMOVE_NODE__] === 'function') {
+      this.el[__REMOVE_NODE__]();
+      return this.el;
+    }
+
     if (this.is('style') || this.is('link') || this.is('script')) {
       const parentNode = this.findParentNodeInApp(
         context,

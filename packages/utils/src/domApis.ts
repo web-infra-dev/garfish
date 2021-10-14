@@ -116,7 +116,7 @@ export class DOMApis {
     return Boolean(hasNameAttr && hasSrcAttr);
   }
 
-  removeElement(el: Element) {
+  removeElement(el: Element | Comment) {
     const parentNode = el && el.parentNode;
     if (parentNode) {
       parentNode.removeChild(el);
