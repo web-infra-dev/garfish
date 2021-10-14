@@ -145,6 +145,10 @@ export class DynamicNodeProcessor {
       } else if (code) {
         this.sandbox.execScript(code, {}, baseUrl, { noEntry: true });
       }
+      // To ensure the processing node to normal has been removed
+      const scriptCommentNode = this.DOMApis.createScriptCommentNode({ src, code });
+      this.el[__REMOVE_NODE__] = ()=> scriptCommentNode.parentNode.removeChild(scriptCommentNode);
+      return scriptCommentNode;
     } else {
       if (__DEV__) {
         warn(
@@ -154,10 +158,7 @@ export class DynamicNodeProcessor {
         );
       }
     }
-    // To ensure the processing node to normal has been removed
-    const scriptCommentNode = this.DOMApis.createScriptCommentNode({ src, code });
-    this.el[__REMOVE_NODE__] = ()=> scriptCommentNode.parentNode.removeChild(scriptCommentNode);
-    return scriptCommentNode;
+    return this.el;
   }
 
   // When append an empty link node and then add href attribute
