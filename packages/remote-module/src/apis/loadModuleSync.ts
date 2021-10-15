@@ -56,8 +56,8 @@ export function loadModuleSync(
     );
 
     try {
-      cacheModules[urlWithVersion] = {};
       const actuator = new Actuator(manager, externals);
+      cacheModules[urlWithVersion] = actuator.env.exports;
       let exports = actuator.execScript().exports;
 
       if (typeof adapter === 'function') {

@@ -38,8 +38,8 @@ export function loadModule(
       try {
         const data = await loader.loadModule(url);
 
-        cacheModules[urlWithVersion] = {};
         const actuator = new Actuator(data.resourceManager, externals);
+        cacheModules[urlWithVersion] = actuator.env.exports;
         let exports = actuator.execScript().exports;
 
         if (typeof adapter === 'function') {
