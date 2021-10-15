@@ -16,9 +16,9 @@
     "clear": "docusaurus clear"
   },
   "dependencies": {
-    "@docusaurus/core": "2.0.0-beta.6",
-    "@docusaurus/plugin-ideal-image": "2.0.0-beta.6",
-    "@docusaurus/preset-classic": "2.0.0-beta.6",
+    "@docusaurus/core": "2.0.0-beta.7",
+    "@docusaurus/plugin-ideal-image": "2.0.0-beta.7",
+    "@docusaurus/preset-classic": "2.0.0-beta.7",
     "@easyops-cn/docusaurus-search-local": "0.19.1",
     "@mdx-js/react": "1.6.22",
     "cld": "2.7.0",
