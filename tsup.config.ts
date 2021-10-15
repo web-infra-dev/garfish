@@ -3,13 +3,14 @@ import { replace } from 'esbuild-plugin-replace';
 
 const watch = process.env.WATCH;
 const sourcemap = Boolean(process.env.SOURCEMAP);
-const ignoreGlobalName = Boolean(process.env.IGNORE_GLOBAL_NAME);
+const debug = Boolean(process.env.DEBUG);
+const dts = process.env.DTS === 'false'? false : true;
 
 export const baseTsup = (pkg): Options => {
   const options: Options = {
     sourcemap,
     clean: true,
-    dts: true,
+    dts: dts,
     watch: watch ? 'src/' : false,
     format: ['esm', 'cjs', 'iife'],
     legacyOutput: true,
@@ -29,7 +30,7 @@ export const baseTsup = (pkg): Options => {
   };
 
   // Can be directly by chrome plug-ins debugging injected garfish page
-  if (ignoreGlobalName) {
+  if (debug) {
     delete options.globalName;
   }
   return options;

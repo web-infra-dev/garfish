@@ -7,7 +7,6 @@
     "build": "pnpm run build --parallel --filter @garfish/* --filter garfish",
     "build:docs": "pnpm run build --filter garfish-docs",
     "build:watch": "cross-env WATCH=true pnpm build",
-    "build:debug": "cross-env WATCH=true IGNORE_GLOBAL_NAME=true pnpm build & http-server ./packages/garfish/dist/iife --cors -p 1111",
     "test:e2e": "zx scripts/e2e.js",
     "test:e2e:open": "cross-env TEST_ENV_OPEN=true zx scripts/e2e.js",
     "test": "node scripts/unit.js",
