@@ -60,7 +60,7 @@
     "@vue/cli-plugin-babel": "4.5.13",
     "@vue/cli-plugin-eslint": "4.5.13",
     "@vue/cli-service": "4.5.13",
-    "axios": "0.22.0",
+    "axios": "0.23.0",
     "babel-polyfill": "6.26.0",
     "chalk": "4.1.2",
     "cross-env": "7.0.3",
