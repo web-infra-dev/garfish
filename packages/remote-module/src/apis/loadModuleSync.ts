@@ -56,6 +56,7 @@ export function loadModuleSync(
     );
 
     try {
+      cacheModules[urlWithVersion] = {};
       const actuator = new Actuator(manager, externals);
       let exports = actuator.execScript().exports;
 
@@ -66,6 +67,7 @@ export function loadModuleSync(
       cacheModules[urlWithVersion] = exports;
       result = getValueInObject(exports, segments);
     } catch (e) {
+      delete cacheModules[urlWithVersion];
       if (typeof error === 'function') {
         result = error(e, info, alias);
       } else {

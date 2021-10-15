@@ -27,15 +27,18 @@ export function loadModule(
 
   const asyncLoadProcess = async () => {
     let result = null;
-    try {
-      let module = cacheModules[urlWithVersion];
-      if (cache && module) {
-        if (isPromise(module)) {
-          module = await module;
-        }
-        result = getValueInObject(module, segments);
-      } else {
+    let module = cacheModules[urlWithVersion];
+
+    if (cache && module) {
+      if (isPromise(module)) {
+        module = await module;
+      }
+      result = getValueInObject(module, segments);
+    } else {
+      try {
         const data = await loader.loadModule(url);
+
+        cacheModules[urlWithVersion] = {};
         const actuator = new Actuator(data.resourceManager, externals);
         let exports = actuator.execScript().exports;
 
@@ -47,16 +50,17 @@ export function loadModule(
           exports = await exports;
         }
         result = getValueInObject(exports, segments);
+      } catch (e) {
+        delete cacheModules[urlWithVersion];
+        const alias = segments ? segments[0] : '';
+        if (typeof error === 'function') {
+          result = error(e, info, alias);
+        } else {
+          throw prettifyError(e, alias, url);
+        }
+      } finally {
+        fetchLoading[urlWithVersion] = null;
       }
-    } catch (e) {
-      const alias = segments ? segments[0] : '';
-      if (typeof error === 'function') {
-        result = error(e, info, alias);
-      } else {
-        throw prettifyError(e, alias, url);
-      }
-    } finally {
-      fetchLoading[urlWithVersion] = null;
     }
     return result;
   };
