@@ -113,7 +113,8 @@ export class DynamicNodeProcessor {
     }
     // To ensure the processing node to normal has been removed
     const linkCommentNode = this.DOMApis.createLinkCommentNode(href) as Comment;
-    this.el[__REMOVE_NODE__] = () => this.DOMApis.removeElement(linkCommentNode);
+    this.el[__REMOVE_NODE__] = () =>
+      this.DOMApis.removeElement(linkCommentNode);
     return linkCommentNode;
   }
 
@@ -155,7 +156,8 @@ export class DynamicNodeProcessor {
         src,
         code,
       });
-      this.el[__REMOVE_NODE__] = () => this.DOMApis.removeElement(scriptCommentNode)
+      this.el[__REMOVE_NODE__] = () =>
+        this.DOMApis.removeElement(scriptCommentNode);
       return scriptCommentNode;
     } else {
       if (__DEV__) {
