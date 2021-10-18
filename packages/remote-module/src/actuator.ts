@@ -1,5 +1,6 @@
 import { evalWithEnv } from '@garfish/utils';
 import { ModuleManager } from '@garfish/loader';
+import { hooks } from './hooks';
 import { currentApp, moduleConfig } from './common';
 
 export class Actuator {
@@ -14,6 +15,7 @@ export class Actuator {
       require: (key) => (externals || {})[key] || moduleConfig.externals[key],
     };
     this.env.module = this.env;
+    hooks.lifecycle.initModule.emit(this);
   }
 
   execScript() {

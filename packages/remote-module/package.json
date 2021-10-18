@@ -32,7 +32,8 @@
   },
   "dependencies": {
     "@garfish/loader": "workspace:*",
-    "@garfish/utils": "workspace:*"
+    "@garfish/utils": "workspace:*",
+    "@garfish/hooks": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

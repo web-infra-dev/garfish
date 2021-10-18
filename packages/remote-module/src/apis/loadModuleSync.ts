@@ -6,6 +6,7 @@ import {
   getModuleCode,
   prettifyError,
 } from '../common';
+import { hooks } from '../hooks';
 import { Actuator } from '../actuator';
 import { processAlias, getValueInObject } from './setModuleConfig';
 
@@ -63,6 +64,7 @@ export function loadModuleSync(
       if (typeof adapter === 'function') {
         exports = adapter(exports);
       }
+      exports = hooks.lifecycle.afterLoadModule.emit({ url, exports }).exports;
       isPromise(exports) && throwWarn(alias, url);
       cacheModules[urlWithVersion] = exports;
       result = getValueInObject(exports, segments);

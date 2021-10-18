@@ -7,6 +7,7 @@ import {
   purifyOptions,
   prettifyError,
 } from '../common';
+import { hooks } from '../hooks';
 import { Actuator } from '../actuator';
 import { processAlias, getValueInObject } from './setModuleConfig';
 
@@ -45,6 +46,10 @@ export function loadModule(
         if (typeof adapter === 'function') {
           exports = adapter(exports);
         }
+        exports = hooks.lifecycle.afterLoadModule.emit({
+          url,
+          exports,
+        }).exports;
         cacheModules[urlWithVersion] = exports;
         if (isPromise(exports)) {
           exports = await exports;
