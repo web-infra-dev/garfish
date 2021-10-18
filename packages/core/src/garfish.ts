@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { EventEmitter2 } from 'eventemitter2';
 import { Loader } from '@garfish/loader';
 import { SyncHook, AsyncHook, PluginSystem } from '@garfish/hooks';
 import { warn, assert, isPlainObject, __GARFISH_FLAG__ } from '@garfish/utils';
@@ -21,13 +21,13 @@ let numberOfNesting = 0;
 const DEFAULT_PROPS = new WeakMap();
 const HOOKS_API = { SyncHook, AsyncHook };
 
-export class Garfish extends EventEmitter {
+export class Garfish extends EventEmitter2 {
   public running = false;
   public version = __VERSION__;
   public flag = __GARFISH_FLAG__; // A unique identifier
   public loader = new Loader();
   public hooks = globalLifecycle();
-  public channel = new EventEmitter();
+  public channel = new EventEmitter2();
   public options = createDefaultOptions();
   public externals: Record<string, any> = {};
   public activeApps: Array<interfaces.App> = [];

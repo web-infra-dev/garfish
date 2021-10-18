@@ -108,7 +108,7 @@ export class App {
       [__GARFISH_EXPORTS__]: this.customExports,
       [__GARFISH_GLOBAL_ENV__]: this.globalEnvVariables,
       require: (key: string) => {
-        return context.externals[key] || this.global[key] || window[key];
+        return this.global[key] || context.externals[key] || window[key];
       },
     };
     this.cjsModules.module = this.cjsModules;
