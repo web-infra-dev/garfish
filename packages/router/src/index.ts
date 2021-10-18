@@ -52,7 +52,7 @@ export function GarfishRouter(_args?: Options) {
           Garfish.options;
 
         async function active(appInfo: interfaces.AppInfo, rootPath: string) {
-          const { name, cache, active } = appInfo;
+          const { name, cache = true, active } = appInfo;
           if (active) return active(appInfo, rootPath);
           appInfo.rootPath = rootPath;
 
@@ -116,8 +116,6 @@ export function GarfishRouter(_args?: Options) {
           if (!app.basename) app.basename = basename;
           return !!app.activeWhen;
         }) as Array<Required<interfaces.AppInfo>>;
-
-        if (appList.length === 0) return;
 
         const listenOptions = {
           basename,
