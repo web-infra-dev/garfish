@@ -102,7 +102,7 @@ function createOptions(Garfish: interfaces.Garfish) {
       ) {
         return;
       }
-
+      if (!appInstance.vmSandbox) return;
       rewriteAppAndSandbox(
         Garfish,
         appInstance,
