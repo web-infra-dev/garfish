@@ -117,8 +117,6 @@ export function GarfishRouter(_args?: Options) {
           return !!app.activeWhen;
         }) as Array<Required<interfaces.AppInfo>>;
 
-        if (appList.length === 0) return;
-
         const listenOptions = {
           basename,
           active,
