@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "outDir": "dist",
     "module": "ESNext",
-    "target": "es5",
+    "target": "es6",
     "lib": ["es6","dom"],
     "sourceMap": false,
     "moduleResolution": "node",

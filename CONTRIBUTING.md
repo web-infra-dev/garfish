@@ -31,7 +31,7 @@ pnpm build
 Build with watch mode
 
 ```bash
-pnpm dev
+pnpm build:watch
 ```
 
 ## Run Demo
@@ -41,6 +41,11 @@ To run Garfish locally, you can run
 ```bash
 pnpm dev
 ```
+
+```bash
+pnpm build:watch
+```
+
 
 The server will restart automatically every time the builds get updated.
 
@@ -67,11 +72,14 @@ packages
 ## The operation of the common
 
 ```shell
-# Debug core/garfish package
+# Debug dev package
 $ pnpm dev
 
 # Pack all package
 $ pnpm build
+
+# Build with watch mode
+$ pnpm build:watch
 
 # Run unit tests
 $ pnpm test

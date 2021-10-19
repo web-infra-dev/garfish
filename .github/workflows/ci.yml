@@ -21,14 +21,14 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Cache .pnpm-store
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/.pnpm-store
         key: ${{ runner.os }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
     - name: Install pnpm
       run: curl -f https://get.pnpm.io/v6.14.js | node - add --global pnpm@6
     - name: install dependency
-      run: pnpm install --filter=\!garfish-docs
+      run: pnpm install --filter=\!garfish-docs --filter=\!@garfish-dev/\*
     - name: Run unit tests
       run: pnpm test
 
@@ -44,7 +44,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Cache .pnpm-store
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/.pnpm-store
         key: ${{ runner.os }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -58,7 +58,7 @@ jobs:
       uses: cypress-io/github-action@v2
       with:
         install: false
-        start: npx cross-env CI_TEST_ENV=true node scripts/dev.js
+        start: node scripts/devCypress.js
         wait-on: 'http://localhost:2333,http://localhost:2444,http://localhost:2555,http://localhost:2666,http://localhost:2777'
         wait-on-timeout: 120
         parallel: true

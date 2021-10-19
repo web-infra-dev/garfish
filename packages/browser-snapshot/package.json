@@ -1,6 +1,6 @@
 {
   "name": "@garfish/browser-snapshot",
-  "version": "0.1.13",
+  "version": "1.0.12",
   "description": "browser-snapshot module.",
   "keywords": [
     "garfish",
@@ -31,7 +31,8 @@
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
   "dependencies": {
-    "@garfish/core": "workspace:*"
+    "@garfish/core": "workspace:*",
+    "@garfish/utils": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

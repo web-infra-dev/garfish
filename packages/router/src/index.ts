@@ -7,7 +7,7 @@ import router, {
 } from './context';
 
 declare module '@garfish/core' {
-  export interface Garfish {
+  export default interface Garfish {
     router: RouterInterface;
     apps: Record<string, interfaces.App>;
   }
@@ -48,13 +48,11 @@ export function GarfishRouter(_args?: Options) {
         let activeApp = null;
         const unmounts: Record<string, Function> = {};
         const { basename } = options;
-        const {
-          autoRefreshApp = true,
-          onNotMatchRouter = () => null,
-        } = Garfish.options;
+        const { autoRefreshApp = true, onNotMatchRouter = () => null } =
+          Garfish.options;
 
         async function active(appInfo: interfaces.AppInfo, rootPath: string) {
-          const { name, cache, active } = appInfo;
+          const { name, cache = true, active } = appInfo;
           if (active) return active(appInfo, rootPath);
           appInfo.rootPath = rootPath;
 
@@ -62,6 +60,7 @@ export function GarfishRouter(_args?: Options) {
           const app = await Garfish.loadApp(appInfo.name, {
             basename: rootPath,
             entry: appInfo.entry,
+            cache: true,
             domGetter: appInfo.domGetter,
           });
 
@@ -117,8 +116,6 @@ export function GarfishRouter(_args?: Options) {
           if (!app.basename) app.basename = basename;
           return !!app.activeWhen;
         }) as Array<Required<interfaces.AppInfo>>;
-
-        if (appList.length === 0) return;
 
         const listenOptions = {
           basename,

@@ -1,5 +1,7 @@
 # `@garfish/browser-vm`
 
+[![NPM version](https://img.shields.io/npm/v/@garfish/browser-vm.svg?style=flat-square)](https://www.npmjs.com/package/@garfish/browser-vm)
+
 ## Usage
 
 ```js

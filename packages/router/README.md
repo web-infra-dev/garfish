@@ -1,6 +1,7 @@
 # `@garfish/router`
 
-> TODO: description
+[![NPM version](https://img.shields.io/npm/v/@garfish/router.svg?style=flat-square)](https://www.npmjs.com/package/@garfish/router)
+
 
 ## Usage
 

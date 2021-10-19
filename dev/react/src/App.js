@@ -4,7 +4,7 @@ import Monitoring from './components/monitoring.js';
 import HelloGarfish from './components/helloGarfish.js';
 import RemoteComponent from './components/remoteComponent.js';
 // sandbox
-import SetProxyVariable from './components/sandbox/setProxyVariable.js';
+import Sandbox from './components/sandbox';
 import './App.css';
 
 const LazyComponent = React.lazy(() => import('./components/lazyComponent.js'));
@@ -29,7 +29,7 @@ export default function App({ basename }) {
         </ul>
         <ul className="nav-bas">
           <li>
-            <Link to="/set-proxy-variable">sandbox set proxy variable</Link>
+            <Link to="/vm-sandbox">vm sandbox</Link>
           </li>
         </ul>
 
@@ -49,8 +49,8 @@ export default function App({ basename }) {
             <Monitoring />
           </Route>
           {/* sandbox */}
-          <Route path="/set-proxy-variable">
-            <SetProxyVariable />
+          <Route path="/vm-sandbox">
+            <Sandbox />
           </Route>
         </Switch>
       </div>

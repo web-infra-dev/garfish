@@ -1,6 +1,6 @@
 {
   "name": "@garfish/core",
-  "version": "0.1.13",
+  "version": "1.0.12",
   "description": "core module.",
   "keywords": [
     "garfish",
@@ -34,7 +34,8 @@
   "dependencies": {
     "@garfish/hooks": "workspace:*",
     "@garfish/loader": "workspace:*",
-    "@garfish/utils": "workspace:*"
+    "@garfish/utils": "workspace:*",
+    "eventemitter2": "^6.4.5"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

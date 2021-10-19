@@ -1,13 +1,13 @@
 # `garfish`
 
-> TODO: description
+[![NPM version](https://img.shields.io/npm/v/garfish.svg?style=flat-square)](https://www.npmjs.com/package/garfish)
 
 ## Usage
 
 ```js
-import Garfish from 'garfish';
+import GarfishInstance from 'garfish';
 
-Garfish.run({
+GarfishInstance.run({
   domGetter: '#AppContainer',
   apps: [
     {

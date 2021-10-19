@@ -1,4 +1,4 @@
-import { warn, __ELEMENT_DELETE_TAG__ } from '@garfish/utils';
+import { warn } from '@garfish/utils';
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
 import { sandboxMap, isInIframe } from '../utils';
@@ -48,7 +48,6 @@ function injectorRemoveChild(current: Function, methodName: string) {
     const originProcess = () => {
       // Sandbox may have applied sub dom side effects to delete
       // by removeChild deleted by the tag determine whether have been removed
-      if (el && el[__ELEMENT_DELETE_TAG__]) return el;
       return current.apply(this, arguments);
     };
     if (sandbox) {

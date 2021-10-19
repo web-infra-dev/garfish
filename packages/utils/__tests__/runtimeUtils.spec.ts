@@ -49,12 +49,11 @@ describe('Garfish shared runtimeUtils', () => {
   });
 
   it('toBoolean', () => {
+    expect(toBoolean('')).toBe(true);
     expect(toBoolean('false')).toBe(false);
-    [0, 1, '', 'a', , false, true, null, undefined, {}, () => {}].forEach(
-      (val) => {
-        expect(toBoolean(val)).toBe(Boolean(val));
-      },
-    );
+    [0, 1, 'a', false, true, null, undefined, {}, () => {}].forEach((val) => {
+      expect(toBoolean(val)).toBe(Boolean(val));
+    });
   });
 
   it('createKey', () => {

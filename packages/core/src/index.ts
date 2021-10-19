@@ -1,2 +1,2 @@
-export { Garfish } from './garfish';
-export { interfaces } from './interface';
+export type { interfaces } from './interface';
+export { Garfish as default } from './garfish';

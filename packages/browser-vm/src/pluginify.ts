@@ -2,9 +2,10 @@ import { interfaces } from '@garfish/core';
 import { warn, isPlainObject } from '@garfish/utils';
 import { Module } from './types';
 import { Sandbox } from './sandbox';
+import { sandboxMap } from './utils';
 
 declare module '@garfish/core' {
-  export interface Garfish {
+  export default interface Garfish {
     getGlobalObject: () => Window & typeof globalThis;
     setGlobalValue(key: string, value?: any): void;
     clearEscapeEffect: (key: string, value?: any) => void;
@@ -56,6 +57,7 @@ function rewriteAppAndSandbox(
   sandbox: Sandbox,
 ) {
   const originExecScript = sandbox.execScript;
+  sandboxMap.set(sandbox);
   // Rewrite sandbox attributes
   sandbox.loader = Garfish.loader;
   sandbox.execScript = (code, env, url, options) => {
@@ -65,7 +67,7 @@ function rewriteAppAndSandbox(
       {
         // For application of environment variables
         ...env,
-        ...app.getExecScriptEnv(false),
+        ...app.getExecScriptEnv(options?.noEntry),
       },
       url,
       options,
@@ -74,6 +76,7 @@ function rewriteAppAndSandbox(
   // Rewrite app attributes
   app.vmSandbox = sandbox;
   app.global = sandbox.global;
+  app.strictIsolation = sandbox.options.strictIsolation;
   app.runCode = function () {
     return originExecScript.apply(sandbox, arguments);
   };
@@ -99,7 +102,7 @@ function createOptions(Garfish: interfaces.Garfish) {
       ) {
         return;
       }
-
+      if (appInstance.vmSandbox) return;
       rewriteAppAndSandbox(
         Garfish,
         appInstance,
@@ -108,7 +111,7 @@ function createOptions(Garfish: interfaces.Garfish) {
           namespace: appInfo.name,
           sourceList: appInstance.sourceList,
           baseUrl: appInstance.entryManager.url,
-          strictIsolation: appInstance.strictIsolation,
+          strictIsolation: appInfo.sandbox?.strictIsolation,
           modules: compatibleOldModule(appInfo.sandbox.modules),
 
           el: () => appInstance.htmlNode,
@@ -124,7 +127,7 @@ function createOptions(Garfish: interfaces.Garfish) {
             return [
               ...(appInfo.protectVariable || []),
               ...(appInstance &&
-                Object.keys(appInstance.getExecScriptEnv(false) || [])),
+                Object.keys(appInstance.getExecScriptEnv(false) || {})),
             ].filter(Boolean);
           },
         }),
@@ -132,12 +135,13 @@ function createOptions(Garfish: interfaces.Garfish) {
     },
 
     // If the app is uninstalled, the sandbox needs to clear all effects and then reset
-    afterUnmount(_, appInstance) {
+    afterUnmount(appInfo, appInstance) {
       if (!appInstance.vmSandbox) return;
       appInstance.vmSandbox.reset();
+      sandboxMap.del(appInstance.vmSandbox);
     },
 
-    afterMount(_, appInstance) {
+    afterMount(appInfo, appInstance) {
       if (!appInstance.vmSandbox) return;
       appInstance.vmSandbox.execScript(`
         if (typeof window.onload === 'function') {

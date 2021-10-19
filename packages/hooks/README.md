@@ -1,6 +1,6 @@
 # `@garfish/hooks`
 
-> TODO: description
+[![NPM version](https://img.shields.io/npm/v/@garfish/hooks.svg?style=flat-square)](https://www.npmjs.com/package/@garfish/hooks)
 
 ## Usage
 

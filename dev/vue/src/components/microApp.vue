@@ -14,6 +14,7 @@
 <script>
 // 嵌套场景
 import GarfishInstance from 'garfish';
+import portInfo from '../../../config.json';
 
 let hasInit = false;
 export default {
@@ -62,14 +63,14 @@ export default {
       apps: [
         {
           name: 'vueApp',
-          entry: 'http://localhost:2666',
+          entry: `http://localhost:${portInfo['dev/vue-sub'].port}`,
           // basename: '/garfish_master/vue/micro-app',
           activeWhen: '/vueApp',
           cache: true,
         },
         {
           name: 'reactApp',
-          entry: 'http://localhost:2444',
+          entry: `http://localhost:${portInfo['dev/react'].port}`,
           // basename: '/garfish_master/vue/micro-app',
           activeWhen: '/reactApp',
           cache: true

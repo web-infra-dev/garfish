@@ -1,21 +1,27 @@
 import { hasOwn, makeMap, nextTick } from '@garfish/utils';
 import { Sandbox } from './sandbox';
 import { FakeWindow } from './types';
-import { __proxyNode__, __sandboxMap__ } from './symbolTypes';
+import {
+  __elementSandboxTag__,
+  __proxyNode__,
+  __sandboxMap__,
+} from './symbolTypes';
 
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object
-const esGlobalMethods = ( // Function properties of the global object // Function properties of the global object
-  'eval,isFinite,isNaN,parseFloat,parseInt,' +
-  // URL handling functions
-  'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +
-  // Constructor properties of the global object
-  'Array,ArrayBuffer,BigInt,BigInt64Array,BigUint64Array,Boolean,DataView,Date,Error,EvalError,' +
-  'FinalizationRegistry,Float32Array,Float64Array,Function,Int8Array,Int16Array,Int32Array,Map,Number,' +
-  'Object,Promise,Proxy,RangeError,ReferenceError,RegExp,Set,SharedArrayBuffer,String,Symbol,SyntaxError,' +
-  'TypeError,Uint8Array,Uint8ClampedArray,Uint16Array,Uint32Array,URIError,WeakMap,WeakRef,WeakSet,' +
-  // Other Properties of the Global Object
-  'Atomics,JSON,Math,Reflect'
-).split(',');
+const esGlobalMethods =
+  // Function properties of the global object // Function properties of the global object
+  (
+    'eval,isFinite,isNaN,parseFloat,parseInt,' +
+    // URL handling functions
+    'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +
+    // Constructor properties of the global object
+    'Array,ArrayBuffer,BigInt,BigInt64Array,BigUint64Array,Boolean,DataView,Date,Error,EvalError,' +
+    'FinalizationRegistry,Float32Array,Float64Array,Function,Int8Array,Int16Array,Int32Array,Map,Number,' +
+    'Object,Promise,Proxy,RangeError,ReferenceError,RegExp,Set,SharedArrayBuffer,String,Symbol,SyntaxError,' +
+    'TypeError,Uint8Array,Uint8ClampedArray,Uint16Array,Uint32Array,URIError,WeakMap,WeakRef,WeakSet,' +
+    // Other Properties of the Global Object
+    'Atomics,JSON,Math,Reflect'
+  ).split(',');
 
 export const isEsGlobalMethods = makeMap(esGlobalMethods);
 
@@ -25,23 +31,37 @@ export const optimizeMethods = [...esGlobalMethods].filter((v) => v !== 'eval');
 
 // The sandbox may be used alone, to ensure that the `sandboxMap` is globally unique,
 // because we will only rewrite `appendChild` once
-export const sandboxMap = (() => {
-  if (!(window as FakeWindow)[__sandboxMap__]) {
-    (window as FakeWindow)[__sandboxMap__] = {
-      deps: new WeakMap(),
+let sandboxList: Map<number, Sandbox> = new Map();
+if (!(window as FakeWindow)[__sandboxMap__]) {
+  (window as FakeWindow)[__sandboxMap__] = sandboxList;
+} else {
+  sandboxList = (window as FakeWindow)[__sandboxMap__];
+}
 
-      get(element: Element): Sandbox {
-        return this.deps.get(element);
-      },
+export const sandboxMap = {
+  sandboxMap: sandboxList,
 
-      set(element: Element, sandbox: Sandbox) {
-        if (this.deps.get(element)) return;
-        this.deps.set(element, sandbox);
-      },
-    };
-  }
-  return (window as FakeWindow)[__sandboxMap__];
-})();
+  get(element: Element): Sandbox {
+    if (!element) return;
+    const sandboxId = element[__elementSandboxTag__];
+    if (typeof sandboxId !== 'number') return;
+    return this.sandboxMap.get(sandboxId);
+  },
+
+  setElementTag(element: Element, sandbox: Sandbox) {
+    if (!element) return;
+    element[__elementSandboxTag__] = sandbox.id;
+  },
+
+  set(sandbox: Sandbox) {
+    if (this.sandboxMap.get(sandbox.id)) return;
+    this.sandboxMap.set(sandbox.id, sandbox);
+  },
+
+  del(sandbox: Sandbox) {
+    this.sandboxMap.delete(sandbox.id);
+  },
+};
 
 export function handlerParams(args: IArguments | Array<any>) {
   args = Array.isArray(args) ? args : Array.from(args);
@@ -63,8 +83,8 @@ export function isInIframe() {
 // Copy "window" and "document"
 export function createFakeObject(
   target: Record<PropertyKey, any>,
-  filter?: (PropertyKey) => boolean,
-  isWritable?: (PropertyKey) => boolean,
+  filter?: (key: PropertyKey) => boolean,
+  isWritable?: (key: PropertyKey) => boolean,
 ) {
   const fakeObject = {};
   const propertyMap = {};

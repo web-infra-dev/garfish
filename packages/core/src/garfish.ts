@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { EventEmitter2 } from 'eventemitter2';
 import { Loader } from '@garfish/loader';
 import { SyncHook, AsyncHook, PluginSystem } from '@garfish/hooks';
 import { warn, assert, isPlainObject, __GARFISH_FLAG__ } from '@garfish/utils';
@@ -8,7 +8,7 @@ import {
   generateAppOptions,
   createDefaultOptions,
 } from './config';
-import { App, AppInfo } from './module/app';
+import { App } from './module/app';
 import { interfaces } from './interface';
 import { globalLifecycle } from './lifecycle';
 import { processAppResources } from './module/resource';
@@ -21,13 +21,13 @@ let numberOfNesting = 0;
 const DEFAULT_PROPS = new WeakMap();
 const HOOKS_API = { SyncHook, AsyncHook };
 
-export class Garfish extends EventEmitter {
+export class Garfish extends EventEmitter2 {
   public running = false;
   public version = __VERSION__;
   public flag = __GARFISH_FLAG__; // A unique identifier
   public loader = new Loader();
   public hooks = globalLifecycle();
-  public channel = new EventEmitter();
+  public channel = new EventEmitter2();
   public options = createDefaultOptions();
   public externals: Record<string, any> = {};
   public activeApps: Array<interfaces.App> = [];
@@ -35,7 +35,7 @@ export class Garfish extends EventEmitter {
   public cacheApps: Record<string, interfaces.App> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
 
-  private nestedPluginSwitch = false;
+  private nestedSwitch = false;
   private loading: Record<string, Promise<any> | null> = {};
 
   get props(): Record<string, any> {
@@ -66,7 +66,7 @@ export class Garfish extends EventEmitter {
     plugin: (context: Garfish) => interfaces.Plugin,
     ...args: Array<any>
   ) {
-    if (!this.nestedPluginSwitch) {
+    if (!this.nestedSwitch) {
       assert(!this.running, 'Cannot register plugin after Garfish is started.');
     }
     assert(typeof plugin === 'function', 'Plugin must be a function.');
@@ -93,13 +93,13 @@ export class Garfish extends EventEmitter {
         options = deepMergeConfig(mainOptions, options);
         options = filterNestedConfig(this, options, numberOfNesting);
 
-        this.nestedPluginSwitch = true;
+        this.nestedSwitch = true;
         options.plugins?.forEach((plugin) => this.usePlugin(plugin));
         // `pluginName` is unique
         this.usePlugin(
           GarfishOptionsLife(options, `nested-lifecycle-${numberOfNesting}`),
         );
-        this.nestedPluginSwitch = false;
+        this.nestedSwitch = false;
 
         if (options.apps) {
           this.registerApp(
@@ -134,18 +134,13 @@ export class Garfish extends EventEmitter {
 
     // Emit hooks and register apps
     this.hooks.lifecycle.beforeBootstrap.emit(this.options);
-    this.registerApp(this.options.apps || []);
     this.running = true;
+    this.registerApp(this.options.apps || []);
     this.hooks.lifecycle.bootstrap.emit(this.options);
     return this;
   }
 
   registerApp(list: interfaces.AppInfo | Array<interfaces.AppInfo>) {
-    if (!this.running) {
-      // TODO: throw error
-      warn('"AppInfo" can only be registered after Garfish is started.');
-    }
-
     const currentAdds = {};
     this.hooks.lifecycle.beforeRegisterApp.emit(list);
     if (!Array.isArray(list)) list = [list];
@@ -157,10 +152,6 @@ export class Garfish extends EventEmitter {
           appInfo.entry,
           `${appInfo.name} application entry is not url: ${appInfo.entry}`,
         );
-        // Deep merge this.options
-        // if (!appInfo.nested) {
-        //   appInfo = deepMergeConfig(this.options, appInfo);
-        // }
         currentAdds[appInfo.name] = appInfo;
         this.appInfos[appInfo.name] = appInfo;
       } else if (__DEV__) {

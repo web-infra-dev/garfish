@@ -1,6 +1,5 @@
 const webpack = require('webpack');
-const configCommon = require('../config.json');
-const path = require('path');
+const portInfo = require('../config.json')['dev/react'];
 
 module.exports = {
   webpack(config, env) {
@@ -8,8 +7,8 @@ module.exports = {
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
     config.output.jsonpFunction = 'react-garfish-exports';
-    (config.mode = process.env.TEST_ENV ? 'production' : 'development'),
-      (config.output.publicPath = `http://localhost:${configCommon.reactPort}/`);
+    config.mode = process.env.TEST_ENV ? 'production' : 'development';
+    config.output.publicPath = `http://localhost:${portInfo.port}/`;
     config.plugins.push(
       new webpack.BannerPlugin({
         raw: true,

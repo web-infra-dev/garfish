@@ -1,5 +1,7 @@
 # `@garfish/loader`
 
+[![NPM version](https://img.shields.io/npm/v/@garfish/loader.svg?style=flat-square)](https://www.npmjs.com/package/@garfish/loader)
+
 ## Usage
 
 ```js

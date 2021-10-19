@@ -6,3 +6,4 @@ export const __windowBind__ = Symbol.for('garfish.windowBind');
 export const __sandboxMap__ = Symbol.for('garfish.sandboxMap');
 export const __documentBind__ = Symbol.for('garfish.documentBind');
 export const __garfishGlobal__ = Symbol.for('garfish.globalObject');
+export const __elementSandboxTag__ = Symbol.for('garfish.elementSandboxTag');

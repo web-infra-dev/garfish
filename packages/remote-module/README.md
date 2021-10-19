@@ -1,5 +1,7 @@
 # `@garfish/remote-module`
 
+[![NPM version](https://img.shields.io/npm/v/@garfish/remote-module.svg?style=flat-square)](https://www.npmjs.com/package/@garfish/remote-module)
+
 `@garfish/remote-module` can be used alone or combined with Garfish.
 
 ## Usage

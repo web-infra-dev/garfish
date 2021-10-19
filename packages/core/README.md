@@ -1,5 +1,7 @@
 # `@garfish/core`
 
+[![NPM version](https://img.shields.io/npm/v/@garfish/core.svg?style=flat-square)](https://www.npmjs.com/package/@garfish/core)
+
 ## Usage
 
 ```shell

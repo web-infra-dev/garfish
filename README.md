@@ -4,7 +4,7 @@
 
 English | [简体中文](./README.ch.md)
 
-## Garfish
+## Garfish [![NPM version](https://img.shields.io/npm/v/garfish.svg?style=flat-square)](https://www.npmjs.com/package/garfish) [![build status](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml)
 
 Garfish is a micro front-end framework, mainly used to solve the problems of cross-team collaboration, diversification of technology system, and increasing complexity of applications brought by modern web applications in the context of front-end ecological boom and increasing complexity of web applications, and Garfish has been polished and tested by a large number of online applications, with strong functional stability and reliability.
 
@@ -15,7 +15,7 @@ To compose multiple independently delivered front-end applications into a whole,
 ## Installation
 
 ```bash
-$ yarn add garfish #or npm i garfish -S
+$ yarn add garfish # or npm i garfish
 ```
 
 ## Documentation

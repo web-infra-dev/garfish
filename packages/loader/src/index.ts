@@ -1,5 +1,12 @@
 import { SyncHook, SyncWaterfallHook, PluginSystem } from '@garfish/hooks';
-import { warn, isJs, isCss, isHtml, __LOADER_FLAG__ } from '@garfish/utils';
+import {
+  warn,
+  isJs,
+  isCss,
+  isHtml,
+  __LOADER_FLAG__,
+  isJsonp,
+} from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
 import { TemplateManager } from './managers/template';
@@ -135,7 +142,11 @@ export class Loader {
         } else if (isHtml(mimeType) || /\.html/.test(result.url)) {
           fileType = FileTypes.template;
           managerCtor = TemplateManager;
-        } else if (isJs(mimeType) || /\.js/.test(result.url)) {
+        } else if (
+          isJs(mimeType) ||
+          /\.js/.test(result.url) ||
+          isJsonp(mimeType, result.url)
+        ) {
           fileType = FileTypes.js;
           managerCtor = JavaScriptManager;
         } else if (isCss(mimeType) || /\.css/.test(result.url)) {

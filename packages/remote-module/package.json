@@ -1,6 +1,6 @@
 {
   "name": "@garfish/remote-module",
-  "version": "0.1.13",
+  "version": "1.0.12",
   "description": "remote-module module.",
   "keywords": [
     "garfish",
@@ -31,8 +31,9 @@
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
   "dependencies": {
-    "@garfish/core": "workspace:*",
-    "@garfish/loader": "workspace:*"
+    "@garfish/loader": "workspace:*",
+    "@garfish/utils": "workspace:*",
+    "@garfish/hooks": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

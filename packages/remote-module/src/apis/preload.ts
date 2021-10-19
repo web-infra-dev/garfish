@@ -1,4 +1,5 @@
 import { assert, isAbsolute } from '@garfish/utils';
+import { hooks } from '../hooks';
 import { processAlias } from './setModuleConfig';
 import { loader, resourcesStore } from '../common';
 
@@ -15,6 +16,8 @@ export function preload(urls: string | Array<string>) {
       );
       return loader.loadModule(url).then((data) => {
         resourcesStore.push(data.resourceManager);
+        hooks.lifecycle.preloaded.emit(data.resourceManager);
+        return data;
       });
     }),
   );
