@@ -1,6 +1,7 @@
 import { Loader, ModuleManager } from '@garfish/loader';
 import {
   isObject,
+  isPlainObject,
   deepMerge,
   safeWrapper,
   __LOADER_FLAG__,
@@ -77,10 +78,21 @@ export const getModuleCode = (url: string) => {
 };
 
 export const purifyOptions = (urlOrAlias: string, options?: ModuleInfo) => {
-  return deepMerge(moduleConfig, {
-    ...options,
-    url: urlOrAlias,
-  }) as ModuleInfo & { url: string };
+  let config;
+
+  if (isPlainObject(options)) {
+    const cloned = { ...options };
+    const externals = { ...moduleConfig.externals, ...options.externals };
+    delete cloned.externals;
+    config = deepMerge(moduleConfig, { ...cloned, url: urlOrAlias });
+    config.externals = externals;
+  } else {
+    config = deepMerge(moduleConfig, { url: urlOrAlias });
+  }
+
+  return config as ModuleInfo & {
+    url: string;
+  };
 };
 
 export const prettifyError = (

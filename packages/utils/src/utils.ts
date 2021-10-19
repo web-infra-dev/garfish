@@ -330,7 +330,10 @@ export function transformUrl(resolvePath: string, curPath: string) {
     const realPath = new URL(curPath, baseUrl.href);
     return realPath.href;
   } catch {
-    __DEV__ && warn(`resolvePath is ${resolvePath}, curPath is ${curPath} .Conversion failure`);
+    __DEV__ &&
+      warn(
+        `resolvePath is ${resolvePath}, curPath is ${curPath} .Conversion failure`,
+      );
     return curPath;
   }
 }
