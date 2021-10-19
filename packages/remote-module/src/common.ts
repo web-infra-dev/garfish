@@ -79,16 +79,21 @@ export const getModuleCode = (url: string) => {
 
 export const purifyOptions = (urlOrAlias: string, options?: ModuleInfo) => {
   let config;
+  const globalExternals = moduleConfig.externals;
+  delete moduleConfig.externals;
 
   if (isPlainObject(options)) {
-    const cloned = { ...options };
-    const externals = { ...moduleConfig.externals, ...options.externals };
-    delete cloned.externals;
-    config = deepMerge(moduleConfig, { ...cloned, url: urlOrAlias });
-    config.externals = externals;
+    const curExternals = options.externals;
+    delete options.externals;
+    config = deepMerge(moduleConfig, { ...options, url: urlOrAlias });
+    options.externals = curExternals;
+    config.externals = { ...globalExternals, ...curExternals };
   } else {
     config = deepMerge(moduleConfig, { url: urlOrAlias });
+    config.externals = globalExternals;
   }
+
+  moduleConfig.externals = globalExternals;
 
   return config as ModuleInfo & {
     url: string;
