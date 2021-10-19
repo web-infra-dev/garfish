@@ -325,9 +325,14 @@ export function isAbsolute(url: string) {
 }
 
 export function transformUrl(resolvePath: string, curPath: string) {
-  const baseUrl = new URL(resolvePath, location.href);
-  const realPath = new URL(curPath, baseUrl.href);
-  return realPath.href;
+  try {
+    const baseUrl = new URL(resolvePath, location.href);
+    const realPath = new URL(curPath, baseUrl.href);
+    return realPath.href;
+  } catch {
+    __DEV__ && warn(`resolvePath is ${resolvePath}, curPath is ${curPath} .Conversion failure`);
+    return curPath;
+  }
 }
 
 export function findTarget(
