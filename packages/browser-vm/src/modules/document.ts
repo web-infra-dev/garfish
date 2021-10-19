@@ -12,10 +12,11 @@ const rawDocumentCtor = Document;
 const rawHTMLDocumentCtor = HTMLDocument;
 
 export const documentModule = (sandbox: Sandbox) => {
-  // eslint-disable-next-line
-  let proxyDocument;
-  const fakeDocument = createFakeObject(document);
+  let proxyDocument = {};
   const getter = createGetter(sandbox);
+
+  const fakeDocument = createFakeObject(document);
+  const fakeHTMLDocument = Object.create(fakeDocument);
 
   const fakeDocumentProto = new Proxy(fakeDocument, {
     get: (...args) => {
@@ -24,7 +25,6 @@ export const documentModule = (sandbox: Sandbox) => {
     },
     has: createHas(),
   });
-
   const fakeHTMLDocumentProto = Object.create(fakeDocumentProto);
 
   const fakeDocumentCtor = function Document() {
@@ -51,7 +51,7 @@ export const documentModule = (sandbox: Sandbox) => {
     const docInstance = new rawHTMLDocumentCtor();
     // If you inherit fakeHTMLDocumentCtor,
     // you will get the properties and methods on the original document, which do not meet expectations
-    Object.setPrototypeOf(docInstance, fakeDocument);
+    Object.setPrototypeOf(docInstance, fakeHTMLDocument);
     return docInstance;
   };
 
@@ -61,7 +61,7 @@ export const documentModule = (sandbox: Sandbox) => {
   fakeHTMLDocumentCtor.prototype.constructor = fakeHTMLDocumentCtor;
 
   if (Symbol.hasInstance) {
-    const getHasInstanceCheckFn = (fakeProto) => {
+    const getHasInstanceCheckFn = (fakeProto, fakeDocument) => {
       return (value) => {
         let proto = value;
         if (proto === document) return true;
@@ -73,17 +73,17 @@ export const documentModule = (sandbox: Sandbox) => {
         const cloned = function () {};
         cloned.prototype = fakeDocument;
         return value instanceof cloned;
-      }
-    }
+      };
+    };
 
     Object.defineProperty(fakeDocumentCtor, Symbol.hasInstance, {
       configurable: true,
-      value: getHasInstanceCheckFn(fakeDocumentProto),
+      value: getHasInstanceCheckFn(fakeDocumentProto, fakeDocument),
     });
 
     Object.defineProperty(fakeHTMLDocumentCtor, Symbol.hasInstance, {
       configurable: true,
-      value: getHasInstanceCheckFn(fakeHTMLDocumentProto),
+      value: getHasInstanceCheckFn(fakeHTMLDocumentProto, fakeHTMLDocument),
     });
   }
 
