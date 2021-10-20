@@ -3,8 +3,8 @@ name: Release
 on:
   push:
     tags-ignore:
-      - 'v1.*.**-alpha-*'
-      - 'v1.*.**-beta-*'
+      - 'v*.*.*-alpha.*'
+      - 'v*.*.*-beta.*'
 
 jobs:
   release:
