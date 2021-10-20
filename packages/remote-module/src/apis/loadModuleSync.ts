@@ -32,6 +32,13 @@ export function loadModuleSync(
   urlOrAlias: string,
   options?: ModuleInfo,
 ): Record<string, any> {
+  const data = hooks.lifecycle.beforeLoadModule.emit({
+    options,
+    url: urlOrAlias,
+  });
+  urlOrAlias = data.url;
+  options = data.options;
+
   assert(urlOrAlias, 'Missing url for loading remote module.');
   const [url, segments] = processAlias(urlOrAlias);
   assert(
