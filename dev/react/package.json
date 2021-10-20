@@ -4,16 +4,16 @@
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "5.14.1",
-    "@testing-library/react": "^9.3.2",
+    "@testing-library/react": "9.5.0",
     "@testing-library/user-event": "13.3.0",
-    "antd": "^4.9.4",
-    "classnames": "^2.3.1",
-    "react": "^16.13.1",
-    "react-app-rewired": "^2.1.6",
-    "react-dom": "^16.13.1",
-    "react-router-dom": "^5.2.0",
+    "antd": "4.16.13",
+    "classnames": "2.3.1",
+    "react": "16.14.0",
+    "react-app-rewired": "2.1.8",
+    "react-dom": "16.14.0",
+    "react-router-dom": "5.3.0",
     "react-scripts": "3.4.1",
-    "react-shadow-dom-retarget-events": "^1.0.11"
+    "react-shadow-dom-retarget-events": "1.1.0"
   },
   "scripts": {
     "start": "WDS_SOCKET_PORT=2444 PORT=2444 BROWSER=none react-app-rewired start",
