@@ -197,6 +197,7 @@ export class Garfish extends EventEmitter2 {
       const cacheApp = this.cacheApps[appName];
       if (appInfo.cache && cacheApp) {
         appInstance = cacheApp;
+        this.loading[appName] = null;
       } else {
         try {
           const [manager, resources, isHtmlMode] = await processAppResources(
@@ -231,7 +232,7 @@ export class Garfish extends EventEmitter2 {
       return appInstance;
     };
 
-    if (!appInfo.cache || !this.loading[appName]) {
+    if (!this.loading[appName]) {
       this.loading[appName] = asyncLoadProcess();
     }
     return this.loading[appName];

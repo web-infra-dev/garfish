@@ -206,11 +206,13 @@ export class App {
       __DEV__ && warn('Need to call the "app.mount()" method first.');
       return false;
     }
+    this.hooks.lifecycle.beforeMount.emit(this.appInfo, this, true);
 
     await this.addContainer();
     this.callRender(provider, false);
     this.display = true;
     this.context.activeApps.push(this);
+    this.hooks.lifecycle.afterMount.emit(this.appInfo, this, true);
     return true;
   }
 
@@ -222,16 +224,18 @@ export class App {
       __DEV__ && warn('Need to call the "app.mount()" method first.');
       return false;
     }
+    this.hooks.lifecycle.beforeUnmount.emit(this.appInfo, this, true);
 
     this.callDestroy(provider, false);
     this.display = false;
     remove(this.context.activeApps, this);
+    this.hooks.lifecycle.afterUnmount.emit(this.appInfo, this, true);
     return true;
   }
 
   async mount() {
     if (!this.canMount()) return false;
-    this.hooks.lifecycle.beforeMount.emit(this.appInfo, this);
+    this.hooks.lifecycle.beforeMount.emit(this.appInfo, this, false);
 
     this.active = true;
     this.mounting = true;
@@ -248,7 +252,7 @@ export class App {
       this.display = true;
       this.mounted = true;
       this.context.activeApps.push(this);
-      this.hooks.lifecycle.afterMount.emit(this.appInfo, this);
+      this.hooks.lifecycle.afterMount.emit(this.appInfo, this, false);
 
       await asyncJsProcess;
       if (!this.stopMountAndClearEffect()) return false;
@@ -273,7 +277,7 @@ export class App {
     }
     // This prevents the unmount of the current app from being called in "provider.destroy"
     this.unmounting = true;
-    this.hooks.lifecycle.beforeUnmount.emit(this.appInfo, this);
+    this.hooks.lifecycle.beforeUnmount.emit(this.appInfo, this, false);
 
     try {
       this.callDestroy(this.provider, true);
@@ -283,7 +287,7 @@ export class App {
       this.customExports = {};
       this.cjsModules.exports = {};
       remove(this.context.activeApps, this);
-      this.hooks.lifecycle.afterUnmount.emit(this.appInfo, this);
+      this.hooks.lifecycle.afterUnmount.emit(this.appInfo, this, false);
     } catch (e) {
       remove(this.context.activeApps, this);
       this.entryManager.DOMApis.removeElement(this.appContainer);
