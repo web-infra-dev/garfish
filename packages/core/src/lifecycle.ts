@@ -41,11 +41,11 @@ export function appLifecycle() {
       ],
       void
     >(),
-    beforeMount: new SyncHook<[interfaces.AppInfo, interfaces.App], void>(),
-    afterMount: new SyncHook<[interfaces.AppInfo, interfaces.App], void>(),
+    beforeMount: new SyncHook<[interfaces.AppInfo, interfaces.App, boolean], void>(),
+    afterMount: new SyncHook<[interfaces.AppInfo, interfaces.App, boolean], void>(),
     errorMountApp: new SyncHook<[Error, interfaces.AppInfo], void>(),
-    beforeUnmount: new SyncHook<[interfaces.AppInfo, interfaces.App], void>(),
-    afterUnmount: new SyncHook<[interfaces.AppInfo, interfaces.App], void>(),
+    beforeUnmount: new SyncHook<[interfaces.AppInfo, interfaces.App, boolean], void>(),
+    afterUnmount: new SyncHook<[interfaces.AppInfo, interfaces.App, boolean], void>(),
     errorUnmountApp: new SyncHook<[Error, interfaces.AppInfo], void>(),
     errorExecCode: new SyncHook<
       [

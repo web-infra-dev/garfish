@@ -106,4 +106,19 @@ describe('Sandbox:Dom & Bom', () => {
       `),
     );
   });
+
+  it('Document and HTMLDocument', () => {
+    sandbox.execScript(
+      go(`
+      expect(document instanceof HTMLDocument).toBe(true);
+      expect(document instanceof Document).toBe(true);
+      const documentCopy1 = new HTMLDocument();
+      expect(documentCopy1 instanceof HTMLDocument).toBe(true);
+      expect(documentCopy1 instanceof Document).toBe(true);
+      const documentCopy2 = new Document();
+      expect(documentCopy2 instanceof HTMLDocument).toBe(false);
+      expect(documentCopy2 instanceof Document).toBe(true);
+    `),
+    );
+  });
 });
