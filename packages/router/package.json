@@ -1,6 +1,6 @@
 {
   "name": "@garfish/router",
-  "version": "1.0.14-beta.2",
+  "version": "1.0.14",
   "description": "router module.",
   "keywords": [
     "garfish",
