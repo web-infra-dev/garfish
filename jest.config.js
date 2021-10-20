@@ -3,6 +3,7 @@
 
 module.exports = {
   clearMocks: true,
+  testEnvironment: 'jsdom',
   preset: 'jest-puppeteer',
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: ['__tests__', '/node_modules/'],
