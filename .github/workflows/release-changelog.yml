@@ -2,8 +2,9 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    tags-ignore:
+      - 'v**-alpha'
+      - 'v**-beta'
 
 jobs:
   release:
