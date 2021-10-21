@@ -28,6 +28,7 @@ export interface SandboxOptions {
   loaderOptions?: LoaderOptions;
   el?: () => Element | ShadowRoot | null;
   protectVariable?: () => Array<PropertyKey>;
+  protectStorage?: () => Array<string>;
   insulationVariable?: () => Array<PropertyKey>;
 }
 

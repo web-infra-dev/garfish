@@ -24,6 +24,7 @@ const appConfigList: Array<keyof interfaces.AppInfo | 'activeWhen'> = [
   'nested',
   'noCheckProvider',
   'protectVariable',
+  'protectStorage',
   'customLoader',
   ...appLifecycle().lifecycleKeys,
 ];

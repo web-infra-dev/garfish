@@ -5,10 +5,12 @@ export class CusStorage {
   prefix: string;
   namespace: string;
   rawStorage: Storage;
+  isProtect: (keyName: string) => boolean;;
 
-  constructor(namespace: string, rawStorage: Storage) {
+  constructor(namespace: string, rawStorage: Storage, isProtect: (keyName: string) => boolean) {
     this.rawStorage = rawStorage;
     this.namespace = namespace;
+    this.isProtect = isProtect;
     this.prefix = `${GARFISH_NAMESPACE_PREFIX}${namespace}__`;
   }
 
@@ -22,6 +24,13 @@ export class CusStorage {
     );
   }
 
+  private getKeyName(keyName: string) {
+    if (this.isProtect(keyName)) {
+      return keyName;
+    }
+    return `${this.prefix + keyName}`;
+  }
+
   // Get the "n" key of the current namespace, you need to remove the prefix
   key(n: number) {
     const key = this.getKeys()[n];
@@ -29,15 +38,15 @@ export class CusStorage {
   }
 
   getItem(keyName: string) {
-    return this.rawStorage.getItem(`${this.prefix + keyName}`);
+    return this.rawStorage.getItem(this.getKeyName(keyName));
   }
 
   setItem(keyName: string, keyValue: string) {
-    this.rawStorage.setItem(`${this.prefix + keyName}`, keyValue);
+    this.rawStorage.setItem(this.getKeyName(keyName), keyValue);
   }
 
   removeItem(keyName: string) {
-    this.rawStorage.removeItem(`${this.prefix + keyName}`);
+    this.rawStorage.removeItem(this.getKeyName(keyName));
   }
 
   clear() {
@@ -48,11 +57,13 @@ export class CusStorage {
 }
 
 export function localStorageModule(sandbox: Sandbox) {
-  const namespace = sandbox.options.namespace;
+  const { isProtectStorage } = sandbox;
+  const { namespace } = sandbox.options;
+
   return {
     override: {
-      localStorage: new CusStorage(namespace, localStorage),
-      sessionStorage: new CusStorage(namespace, sessionStorage),
+      localStorage: new CusStorage(namespace, localStorage, isProtectStorage),
+      sessionStorage: new CusStorage(namespace, sessionStorage, isProtectStorage),
     },
   };
 }

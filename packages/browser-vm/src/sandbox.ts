@@ -78,6 +78,7 @@ export class Sandbox {
   public deferClearEffects: Set<() => void> = new Set();
   public isExternalGlobalVariable: Set<PropertyKey> = new Set();
   public isProtectVariable: (p: PropertyKey) => boolean;
+  public isProtectStorage: (p: string) => boolean;
   public isInsulationVariable: (P: PropertyKey) => boolean;
 
   private optimizeCode = ''; // To optimize the with statement
@@ -94,6 +95,7 @@ export class Sandbox {
       strictIsolation: false,
       el: () => null,
       protectVariable: () => [],
+      protectStorage: () => [],
       insulationVariable: () => [],
     };
     this.options = isPlainObject(options)
@@ -102,9 +104,10 @@ export class Sandbox {
     // SourceUrl Using a reference type, make its can be changed
     options.sourceList && (this.options.sourceList = options.sourceList);
 
-    const { loaderOptions, protectVariable, insulationVariable } = this.options;
+    const { loaderOptions, protectVariable, protectStorage, insulationVariable } = this.options;
     this.loader = new Loader(loaderOptions);
     this.isProtectVariable = makeMap(protectVariable?.() || []);
+    this.isProtectStorage = makeMap(protectStorage?.() || []);
     this.isInsulationVariable = makeMap(insulationVariable?.() || []);
 
     this.replaceGlobalVariables = {

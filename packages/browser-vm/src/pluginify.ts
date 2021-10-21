@@ -18,11 +18,13 @@ declare module '@garfish/core' {
 
     export interface Config {
       protectVariable?: PropertyKey[];
+      protectStorage?: string[];
       insulationVariable?: PropertyKey[];
     }
 
     export interface AppInfo {
       protectVariable?: PropertyKey[];
+      protectStorage?: string[];
       insulationVariable?: PropertyKey[];
     }
 
@@ -129,6 +131,10 @@ function createOptions(Garfish: interfaces.Garfish) {
               ...(appInstance &&
                 Object.keys(appInstance.getExecScriptEnv(false) || {})),
             ].filter(Boolean);
+          },
+
+          protectStorage: () => {
+            return (appInfo.protectStorage || []).filter(Boolean);
           },
         }),
       );
