@@ -50,7 +50,7 @@ order: 2
 
 #### `protectStorage?: Array<string>`
 
-`Garfish`默认会在子应用访问`Web Storage`时，在键值中加入`__Garfish__模块名___`的前缀，实现`Web Storage`的隔离。如果想实现全模块共享storage，可以在此设置中加入需要共享的key，。
+`Garfish`默认会在子应用访问`Web Storage`时，在键值中加入`__Garfish__模块名___`的前缀，实现`Web Storage`的隔离。如果想实现全模块共享storage，可以在此设置中加入需要共享的key。共享的storage在子应用执行`clear`方法时，不会被清除。
 
 #### `autoRefreshApp?: boolean`
 
