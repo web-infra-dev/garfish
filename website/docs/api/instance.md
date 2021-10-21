@@ -48,6 +48,10 @@ order: 2
 
 保存指定变量，在沙盒切换过程中不进行清除
 
+#### `protectStorage?: Array<string>`
+
+`Garfish`默认会在子应用访问`Web Storage`时，在键值中加入`__Garfish__模块名___`的前缀，实现`Web Storage`的隔离。如果想实现全模块共享storage，可以在此设置中加入需要共享的key，。
+
 #### `autoRefreshApp?: boolean`
 
 默认 `true`，主应用跳转子应用子路由会更新组件
