@@ -25,12 +25,6 @@
     "release": "node ./scripts/release.js",
     "release:canary": "node ./scripts/release.js --canary"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "ls-lint && lint-staged",
-      "commit-msg": "node scripts/verifyCommit.js"
-    }
-  },
   "lint-staged": {
     "*.js": [
       "prettier --write"
