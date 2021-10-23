@@ -100,7 +100,7 @@ importers:
       garfish: workspace:*
       html-webpack-plugin: ^3.2.0
       less-loader: ^6.2.0
-      loader-utils: ^2.0.0
+      loader-utils: 3.0.0
       mobx: ^6.0.1
       react: ^16.13.1
       react-dom: ^16.13.1
@@ -115,7 +115,7 @@ importers:
     dependencies:
       '@babel/runtime': 7.15.4
       garfish: link:../../packages/garfish
-      loader-utils: 2.0.0
+      loader-utils: 3.0.0
       mobx: 6.3.3
       react: 16.14.0
       react-dom: 16.14.0_react@16.14.0
@@ -7925,6 +7925,10 @@ packages:
   /big.js/5.2.2:
     resolution: {integrity: sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==}
 
+  /big.js/6.1.1:
+    resolution: {integrity: sha512-1vObw81a8ylZO5ePrtMay0n018TcftpTA5HFKDaSuiUDBo8biRBtjIobw60OpwuvrGk+FsxKamqN4cnmj/eXdg==}
+    dev: false
+
   /binary-extensions/1.13.1:
     resolution: {integrity: sha512-Un7MIEDdUC5gNpcGDV97op1Ywk748MpHcFTHoYs6qnj1Z3j7I53VG3nwZhKzoBZmbdRNnb6WRdFlwl7tSDuZGw==}
     engines: {node: '>=0.10.0'}
@@ -15011,6 +15015,13 @@ packages:
       big.js: 5.2.2
       emojis-list: 3.0.0
       json5: 2.2.0
+
+  /loader-utils/3.0.0:
+    resolution: {integrity: sha512-ry4RE7qen73BFLgihlbyllGIW9SVWLUD5Cq9VWtzrqhntOMOJl8yEjA89d5mCUTT0puCnHo4EecO6bz+BOAS8w==}
+    engines: {node: '>= 12.13.0'}
+    dependencies:
+      big.js: 6.1.1
+    dev: false
 
   /locate-path/2.0.0:
     resolution: {integrity: sha1-K1aLJl7slExtnA3pw9u7ygNUzY4=}
