@@ -1,6 +1,5 @@
 const fs = require('fs');
 const chalk = require('chalk');
-console.log(process.env);
 const msgPath = process.env.HUSKY_GIT_PARAMS;
 const msg = fs.readFileSync(msgPath, 'utf-8').trim();
 const ng =
