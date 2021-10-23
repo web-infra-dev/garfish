@@ -30,7 +30,7 @@ importers:
       install: 0.13.0
       jest: 27.3.1
       kill-port: 1.6.1
-      lint-staged: 11.2.3
+      lint-staged: 11.2.4
       lodash: 4.17.21
       minimist: 1.2.5
       pnpm: 6.19.0
@@ -71,7 +71,7 @@ importers:
       install: 0.13.0
       jest: 27.3.1
       kill-port: 1.6.1
-      lint-staged: 11.2.3
+      lint-staged: 11.2.4
       lodash: 4.17.21
       minimist: 1.2.5
       pnpm: 6.19.0
@@ -5504,6 +5504,7 @@ packages:
 
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
+    dev: false
 
   /@types/parse5/5.0.3:
     resolution: {integrity: sha512-kUNnecmtkunAoQ3CnjmMkzNU/gtxG8guhi+Fk2U/kOpIKjIMKnXGp4IJCgQJrXSgMsWYimYG4TGjz/UzbGEBTw==}
@@ -6192,7 +6193,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.13_typescript@4.4.3
+      '@vue/cli-service': 4.5.13_daaec740214156bd7a1b7d7855d908a4
       '@vue/cli-shared-utils': 4.5.13
     dev: true
 
@@ -6208,7 +6209,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.13_typescript@4.4.3
+      '@vue/cli-service': 4.5.13_daaec740214156bd7a1b7d7855d908a4
     dev: true
 
   /@vue/cli-service/4.4.6_daaec740214156bd7a1b7d7855d908a4:
@@ -9134,6 +9135,7 @@ packages:
       parse-json: 5.2.0
       path-type: 4.0.0
       yaml: 1.10.2
+    dev: false
 
   /create-ecdh/4.0.4:
     resolution: {integrity: sha512-mf+TCx8wWc9VpuxfP2ht0iSISLZnt0JgWlrOKZiNqyUZWnjIaCIVNQArMHnCZKfEYRg6IM7A+NeJoN8gf/Ws0A==}
@@ -14899,17 +14901,18 @@ packages:
   /lines-and-columns/1.1.6:
     resolution: {integrity: sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=}
 
-  /lint-staged/11.2.3:
-    resolution: {integrity: sha512-Tfmhk8O2XFMD25EswHPv+OYhUjsijy5D7liTdxeXvhG2rsadmOLFtyj8lmlfoFFXY8oXWAIOKpoI+lJe1DB1mw==}
+  /lint-staged/11.2.4:
+    resolution: {integrity: sha512-aTUqcPDSV05EyKlMT4N5h7tmnevKfAxI3xZkRb+DHfmcFaoCxfxVvpqlLMCVGy3EYle9JYER2nA5zc4eNTkZVQ==}
     hasBin: true
     dependencies:
       cli-truncate: 2.1.0
       colorette: 1.4.0
       commander: 8.2.0
-      cosmiconfig: 7.0.1
       debug: 4.3.2_supports-color@8.1.1
       enquirer: 2.3.6
       execa: 5.1.1
+      js-yaml: 4.1.0
+      lilconfig: 2.0.3
       listr2: 3.12.2_enquirer@2.3.6
       micromatch: 4.0.4
       normalize-path: 3.0.0
