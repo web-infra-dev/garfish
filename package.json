@@ -23,13 +23,8 @@
     "format:js": "prettier --write --parser typescript \"(packages|scripts)/**/*.js\"",
     "format:md": "prettier --write \"**/*.md\"",
     "release": "node ./scripts/release.js",
-    "release:canary": "node ./scripts/release.js --canary"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "ls-lint && lint-staged",
-      "commit-msg": "node scripts/verifyCommit.js"
-    }
+    "release:canary": "node ./scripts/release.js --canary",
+    "postinstall": "husky install"
   },
   "lint-staged": {
     "*.js": [
@@ -89,6 +84,9 @@
     "wait-on": "6.0.0",
     "workspace-tools": "0.16.2",
     "zx": "4.2.0"
+  },
+  "engines": {
+    "node": ">=14.13.0"
   },
   "version": "1.0.15"
 }

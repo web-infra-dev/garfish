@@ -13,7 +13,6 @@ ls:
     .d.ts: camelCase
 
   website/{src,docs}:
-    .md: camelCase
     .js: camelCase
     .ts: camelCase
     .jsx: camelCase
