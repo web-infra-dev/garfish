@@ -2,7 +2,7 @@
   <img src="https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/icons/Garfish-icon-Square.png" width="300" alt="garfish" />
 </p>
 
-[English](./README.en.md) | 中文
+[English](./README.md) | 中文
 
 ## Garfish [![NPM version](https://img.shields.io/npm/v/garfish.svg?style=flat-square)](https://www.npmjs.com/package/garfish) [![build status](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml)
 
