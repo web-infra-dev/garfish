@@ -39,7 +39,7 @@ importers:
       rimraf: 3.0.2
       ts-jest: 27.0.7
       tslib: 2.3.1
-      tsup: 5.4.0
+      tsup: 5.4.4
       typescript: 4.4.3
       wait-on: 6.0.0
       workspace-tools: 0.16.2
@@ -80,7 +80,7 @@ importers:
       rimraf: 3.0.2
       ts-jest: 27.0.7_ea8eecb57f6c3978f25f89c419c42230
       tslib: 2.3.1
-      tsup: 5.4.0_typescript@4.4.3
+      tsup: 5.4.4_typescript@4.4.3
       typescript: 4.4.3
       wait-on: 6.0.0
       workspace-tools: 0.16.2
@@ -6192,7 +6192,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.13_typescript@4.4.3
+      '@vue/cli-service': 4.5.13_daaec740214156bd7a1b7d7855d908a4
       '@vue/cli-shared-utils': 4.5.13
     dev: true
 
@@ -6208,7 +6208,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.13_typescript@4.4.3
+      '@vue/cli-service': 4.5.13_daaec740214156bd7a1b7d7855d908a4
     dev: true
 
   /@vue/cli-service/4.4.6_daaec740214156bd7a1b7d7855d908a4:
@@ -21247,8 +21247,8 @@ packages:
   /tslib/2.3.1:
     resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
 
-  /tsup/5.4.0_typescript@4.4.3:
-    resolution: {integrity: sha512-wm52TUJzDCvF9dJ3TxYtoJg8L7EjSYsOsH+jZhMMXfk1qZn6CdxFStwzMnwhyducdMBXHQNl7wZn+ioIhJoCHA==}
+  /tsup/5.4.4_typescript@4.4.3:
+    resolution: {integrity: sha512-mrzBGNqmuhk6BSUe/uowB+qk8lJ8R/2IZTMeub5oVTCqu3gs2YON7veOvfQt5nYpPUGGDXZdMvaygha2c1srOw==}
     hasBin: true
     peerDependencies:
       typescript: ^4.2.3
