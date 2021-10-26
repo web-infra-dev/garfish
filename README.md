@@ -1,9 +1,5 @@
-<p align="center">
-  <img src="https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/icons/Garfish-icon-Square.png" width="300" alt="garfish" />
-</p>
-
 <div align="center">
-  <h2>Garfish</h2>
+  <img src="https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/icons/Garfish-icon-Square.png" width="300" alt="garfish" />
 </div>
 
 <div align="center">
