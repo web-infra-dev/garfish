@@ -139,7 +139,6 @@ function createOptions(Garfish: interfaces.Garfish) {
       // The caching pattern to retain the same context
       if (!appInstance.vmSandbox || isCacheMode) return;
       appInstance.vmSandbox.reset();
-      sandboxMap.del(appInstance.vmSandbox);
     },
 
     afterMount(appInfo, appInstance) {
