@@ -1,6 +1,6 @@
 {
   "name": "@garfish/browser-snapshot",
-  "version": "1.0.17-beta.1",
+  "version": "1.0.17",
   "description": "browser-snapshot module.",
   "keywords": [
     "garfish",
