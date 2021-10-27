@@ -111,6 +111,6 @@ export namespace interfaces {
     hooks?: PluginSystem<any>; // Plugin's own plugin
   }
 
-  // You can be extended plug-in type dynamic registration
+  // You can be extended plugin type dynamic registration
   export interface Plugins {}
 }
