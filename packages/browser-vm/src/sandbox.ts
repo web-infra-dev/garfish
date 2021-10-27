@@ -11,9 +11,9 @@ import {
   setDocCurrentScript,
 } from '@garfish/utils';
 import { historyModule } from './modules/history';
+import { networkModule } from './modules/network';
 import { documentModule } from './modules/document';
 import { UiEventOverride } from './modules/uiEvent';
-import { XMLHttpRequestModule } from './modules/xhr';
 import { localStorageModule } from './modules/storage';
 import { listenerModule } from './modules/eventListener';
 import { timeoutModule, intervalModule } from './modules/timer';
@@ -37,6 +37,7 @@ import {
 
 let id = 0;
 const defaultModules: Array<Module> = [
+  networkModule,
   timeoutModule,
   intervalModule,
   historyModule,
@@ -45,11 +46,6 @@ const defaultModules: Array<Module> = [
   UiEventOverride,
   localStorageModule,
 ];
-
-// Deal with hmr problem
-if (__DEV__) {
-  defaultModules.push(XMLHttpRequestModule);
-}
 
 const isModule = (module: Window) => {
   return isObject(module)
@@ -208,7 +204,7 @@ export class Sandbox {
 
     for (const module of allModules) {
       if (typeof module === 'function') {
-        const { recover, override, created, prepare } = module(this);
+        const { recover, override, created, prepare } = module(this) || {};
         if (recover) recoverList.push(recover);
         if (created) createdList.push(created);
         if (prepare) prepareList.push(prepare);
