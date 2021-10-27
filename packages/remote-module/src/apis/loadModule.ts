@@ -15,6 +15,14 @@ export function loadModule(
   urlOrAlias: string,
   options?: ModuleInfo,
 ): Promise<Record<string, any> | null> {
+  const data = hooks.lifecycle.beforeLoadModule.emit({
+    options,
+    url: urlOrAlias,
+  });
+
+  urlOrAlias = data.url;
+  options = data.options;
+
   assert(urlOrAlias, 'Missing url for loading remote module.');
   const [url, segments] = processAlias(urlOrAlias);
   assert(

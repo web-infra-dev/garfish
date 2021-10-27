@@ -23,13 +23,8 @@
     "format:js": "prettier --write --parser typescript \"(packages|scripts)/**/*.js\"",
     "format:md": "prettier --write \"**/*.md\"",
     "release": "node ./scripts/release.js",
-    "release:canary": "node ./scripts/release.js --canary"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "ls-lint && lint-staged",
-      "commit-msg": "node scripts/verifyCommit.js"
-    }
+    "release:canary": "node ./scripts/release.js --canary",
+    "postinstall": "husky install"
   },
   "lint-staged": {
     "*.js": [
@@ -55,40 +50,43 @@
     "@jsdevtools/version-bump-prompt": "6.1.0",
     "@ls-lint/ls-lint": "1.10.0",
     "@types/jest": "27.0.2",
-    "@typescript-eslint/eslint-plugin": "5.0.0",
-    "@typescript-eslint/parser": "5.0.0",
+    "@typescript-eslint/eslint-plugin": "5.2.0",
+    "@typescript-eslint/parser": "5.2.0",
     "@vue/cli-plugin-babel": "4.5.13",
     "@vue/cli-plugin-eslint": "4.5.13",
     "@vue/cli-service": "4.5.13",
-    "axios": "0.23.0",
+    "axios": "0.24.0",
     "babel-polyfill": "6.26.0",
     "chalk": "4.1.2",
     "cross-env": "7.0.3",
-    "cypress": "8.6.0",
+    "cypress": "8.7.0",
     "esbuild-plugin-replace": "1.0.7",
     "eslint": "7.32.0",
     "eslint-plugin-vue": "7.19.1",
     "execa": "4.1.0",
     "fs-extra": "10.0.0",
     "http-server": "13.0.2",
-    "husky": "7.0.2",
+    "husky": "7.0.4",
     "install": "0.13.0",
     "jest": "27.3.1",
     "kill-port": "1.6.1",
-    "lint-staged": "11.2.3",
+    "lint-staged": "11.2.6",
     "lodash": "4.17.21",
     "minimist": "1.2.5",
-    "pnpm": "6.17.0",
+    "pnpm": "6.19.1",
     "prettier": "2.4.1",
     "prettier-eslint-cli": "5.0.1",
     "rimraf": "3.0.2",
     "ts-jest": "27.0.7",
     "tslib": "2.3.1",
-    "tsup": "5.4.0",
+    "tsup": "5.5.0",
     "typescript": "4.4.3",
     "wait-on": "6.0.0",
     "workspace-tools": "0.16.2",
     "zx": "4.2.0"
   },
-  "version": "1.0.14"
+  "engines": {
+    "node": ">=14.13.0"
+  },
+  "version": "1.0.16"
 }

@@ -21,7 +21,7 @@ export class StyleManager {
       // The relative path is converted to an absolute path according to the path of the css file
       this.styleCode = styleCode.replace(MATCH_CSS_URL, (k1, k2) => {
         if (isAbsolute(k2)) return k1;
-        return `url("${transformUrl(url, k2)}")`;
+        return `url("${transformUrl(baseUrl, k2)}")`;
       });
     }
   }

@@ -5,7 +5,7 @@ import HelloGarfish from './components/helloGarfish.js';
 import RemoteComponent from './components/remoteComponent.js';
 // sandbox
 import Sandbox from './components/sandbox';
-import './App.css';
+import './app.css';
 
 const LazyComponent = React.lazy(() => import('./components/lazyComponent.js'));
 

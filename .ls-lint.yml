@@ -5,17 +5,19 @@ ls:
     .d.ts: camelCase
     .spec.ts: camelCase | PascalCase
 
-  deprecated-byted/*/{src,__tests__}:
+  dev/*/{src}:
     .js: camelCase
     .ts: camelCase
+    .jsx: camelCase
+    .tsx: camelCase
     .d.ts: camelCase
-    .spec.ts: camelCase | PascalCase
 
-  example:
+  website/{src,docs}:
     .js: camelCase
     .ts: camelCase
+    .jsx: camelCase
+    .tsx: camelCase
     .d.ts: camelCase
-    .spec.ts: camelCase | PascalCase
 
   scripts:
     .js: camelCase
