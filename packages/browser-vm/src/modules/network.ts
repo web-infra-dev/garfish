@@ -3,11 +3,10 @@ import { Sandbox } from '../sandbox';
 
 export function networkModule(sandbox: Sandbox) {
   const baseUrl = sandbox.options.baseUrl;
-  if (!baseUrl) return;
-
   const xhrSet = new Set<fakeXMLHttpRequest>();
   const fetchSet = new Set<AbortController>();
-  const needFix = (url) => typeof url === 'string' && !isAbsolute(url);
+  const needFix = (url) =>
+    baseUrl && typeof url === 'string' && !isAbsolute(url);
 
   class fakeXMLHttpRequest extends XMLHttpRequest {
     constructor() {
