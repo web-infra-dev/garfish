@@ -1,8 +1,9 @@
-import { hasOwn, isAbsolute, transformUrl } from '@garfish/utils';
+import { hasOwn, isAbsolute, transformUrl, toWsProtocol } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 
 export function networkModule(sandbox: Sandbox) {
   const baseUrl = sandbox.options.baseUrl;
+  const wsSet = new Set<fakeWebSocket>();
   const xhrSet = new Set<fakeXMLHttpRequest>();
   const fetchSet = new Set<AbortController>();
   const needFix = (url) =>
@@ -23,6 +24,27 @@ export function networkModule(sandbox: Sandbox) {
         arguments[1] = transformUrl(baseUrl, arguments[1]);
       }
       return super.open.apply(this, arguments);
+    }
+
+    abort() {
+      xhrSet.delete(this);
+      return super.abort.apply(this, arguments);
+    }
+  }
+
+  class fakeWebSocket extends WebSocket {
+    constructor(url, protocols?: string | string[]) {
+      if (needFix(url)) {
+        const baseWsUrl = toWsProtocol(baseUrl);
+        url = transformUrl(baseWsUrl, arguments[1]);
+      }
+      super(url, protocols);
+      wsSet.add(this);
+    }
+
+    close() {
+      wsSet.delete(this);
+      return super.close.apply(this, arguments);
     }
   }
 
@@ -45,11 +67,15 @@ export function networkModule(sandbox: Sandbox) {
   return {
     override: {
       fetch: window.fetch ? fakeFetch : undefined,
+      WebSocket: fakeWebSocket as unknown as WebSocket,
       XMLHttpRequest: fakeXMLHttpRequest as unknown as XMLHttpRequest,
     },
+
     recover() {
+      wsSet.forEach((ws) => ws.close());
       xhrSet.forEach((xhr) => xhr.abort());
       fetchSet.forEach((ctor) => ctor.abort());
+      wsSet.clear();
       xhrSet.clear();
       fetchSet.clear();
     },
