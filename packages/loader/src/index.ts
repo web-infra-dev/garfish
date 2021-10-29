@@ -139,17 +139,17 @@ export class Loader {
         if (isModule) {
           fileType = FileTypes.module;
           managerCtor = ModuleManager;
-        } else if (isHtml(mimeType) || /\.html/.test(result.url)) {
+        } else if (isHtml(mimeType) || /\.html$/.test(result.url)) {
           fileType = FileTypes.template;
           managerCtor = TemplateManager;
         } else if (
           isJs(mimeType) ||
-          /\.js/.test(result.url) ||
+          /\.js$/.test(result.url) ||
           isJsonp(mimeType, result.url)
         ) {
           fileType = FileTypes.js;
           managerCtor = JavaScriptManager;
-        } else if (isCss(mimeType) || /\.css/.test(result.url)) {
+        } else if (isCss(mimeType) || /\.css$/.test(result.url)) {
           fileType = FileTypes.css;
           managerCtor = StyleManager;
         }
