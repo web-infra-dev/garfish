@@ -603,7 +603,7 @@ export class App {
     }
 
     if (!appInfo.noCheckProvider) {
-      assert(provider, `"provider" is "${typeof provider}".`);
+      assert(provider, `"provider" is "${provider}".`);
       // No need to use "hasOwn", because "render" may be on the prototype chain
       assert('render' in provider, '"render" is required in provider.');
       assert('destroy' in provider, '"destroy" is required in provider.');
