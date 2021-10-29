@@ -390,20 +390,22 @@ export class App {
   // Calls to render do compatible with two different sandbox
   private callRender(provider: interfaces.Provider, isMount: boolean) {
     const { appInfo, rootElement } = this;
-    provider.render({
-      dom: rootElement,
-      basename: appInfo.basename,
-      appRenderInfo: { isMount },
-    });
+    provider &&
+      provider.render({
+        dom: rootElement,
+        basename: appInfo.basename,
+        appRenderInfo: { isMount },
+      });
   }
 
   // Call to destroy do compatible with two different sandbox
   private callDestroy(provider: interfaces.Provider, isUnmount: boolean) {
     const { rootElement, appContainer } = this;
-    provider.destroy({
-      dom: rootElement,
-      appRenderInfo: { isUnmount },
-    });
+    provider &&
+      provider.destroy({
+        dom: rootElement,
+        appRenderInfo: { isUnmount },
+      });
     this.entryManager.DOMApis.removeElement(appContainer);
   }
 
