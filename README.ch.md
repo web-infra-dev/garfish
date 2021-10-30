@@ -63,6 +63,11 @@ yarn add garfish
 
 [https://garfish.top/community/discuss](https://garfish.top/community/discuss)
 
+## 感谢
+
+- [Qiankun](https://github.com/umijs/qiankun) 是一款非常优秀的微前端框架，Garfish 的沙箱设计从中吸收了很多优秀的想法
+- [single-spa](https://github.com/single-spa/single-spa) 为社区掀起了微前端解决方案的热潮，Garfish 路由系统设计从中吸取了很多令人惊叹的想法
+
 ## LICENSE
 
 Garfish is released under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).

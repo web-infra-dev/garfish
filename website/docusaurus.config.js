@@ -28,8 +28,7 @@ module.exports = {
     navbar: {
       logo: {
         alt: 'Garfish',
-        src:
-          'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/icons/garfish-icon.png',
+        src: 'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/icons/garfish-icon.png',
         srcDark:
           'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/icons/garfish-icon.png',
       },
@@ -135,18 +134,18 @@ module.exports = {
       },
     ],
   ],
-  i18n: {
-    defaultLocale: 'zh-CN',
-    locales: ['en', 'zh-CN'],
-    localeConfigs: {
-      en: {
-        label: 'English (Auto)',
-        direction: 'ltr',
-      },
-      'zh-CN': {
-        label: '简体中文（中国）',
-        direction: 'ltr',
-      },
-    },
-  },
+  // i18n: {
+  //   defaultLocale: 'zh-CN',
+  //   locales: ['en', 'zh-CN'],
+  //   localeConfigs: {
+  //     en: {
+  //       label: 'English (Auto)',
+  //       direction: 'ltr',
+  //     },
+  //     'zh-CN': {
+  //       label: '简体中文（中国）',
+  //       direction: 'ltr',
+  //     },
+  //   },
+  // },
 };
