@@ -2,47 +2,34 @@
 const { run, step } = require('./utils');
 
 function startMockServer() {
-  const port = 3333;
-  const url = require('url');
-  const http = require('http');
+  const Koa = require('koa');
+  const cors = require('@koa/cors');
+  const route = require('koa-route');
+  const app = new Koa();
 
-  const css = 'div { color: "#000" }';
-  const html = `
+  const cssCode = 'div { color: "#000" }';
+  const htmlCode = `
     <!DOCTYPE html>
     <html>
       <link rel="stylesheet" href="./index.css">
-      <div>Garfish</div>
       <script src="./index.js"></script>
     </html>
   `;
-  const js = `
+  const jsCode = `
     exports.provider = {
       render() {},
       destroy() {},
     };
   `;
 
-  http
-    .createServer((req, res) => {
-      let code = '';
-      const { pathname } = url.parse(req.url || '');
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Access-Control-Allow-Methods', 'GET');
-
-      if (pathname.includes('error')) {
-        res.statusCode = 400;
-      } else {
-        if (pathname.includes('index.html')) {
-          code = html;
-        } else if (pathname.includes('index.js')) {
-          code = js;
-        } else if (pathname.includes('index.css')) {
-          code = css;
-        }
-      }
-      res.end(code);
-    })
-    .listen(port);
+  app
+    .use(cors())
+    .use(route.get('/get', (ctx) => (ctx.body = 'ok')))
+    .use(route.get('/error', (ctx) => ctx.throw(400, 'error')))
+    .use(route.get('/index.js', (ctx) => (ctx.body = jsCode)))
+    .use(route.get('/index.css', (ctx) => (ctx.body = cssCode)))
+    .use(route.get('/index.html', (ctx) => (ctx.body = htmlCode)))
+    .listen(3333);
 }
 
 function startUnitTest() {
@@ -51,9 +38,7 @@ function startUnitTest() {
     ['./scripts/unit.js', '--startMockServer'],
     { detached: true },
   );
-
   const testProcess = run('jest', process.argv.slice(2, process.argv.length));
-
   process.on('SIGINT', () => serverProcess.kill());
   process.on('SIGHUP', () => serverProcess.kill());
   testProcess.on('close', () => serverProcess.kill());
