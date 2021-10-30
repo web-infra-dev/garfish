@@ -71,7 +71,6 @@ describe('Sandbox', () => {
     delete (window as any).a;
     delete (window as any).b;
     delete (window as any).c;
-    // 由于 proxy 是 polyfill 的性质，所以需要提前定义好才能拦截到
     (window as any).a = null;
     sandbox = create();
   });

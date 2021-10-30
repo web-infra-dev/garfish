@@ -1,4 +1,10 @@
-import { hasOwn, isAbsolute, transformUrl, toWsProtocol } from '@garfish/utils';
+import {
+  hasOwn,
+  isPromise,
+  isAbsolute,
+  transformUrl,
+  toWsProtocol,
+} from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 
 export function networkModule(sandbox: Sandbox) {
@@ -59,9 +65,10 @@ export function networkModule(sandbox: Sandbox) {
       fetchSet.add(controller);
       options.signal = controller.signal;
     }
-    return controller
-      ? window.fetch(input, options).finally(() => fetchSet.delete(controller))
-      : window.fetch(input, options);
+    const result = window.fetch(input, options);
+    return controller && isPromise(result)
+      ? result.finally(() => fetchSet.delete(controller))
+      : result;
   };
 
   return {
@@ -72,9 +79,9 @@ export function networkModule(sandbox: Sandbox) {
     },
 
     recover() {
-      wsSet.forEach((ws) => ws.close());
-      xhrSet.forEach((xhr) => xhr.abort());
-      fetchSet.forEach((ctor) => ctor.abort());
+      wsSet.forEach((ws) => ws.close && ws.close());
+      xhrSet.forEach((xhr) => xhr.abort && xhr.abort());
+      fetchSet.forEach((ctor) => ctor.abort && ctor.abort());
       wsSet.clear();
       xhrSet.clear();
       fetchSet.clear();
