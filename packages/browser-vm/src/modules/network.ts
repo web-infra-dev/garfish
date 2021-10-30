@@ -73,15 +73,22 @@ export function networkModule(sandbox: Sandbox) {
 
   return {
     override: {
+      WebSocket: fakeWebSocket as any,
+      XMLHttpRequest: fakeXMLHttpRequest as any,
       fetch: window.fetch ? fakeFetch : undefined,
-      WebSocket: fakeWebSocket as unknown as WebSocket,
-      XMLHttpRequest: fakeXMLHttpRequest as unknown as XMLHttpRequest,
     },
 
     recover() {
-      wsSet.forEach((ws) => ws.close && ws.close());
-      xhrSet.forEach((xhr) => xhr.abort && xhr.abort());
-      fetchSet.forEach((ctor) => ctor.abort && ctor.abort());
+      wsSet.forEach((ws) => {
+        if (typeof ws.close === 'function') ws.close();
+      });
+      xhrSet.forEach((xhr) => {
+        if (typeof xhr.abort === 'function') xhr.abort();
+      });
+      fetchSet.forEach((ctor) => {
+        if (typeof ctor.abort === 'function') ctor.abort();
+      });
+
       wsSet.clear();
       xhrSet.clear();
       fetchSet.clear();
