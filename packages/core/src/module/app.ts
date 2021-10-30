@@ -390,20 +390,24 @@ export class App {
   // Calls to render do compatible with two different sandbox
   private callRender(provider: interfaces.Provider, isMount: boolean) {
     const { appInfo, rootElement } = this;
-    provider.render({
-      dom: rootElement,
-      basename: appInfo.basename,
-      appRenderInfo: { isMount },
-    });
+    if (provider && provider.render) {
+      provider.render({
+        dom: rootElement,
+        basename: appInfo.basename,
+        appRenderInfo: { isMount },
+      });
+    }
   }
 
   // Call to destroy do compatible with two different sandbox
   private callDestroy(provider: interfaces.Provider, isUnmount: boolean) {
     const { rootElement, appContainer } = this;
-    provider.destroy({
-      dom: rootElement,
-      appRenderInfo: { isUnmount },
-    });
+    if (provider && provider.destroy) {
+      provider.destroy({
+        dom: rootElement,
+        appRenderInfo: { isUnmount },
+      });
+    }
     this.entryManager.DOMApis.removeElement(appContainer);
   }
 
@@ -601,7 +605,7 @@ export class App {
     }
 
     if (!appInfo.noCheckProvider) {
-      assert(provider, `"provider" is "${typeof provider}".`);
+      assert(provider, `"provider" is "${provider}".`);
       // No need to use "hasOwn", because "render" may be on the prototype chain
       assert('render' in provider, '"render" is required in provider.');
       assert('destroy' in provider, '"destroy" is required in provider.');

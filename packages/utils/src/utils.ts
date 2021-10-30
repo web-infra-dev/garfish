@@ -330,6 +330,15 @@ export function transformUrl(resolvePath: string, curPath: string) {
   return realPath.href;
 }
 
+export function toWsProtocol(url: string) {
+  const data = new URL(url);
+  if (data.protocol.startsWith('http')) {
+    data.protocol = data.protocol === 'https:' ? 'wss:' : 'ws:';
+    return data.toString();
+  }
+  return url;
+}
+
 export function findTarget(
   el: Element | ShadowRoot | Document,
   selectors: Array<string>,

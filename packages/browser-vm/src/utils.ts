@@ -2,9 +2,9 @@ import { hasOwn, makeMap, nextTick } from '@garfish/utils';
 import { Sandbox } from './sandbox';
 import { FakeWindow } from './types';
 import {
-  __elementSandboxTag__,
   __proxyNode__,
   __sandboxMap__,
+  __elementSandboxTag__,
 } from './symbolTypes';
 
 // https://tc39.es/ecma262/#sec-function-properties-of-the-global-object

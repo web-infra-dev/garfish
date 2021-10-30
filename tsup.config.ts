@@ -2,9 +2,9 @@ import type { Options } from 'tsup';
 import { replace } from 'esbuild-plugin-replace';
 
 const watch = process.env.WATCH;
+const debug = process.env.DEBUG;
 const sourcemap = Boolean(process.env.SOURCEMAP);
-const debug = Boolean(process.env.DEBUG);
-const dts = process.env.DTS === 'false'? false : true;
+const dts = process.env.DTS === 'false' ? false : true;
 
 export const baseTsup = (pkg): Options => {
   const options: Options = {
@@ -29,7 +29,7 @@ export const baseTsup = (pkg): Options => {
     ],
   };
 
-  // Can be directly by chrome plug-ins debugging injected garfish page
+  // Can be directly by chrome plugins debugging injected garfish page
   if (debug) {
     delete options.globalName;
   }

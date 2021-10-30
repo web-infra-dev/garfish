@@ -121,13 +121,10 @@ export class DynamicNodeProcessor {
   // Load dynamic js script
   private addDynamicScriptNode() {
     const { src, type } = this.el;
+    const mimeType = parseContentType(type);
     const code = this.el.textContent || this.el.text || '';
 
-    if (
-      !type ||
-      isJs(parseContentType(type)) ||
-      isJsonp(parseContentType(type), src)
-    ) {
+    if (!type || isJs(mimeType) || isJsonp(mimeType, src)) {
       // The "src" higher priority
       const { baseUrl, namespace = '' } = this.sandbox.options;
       if (src) {

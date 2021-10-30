@@ -19,13 +19,15 @@ module.exports = {
   },
 
   configureWebpack: (config) => {
-    config.optimization.minimize = true;
+    // If you set it to true, it will cause some libraries to escape the sandbox,
+    // Webpack use `(function() { return this })()` get `global` variable.
+    config.node = false;
     config.devtool = 'source-map';
+    config.optimization.minimize = true;
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
     config.output.jsonpFunction = `sub-app-jsonp`;
     config.mode = process.env.TEST_ENV ? 'production' : 'development';
-    config.optimization.minimize = true;
     config.module.rules.push({
       type: 'javascript/auto',
       test: /\.mjs$/,

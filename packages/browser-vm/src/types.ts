@@ -2,7 +2,7 @@ import { Sandbox } from './sandbox';
 import type { LoaderOptions } from '@garfish/loader';
 
 export type FakeWindow = Window & Record<PropertyKey, any>;
-export type Module = (sandbox: Sandbox) => OverridesData;
+export type Module = (sandbox: Sandbox) => OverridesData | void;
 
 export interface OverridesData {
   recover?: () => void;
