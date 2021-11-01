@@ -77,6 +77,7 @@ export class Sandbox {
   public isInsulationVariable: (P: PropertyKey) => boolean;
 
   private optimizeCode = ''; // To optimize the with statement
+  private tempVariable = '__vm_temp_var__';
 
   constructor(options: SandboxOptions) {
     // Default sandbox config
@@ -230,26 +231,36 @@ export class Sandbox {
     this.hooks.lifecycle.afterClearEffect.emit();
   }
 
-  optimizeGlobalMethod() {
+  optimizeGlobalMethod(tempEnvList = []) {
     let code = '';
     const methods = optimizeMethods.filter((p) => {
       return (
         // If the method does not exist in the current environment, do not care
-        p && !this.isProtectVariable(p) && hasOwn(this.global, p)
+        p &&
+        !this.isProtectVariable(p) &&
+        !tempEnvList.includes(p) &&
+        hasOwn(this.global, p)
       );
     });
-    if (methods.length === 0) return code;
 
-    code = methods.reduce((prevCode, name) => {
-      // You can only use `let`, if you use `var`,
-      // declaring the characteristics in advance will cause you to fetch from with,
-      // resulting in a recursive loop
-      return `${prevCode} let ${name} = window.${name};`;
-    }, code);
-    // Used to update the variables synchronously after `window.x = xx` is updated
-    this.global[`${GARFISH_OPTIMIZE_NAME}Methods`] = methods;
-    this.global[`${GARFISH_OPTIMIZE_NAME}UpdateStack`] = [];
-    code += `window.${GARFISH_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v")});`;
+    if (methods.length > 0) {
+      code = methods.reduce((prevCode, name) => {
+        // Can only use `let`, if you use `var`,
+        // declaring the characteristics in advance will cause you to fetch from with,
+        // resulting in a recursive loop
+        return `${prevCode} let ${name} = window.${name};`;
+      }, code);
+      // Used to update the variables synchronously after `window.x = xx` is updated
+      this.global[`${GARFISH_OPTIMIZE_NAME}Methods`] = methods;
+      this.global[`${GARFISH_OPTIMIZE_NAME}UpdateStack`] = [];
+      code += `window.${GARFISH_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v")});`;
+    }
+
+    if (tempEnvList.length > 0) {
+      code = tempEnvList.reduce((prevCode, name) => {
+        return `${prevCode} let ${name} = ${this.tempVariable}.${name};`;
+      }, code);
+    }
     return code;
   }
 
@@ -265,7 +276,7 @@ export class Sandbox {
     }
 
     const revertCurrentScript = setDocCurrentScript(
-      this.global.document,
+      openSandbox ? this.global.document : window.document,
       code,
       false,
       url,
@@ -274,20 +285,27 @@ export class Sandbox {
 
     try {
       code += `\n${url ? `//# sourceURL=${url}\n` : ''}`;
-      code = !disableWith
-        ? `with(window) {;${this.optimizeCode + code}}`
-        : code;
 
       if (openSandbox) {
-        evalWithEnv(
-          code,
-          {
-            window: this.global,
-            ...overrideList,
-            ...env,
-          },
-          this.global,
-        );
+        const params = {
+          window: this.global,
+          ...overrideList,
+        };
+
+        if (!disableWith) {
+          const tempEnvKeys = Object.keys(env);
+          const optimizeCode =
+            tempEnvKeys.length > 0
+              ? this.optimizeGlobalMethod(tempEnvKeys)
+              : this.optimizeCode;
+
+          code = `with(window) {;${optimizeCode + code}}`;
+          params[this.tempVariable] = env;
+        } else {
+          Object.assign(params, env);
+        }
+
+        evalWithEnv(code, params, this.global);
       } else {
         evalWithEnv(code, env, window);
       }

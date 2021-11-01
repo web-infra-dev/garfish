@@ -116,18 +116,12 @@ function createOptions(Garfish: interfaces.Garfish) {
 
           el: () => appInstance.htmlNode,
 
+          protectVariable: () => appInfo.protectVariable || [],
+
           insulationVariable: () => {
             return [
               ...specialExternalVariables,
               ...(appInfo.insulationVariable || []),
-            ].filter(Boolean);
-          },
-
-          protectVariable: () => {
-            return [
-              ...(appInfo.protectVariable || []),
-              ...(appInstance &&
-                Object.keys(appInstance.getExecScriptEnv(false) || {})),
             ].filter(Boolean);
           },
         }),
