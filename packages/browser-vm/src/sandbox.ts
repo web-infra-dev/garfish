@@ -231,14 +231,14 @@ export class Sandbox {
     this.hooks.lifecycle.afterClearEffect.emit();
   }
 
-  optimizeGlobalMethod(tempEnvList = []) {
+  optimizeGlobalMethod(tempEnvKeys = []) {
     let code = '';
     const methods = optimizeMethods.filter((p) => {
       return (
         // If the method does not exist in the current environment, do not care
         p &&
         !this.isProtectVariable(p) &&
-        !tempEnvList.includes(p) &&
+        !tempEnvKeys.includes(p) &&
         hasOwn(this.global, p)
       );
     });
@@ -256,8 +256,8 @@ export class Sandbox {
       code += `window.${GARFISH_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v")});`;
     }
 
-    if (tempEnvList.length > 0) {
-      code = tempEnvList.reduce((prevCode, name) => {
+    if (tempEnvKeys.length > 0) {
+      code = tempEnvKeys.reduce((prevCode, name) => {
         return `${prevCode} let ${name} = ${this.tempVariable}.${name};`;
       }, code);
     }
@@ -293,10 +293,10 @@ export class Sandbox {
         };
 
         if (!disableWith) {
-          const tempEnvKeys = Object.keys(env);
+          const envKeys = Object.keys(env);
           const optimizeCode =
-            tempEnvKeys.length > 0
-              ? this.optimizeGlobalMethod(tempEnvKeys)
+            envKeys.length > 0
+              ? this.optimizeGlobalMethod(envKeys)
               : this.optimizeCode;
 
           code = `with(window) {;${optimizeCode + code}}`;
