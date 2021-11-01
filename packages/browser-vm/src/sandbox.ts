@@ -77,7 +77,7 @@ export class Sandbox {
   public isInsulationVariable: (P: PropertyKey) => boolean;
 
   private optimizeCode = ''; // To optimize the with statement
-  private tempVariable = '__vm_temp_var__';
+  private tempVariable = '__sandbox_temp_vars__';
 
   constructor(options: SandboxOptions) {
     // Default sandbox config
@@ -86,8 +86,8 @@ export class Sandbox {
       namespace: '',
       modules: [],
       sourceList: [],
-      disableWith: false,
       openSandbox: true,
+      disableWith: false,
       strictIsolation: false,
       el: () => null,
       protectVariable: () => [],
@@ -184,7 +184,7 @@ export class Sandbox {
     proxy.self = subProxy;
     proxy.window = subProxy;
     proxy.globalThis = subProxy;
-    proxy.unstable_sandbox = this; // This attribute is used for debugger
+    proxy.__debug_sandbox__ = this; // This attribute is used for debugger
     safeWrapper(() => {
       // Cross-domain errors may occur during access
       proxy.top = window.top === window ? subProxy : window.top;
