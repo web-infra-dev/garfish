@@ -230,17 +230,4 @@ describe('Sandbox', () => {
     );
     env.a = 'changedEnvA';
   });
-
-  it('no open vmSandbox', () => {
-    const sandbox = create({ openSandbox: false });
-    sandbox.execScript(
-      go(`
-      expect(window.a).toBe(null);
-      expect(window === nativeWindow).toBe(true);
-      expect(parentWindow === nativeWindow).toBe(true);
-      expect(document === nativeWindow.document).toBe(true);
-    `),
-      { __debug_sandbox__: sandbox },
-    );
-  });
 });

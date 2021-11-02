@@ -86,7 +86,6 @@ export class Sandbox {
       namespace: '',
       modules: [],
       sourceList: [],
-      openSandbox: true,
       disableWith: false,
       strictIsolation: false,
       el: () => null,
@@ -200,8 +199,7 @@ export class Sandbox {
     const createdList = [];
     const prepareList = [];
     const overrideList = {};
-    const { modules, openSandbox } = this.options;
-    const allModules = openSandbox ? defaultModules.concat(modules) : modules;
+    const allModules = defaultModules.concat(this.options.modules);
 
     for (const module of allModules) {
       if (typeof module === 'function') {
@@ -266,7 +264,7 @@ export class Sandbox {
 
   execScript(code: string, env = {}, url = '', options?: ExecScriptOptions) {
     const { async } = options || {};
-    const { disableWith, openSandbox } = this.options;
+    const { disableWith } = this.options;
     const { prepareList, overrideList } = this.replaceGlobalVariables;
 
     this.hooks.lifecycle.beforeInvoke.emit(url, env, options);
@@ -276,7 +274,7 @@ export class Sandbox {
     }
 
     const revertCurrentScript = setDocCurrentScript(
-      openSandbox ? this.global.document : window.document,
+      this.global.document,
       code,
       false,
       url,
@@ -286,29 +284,25 @@ export class Sandbox {
     try {
       code += `\n${url ? `//# sourceURL=${url}\n` : ''}`;
 
-      if (openSandbox) {
-        const params = {
-          window: this.global,
-          ...overrideList,
-        };
+      const params = {
+        window: this.global,
+        ...overrideList,
+      };
 
-        if (!disableWith) {
-          const envKeys = Object.keys(env);
-          const optimizeCode =
-            envKeys.length > 0
-              ? this.optimizeGlobalMethod(envKeys)
-              : this.optimizeCode;
-
-          code = `with(window) {;${optimizeCode + code}}`;
-          params[this.tempVariable] = env;
-        } else {
-          Object.assign(params, env);
-        }
-
-        evalWithEnv(code, params, this.global);
+      if (disableWith) {
+        Object.assign(params, env);
       } else {
-        evalWithEnv(code, env, window);
+        const envKeys = Object.keys(env);
+        const optimizeCode =
+          envKeys.length > 0
+            ? this.optimizeGlobalMethod(envKeys)
+            : this.optimizeCode;
+
+        code = `with(window) {;${optimizeCode + code}}`;
+        params[this.tempVariable] = env;
       }
+
+      evalWithEnv(code, params, this.global);
     } catch (e) {
       this.hooks.lifecycle.invokeError.emit(e, url, env, options);
       // dispatch `window.onerror`

@@ -21,7 +21,6 @@ export interface SandboxOptions {
   namespace: string;
   baseUrl?: string;
   disableWith?: boolean;
-  openSandbox?: boolean;
   strictIsolation?: boolean;
   modules?: Array<Module>;
   sourceList?: Array<{ tagName: string; url: string }>;

@@ -107,7 +107,6 @@ function createOptions(Garfish: interfaces.Garfish) {
         Garfish,
         appInstance,
         new Sandbox({
-          openSandbox: true,
           namespace: appInfo.name,
           sourceList: appInstance.sourceList,
           baseUrl: appInstance.entryManager.url,
