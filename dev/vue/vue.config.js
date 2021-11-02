@@ -23,7 +23,7 @@ module.exports = {
     // Webpack use `(function() { return this })()` get `global` variable.
     config.node = false;
     config.devtool = 'source-map';
-    config.optimization.minimize = true;
+    // config.optimization.minimize = true;
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
     config.output.jsonpFunction = `sub-app-jsonp`;

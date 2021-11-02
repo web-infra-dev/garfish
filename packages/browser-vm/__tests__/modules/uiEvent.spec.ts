@@ -1,5 +1,9 @@
 import { MouseEventPatch } from '../../src/modules/uiEvent';
 
+/**
+ * The logic of UIEvent is referenced from qiankun typography
+ * https://github.com/umijs/qiankun/pull/593/files
+ */
 test('patch UIEvent', async () => {
   const dispatchEventAction = jest.fn();
 

@@ -14,6 +14,10 @@ export function isPlainObject(val: any) {
   return objectToString.call(val) === '[object Object]';
 }
 
+export function getType(val: any) {
+  return objectToString.call(val).slice(8, -1).toLowerCase();
+}
+
 export function isPromise(obj: any) {
   return isObject(obj) && typeof obj.then === 'function';
 }

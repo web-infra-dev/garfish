@@ -22,7 +22,7 @@ module.exports = {
   devServer: {
     open: true,
     port: portInfo.port,
-    compress: true,
+    // compress: true,
     disableHostCheck: true,
     historyApiFallback: true,
     clientLogLevel: 'warning',
