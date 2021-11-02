@@ -1,32 +1,21 @@
-import { _extends, objectToString } from '@garfish/utils';
+import { _extends, getType } from '@garfish/utils';
 
-_extends(MouseEventPatch, MouseEvent);
-
-export function MouseEventPatch(
-  typeArg: string,
-  mouseEventInit?: MouseEventInit,
-): void {
-  if (
-    mouseEventInit &&
-    objectToString.call(mouseEventInit.view) === '[object Window]'
-  ) {
-    mouseEventInit.view = window;
+/**
+ * The logic of UIEvent is referenced from qiankun typography
+ * https://github.com/umijs/qiankun/pull/593/files
+ * TODO: fix normal mouse event instanceof MouseEvent === false
+ */
+const RawMouseEvent = window.MouseEvent;
+export class MouseEventPatch extends RawMouseEvent {
+  constructor(typeArg: string, mouseEventInit?: MouseEventInit) {
+    if (mouseEventInit && getType(mouseEventInit.view) === 'window') {
+      mouseEventInit.view = window;
+    }
+    super(typeArg, mouseEventInit);
   }
-  return new MouseEvent(typeArg, mouseEventInit) as any;
 }
 
 export function UiEventOverride() {
-  class MouseEventPatch extends MouseEvent {
-    constructor(typeArg: string, mouseEventInit?: MouseEventInit) {
-      if (
-        mouseEventInit &&
-        objectToString.call(mouseEventInit.view) === '[object Window]'
-      ) {
-        mouseEventInit.view = window;
-      }
-      super(typeArg, mouseEventInit);
-    }
-  }
   return {
     override: {
       MouseEvent: MouseEventPatch as any,

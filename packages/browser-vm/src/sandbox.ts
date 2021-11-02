@@ -169,6 +169,7 @@ export class Sandbox {
       set: createSetter(this),
       defineProperty: createDefineProperty(this),
       deleteProperty: createDeleteProperty(this),
+      getPrototypeOf: () => Reflect.getPrototypeOf(window),
     };
 
     const parentHandlers = {
