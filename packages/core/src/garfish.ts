@@ -197,7 +197,6 @@ export class Garfish extends EventEmitter2 {
       const cacheApp = this.cacheApps[appName];
       if (appInfo.cache && cacheApp) {
         appInstance = cacheApp;
-        this.loading[appName] = null;
       } else {
         try {
           const [manager, resources, isHtmlMode] = await processAppResources(
@@ -224,8 +223,6 @@ export class Garfish extends EventEmitter2 {
         } catch (e) {
           __DEV__ && warn(e);
           this.hooks.lifecycle.errorLoadApp.emit(e, appInfo);
-        } finally {
-          this.loading[appName] = null;
         }
       }
       this.hooks.lifecycle.afterLoad.emit(appInfo, appInstance);
@@ -233,7 +230,9 @@ export class Garfish extends EventEmitter2 {
     };
 
     if (!this.loading[appName]) {
-      this.loading[appName] = asyncLoadProcess();
+      this.loading[appName] = asyncLoadProcess().finally(() => {
+        this.loading[appName] = null;
+      });
     }
     return this.loading[appName];
   }
