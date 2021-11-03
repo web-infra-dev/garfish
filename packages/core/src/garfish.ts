@@ -225,7 +225,7 @@ export class Garfish extends EventEmitter2 {
           this.hooks.lifecycle.errorLoadApp.emit(e, appInfo);
         }
       }
-      this.hooks.lifecycle.afterLoad.emit(appInfo, appInstance);
+      await this.hooks.lifecycle.afterLoad.emit(appInfo, appInstance);
       return appInstance;
     };
 
