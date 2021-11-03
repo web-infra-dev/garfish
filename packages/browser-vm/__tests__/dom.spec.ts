@@ -8,7 +8,7 @@ describe('Sandbox:Dom & Bom', () => {
 
   const go = (code: string) => {
     return `
-      const sandbox = unstable_sandbox;
+      const sandbox = __debug_sandbox__;
       const Sandbox = sandbox.constructor;
       const nativeWindow = Sandbox.getNativeWindow();
       document.body.innerHTML = '<div id="root">123</div><div __garfishmockhead__></div>'

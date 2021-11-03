@@ -96,18 +96,17 @@ function createOptions(Garfish: interfaces.Garfish) {
       if (
         !canSupport ||
         !appInstance ||
+        appInstance.vmSandbox ||
         appInfo.sandbox === false || // Ensure that old versions compatible
         appInfo.sandbox.open === false ||
         appInfo.sandbox.snapshot
       ) {
         return;
       }
-      if (appInstance.vmSandbox) return;
       rewriteAppAndSandbox(
         Garfish,
         appInstance,
         new Sandbox({
-          openSandbox: true,
           namespace: appInfo.name,
           sourceList: appInstance.sourceList,
           baseUrl: appInstance.entryManager.url,
@@ -116,18 +115,12 @@ function createOptions(Garfish: interfaces.Garfish) {
 
           el: () => appInstance.htmlNode,
 
+          protectVariable: () => appInfo.protectVariable || [],
+
           insulationVariable: () => {
             return [
               ...specialExternalVariables,
               ...(appInfo.insulationVariable || []),
-            ].filter(Boolean);
-          },
-
-          protectVariable: () => {
-            return [
-              ...(appInfo.protectVariable || []),
-              ...(appInstance &&
-                Object.keys(appInstance.getExecScriptEnv(false) || {})),
             ].filter(Boolean);
           },
         }),
@@ -137,17 +130,19 @@ function createOptions(Garfish: interfaces.Garfish) {
     // If the app is uninstalled, the sandbox needs to clear all effects and then reset
     afterUnmount(appInfo, appInstance, isCacheMode) {
       // The caching pattern to retain the same context
-      if (!appInstance.vmSandbox || isCacheMode) return;
-      appInstance.vmSandbox.reset();
+      if (appInstance.vmSandbox && !isCacheMode) {
+        appInstance.vmSandbox.reset();
+      }
     },
 
     afterMount(appInfo, appInstance) {
-      if (!appInstance.vmSandbox) return;
-      appInstance.vmSandbox.execScript(`
-        if (typeof window.onload === 'function') {
-          window.onload.call(window);
-        }
-      `);
+      if (appInstance.vmSandbox) {
+        appInstance.vmSandbox.execScript(`
+          if (typeof window.onload === 'function') {
+            window.onload.call(window);
+          }
+        `);
+      }
     },
   };
   return options;
