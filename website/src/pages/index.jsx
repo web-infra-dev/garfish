@@ -53,7 +53,7 @@ const features = [
     description: '支持 vue、react、angular 多种框架混合使用',
   },
   {
-    title: 'Api 最大简洁化',
+    title: 'API 最大简洁化',
     imageUrl: 'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/feat-api.png',
     description: '在实际应用中使用方式极大简洁化',
   },
