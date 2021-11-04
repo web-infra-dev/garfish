@@ -93,7 +93,7 @@ export function isJsonp(mt: mimeType, src: string) {
     ) {
       return true;
     }
-  } catch {
+  } catch (e) {
     return false;
   }
   return false;
