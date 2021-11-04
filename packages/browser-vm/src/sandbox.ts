@@ -329,7 +329,7 @@ export class Sandbox {
     if (support) {
       try {
         new Function('let a = 666;');
-      } catch {
+      } catch (e) {
         support = false;
       }
     }

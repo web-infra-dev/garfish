@@ -69,7 +69,7 @@ const processError = (
       }
       fn(error, false);
     }
-  } catch {
+  } catch (e) {
     fn(error, typeof error === 'string');
   }
 };
@@ -445,7 +445,7 @@ export const hookObjectProperty = <
       hooked = function (...args: any) {
         try {
           return (hookedUnsafe as any).apply(this, args);
-        } catch {
+        } catch (e) {
           return typeof origin === 'function' && origin.apply(this, args);
         }
       } as any as T[K];
