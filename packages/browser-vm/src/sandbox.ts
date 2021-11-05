@@ -37,7 +37,7 @@ import {
 
 let id = 0;
 const defaultModules: Array<Module> = [
-  networkModule,
+  // networkModule,
   timeoutModule,
   intervalModule,
   historyModule,
