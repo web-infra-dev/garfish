@@ -1,29 +1,16 @@
 import { Sandbox } from '../sandbox';
 
-const rawMutationObserver = MutationObserver;
+const rawMutationObserver = window.MutationObserver;
 
 export function observerModule(_sandbox: Sandbox) {
   const observers: MutationObserver[] = [];
-  const fakeMutationObserverProto = Object.create(
-    rawMutationObserver.prototype,
-  );
 
-  const fakeMutationObserver = function MutationObserver(cb: MutationCallback) {
-    if (!(this instanceof fakeMutationObserver)) {
-      throw new TypeError(
-        // eslint-disable-next-line quotes
-        "Failed to construct 'MutationObserver': Please use the 'new' operator.",
-      );
+  class MutationObserver extends rawMutationObserver {
+    constructor(cb: MutationCallback) {
+      super(cb);
+      observers.push(this);
     }
-
-    const observerInstance = new rawMutationObserver(cb);
-    Object.setPrototypeOf(observerInstance, fakeMutationObserverProto);
-    observers.push(observerInstance);
-    return observerInstance;
-  };
-
-  fakeMutationObserver.prototype = fakeMutationObserverProto;
-  fakeMutationObserver.prototype.constructor = fakeMutationObserver;
+  }
 
   const recover = () => {
     observers.forEach((observer) => {
@@ -35,7 +22,7 @@ export function observerModule(_sandbox: Sandbox) {
   return {
     recover,
     override: {
-      MutationObserver: fakeMutationObserver,
+      MutationObserver: MutationObserver as Function,
     },
   };
 }
