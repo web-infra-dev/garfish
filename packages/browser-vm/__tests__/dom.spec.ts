@@ -1,4 +1,5 @@
 import { Sandbox } from '../src/sandbox';
+import { sandboxMap } from '../src/utils';
 
 // Garfish 使用 Proxy 对 dom 进行了劫持, 同时对调用 dom 的函数做了劫持, 修正 dom 节点的类型
 // 对调用 dom 的相关方法进行测试
@@ -35,6 +36,7 @@ describe('Sandbox:Dom & Bom', () => {
   };
 
   beforeEach(() => {
+    delete (window as any).__jestDoneNext__;
     sandbox = create();
   });
 
@@ -120,5 +122,38 @@ describe('Sandbox:Dom & Bom', () => {
       expect(documentCopy2 instanceof Document).toBe(true);
     `),
     );
+  });
+
+  it('MutationObserver callbacks can be canceled.', (next) => {
+    sandboxMap.set(sandbox);
+    sandbox.execScript(
+      go(`
+        let windowObserverTriggered = false;
+        let sandboxObserverTriggered = false;
+        const root = document.getElementById('root');
+        const outer = document.createElement('div');
+        outer.innerText = 'outer';
+        root.appendChild(outer);
+        const inner = document.createElement('div');
+        inner.innerText = 'inner';
+        outer.appendChild(inner);
+        const windowObserver = new nativeWindow.MutationObserver(() => {
+          windowObserverTriggered = true;
+        });
+        windowObserver.observe(outer, { attributes: true, childList: true, subtree: true });
+        const sandboxObserver = new MutationObserver(() => {
+          sandboxObserverTriggered = true;
+        });
+        sandboxObserver.observe(outer, { attributes: true, childList: true, subtree: true });
+        // To trigger clear effects.
+        sandbox.reset();
+        Promise.resolve().then(() => {
+          expect(windowObserverTriggered).toBe(true);
+          expect(sandboxObserverTriggered).toBe(false);
+          __jestDoneNext__();
+        });
+      `),
+    );
+    (window as any).__jestDoneNext__ = next;
   });
 });
