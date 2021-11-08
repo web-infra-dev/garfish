@@ -16,6 +16,7 @@ import { documentModule } from './modules/document';
 import { UiEventOverride } from './modules/uiEvent';
 import { localStorageModule } from './modules/storage';
 import { listenerModule } from './modules/eventListener';
+import { observerModule } from './modules/mutationObserver';
 import { timeoutModule, intervalModule } from './modules/timer';
 import { makeElInjector } from './dynamicNode';
 import { sandboxLifecycle } from './lifecycle';
@@ -43,6 +44,7 @@ const defaultModules: Array<Module> = [
   historyModule,
   documentModule,
   listenerModule,
+  observerModule,
   UiEventOverride,
   localStorageModule,
 ];
