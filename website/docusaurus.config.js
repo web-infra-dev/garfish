@@ -134,18 +134,18 @@ module.exports = {
       },
     ],
   ],
-  // i18n: {
-  //   defaultLocale: 'zh-CN',
-  //   locales: ['en', 'zh-CN'],
-  //   localeConfigs: {
-  //     en: {
-  //       label: 'English (Auto)',
-  //       direction: 'ltr',
-  //     },
-  //     'zh-CN': {
-  //       label: '简体中文（中国）',
-  //       direction: 'ltr',
-  //     },
-  //   },
-  // },
+  i18n: {
+    defaultLocale: 'zh-CN',
+    locales: ['en', 'zh-CN'],
+    localeConfigs: {
+      en: {
+        label: 'English (Auto)',
+        direction: 'ltr',
+      },
+      'zh-CN': {
+        label: '简体中文（中国）',
+        direction: 'ltr',
+      },
+    },
+  },
 };
