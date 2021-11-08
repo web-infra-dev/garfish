@@ -3,20 +3,20 @@ import { Sandbox } from '../sandbox';
 const rawMutationObserver = window.MutationObserver;
 
 export function observerModule(_sandbox: Sandbox) {
-  const observers: MutationObserver[] = [];
+  const observerSet = new Set<MutationObserver>();
 
   class MutationObserver extends rawMutationObserver {
     constructor(cb: MutationCallback) {
       super(cb);
-      observers.push(this);
+      observerSet.add(this);
     }
   }
 
   const recover = () => {
-    observers.forEach((observer) => {
-      observer.disconnect();
+    observerSet.forEach((observer) => {
+      if (typeof observer.disconnect === 'function') observer.disconnect();
     });
-    observers.splice(0);
+    observerSet.clear();
   };
 
   return {
