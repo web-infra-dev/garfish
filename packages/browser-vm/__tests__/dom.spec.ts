@@ -36,7 +36,6 @@ describe('Sandbox:Dom & Bom', () => {
   };
 
   beforeEach(() => {
-    delete (window as any).__jestDoneNext__;
     sandbox = create();
   });
 
@@ -150,10 +149,10 @@ describe('Sandbox:Dom & Bom', () => {
         Promise.resolve().then(() => {
           expect(windowObserverTriggered).toBe(true);
           expect(sandboxObserverTriggered).toBe(false);
-          __jestDoneNext__();
+          next();
         });
       `),
+      { next },
     );
-    (window as any).__jestDoneNext__ = next;
   });
 });
