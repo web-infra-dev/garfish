@@ -128,14 +128,14 @@ export class Garfish extends EventEmitter2 {
     if (!this.options.disablePreloadApp) {
       this.usePlugin(GarfishPreloadPlugin());
     }
-    options.plugins?.forEach((plugin) => this.usePlugin(plugin, this));
+    options.plugins?.forEach((plugin) => this.usePlugin(plugin));
     // Put the lifecycle plugin at the end, so that you can get the changes of other plugins
     this.usePlugin(GarfishOptionsLife(this.options, 'global-lifecycle'));
 
     // Emit hooks and register apps
     this.hooks.lifecycle.beforeBootstrap.emit(this.options);
-    this.running = true;
     this.registerApp(this.options.apps || []);
+    this.running = true;
     this.hooks.lifecycle.bootstrap.emit(this.options);
     return this;
   }
