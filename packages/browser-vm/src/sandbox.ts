@@ -38,7 +38,7 @@ import {
 
 let id = 0;
 const defaultModules: Array<Module> = [
-  networkModule,
+  // networkModule,
   timeoutModule,
   intervalModule,
   historyModule,
@@ -79,6 +79,7 @@ export class Sandbox {
   public isInsulationVariable: (P: PropertyKey) => boolean;
 
   private optimizeCode = ''; // To optimize the with statement
+  private tempVariable = '__sandbox_temp_vars__';
 
   constructor(options: SandboxOptions) {
     // Default sandbox config
@@ -88,7 +89,6 @@ export class Sandbox {
       modules: [],
       sourceList: [],
       disableWith: false,
-      openSandbox: true,
       strictIsolation: false,
       el: () => null,
       protectVariable: () => [],
@@ -185,7 +185,7 @@ export class Sandbox {
     proxy.self = subProxy;
     proxy.window = subProxy;
     proxy.globalThis = subProxy;
-    proxy.unstable_sandbox = this; // This attribute is used for debugger
+    proxy.__debug_sandbox__ = this; // This attribute is used for debugger
     safeWrapper(() => {
       // Cross-domain errors may occur during access
       proxy.top = window.top === window ? subProxy : window.top;
@@ -201,8 +201,7 @@ export class Sandbox {
     const createdList = [];
     const prepareList = [];
     const overrideList = {};
-    const { modules, openSandbox } = this.options;
-    const allModules = openSandbox ? defaultModules.concat(modules) : modules;
+    const allModules = defaultModules.concat(this.options.modules);
 
     for (const module of allModules) {
       if (typeof module === 'function') {
@@ -232,32 +231,42 @@ export class Sandbox {
     this.hooks.lifecycle.afterClearEffect.emit();
   }
 
-  optimizeGlobalMethod() {
+  optimizeGlobalMethod(tempEnvKeys = []) {
     let code = '';
     const methods = optimizeMethods.filter((p) => {
       return (
         // If the method does not exist in the current environment, do not care
-        p && !this.isProtectVariable(p) && hasOwn(this.global, p)
+        p &&
+        !this.isProtectVariable(p) &&
+        !tempEnvKeys.includes(p) &&
+        hasOwn(this.global, p)
       );
     });
-    if (methods.length === 0) return code;
 
-    code = methods.reduce((prevCode, name) => {
-      // You can only use `let`, if you use `var`,
-      // declaring the characteristics in advance will cause you to fetch from with,
-      // resulting in a recursive loop
-      return `${prevCode} let ${name} = window.${name};`;
-    }, code);
-    // Used to update the variables synchronously after `window.x = xx` is updated
-    this.global[`${GARFISH_OPTIMIZE_NAME}Methods`] = methods;
-    this.global[`${GARFISH_OPTIMIZE_NAME}UpdateStack`] = [];
-    code += `window.${GARFISH_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v")});`;
+    if (methods.length > 0) {
+      code = methods.reduce((prevCode, name) => {
+        // Can only use `let`, if you use `var`,
+        // declaring the characteristics in advance will cause you to fetch from with,
+        // resulting in a recursive loop
+        return `${prevCode} let ${name} = window.${name};`;
+      }, code);
+      // Used to update the variables synchronously after `window.x = xx` is updated
+      this.global[`${GARFISH_OPTIMIZE_NAME}Methods`] = methods;
+      this.global[`${GARFISH_OPTIMIZE_NAME}UpdateStack`] = [];
+      code += `window.${GARFISH_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v")});`;
+    }
+
+    if (tempEnvKeys.length > 0) {
+      code = tempEnvKeys.reduce((prevCode, name) => {
+        return `${prevCode} let ${name} = ${this.tempVariable}.${name};`;
+      }, code);
+    }
     return code;
   }
 
   execScript(code: string, env = {}, url = '', options?: ExecScriptOptions) {
     const { async } = options || {};
-    const { disableWith, openSandbox } = this.options;
+    const { disableWith } = this.options;
     const { prepareList, overrideList } = this.replaceGlobalVariables;
 
     this.hooks.lifecycle.beforeInvoke.emit(url, env, options);
@@ -276,23 +285,26 @@ export class Sandbox {
 
     try {
       code += `\n${url ? `//# sourceURL=${url}\n` : ''}`;
-      code = !disableWith
-        ? `with(window) {;${this.optimizeCode + code}}`
-        : code;
 
-      if (openSandbox) {
-        evalWithEnv(
-          code,
-          {
-            window: this.global,
-            ...overrideList,
-            ...env,
-          },
-          this.global,
-        );
+      const params = {
+        window: this.global,
+        ...overrideList,
+      };
+
+      if (disableWith) {
+        Object.assign(params, env);
       } else {
-        evalWithEnv(code, env, window);
+        const envKeys = Object.keys(env);
+        const optimizeCode =
+          envKeys.length > 0
+            ? this.optimizeGlobalMethod(envKeys)
+            : this.optimizeCode;
+
+        code = `with(window) {;${optimizeCode + code}}`;
+        params[this.tempVariable] = env;
       }
+
+      evalWithEnv(code, params, this.global);
     } catch (e) {
       this.hooks.lifecycle.invokeError.emit(e, url, env, options);
       // dispatch `window.onerror`
@@ -331,7 +343,7 @@ export class Sandbox {
     if (support) {
       try {
         new Function('let a = 666;');
-      } catch {
+      } catch (e) {
         support = false;
       }
     }

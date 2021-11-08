@@ -22,7 +22,6 @@ describe('Init', () => {
   };
 
   beforeEach(() => {
-    delete (window as any).__jestDoneNext__;
     sandbox = create();
   });
 
@@ -44,11 +43,10 @@ describe('Init', () => {
       xhr.open('GET', '/get');
       xhr.onload = (e) => {
         expect(e.target.response).toBe('ok');
-        __jestDoneNext__();
+        next();
       }
       xhr.send();
     `;
-    (window as any).__jestDoneNext__ = next;
-    sandbox.execScript(code);
+    sandbox.execScript(code, { next });
   });
 });

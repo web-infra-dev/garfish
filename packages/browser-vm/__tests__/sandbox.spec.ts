@@ -4,13 +4,17 @@ import { Sandbox } from '../src/sandbox';
 // 多沙箱共存
 // 沙箱嵌套
 // 嵌套共存同时存在
+// 临时变量
+// 禁用 with
 describe('Sandbox', () => {
   let sandbox: Sandbox;
   window.dispatchEvent = () => true;
 
   const go = (code: string) => {
     return `
-      const sandbox = unstable_sandbox;
+      const sandbox = typeof __debug_sandbox__ !== 'undefined'
+        ? __debug_sandbox__
+        : window.__debug_sandbox__;
       const Sandbox = sandbox.constructor;
       const nativeWindow = Sandbox.getNativeWindow();
       const parentWindow = sandbox.global[Symbol.for('garfish.globalObject')];
@@ -18,18 +22,14 @@ describe('Sandbox', () => {
     `;
   };
 
-  const create = (opts = {}) => {
+  const create = (opts?: Partial<Sandbox['options']>) => {
     return new Sandbox({
       ...opts,
       namespace: 'app',
       modules: [
         () => ({
           recover() {},
-          override: {
-            go,
-            jest,
-            expect,
-          },
+          override: { go },
         }),
       ],
     });
@@ -85,6 +85,7 @@ describe('Sandbox', () => {
         window.a = 2;
         expect(window.a).toBe(2);
         expect(nativeWindow.a).toBe(1);
+        expect(window === nativeWindow).toBe(false);
         expect(parentWindow === nativeWindow).toBe(true);
         nativeWindow.b = 2;
       `),
@@ -165,5 +166,68 @@ describe('Sandbox', () => {
         expect(nativeWindow.b).toBe(undefined);
       `),
     );
+  });
+
+  it('temporary variables', (next) => {
+    const env = {
+      next,
+      a: 'envA',
+    };
+    sandbox.execScript(
+      go(`
+      expect(a).toBe('envA');
+      expect(window.a).toBe(null);
+      expect(typeof __debug_sandbox__).toBe('object');
+      expect(window.__debug_sandbox__ === __debug_sandbox__).toBe(true);
+      setTimeout(() => {
+        expect(a).toBe('envA');
+        expect(window.a).toBe(null);
+        next();
+      })
+    `),
+      env,
+    );
+    // 引用的对象变化，不影响内部使用的值
+    env.a = 'changedEnvA';
+
+    sandbox = create();
+    sandbox.execScript(
+      go(`
+      expect(a).toBe(null);
+      expect(window.a).toBe(null);
+      expect(typeof __debug_sandbox__).toBe('object');
+      setTimeout(() => {
+        expect(a).toBe(null);
+        expect(window.a).toBe(null);
+        next();
+      })
+    `),
+      {
+        next,
+      },
+    );
+  });
+
+  it('disable with and temporary variables', (next) => {
+    sandbox = create({ disableWith: true });
+    const env = {
+      next,
+      a: 'envA',
+    };
+    sandbox.execScript(
+      go(`
+      expect(a).toBe('envA');
+      expect(window.a).toBe(null);
+      expect(typeof __debug_sandbox__).toBe('undefined');
+      expect(typeof window.__debug_sandbox__).toBe('object');
+      setTimeout(() => {
+        expect(a).toBe('envA');
+        expect(window.a).toBe(null);
+        next();
+      })
+    `),
+      env,
+    );
+    env.a = 'changedEnvA';
   });
 });

@@ -9,7 +9,7 @@ export function globalLifecycle() {
     beforeRegisterApp: new SyncHook<[interfaces.AppInfo | Array<interfaces.AppInfo>], void>(),
     registerApp: new SyncHook<[Record<string, interfaces.AppInfo>], void>(),
     beforeLoad: new AsyncHook<[interfaces.AppInfo], Promise<boolean | void> | void | boolean>(),
-    afterLoad: new SyncHook<[interfaces.AppInfo, interfaces.App], void>(),
+    afterLoad: new AsyncHook<[interfaces.AppInfo, interfaces.App], void>(),
     errorLoadApp: new SyncHook<[Error, interfaces.AppInfo], void>(),
   });
 }
