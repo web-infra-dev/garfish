@@ -1,7 +1,12 @@
 /// <reference types="cypress" />
 import GarfishInstance from 'garfish';
+// import './vue-app';
 import { Config } from './config';
 
+GarfishInstance.router.beforeEach((to, from, next) => {
+  console.log(to, from);
+  next();
+});
 GarfishInstance.run(Config);
 
 const useRouterMode = true;

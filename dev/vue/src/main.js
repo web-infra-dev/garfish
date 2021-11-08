@@ -16,6 +16,7 @@ Vue.config.productionTip = false;
 
 let vm;
 const render = ({ dom, basename = '/' }) => {
+  console.log('render Vue app');
   const router = new VueRouter({
     mode: 'history',
     base: basename,
@@ -48,6 +49,6 @@ export function provider({ basename, dom }) {
 }
 
 // There is no running show that the main application execution run, you can perform in micro front-end environment rendering
-if (!window.__GARFISH_PARENT__) {
+if (!window.__GARFISH__) {
   render({});
 }
