@@ -37,7 +37,7 @@ export function createAppContainer(appInfo: interfaces.AppInfo) {
     htmlNode = document.createElement('html');
     const root = appContainer.attachShadow({ mode: 'open' });
     root.appendChild(htmlNode);
-    asyncNodeAttribute(htmlNode, document.body);
+    // asyncNodeAttribute(htmlNode, document.body);
     dispatchEvents(root);
   } else {
     htmlNode.setAttribute(__MockHtml__, '');
