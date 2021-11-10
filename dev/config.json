@@ -5,7 +5,7 @@
   },
   "dev/main-web-component": {
     "pkgName": "@garfish-dev/main-web-component",
-    "port": 24444
+    "port": 2222
   },
   "dev/react": {
     "pkgName": "@garfish-dev/react",

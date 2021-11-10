@@ -1,42 +1,24 @@
-.DS_Store
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-.pnp
+# dependencies
+/node_modules
+/.pnp
 .pnp.js
-.env.*.local
-.history
-.rts*
-*.log*
-*.pid
-*.pid.*
-*.report
-*.lcov
-lib-cov
 
-node_modules/
-.npm
-.lock-wscript
-.yarn-integrity
-.node_repl_history
-.nyc_output
-*.tsbuildinfo
-.eslintcache
-.sonarlint
+# testing
+/coverage
 
-dist/
-coverage/
-release/
-output/
-output_resource/
+# production
+/build
 
-.vscode/**/*
-!.vscode/settings.json
-!.vscode/extensions.json
-.idea/
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-**/*/typings/auto-generated
-**/*/adapters/**/index.ts
-**/*/adapters/**/index.js
-
-.changeset/pre.json
-
-.pnpm-store/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json

@@ -1,58 +1,43 @@
 {
-  "name": "main-web-component",
-  "version": "0.1.0",
-  "scripts": {
-    "reset": "rm -rf node_modules",
-    "dev": "modern dev",
-    "build": "modern build",
-    "start": "modern start",
-    "new": "modern new",
-    "lint": "modern lint"
+  "name": "@garfish-dev/main-web-component",
+  "version": "0.1.5",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "5.14.1",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "13.3.0",
+    "antd": "^4.9.4",
+    "classnames": "^2.3.1",
+    "react": "^16.13.1",
+    "react-app-rewired": "^2.1.6",
+    "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.1",
+    "react-shadow-dom-retarget-events": "^1.0.11",
+    "@garfish/web-component": "workspace:*"
   },
-  "engines": {
-    "node": ">=14.17.6"
+  "scripts": {
+    "start": "WDS_SOCKET_PORT=2222 PORT=2222 BROWSER=none react-app-rewired start",
+    "build": "react-app-rewired build && cp -r build dist",
+    "test": "react-app-rewired test",
+    "eject": "react-scripts eject"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   },
   "eslintConfig": {
-    "extends": [
-      "@modern-js"
-    ]
+    "extends": "react-app"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "node --max_old_space_size=8192 ./node_modules/eslint/bin/eslint.js --fix --color --cache --quiet",
-      "git add"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
     ],
-    "*.{js,jsx,mjs,mjsx,cjs,cjsx}": [
-      "node --max_old_space_size=8192 ./node_modules/eslint/bin/eslint.js --fix --color --cache --quiet",
-      "git add"
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
     ]
-  },
-  "eslintIgnore": [
-    "node_modules/",
-    "dist/"
-  ],
-  "dependencies": {
-    "@modern-js/runtime": "^1.0.0",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
-  },
-  "devDependencies": {
-    "@modern-js/app-tools": "^1.0.0",
-    "@modern-js/plugin-jarvis": "^1.0.0",
-    "typescript": "^4",
-    "@types/react": "^17",
-    "@types/react-dom": "^17",
-    "@types/node": "^14"
-  },
-  "modernConfig": {
-    "runtime": {
-      "router": true,
-      "state": true
-    }
   }
 }

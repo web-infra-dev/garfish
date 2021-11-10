@@ -7,48 +7,38 @@ interface AppInfo {
 }
 
 interface CustomOptions {
-  loading: (loadingParams: {
-    isLoading: boolean,
-    error: Error
-  }) => Element;
+  loading: (loadingParams: { isLoading: boolean; error: Error }) => Element;
 }
 
-function generateCustomerElement (htmlTag: string, options: CustomOptions) {
+function generateCustomerElement(htmlTag: string, options: CustomOptions) {
   class MicroApp extends HTMLElement {
     appInfo = {
       name: '',
       entry: '',
       basename: '',
-    }
+    };
     options = {
       loading: null,
-    }
+    };
     placeholder: Element;
     state = this._observerAppState({
       isLoading: false,
       error: null,
       promise: null,
       loaded: null,
-    })
+    });
 
     constructor() {
       super();
-      this.appInfo = {
-        name: this.getAttribute('app-name'),
-        entry: this.getAttribute('entry'),
-        basename: this.getAttribute('basename') || '/',
-      };
       this.options = options;
-
-      this._loadApp();
     }
 
-    _observerAppState (state) {
+    _observerAppState(state) {
       return new Proxy(state, {
         set: (target: any, p: string | symbol, value: any, receiver: any) => {
           // Loading status content display in the loading process
           // Error display error
-          const getPlaceHolderAndAppend = ()=> {
+          const getPlaceHolderAndAppend = () => {
             // Remove the existing placeholder content
             if (this.placeholder) {
               this.removeChild(this.placeholder);
@@ -59,15 +49,15 @@ function generateCustomerElement (htmlTag: string, options: CustomOptions) {
             });
             placeholder && this.appendChild(placeholder);
             return placeholder;
-          }
+          };
 
-          const res = Reflect.set(target,p,value,receiver);
+          const res = Reflect.set(target, p, value, receiver);
           // Loading began to open the loading placeholder
           // Loading end closed loading placeholder
           // Loading end placeholder closed if there is no mistake
           if (p === 'error' && value) {
             this.placeholder = getPlaceHolderAndAppend();
-          } else if(p === 'isLoading' && value === true) {
+          } else if (p === 'isLoading' && value === true) {
             this.placeholder = getPlaceHolderAndAppend();
           } else if (p === 'isLoading' && value === false) {
             if (!this.state.error && this.contains(this.placeholder)) {
@@ -76,10 +66,10 @@ function generateCustomerElement (htmlTag: string, options: CustomOptions) {
           }
           return res;
         },
-      })
+      });
     }
 
-    _loadApp () {
+    _loadApp() {
       // If you are loading stop continue to load
       if (this.state.isLoading) return;
       this.state.isLoading = true;
@@ -91,10 +81,17 @@ function generateCustomerElement (htmlTag: string, options: CustomOptions) {
           snapshot: false,
           strictIsolation: true,
         },
-      })
+      });
     }
 
     async connectedCallback() {
+      console.log('Custom square element added to page.', this);
+      this.appInfo = {
+        name: this.getAttribute('app-name'),
+        entry: this.getAttribute('entry'),
+        basename: this.getAttribute('basename') || '/',
+      };
+      this._loadApp();
       try {
         this.state.loaded = await this.state.promise;
         if (this.state.loaded.mounted) {
@@ -102,12 +99,11 @@ function generateCustomerElement (htmlTag: string, options: CustomOptions) {
         } else {
           await this.state.loaded.mount();
         }
-      } catch(error) {
+      } catch (error) {
         this.state.error = error;
       } finally {
         this.state.isLoading = false;
       }
-      console.log('Custom square element added to page.');
     }
 
     disconnectedCallback() {
@@ -135,7 +131,6 @@ function generateCustomerElement (htmlTag: string, options: CustomOptions) {
   customElements.define(htmlTag, MicroApp);
 }
 
-
 function createLoadableWebComponent(htmlTag: string, options: CustomOptions) {
   if (typeof htmlTag !== 'string') {
     throw new Error('garfish requires a `htmlTag` name');
@@ -151,16 +146,15 @@ function createLoadableWebComponent(htmlTag: string, options: CustomOptions) {
       delay: 200,
       timeout: null,
     },
-    options
+    options,
   );
-  return generateCustomerElement(htmlTag,opts);
+  return generateCustomerElement(htmlTag, opts);
 }
 
-
-function LoadableWebComponent (htmlTag: string, options: CustomOptions) {
-  return createLoadableWebComponent(htmlTag,options);
+function LoadableWebComponent(htmlTag: string, options: CustomOptions) {
+  return createLoadableWebComponent(htmlTag, options);
 }
 
-export function defineCustomElements (htmlTag: string, options: CustomOptions) {
-  return createLoadableWebComponent(htmlTag,options);
+export function defineCustomElements(htmlTag: string, options: CustomOptions) {
+  return createLoadableWebComponent(htmlTag, options);
 }
