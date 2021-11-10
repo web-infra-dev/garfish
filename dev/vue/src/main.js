@@ -13,7 +13,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 Vue.use(VueRouter);
 Vue.config.productionTip = false;
-
+// window.a.a.a = true;
 let vm;
 const render = ({ dom, basename = '/' }) => {
   console.log('render Vue app');

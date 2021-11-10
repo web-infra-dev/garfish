@@ -1,9 +1,21 @@
 /// <reference types="cypress" />
-// import './vueApp';
-import garfish from 'garfish';
+import { defineCustomElements } from '@garfish/web-component';
 
-// garfish.defineCustomElements('')
-console.log(garfish);
+defineCustomElements('micro-portal',{
+  loading: ({ isLoading, error })=> {
+    let loadingElement = document.createElement('div');
+    loadingElement.setAttribute('style','font-size:20px; text-align: center;');
+    if (error) {
+      loadingElement.innerHTML = `load error msg: ${error.message}`;
+      return loadingElement;
+    } else if(isLoading) {
+      loadingElement.innerHTML = `loading`;
+      return loadingElement;
+    } else {
+      return null;
+    }
+  },
+});
 
 // import GarfishInstance from 'garfish';
 // import { Config } from './config';
