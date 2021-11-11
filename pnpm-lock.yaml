@@ -20,7 +20,7 @@ importers:
       babel-polyfill: 6.26.0
       chalk: 4.1.2
       cross-env: 7.0.3
-      cypress: 8.7.0
+      cypress: 9.0.0
       esbuild-plugin-replace: 1.0.7
       eslint: 7.32.0
       eslint-plugin-vue: 7.19.1
@@ -65,7 +65,7 @@ importers:
       babel-polyfill: 6.26.0
       chalk: 4.1.2
       cross-env: 7.0.3
-      cypress: 8.7.0
+      cypress: 9.0.0
       esbuild-plugin-replace: 1.0.7
       eslint: 7.32.0
       eslint-plugin-vue: 7.19.1_eslint@7.32.0
@@ -3859,8 +3859,8 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
-  /@cypress/request/2.88.6:
-    resolution: {integrity: sha512-z0UxBE/+qaESAHY9p9sM2h8Y4XqtsbDCt0/DPOrqA/RZgKi4PkxdpXyK4wCCnSk1xHqWHZZAE+gV6aDAR6+caQ==}
+  /@cypress/request/2.88.7:
+    resolution: {integrity: sha512-FTULIP2rnDJvZDT9t6B4nSfYR40ue19tVmv3wUcY05R9/FPCoMl1nAPJkzWzBCo7ltVn5ThQTbxiMoGBN7k0ig==}
     engines: {node: '>= 6'}
     dependencies:
       aws-sign2: 0.7.0
@@ -6552,7 +6552,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.15_typescript@4.4.3
+      '@vue/cli-service': 4.5.15_daaec740214156bd7a1b7d7855d908a4
       '@vue/cli-shared-utils': 4.5.15
 
   /@vue/cli-plugin-vuex/4.5.13_@vue+cli-service@4.5.13:
@@ -6568,7 +6568,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.15_typescript@4.4.3
+      '@vue/cli-service': 4.5.15_daaec740214156bd7a1b7d7855d908a4
 
   /@vue/cli-service/4.5.13_daaec740214156bd7a1b7d7855d908a4:
     resolution: {integrity: sha512-CKAZN4iokMMsaUyJRU22oUAz3oS/X9sVBSKAF2/shFBV5xh3jqAlKl8OXZYz4cXGFLA6djNuYrniuLAo7Ku97A==}
@@ -7993,7 +7993,7 @@ packages:
       loader-utils: 1.4.0
       make-dir: 3.1.0
       schema-utils: 2.7.1
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   /babel-plugin-apply-mdx-type-prop/1.6.22_@babel+core@7.12.9:
     resolution: {integrity: sha512-VefL+8o+F/DfK24lPZMtJctrCVOfgbqLAGZSkxwhazQv4VxPg3Za/i40fu22KR2m8eEda+IfSOlPLUSIiLcnCQ==}
@@ -9731,7 +9731,7 @@ packages:
       postcss-value-parser: 4.1.0
       schema-utils: 2.7.1
       semver: 6.3.0
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   /css-loader/5.2.7_webpack@5.53.0:
     resolution: {integrity: sha512-Q7mOvpBNBG7YrVGMxRxcBJZFL75o+cH2abNASdibkj/fffYD8qWbInZrD0S9ccI6vZclF3DsHE7njGlLtaHbhg==}
@@ -10045,13 +10045,13 @@ packages:
   /cyclist/1.0.1:
     resolution: {integrity: sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=}
 
-  /cypress/8.7.0:
-    resolution: {integrity: sha512-b1bMC3VQydC6sXzBMFnSqcvwc9dTZMgcaOzT0vpSD+Gq1yFc+72JDWi55sfUK5eIeNLAtWOGy1NNb6UlhMvB+Q==}
+  /cypress/9.0.0:
+    resolution: {integrity: sha512-/93SWBZTw7BjFZ+I9S8SqkFYZx7VhedDjTtRBmXO0VzTeDbmxgK/snMJm/VFjrqk/caWbI+XY4Qr80myDMQvYg==}
     engines: {node: '>=12.0.0'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      '@cypress/request': 2.88.6
+      '@cypress/request': 2.88.7
       '@cypress/xvfb': 1.2.4
       '@types/node': 14.17.18
       '@types/sinonjs__fake-timers': 6.0.4
@@ -10086,7 +10086,6 @@ packages:
       ospath: 1.2.2
       pretty-bytes: 5.6.0
       proxy-from-env: 1.0.0
-      ramda: 0.27.1
       request-progress: 3.0.0
       supports-color: 8.1.1
       tmp: 0.2.1
@@ -12131,7 +12130,7 @@ packages:
       debug:
         optional: true
     dependencies:
-      debug: 4.3.2
+      debug: 4.3.2_supports-color@6.1.0
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -13025,7 +13024,7 @@ packages:
       tapable: 1.1.3
       toposort: 1.0.7
       util.promisify: 1.0.0
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   /html-webpack-plugin/4.0.0-beta.11_webpack@4.42.0:
     resolution: {integrity: sha512-4Xzepf0qWxf8CGg7/WQM5qBB2Lc/NFI7MhU59eUDTkuQp3skZczH4UA1d6oQyDEIoMDgERVhRyTdtUPZ5s5HBg==}
@@ -18767,10 +18766,6 @@ packages:
       performance-now: 2.1.0
     dev: false
 
-  /ramda/0.27.1:
-    resolution: {integrity: sha512-PgIdVpn5y5Yns8vqb8FzBUEYn98V3xcPgawAkkgj0YJ0qDsnHCiNmZYfOGMgOvoB0eWFLpYbhxUR3mxfDIMvpw==}
-    dev: true
-
   /randombytes/2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
     dependencies:
@@ -22736,7 +22731,7 @@ packages:
       mime: 2.5.2
       mkdirp: 0.5.5
       range-parser: 1.2.1
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
       webpack-log: 2.0.0
 
   /webpack-dev-middleware/3.7.3_webpack@5.53.0:
