@@ -157,7 +157,7 @@ importers:
       react: ^16.13.1
       react-app-rewired: ^2.1.6
       react-dom: ^16.13.1
-      react-router-dom: ^5.2.0
+      react-router-dom: 6.0.2
       react-scripts: 3.4.1
       react-shadow-dom-retarget-events: ^1.0.11
     dependencies:
@@ -169,7 +169,7 @@ importers:
       react: 16.14.0
       react-app-rewired: 2.1.8_react-scripts@3.4.1
       react-dom: 16.14.0_react@16.14.0
-      react-router-dom: 5.3.0_react@16.14.0
+      react-router-dom: 6.0.2_react-dom@16.14.0+react@16.14.0
       react-scripts: 3.4.1_typescript@4.4.3
       react-shadow-dom-retarget-events: 1.1.0
 
@@ -6552,7 +6552,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.15_typescript@4.4.3
+      '@vue/cli-service': 4.5.15_daaec740214156bd7a1b7d7855d908a4
       '@vue/cli-shared-utils': 4.5.15
 
   /@vue/cli-plugin-vuex/4.5.13_@vue+cli-service@4.5.13:
@@ -6568,7 +6568,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.15_typescript@4.4.3
+      '@vue/cli-service': 4.5.15_daaec740214156bd7a1b7d7855d908a4
 
   /@vue/cli-service/4.5.13_daaec740214156bd7a1b7d7855d908a4:
     resolution: {integrity: sha512-CKAZN4iokMMsaUyJRU22oUAz3oS/X9sVBSKAF2/shFBV5xh3jqAlKl8OXZYz4cXGFLA6djNuYrniuLAo7Ku97A==}
@@ -7993,7 +7993,7 @@ packages:
       loader-utils: 1.4.0
       make-dir: 3.1.0
       schema-utils: 2.7.1
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   /babel-plugin-apply-mdx-type-prop/1.6.22_@babel+core@7.12.9:
     resolution: {integrity: sha512-VefL+8o+F/DfK24lPZMtJctrCVOfgbqLAGZSkxwhazQv4VxPg3Za/i40fu22KR2m8eEda+IfSOlPLUSIiLcnCQ==}
@@ -9731,7 +9731,7 @@ packages:
       postcss-value-parser: 4.1.0
       schema-utils: 2.7.1
       semver: 6.3.0
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   /css-loader/5.2.7_webpack@5.53.0:
     resolution: {integrity: sha512-Q7mOvpBNBG7YrVGMxRxcBJZFL75o+cH2abNASdibkj/fffYD8qWbInZrD0S9ccI6vZclF3DsHE7njGlLtaHbhg==}
@@ -12131,7 +12131,7 @@ packages:
       debug:
         optional: true
     dependencies:
-      debug: 4.3.2
+      debug: 4.3.2_supports-color@6.1.0
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -12912,6 +12912,12 @@ packages:
       value-equal: 1.0.1
     dev: false
 
+  /history/5.1.0:
+    resolution: {integrity: sha512-zPuQgPacm2vH2xdORvGGz1wQMuHSIB56yNAy5FnLuwOwgSYyPKptJtcMm6Ev+hRGeS+GzhbmRacHzvlESbFwDg==}
+    dependencies:
+      '@babel/runtime': 7.15.4
+    dev: false
+
   /hmac-drbg/1.0.1:
     resolution: {integrity: sha1-0nRXAQJabHdabFRXk+1QL8DGSaE=}
     dependencies:
@@ -13025,7 +13031,7 @@ packages:
       tapable: 1.1.3
       toposort: 1.0.7
       util.promisify: 1.0.0
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   /html-webpack-plugin/4.0.0-beta.11_webpack@4.42.0:
     resolution: {integrity: sha512-4Xzepf0qWxf8CGg7/WQM5qBB2Lc/NFI7MhU59eUDTkuQp3skZczH4UA1d6oQyDEIoMDgERVhRyTdtUPZ5s5HBg==}
@@ -19499,6 +19505,18 @@ packages:
       tiny-warning: 1.0.3
     dev: false
 
+  /react-router-dom/6.0.2_react-dom@16.14.0+react@16.14.0:
+    resolution: {integrity: sha512-cOpJ4B6raFutr0EG8O/M2fEoyQmwvZWomf1c6W2YXBZuFBx8oTk/zqjXghwScyhfrtnt0lANXV2182NQblRxFA==}
+    peerDependencies:
+      react: '>=16.8'
+      react-dom: '>=16.8'
+    dependencies:
+      history: 5.1.0
+      react: 16.14.0
+      react-dom: 16.14.0_react@16.14.0
+      react-router: 6.0.2_react@16.14.0
+    dev: false
+
   /react-router/5.2.1_react@16.14.0:
     resolution: {integrity: sha512-lIboRiOtDLFdg1VTemMwud9vRVuOCZmUIT/7lUoZiSpPODiiH1UQlfXy+vPLC/7IWdFYnhRwAyNqA/+I7wnvKQ==}
     peerDependencies:
@@ -19515,6 +19533,15 @@ packages:
       react-is: 16.13.1
       tiny-invariant: 1.1.0
       tiny-warning: 1.0.3
+    dev: false
+
+  /react-router/6.0.2_react@16.14.0:
+    resolution: {integrity: sha512-8/Wm3Ed8t7TuedXjAvV39+c8j0vwrI5qVsYqjFr5WkJjsJpEvNSoLRUbtqSEYzqaTUj1IV+sbPJxvO+accvU0Q==}
+    peerDependencies:
+      react: '>=16.8'
+    dependencies:
+      history: 5.1.0
+      react: 16.14.0
     dev: false
 
   /react-scripts/3.4.1_typescript@4.4.3:
@@ -22736,7 +22763,7 @@ packages:
       mime: 2.5.2
       mkdirp: 0.5.5
       range-parser: 1.2.1
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
       webpack-log: 2.0.0
 
   /webpack-dev-middleware/3.7.3_webpack@5.53.0:
