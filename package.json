@@ -92,5 +92,5 @@
   "engines": {
     "node": ">=14.13.0"
   },
-  "version": "1.0.21"
+  "version": "1.0.22-beta.1"
 }
