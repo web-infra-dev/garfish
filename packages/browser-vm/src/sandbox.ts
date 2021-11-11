@@ -20,7 +20,7 @@ import { observerModule } from './modules/mutationObserver';
 import { timeoutModule, intervalModule } from './modules/timer';
 import { makeElInjector } from './dynamicNode';
 import { sandboxLifecycle } from './lifecycle';
-import { optimizeMethods, createFakeObject } from './utils';
+import { optimizeMethods, createFakeObject, sandboxMap } from './utils';
 import { __garfishGlobal__, GARFISH_OPTIMIZE_NAME } from './symbolTypes';
 import {
   Module,
@@ -115,6 +115,7 @@ export class Sandbox {
     makeElInjector();
     // The default startup sandbox
     this.start();
+    sandboxMap.set(this);
   }
 
   start() {
