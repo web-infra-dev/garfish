@@ -94,7 +94,6 @@ describe('Sandbox: dynamic script', () => {
         second.src = 'http://garfish.com/second.js';
         second.onload = function () {
           window.execOrder.push('second onload task');
-          console.log(window.execOrder);
           expect(window.execOrder).toEqual([
             'first normal task','second normal task','first micro task',
             'first onload task','second micro task','second onload task'
