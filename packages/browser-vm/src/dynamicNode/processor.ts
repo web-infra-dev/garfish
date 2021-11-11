@@ -63,7 +63,7 @@ export class DynamicNodeProcessor {
 
   // Put it in the next macro task to ensure that the current synchronization script is executed
   private dispatchEvent(type: string, errInfo?: ErrorEventInit) {
-    setTimeout(() => {
+    Promise.resolve().then(() => {
       const isError = type === 'error';
       let event: Event & { __byGarfish__?: boolean };
 
@@ -129,22 +129,20 @@ export class DynamicNodeProcessor {
       const { baseUrl, namespace = '' } = this.sandbox.options;
       if (src) {
         const fetchUrl = baseUrl ? transformUrl(baseUrl, src) : src;
-        this.sandbox.loader
-          .load<JavaScriptManager>(namespace, fetchUrl)
-          .then(({ resourceManager: { url, scriptCode } }) => {
+        this.sandbox.loader.load<JavaScriptManager>(namespace, fetchUrl).then(
+          ({ resourceManager: { url, scriptCode } }) => {
             // It is necessary to ensure that the code execution error cannot trigger the `el.onerror` event
-            setTimeout(() => {
-              this.dispatchEvent('load');
-              this.sandbox.execScript(scriptCode, {}, url, { noEntry: true });
-            });
-          })
-          .catch((e) => {
+            this.sandbox.execScript(scriptCode, {}, url, { noEntry: true });
+            this.dispatchEvent('load');
+          },
+          (e) => {
             __DEV__ && warn(e);
             this.dispatchEvent('error', {
               error: e,
               filename: fetchUrl,
             });
-          });
+          },
+        );
       } else if (code) {
         this.sandbox.execScript(code, {}, baseUrl, { noEntry: true });
       }
