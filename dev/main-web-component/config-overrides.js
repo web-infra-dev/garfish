@@ -6,7 +6,7 @@ module.exports = {
     config.devtool = 'source-map';
     config.output.libraryTarget = 'umd';
     config.output.globalObject = 'window';
-    config.output.jsonpFunction = 'react-garfish-exports';
+    config.output.jsonpFunction = 'web-component-garfish-exports';
     config.mode = process.env.TEST_ENV ? 'production' : 'development';
     config.output.publicPath = `http://localhost:${portInfo.port}/`;
     config.plugins.push(

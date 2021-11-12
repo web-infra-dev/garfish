@@ -1,3 +1,4 @@
+import { def } from 'packages/utils/src/utils';
 import { GarfishInstance } from './instance';
 
 interface AppInfo {
@@ -85,7 +86,6 @@ function generateCustomerElement(htmlTag: string, options: CustomOptions) {
     }
 
     async connectedCallback() {
-      console.log('Custom square element added to page.', this);
       this.appInfo = {
         name: this.getAttribute('app-name'),
         entry: this.getAttribute('entry'),
@@ -110,7 +110,6 @@ function generateCustomerElement(htmlTag: string, options: CustomOptions) {
       if (this.state.loaded) {
         this.state.loaded.hide();
       }
-      console.log('Custom square element removed from page.');
     }
 
     async adoptedCallback() {
@@ -128,7 +127,7 @@ function generateCustomerElement(htmlTag: string, options: CustomOptions) {
   }
 
   // Define the new element
-  customElements.define(htmlTag, MicroApp);
+  customElements.get(htmlTag) || customElements.define(htmlTag, MicroApp);
 }
 
 function createLoadableWebComponent(htmlTag: string, options: CustomOptions) {
@@ -154,6 +153,8 @@ function createLoadableWebComponent(htmlTag: string, options: CustomOptions) {
 function LoadableWebComponent(htmlTag: string, options: CustomOptions) {
   return createLoadableWebComponent(htmlTag, options);
 }
+
+def(window, '__GARFISH__', true);
 
 export function defineCustomElements(htmlTag: string, options: CustomOptions) {
   return createLoadableWebComponent(htmlTag, options);

@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import HelloGarfish from './components/helloGarfish.js';
 import VueApp from './components/vueApp.js';
+import ReactApp from './components/reactApp';
 import './app.css';
 
 export default function App({ basename }) {
@@ -15,6 +16,9 @@ export default function App({ basename }) {
           <li>
             <Link to="/vue-app">Vue Component</Link>
           </li>
+          <li>
+            <Link to="/react-app">React Component</Link>
+          </li>
         </ul>
 
         <Switch>
@@ -23,6 +27,9 @@ export default function App({ basename }) {
           </Route>
           <Route path="/vue-app">
             <VueApp />
+          </Route>
+          <Route path="/react-app">
+            <ReactApp />
           </Route>
         </Switch>
       </div>
