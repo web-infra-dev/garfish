@@ -1,72 +1,55 @@
 /// <reference types="cypress" />
-import { defineCustomElements } from '@garfish/web-component';
 
-defineCustomElements('micro-portal',{
-  loading: ({ isLoading, error })=> {
-    let loadingElement = document.createElement('div');
-    loadingElement.setAttribute('style','font-size:20px; text-align: center;');
-    if (error) {
-      loadingElement.innerHTML = `load error msg: ${error.message}`;
-      return loadingElement;
-    } else if(isLoading) {
-      loadingElement.innerHTML = `loading`;
-      return loadingElement;
-    } else {
-      return null;
-    }
+import GarfishInstance from 'garfish';
+import { Config } from './config';
+
+GarfishInstance.router.beforeEach((to, from, next) => {
+  console.log(to, from);
+  next();
+});
+GarfishInstance.run(Config);
+
+const useRouterMode = true;
+
+document.getElementById('vueBtn').onclick = async () => {
+  if (useRouterMode) {
+    history.pushState({}, 'vue', '/garfish_master/vue'); // use router to load app
+  } else {
+    const prevApp = await GarfishInstance.loadApp('vue', {
+      entry: 'http://localhost:2666',
+      domGetter: '#submoduleByCunstom',
+    });
+    console.log(prevApp);
+    prevApp && (await prevApp.mount());
+  }
+};
+
+document.getElementById('reactBtn').onclick = async () => {
+  if (useRouterMode) {
+    history.pushState({}, 'react', '/garfish_master/react');
+  } else {
+    const prevApp = await GarfishInstance.loadApp('react', {
+      entry: 'http://localhost:2444',
+      domGetter: '#submoduleByCunstom',
+    });
+    console.log(prevApp);
+    prevApp && (await prevApp.mount());
+  }
+};
+
+// Plugin test
+const hooks = GarfishInstance.createPluginSystem(({ SyncHook, AsyncHook }) => {
+  return {
+    create: new AsyncHook<[number], string>(),
+  };
+});
+
+hooks.usePlugin({
+  name: 'test',
+  create(a) {
+    console.log(a);
+    return '';
   },
 });
 
-// import GarfishInstance from 'garfish';
-// import { Config } from './config';
-
-// GarfishInstance.router.beforeEach((to, from, next) => {
-//   console.log(to, from);
-//   next();
-// });
-// GarfishInstance.run(Config);
-
-// const useRouterMode = true;
-
-// document.getElementById('vueBtn').onclick = async () => {
-//   if (useRouterMode) {
-//     history.pushState({}, 'vue', '/garfish_master/vue'); // use router to load app
-//   } else {
-//     const prevApp = await GarfishInstance.loadApp('vue', {
-//       entry: 'http://localhost:2666',
-//       domGetter: '#submoduleByCunstom',
-//     });
-//     console.log(prevApp);
-//     prevApp && (await prevApp.mount());
-//   }
-// };
-
-// document.getElementById('reactBtn').onclick = async () => {
-//   if (useRouterMode) {
-//     history.pushState({}, 'react', '/garfish_master/react');
-//   } else {
-//     const prevApp = await GarfishInstance.loadApp('react', {
-//       entry: 'http://localhost:2444',
-//       domGetter: '#submoduleByCunstom',
-//     });
-//     console.log(prevApp);
-//     prevApp && (await prevApp.mount());
-//   }
-// };
-
-// Plugin test
-// const hooks = GarfishInstance.createPluginSystem(({ SyncHook, AsyncHook }) => {
-//   return {
-//     create: new AsyncHook<[number], string>(),
-//   };
-// });
-
-// hooks.usePlugin({
-//   name: 'test',
-//   create(a) {
-//     console.log(a);
-//     return '';
-//   },
-// });
-
-// hooks.lifecycle.create.emit(123);
+hooks.lifecycle.create.emit(123);
