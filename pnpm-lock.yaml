@@ -347,7 +347,7 @@ importers:
       '@docusaurus/core': 2.0.0-beta.6
       '@docusaurus/plugin-ideal-image': 2.0.0-beta.6
       '@docusaurus/preset-classic': 2.0.0-beta.6
-      '@easyops-cn/docusaurus-search-local': 0.19.1
+      '@easyops-cn/docusaurus-search-local': 0.20.0
       '@mdx-js/react': 1.6.22
       cld: 2.7.0
       clsx: 1.1.1
@@ -361,7 +361,7 @@ importers:
       '@docusaurus/core': 2.0.0-beta.6_react-dom@16.14.0+react@16.14.0
       '@docusaurus/plugin-ideal-image': 2.0.0-beta.6_react-dom@16.14.0+react@16.14.0
       '@docusaurus/preset-classic': 2.0.0-beta.6_react-dom@16.14.0+react@16.14.0
-      '@easyops-cn/docusaurus-search-local': 0.19.1_nodejieba@2.5.2
+      '@easyops-cn/docusaurus-search-local': 0.20.0
       '@mdx-js/react': 1.6.22_react@16.14.0
       cld: 2.7.0
       clsx: 1.1.1
@@ -4577,11 +4577,9 @@ packages:
       immediate: 3.3.0
     dev: false
 
-  /@easyops-cn/docusaurus-search-local/0.19.1_nodejieba@2.5.2:
-    resolution: {integrity: sha512-iBtFxP7y/eLuUABa7ODqn/RNcrWiao/LW5HiEjM56RR5hlOXjML5GmDwVdcazZHuPhR8K0sOjZE33vLRUFdCog==}
+  /@easyops-cn/docusaurus-search-local/0.20.0:
+    resolution: {integrity: sha512-hgQTDdGCujG8NBxtq/2EyGMKZYqT/BgAgWCXG75b7idlN9bD2gS5A8z9Rrq+3HRK16mlWlZGTWHlIPf/HEcf5w==}
     engines: {node: '>=12'}
-    peerDependencies:
-      nodejieba: ^2.4.1
     dependencies:
       '@docusaurus/utils': 2.0.0-beta.6
       '@docusaurus/utils-validation': 2.0.0-beta.6
@@ -4594,7 +4592,6 @@ packages:
       lunr: 2.3.9
       lunr-languages: 1.9.0
       mark.js: 8.11.1
-      nodejieba: 2.5.2
       tslib: 2.3.1
     transitivePeerDependencies:
       - '@swc/core'
@@ -7812,8 +7809,8 @@ packages:
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      browserslist: 4.17.1
-      caniuse-lite: 1.0.30001260
+      browserslist: 4.17.5
+      caniuse-lite: 1.0.30001274
       fraction.js: 4.1.1
       nanocolors: 0.1.12
       normalize-range: 0.1.2
@@ -7993,7 +7990,7 @@ packages:
       loader-utils: 1.4.0
       make-dir: 3.1.0
       schema-utils: 2.7.1
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   /babel-plugin-apply-mdx-type-prop/1.6.22_@babel+core@7.12.9:
     resolution: {integrity: sha512-VefL+8o+F/DfK24lPZMtJctrCVOfgbqLAGZSkxwhazQv4VxPg3Za/i40fu22KR2m8eEda+IfSOlPLUSIiLcnCQ==}
@@ -8502,8 +8499,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001260
-      electron-to-chromium: 1.3.849
+      caniuse-lite: 1.0.30001274
+      electron-to-chromium: 1.3.885
       escalade: 3.1.1
       node-releases: 1.1.76
     dev: false
@@ -8529,7 +8526,6 @@ packages:
       escalade: 3.1.1
       node-releases: 2.0.1
       picocolors: 1.0.0
-    dev: true
 
   /bs-logger/0.2.6:
     resolution: {integrity: sha512-pd8DCoxmbgc7hyPKOvxtqNcjYoOsABPQdcCUjGp3d42VR2CX1ORhk2A87oqqu5R1kk+76nsxZupkmyd+MVtCog==}
@@ -8774,7 +8770,6 @@ packages:
 
   /caniuse-lite/1.0.30001274:
     resolution: {integrity: sha512-+Nkvv0fHyhISkiMIjnyjmf5YJcQ1IQHZN6U9TLUMroWR38FNwpsC51Gb68yueafX1V6ifOisInSgP9WJFS13ew==}
-    dev: true
 
   /capture-exit/2.0.0:
     resolution: {integrity: sha512-PiT/hQmTonHhl/HFGN+Lx3JJUznrVYJ3+AQsnthneZbvW7x+f08Tk7yLJTLEOUvBTbduLeeBkxEaYXUOUrRq6g==}
@@ -9731,7 +9726,7 @@ packages:
       postcss-value-parser: 4.1.0
       schema-utils: 2.7.1
       semver: 6.3.0
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   /css-loader/5.2.7_webpack@5.53.0:
     resolution: {integrity: sha512-Q7mOvpBNBG7YrVGMxRxcBJZFL75o+cH2abNASdibkj/fffYD8qWbInZrD0S9ccI6vZclF3DsHE7njGlLtaHbhg==}
@@ -9767,7 +9762,7 @@ packages:
     dependencies:
       clean-css: 5.1.5
       cssnano: 5.0.8_postcss@8.3.7
-      jest-worker: 27.2.0
+      jest-worker: 27.3.1
       p-limit: 3.1.0
       postcss: 8.3.7
       schema-utils: 3.1.1
@@ -10323,7 +10318,7 @@ packages:
     dependencies:
       globby: 11.0.4
       graceful-fs: 4.2.8
-      is-glob: 4.0.1
+      is-glob: 4.0.3
       is-path-cwd: 2.2.0
       is-path-inside: 3.0.3
       p-map: 4.0.0
@@ -10646,7 +10641,6 @@ packages:
 
   /electron-to-chromium/1.3.885:
     resolution: {integrity: sha512-JXKFJcVWrdHa09n4CNZYfYaK6EW5aAew7/wr3L1OnsD1L+JHL+RCtd7QgIsxUbFPeTwPlvnpqNNTOLkoefmtXg==}
-    dev: true
 
   /element-ui/2.15.6_vue@2.6.14:
     resolution: {integrity: sha512-rcYXEKd/j2G0AgficAOk1Zd1AsnHRkhmrK4yLHmNOiimU2JfsywgfKUjMoFuT6pQx0luhovj8lFjpE4Fnt58Iw==}
@@ -12131,7 +12125,7 @@ packages:
       debug:
         optional: true
     dependencies:
-      debug: 4.3.2
+      debug: 4.3.2_supports-color@6.1.0
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -12467,7 +12461,7 @@ packages:
     resolution: {integrity: sha512-kEVjS71mQazDBHKcsq4E9u/vUzaLcw1A8EtUeydawvIWQCJM0qQ08G1H7/XTjFUulla6XQiDOG6MXSaG0HDKog==}
     engines: {node: '>=10.13.0'}
     dependencies:
-      is-glob: 4.0.1
+      is-glob: 4.0.3
     dev: false
 
   /glob-to-regexp/0.3.0:
@@ -13025,7 +13019,7 @@ packages:
       tapable: 1.1.3
       toposort: 1.0.7
       util.promisify: 1.0.0
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   /html-webpack-plugin/4.0.0-beta.11_webpack@4.42.0:
     resolution: {integrity: sha512-4Xzepf0qWxf8CGg7/WQM5qBB2Lc/NFI7MhU59eUDTkuQp3skZczH4UA1d6oQyDEIoMDgERVhRyTdtUPZ5s5HBg==}
@@ -14894,15 +14888,6 @@ packages:
       supports-color: 7.2.0
     dev: false
 
-  /jest-worker/27.2.0:
-    resolution: {integrity: sha512-laB0ZVIBz+voh/QQy9dmUuuDsadixeerrKqyVpgPz+CCWiOYjOBabUXHIXZhsdvkWbLqSHbgkAHWl5cg24Q6RA==}
-    engines: {node: '>= 10.13.0'}
-    dependencies:
-      '@types/node': 16.9.6
-      merge-stream: 2.0.0
-      supports-color: 8.1.1
-    dev: false
-
   /jest-worker/27.3.1:
     resolution: {integrity: sha512-ks3WCzsiZaOPJl/oMsDjaf0TRiSv7ctNgs0FqRr2nARsovz6AWWy4oLElwcquGSz692DzgZQrCLScPNs5YlC4g==}
     engines: {node: '>= 10.13.0'}
@@ -14910,7 +14895,6 @@ packages:
       '@types/node': 16.9.6
       merge-stream: 2.0.0
       supports-color: 8.1.1
-    dev: true
 
   /jest/24.9.0:
     resolution: {integrity: sha512-YvkBL1Zm7d2B1+h5fHEOdyjCG+sGMz4f8D86/0HiqJ6MB4MnDc8FgP5vdWsGnemOQro7lnYo8UakZ3+5A0jxGw==}
@@ -16471,7 +16455,6 @@ packages:
 
   /node-releases/2.0.1:
     resolution: {integrity: sha512-CqyzN6z7Q6aMeF/ktcMVTzhAHCEpf8SOarwpzpf8pNBY2k5/oM34UHldUwp8VKI7uxct2HxSRdJjBaZeESzcxA==}
-    dev: true
 
   /node-vibrant/3.1.6:
     resolution: {integrity: sha512-Wlc/hQmBMOu6xon12ZJHS2N3M+I6J8DhrD3Yo6m5175v8sFkVIN+UjhKVRcO+fqvre89ASTpmiFEP3nPO13SwA==}
@@ -17201,7 +17184,6 @@ packages:
 
   /picocolors/1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
-    dev: true
 
   /picomatch/2.3.0:
     resolution: {integrity: sha512-lY1Q/PiJGC2zOv/z391WOTD+Z02bCgsFfvxoXXf6h7kv9o+WmsmzYqrAwY63sNgOxE4xEdq0WyUnXfKeBrSvYw==}
@@ -17416,7 +17398,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: 4.17.1
+      browserslist: 4.17.5
       caniuse-api: 3.0.0
       colord: 2.8.0
       postcss: 8.3.7
@@ -17720,7 +17702,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: 4.17.1
+      browserslist: 4.17.5
       caniuse-api: 3.0.0
       cssnano-utils: 2.0.1_postcss@8.3.7
       postcss: 8.3.7
@@ -17784,7 +17766,7 @@ packages:
       postcss: ^8.2.15
     dependencies:
       alphanum-sort: 1.0.2
-      browserslist: 4.17.1
+      browserslist: 4.17.5
       cssnano-utils: 2.0.1_postcss@8.3.7
       postcss: 8.3.7
       postcss-value-parser: 4.1.0
@@ -18011,7 +17993,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: 4.17.1
+      browserslist: 4.17.5
       postcss: 8.3.7
       postcss-value-parser: 4.1.0
     dev: false
@@ -18181,7 +18163,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: 4.17.1
+      browserslist: 4.17.5
       caniuse-api: 3.0.0
       postcss: 8.3.7
     dev: false
@@ -21201,7 +21183,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: 4.17.1
+      browserslist: 4.17.5
       postcss: 8.3.7
       postcss-selector-parser: 6.0.6
     dev: false
@@ -21456,7 +21438,7 @@ packages:
       uglify-js:
         optional: true
     dependencies:
-      jest-worker: 27.2.0
+      jest-worker: 27.3.1
       p-limit: 3.1.0
       schema-utils: 3.1.1
       serialize-javascript: 6.0.0
@@ -22736,7 +22718,7 @@ packages:
       mime: 2.5.2
       mkdirp: 0.5.5
       range-parser: 1.2.1
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
       webpack-log: 2.0.0
 
   /webpack-dev-middleware/3.7.3_webpack@5.53.0:
@@ -23108,7 +23090,7 @@ packages:
       '@webassemblyjs/wasm-parser': 1.11.1
       acorn: 8.5.0
       acorn-import-assertions: 1.7.6_acorn@8.5.0
-      browserslist: 4.17.1
+      browserslist: 4.17.5
       chrome-trace-event: 1.0.3
       enhanced-resolve: 5.8.3
       es-module-lexer: 0.7.1
