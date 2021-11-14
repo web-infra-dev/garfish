@@ -74,7 +74,7 @@
     "kill-port": "1.6.1",
     "koa": "2.13.4",
     "koa-route": "3.2.0",
-    "lint-staged": "11.2.6",
+    "lint-staged": "12.0.2",
     "lodash": "4.17.21",
     "minimist": "1.2.5",
     "pnpm": "6.20.0",
