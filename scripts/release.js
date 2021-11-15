@@ -35,10 +35,10 @@ async function main() {
     step('\npublishing...');
   }
 
+  await publish(selectVersion.newVersion);
+
   // github canary release don't push
   if (!args.canary) {
-    await publish(selectVersion.newVersion);
-
     // push to GitHub
     step('\nPushing to GitHub...');
     await pushToGithub(selectVersion);
