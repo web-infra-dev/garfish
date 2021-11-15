@@ -22,4 +22,4 @@ jobs:
     - name: install dependency
       run: pnpm install --filter=\!garfish-docs
     - name: release
-      run: node ./scripts/release.js --tag=prerelease
+      run: node ./scripts/release.js --tag=prerelease --canary=true

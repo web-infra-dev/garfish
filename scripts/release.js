@@ -22,7 +22,7 @@ async function main() {
   await build();
 
   const { stdout } = await run('git', ['diff'], { stdio: 'pipe' });
-  if (stdout) {
+  if (stdout && !args.canary) {
     step('\nCommitting changes...');
     await run('git', ['add', '-A']);
     await run('git', ['commit', '-m', `release: v${selectVersion.newVersion}`]);
@@ -34,11 +34,15 @@ async function main() {
   if (selectVersion) {
     step('\npublishing...');
   }
-  await publish(selectVersion.newVersion);
 
-  // push to GitHub
-  step('\nPushing to GitHub...');
-  await pushToGithub(selectVersion);
+  // github canary release don't push
+  if (!args.canary) {
+    await publish(selectVersion.newVersion);
+
+    // push to GitHub
+    step('\nPushing to GitHub...');
+    await pushToGithub(selectVersion);
+  }
 }
 
 async function build() {
