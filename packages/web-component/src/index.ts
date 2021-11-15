@@ -9,6 +9,7 @@ interface AppInfo {
 
 interface CustomOptions {
   loading: (loadingParams: { isLoading: boolean; error: Error }) => Element;
+  delay: number;
 }
 
 function generateCustomerElement(htmlTag: string, options: CustomOptions) {
@@ -20,6 +21,7 @@ function generateCustomerElement(htmlTag: string, options: CustomOptions) {
     };
     options = {
       loading: null,
+      delay: 200,
     };
     placeholder: Element;
     state = this._observerAppState({
@@ -27,7 +29,9 @@ function generateCustomerElement(htmlTag: string, options: CustomOptions) {
       error: null,
       promise: null,
       loaded: null,
+      pastDelay: false,
     });
+    _delay: NodeJS.Timeout;
 
     constructor() {
       super();
@@ -47,6 +51,7 @@ function generateCustomerElement(htmlTag: string, options: CustomOptions) {
             const placeholder = this.options.loading({
               isLoading: this.state.isLoading,
               error: this.state.error,
+              pastDelay: this.state.pastDelay,
             });
             placeholder && this.appendChild(placeholder);
             return placeholder;
@@ -57,6 +62,8 @@ function generateCustomerElement(htmlTag: string, options: CustomOptions) {
           // Loading end closed loading placeholder
           // Loading end placeholder closed if there is no mistake
           if (p === 'error' && value) {
+            this.placeholder = getPlaceHolderAndAppend();
+          } else if (p === 'pastDelay' && value === true) {
             this.placeholder = getPlaceHolderAndAppend();
           } else if (p === 'isLoading' && value === true) {
             this.placeholder = getPlaceHolderAndAppend();
@@ -74,6 +81,18 @@ function generateCustomerElement(htmlTag: string, options: CustomOptions) {
       // If you are loading stop continue to load
       if (this.state.isLoading) return;
       this.state.isLoading = true;
+
+      // Avoid loading flash back
+      if (typeof this.options.delay === 'number') {
+        if (this.options.delay === 0) {
+          this.state.pastDelay = true;
+        } else {
+          this._delay = setTimeout(() => {
+            this.state.pastDelay = true;
+          }, this.options.delay);
+        }
+      }
+
       this.state.promise = GarfishInstance.loadApp(this.appInfo.name, {
         entry: this.appInfo.entry,
         domGetter: () => this,
@@ -83,6 +102,10 @@ function generateCustomerElement(htmlTag: string, options: CustomOptions) {
           strictIsolation: true,
         },
       });
+    }
+
+    _clearTimeouts() {
+      clearTimeout(this._delay);
     }
 
     async connectedCallback() {
@@ -107,6 +130,7 @@ function generateCustomerElement(htmlTag: string, options: CustomOptions) {
     }
 
     disconnectedCallback() {
+      this._clearTimeouts();
       if (this.state.loaded) {
         this.state.loaded.hide();
       }

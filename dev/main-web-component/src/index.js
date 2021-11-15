@@ -21,9 +21,9 @@ const getError = (error) => {
 };
 
 defineCustomElements('micro-portal', {
-  loading: ({ isLoading, error }) => {
+  loading: ({ isLoading, error, pastDelay }) => {
     if (error) return getError(error);
-    if (isLoading) return getLoading();
+    if (pastDelay && isLoading) return getLoading();
     return null;
   },
 });
