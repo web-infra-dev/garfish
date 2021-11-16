@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import HelloGarfish from './components/helloGarfish.js';
 import VueApp from './components/vueApp.js';
 import ReactApp from './components/reactApp';
-import './app.css';
+import './App.css';
 
 export default function App({ basename }) {
   return (

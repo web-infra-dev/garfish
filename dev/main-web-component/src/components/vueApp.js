@@ -7,9 +7,9 @@ export default function VueApp() {
         Vue-app
       </h3>
       <micro-portal
-        app-name="vue-app"
-        entry="http://localhost:2666"
+        name="vue-app"
         basename="/vue-app"
+        entry="http://localhost:2666"
       ></micro-portal>
     </div>
   );

@@ -26,6 +26,11 @@ defineCustomElements('micro-portal', {
     if (pastDelay && isLoading) return getLoading();
     return null;
   },
+  config: {
+    beforeLoad(appInfos) {
+      console.log(appInfos);
+    },
+  },
 });
 
 ReactDOM.render(

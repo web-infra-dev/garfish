@@ -7,7 +7,7 @@ export default function ReactApp() {
         React-app
       </h3>
       <micro-portal
-        app-name="react-app"
+        name="react-app"
         entry="http://localhost:2444"
         basename="/react-app"
       ></micro-portal>

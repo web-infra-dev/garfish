@@ -13,11 +13,11 @@ const render = ({ dom, basename }) => {
   );
 };
 
-export const provider = ({ dom, basename, appName }) => {
-  console.log('registerApp props', basename);
+export const provider = () => {
   return {
-    render: () => render({ dom, basename }),
-    destroy: () => ReactDOM.unmountComponentAtNode(dom.querySelector('#root')),
+    render: ({ dom, basename }) => render({ dom, basename }),
+    destroy: ({ dom, basename }) =>
+      ReactDOM.unmountComponentAtNode(dom.querySelector('#root')),
   };
 };
 
