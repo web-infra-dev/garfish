@@ -8,7 +8,7 @@
   ],
   "author": "chentao.arthur <chentao.arthur@bytedance.com>",
   "homepage": "http://garfish.bytedance.com",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "exports": {
     ".": {
       "import": "./dist/esm/index.js",

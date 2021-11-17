@@ -4,15 +4,11 @@
   "description": "garfish module.",
   "keywords": [
     "garfish",
-    "micro frontend",
-    "microfrontend",
-    "micro frontends",
-    "micro-frontend",
-    "micro-frontends"
+    "micro frontend"
   ],
   "author": "zhoushaw <codingzx@gmail.com>",
   "homepage": "https://github.com/bytedance/garfish",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"
@@ -29,7 +25,7 @@
   },
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
-  "types": "./index.d.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "rimraf dist && tsup src/index.ts",
     "dev": "cross-env WATCH=true tsup src/index.ts"

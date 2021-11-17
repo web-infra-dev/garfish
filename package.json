@@ -42,7 +42,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "author": "bytedance",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "devDependencies": {
     "@babel/plugin-transform-regenerator": "7.16.0",
     "@babel/preset-env": "7.16.0",

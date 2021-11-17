@@ -1,13 +1,12 @@
 {
-  "name": "@garfish/core",
+  "name": "@garfish/bridge",
   "version": "1.1.0-beta.1",
-  "description": "core module.",
+  "description": "garfish module.",
   "keywords": [
     "garfish",
-    "core",
-    "micro front-end"
+    "micro frontend"
   ],
-  "author": "zhouxiao<codingzx@gmail.com>",
+  "author": "zhoushaw <codingzx@gmail.com>",
   "homepage": "https://github.com/bytedance/garfish",
   "license": "MIT",
   "repository": {
@@ -32,10 +31,11 @@
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
   "dependencies": {
-    "@garfish/hooks": "workspace:*",
-    "@garfish/loader": "workspace:*",
-    "@garfish/utils": "workspace:*",
-    "eventemitter2": "^6.4.5"
+    "@garfish/browser-snapshot": "workspace:*",
+    "@garfish/browser-vm": "workspace:*",
+    "@garfish/core": "workspace:*",
+    "@garfish/router": "workspace:*",
+    "@garfish/utils": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
