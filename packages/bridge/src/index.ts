@@ -1,3 +1,2 @@
 import { def } from '@garfish/utils';
-
-function reactBridge() {}
+export { reactBridge } from './reactBridge';

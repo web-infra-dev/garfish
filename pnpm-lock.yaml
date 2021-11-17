@@ -177,6 +177,7 @@ importers:
 
   dev/react:
     specifiers:
+      '@garfish/bridge': workspace:*
       '@testing-library/jest-dom': 5.14.1
       '@testing-library/react': ^9.3.2
       '@testing-library/user-event': 13.3.0
@@ -189,6 +190,7 @@ importers:
       react-scripts: 3.4.1
       react-shadow-dom-retarget-events: ^1.0.11
     dependencies:
+      '@garfish/bridge': link:../../packages/bridge
       '@testing-library/jest-dom': 5.14.1
       '@testing-library/react': 9.5.0_react-dom@16.14.0+react@16.14.0
       '@testing-library/user-event': 13.3.0
@@ -288,6 +290,20 @@ importers:
       eslint: 6.8.0
       eslint-plugin-vue: 7.19.1_eslint@6.8.0
       vue-template-compiler: 2.6.14
+
+  packages/bridge:
+    specifiers:
+      '@garfish/browser-snapshot': workspace:*
+      '@garfish/browser-vm': workspace:*
+      '@garfish/core': workspace:*
+      '@garfish/router': workspace:*
+      '@garfish/utils': workspace:*
+    dependencies:
+      '@garfish/browser-snapshot': link:../browser-snapshot
+      '@garfish/browser-vm': link:../browser-vm
+      '@garfish/core': link:../core
+      '@garfish/router': link:../router
+      '@garfish/utils': link:../utils
 
   packages/browser-snapshot:
     specifiers:
@@ -11469,7 +11485,7 @@ packages:
     engines: {node: '>= 0.10'}
 
   /emojis-list/3.0.0:
-    resolution: {integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==}
+    resolution: {integrity: sha1-VXBmIEatKeLpFucariYKvf9Pang=}
     engines: {node: '>= 4'}
 
   /emoticon/3.2.0:
@@ -13107,7 +13123,7 @@ packages:
     resolution: {integrity: sha1-FQStJSMVjKpA20onh8sBQRmU6k8=}
 
   /fsevents/1.2.13:
-    resolution: {integrity: sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==}
+    resolution: {integrity: sha1-8yXLBFVZJCi88Rs4M3DvcOO/zDg=}
     engines: {node: '>= 4.0'}
     os: [darwin]
     deprecated: fsevents 1 will break on node v14+ and could be using insecure binaries. Upgrade to fsevents 2.
@@ -13118,7 +13134,7 @@ packages:
     optional: true
 
   /fsevents/2.1.2:
-    resolution: {integrity: sha512-R4wDiBwZ0KzpgOWetKDug1FZcYhqYnUYKtfZYt4mD5SBz76q0KR4Q9o7GIPamsVPGmW3EYPPJ0dOOjvx32ldZA==}
+    resolution: {integrity: sha1-TAofs0vGjlQ7S4Kp7Dkr+9qECAU=}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     deprecated: '"Please update to latest v2.3 or v2.2"'
@@ -13127,7 +13143,7 @@ packages:
     optional: true
 
   /fsevents/2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+    resolution: {integrity: sha1-ilJveLj99GI7cJ4Ll1xSwkwC/Ro=}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     requiresBuild: true
@@ -23405,7 +23421,7 @@ packages:
     dev: false
 
   /watchpack-chokidar2/2.0.1:
-    resolution: {integrity: sha512-nCFfBIPKr5Sh61s4LPpy1Wtfi0HE8isJ3d2Yb5/Ppw2P2B/3eVSEBjKfN0fmHJSK14+31KwMKmcrzs2GM4P0Ww==}
+    resolution: {integrity: sha1-OFAAcu5uzmbzdpk2lQ6hdxvhyVc=}
     requiresBuild: true
     dependencies:
       chokidar: 2.1.8
