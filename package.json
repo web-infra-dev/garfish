@@ -45,7 +45,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@babel/plugin-transform-regenerator": "7.16.0",
-    "@babel/preset-env": "7.16.0",
+    "@babel/preset-env": "7.16.4",
     "@babel/preset-typescript": "7.16.0",
     "@jsdevtools/version-bump-prompt": "6.1.0",
     "@koa/cors": "3.1.0",
