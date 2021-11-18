@@ -4,18 +4,18 @@
 // React context that gives any react component the single-spa props
 export let GarfishContext = null;
 
-try {
-  // garfish-react-bridge is usable as a global script, as a systemjs module, and other
-  // situations where require() is unavailable. This is why we require the user to
-  // pass in opts.React and opts.ReactDOM - to avoid the mess of "how do i properly load react".
-  // However, in situations where require() is available, we can use it this way to create
-  // the react context. The try/catch defensiveness keeps garfish-react-bridge working in
-  // as many situations as possible.
-  // eslint-disable-next-line no-restricted-globals
-  GarfishContext = require('react').createContext();
-} catch {
-  // ignore
-}
+// try {
+//   // garfish-react-bridge is usable as a global script, as a systemjs module, and other
+//   // situations where require() is unavailable. This is why we require the user to
+//   // pass in opts.React and opts.ReactDOM - to avoid the mess of "how do i properly load react".
+//   // However, in situations where require() is available, we can use it this way to create
+//   // the react context. The try/catch defensiveness keeps garfish-react-bridge working in
+//   // as many situations as possible.
+//   // eslint-disable-next-line no-restricted-globals
+// GarfishContext = require('react').createContext();
+// } catch(e) {
+//   // ignore
+// }
 
 const defaultOpts = {
   // required opts
@@ -37,6 +37,16 @@ const defaultOpts = {
   renderResults: {},
   updateResolves: {},
 };
+
+declare const __GARFISH_EXPORTS__: {
+  provider: Object;
+};
+
+declare global {
+  interface Window {
+    __GARFISH__: boolean;
+  }
+}
 
 export function reactBridge(userOpts) {
   if (typeof userOpts !== 'object') {
@@ -83,7 +93,7 @@ export function reactBridge(userOpts) {
     lifecycles.update = update.bind(null, opts);
   }
 
-  return async function (...args) {
+  const provider = async function (...args) {
     await lifecycles.bootstrap.apply(this, args);
     return {
       render: (...args) => lifecycles.mount.apply(this, args),
@@ -92,6 +102,10 @@ export function reactBridge(userOpts) {
         lifecycles.update && lifecycles.update.apply(this, args),
     };
   };
+  if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ === 'object') {
+    __GARFISH_EXPORTS__.provider = provider;
+  }
+  return provider;
 }
 
 function bootstrap(opts, props) {
@@ -177,7 +191,7 @@ function update(opts, props) {
       renderRoot.render(elementToRender);
     } else {
       // React 16 / 17 with ReactDOM.render()
-      const domElement = chooseDomElementGetter(opts, props)();
+      const domElement = chooseDomElementGetter(opts, props);
 
       // This is the old way to update a react application - just call render() again
       opts.ReactDOM.render(elementToRender, domElement);
@@ -286,7 +300,8 @@ function getElementToRender(opts, props, mountFinished) {
 
   // This is a class component, since we need a mount hook and garfish-react-bridge supports React@15 (no useEffect available)
   function SingleSpaRoot(_props) {
-    SingleSpaRoot.displayName = `SingleSpaRoot(${_props.name})`;
+    // eslint-disable-next-line no-restricted-globals
+    // SingleSpaRoot.displayName = `SingleSpaRoot(${_props.name})`;
   }
 
   SingleSpaRoot.prototype = Object.create(opts.React.Component.prototype);
@@ -318,7 +333,9 @@ function createErrorBoundary(opts, props) {
       caughtErrorInfo: null,
     };
 
-    SingleSpaReactErrorBoundary.displayName = `ReactBridgeReactErrorBoundary(${props.name})`;
+    (
+      SingleSpaReactErrorBoundary as any
+    ).displayName = `ReactBridgeReactErrorBoundary(${props.name})`;
   }
 
   SingleSpaReactErrorBoundary.prototype = Object.create(
@@ -355,7 +372,6 @@ function createErrorBoundary(opts, props) {
 function chooseDomElementGetter(opts, props) {
   const { dom: container } = props;
   let domElementGetter;
-
   if (typeof opts.domElementGetter === 'string') {
     domElementGetter = container.querySelector(opts.domElementGetter);
   } else if (typeof opts.domElementGetter === 'function') {
@@ -371,5 +387,5 @@ function chooseDomElementGetter(opts, props) {
       }'. Expected HTMLElement, received ${typeof domElementGetter}`,
     );
   }
-  return props.dom;
+  return domElementGetter;
 }

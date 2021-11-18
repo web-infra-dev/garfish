@@ -17,7 +17,7 @@ import { reactBridge } from '@garfish/bridge';
 export const provider = reactBridge({
   React,
   ReactDOM,
-
+  domElementGetter: '#root',
   rootComponent: App,
 });
 

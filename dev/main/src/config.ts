@@ -43,6 +43,7 @@ let defaultConfig: interfaces.Options = {
   autoRefreshApp: false,
   disablePreloadApp: true,
   protectVariable: ['MonitoringInstance', 'Garfish'],
+  insulationVariable: ['setImmediate'],
   sandbox: {
     open: true,
     // strictIsolation: true,
