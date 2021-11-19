@@ -11,7 +11,7 @@ import {
 const esGlobalMethods =
   // Function properties of the global object // Function properties of the global object
   (
-    'eval,isFinite,isNaN,parseFloat,parseInt,' +
+    'eval,isFinite,isNaN,parseFloat,parseInt,hasOwnProperty,' +
     // URL handling functions
     'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +
     // Constructor properties of the global object
@@ -20,7 +20,7 @@ const esGlobalMethods =
     'Object,Promise,Proxy,RangeError,ReferenceError,RegExp,Set,SharedArrayBuffer,String,Symbol,SyntaxError,' +
     'TypeError,Uint8Array,Uint8ClampedArray,Uint16Array,Uint32Array,URIError,WeakMap,WeakRef,WeakSet,' +
     // Other Properties of the Global Object
-    'Atomics,JSON,Math,Reflect'
+    'Atomics,JSON,Math,Reflect,'
   ).split(',');
 
 export const isEsGlobalMethods = makeMap(esGlobalMethods);
