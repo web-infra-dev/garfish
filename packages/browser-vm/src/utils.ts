@@ -30,10 +30,7 @@ export const isNativeCodeMethods = makeMap(nativeCodeMethods);
 
 // Need to optimize, avoid from the with
 // Can't filter document, eval keywords, such as document in handling parentNode useful
-export const optimizeMethods = [
-  ...esGlobalMethods,
-  ...nativeCodeMethods,
-].filter((v) => v !== 'eval');
+export const optimizeMethods = [...esGlobalMethods].filter((v) => v !== 'eval');
 
 // The sandbox may be used alone, to ensure that the `sandboxMap` is globally unique,
 // because we will only rewrite `appendChild` once
