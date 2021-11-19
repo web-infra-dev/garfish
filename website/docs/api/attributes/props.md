@@ -9,7 +9,7 @@ order: 2
 ### 主应用共享数据
 
 ```js
-import Garfish from 'garfish';
+import Garfish from '@byted/garfish';
 import { observable, computed, action } from 'mobx';
 
 class Store {
