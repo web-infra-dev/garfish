@@ -1,6 +1,6 @@
 import { warn, hasOwn } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
-import { isEsGlobalMethods } from '../utils';
+import { isEsGlobalMethods, isNativeCodeMethods } from '../utils';
 import { __windowBind__, GARFISH_OPTIMIZE_NAME } from '../symbolTypes';
 import {
   bind,
@@ -36,6 +36,7 @@ export function createGetter(sandbox: Sandbox) {
       // Make judgments such as constructors for these environment-related functions to further narrow the scope of bind
       if (
         isEsGlobalMethods(p) ||
+        isNativeCodeMethods(p) ||
         hasOwn(overrideList, p) ||
         isConstructor(value) ||
         sandbox.isExternalGlobalVariable.has(p)

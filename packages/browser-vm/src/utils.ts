@@ -11,7 +11,7 @@ import {
 const esGlobalMethods =
   // Function properties of the global object // Function properties of the global object
   (
-    'eval,isFinite,isNaN,parseFloat,parseInt,hasOwnProperty,' +
+    'eval,isFinite,isNaN,parseFloat,parseInt,' +
     // URL handling functions
     'decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +
     // Constructor properties of the global object
@@ -23,7 +23,10 @@ const esGlobalMethods =
     'Atomics,JSON,Math,Reflect,'
   ).split(',');
 
+const nativeCodeMethods = 'hasOwnProperty,'.split(',');
+
 export const isEsGlobalMethods = makeMap(esGlobalMethods);
+export const isNativeCodeMethods = makeMap(nativeCodeMethods);
 
 // Need to optimize, avoid from the with
 // Can't filter document, eval keywords, such as document in handling parentNode useful
