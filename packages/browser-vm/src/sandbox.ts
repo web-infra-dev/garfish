@@ -77,6 +77,11 @@ export class Sandbox {
   public isExternalGlobalVariable: Set<PropertyKey> = new Set();
   public isProtectVariable: (p: PropertyKey) => boolean;
   public isInsulationVariable: (P: PropertyKey) => boolean;
+  public dynamicStyleSheetElementSet = new Set<HTMLStyleElement>();
+  public styledComponentCSSRulesMap = new WeakMap<
+    HTMLStyleElement,
+    CSSRuleList
+  >();
 
   private optimizeCode = ''; // To optimize the with statement
   private tempVariable = '__sandbox_temp_vars__';
@@ -148,6 +153,7 @@ export class Sandbox {
     this.initComplete = false;
     this.deferClearEffects.clear();
     this.isExternalGlobalVariable.clear();
+    this.dynamicStyleSheetElementSet.clear();
     this.replaceGlobalVariables.createdList = [];
     this.replaceGlobalVariables.prepareList = [];
     this.replaceGlobalVariables.recoverList = [];

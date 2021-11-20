@@ -2,7 +2,7 @@ import { interfaces } from '@garfish/core';
 import { warn, isPlainObject } from '@garfish/utils';
 import { Module } from './types';
 import { Sandbox } from './sandbox';
-import { sandboxMap } from './utils';
+import { recordStyledComponentCSSRules, rebuildCSSRules } from './dynamicNode';
 
 declare module '@garfish/core' {
   export default interface Garfish {
@@ -126,6 +126,15 @@ function createOptions(Garfish: interfaces.Garfish) {
       );
     },
 
+    beforeUnmount(appInfo, appInstance) {
+      if (appInstance.vmSandbox) {
+        recordStyledComponentCSSRules(
+          appInstance.vmSandbox.dynamicStyleSheetElementSet,
+          appInstance.vmSandbox.styledComponentCSSRulesMap,
+        );
+      }
+    },
+
     // If the app is uninstalled, the sandbox needs to clear all effects and then reset
     afterUnmount(appInfo, appInstance, isCacheMode) {
       // The caching pattern to retain the same context
@@ -136,6 +145,10 @@ function createOptions(Garfish: interfaces.Garfish) {
 
     afterMount(appInfo, appInstance) {
       if (appInstance.vmSandbox) {
+        rebuildCSSRules(
+          appInstance.vmSandbox.dynamicStyleSheetElementSet,
+          appInstance.vmSandbox.styledComponentCSSRulesMap,
+        );
         appInstance.vmSandbox.execScript(`
           if (typeof window.onload === 'function') {
             window.onload.call(window);
