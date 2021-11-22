@@ -16,10 +16,11 @@ import { documentModule } from './modules/document';
 import { UiEventOverride } from './modules/uiEvent';
 import { localStorageModule } from './modules/storage';
 import { listenerModule } from './modules/eventListener';
+import { observerModule } from './modules/mutationObserver';
 import { timeoutModule, intervalModule } from './modules/timer';
 import { makeElInjector } from './dynamicNode';
 import { sandboxLifecycle } from './lifecycle';
-import { optimizeMethods, createFakeObject } from './utils';
+import { optimizeMethods, createFakeObject, sandboxMap } from './utils';
 import { __garfishGlobal__, GARFISH_OPTIMIZE_NAME } from './symbolTypes';
 import {
   Module,
@@ -37,12 +38,13 @@ import {
 
 let id = 0;
 const defaultModules: Array<Module> = [
-  networkModule,
+  // networkModule,
   timeoutModule,
   intervalModule,
   historyModule,
   documentModule,
   listenerModule,
+  observerModule,
   UiEventOverride,
   localStorageModule,
 ];
@@ -113,6 +115,7 @@ export class Sandbox {
     makeElInjector();
     // The default startup sandbox
     this.start();
+    sandboxMap.set(this);
   }
 
   start() {

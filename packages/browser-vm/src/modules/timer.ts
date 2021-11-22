@@ -65,6 +65,13 @@ export const intervalModule = () => {
     override: {
       setInterval,
       clearInterval,
+      // webpack lazy use Promise
+      // Promise is polyfill
+      // polyfill Promise include Promise._setImmediate use setImmediate methods
+      // setImmediate polyfill postMessage as marco tasks
+      // postMessage callback judge event.source === window
+      // use setTimeout as setImmediate avoid judge fail
+      setImmediate: (fn) => setTimeout(fn, 0),
     },
   };
 };

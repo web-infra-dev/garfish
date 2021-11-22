@@ -105,8 +105,6 @@ export class App {
     this.cjsModules = {
       exports: {},
       module: null,
-      [__GARFISH_EXPORTS__]: this.customExports,
-      [__GARFISH_GLOBAL_ENV__]: this.globalEnvVariables,
       require: (key: string) => {
         return this.global[key] || context.externals[key] || window[key];
       },
@@ -302,14 +300,22 @@ export class App {
   getExecScriptEnv(noEntry: boolean) {
     // The legacy of commonJS function support
     if (this.esModule) return {};
+    const envs = {
+      [__GARFISH_EXPORTS__]: this.customExports,
+      [__GARFISH_GLOBAL_ENV__]: this.globalEnvVariables,
+    };
+
     if (noEntry) {
       return {
+        ...envs,
         require: this.cjsModules.require,
-        [__GARFISH_EXPORTS__]: this.customExports,
-        [__GARFISH_GLOBAL_ENV__]: this.globalEnvVariables,
       };
     }
-    return this.cjsModules;
+
+    return {
+      ...envs,
+      ...this.cjsModules,
+    };
   }
 
   // Performs js resources provided by the module, finally get the content of the export

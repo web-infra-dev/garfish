@@ -57,7 +57,6 @@ function rewriteAppAndSandbox(
   sandbox: Sandbox,
 ) {
   const originExecScript = sandbox.execScript;
-  sandboxMap.set(sandbox);
   // Rewrite sandbox attributes
   sandbox.loader = Garfish.loader;
   sandbox.execScript = (code, env, url, options) => {

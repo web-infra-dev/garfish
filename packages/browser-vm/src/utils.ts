@@ -20,10 +20,13 @@ const esGlobalMethods =
     'Object,Promise,Proxy,RangeError,ReferenceError,RegExp,Set,SharedArrayBuffer,String,Symbol,SyntaxError,' +
     'TypeError,Uint8Array,Uint8ClampedArray,Uint16Array,Uint32Array,URIError,WeakMap,WeakRef,WeakSet,' +
     // Other Properties of the Global Object
-    'Atomics,JSON,Math,Reflect'
+    'Atomics,JSON,Math,Reflect,'
   ).split(',');
 
+const nativeCodeMethods = 'hasOwnProperty,'.split(',');
+
 export const isEsGlobalMethods = makeMap(esGlobalMethods);
+export const isNativeCodeMethods = makeMap(nativeCodeMethods);
 
 // Need to optimize, avoid from the with
 // Can't filter document, eval keywords, such as document in handling parentNode useful
