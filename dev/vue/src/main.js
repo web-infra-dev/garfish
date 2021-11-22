@@ -38,9 +38,9 @@ const render = ({ dom, basename = '/' }) => {
   (dom || document).querySelector('#app').appendChild(vm.$el);
 };
 
-export function provider({ basename, dom }) {
+export function provider() {
   return {
-    render: () => render({ basename, dom }),
+    render: ({ basename, dom }) => render({ basename, dom }),
     destroy: () => {
       vm.$destroy();
       vm.$el.parentNode && vm.$el.parentNode.removeChild(vm.$el);

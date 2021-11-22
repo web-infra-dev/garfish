@@ -82,7 +82,7 @@ export function reactBridge(userOpts) {
     GarfishContext = opts.React.createContext();
   }
 
-  const lifecycles = {
+  const lifeCycles = {
     bootstrap: bootstrap.bind(null, opts),
     mount: mount.bind(null, opts),
     unmount: unmount.bind(null, opts),
@@ -90,16 +90,16 @@ export function reactBridge(userOpts) {
   };
 
   if (opts.canUpdate) {
-    lifecycles.update = update.bind(null, opts);
+    lifeCycles.update = update.bind(null, opts);
   }
 
   const provider = async function (...args) {
-    await lifecycles.bootstrap.apply(this, args);
+    await lifeCycles.bootstrap.apply(this, args);
     return {
-      render: (...args) => lifecycles.mount.apply(this, args),
-      destroy: (...args) => lifecycles.unmount.apply(this, args),
+      render: (...args) => lifeCycles.mount.apply(this, args),
+      destroy: (...args) => lifeCycles.unmount.apply(this, args),
       update: (...args) =>
-        lifecycles.update && lifecycles.update.apply(this, args),
+        lifeCycles.update && lifeCycles.update.apply(this, args),
     };
   };
   if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ === 'object') {

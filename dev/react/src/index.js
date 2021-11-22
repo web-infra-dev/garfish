@@ -31,10 +31,5 @@ export const provider = reactBridge({
 
 // Which can make application to run independently
 if (!window.__GARFISH__) {
-  ReactDOM.render(
-    <React.StrictMode>
-      <App basename={'/'} />
-    </React.StrictMode>,
-    document.querySelector('#root'),
-  );
+  ReactDOM.render(<App basename={'/'} />, document.querySelector('#root'));
 }
