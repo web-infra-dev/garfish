@@ -40,12 +40,13 @@ export const provider = vueBridge({
 });
 
 if (!window.__GARFISH__) {
+  console.log('hello world');
   const router = newRouter('/');
   new Vue({
     store,
     router,
     render: (h) => h(App),
-  }).$mount();
+  }).$mount('#app');
 }
 
 // let vm;
