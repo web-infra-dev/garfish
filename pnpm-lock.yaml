@@ -43,7 +43,7 @@ importers:
       rimraf: 3.0.2
       ts-jest: 27.0.7
       tslib: 2.3.1
-      tsup: 5.7.2
+      tsup: 5.9.0
       typescript: 4.4.3
       wait-on: 6.0.0
       workspace-tools: 0.16.2
@@ -88,7 +88,7 @@ importers:
       rimraf: 3.0.2
       ts-jest: 27.0.7_ea8eecb57f6c3978f25f89c419c42230
       tslib: 2.3.1
-      tsup: 5.7.2_typescript@4.4.3
+      tsup: 5.9.0_typescript@4.4.3
       typescript: 4.4.3
       wait-on: 6.0.0
       workspace-tools: 0.16.2
@@ -21814,8 +21814,8 @@ packages:
     engines: {node: '>=0.6.x'}
     dev: true
 
-  /tsup/5.7.2_typescript@4.4.3:
-    resolution: {integrity: sha512-YxryYjhB54h8YUNlN7Oze9PnqcuN++vwrFW6qtjC1ve9eQPvzCJw0rN0WPOuEQXburwo+gtDid9C4eQZ6x/Yog==}
+  /tsup/5.9.0_typescript@4.4.3:
+    resolution: {integrity: sha512-GAu+q/x2e/PM0owEEtNIYIfK0U8FZkaredZP+zX4pLoc3t8UEnK9MDCIhhbWjZXvXi+VKD13rQ0+loIFRrHpkQ==}
     hasBin: true
     peerDependencies:
       typescript: ^4.2.3
