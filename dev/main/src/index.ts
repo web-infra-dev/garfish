@@ -4,7 +4,6 @@ import GarfishInstance from 'garfish';
 import { Config } from './config';
 
 GarfishInstance.router.beforeEach((to, from, next) => {
-  console.log(to, from);
   next();
 });
 GarfishInstance.run(Config);

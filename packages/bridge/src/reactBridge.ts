@@ -1,4 +1,5 @@
 // The logic of reactBridge is referenced from single-spa typography
+// Because the Garfish lifecycle does not agree with that of single-spa  part logical coupling in the framework
 // https://github.com/single-spa/single-spa-react/blob/main/src/single-spa-react.js
 
 // React context that gives any react component the single-spa props
@@ -30,7 +31,7 @@ const defaultOpts = {
   renderType: null,
   errorBoundary: null,
   errorBoundaryClass: null,
-  domElementGetter: null,
+  el: null,
   canUpdate: true, // by default, allow parcels created with garfish-react-bridge to be updated
   suppressComponentDidCatchWarning: false,
   domElements: {},
@@ -82,26 +83,15 @@ export function reactBridge(userOpts) {
     GarfishContext = opts.React.createContext();
   }
 
-  const lifeCycles = {
-    bootstrap: bootstrap.bind(null, opts),
-    mount: mount.bind(null, opts),
-    unmount: unmount.bind(null, opts),
-    update: null,
-  };
-
-  if (opts.canUpdate) {
-    lifeCycles.update = update.bind(null, opts);
-  }
-
-  const provider = async function (...args) {
-    await lifeCycles.bootstrap.apply(this, args);
+  const provider = async function (props) {
+    await bootstrap.call(this, opts, props);
     return {
-      render: (...args) => lifeCycles.mount.apply(this, args),
-      destroy: (...args) => lifeCycles.unmount.apply(this, args),
-      update: (...args) =>
-        lifeCycles.update && lifeCycles.update.apply(this, args),
+      render: (props) => mount.call(this, opts, props),
+      destroy: (props) => unmount.call(this, opts, props),
+      update: (props) => opts.canUpdate && update.call(this, opts, props),
     };
   };
+
   if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ === 'object') {
     __GARFISH_EXPORTS__.provider = provider;
   }
@@ -371,21 +361,19 @@ function createErrorBoundary(opts, props) {
 
 function chooseDomElementGetter(opts, props) {
   const { dom: container } = props;
-  let domElementGetter;
-  if (typeof opts.domElementGetter === 'string') {
-    domElementGetter = container.querySelector(opts.domElementGetter);
-  } else if (typeof opts.domElementGetter === 'function') {
-    domElementGetter = opts.domElementGetter(container);
+  let el;
+  if (typeof opts.el === 'string') {
+    el = container.querySelector(opts.el);
   } else {
-    domElementGetter = container;
+    el = container;
   }
 
-  if (!(domElementGetter instanceof HTMLElement)) {
+  if (!(el instanceof HTMLElement)) {
     throw Error(
-      `react bridge's dom-element-getter-helpers: domElementGetter is an invalid dom element for application'${
+      `react bridge's dom-element-getter-helpers: el is an invalid dom element for application'${
         props.name
-      }'. Expected HTMLElement, received ${typeof domElementGetter}`,
+      }'. Expected HTMLElement, received ${typeof el}`,
     );
   }
-  return domElementGetter;
+  return el;
 }

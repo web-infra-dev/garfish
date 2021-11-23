@@ -9,14 +9,13 @@ import MicroApp from './components/microApp.vue';
 import HelloGarfish from './components/HelloGarfish.vue';
 import RemoteComponent from './components/remoteComponent.vue';
 import 'element-ui/lib/theme-chalk/index.css';
+import { vueBridge } from '@garfish/bridge';
 
 Vue.use(ElementUI);
 Vue.use(VueRouter);
 Vue.config.productionTip = false;
-// window.a.a.a = true;
-let vm;
-const render = ({ dom, basename = '/' }) => {
-  console.log('render Vue app');
+
+function newRouter(basename) {
   const router = new VueRouter({
     mode: 'history',
     base: basename,
@@ -29,26 +28,28 @@ const render = ({ dom, basename = '/' }) => {
       { path: '/remote-component', component: RemoteComponent },
     ],
   });
-
-  vm = new Vue({
-    store,
-    router,
-    render: (h) => h(App, { props: { basename } }),
-  }).$mount();
-  (dom || document).querySelector('#app').appendChild(vm.$el);
-};
-
-export function provider() {
-  return {
-    render: ({ basename, dom }) => render({ basename, dom }),
-    destroy: () => {
-      vm.$destroy();
-      vm.$el.parentNode && vm.$el.parentNode.removeChild(vm.$el);
-    },
-  };
+  return router;
 }
+
+export const provider = vueBridge({
+  Vue,
+  rootComponent: App,
+  appOptions: ({ basename }) => {
+    const router = newRouter(basename);
+    return {
+      el: '#app',
+      router,
+      store,
+    };
+  },
+});
 
 // There is no running show that the main application execution run, you can perform in micro front-end environment rendering
 if (!window.__GARFISH__) {
-  render({});
+  const router = newRouter('/');
+  new Vue({
+    store,
+    router,
+    render: (h) => h(App),
+  }).$mount();
 }

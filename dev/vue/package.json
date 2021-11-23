@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@garfish/remote-module": "workspace:*",
+    "@garfish/bridge": "workspace:*",
     "core-js": "^3.6.5",
     "element-ui": "^2.14.1",
     "garfish": "workspace:*",
