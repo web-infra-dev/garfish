@@ -6,18 +6,15 @@ import {
   warn,
   __GARFISH_FLAG__,
   def,
+  getGarfishDebugInstanceName,
 } from '@garfish/utils';
-
-const DEBUG_GARFISH_TAG = '__GARFISH_INSTANCE_DEBUG__';
 
 export const GarfishInstance = new Garfish({
   plugins: [GarfishBrowserVm(), GarfishRouter()],
 });
 
 try {
-  const GarfishInstanceName =
-    localStorage.getItem(DEBUG_GARFISH_TAG) ||
-    getParameterByName(DEBUG_GARFISH_TAG);
+  const GarfishInstanceName = getGarfishDebugInstanceName();
   if (GarfishInstanceName) {
     let uniqueIndex = 0;
     let uniqueName = GarfishInstanceName + uniqueIndex;

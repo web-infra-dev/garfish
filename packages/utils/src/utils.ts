@@ -460,12 +460,19 @@ export const hookObjectProperty = <
   };
 };
 
-
 export function getParameterByName(name, url = window.location.href) {
   name = name.replace(/[\[\]]/g, '\\$&');
   const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-      results = regex.exec(url);
+    results = regex.exec(url);
   if (!results) return null;
   if (!results[2]) return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+export function getGarfishDebugInstanceName(): string | null {
+  const DEBUG_GARFISH_TAG = '__GARFISH_INSTANCE_DEBUG__';
+  return (
+    localStorage.getItem(DEBUG_GARFISH_TAG) ||
+    getParameterByName(DEBUG_GARFISH_TAG)
+  );
 }

@@ -242,6 +242,7 @@ importers:
 
   dev/vue-sub:
     specifiers:
+      '@garfish/bridge': workspace:*
       '@vue/cli-plugin-babel': 4.5.15
       '@vue/cli-plugin-eslint': 4.5.15
       '@vue/cli-service': 4.5.15
@@ -255,6 +256,7 @@ importers:
       vue-template-compiler: ^2.6.11
       vuex: ^3.5.1
     dependencies:
+      '@garfish/bridge': link:../../packages/bridge
       '@vue/cli-plugin-babel': 4.5.15_4c1e5ebbf041a85328f9984e4ede8f8a
       '@vue/cli-plugin-eslint': 4.5.15_159f9ca94908a7070131e2c321d72521
       '@vue/cli-service': 4.5.15_daaec740214156bd7a1b7d7855d908a4
@@ -270,6 +272,7 @@ importers:
 
   dev/vue2:
     specifiers:
+      '@garfish/bridge': workspace:*
       '@vue/cli-plugin-babel': ~4.5.0
       '@vue/cli-plugin-eslint': ~4.5.0
       '@vue/cli-service': ~4.5.0
@@ -282,6 +285,7 @@ importers:
       vue-template-compiler: ^2.6.11
       vuex: ^3.5.1
     dependencies:
+      '@garfish/bridge': link:../../packages/bridge
       core-js: 3.18.2
       mobx-vue: 2.1.0_vue@2.6.14
       vue: 2.6.14

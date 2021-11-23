@@ -7,50 +7,86 @@ import HelloWorld from './components/HelloWorld.vue';
 import Test from './components/test.vue';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import { vueBridge } from '@garfish/bridge';
 
 Vue.use(ElementUI);
 Vue.use(VueRouter);
 Vue.config.productionTip = false;
 
-let vm;
-const render = ({ dom, basename = '/' }) => {
+function newRouter(basename) {
   const router = new VueRouter({
     mode: 'history',
     base: basename,
-    router,
     routes: [
       { path: '/', component: HelloWorld },
       { path: '/test', component: Test },
       { path: '/todo', component: ToDoList },
     ],
   });
+  return router;
+}
 
-  vm = new Vue({
-    store,
-    render: (h) => h(App, { props: { basename } }),
-  }).$mount();
-  (dom || document).querySelector('#app').appendChild(vm.$el);
-};
+export const provider = vueBridge({
+  Vue,
+  rootComponent: App,
+  appOptions: ({ basename }) => {
+    const router = newRouter(basename);
+    return {
+      el: '#app',
+      router,
+      store,
+    };
+  },
+});
 
 if (!window.__GARFISH__) {
-  render({
-    dom: document,
-  });
-} else {
-  // eslint-disable-next-line no-undef
-  __GARFISH_EXPORTS__.provider = provider;
+  const router = newRouter('/');
+  new Vue({
+    store,
+    router,
+    render: (h) => h(App),
+  }).$mount();
 }
 
-export function provider({ basename, dom, fuckYou }) {
-  console.log('provider', basename, dom, fuckYou);
-  return {
-    render: () => render({ basename, dom }),
-    destroy() {
-      vm.$destroy();
-      vm.$el.parentNode && vm.$el.parentNode.removeChild(vm.$el);
-    },
-  };
-}
+// let vm;
+// const render = ({ dom, basename = '/' }) => {
+//   const router = new VueRouter({
+//     mode: 'history',
+//     base: basename,
+//     router,
+//     routes: [
+//       { path: '/', component: HelloWorld },
+//       { path: '/test', component: Test },
+//       { path: '/todo', component: ToDoList },
+//     ],
+//   });
+
+//   vm = new Vue({
+//     store,
+//     render: (h) => h(App, { props: { basename } }),
+//   }).$mount();
+//   (dom || document).querySelector('#app').appendChild(vm.$el);
+// };
+
+// if (!window.__GARFISH__) {
+//   render({
+//     dom: document,
+//   });
+// } else {
+//   // eslint-disable-next-line no-undef
+//   __GARFISH_EXPORTS__.provider = provider;
+// }
+
+// export function provider({ basename, dom, fuckYou }) {
+//   console.log('provider', basename, dom, fuckYou);
+//   return {
+//     render: () => render({ basename, dom }),
+//     destroy() {
+//       vm.$destroy();
+//       vm.$el.parentNode && vm.$el.parentNode.removeChild(vm.$el);
+//     },
+//   };
+// }
 
 // let a = document.body;
 // let ob = new MutationObserver(() => {
