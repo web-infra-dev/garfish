@@ -15,40 +15,47 @@ const opts = {
 
 function runAllExample() {
   // Usage with promises
-  return (
-    Promise.all(ports.map((port) => killPort(port)))
-      // build all demo or dev all example
-      .then(() => {
-        if (process.env.CI) {
+  if (process.env.CI) {
+    return (
+      Promise.all(ports.map((port) => killPort(port)))
+        // build all demo or dev all example
+        .then(() => {
           step('\n building dev project...');
           return $`pnpm run build --parallel --filter "@garfish-dev/*"`;
-        } else {
-          step('\n run dev project...');
-          return $`npx cross-env TEST_ENV=true pnpm start --filter "@garfish-dev/*" --parallel`;
-        }
-      })
-      // http-server all demo
-      .then(() => {
-        if (process.env.CI) {
+        })
+        .then(() => {
           step('\n http-server dev dist...');
           Object.keys(portMap).forEach((pkgPath) => {
-            // historyapifallback
+            // history api fallback
             if (pkgPath === 'dev/main') {
               $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} --proxy http://localhost:${portMap[pkgPath].port}?`;
             } else {
               $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port}`;
             }
           });
-        }
-      })
-      .then(() => waitOn(opts))
-      .catch((err) => {
-        console.error(err);
-        ports.forEach((port) => killPort(port));
-      })
-  );
+        })
+        .then(() => waitOn(opts))
+        .catch((err) => {
+          console.error(err);
+          ports.forEach((port) => killPort(port));
+        })
+    );
+  } else {
+    return (
+      Promise.all(ports.map((port) => killPort(port)))
+        // build all demo or dev all example
+        .then(() => {
+          step('\n run dev project...');
+          $`npx cross-env TEST_ENV=false pnpm start --filter "@garfish-dev/*" --parallel`;
+        })
+        .then(() => waitOn(opts))
+        .catch((err) => {
+          console.error(err);
+          ports.forEach((port) => killPort(port));
+        })
+    );
+  }
 }
-
 module.exports = {
   ports,
   runAllExample,

@@ -45,11 +45,11 @@ export const provider = vueBridge({
 });
 
 // There is no running show that the main application execution run, you can perform in micro front-end environment rendering
-if (!window.__GARFISH__) {
+if (!window.__GARFISH_PARENT__) {
   const router = newRouter('/');
   new Vue({
     store,
     router,
     render: (h) => h(App),
-  }).$mount();
+  }).$mount('#app');
 }

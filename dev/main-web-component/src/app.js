@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import HelloGarfish from './components/helloGarfish.js';
 import VueApp from './components/vueApp.js';
