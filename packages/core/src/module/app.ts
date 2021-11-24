@@ -395,11 +395,11 @@ export class App {
 
   // Calls to render do compatible with two different sandbox
   private callRender(provider: interfaces.Provider, isMount: boolean) {
-    const { appInfo, rootElement } = this;
     if (provider && provider.render) {
       provider.render({
-        dom: rootElement,
-        basename: appInfo.basename,
+        appName: this.appInfo.name,
+        dom: this.rootElement,
+        basename: this.appInfo.basename,
         appRenderInfo: { isMount },
       });
     }
@@ -410,6 +410,7 @@ export class App {
     const { rootElement, appContainer } = this;
     if (provider && provider.destroy) {
       provider.destroy({
+        appName: this.appInfo.name,
         dom: rootElement,
         appRenderInfo: { isUnmount },
       });

@@ -1,4 +1,8 @@
 {
+  "dev/main-web-component": {
+    "pkgName": "@garfish-dev/main-web-component",
+    "port": 2222
+  },
   "dev/main": {
     "pkgName": "@garfish-dev/main",
     "port": 2333

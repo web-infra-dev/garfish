@@ -1,6 +1,7 @@
 import { SyncHook, SyncWaterfallHook, PluginSystem } from '@garfish/hooks';
 import {
   warn,
+  error,
   isJs,
   isCss,
   isHtml,
@@ -175,7 +176,7 @@ export class Loader {
         return copyResult(data.value as any);
       })
       .catch((e) => {
-        __DEV__ && warn(e);
+        __DEV__ && error(e);
         this.hooks.lifecycle.error.emit(e);
         throw e; // Let the upper application catch the error
       })

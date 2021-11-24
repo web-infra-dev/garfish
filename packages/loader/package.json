@@ -1,6 +1,6 @@
 {
   "name": "@garfish/loader",
-  "version": "1.0.26",
+  "version": "1.1.0-beta.1",
   "description": "loader module.",
   "keywords": [
     "garfish",
@@ -8,7 +8,7 @@
   ],
   "author": "chentao.arthur <chentao.arthur@bytedance.com>",
   "homepage": "http://garfish.bytedance.com",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bytedance/garfish.git"

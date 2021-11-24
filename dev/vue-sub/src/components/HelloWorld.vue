@@ -2,7 +2,7 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <p>
-     Thank you for using Gar
+     Thank you for using Garfish
     </p>
   </div>
 </template>

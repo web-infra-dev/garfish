@@ -14,7 +14,6 @@ export function GarfishPerformance() {
           if (typeof appInfo.domGetter === 'function') {
             appDomGetter = await appInfo.domGetter();
           }
-          // 运营平台子应用跟节点 id 为 'master-app'
           subAppMap[appInfo.name] = new SubAppObserver({
             subAppRootSelector: appDomGetter as Element,
           });

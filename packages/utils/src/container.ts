@@ -29,19 +29,21 @@ function asyncNodeAttribute(from: Element, to: Element) {
 export function createAppContainer(appInfo: interfaces.AppInfo) {
   const name = appInfo.name;
   // Create a temporary node, which is destroyed by the module itself
-  const htmlNode = document.createElement('div');
+  let htmlNode: HTMLDivElement | HTMLHtmlElement =
+    document.createElement('div');
   const appContainer = document.createElement('div');
 
   if (appInfo.sandbox && appInfo.sandbox.strictIsolation) {
+    htmlNode = document.createElement('html');
     const root = appContainer.attachShadow({ mode: 'open' });
     root.appendChild(htmlNode);
-    asyncNodeAttribute(htmlNode, document.body);
+    // asyncNodeAttribute(htmlNode, document.body);
     dispatchEvents(root);
   } else {
     htmlNode.setAttribute(__MockHtml__, '');
-    appContainer.id = `garfish_app_for_${name}_${createKey()}`;
     appContainer.appendChild(htmlNode);
   }
+  appContainer.id = `garfish_app_for_${name}_${createKey()}`;
 
   return {
     htmlNode,

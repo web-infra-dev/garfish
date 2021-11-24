@@ -48,11 +48,25 @@ export namespace interfaces {
   }
 
   export interface Provider {
-    destroy: ({ dom: HTMLElement, appRenderInfo: AppRenderInfo }) => void;
+    destroy: ({
+      appName,
+      dom,
+      appRenderInfo,
+    }: {
+      appName: string;
+      dom: Element | ShadowRoot | Document;
+      appRenderInfo: AppRenderInfo;
+    }) => void;
     render: ({
-      dom: HTMLElement,
-      basename: string,
-      appRenderInfo: AppRenderInfo,
+      appName,
+      dom,
+      basename,
+      appRenderInfo,
+    }: {
+      appName: String;
+      dom: Element | ShadowRoot | Document;
+      basename: string;
+      appRenderInfo: AppRenderInfo;
     }) => void;
   }
 

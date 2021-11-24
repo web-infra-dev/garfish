@@ -13,11 +13,12 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "react-shadow-dom-retarget-events": "^1.0.11"
+    "react-shadow-dom-retarget-events": "^1.0.11",
+    "@garfish/bridge": "workspace:*"
   },
   "scripts": {
     "start": "WDS_SOCKET_PORT=2444 PORT=2444 BROWSER=none react-app-rewired start",
-    "build": "react-app-rewired build && cp -r build dist",
+    "build": "rimraf dist && react-app-rewired build && cp -r build dist",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },

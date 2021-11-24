@@ -7,5 +7,5 @@ runAllExample().then(() => {
   const spawnInstance = run('pnpm', [
     process.env.TEST_ENV_OPEN ? 'cy:open' : 'cy:run',
   ]);
-  spawnInstance.stdout.on('data', (msg) => step(msg.toString()));
+  spawnInstance.stdout?.on('data', (msg) => step(msg.toString()));
 });

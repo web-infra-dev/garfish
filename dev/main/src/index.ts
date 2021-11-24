@@ -1,7 +1,11 @@
 /// <reference types="cypress" />
+
 import GarfishInstance from 'garfish';
 import { Config } from './config';
 
+GarfishInstance.router.beforeEach((to, from, next) => {
+  next();
+});
 GarfishInstance.run(Config);
 
 const useRouterMode = true;
@@ -33,18 +37,18 @@ document.getElementById('reactBtn').onclick = async () => {
 };
 
 // Plugin test
-// const hooks = GarfishInstance.createPluginSystem(({ SyncHook, AsyncHook }) => {
-//   return {
-//     create: new AsyncHook<[number], string>(),
-//   };
-// });
+const hooks = GarfishInstance.createPluginSystem(({ SyncHook, AsyncHook }) => {
+  return {
+    create: new AsyncHook<[number], string>(),
+  };
+});
 
-// hooks.usePlugin({
-//   name: 'test',
-//   create(a) {
-//     console.log(a);
-//     return '';
-//   },
-// });
+hooks.usePlugin({
+  name: 'test',
+  create(a) {
+    console.log(a);
+    return '';
+  },
+});
 
-// hooks.lifecycle.create.emit(123);
+hooks.lifecycle.create.emit(123);

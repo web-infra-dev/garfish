@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import Monitoring from './components/monitoring.js';
 import HelloGarfish from './components/helloGarfish.js';
 import RemoteComponent from './components/remoteComponent.js';
+import Dialog from './components/dialog.js';
+
 // sandbox
 import Sandbox from './components/sandbox';
 import './app.css';
@@ -25,6 +27,9 @@ export default function App({ basename }) {
           </li>
           <li>
             <Link to="/remote-component">Remote Component</Link>
+          </li>
+          <li>
+            <Link to="/dialog">Dialog Component</Link>
           </li>
         </ul>
         <ul className="nav-bas">
@@ -51,6 +56,9 @@ export default function App({ basename }) {
           {/* sandbox */}
           <Route path="/vm-sandbox">
             <Sandbox />
+          </Route>
+          <Route path="/dialog">
+            <Dialog />
           </Route>
         </Switch>
       </div>

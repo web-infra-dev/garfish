@@ -454,7 +454,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-- modify the licence to Apache-2.0 ([b349299](https://github.com/modern-js-dev/garfish/commit/b349299a2f565e16dd0c40d52aa523379152c648))
+- modify the licence to MIT ([b349299](https://github.com/modern-js-dev/garfish/commit/b349299a2f565e16dd0c40d52aa523379152c648))
 
 ### Features
 
