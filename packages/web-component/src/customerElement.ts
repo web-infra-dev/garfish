@@ -43,7 +43,7 @@ export function generateCustomerElement(
           // Error display error
           const getPlaceHolderAndAppend = () => {
             // Remove the existing placeholder content
-            if (this.placeholder) {
+            if (this.placeholder && this.contains(this.placeholder)) {
               this.removeChild(this.placeholder);
             }
             const placeholder = this.options.loading({

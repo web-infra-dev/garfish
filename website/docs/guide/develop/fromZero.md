@@ -1,7 +1,7 @@
 ---
 title: 从零开始搭建
 slug: /guide/develop/from-zero
-order: 1
+order: 4
 ---
 
 ## 主应用
