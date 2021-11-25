@@ -38,7 +38,7 @@ importers:
       lodash: 4.17.21
       minimist: 1.2.5
       pnpm: 6.23.2
-      prettier: 2.4.1
+      prettier: 2.5.0
       prettier-eslint-cli: 5.0.1
       rimraf: 3.0.2
       ts-jest: 27.0.7
@@ -83,7 +83,7 @@ importers:
       lodash: 4.17.21
       minimist: 1.2.5
       pnpm: 6.23.2
-      prettier: 2.4.1
+      prettier: 2.5.0
       prettier-eslint-cli: 5.0.1
       rimraf: 3.0.2
       ts-jest: 27.0.7_ea8eecb57f6c3978f25f89c419c42230
@@ -19372,8 +19372,8 @@ packages:
     hasBin: true
     requiresBuild: true
 
-  /prettier/2.4.1:
-    resolution: {integrity: sha512-9fbDAXSBcc6Bs1mZrDYb3XKzDLm4EXXL9sC1LqKP5rZkT6KRr/rf9amVUcODVXgguK/isJz0d0hP72WeaKWsvA==}
+  /prettier/2.5.0:
+    resolution: {integrity: sha512-FM/zAKgWTxj40rH03VxzIPdXmj39SwSjwG0heUcNFwI+EMZJnY93yAiKXM3dObIKAM5TA88werc8T/EwhB45eg==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
