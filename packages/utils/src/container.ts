@@ -95,17 +95,7 @@ export async function getRenderNode(domGetter: interfaces.DomGetter) {
       | undefined;
   } else if (typeof domGetter === 'function') {
     appWrapperNode = await Promise.resolve(domGetter());
-  } else if (domGetter instanceof Element) {
-    appWrapperNode = domGetter;
   }
-
-  console.log(
-    '来这里了!!!!!!!!',
-    appWrapperNode instanceof Element,
-    domGetter,
-    appWrapperNode,
-  );
-
   assert(appWrapperNode instanceof Element, `Invalid domGetter: ${domGetter}`);
   return appWrapperNode as Element;
 }

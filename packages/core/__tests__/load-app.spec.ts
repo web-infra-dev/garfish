@@ -127,23 +127,4 @@ describe('Core: load process', () => {
     );
     document.body.removeChild(container);
   });
-
-  it('domGetter is Element', async () => {
-    const container = document.createElement('div');
-    container.setAttribute('id', 'container');
-    document.body.appendChild(container);
-    const selectorContainer = document.querySelector('#container');
-    console.log(
-      selectorContainer.appendChild,
-      selectorContainer instanceof Element,
-    );
-    const app = await GarfishInstance.loadApp('vue-app', {
-      entry: vueSubAppEntry,
-      domGetter: selectorContainer,
-    });
-    await app.mount();
-    console.log(container, document.body.innerHTML);
-    const appContainer = container.querySelectorAll(`[id^=${appContainerId}]`);
-    expect(appContainer).toHaveLength(1);
-  });
 });

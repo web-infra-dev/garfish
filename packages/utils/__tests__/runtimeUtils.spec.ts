@@ -91,7 +91,7 @@ describe('Garfish shared runtimeUtils', () => {
     const has = makeMap('a,b,c,d,e'.split(','));
     expect(typeof has === 'function').toBe(true);
     'a,b,c,d,e'.split(',').forEach((v) => expect(has(v)).toBe(true));
-    'f,g,h,i,j'.split(',').forEach((v) => expect(has(v)).toBe(undefined));
+    'f,g,h,i,j'.split(',').forEach((v) => expect(has(v)).toBe(false));
   });
 
   it('remove', () => {
@@ -120,7 +120,7 @@ describe('Garfish shared runtimeUtils', () => {
   });
 
   it('deepMerge', () => {
-    expect(deepMerge.length).toBe(3);
+    expect(deepMerge.length).toBe(4);
     const s1 = Symbol();
     const s2 = Symbol();
     const one = {
@@ -169,8 +169,8 @@ describe('Garfish shared runtimeUtils', () => {
 
     const res1 = deepMerge(one, two);
     expect(res1.e.length).toBe(2);
-    expect(res1 !== one).toBe(true);
-    expect(res1 !== two).toBe(true);
+    expect(res1).not.toEqual(one);
+    expect(res1).not.toEqual(two);
     expect(res1).toMatchObject(destObject());
 
     one.g = 6;
@@ -199,7 +199,7 @@ describe('Garfish shared runtimeUtils', () => {
     const res2 = deepMerge(clonedOne, clonedTwo, true);
     expect(res2.e.length).toBe(2);
     expect(res2).toMatchObject(destObject(true));
-    // 反转结果应该一样
+    // The inversion results should be the same
     expect(deepMerge(one, {})).toMatchObject(one);
     expect(deepMerge({}, one)).toMatchObject(one);
     expect(deepMerge(two, {})).toMatchObject(two);
