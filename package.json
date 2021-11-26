@@ -58,7 +58,7 @@
     "@vue/cli-service": "4.5.15",
     "axios": "0.24.0",
     "babel-polyfill": "6.26.0",
-    "chalk": "4.1.2",
+    "chalk": "5.0.0",
     "cross-env": "7.0.3",
     "cypress": "8.7.0",
     "esbuild-plugin-replace": "1.0.7",

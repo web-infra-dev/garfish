@@ -18,7 +18,7 @@ importers:
       '@vue/cli-service': 4.5.15
       axios: 0.24.0
       babel-polyfill: 6.26.0
-      chalk: 4.1.2
+      chalk: 5.0.0
       cross-env: 7.0.3
       cypress: 8.7.0
       esbuild-plugin-replace: 1.0.7
@@ -63,7 +63,7 @@ importers:
       '@vue/cli-service': 4.5.15_typescript@4.4.3
       axios: 0.24.0
       babel-polyfill: 6.26.0
-      chalk: 4.1.2
+      chalk: 5.0.0
       cross-env: 7.0.3
       cypress: 8.7.0
       esbuild-plugin-replace: 1.0.7
@@ -9734,6 +9734,11 @@ packages:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
+  /chalk/5.0.0:
+    resolution: {integrity: sha512-/duVOqst+luxCQRKEo4bNxinsOQtMP80ZYm7mMqzuh5PociNL0PvmHFvREJ9ueYL2TxlHjBcmLCdmocx9Vg+IQ==}
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+    dev: true
+
   /char-regex/1.0.2:
     resolution: {integrity: sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==}
     engines: {node: '>=10'}
@@ -10116,7 +10121,7 @@ packages:
     resolution: {integrity: sha512-Y2oEozpomLn7Q3HFP7dpww7AtMJplbM9lGZP6RDfHqmbeRjiwRg4n6VM6j4KLmRke85uWEI7JqF17f3pqdRA0g==}
 
   /colors/1.4.0:
-    resolution: {integrity: sha1-xQSRR51MG9rtLJztMs98fcI2D3g=}
+    resolution: {integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==}
     engines: {node: '>=0.1.90'}
     dev: true
 
@@ -11583,7 +11588,7 @@ packages:
     engines: {node: '>= 0.10'}
 
   /emojis-list/3.0.0:
-    resolution: {integrity: sha1-VXBmIEatKeLpFucariYKvf9Pang=}
+    resolution: {integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==}
     engines: {node: '>= 4'}
 
   /emoticon/3.2.0:
