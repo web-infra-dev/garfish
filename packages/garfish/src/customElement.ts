@@ -154,3 +154,27 @@ export function generateCustomerElement(
     customElements.define(htmlTag, MicroApp);
   }
 }
+
+function createLoadableWebComponent(htmlTag: string, options: CustomOptions) {
+  if (typeof htmlTag !== 'string') {
+    throw new Error('garfish requires a `htmlTag` name');
+  }
+
+  if (!options.loading) {
+    throw new Error('garfish requires a `loading` component');
+  }
+
+  const opts = Object.assign(
+    {
+      loading: false,
+      delay: 200,
+      timeout: null,
+    },
+    options,
+  );
+  return generateCustomerElement(htmlTag, opts);
+}
+
+export function defineCustomElements(htmlTag: string, options: CustomOptions) {
+  return createLoadableWebComponent(htmlTag, options);
+}

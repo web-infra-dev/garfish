@@ -181,6 +181,10 @@ export function GarfishPreloadPlugin() {
       },
 
       registerApp(appInfos) {
+        // Through disablePreloadApp preload is prohibited
+        if (Garfish.options.disablePreloadApp) {
+          return;
+        }
         setTimeout(
           () => {
             if (isMobile || isSlowNetwork()) return;

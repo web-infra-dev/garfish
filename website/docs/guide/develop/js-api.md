@@ -23,7 +23,7 @@ npm install garfish --save
 
 ```js
 // index.js（主应用入口处）
-import Garfish from '@byted/garfish';
+import Garfish from 'garfish';
 
 Garfish.run({
   // 主应用的基础路径，该值需要保证与主应用的基础路径一致

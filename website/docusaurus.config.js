@@ -49,10 +49,6 @@ module.exports = {
           label: '常见问题',
           position: 'left',
         },
-        {
-          type: 'localeDropdown',
-          position: 'right',
-        },
         // {
         //   href:
         //     'https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=601jeae5-250c-48b4-a3bd-7e6211cd4471',

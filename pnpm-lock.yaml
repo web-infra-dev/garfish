@@ -103,7 +103,6 @@ importers:
       '@babel/plugin-transform-runtime': ^7.11.0
       '@babel/preset-env': ^7.7.1
       '@babel/runtime': ^7.12.1
-      '@garfish/web-component': workspace:*
       babel-loader: ^8.0.6
       css-loader: ^3.2.0
       garfish: workspace:*
@@ -123,7 +122,6 @@ importers:
       webpack-dev-server: ^3.9.0
     dependencies:
       '@babel/runtime': 7.15.4
-      '@garfish/web-component': link:../../packages/web-component
       garfish: link:../../packages/garfish
       loader-utils: 3.1.0
       mobx: 6.3.3
@@ -151,12 +149,12 @@ importers:
 
   dev/main-web-component:
     specifiers:
-      '@garfish/web-component': workspace:*
       '@testing-library/jest-dom': 5.14.1
       '@testing-library/react': ^9.3.2
       '@testing-library/user-event': 13.3.0
       antd: ^4.9.4
       classnames: ^2.3.1
+      garfish: workspace:*
       react: ^16.13.1
       react-app-rewired: ^2.1.6
       react-dom: ^16.13.1
@@ -164,12 +162,12 @@ importers:
       react-scripts: 3.4.1
       react-shadow-dom-retarget-events: ^1.0.11
     dependencies:
-      '@garfish/web-component': link:../../packages/web-component
       '@testing-library/jest-dom': 5.14.1
       '@testing-library/react': 9.5.0_react-dom@16.14.0+react@16.14.0
       '@testing-library/user-event': 13.3.0
       antd: 4.16.13_react-dom@16.14.0+react@16.14.0
       classnames: 2.3.1
+      garfish: link:../../packages/garfish
       react: 16.14.0
       react-app-rewired: 2.1.8_react-scripts@3.4.1
       react-dom: 16.14.0_react@16.14.0
@@ -395,20 +393,6 @@ importers:
       '@garfish/core': workspace:*
     devDependencies:
       '@garfish/core': link:../core
-
-  packages/web-component:
-    specifiers:
-      '@garfish/browser-snapshot': workspace:*
-      '@garfish/browser-vm': workspace:*
-      '@garfish/core': workspace:*
-      '@garfish/router': workspace:*
-      '@garfish/utils': workspace:*
-    dependencies:
-      '@garfish/browser-snapshot': link:../browser-snapshot
-      '@garfish/browser-vm': link:../browser-vm
-      '@garfish/core': link:../core
-      '@garfish/router': link:../router
-      '@garfish/utils': link:../utils
 
   website:
     specifiers:

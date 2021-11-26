@@ -8,7 +8,7 @@ order: 1
 
 通过 web component 接入子应用整体流程概述为：
 
-1. 添加 `@garfish/web-component` 依赖
+1. 添加 `garfish` 依赖
 2. 使用 `defineCustomElements` API 定义微前端 Web Component 组件
 3. 通过微前端 WebComponent 组件，加载微前端子应用
 
@@ -17,14 +17,14 @@ order: 1
 ### 安装依赖
 
 ```bash npm2yarn
-npm install @garfish/web-component --save
+npm install garfish --save
 ```
 
 ### 入口处注册 Web Component
 
 ```js
 // index.js（主应用入口处）
-import { defineCustomElements } from '@garfish/web-component';
+import { defineCustomElements } from 'garfish';
 
 // 定义 WebComponent Tag 为“micro-portal”，并指定 loading 时的内容
 defineCustomElements('micro-portal', {

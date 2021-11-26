@@ -47,6 +47,9 @@ export class Garfish extends EventEmitter2 {
     this.setOptions(options);
     DEFAULT_PROPS.set(this, {});
     this.options.plugins?.forEach((plugin) => this.usePlugin(plugin));
+    this.usePlugin(GarfishHMRPlugin());
+    this.usePlugin(GarfishPerformance());
+    this.usePlugin(GarfishPreloadPlugin());
   }
 
   private setOptions(options: Partial<interfaces.Options>) {
@@ -123,11 +126,6 @@ export class Garfish extends EventEmitter2 {
 
     this.setOptions(options);
     // Register plugins
-    this.usePlugin(GarfishHMRPlugin());
-    this.usePlugin(GarfishPerformance());
-    if (!this.options.disablePreloadApp) {
-      this.usePlugin(GarfishPreloadPlugin());
-    }
     options.plugins?.forEach((plugin) => this.usePlugin(plugin));
     // Put the lifecycle plugin at the end, so that you can get the changes of other plugins
     this.usePlugin(GarfishOptionsLife(this.options, 'global-lifecycle'));
