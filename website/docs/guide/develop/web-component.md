@@ -76,7 +76,7 @@ function App() {
       <Link to="/vue-app">VueApp</Link>
       <Switch>
         // 分配一个路由给 vue 应用
-        <Route path="/vue-app" component={() => Vue2('/vue-app')}></Route>
+        <Route path="/vue-app" component={() => VueApp('/vue-app')}></Route>
       </Switch>
     </BrowserRouter>
   );
@@ -86,38 +86,45 @@ function App() {
   </TabItem>
   <TabItem value="Vue" label="Vue">
 
-```vue
+> 提供 ReactApp 的 Vue 组件
+
+```html
+<!-- ./component/ReactApp.vue -->
 <template>
   <div>
-    <micro-portal name="react16" entry="http://localhost:8093" basename="/" />
+    <micro-portal
+      name="react-app"
+      entry="http://localhost:8093"
+      basename="/react-app"
+    />
   </div>
 </template>
 
 <script>
-export default {
-  name: 'App',
-};
+  export default {
+    name: 'App',
+  };
 </script>
 <style></style>
 ```
 
-  </TabItem>
-  <TabItem value="Other" label="Other">
+> 将 ReactApp 组件添加到路由中
 
-```html
-<!--
-  Web component 参数说明
-  name: 子应用名称
-  entry: 子应用入口资源地址，可以为 HTML、或 JS
-  basename: 子应用路由的基础路径
--->
-<div>
-  <micro-portal
-    name="vue-app"
-    entry="http://localhost:8092"
-    basename="/vue-app"
-  ></micro-portal>
-</div>
+```js
+// index.js
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import ReactApp from './component/ReactApp.vue';
+const router = new VueRouter({
+  mode: 'history',
+  base: '/',
+  routers: [{ path: '/react-app', component: ReactApp }],
+});
+new Vue({
+  router,
+  store,
+  render: (h) => h(App),
+}).$mount('#app');
 ```
 
   </TabItem>
@@ -221,8 +228,5 @@ export const provider = vueBridge({
 });
 ```
 
-  </TabItem>
-  <TabItem value="Other" label="Other">
-    This is a banana 🍌
   </TabItem>
 </Tabs>

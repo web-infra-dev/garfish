@@ -69,7 +69,10 @@ Garfish.run({
 npm install @garfish/bridge --save
 ```
 
-### 调整子应用的 Webpack 构建配置
+### 调整子应用的构建配置
+
+<Tabs>
+  <TabItem value="Webpack" label="Webpack" default>
 
 ```js
 module.exports = {
@@ -93,6 +96,9 @@ module.exports = {
   },
 };
 ```
+
+  </TabItem>
+</Tabs>
 
 ### 通过 Bridge 函数包装子应用
 
@@ -158,9 +164,6 @@ export const provider = vueBridge({
 });
 ```
 
-  </TabItem>
-  <TabItem value="Other" label="Other">
-    This is a banana 🍌
   </TabItem>
 </Tabs>
 
