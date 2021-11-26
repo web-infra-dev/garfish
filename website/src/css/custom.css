@@ -122,16 +122,6 @@ html[data-theme='dark'] .swiper-pagination-bullet {
   margin-left: -1rem;
 }
 
-.menu__list a.menu__link--sublist {
-  font-size: 16px !important;
-  margin-left: 0px !important;
-}
-
-.menu__list li.menu__list-item a {
-  font-size: 14px;
-  margin-left: 10px;
-}
-
 .polyfill-browser-table tr{
   border-top: 0px;
 }

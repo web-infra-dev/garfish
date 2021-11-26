@@ -1,28 +1,18 @@
 ---
-title: API 参考
+title: run
 slug: /api/new
-order: 2
+order: 1
 ---
 
-## run
+`Garfish.run` 是一个函数，当执行 `Garfish.run` 后，此时 `Garfish` 框架将会启动路由劫持能力，当浏览器的地址发生变化时，`Garfish` 框架内部便会立即触发匹配逻辑当应用符合匹配逻辑时将会自动将应用挂载至页面中并依次触发子应用加载、渲染过程中的生命周期，支持传递 `Options` 参数，下面是参数列表
 
-`Garfish.run(options: Options) : Garfish`
+## Options
 
-### Options
-
-#### `domGetter: () => Element | string`
+### `domGetter: () => Element | string`
 
 可填入获取挂载点的节点或者 `querySelect` 可选到的字符。
 
-#### `apps: Array<AppInfo>`
-
-:::note
-
-1. 主框架不会自动与远程 Garfish 管理平台关联，需要手动注入。
-2. 子应用资源地址需要支持跨域（**请控制允许的范围，若没有设置允许的范围可能造成安全风险**）。
-3. `Garfish` 会根据资源的 `mineType` 判断是 `html entry` 还是 `js entry`。
-4. 单个 `js`，导出内容必须为 `provider: { render, destroy }`。
-   :::
+### `apps: Array<AppInfo>`
 
 - `AppInfo: { name, entry, activeWhen, active, deactive }`
   - `name` 模板名称，请确保该名称的唯一性。
@@ -54,7 +44,7 @@ Garfish.run({
 });
 ```
 
-#### `basename?: string`
+### `basename?: string`
 
 - `basename` 默认值为 `'/'`
 - 该参数用于作为子应用激活的 `basePath`，并且可以提供给子应用作为子应用的 `basepath`。
@@ -68,7 +58,7 @@ Garfish.run({
 
 ```js
 // 主应用的 index.js
-const basePath = 'toutiao';
+const basePath = '/demo';
 const router = new VueRouter({
   mode: 'history',
   base: basePath,
@@ -92,93 +82,76 @@ const app = new Vue({ router }).$mount('#app');
 ```js
 // 子应用的 index.js
 // 获取框架传输的主应用提供的 basename，作为子应用的 basename，在路由跳转时将其作为根路由
-class App extends React.Component<Props> {
-  render() {
-    return (
-      <BrowserRouter basename={this.props.basename}>
-        <div>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-          </ul>
-          <Route exact path="/" component={Index}></Route>
-        </div>
-      </BrowserRouter>
-    );
-  }
+function App{
+  return (
+    <BrowserRouter basename={this.props.basename}>
+      <div>
+        <Link to="/">Home</Link>
+      </div>
+      <Route exact path="/" component={Index}></Route>
+    </BrowserRouter>
+  );
 }
 
-export function provider() {
-  return {
-    render({ dom, basename }) {
-      // 渲染到子应用html里的某个节点
-      ReactDOM.render(<App basename={basename} />, dom.querySelector('#root'));
-    },
-
-    destroy({ dom }) {
-      const root = dom && dom.querySelector('#root');
-      if (root) {
-        ReactDOM.unmountComponentAtNode(root);
-      }
-    },
-  };
-}
+export const provider = reactBridge({
+  React,
+  ReactDOM,
+  domElementGetter: '#root', // 应用的挂载点，如果子应用打包为 JS 入口，可不填写
+  rootComponent: App,
+});
 ```
 
-#### `sandbox?: SandboxConfig | false`
+### `sandbox?: SandboxConfig | false`
 
-- `snapshot?: boolean` 是否开启快照沙箱，默认`false`
-
-#### `props?: Object`
+### `props?: Object`
 
 提供参数作为子应用的 `provider` 参数
 
-#### `protectVariable?: Array<string>`
+### `protectVariable?: Array<string>`
 
 保存指定变量，在沙盒切换过程中不进行清除
 
-#### `autoRefreshApp?: boolean`
+### `autoRefreshApp?: boolean`
 
 默认 `true`，主应用跳转子应用子路由会更新组件
 
-#### `beforeLoad?: (appInfo: AppInfo) => void`
+### `beforeLoad?: (appInfo: AppInfo) => void`
 
 资源加载前调用，返回 `false`，将阻止加载 `app`，此时就可能没有 `app`
 
-#### `beforeMount?: (appInfo: AppInfo, path: string) => void`
+### `beforeMount?: (appInfo: AppInfo, path: string) => void`
 
 子应用挂载前调用
 
-#### `afterMount?: (appInfo: AppInfo, path: string) => void`
+### `afterMount?: (appInfo: AppInfo, path: string) => void`
 
 子应用挂载后调用
 
-#### `beforeUnmount?: (appInfo: AppInfo, path: string) => void`
+### `beforeUnmount?: (appInfo: AppInfo, path: string) => void`
 
 子应用销毁前调用
 
-#### `afterUnmount?: (appInfo: AppInfo, path: string) => void`
+### `afterUnmount?: (appInfo: AppInfo, path: string) => void`
 
 子应用销毁后调用
 
-#### `customLoader?: (provider: any, path: string, module: App) => void`
+### `customLoader?: (provider: any, path: string, module: App) => void`
 
 自定义加载规则
 
-#### `errorLoadApp?: (err: Error, appInfo: AppInfo) => void`
+### `errorLoadApp?: (err: Error, appInfo: AppInfo) => void`
 
 捕获加载子应用的错误
 
-#### `errorMountApp?: (err: Error, appInfo: AppInfo) => void`
+### `errorMountApp?: (err: Error, appInfo: AppInfo) => void`
 
 捕获挂载子应用时的错误
 
-#### `errorUnmountApp?: (err: Error, appInfo: AppInfo) => void`
+### `errorUnmountApp?: (err: Error, appInfo: AppInfo) => void`
 
 捕获卸载子应用时的错误
 
-#### `onNotMatchRouter?: (path: string) => void`
+### `onNotMatchRouter?: (path: string) => void`
 
 未匹配到对应子应用时触发
 

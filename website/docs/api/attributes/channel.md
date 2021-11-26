@@ -1,7 +1,7 @@
 ---
 title: channel
 slug: /api/attributes
-order: 1
+order: 6
 ---
 
 `Garfish.channel` 用于应用之间的通信。他有着与 `node evnets(v11.13.0)` 模块相同的 [api](https://nodejs.org/dist/v11.13.0/docs/api/events.html)。

@@ -1,5 +1,5 @@
 ---
-title: web component 接入（beta）
+title: Web component 接入（beta）
 slug: /guide/develop/web-component
 order: 1
 ---
