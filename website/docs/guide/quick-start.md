@@ -1,6 +1,6 @@
 ---
-title: JavaScript API 接入
-slug: /guide/develop/js-api
+title: 快速开始
+slug: /guide/develop/from-zero
 order: 2
 ---
 
@@ -8,8 +8,8 @@ order: 2
 
 通过 Garfish API 接入子应用整体流程概述为：
 
-1. 添加 `garfish` 依赖包
-2. 通过 `Garfish.run`，提供挂载点、basename、子应用列表信息
+1. 添加 `garfish` 依赖包（字节内部研发请使用 `@byted/garfish` 代替 `garfish`）
+2. 通过 `Garfish.run`，提供挂载点、basename、子应用列表
 
 ## 主应用
 
@@ -19,16 +19,27 @@ order: 2
 npm install garfish --save
 ```
 
-### 在主应用入口处注册子应用并启动 Garfish
+### 注册子应用并启动 Garfish
 
 ```js
 // index.js（主应用入口处）
 import Garfish from 'garfish';
-
+/*
+  当执行 `Garfish.run` 后，此时 `Garfish` 框架将会启动路由劫持能力
+  当浏览器的地址发生变化时，`Garfish` 框架内部便会立即触发匹配逻辑当应用符合匹配逻辑时将会自动将应用挂载至页面中
+  并依次触发子应用加载、渲染过程中的生命周期
+*/
 Garfish.run({
-  // 主应用的基础路径，该值需要保证与主应用的基础路径一致
+  /*
+    主应用的基础路径，该值需要保证与主应用的基础路径一致
+    * basename: '/'：
+      * React 应用的激活地址为 /react
+      * 那么在浏览器跳转至 /react 以及 /react/xxx 等路由时都会触发 React 应用都会挂载至 `domGetter` 中
+    * 若 basename: '/demo'：
+      * 那 React 应用的激活路径则为 /demo/react
+      * 那么在浏览器跳转至 '/demo/react' 以及 '/demo/react/xxx/xx' 等路由时都会触发 React 应用都会挂载至 `domGetter` 中
+  */
   basename: '/',
-  // 注意在执行 run 时请确保 #subApp 节点已在页面中存在，可为函数（为函数时将使用函数返回时作为挂载点）
   domGetter: '#subApp',
   apps: [
     {
@@ -36,7 +47,8 @@ Garfish.run({
       name: 'react',
       // 可为函数，当函数返回值为 true 时，标识满足激活条件，该应用将会自动挂载至页面中，手动挂在时可不填写该参数
       activeWhen: '/react',
-      // 子应用的入口地址，可以为 HTML 地址和 JS 地址（为不同模式时，渲染函数的处理有所不同）
+      // 子应用的入口地址，可以为 HTML 地址和 JS 地址
+      // 注意：entry 地址不可以与主应用+子应用激活地址相同，否则刷新时将会直接返回子应用内容
       entry: 'http://localhost:3000',
     },
     {
@@ -47,19 +59,6 @@ Garfish.run({
   ],
 });
 ```
-
-> 能力概述
-
-当执行 `Garfish.run` 后，此时 `Garfish` 框架将会启动路由劫持能力，当浏览器的地址发生变化时，`Garfish` 框架内部便会立即触发匹配逻辑当应用符合匹配逻辑时将会自动将应用挂载至页面中。并依次触发子应用加载、渲染过程中的生命周期。
-
-例如上述例子中：
-
-- `basename: '/'`
-  - React 应用的激活地址为 `/react`
-  - 那么在浏览器跳转至 `/react` 以及 `/react/xxx/xx` 等路由时都会触发 React 应用都会挂载至 `domGetter` 中
-- 若 `basename: '/demo'`
-  - 那 React 应用的激活路径则为 `/demo/react`
-  - 那么在浏览器跳转至 `'/demo/react'` 以及 `'/demo/react/xxx/xx'` 等路由时都会触发 React 应用都会挂载至 `domGetter` 中
 
 ## 子应用
 
