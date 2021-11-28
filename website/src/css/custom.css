@@ -31,6 +31,23 @@
   margin-left: 20px;
 }
 
+code {
+  border: none;
+}
+
+.args-list {
+  list-style: none;
+  padding-left: 0.75rem;
+}
+
+.args-list>dt {
+  color: var(--ifm-color-primary);
+}
+
+.args-list>dd {
+  margin: 0 0 .75rem .75rem
+}
+
 .header-gitlab-link:before {
   content: '';
   width: 24px;
