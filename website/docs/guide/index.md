@@ -6,8 +6,6 @@ order: 1
 
 # 关于 Garfish
 
-## 什么是 Garfish
-
 Garfish 起源于 [头条号](http://mp.toutiao.com) 的实际场景，随着业务发展变成一个 Monolithic-Applications （[巨石应用](https://en.wikipedia.org/wiki/Monolithic_application)），同时维护的团队人员都比较分散，工程大，导致开发调试效率低、上线困难（代码合并相互依赖），成为阻塞业务发展的一个重要因素。
 
 于是在 2018 年衍生了 Garfish 这个微前端框架，经过大量业务方实际场景的验证和打磨，Garfish 逐渐趋于成熟。并且随着更多的业务对微前端的需求，Garfish 也在不断迭代之中，已经积累了丰富的微前端问题解决经验。
