@@ -1,6 +1,6 @@
 ---
 title: 快速开始
-slug: /guide/develop/from-zero
+slug: /quick-start
 order: 2
 ---
 
