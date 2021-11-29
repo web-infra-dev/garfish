@@ -4,7 +4,7 @@ slug: /guide/develop/from-zero
 order: 2
 ---
 
-本节主要从主应用视角出发，通过 `Garfish api` 的加载方式概览性描述主应用如何接入微前端子应用
+本节主要从主应用视角出发，通过 [Garfish API](/api/garfish) 的加载方式概览性描述主应用如何接入微前端子应用，
 
 通过 Garfish API 接入子应用整体流程概述为：
 
@@ -28,17 +28,10 @@ import Garfish from 'garfish';
   当执行 `Garfish.run` 后，此时 `Garfish` 框架将会启动路由劫持能力
   当浏览器的地址发生变化时，`Garfish` 框架内部便会立即触发匹配逻辑当应用符合匹配逻辑时将会自动将应用挂载至页面中
   并依次触发子应用加载、渲染过程中的生命周期
+  跳转至: /react 时，自动挂载 react 应用
+  跳转至: /vue 时，自动挂载 vue 应用
 */
 Garfish.run({
-  /*
-    主应用的基础路径，该值需要保证与主应用的基础路径一致
-    * basename: '/'：
-      * React 应用的激活地址为 /react
-      * 那么在浏览器跳转至 /react 以及 /react/xxx 等路由时都会触发 React 应用都会挂载至 `domGetter` 中
-    * 若 basename: '/demo'：
-      * 那 React 应用的激活路径则为 /demo/react
-      * 那么在浏览器跳转至 '/demo/react' 以及 '/demo/react/xxx/xx' 等路由时都会触发 React 应用都会挂载至 `domGetter` 中
-  */
   basename: '/',
   domGetter: '#subApp',
   apps: [

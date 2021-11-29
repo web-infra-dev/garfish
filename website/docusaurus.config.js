@@ -39,11 +39,11 @@ module.exports = {
           label: '文档',
           position: 'left',
         },
-        {
-          to: 'api/',
-          label: 'API',
-          position: 'left',
-        },
+        // {
+        //   to: 'api/',
+        //   label: 'API',
+        //   position: 'left',
+        // },
         {
           to: 'issues/',
           label: '常见问题',
