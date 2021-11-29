@@ -357,6 +357,35 @@ Garfish.setOptions({
 
 <a href="#run">与 run 参数一致</a>
 
+## channel
+
+`channel` 用于应用间的通信。它是 [EventEmitter2](https://github.com/EventEmitter2/EventEmitter2) 的实例
+
+### 示例
+
+```js
+// 子应用监听登录事件
+const App = () => {
+  const handleLogin = (userInfo) => {
+    console.log(`${userInfo.name} has login`);
+  };
+
+  useEffect(() => {
+    window?.Garfish.channel.on('login', handleLogin);
+    return () => {
+      window?.Garfish.channel.removeListener('login', handleLogin);
+    };
+  });
+};
+
+// 主应用触发监听事件
+api.getLoginInfo.then((res) => {
+  if (res.code === 0) {
+    window.Garfish.channel.emit('login', res.data);
+  }
+});
+```
+
 ## setExternal
 
 `setExternal` 用于实现应用间的依赖共享，通过该函数将依赖进行注册，注册完成后可以实现主子应用的依赖共享，但可能会由于共享带来某些依赖的影响，若出现问题建议关闭共享。
