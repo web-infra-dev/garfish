@@ -111,6 +111,7 @@ function createOptions(Garfish: interfaces.Garfish) {
           baseUrl: appInstance.entryManager.url,
           strictIsolation: appInfo.sandbox?.strictIsolation,
           modules: compatibleOldModule(appInfo.sandbox.modules),
+          disableWith: appInfo?.sandbox?.disableWith || false,
 
           el: () => appInstance.htmlNode,
 
