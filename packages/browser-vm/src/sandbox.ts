@@ -295,13 +295,7 @@ export class Sandbox {
       if (disableWith) {
         Object.assign(params, env);
       } else {
-        const envKeys = Object.keys(env);
-        const optimizeCode =
-          envKeys.length > 0
-            ? this.optimizeGlobalMethod(envKeys)
-            : this.optimizeCode;
-
-        code = `with(window) {;${optimizeCode + code}}`;
+        code = `with(window) {;${this.optimizeCode + code}}`;
         params[this.tempVariable] = env;
       }
 
