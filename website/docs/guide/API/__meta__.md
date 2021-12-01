@@ -1,5 +1,5 @@
 ---
 title: API
-collapsed: true
+collapsed: false
 order: 3
 ---
