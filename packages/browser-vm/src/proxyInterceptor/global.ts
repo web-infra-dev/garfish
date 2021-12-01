@@ -90,7 +90,7 @@ export function createSetter(sandbox: Sandbox) {
         }
 
         // Update need optimization variables
-        if (sandbox.global) {
+        if (sandbox.global && !sandbox.options.disableWith) {
           const methods = sandbox.global[`${GARFISH_OPTIMIZE_NAME}Methods`];
           if (Array.isArray(methods)) {
             if (methods.includes(p)) {
