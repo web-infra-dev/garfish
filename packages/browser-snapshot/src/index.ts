@@ -55,8 +55,8 @@ export function GarfishBrowserSnapshot(op?: BrowserConfig) {
         appInstance.snapshotSandbox.activate();
       },
 
-      afterUnmount(appInfo, appInstance) {
-        if (!appInstance.snapshotSandbox) return;
+      afterUnmount(appInfo, appInstance, isCacheMode) {
+        if (!appInstance.snapshotSandbox || isCacheMode) return;
         appInstance.snapshotSandbox.deactivate();
       },
     };
