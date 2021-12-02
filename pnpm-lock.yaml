@@ -46,7 +46,7 @@ importers:
       tsup: 5.7.2
       typescript: 4.4.3
       wait-on: 6.0.0
-      workspace-tools: 0.16.2
+      workspace-tools: 0.17.0
       zx: 4.2.0
     devDependencies:
       '@babel/plugin-transform-regenerator': 7.16.0
@@ -91,7 +91,7 @@ importers:
       tsup: 5.7.2_typescript@4.4.3
       typescript: 4.4.3
       wait-on: 6.0.0
-      workspace-tools: 0.16.2
+      workspace-tools: 0.17.0
       zx: 4.2.0
 
   dev/main:
@@ -8503,11 +8503,11 @@ packages:
       array-uniq: 1.0.3
 
   /array-union/2.1.0:
-    resolution: {integrity: sha1-t5hCCtvrHego2ErNii4j0+/oXo0=}
+    resolution: {integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==}
     engines: {node: '>=8'}
 
   /array-union/3.0.1:
-    resolution: {integrity: sha1-2lJjDTJ/i4jPv7V3KOKvXNm2uXU=}
+    resolution: {integrity: sha512-1OvF9IbWwaeiM9VhzYXVQacMibxpXOMYVNIvMtKRyX9SImBXpKcFr8XvFDeEslCyuH/t6KRt7HEO94AlP8Iatw==}
     engines: {node: '>=12'}
     dev: true
 
@@ -13039,7 +13039,7 @@ packages:
       debug:
         optional: true
     dependencies:
-      debug: 4.3.2_supports-color@6.1.0
+      debug: 4.3.2
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -24261,8 +24261,8 @@ packages:
       microevent.ts: 0.1.1
     dev: false
 
-  /workspace-tools/0.16.2:
-    resolution: {integrity: sha512-Z/NHo4t39DUd50MdWiPfxICyVaCjWZc/xwZxE4a/n2nAQGgeYeg6GWBY1juULPi/BGSrjSVaDQfDCj/Y80033A==}
+  /workspace-tools/0.17.0:
+    resolution: {integrity: sha512-vfKAXUkwFwC2IAo0/34Zql25IGMc8aVm2zJ+D1rdZpRPfvSjT06kf0pv+kamgNjMQ0Vsrq9rirCyJz1mPhZZtg==}
     dependencies:
       '@yarnpkg/lockfile': 1.1.0
       find-up: 4.1.0

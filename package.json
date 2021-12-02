@@ -86,7 +86,7 @@
     "tsup": "5.7.2",
     "typescript": "4.4.3",
     "wait-on": "6.0.0",
-    "workspace-tools": "0.16.2",
+    "workspace-tools": "0.17.0",
     "zx": "4.2.0"
   },
   "engines": {
