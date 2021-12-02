@@ -252,8 +252,25 @@ export class Sandbox {
         return `${prevCode} let ${name} = window.${name};`;
       }, code);
       // Used to update the variables synchronously after `window.x = xx` is updated
-      this.global[`${GARFISH_OPTIMIZE_NAME}Methods`] = methods;
-      this.global[`${GARFISH_OPTIMIZE_NAME}UpdateStack`] = [];
+      Object.defineProperty(this.global, `${GARFISH_OPTIMIZE_NAME}Methods`, {
+        get() {
+          return methods;
+        },
+        enumerable: true,
+        configurable: true,
+      });
+      Object.defineProperty(
+        this.global,
+        `${GARFISH_OPTIMIZE_NAME}UpdateStack`,
+        {
+          get() {
+            return [];
+          },
+          enumerable: true,
+          configurable: true,
+        },
+      );
+
       code += `window.${GARFISH_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v")});`;
     }
 
