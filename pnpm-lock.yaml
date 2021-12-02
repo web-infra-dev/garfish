@@ -21,7 +21,7 @@ importers:
       chalk: 4.1.2
       cross-env: 7.0.3
       cypress: 8.7.0
-      esbuild-plugin-replace: 1.0.7
+      esbuild-plugin-replace: 1.0.9
       eslint: 7.32.0
       eslint-plugin-vue: 7.19.1
       execa: 4.1.0
@@ -66,7 +66,7 @@ importers:
       chalk: 4.1.2
       cross-env: 7.0.3
       cypress: 8.7.0
-      esbuild-plugin-replace: 1.0.7
+      esbuild-plugin-replace: 1.0.9
       eslint: 7.32.0
       eslint-plugin-vue: 7.19.1_eslint@7.32.0
       execa: 4.1.0
@@ -11825,8 +11825,8 @@ packages:
     dev: true
     optional: true
 
-  /esbuild-plugin-replace/1.0.7:
-    resolution: {integrity: sha512-Xw5Zfr6U62/oxEGJjqO+/YF0ZCQJsyeYZWiCx+dLdAOIA9ma0nXQxxdJhKWLG1DUGkd5ZBLks0inV/UtABIvZw==}
+  /esbuild-plugin-replace/1.0.9:
+    resolution: {integrity: sha512-dWzw8YLzp87lE+CaNbs41b1rtL2JC5M9770F9Av8EgUT6z/buKmgfYHH15Dy3lpL6gCK0AREJ8yTKSgXB5L2bg==}
     dependencies:
       magic-string: 0.25.7
     dev: true
@@ -13039,7 +13039,7 @@ packages:
       debug:
         optional: true
     dependencies:
-      debug: 4.3.2_supports-color@6.1.0
+      debug: 4.3.2
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
