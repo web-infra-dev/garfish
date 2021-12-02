@@ -3,6 +3,15 @@ export type SnapshotDiff = {
   removed: Snapshot;
 };
 
+export function isStyledComponentsLike(element: HTMLStyleElement) {
+  // A styled-components liked element has no textContent but keep the rules in its sheet.cssRules.
+  return (
+    element instanceof HTMLStyleElement &&
+    !element.textContent &&
+    element.sheet?.cssRules.length
+  );
+}
+
 export class Snapshot {
   constructor(public arrDoms: Array<HTMLElement>) {
     this.arrDoms = arrDoms;
@@ -43,8 +52,15 @@ export class Snapshot {
 }
 
 export class Interceptor {
+  dynamicStyleSheetElementSet: Set<HTMLStyleElement>;
+  styledComponentCSSRulesMap: WeakMap<HTMLStyleElement, CSSRuleList>;
   constructor(public dom: HTMLElement = document.head) {
     this.dom = dom;
+    this.dynamicStyleSheetElementSet = new Set<HTMLStyleElement>();
+    this.styledComponentCSSRulesMap = new WeakMap<
+      HTMLStyleElement,
+      CSSRuleList
+    >();
   }
 
   add(from: Snapshot): void;
@@ -60,6 +76,16 @@ export class Interceptor {
     }
     created.arrDoms.reduce((prev, val) => {
       prev.appendChild(val);
+      if (val instanceof HTMLStyleElement) {
+        const cssRules = this.styledComponentCSSRulesMap.get(val);
+        if (cssRules && cssRules.length) {
+          for (let i = 0; i < cssRules.length; i++) {
+            const cssRule = cssRules[i];
+            // re-insert rules for styled-components element
+            val.sheet.insertRule(cssRule.cssText, val.sheet.cssRules.length);
+          }
+        }
+      }
       return prev;
     }, this.dom);
     removed.arrDoms.reduce((prev, val) => {
@@ -80,6 +106,9 @@ export class Interceptor {
       created = createdOrSnapshot;
     }
     created.arrDoms.reduce((prev, val) => {
+      if (val instanceof HTMLStyleElement && isStyledComponentsLike(val)) {
+        this.styledComponentCSSRulesMap.set(val, val.sheet.cssRules);
+      }
       prev.removeChild(val);
       return prev;
     }, this.dom);
