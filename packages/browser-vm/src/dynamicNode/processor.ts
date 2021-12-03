@@ -251,6 +251,7 @@ export class DynamicNodeProcessor {
         this.el.textContent = manager.styleCode;
       }
       convertedNode = this.el;
+      this.sandbox.dynamicStyleSheetElementSet.add(this.el);
     }
     // The link node of the request css needs to be changed to style node
     else if (this.is('link')) {
@@ -318,8 +319,13 @@ export class DynamicNodeProcessor {
         context,
         this.is('script') ? 'body' : 'head',
       );
-      if (this.el.parentNode === parentNode)
+
+      if (this.el.parentNode === parentNode) {
+        if (this.sandbox.dynamicStyleSheetElementSet.has(this.el)) {
+          this.sandbox.dynamicStyleSheetElementSet.delete(this.el);
+        }
         return this.nativeRemove.call(parentNode, this.el);
+      }
     }
     return originProcess();
   }

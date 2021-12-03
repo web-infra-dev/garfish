@@ -1,7 +1,7 @@
 import { warn } from '@garfish/utils';
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
-import { sandboxMap, isInIframe } from '../utils';
+import { sandboxMap, isStyledComponentsLike } from '../utils';
 import { injectHandlerParams } from './processParams';
 import { DynamicNodeProcessor, rawElementMethods } from './processor';
 
@@ -104,4 +104,34 @@ export function makeElInjector() {
   }
 
   injectHandlerParams();
+}
+
+export function recordStyledComponentCSSRules(
+  dynamicStyleSheetElementSet: Set<HTMLStyleElement>,
+  styledComponentCSSRulesMap: WeakMap<HTMLStyleElement, CSSRuleList>,
+) {
+  dynamicStyleSheetElementSet.forEach((styleElement) => {
+    if (isStyledComponentsLike(styleElement) && styleElement.sheet) {
+      styledComponentCSSRulesMap.set(styleElement, styleElement.sheet.cssRules);
+    }
+  });
+}
+
+export function rebuildCSSRules(
+  dynamicStyleSheetElementSet: Set<HTMLStyleElement>,
+  styledComponentCSSRulesMap: WeakMap<HTMLStyleElement, CSSRuleList>,
+) {
+  dynamicStyleSheetElementSet.forEach((styleElement) => {
+    const cssRules = styledComponentCSSRulesMap.get(styleElement);
+    if (cssRules && (isStyledComponentsLike(styleElement) || cssRules.length)) {
+      for (let i = 0; i < cssRules.length; i++) {
+        const cssRule = cssRules[i];
+        // re-insert rules for styled-components element
+        styleElement.sheet.insertRule(
+          cssRule.cssText,
+          styleElement.sheet.cssRules.length,
+        );
+      }
+    }
+  });
 }
