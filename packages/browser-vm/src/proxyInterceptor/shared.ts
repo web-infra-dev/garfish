@@ -88,7 +88,9 @@ export function isConstructor(fn: () => void | FunctionConstructor) {
   const fp = fn.prototype;
   const hasConstructor =
     fp && fp.constructor === fn && Object.getOwnPropertyNames(fp).length > 1;
-  const functionStr = !hasConstructor && fn.toString();
+  const functionStr =
+    (!hasConstructor && typeof fn.toString === 'function' && fn.toString()) ||
+    '';
 
   return (
     hasConstructor ||
