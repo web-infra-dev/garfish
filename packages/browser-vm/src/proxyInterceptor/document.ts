@@ -11,7 +11,7 @@ import { rootElm, sandboxMap } from '../utils';
 import { __documentBind__ } from '../symbolTypes';
 import { bind, verifyGetterDescriptor, verifySetterDescriptor } from './shared';
 
-const passedKey = makeMap(['title', 'cookie']);
+const passedKey = makeMap(['title', 'cookie', 'onselectstart', 'ondragstart']);
 
 const queryFunctions = makeMap([
   'querySelector',
@@ -101,7 +101,7 @@ export function createSetter(sandbox) {
     }
 
     // Application area of the ban on selected, if users want to ban the global need to set on the main application
-    if (p === 'onselectstart') {
+    if (p === 'onselectstart' || p === 'ondragstart') {
       if (rootNode) {
         return Reflect.set(rootNode, p, value);
       } else {
