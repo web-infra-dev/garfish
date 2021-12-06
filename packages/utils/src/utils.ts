@@ -476,3 +476,27 @@ export function getGarfishDebugInstanceName(): string | null {
     getParameterByName(DEBUG_GARFISH_TAG)
   );
 }
+
+// Reflect.set will be called in the set callback, and the DefineProperty callback will be triggered after Reflect.set is called.
+// but the descriptor values ​​writable, enumerable, and configurable on safari 13.x version are set to false for the second time
+// set and defineProperty callback is async Synchronize back
+// Set the default when calling defineProperty through set ​​writable, enumerable, and configurable default to true
+// safari 13.x default use strict mode，descriptor's ​​writable is false can't set again
+// deal safari 13
+export function safari13Deal() {
+  let fromSetFlag = false;
+  return {
+    triggerSet() {
+      fromSetFlag = true;
+    },
+    // reason: Reflect.set
+    // Object.defineProperty is used to implement, so defineProperty is triggered when set is triggered
+    // but the descriptor values ​​writable, enumerable, and configurable on safari 13.x version are set to false for the second time
+    handleDescriptor(descriptor: PropertyDescriptor) {
+      fromSetFlag = false;
+      if (descriptor?.writable === false) descriptor.writable = true;
+      if (descriptor?.enumerable === false) descriptor.writable = true;
+      if (descriptor?.configurable === false) descriptor.configurable = true;
+    },
+  };
+}

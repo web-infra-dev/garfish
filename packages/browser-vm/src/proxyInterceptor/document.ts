@@ -5,6 +5,7 @@ import {
   findTarget,
   __MockBody__,
   __MockHead__,
+  safari13Deal,
 } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 import { rootElm, sandboxMap } from '../utils';
@@ -82,6 +83,8 @@ export function createGetter(sandbox: Sandbox) {
     return value;
   };
 }
+
+const safariProxyDocumentDealHandler = safari13Deal();
 
 // document proxy setter
 export function createSetter(sandbox) {

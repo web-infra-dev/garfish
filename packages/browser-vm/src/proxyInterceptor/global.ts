@@ -1,4 +1,4 @@
-import { warn, hasOwn } from '@garfish/utils';
+import { warn, hasOwn, safari13Deal } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 import { isEsGlobalMethods, isNativeCodeMethods } from '../utils';
 import { __windowBind__, GARFISH_OPTIMIZE_NAME } from '../symbolTypes';
@@ -60,12 +60,7 @@ export function createGetter(sandbox: Sandbox) {
   };
 }
 
-// Reflect.set will be called in the set callback, and the DefineProperty callback will be triggered after Reflect.set is called.
-// but the descriptor values ​​writable, enumerable, and configurable on safari 13.x version are set to false for the second time
-// set and defineProperty callback is async Synchronize back
-// Set the default when calling defineProperty through set ​​writable, enumerable, and configurable default to true
-// safari 13.x default use strict mode，descriptor's ​​writable is false can't set again
-let fromSetFlag = false;
+const safariProxyWindowDealHandler = safari13Deal();
 
 // window proxy setter
 export function createSetter(sandbox: Sandbox) {
@@ -91,7 +86,7 @@ export function createSetter(sandbox: Sandbox) {
       return Reflect.set(window, p, value);
     } else {
       // current is setting
-      fromSetFlag = true;
+      safariProxyWindowDealHandler.triggerSet();
       const success = Reflect.set(target, p, value, receiver);
       if (success) {
         if (sandbox.initComplete) {
@@ -118,15 +113,7 @@ export function createSetter(sandbox: Sandbox) {
 // window proxy defineProperty
 export function createDefineProperty(sandbox: Sandbox) {
   return (target: Window, p: PropertyKey, descriptor: PropertyDescriptor) => {
-    // reason: Reflect.set
-    // Object.defineProperty is used to implement, so defineProperty is triggered when set is triggered
-    // but the descriptor values ​​writable, enumerable, and configurable on safari 13.x version are set to false for the second time
-    if (fromSetFlag) {
-      fromSetFlag = false;
-      descriptor.writable = true;
-      descriptor.enumerable = true;
-      descriptor.configurable = true;
-    }
+    safariProxyWindowDealHandler.handleDescriptor(descriptor);
 
     if (sandbox.isProtectVariable(p)) {
       return Reflect.defineProperty(window, p, descriptor);
