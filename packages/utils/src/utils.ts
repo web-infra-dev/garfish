@@ -493,10 +493,12 @@ export function safari13Deal() {
     // Object.defineProperty is used to implement, so defineProperty is triggered when set is triggered
     // but the descriptor values ​​writable, enumerable, and configurable on safari 13.x version are set to false for the second time
     handleDescriptor(descriptor: PropertyDescriptor) {
-      fromSetFlag = false;
-      if (descriptor?.writable === false) descriptor.writable = true;
-      if (descriptor?.enumerable === false) descriptor.writable = true;
-      if (descriptor?.configurable === false) descriptor.configurable = true;
+      if ((fromSetFlag = true)) {
+        fromSetFlag = false;
+        if (descriptor?.writable === false) descriptor.writable = true;
+        if (descriptor?.enumerable === false) descriptor.writable = true;
+        if (descriptor?.configurable === false) descriptor.configurable = true;
+      }
     },
   };
 }
