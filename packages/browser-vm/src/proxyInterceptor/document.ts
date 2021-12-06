@@ -112,15 +112,19 @@ export function createSetter(sandbox) {
       }
     }
 
-    return typeof p === 'string' && passedKey(p)
-      ? Reflect.set(document, p, value)
-      : Reflect.set(target, p, value, receiver);
+    if (typeof p === 'string' && passedKey(p)) {
+      return Reflect.set(document, p, value);
+    } else {
+      safariProxyDocumentDealHandler.triggerSet();
+      return Reflect.set(target, p, value, receiver);
+    }
   };
 }
 
 // document proxy defineProperty
 export function createDefineProperty() {
   return (target: any, p: PropertyKey, descriptor: PropertyDescriptor) => {
+    safariProxyDocumentDealHandler.handleDescriptor(descriptor);
     return passedKey(p)
       ? Reflect.defineProperty(document, p, descriptor)
       : Reflect.defineProperty(target, p, descriptor);
