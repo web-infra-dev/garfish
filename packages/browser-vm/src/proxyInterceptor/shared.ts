@@ -84,13 +84,19 @@ export function verifySetterDescriptor(
   return 0;
 }
 
+function safeToString(thing) {
+  try {
+    return thing.toString();
+  } catch (e) {
+    return '[toString failed]';
+  }
+}
+
 export function isConstructor(fn: () => void | FunctionConstructor) {
   const fp = fn.prototype;
   const hasConstructor =
     fp && fp.constructor === fn && Object.getOwnPropertyNames(fp).length > 1;
-  const functionStr =
-    (!hasConstructor && typeof fn.toString === 'function' && fn.toString()) ||
-    '';
+  const functionStr = !hasConstructor && safeToString(fn);
 
   return (
     hasConstructor ||
