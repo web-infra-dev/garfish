@@ -258,31 +258,8 @@ export class Sandbox {
         return `${prevCode} let ${name} = window.${name};`;
       }, code);
 
-      // defineProperty(target, p, descriptor) {
-      // safari 13.x set proxy global defineProperty descriptor default is { enumerable: false, configurable: false }
-      // verifySetterDescriptor will failure
-      // Proxy object's 'set' trap returned falsy value
-      // new Proxy({},{ return Reflect.defineProperty(target, p, descriptor) } })
-      // Used to update the variables synchronously after `window.x = xx` is updated
-      Object.defineProperty(this.global, `${GARFISH_OPTIMIZE_NAME}Methods`, {
-        get() {
-          return methods;
-        },
-        enumerable: true,
-        configurable: true,
-      });
-      Object.defineProperty(
-        this.global,
-        `${GARFISH_OPTIMIZE_NAME}UpdateStack`,
-        {
-          get() {
-            return [];
-          },
-          enumerable: true,
-          configurable: true,
-        },
-      );
-
+      this.global[`${GARFISH_OPTIMIZE_NAME}Methods`] = methods;
+      this.global[`${GARFISH_OPTIMIZE_NAME}UpdateStack`] = [];
       code += `window.${GARFISH_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v")});`;
     }
 
