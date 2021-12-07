@@ -1,4 +1,4 @@
-import { warn, hasOwn } from '@garfish/utils';
+import { warn, hasOwn, safari13Deal } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 import { isEsGlobalMethods, isNativeCodeMethods } from '../utils';
 import { __windowBind__, GARFISH_OPTIMIZE_NAME } from '../symbolTypes';
@@ -60,6 +60,8 @@ export function createGetter(sandbox: Sandbox) {
   };
 }
 
+const safariProxyWindowDealHandler = safari13Deal();
+
 // window proxy setter
 export function createSetter(sandbox: Sandbox) {
   return (target: Window, p: PropertyKey, value: unknown, receiver: any) => {
@@ -83,6 +85,8 @@ export function createSetter(sandbox: Sandbox) {
     if (sandbox.isProtectVariable(p)) {
       return Reflect.set(window, p, value);
     } else {
+      // current is setting
+      safariProxyWindowDealHandler.triggerSet();
       const success = Reflect.set(target, p, value, receiver);
       if (success) {
         if (sandbox.initComplete) {
@@ -109,6 +113,8 @@ export function createSetter(sandbox: Sandbox) {
 // window proxy defineProperty
 export function createDefineProperty(sandbox: Sandbox) {
   return (target: Window, p: PropertyKey, descriptor: PropertyDescriptor) => {
+    safariProxyWindowDealHandler.handleDescriptor(descriptor);
+
     if (sandbox.isProtectVariable(p)) {
       return Reflect.defineProperty(window, p, descriptor);
     } else {

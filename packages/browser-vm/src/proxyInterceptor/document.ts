@@ -5,13 +5,14 @@ import {
   findTarget,
   __MockBody__,
   __MockHead__,
+  safari13Deal,
 } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 import { rootElm, sandboxMap } from '../utils';
 import { __documentBind__ } from '../symbolTypes';
 import { bind, verifyGetterDescriptor, verifySetterDescriptor } from './shared';
 
-const passedKey = makeMap(['title', 'cookie']);
+const passedKey = makeMap(['title', 'cookie', 'onselectstart', 'ondragstart']);
 
 const queryFunctions = makeMap([
   'querySelector',
@@ -83,6 +84,8 @@ export function createGetter(sandbox: Sandbox) {
   };
 }
 
+const safariProxyDocumentDealHandler = safari13Deal();
+
 // document proxy setter
 export function createSetter(sandbox) {
   return (target: any, p: PropertyKey, value: any, receiver: any) => {
@@ -101,7 +104,7 @@ export function createSetter(sandbox) {
     }
 
     // Application area of the ban on selected, if users want to ban the global need to set on the main application
-    if (p === 'onselectstart') {
+    if (p === 'onselectstart' || p === 'ondragstart') {
       if (rootNode) {
         return Reflect.set(rootNode, p, value);
       } else {
@@ -109,15 +112,19 @@ export function createSetter(sandbox) {
       }
     }
 
-    return typeof p === 'string' && passedKey(p)
-      ? Reflect.set(document, p, value)
-      : Reflect.set(target, p, value, receiver);
+    if (typeof p === 'string' && passedKey(p)) {
+      return Reflect.set(document, p, value);
+    } else {
+      safariProxyDocumentDealHandler.triggerSet();
+      return Reflect.set(target, p, value, receiver);
+    }
   };
 }
 
 // document proxy defineProperty
 export function createDefineProperty() {
   return (target: any, p: PropertyKey, descriptor: PropertyDescriptor) => {
+    safariProxyDocumentDealHandler.handleDescriptor(descriptor);
     return passedKey(p)
       ? Reflect.defineProperty(document, p, descriptor)
       : Reflect.defineProperty(target, p, descriptor);
