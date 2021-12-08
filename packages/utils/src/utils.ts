@@ -496,7 +496,7 @@ export function safari13Deal() {
       if ((fromSetFlag = true)) {
         fromSetFlag = false;
         if (descriptor?.writable === false) descriptor.writable = true;
-        if (descriptor?.enumerable === false) descriptor.writable = true;
+        if (descriptor?.enumerable === false) descriptor.enumerable = true;
         if (descriptor?.configurable === false) descriptor.configurable = true;
       }
     },
