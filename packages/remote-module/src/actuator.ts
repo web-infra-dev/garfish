@@ -12,7 +12,10 @@ export class Actuator {
     this.env = {
       exports: {},
       module: null,
-      require: (key) => (externals || {})[key] || moduleConfig.externals[key],
+      require: (key) =>
+        (externals || {})[key] ||
+        moduleConfig.externals[key] ||
+        currentApp?.context.externals[key],
     };
     this.env.module = this.env;
     hooks.lifecycle.initModule.emit(this);
