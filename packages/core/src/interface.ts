@@ -32,7 +32,6 @@ export namespace interfaces {
   };
 
   export type DomGetter =
-    | Element
     | string
     | (() => Element | null)
     | (() => Promise<Element>);

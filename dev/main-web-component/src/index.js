@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { defineCustomElements } from '@garfish/web-component';
+import { defineCustomElements } from 'garfish';
 import App from './app';
 import 'antd/dist/antd.css';
 import './index.css';

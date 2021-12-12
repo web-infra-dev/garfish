@@ -4,26 +4,6 @@ slug: /issues
 order: 1
 ---
 
-## "provider" is "object".
-
-通过环境变量导出，将会更准确的让 Garfish 框架获取到导出内容
-
-```js
-if (window.__GARFISH__ && __GARFISH_EXPORTS__) {
-  // eslint-disable-next-line no-undef
-  __GARFISH_EXPORTS__.provider = provider;
-}
-```
-
-## Invalid domGetter "xxx"
-
-错误原因：在 Garfish 开始渲染时，无法查询到该挂载节点则会提示该错误
-
-> 解决方案
-
-1. 将挂载点设置为常驻挂载点，不要跟随路由变化使子应用挂载点销毁和出现
-2. 保证 Garfish 在渲染时挂载点存在
-
 ## 推荐配置
 
 如果在接入子应用的时候，出现了拿不到子应用导出的问题的时候。可以先按照以下步骤自查：
@@ -97,70 +77,6 @@ if (window.__GARFISH__ && __GARFISH_EXPORTS__) {
 - 若子应用的激活条件为函数，在每次发生路由变化时会通过校验子应用的激活函数若函数返回 `true` 表明符合当前激活条件将触发路由激活，
 - Garfish 会将当前的路径传入激活函数分割以得到子应用的最长激活路径，并将 `basename` + `子应用最长激活路径传` 给子应用参数
 - **子应用如果本身具备路由，在微前端的场景下，必须把 basename 作为子应用的基础路径，没有基础路由，子应用的路由可能与主应用和其他应用发生冲突**
-
-## 样式丢失
-
-可能子应用导出的 `render` 函数有误。
-
-- `render` 的时候直接渲染到子应用根节点了，所以添加进去的样式都被 `render` 覆盖了，导致丢失。
-- 样式丢失的很大可能是传递给框架的 `dom` 没有正常的作为挂载节点，由于现在 Garfish 微前端框架具备两种入口方式：`html entry`、`js entry`。
-
-**参考 HTML entry 和 JS entry 差异**，根据入口类型选用正确的渲染方式
-
-# HTML entry 和 JS entry 差异
-
-- HTML entry
-  - 指的是子应用配置的资源地址是 HTML 的地址
-  - 指定子应用的 entry 地址为 HTML 地址，支持像 iframe 一样的能力，将对应的子应用渲染至当前应用中
-- JS entry
-  - 指的是子应用配置的资源地址就是一个 JS 地址
-
-### 为什么有 HTML entry 模式
-
-HTML entry 模式的作用设计的初衷，解决子应用：**独立开发**、**独立测试** 的能力
-
-### HTML entry 和 JS entry 的差异
-
-- 使用层面上的差异
-  - 在作为 `html entry` 时，子应用的挂载点需要基于传入的 `dom` 节点进行选中挂载点
-  - 因为在 `html entry` 时，其实类似于 `iframe` 的模式，子应用在独立运行时的所有 `dom` 结构都会被挂到主应用的文档流上（整个文档流会挂载在当前 html 上）
-  - 所以子应用在渲染时需要根据子应用的 `dom` 结构去找他的挂载点。
-
-#### HTML entry 正确渲染销毁写法
-
-```js {6}
-export const provider = () => {
-  return {
-    render({ dom }) {
-      ReactDOM.render(
-        React.createElement(HotApp),
-        dom.querySelector('#root'), // 基于 dom 去选中文档流中的 #root，就和在独立运行时使用 document.querySelector('#root') 一样
-      );
-    },
-    destroy({ dom }) {
-      // 此外，destroy 应该正确的执行
-      const root = dom && dom.querySelector('#root');
-      if (root) {
-        ReactDOM.unmountComponentAtNode(root);
-      }
-    },
-  };
-};
-```
-
-#### JS entry 正确渲染销毁写法
-
-```js
-export const provider = ({ dom , basename}) => ({
-  render(){
-  	ReactDOM.render(<App basename={basename} />, dom); // 作为 js entry 时，没有自己的文档流，只有提供的渲染节点
-  },
-
-  destroy({ dom }}) {
-    ReactDOM.unmountComponentAtNode(dom); // 没有自己的文档流，直接销毁
-  },
-});
-```
 
 ## 主子应用样式冲突
 

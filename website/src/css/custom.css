@@ -31,6 +31,23 @@
   margin-left: 20px;
 }
 
+code {
+  border: none;
+}
+
+.args-list {
+  list-style: none;
+  padding-left: 0.75rem;
+}
+
+.args-list>dt {
+  color: var(--ifm-color-primary);
+}
+
+.args-list>dd {
+  margin: 0 0 .75rem .75rem
+}
+
 .header-gitlab-link:before {
   content: '';
   width: 24px;
@@ -120,16 +137,6 @@ html[data-theme='dark'] .swiper-pagination-bullet {
   color: rgb(153, 153, 153);
   position: absolute;
   margin-left: -1rem;
-}
-
-.menu__list a.menu__link--sublist {
-  font-size: 16px !important;
-  margin-left: 0px !important;
-}
-
-.menu__list li.menu__list-item a {
-  font-size: 14px;
-  margin-left: 10px;
 }
 
 .polyfill-browser-table tr{
