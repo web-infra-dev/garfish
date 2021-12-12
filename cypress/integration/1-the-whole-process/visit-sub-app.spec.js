@@ -121,4 +121,16 @@ describe('whole process app render', () => {
         .then(() => expect(popstateTriggerTime).to.equal(8));
     });
   });
+
+  it('Switch to the Vite app', () => {
+    const HomeTitle = 'Hello Vue 3 + Vite';
+
+    cy.window().then((win) => {
+      win.Garfish.router.push({ path: '/vite' });
+      cy.contains('[data-test=title]', HomeTitle).then(() => {
+        cy.get('button').dblclick();
+        cy.contains('button', 'count is: 2');
+      });
+    });
+  });
 });
