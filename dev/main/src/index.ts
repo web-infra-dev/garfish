@@ -36,6 +36,12 @@ document.getElementById('reactBtn').onclick = async () => {
   }
 };
 
+document.getElementById('viteBtn').onclick = async () => {
+  if (useRouterMode) {
+    history.pushState({}, 'vite', '/garfish_master/vite');
+  }
+};
+
 // Plugin test
 const hooks = GarfishInstance.createPluginSystem(({ SyncHook, AsyncHook }) => {
   return {

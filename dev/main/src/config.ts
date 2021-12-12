@@ -31,6 +31,12 @@ let defaultConfig: interfaces.Options = {
       activeWhen: '/vue2',
       entry: 'http://localhost:2777',
     },
+    {
+      name: 'vite-vue3',
+      cache: false,
+      activeWhen: '/vite',
+      entry: 'http://localhost:3000/',
+    },
     // {
     //   name: 'react',
     //   activeWhen: '/react',
