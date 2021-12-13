@@ -14,7 +14,7 @@ module.exports = {
   organizationName: 'ByteDance',
   projectName: 'Garfish Docs',
   customFields: {
-    slogan: 'Garfish 微前端解决方案',
+    slogan: 'Garfish 微前端框架',
     summary:
       '包含构建微前端系统时所需要的基本能力，任意前端框架均可使用。接入简单，可轻松将多个前端应用组合成内聚的单个产品',
   },

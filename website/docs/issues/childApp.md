@@ -4,6 +4,26 @@ slug: /issues
 order: 1
 ---
 
+## "provider" is "object".
+
+通过环境变量导出，将会更准确的让 Garfish 框架获取到导出内容
+
+```js
+if (window.__GARFISH__ && __GARFISH_EXPORTS__) {
+  // eslint-disable-next-line no-undef
+  __GARFISH_EXPORTS__.provider = provider;
+}
+```
+
+## Invalid domGetter "xxx"
+
+错误原因：在 Garfish 开始渲染时，无法查询到该挂载节点则会提示该错误
+
+> 解决方案
+
+1. 将挂载点设置为常驻挂载点，不要跟随路由变化使子应用挂载点销毁和出现
+2. 保证 Garfish 在渲染时挂载点存在
+
 ## 推荐配置
 
 如果在接入子应用的时候，出现了拿不到子应用导出的问题的时候。可以先按照以下步骤自查：
