@@ -394,20 +394,6 @@ importers:
     devDependencies:
       '@garfish/core': link:../core
 
-  packages/web-component:
-    specifiers:
-      '@garfish/browser-snapshot': workspace:*
-      '@garfish/browser-vm': workspace:*
-      '@garfish/core': workspace:*
-      '@garfish/router': workspace:*
-      '@garfish/utils': workspace:*
-    dependencies:
-      '@garfish/browser-snapshot': link:../browser-snapshot
-      '@garfish/browser-vm': link:../browser-vm
-      '@garfish/core': link:../core
-      '@garfish/router': link:../router
-      '@garfish/utils': link:../utils
-
   website:
     specifiers:
       '@docusaurus/core': 2.0.0-beta.9
