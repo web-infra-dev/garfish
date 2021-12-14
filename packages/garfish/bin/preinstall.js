@@ -9,19 +9,21 @@ const { spawnSync } = require('child_process');
 
 const tmpDirPath = os.tmpdir();
 const configPath = path.join(tmpDirPath, 'garfish-config.json');
-console.log('tmp dir: ', tmpDirPath);
+console.log('save Garfish config to tmp dir: ', tmpDirPath);
 
 const config = {
   firstInstall: true,
 };
 
 // @byted/garfish preinstall 时会提供 fromInternalGarfish 环境变量
-const fromInternalGarfish = process.env.fromInternalGarfish;
+const DISABLE_GARFISH_CHECK_INTERNAL =
+  !!process.env.DISABLE_GARFISH_CHECK_INTERNAL;
 
 co(function* () {
   // 处于内网环境并且不是来自 @byted/garfish 隐式依赖时
+  // 当前 Monorepo 仓库安装 demo 时
   // 第一次安装 garfish 终止安装
-  if (isInternal() && !fromInternalGarfish) {
+  if (isInternal() && !DISABLE_GARFISH_CHECK_INTERNAL) {
     if (!fs.existsSync(configPath)) {
       fs.writeFileSync(configPath, JSON.stringify(config));
       console.error(

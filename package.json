@@ -15,7 +15,7 @@
     "cy:run": "cypress run",
     "changeset": "npx changeset",
     "reset": "pnpm -r exec -- rm -rf node_modules && rm -rf node_modules",
-    "setup": "pnpm install",
+    "setup": "cross-env DISABLE_GARFISH_CHECK_INTERNAL=true npx pnpm install",
     "ls-lint": "ls-lint",
     "lint": "eslint --ext .ts packages/*/*/src/**",
     "reset-gittag": "git tag -l | xargs git tag -d && git fetch --prune",
