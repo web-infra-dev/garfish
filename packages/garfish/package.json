@@ -34,7 +34,7 @@
   "scripts": {
     "build": "rimraf dist && tsup src/index.ts",
     "dev": "cross-env WATCH=true tsup src/index.ts",
-    "preinstall": "node ./bin/preinstall.js"
+    "preinstall": "node ./scripts/preinstall.js"
   },
   "dependencies": {
     "@garfish/browser-snapshot": "workspace:*",
