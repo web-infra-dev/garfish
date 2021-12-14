@@ -43,10 +43,6 @@
     "@garfish/router": "workspace:*",
     "@garfish/utils": "workspace:*"
   },
-  "devDependencies": {
-    "co": "^4.6.0",
-    "enquirer": "^2.3.0"
-  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"

@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable no-restricted-globals */
 
-const co = require('co');
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
@@ -19,7 +18,7 @@ const config = {
 const DISABLE_GARFISH_CHECK_INTERNAL =
   !!process.env.DISABLE_GARFISH_CHECK_INTERNAL;
 
-co(function* () {
+try {
   // 处于内网环境并且不是来自 @byted/garfish 隐式依赖时
   // 当前 Monorepo 仓库安装 demo 时
   // 第一次安装 garfish 终止安装
@@ -32,9 +31,9 @@ co(function* () {
       process.exit(1);
     }
   }
-}).catch((err) => {
+} catch (err) {
   console.error(err.stack);
-});
+}
 
 function isInternal() {
   try {
