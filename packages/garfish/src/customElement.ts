@@ -43,7 +43,7 @@ export function generateCustomerElement(
           // Error display error
           const getPlaceHolderAndAppend = () => {
             // Remove the existing placeholder content
-            if (this.placeholder) {
+            if (this.placeholder && this.contains(this.placeholder)) {
               this.removeChild(this.placeholder);
             }
             const placeholder = this.options.loading({
@@ -153,4 +153,28 @@ export function generateCustomerElement(
     GarfishInstance.run(options.config || {});
     customElements.define(htmlTag, MicroApp);
   }
+}
+
+function createLoadableWebComponent(htmlTag: string, options: CustomOptions) {
+  if (typeof htmlTag !== 'string') {
+    throw new Error('garfish requires a `htmlTag` name');
+  }
+
+  if (!options.loading) {
+    throw new Error('garfish requires a `loading` component');
+  }
+
+  const opts = Object.assign(
+    {
+      loading: false,
+      delay: 200,
+      timeout: null,
+    },
+    options,
+  );
+  return generateCustomerElement(htmlTag, opts);
+}
+
+export function defineCustomElements(htmlTag: string, options: CustomOptions) {
+  return createLoadableWebComponent(htmlTag, options);
 }

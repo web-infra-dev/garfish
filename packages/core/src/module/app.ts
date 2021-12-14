@@ -37,7 +37,7 @@ export type AppInfo = interfaces.AppInfo & {
 };
 
 let appId = 0;
-const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
+export const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
 
 // Have the ability to App instance

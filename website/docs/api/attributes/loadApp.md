@@ -4,11 +4,12 @@ slug: /api/attributes/loadApp
 order: 5
 ---
 
-:::danger
+:::note
 
 - 持续加载新的应用可能会导致内存泄漏，尽可能将 Garfish.loadApp 返回的应用实例进行缓存，每次使用同一个实例进行渲染和销毁
 - 持续调用：mount 和 unmout 方法可能会造成内存泄漏，请首次使用：mount 挂载，销毁时通过 hide 隐藏，显示时通过 show 展示
-  :::
+
+:::
 
 ### Garfish.loadApp(appName: string, opts?: LoadAppOptions)
 
