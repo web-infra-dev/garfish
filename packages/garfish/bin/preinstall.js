@@ -15,20 +15,23 @@ const config = {
   firstInstall: true,
 };
 
+// @byted/garfish preinstall 时会提供 fromInternalGarfish 环境变量
+const fromInternalGarfish = process.env.fromInternalGarfish;
+
 co(function* () {
-  // 处于内网环境，并且第一次安装提供使用 @byted/garfish，否则使用
-  if (isInternal()) {
+  // 处于内网环境并且不是来自 @byted/garfish 隐式依赖时
+  // 第一次安装 garfish 终止安装
+  if (isInternal() && !fromInternalGarfish) {
     if (!fs.existsSync(configPath)) {
       fs.writeFileSync(configPath, JSON.stringify(config));
       console.error(
-        '检测到目前可能处于内网环境，推荐使用 @byted/garfish 代替 garfish 包',
+        '检测到目前可能处于内网环境，请使用 @byted/garfish 代替 garfish 包',
       );
       process.exit(1);
     }
   }
 }).catch((err) => {
   console.error(err.stack);
-  process.exit(1);
 });
 
 function isInternal() {
