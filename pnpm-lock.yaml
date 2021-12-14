@@ -394,6 +394,20 @@ importers:
     devDependencies:
       '@garfish/core': link:../core
 
+  packages/web-component:
+    specifiers:
+      '@garfish/browser-snapshot': workspace:*
+      '@garfish/browser-vm': workspace:*
+      '@garfish/core': workspace:*
+      '@garfish/router': workspace:*
+      '@garfish/utils': workspace:*
+    dependencies:
+      '@garfish/browser-snapshot': link:../browser-snapshot
+      '@garfish/browser-vm': link:../browser-vm
+      '@garfish/core': link:../core
+      '@garfish/router': link:../router
+      '@garfish/utils': link:../utils
+
   website:
     specifiers:
       '@docusaurus/core': 2.0.0-beta.9
@@ -7554,7 +7568,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.15_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.5.15_typescript@4.4.3
       '@vue/cli-shared-utils': 4.5.15
 
   /@vue/cli-plugin-vuex/4.5.13_@vue+cli-service@4.5.13:
@@ -7570,7 +7584,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.15_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.5.15_typescript@4.4.3
 
   /@vue/cli-service/4.5.13_daaec740214156bd7a1b7d7855d908a4:
     resolution: {integrity: sha512-CKAZN4iokMMsaUyJRU22oUAz3oS/X9sVBSKAF2/shFBV5xh3jqAlKl8OXZYz4cXGFLA6djNuYrniuLAo7Ku97A==}
@@ -11848,7 +11862,7 @@ packages:
     engines: {node: '>= 0.10'}
 
   /emojis-list/3.0.0:
-    resolution: {integrity: sha1-VXBmIEatKeLpFucariYKvf9Pang=}
+    resolution: {integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==}
     engines: {node: '>= 4'}
 
   /emoticon/3.2.0:
