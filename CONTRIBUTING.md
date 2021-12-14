@@ -17,7 +17,7 @@ npm i -g pnpm
 Clone this repo to your local machine and install the dependencies.
 
 ```bash
-pnpm install
+pnpm run setup
 ```
 
 ## Development
@@ -45,7 +45,6 @@ pnpm dev
 ```bash
 pnpm build:watch
 ```
-
 
 The server will restart automatically every time the builds get updated.
 
