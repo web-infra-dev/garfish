@@ -23,6 +23,10 @@
     },
     "./*": "./*"
   },
+  "files": [
+    "dist",
+    "bin"
+  ],
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
   "types": "./index.d.ts",
