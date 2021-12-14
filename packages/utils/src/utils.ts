@@ -47,7 +47,7 @@ export function makeMap(list: Array<PropertyKey>) {
   for (let i = 0; i < list.length; i++) {
     map[list[i]] = true;
   }
-  return (val) => map[val] as boolean;
+  return (val) => !!map[val] as boolean;
 }
 
 export function inBrowser() {
