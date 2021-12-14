@@ -25,7 +25,7 @@
   },
   "files": [
     "dist",
-    "bin",
+    "scripts",
     "index.d.ts"
   ],
   "main": "dist/index.js",
