@@ -63,6 +63,7 @@ export function GarfishRouter(_args?: Options) {
             cache: true,
             domGetter: appInfo.domGetter,
           });
+          app.appInfo.basename = rootPath;
 
           const call = (app: interfaces.App, isRender: boolean) => {
             if (!app) return;
