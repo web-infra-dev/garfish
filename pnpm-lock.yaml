@@ -352,17 +352,12 @@ importers:
       '@garfish/core': workspace:*
       '@garfish/router': workspace:*
       '@garfish/utils': workspace:*
-      co: ^4.6.0
-      enquirer: ^2.3.0
     dependencies:
       '@garfish/browser-snapshot': link:../browser-snapshot
       '@garfish/browser-vm': link:../browser-vm
       '@garfish/core': link:../core
       '@garfish/router': link:../router
       '@garfish/utils': link:../utils
-    devDependencies:
-      co: 4.6.0
-      enquirer: 2.3.6
 
   packages/hooks:
     specifiers: {}

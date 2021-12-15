@@ -1,6 +1,6 @@
 {
   "name": "garfish",
-  "version": "1.2.1",
+  "version": "1.2.2-beta.4",
   "description": "garfish module.",
   "keywords": [
     "garfish",
@@ -25,7 +25,6 @@
   },
   "files": [
     "dist",
-    "bin",
     "index.d.ts"
   ],
   "main": "dist/index.js",
@@ -33,8 +32,7 @@
   "types": "./index.d.ts",
   "scripts": {
     "build": "rimraf dist && tsup src/index.ts",
-    "dev": "cross-env WATCH=true tsup src/index.ts",
-    "postinstall": "node ./bin/postinstall.js"
+    "dev": "cross-env WATCH=true tsup src/index.ts"
   },
   "dependencies": {
     "@garfish/browser-snapshot": "workspace:*",
@@ -42,10 +40,6 @@
     "@garfish/core": "workspace:*",
     "@garfish/router": "workspace:*",
     "@garfish/utils": "workspace:*"
-  },
-  "devDependencies": {
-    "co": "^4.6.0",
-    "enquirer": "^2.3.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
