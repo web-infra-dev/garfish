@@ -154,9 +154,10 @@ export class App {
     options?: { async?: boolean; noEntry?: boolean },
   ) {
     env = {
-      ...(env || {}),
       ...this.getExecScriptEnv(options?.noEntry),
+      ...(env || {}),
     };
+
     const args = [this.appInfo, code, env, url, options] as const;
 
     this.hooks.lifecycle.beforeEval.emit(...args);
