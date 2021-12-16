@@ -275,7 +275,7 @@ function getElementToRender(opts, props, mountFinished) {
 
   // https://github.com/single-spa/single-spa-react/issues/112
   elementToRender = opts.React.createElement(
-    SingleSpaRoot,
+    GarfishSubAppRoot,
     {
       ...props,
       mountFinished,
@@ -293,22 +293,21 @@ function getElementToRender(opts, props, mountFinished) {
   );
 
   // This is a class component, since we need a mount hook and garfish-react-bridge supports React@15 (no useEffect available)
-  function SingleSpaRoot(_props) {
+  function GarfishSubAppRoot(_props) {
     // eslint-disable-next-line no-restricted-globals
     // SingleSpaRoot.displayName = `SingleSpaRoot(${_props.name})`;
   }
 
-  SingleSpaRoot.prototype = Object.create(opts.React.Component.prototype);
-  SingleSpaRoot.prototype.componentDidMount = function () {
+  GarfishSubAppRoot.prototype = Object.create(opts.React.Component.prototype);
+  GarfishSubAppRoot.prototype.componentDidMount = function () {
     setTimeout(this.props.mountFinished);
   };
-  SingleSpaRoot.prototype.componentWillUnmount = function () {
+  GarfishSubAppRoot.prototype.componentWillUnmount = function () {
     setTimeout(this.props.unmountFinished);
   };
-  SingleSpaRoot.prototype.render = function () {
+  GarfishSubAppRoot.prototype.render = function () {
     // componentDidUpdate doesn't seem to be called during root.render() for updates
     setTimeout(this.props.updateFinished);
-
     return this.props.children;
   };
 
@@ -318,7 +317,7 @@ function getElementToRender(opts, props, mountFinished) {
 function createErrorBoundary(opts, props) {
   // Avoiding babel output for class syntax and super()
   // to avoid bloat
-  function SingleSpaReactErrorBoundary(props) {
+  function GarfishSubAppReactErrorBoundary(props) {
     // super
     opts.React.Component.apply(this, arguments);
 
@@ -328,15 +327,15 @@ function createErrorBoundary(opts, props) {
     };
 
     (
-      SingleSpaReactErrorBoundary as any
+      GarfishSubAppReactErrorBoundary as any
     ).displayName = `ReactBridgeReactErrorBoundary(${props.name})`;
   }
 
-  SingleSpaReactErrorBoundary.prototype = Object.create(
+  GarfishSubAppReactErrorBoundary.prototype = Object.create(
     opts.React.Component.prototype,
   );
 
-  SingleSpaReactErrorBoundary.prototype.render = function () {
+  GarfishSubAppReactErrorBoundary.prototype.render = function () {
     if (this.state.caughtError) {
       const errorBoundary = opts.errorBoundary || props.errorBoundary;
 
@@ -350,7 +349,7 @@ function createErrorBoundary(opts, props) {
     }
   };
 
-  SingleSpaReactErrorBoundary.prototype.componentDidCatch = function (
+  GarfishSubAppReactErrorBoundary.prototype.componentDidCatch = function (
     err,
     info,
   ) {
@@ -360,7 +359,7 @@ function createErrorBoundary(opts, props) {
     });
   };
 
-  return SingleSpaReactErrorBoundary;
+  return GarfishSubAppReactErrorBoundary;
 }
 
 function chooseDomElementGetter(opts, props) {
