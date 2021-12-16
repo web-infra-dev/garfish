@@ -119,7 +119,7 @@ function App({ basename }) {
 export const provider = reactBridge({
   React,
   ReactDOM,
-  domElementGetter: '#root',
+  el: '#root',
   rootComponent: App,
 });
 ```
