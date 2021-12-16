@@ -16,6 +16,7 @@ Vue.use(VueRouter);
 Vue.config.productionTip = false;
 
 function newRouter(basename) {
+  console.log('执行了吗', basename);
   const router = new VueRouter({
     mode: 'history',
     base: basename,
@@ -34,14 +35,11 @@ function newRouter(basename) {
 export const provider = vueBridge({
   Vue,
   rootComponent: App,
-  appOptions: ({ basename }) => {
-    const router = newRouter(basename);
-    return {
-      el: '#app',
-      router,
-      store,
-    };
-  },
+  appOptions: ({ basename }) => ({
+    el: '#app',
+    router: newRouter(basename),
+    store,
+  }),
 });
 
 // There is no running show that the main application execution run, you can perform in micro front-end environment rendering
