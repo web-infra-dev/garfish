@@ -4,7 +4,7 @@ slug: /quick-start
 order: 2
 ---
 
-本节主要从主应用视角出发，通过 [Garfish API](/api/garfish) 的加载方式概览性描述主应用如何接入微前端子应用，
+本节主要从主应用视角出发，通过 [Garfish API](/api) 的加载方式概览性描述主应用如何接入微前端子应用，
 
 通过 Garfish API 接入子应用整体流程概述为：
 

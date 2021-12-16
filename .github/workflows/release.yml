@@ -1,5 +1,12 @@
-name: release
-on: workflow_dispatch
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release Version(minor,patch,prerelease)'
+        required: true
+        default: 'prerelease'
+
 jobs:
   release:
     runs-on: ubuntu-20.04
@@ -22,4 +29,4 @@ jobs:
     - name: install dependency
       run: pnpm install --filter=\!garfish-docs
     - name: release
-      run: node ./scripts/release.js --tag=patch
+      run: node ./scripts/release.js --version=${{ github.event.inputs.version }}

@@ -52,7 +52,7 @@ async function test() {
 async function bumpVersion() {
   return await bumpPrompt({
     files: ['package.json', 'packages/*/package.json'],
-    release: args.tag || '',
+    release: args.version || '',
     push: false,
     tag: false,
   });
@@ -71,8 +71,8 @@ async function pushToGithub(selectVersion) {
 
 async function publish(version) {
   let releaseTag = 'latest';
-  if (args.tag) {
-    releaseTag = args.tag;
+  if (args.version) {
+    releaseTag = args.version;
   } else if (version.includes('alpha')) {
     releaseTag = 'alpha';
   } else if (version.includes('beta')) {
