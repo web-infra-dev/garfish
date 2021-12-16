@@ -23,11 +23,12 @@ function VueApp(basename) {
   useEffect(async () => {
     let app = await Garfish.loadApp('vue-app', {
       entry: 'http://localhost:8092',
+      domGetter: '#container',
       basename,
       cache: true,
     });
     // 若已经渲染触发 show，只有首次渲染触发 mount，后面渲染都可以触发 show 提供性能
-    app.mounted ? app.mount() : app.show();
+    app.mounted ? await app.mount() : app.show();
     return () => app.hide();
   });
   return <div id="container"></div>;
@@ -66,11 +67,12 @@ function App() {
     async mounted () {
       appInstance = await Garfish.loadApp('react-app',{
         entry: 'http://localhost:8093',
+        domGetter: '#container',
         basename: '/react-app',
         cache: true
       });
       // 若已经渲染触发 show，只有首次渲染触发 mount，后面渲染都可以触发 show 提供性能
-      appInstance.mounted? appInstance.mount() : appInstance.show();
+      appInstance.mounted? await appInstance.mount() : appInstance.show();
     },
     destroyed () {
       appInstance.hide();
