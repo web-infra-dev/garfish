@@ -38,7 +38,7 @@ yarn add garfish
 
 - [关于 Garfish](https://garfish.top/guide)
 - [快速开始](https://garfish.top/quick-start)
-- [API](https://garfish.top/api/garfish)
+- [API](https://garfish.top/api)
 
 ## 功能
 

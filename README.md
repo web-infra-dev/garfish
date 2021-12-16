@@ -38,7 +38,7 @@ yarn add garfish
 
 - [About Garfish](https://garfish.top/guide)
 - [Quick Start](https://garfish.top/quick-start)
-- [API References](https://garfish.top/api/garfish)
+- [API References](https://garfish.top/api)
 
 ## Functionality
 
