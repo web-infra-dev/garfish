@@ -16,11 +16,9 @@ Vue.use(VueRouter);
 Vue.config.productionTip = false;
 
 function newRouter(basename) {
-  console.log('执行了吗', basename);
   const router = new VueRouter({
     mode: 'history',
     base: basename,
-    router,
     routes: [
       { path: '/', component: HelloGarfish },
       { path: '/test', component: Test },
