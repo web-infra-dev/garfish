@@ -56,13 +56,13 @@ async function main() {
     console.log('No changes to commit.');
   }
 
-  if (!actionPublishCanary) {
-    step('\nPublishing...');
-    if (selectVersion) {
-      step('\npublishing...');
-    }
-    await publish(selectVersion.newVersion);
+  step('\nPublishing...');
+  if (selectVersion) {
+    step('\npublishing...');
+  }
+  await publish(selectVersion.newVersion);
 
+  if (!actionPublishCanary) {
     // canary don't need to push
     // push to GitHub
     if (args.version !== 'prerelease') {
