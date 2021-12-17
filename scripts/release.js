@@ -3,6 +3,8 @@ const { run, step } = require('./utils');
 const semver = require('semver');
 const currentVersion = require('../package.json').version;
 const args = require('minimist')(process.argv.slice(2));
+const fs = require('fs');
+
 const actionPublishCanary =
   ['preminor', 'prepatch'].includes(args.version) && process.env.CI;
 
@@ -56,11 +58,15 @@ async function main() {
     console.log('No changes to commit.');
   }
 
-  step('\nPublishing...');
+  step('\nSetting npmrc ...');
+  await writeNpmrc();
+
   if (selectVersion) {
-    step('\npublishing...');
+    step('\nPublishing...');
+    await publish(selectVersion.newVersion);
+  } else {
+    console.log('No new version:', selectVersion);
   }
-  await publish(selectVersion.newVersion);
 
   if (!actionPublishCanary) {
     // canary don't need to push
@@ -123,6 +129,21 @@ async function publish(version) {
   }
 
   await run('pnpm', publishArgs);
+}
+
+async function writeNpmrc() {
+  if (process.env.CI) {
+    const npmrcPath = `${process.env.HOME}/.npmrc`;
+    if (fs.existsSync(npmrcPath)) {
+      console.info('Found existing .npmrc file');
+    } else {
+      console.info('No .npmrc file found, creating one');
+      fs.writeFileSync(
+        npmrcPath,
+        `//registry.npmjs.org/:_authToken=${process.env.NPM_TOKEN}`,
+      );
+    }
+  }
 }
 
 main().catch((err) => {
