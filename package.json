@@ -81,6 +81,7 @@
     "prettier": "2.4.1",
     "prettier-eslint-cli": "5.0.1",
     "rimraf": "3.0.2",
+    "semver": "^7.3.5",
     "ts-jest": "27.0.7",
     "tslib": "2.3.1",
     "tsup": "5.7.2",
