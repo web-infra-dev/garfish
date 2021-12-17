@@ -39,8 +39,16 @@ async function main() {
       ]);
     }
     step('\nCommitting changes...');
-    await run('git', ['add', '-A']);
-    await run('git', ['commit', '-m', `release: v${selectVersion.newVersion}`]);
+
+    // canary don't need to push
+    if (args.version !== 'prerelease') {
+      await run('git', ['add', '-A']);
+      await run('git', [
+        'commit',
+        '-m',
+        `release: v${selectVersion.newVersion}`,
+      ]);
+    }
   } else {
     console.log('No changes to commit.');
   }
@@ -51,9 +59,12 @@ async function main() {
   }
   await publish(selectVersion.newVersion);
 
+  // canary don't need to push
   // push to GitHub
-  step('\nPushing to GitHub...');
-  await pushToGithub(selectVersion);
+  if (args.version !== 'prerelease') {
+    step('\nPushing to GitHub...');
+    await pushToGithub(selectVersion);
+  }
 }
 
 async function build() {
