@@ -1,7 +1,10 @@
 const bumpPrompt = require('@jsdevtools/version-bump-prompt');
 const { run, step } = require('./utils');
-
+const semver = require('semver');
+const currentVersion = require('../package.json').version;
 const args = require('minimist')(process.argv.slice(2));
+const actionPublishCanary =
+  ['preminor', 'prepatch'].includes(args.version) && process.env.CI;
 
 async function main() {
   // build all packages with types
@@ -41,7 +44,7 @@ async function main() {
     step('\nCommitting changes...');
 
     // canary don't need to push
-    if (args.version !== 'prerelease') {
+    if (!actionPublishCanary) {
       await run('git', ['add', '-A']);
       await run('git', [
         'commit',
@@ -53,17 +56,19 @@ async function main() {
     console.log('No changes to commit.');
   }
 
-  // step('\nPublishing...');
-  if (selectVersion) {
-    step('\npublishing...');
-  }
-  await publish(selectVersion.newVersion);
+  if (!actionPublishCanary) {
+    step('\nPublishing...');
+    if (selectVersion) {
+      step('\npublishing...');
+    }
+    await publish(selectVersion.newVersion);
 
-  // canary don't need to push
-  // push to GitHub
-  if (args.version !== 'prerelease') {
-    step('\nPushing to GitHub...');
-    await pushToGithub(selectVersion);
+    // canary don't need to push
+    // push to GitHub
+    if (args.version !== 'prerelease') {
+      step('\nPushing to GitHub...');
+      await pushToGithub(selectVersion);
+    }
   }
 }
 
@@ -76,9 +81,15 @@ async function test() {
 }
 
 async function bumpVersion() {
+  let version = args.version;
+  if (version && actionPublishCanary) {
+    const hash = +new Date();
+    version = semver.inc(currentVersion, version, 'beta-' + hash);
+  }
+
   return await bumpPrompt({
     files: ['package.json', 'packages/*/package.json'],
-    release: args.version || '',
+    release: version || '',
     push: false,
     tag: false,
   });

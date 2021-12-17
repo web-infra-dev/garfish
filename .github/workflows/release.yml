@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release Version(minor,patch,prerelease)'
+        description: 'Release Version(minor,patch,preminor,prepatch)'
         required: true
-        default: 'prerelease'
+        default: 'patch'
 
 jobs:
   release:
