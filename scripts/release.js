@@ -23,6 +23,21 @@ async function main() {
 
   const { stdout } = await run('git', ['diff'], { stdio: 'pipe' });
   if (stdout) {
+    if (process.env.CI) {
+      step('\nSetting git info...');
+      await run('git', [
+        'config',
+        '--global',
+        'user.name',
+        'github-actions[bot]',
+      ]);
+      await run('git', [
+        'config',
+        '--global',
+        'user.email',
+        'github-actions[bot]@users.noreply.github.com',
+      ]);
+    }
     step('\nCommitting changes...');
     await run('git', ['add', '-A']);
     await run('git', ['commit', '-m', `release: v${selectVersion.newVersion}`]);
