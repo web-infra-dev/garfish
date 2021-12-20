@@ -28,7 +28,7 @@ function VueApp(basename) {
       cache: true,
     });
     // 若已经渲染触发 show，只有首次渲染触发 mount，后面渲染都可以触发 show 提供性能
-    app.mounted ? await app.mount() : app.show();
+    app.mounted ? app.show() : await app.mount();
     return () => app.hide();
   });
   return <div id="container"></div>;
@@ -72,7 +72,7 @@ function App() {
         cache: true
       });
       // 若已经渲染触发 show，只有首次渲染触发 mount，后面渲染都可以触发 show 提供性能
-      appInstance.mounted? await appInstance.mount() : appInstance.show();
+      appInstance.mounted? appInstance.show() : await appInstance.mount();
     },
     destroyed () {
       appInstance.hide();
