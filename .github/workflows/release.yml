@@ -3,9 +3,13 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release Version(minor,patch,prerelease)'
+        description: 'Release Version(minor,patch,preminor,prepatch)'
         required: true
-        default: 'prerelease'
+        default: 'patch'
+      branch:
+        description: 'Release Branch(confirm release branch)'
+        required: true
+        default: 'master'
 
 jobs:
   release:
@@ -15,6 +19,8 @@ jobs:
         node-version: [14.17.0]
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.branch }}
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
