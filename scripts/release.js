@@ -4,6 +4,7 @@ const semver = require('semver');
 const currentVersion = require('../package.json').version;
 const args = require('minimist')(process.argv.slice(2));
 const fs = require('fs');
+const path = require('path');
 
 const actionPublishCanary =
   ['preminor', 'prepatch'].includes(args.version) && process.env.CI;
@@ -133,13 +134,13 @@ async function publish(version) {
 
 async function writeNpmrc() {
   if (process.env.CI) {
-    const npmrcPath = `${process.env.GITHUB_WORKSPACE}/.npmrc`;
-    if (fs.existsSync(npmrcPath)) {
+    const npmRcPath = `${path.join(__dirname, '..')}/.npmrc`;
+    if (fs.existsSync(npmRcPath)) {
       console.info('Found existing .npmrc file');
     } else {
       console.info('No .npmrc file found, creating one');
       fs.writeFileSync(
-        npmrcPath,
+        npmRcPath,
         `//registry.npmjs.org/:_authToken=${process.env.NPM_TOKEN}`,
       );
     }

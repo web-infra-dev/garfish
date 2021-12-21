@@ -10,6 +10,7 @@ es/
 .yarn/
 temp/
 /docs
+.npmrc
 
 # test result
 cypress/screenshots
