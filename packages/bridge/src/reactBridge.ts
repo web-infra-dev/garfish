@@ -233,11 +233,12 @@ function reactDomRender({ opts, elementToRender, domElement }) {
   return null;
 }
 
-function getElementToRender(opts, appInfo, props) {
-  const rootComponentElement = opts.React.createElement(opts.rootComponent, [
+function getElementToRender(opts, appInfo, props = {}) {
+  const rootComponentElement = opts.React.createElement(
+    opts.rootComponent,
     appInfo,
     props,
-  ]);
+  );
 
   let elementToRender = GarfishContext
     ? opts.React.createElement(
@@ -250,11 +251,12 @@ function getElementToRender(opts, appInfo, props) {
   if (opts.errorBoundary || opts.errorBoundaryClass) {
     opts.errorBoundaryClass =
       opts.errorBoundaryClass ||
-      props.errorBoundaryClass ||
+      opts.errorBoundaryClass ||
       createErrorBoundary(opts, props);
     elementToRender = opts.React.createElement(
       opts.errorBoundaryClass,
-      [appInfo, props],
+      appInfo,
+      props,
       elementToRender,
     );
   }
