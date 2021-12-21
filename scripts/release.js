@@ -58,9 +58,6 @@ async function main() {
     console.log('No changes to commit.');
   }
 
-  step('\nSetting npmrc ...');
-  await writeNpmrc();
-
   if (selectVersion) {
     step('\nPublishing...');
     await publish(selectVersion.newVersion);
@@ -113,6 +110,9 @@ async function pushToGithub(selectVersion) {
 }
 
 async function publish(version) {
+  step('\nSetting npmrc ...');
+  await writeNpmrc();
+
   let releaseTag = 'latest';
   if (args.version) {
     releaseTag = args.version;
