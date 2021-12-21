@@ -135,6 +135,7 @@ async function publish(version) {
 async function writeNpmrc() {
   if (process.env.CI) {
     const npmRcPath = `${path.join(__dirname, '..')}/.npmrc`;
+    console.info(`curring .npmrc file path is ${npmRcPath}`);
     if (fs.existsSync(npmRcPath)) {
       console.info('Found existing .npmrc file');
     } else {
