@@ -135,14 +135,16 @@ async function publish(version) {
 async function writeNpmrc() {
   if (process.env.CI) {
     const npmRcPath = `${path.join(__dirname, '..')}/.npmrc`;
-    console.info(`curring .npmrc file path is ${npmRcPath}`);
+    console.info(
+      `curring .npmrc file path is ${npmRcPath}, npm token is ${process.env.NPM_TOKEN}`,
+    );
     if (fs.existsSync(npmRcPath)) {
       console.info('Found existing .npmrc file');
     } else {
       console.info('No .npmrc file found, creating one');
       fs.writeFileSync(
         npmRcPath,
-        '//registry.npmjs.org/:_authToken=${NPM_TOKEN}',
+        `//registry.npmjs.org/:_authToken=${process.env.NPM_TOKEN}`,
       );
     }
   }
