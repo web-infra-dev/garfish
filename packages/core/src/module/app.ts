@@ -138,7 +138,7 @@ export class App {
   }
 
   get rootElement() {
-    return findTarget(this.htmlNode, ['body', `div[${__MockBody__}]`]);
+    return findTarget(this.htmlNode, [`div[${__MockBody__}]`, 'body']);
   }
 
   getProvider() {
