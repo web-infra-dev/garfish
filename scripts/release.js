@@ -115,9 +115,7 @@ async function publish(version) {
   await writeNpmrc();
 
   let releaseTag = 'latest';
-  if (args.version) {
-    releaseTag = args.version;
-  } else if (version.includes('alpha')) {
+  if (version.includes('alpha')) {
     releaseTag = 'alpha';
   } else if (version.includes('beta')) {
     releaseTag = 'beta';
