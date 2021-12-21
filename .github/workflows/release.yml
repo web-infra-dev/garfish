@@ -36,3 +36,5 @@ jobs:
       run: pnpm install --filter=\!garfish-docs
     - name: release
       run: node ./scripts/release.js --version=${{ github.event.inputs.version }}
+      env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

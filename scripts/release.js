@@ -4,6 +4,7 @@ const semver = require('semver');
 const currentVersion = require('../package.json').version;
 const args = require('minimist')(process.argv.slice(2));
 const fs = require('fs');
+const path = require('path');
 
 const actionPublishCanary =
   ['preminor', 'prepatch'].includes(args.version) && process.env.CI;
@@ -58,9 +59,6 @@ async function main() {
     console.log('No changes to commit.');
   }
 
-  step('\nSetting npmrc ...');
-  await writeNpmrc();
-
   if (selectVersion) {
     step('\nPublishing...');
     await publish(selectVersion.newVersion);
@@ -113,6 +111,9 @@ async function pushToGithub(selectVersion) {
 }
 
 async function publish(version) {
+  step('\nSetting npmrc ...');
+  await writeNpmrc();
+
   let releaseTag = 'latest';
   if (args.version) {
     releaseTag = args.version;
@@ -133,13 +134,16 @@ async function publish(version) {
 
 async function writeNpmrc() {
   if (process.env.CI) {
-    const npmrcPath = `${process.env.HOME}/.npmrc`;
-    if (fs.existsSync(npmrcPath)) {
+    const npmRcPath = `${process.env.HOME}/.npmrc`;
+    console.info(
+      `curring .npmrc file path is ${npmRcPath}, npm token is ${process.env.NPM_TOKEN}`,
+    );
+    if (fs.existsSync(npmRcPath)) {
       console.info('Found existing .npmrc file');
     } else {
       console.info('No .npmrc file found, creating one');
       fs.writeFileSync(
-        npmrcPath,
+        npmRcPath,
         `//registry.npmjs.org/:_authToken=${process.env.NPM_TOKEN}`,
       );
     }
