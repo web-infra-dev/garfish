@@ -142,7 +142,7 @@ async function writeNpmrc() {
       console.info('No .npmrc file found, creating one');
       fs.writeFileSync(
         npmRcPath,
-        `//registry.npmjs.org/:_authToken=${process.env.NPM_TOKEN}`,
+        '//registry.npmjs.org/:_authToken=${NPM_TOKEN}',
       );
     }
   }
