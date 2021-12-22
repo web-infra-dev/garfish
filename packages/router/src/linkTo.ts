@@ -102,8 +102,7 @@ export const linkTo = async ({
 
   setRouterConfig({
     current: {
-      // path: getPath(RouterConfig.basename!),
-      path: location.pathname,
+      path: getPath(RouterConfig.basename!),
       fullPath: location.pathname,
       matched: activeApps,
       state: history.state,
