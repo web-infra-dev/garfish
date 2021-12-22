@@ -86,9 +86,10 @@ export function reactBridge(userOpts) {
   const provider = async function (props) {
     await bootstrap.call(this, opts, props);
     return {
-      render: (props) => mount.call(this, opts, props),
-      destroy: (props) => unmount.call(this, opts, props),
-      update: (props) => opts.canUpdate && update.call(this, opts, props),
+      render: (appInfo, props) => mount.call(this, opts, appInfo, props),
+      destroy: (appInfo, props) => unmount.call(this, opts, appInfo, props),
+      update: (appInfo, props) =>
+        opts.canUpdate && update.call(this, appInfo, props),
     };
   };
 
@@ -114,7 +115,7 @@ function bootstrap(opts, props) {
   }
 }
 
-function mount(opts, props) {
+function mount(opts, appInfo, props) {
   if (
     !opts.suppressComponentDidCatchWarning &&
     atLeastReact16(opts.React) &&
@@ -123,44 +124,44 @@ function mount(opts, props) {
     if (!opts.rootComponent.prototype) {
       console.warn(
         `garfish-react-bridge: ${
-          props.name || props.appName || props.childAppName
+          appInfo.name || appInfo.appName || appInfo.childAppName
         }'s rootComponent does not implement an error boundary.  If using a functional component, consider providing an opts.errorBoundary to reactBridge(opts).`,
       );
     } else if (!opts.rootComponent.prototype.componentDidCatch) {
       console.warn(
         `garfish-react-bridge: ${
-          props.name || props.appName || props.childAppName
+          appInfo.name || appInfo.appName || appInfo.childAppName
         }'s rootComponent should implement componentDidCatch to avoid accidentally unmounting the entire garfish application.`,
       );
     }
   }
 
-  const elementToRender = getElementToRender(opts, props);
-  const domElement = chooseDomElementGetter(opts, props);
+  const elementToRender = getElementToRender(opts, appInfo, props);
+  const domElement = chooseDomElementGetter(opts, appInfo);
   const renderResult = reactDomRender({
     elementToRender,
     domElement,
     opts,
   });
-  opts.domElements[props.name] = domElement;
-  opts.renderResults[props.name] = renderResult;
+  opts.domElements[appInfo.name] = domElement;
+  opts.renderResults[appInfo.name] = renderResult;
 }
 
-function unmount(opts, props) {
-  const root = opts.renderResults[props.name];
+function unmount(opts, appInfo) {
+  const root = opts.renderResults[appInfo.name];
 
   if (root && root.unmount) {
     // React >= 18
     const unmountResult = root.unmount();
   } else {
     // React < 18
-    opts.ReactDOM.unmountComponentAtNode(opts.domElements[props.name]);
+    opts.ReactDOM.unmountComponentAtNode(opts.domElements[appInfo.name]);
   }
-  delete opts.domElements[props.name];
-  delete opts.renderResults[props.name];
+  delete opts.domElements[appInfo.name];
+  delete opts.renderResults[appInfo.name];
 }
 
-function update(opts, props) {
+function update(opts, appInfo, props) {
   return new Promise((resolve) => {
     if (!opts.updateResolves[props.name]) {
       opts.updateResolves[props.name] = [];
@@ -168,14 +169,14 @@ function update(opts, props) {
 
     opts.updateResolves[props.name].push(resolve);
 
-    const elementToRender = getElementToRender(opts, props);
+    const elementToRender = getElementToRender(opts, appInfo, props);
     const renderRoot = opts.renderResults[props.name];
     if (renderRoot && renderRoot.render) {
       // React 18 with ReactDOM.createRoot()
       renderRoot.render(elementToRender);
     } else {
       // React 16 / 17 with ReactDOM.render()
-      const domElement = chooseDomElementGetter(opts, props);
+      const domElement = chooseDomElementGetter(opts, appInfo);
 
       // This is the old way to update a react application - just call render() again
       opts.ReactDOM.render(elementToRender, domElement);
@@ -232,9 +233,10 @@ function reactDomRender({ opts, elementToRender, domElement }) {
   return null;
 }
 
-function getElementToRender(opts, props) {
+function getElementToRender(opts, appInfo, props = {}) {
   const rootComponentElement = opts.React.createElement(
     opts.rootComponent,
+    appInfo,
     props,
   );
 
@@ -246,18 +248,14 @@ function getElementToRender(opts, props) {
       )
     : rootComponentElement;
 
-  if (
-    opts.errorBoundary ||
-    props.errorBoundary ||
-    opts.errorBoundaryClass ||
-    props.errorBoundaryClass
-  ) {
+  if (opts.errorBoundary || opts.errorBoundaryClass) {
     opts.errorBoundaryClass =
       opts.errorBoundaryClass ||
-      props.errorBoundaryClass ||
+      opts.errorBoundaryClass ||
       createErrorBoundary(opts, props);
     elementToRender = opts.React.createElement(
       opts.errorBoundaryClass,
+      appInfo,
       props,
       elementToRender,
     );
@@ -313,8 +311,8 @@ function createErrorBoundary(opts, props) {
   return GarfishSubAppReactErrorBoundary;
 }
 
-function chooseDomElementGetter(opts, props) {
-  const { dom: container } = props;
+function chooseDomElementGetter(opts, appInfo) {
+  const { dom: container } = appInfo;
   let el;
   if (typeof opts.el === 'string') {
     el = container.querySelector(opts.el);
@@ -325,7 +323,7 @@ function chooseDomElementGetter(opts, props) {
   if (!(el instanceof HTMLElement)) {
     throw Error(
       `react bridge's dom-element-getter-helpers: el is an invalid dom element for application'${
-        props.name
+        appInfo.name
       }'. Expected HTMLElement, received ${typeof el}`,
     );
   }
