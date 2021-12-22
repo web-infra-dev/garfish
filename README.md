@@ -63,9 +63,6 @@ yarn add garfish
 
 - Provide business plugins to meet various customization needs of business parties
 
-## community
-
-[https://garfish.top/community/discuss](https://garfish.top/community/discuss)
 
 ## credit
 
