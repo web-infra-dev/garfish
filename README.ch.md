@@ -63,9 +63,6 @@ yarn add garfish
 
 - 提供业务插件满足业务方的各种定制需求
 
-## 社区
-
-[https://garfish.top/community/discuss](https://garfish.top/community/discuss)
 
 ## 感谢
 
