@@ -1,4 +1,4 @@
-import { parseQuery } from './utils/urlUt';
+import { getPath, parseQuery } from './utils/urlUt';
 import { createEvent } from './utils';
 import {
   RouterConfig,
@@ -44,13 +44,13 @@ export const normalAgent = () => {
                 toRouterInfo: {
                   fullPath: urlAfter,
                   query: parseQuery(location.search),
-                  path: urlAfter,
+                  path: getPath(RouterConfig.basename!, urlAfter),
                   state: stateAfter,
                 },
                 fromRouterInfo: {
                   fullPath: urlBefore,
                   query: parseQuery(location.search),
-                  path: urlBefore,
+                  path: getPath(RouterConfig.basename!, urlBefore),
                   state: stateBefore,
                 },
                 eventType: type,
@@ -81,11 +81,14 @@ export const normalAgent = () => {
               toRouterInfo: {
                 fullPath: location.pathname,
                 query: parseQuery(location.search),
-                path: location.pathname,
+                path: getPath(RouterConfig.basename!),
               },
               fromRouterInfo: {
                 fullPath: RouterConfig.current!.fullPath,
-                path: RouterConfig.current!.path,
+                path: getPath(
+                  RouterConfig.basename!,
+                  RouterConfig.current!.path,
+                ),
                 query: RouterConfig.current!.query,
               },
               eventType: 'popstate',
@@ -105,7 +108,7 @@ export const initRedirect = () => {
   linkTo({
     toRouterInfo: {
       fullPath: location.pathname,
-      path: location.pathname,
+      path: getPath(RouterConfig.basename!),
       query: parseQuery(location.search),
       state: history.state,
     },

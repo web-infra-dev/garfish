@@ -69,10 +69,8 @@ async function main() {
   if (!actionPublishCanary) {
     // canary don't need to push
     // push to GitHub
-    if (args.version !== 'prerelease') {
-      step('\nPushing to GitHub...');
-      await pushToGithub(selectVersion);
-    }
+    step('\nPushing to GitHub...');
+    await pushToGithub(selectVersion);
   }
 }
 
