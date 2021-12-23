@@ -100,6 +100,8 @@ function createOptions(Garfish: interfaces.Garfish) {
         appInfo.sandbox.open === false ||
         appInfo.sandbox.snapshot
       ) {
+        if (appInstance.vmSandbox)
+          appInstance.global = appInstance.vmSandbox.global;
         return;
       }
       rewriteAppAndSandbox(
@@ -140,9 +142,7 @@ function createOptions(Garfish: interfaces.Garfish) {
     afterUnmount(appInfo, appInstance, isCacheMode) {
       // The caching pattern to retain the same context
       if (appInstance.vmSandbox && !isCacheMode) {
-        setTimeout(() => {
-          appInstance.vmSandbox.reset();
-        });
+        appInstance.vmSandbox.reset();
       }
     },
 

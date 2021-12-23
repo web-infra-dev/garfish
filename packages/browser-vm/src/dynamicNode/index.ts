@@ -127,9 +127,9 @@ export function rebuildCSSRules(
       for (let i = 0; i < cssRules.length; i++) {
         const cssRule = cssRules[i];
         // re-insert rules for styled-components element
-        styleElement.sheet.insertRule(
+        styleElement.sheet?.insertRule(
           cssRule.cssText,
-          styleElement.sheet.cssRules.length,
+          styleElement.sheet?.cssRules.length,
         );
       }
     }
