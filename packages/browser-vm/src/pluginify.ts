@@ -1,5 +1,9 @@
 import { interfaces } from '@garfish/core';
-import { warn, isPlainObject } from '@garfish/utils';
+import {
+  warn,
+  isPlainObject,
+  __GARFISH_GLOBAL_APP_LIFECYCLE__,
+} from '@garfish/utils';
 import { Module } from './types';
 import { Sandbox } from './sandbox';
 import { recordStyledComponentCSSRules, rebuildCSSRules } from './dynamicNode';
@@ -36,6 +40,7 @@ const specialExternalVariables = [
   'onerror',
   'webpackjsonp',
   '__REACT_ERROR_OVERLAY_GLOBAL_HOOK__',
+  __GARFISH_GLOBAL_APP_LIFECYCLE__,
   __DEV__ ? 'webpackHotUpdate' : '',
 ];
 

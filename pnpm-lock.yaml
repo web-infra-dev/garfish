@@ -207,11 +207,13 @@ importers:
 
   dev/vite-subapp:
     specifiers:
+      '@garfish/bridge': workspace:*
       '@garfish/vite-plugin': workspace:*
       '@vitejs/plugin-vue': ^1.10.2
       vite: ^2.7.0
       vue: ^3.2.23
     dependencies:
+      '@garfish/bridge': link:../../packages/bridge
       vue: 3.2.24
     devDependencies:
       '@garfish/vite-plugin': link:../../packages/vite-plugin
@@ -13500,7 +13502,7 @@ packages:
     optional: true
 
   /fsevents/2.1.2:
-    resolution: {integrity: sha512-R4wDiBwZ0KzpgOWetKDug1FZcYhqYnUYKtfZYt4mD5SBz76q0KR4Q9o7GIPamsVPGmW3EYPPJ0dOOjvx32ldZA==}
+    resolution: {integrity: sha1-TAofs0vGjlQ7S4Kp7Dkr+9qECAU=}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     deprecated: '"Please update to latest v2.3 or v2.2"'
@@ -13509,7 +13511,7 @@ packages:
     optional: true
 
   /fsevents/2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+    resolution: {integrity: sha1-ilJveLj99GI7cJ4Ll1xSwkwC/Ro=}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     requiresBuild: true

@@ -1,19 +1,20 @@
-import { createApp } from 'vue';
+import { vueBridge } from '@garfish/bridge';
+import { h, createApp } from 'vue';
 import App from './App.vue';
 
-let vueInstance;
-
-const providerConfig = {
-  render: ({ dom }) => {
-    vueInstance = createApp(App);
-    vueInstance.mount(dom.querySelector('#app'));
-  },
-  destroy: ({ dom }) => {
-    vueInstance.unmount(dom.querySelector('#app'));
-  },
-};
+export const provider = vueBridge({
+  createApp,
+  appId: 'vite-vue-sub-app',
+  appOptions: () => ({
+    el: '#app',
+    render() {
+      return h(App);
+    },
+  }),
+});
 
 // 非微前端环境直接运行
-if (!window.__GARFISH__) providerConfig.render({ dom: document });
-
-export const provider = () => providerConfig;
+if (!window.__GARFISH__) {
+  let vueInstance = createApp(App);
+  vueInstance.mount(document.querySelector('#app'));
+}

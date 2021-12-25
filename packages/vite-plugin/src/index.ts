@@ -25,28 +25,13 @@ export const htmlPlugin = (GarfishName, microOption: MicroOption = {}) => {
       GarfishLifeCycle['${AppID}'] = {}
       GarfishLifeCycle['${AppID}'].defer = null;
       GarfishLifeCycle['${AppID}'].provider = new Promise((resolve, reject) => {
-        GarfishLifeCycle['${AppID}'].defer = (res)=> {
-          resolve(res.provider());
-          GarfishLifeCycle['${AppID}'].provider = res.provider();
+        GarfishLifeCycle['${AppID}'].defer = (provider)=> {
+          resolve(provider);
+          GarfishLifeCycle['${AppID}'].provider = provider;
         }
       });
     })(window);
   `;
-
-  const createImportFinallyResolve = (AppID) => {
-    return `
-      (exports)=>{
-        ;(global => {
-          let GarfishLifeCycle = global['${__GARFISH_GLOBAL_APP_LIFECYCLE__}'];
-          if (GarfishLifeCycle && GarfishLifeCycle['${AppID}']) {
-            GarfishLifeCycle['${AppID}'].defer(exports);
-          } else {
-            throw Error("can't get ${AppID} application provider")
-          }
-        })(window);
-      }
-    `;
-  };
 
   const module2DynamicImport = ($, scriptTag) => {
     if (!scriptTag) {
@@ -60,7 +45,7 @@ export const htmlPlugin = (GarfishName, microOption: MicroOption = {}) => {
     }
     script$.attr(__SCRIPT_GLOBAL_APP_ID__, GarfishName);
     script$.removeAttr('src');
-    script$.removeAttr('type');
+    // script$.removeAttr('type');
     script$.html(`
       import(${appendBase}'${moduleSrc}')
     `);
@@ -106,9 +91,10 @@ export const htmlPlugin = (GarfishName, microOption: MicroOption = {}) => {
 
       const entryModule = moduleTags[len - 1];
       const script$ = module2DynamicImport($, entryModule);
-      script$?.html(
-        `${script$.html()}.then(${createImportFinallyResolve(GarfishName)})`,
-      );
+      // script$?.html(
+      //   `${script$.html()}.then(${createImportFinallyResolve(GarfishName)})`,
+      // );
+      script$?.html(`${script$.html()}`);
 
       $('body').append(`
         <script>

@@ -33,7 +33,7 @@ let defaultConfig: interfaces.Options = {
     },
     {
       name: 'vite-vue3',
-      cache: false,
+      cache: true,
       activeWhen: '/vite',
       entry: 'http://localhost:3000/',
     },
@@ -48,7 +48,11 @@ let defaultConfig: interfaces.Options = {
   ],
   autoRefreshApp: false,
   disablePreloadApp: true,
-  protectVariable: ['MonitoringInstance', 'Garfish'],
+  protectVariable: [
+    'MonitoringInstance',
+    'Garfish',
+    '__GARFISH_GLOBAL_APP_LIFECYCLE__',
+  ],
   insulationVariable: ['setImmediate'],
   sandbox: {
     open: true,
