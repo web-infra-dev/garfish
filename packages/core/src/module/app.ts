@@ -39,7 +39,7 @@ export type AppInfo = interfaces.AppInfo & {
 };
 
 let appId = 0;
-const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
+export const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
 
 // Have the ability to App instance
@@ -142,7 +142,7 @@ export class App {
   }
 
   get rootElement() {
-    return findTarget(this.htmlNode, ['body', `div[${__MockBody__}]`]);
+    return findTarget(this.htmlNode, [`div[${__MockBody__}]`, 'body']);
   }
 
   getProvider() {
@@ -158,9 +158,10 @@ export class App {
     options?: { async?: boolean; noEntry?: boolean },
   ) {
     env = {
-      ...(env || {}),
       ...this.getExecScriptEnv(options?.noEntry),
+      ...(env || {}),
     };
+
     const args = [this.appInfo, code, env, url, options] as const;
 
     this.hooks.lifecycle.beforeEval.emit(...args);
@@ -400,12 +401,15 @@ export class App {
   // Calls to render do compatible with two different sandbox
   private callRender(provider: interfaces.Provider, isMount: boolean) {
     if (provider && provider.render) {
-      provider.render({
-        appName: this.appInfo.name,
-        dom: this.rootElement,
-        basename: this.appInfo.basename,
-        appRenderInfo: { isMount },
-      });
+      provider.render(
+        {
+          appName: this.appInfo.name,
+          dom: this.rootElement,
+          basename: this.appInfo.basename,
+          appRenderInfo: { isMount },
+        },
+        this.appInfo.props,
+      );
     }
   }
 
@@ -413,11 +417,14 @@ export class App {
   private callDestroy(provider: interfaces.Provider, isUnmount: boolean) {
     const { rootElement, appContainer } = this;
     if (provider && provider.destroy) {
-      provider.destroy({
-        appName: this.appInfo.name,
-        dom: rootElement,
-        appRenderInfo: { isUnmount },
-      });
+      provider.destroy(
+        {
+          appName: this.appInfo.name,
+          dom: rootElement,
+          appRenderInfo: { isUnmount },
+        },
+        this.appInfo.props,
+      );
     }
     this.entryManager.DOMApis.removeElement(appContainer);
   }

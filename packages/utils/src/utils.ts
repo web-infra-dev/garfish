@@ -47,7 +47,7 @@ export function makeMap(list: Array<PropertyKey>) {
   for (let i = 0; i < list.length; i++) {
     map[list[i]] = true;
   }
-  return (val) => map[val] as boolean;
+  return (val) => !!map[val] as boolean;
 }
 
 export function inBrowser() {
@@ -226,10 +226,16 @@ export function isPrimitive(val: any) {
 }
 
 // Deeply merge two objects, can handle circular references, the latter overwrite the previous
-export function deepMerge<K, T>(o: K, n: T, dp?: boolean) {
+export function deepMerge<K, T>(
+  o: K,
+  n: T,
+  dp?: boolean,
+  ignores?: Array<string>,
+) {
   const leftRecord = new WeakMap();
   const rightRecord = new WeakMap();
   const valueRecord = new WeakMap();
+  const ignoresMap = makeMap(ignores || []);
 
   const isArray = Array.isArray;
   const isAllRefs = (a, b) => {
@@ -265,10 +271,14 @@ export function deepMerge<K, T>(o: K, n: T, dp?: boolean) {
     }
   };
 
-  const setValue = (r, k) => {
+  const setValue = (r, k, key) => {
     if (r.has(k)) {
       return r.get(k);
     } else {
+      // Ignore the content does not need to copy
+      if (ignoresMap[key]) {
+        return k;
+      }
       const val = clone(k);
       if (!isPrimitive(val) && typeof val !== 'function') {
         r.set(k, val);
@@ -298,16 +308,16 @@ export function deepMerge<K, T>(o: K, n: T, dp?: boolean) {
             ? leftRecord.get(lv) // The same value on the left and right, whichever is OK
             : mergeObject(lv, rv);
         } else {
-          res[key] = setValue(rightRecord, rv);
+          res[key] = setValue(rightRecord, rv, key);
         }
       } else {
-        res[key] = setValue(leftRecord, lv);
+        res[key] = setValue(leftRecord, lv, key);
       }
     });
 
     rightKeys.forEach((key) => {
       if (hasOwn(res, key)) return;
-      res[key] = setValue(rightRecord, r[key]);
+      res[key] = setValue(rightRecord, r[key], key);
     });
 
     return res;

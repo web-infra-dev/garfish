@@ -15,7 +15,7 @@
     "cy:run": "cypress run",
     "changeset": "npx changeset",
     "reset": "pnpm -r exec -- rm -rf node_modules && rm -rf node_modules",
-    "setup": "pnpm install",
+    "setup": "cross-env DISABLE_GARFISH_CHECK_INTERNAL=true pnpm install",
     "ls-lint": "ls-lint",
     "lint": "eslint --ext .ts packages/*/*/src/**",
     "reset-gittag": "git tag -l | xargs git tag -d && git fetch --prune",
@@ -81,6 +81,7 @@
     "prettier": "2.4.1",
     "prettier-eslint-cli": "5.0.1",
     "rimraf": "3.0.2",
+    "semver": "^7.3.5",
     "ts-jest": "27.0.7",
     "tslib": "2.3.1",
     "tsup": "5.7.2",
@@ -92,5 +93,5 @@
   "engines": {
     "node": ">=14.13.0"
   },
-  "version": "1.1.8"
+  "version": "1.2.12"
 }

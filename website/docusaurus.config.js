@@ -14,7 +14,7 @@ module.exports = {
   organizationName: 'ByteDance',
   projectName: 'Garfish Docs',
   customFields: {
-    slogan: 'Garfish 微前端解决方案',
+    slogan: 'Garfish 微前端框架',
     summary:
       '包含构建微前端系统时所需要的基本能力，任意前端框架均可使用。接入简单，可轻松将多个前端应用组合成内聚的单个产品',
   },
@@ -39,24 +39,15 @@ module.exports = {
           label: '文档',
           position: 'left',
         },
-        {
-          to: 'api/',
-          label: 'API',
-          position: 'left',
-        },
+        // {
+        //   to: 'api/',
+        //   label: 'API',
+        //   position: 'left',
+        // },
         {
           to: 'issues/',
           label: '常见问题',
           position: 'left',
-        },
-        {
-          to: 'community/discuss',
-          label: '社区',
-          position: 'left',
-        },
-        {
-          type: 'localeDropdown',
-          position: 'right',
         },
         // {
         //   href:
@@ -84,7 +75,7 @@ module.exports = {
         hashed: true,
         // For Docs using Chinese, The `language` is recommended to set to:
         // ```
-        language: ['en', 'zh'],
+        language: ['zh'],
         docsRouteBasePath: [
           '/docs/',
           '/api/',
@@ -119,6 +110,12 @@ module.exports = {
           editUrl: 'https://github.com/bytedance/garfish/tree/master/website',
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
+          remarkPlugins: [
+            [require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }],
+          ],
+        },
+        pages: {
+          remarkPlugins: [require('@docusaurus/remark-plugin-npm2yarn')],
         },
         blog: {
           showReadingTime: true,
@@ -136,16 +133,16 @@ module.exports = {
   ],
   i18n: {
     defaultLocale: 'zh-CN',
-    locales: ['en', 'zh-CN'],
+    locales: ['zh-CN'],
     localeConfigs: {
-      en: {
-        label: 'English (Auto)',
-        direction: 'ltr',
-      },
-      'zh-CN': {
-        label: '简体中文（中国）',
-        direction: 'ltr',
-      },
+      // en: {
+      //   label: 'English (Auto)',
+      //   direction: 'ltr',
+      // },
+      // 'zh-CN': {
+      //   label: '简体中文（中国）',
+      //   direction: 'ltr',
+      // },
     },
   },
 };

@@ -1,7 +1,13 @@
 const bumpPrompt = require('@jsdevtools/version-bump-prompt');
 const { run, step } = require('./utils');
-
+const semver = require('semver');
+const currentVersion = require('../package.json').version;
 const args = require('minimist')(process.argv.slice(2));
+const fs = require('fs');
+const path = require('path');
+
+const actionPublishCanary =
+  ['preminor', 'prepatch'].includes(args.version) && process.env.CI;
 
 async function main() {
   // build all packages with types
@@ -23,22 +29,49 @@ async function main() {
 
   const { stdout } = await run('git', ['diff'], { stdio: 'pipe' });
   if (stdout) {
+    if (process.env.CI) {
+      step('\nSetting git info...');
+      await run('git', [
+        'config',
+        '--global',
+        'user.name',
+        'github-actions[bot]',
+      ]);
+      await run('git', [
+        'config',
+        '--global',
+        'user.email',
+        'github-actions[bot]@users.noreply.github.com',
+      ]);
+    }
     step('\nCommitting changes...');
-    await run('git', ['add', '-A']);
-    await run('git', ['commit', '-m', `release: v${selectVersion.newVersion}`]);
+
+    // canary don't need to push
+    if (!actionPublishCanary) {
+      await run('git', ['add', '-A']);
+      await run('git', [
+        'commit',
+        '-m',
+        `release: v${selectVersion.newVersion}`,
+      ]);
+    }
   } else {
     console.log('No changes to commit.');
   }
 
-  // step('\nPublishing...');
   if (selectVersion) {
-    step('\npublishing...');
+    step('\nPublishing...');
+    await publish(selectVersion.newVersion);
+  } else {
+    console.log('No new version:', selectVersion);
   }
-  await publish(selectVersion.newVersion);
 
-  // push to GitHub
-  step('\nPushing to GitHub...');
-  await pushToGithub(selectVersion);
+  if (!actionPublishCanary) {
+    // canary don't need to push
+    // push to GitHub
+    step('\nPushing to GitHub...');
+    await pushToGithub(selectVersion);
+  }
 }
 
 async function build() {
@@ -50,9 +83,15 @@ async function test() {
 }
 
 async function bumpVersion() {
+  let version = args.version;
+  if (version && actionPublishCanary) {
+    const hash = +new Date();
+    version = semver.inc(currentVersion, version, 'beta-' + hash);
+  }
+
   return await bumpPrompt({
     files: ['package.json', 'packages/*/package.json'],
-    release: args.tag || '',
+    release: version || '',
     push: false,
     tag: false,
   });
@@ -70,10 +109,11 @@ async function pushToGithub(selectVersion) {
 }
 
 async function publish(version) {
+  step('\nSetting npmrc ...');
+  await writeNpmrc();
+
   let releaseTag = 'latest';
-  if (args.tag) {
-    releaseTag = args.tag;
-  } else if (version.includes('alpha')) {
+  if (version.includes('alpha')) {
     releaseTag = 'alpha';
   } else if (version.includes('beta')) {
     releaseTag = 'beta';
@@ -86,6 +126,24 @@ async function publish(version) {
   }
 
   await run('pnpm', publishArgs);
+}
+
+async function writeNpmrc() {
+  if (process.env.CI) {
+    const npmRcPath = `${process.env.HOME}/.npmrc`;
+    console.info(
+      `curring .npmrc file path is ${npmRcPath}, npm token is ${process.env.NPM_TOKEN}`,
+    );
+    if (fs.existsSync(npmRcPath)) {
+      console.info('Found existing .npmrc file');
+    } else {
+      console.info('No .npmrc file found, creating one');
+      fs.writeFileSync(
+        npmRcPath,
+        `//registry.npmjs.org/:_authToken=${process.env.NPM_TOKEN}`,
+      );
+    }
+  }
 }
 
 main().catch((err) => {

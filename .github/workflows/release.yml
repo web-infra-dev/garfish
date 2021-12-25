@@ -1,5 +1,16 @@
-name: release
-on: workflow_dispatch
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release Version(minor,patch,preminor,prepatch)'
+        required: true
+        default: 'patch'
+      branch:
+        description: 'Release Branch(confirm release branch)'
+        required: true
+        default: 'master'
+
 jobs:
   release:
     runs-on: ubuntu-20.04
@@ -8,6 +19,8 @@ jobs:
         node-version: [14.17.0]
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.branch }}
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
@@ -22,4 +35,6 @@ jobs:
     - name: install dependency
       run: pnpm install --filter=\!garfish-docs
     - name: release
-      run: node ./scripts/release.js --tag=patch
+      run: node ./scripts/release.js --version=${{ github.event.inputs.version }}
+      env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

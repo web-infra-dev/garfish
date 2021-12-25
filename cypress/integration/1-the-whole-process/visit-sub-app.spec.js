@@ -117,6 +117,7 @@ describe('whole process app render', () => {
 
       win.history.pushState({}, 'vue2', `${basename}/vue2`);
       cy.contains('[data-test=title]', HomeTitle)
+        .then(() => expect(popstateTriggerTime).to.equal(7))
         .then(AboutPage)
         .then(() => expect(popstateTriggerTime).to.equal(8));
     });

@@ -26,6 +26,8 @@ function asyncNodeAttribute(from: Element, to: Element) {
   observer.observe(from, { attributes: true, subtree: true });
 }
 
+export const appContainerId = 'garfish_app_for';
+
 export function createAppContainer(appInfo: interfaces.AppInfo) {
   const name = appInfo.name;
   // Create a temporary node, which is destroyed by the module itself
@@ -43,7 +45,7 @@ export function createAppContainer(appInfo: interfaces.AppInfo) {
     htmlNode.setAttribute(__MockHtml__, '');
     appContainer.appendChild(htmlNode);
   }
-  appContainer.id = `garfish_app_for_${name}_${createKey()}`;
+  appContainer.id = `${appContainerId}_${name}_${createKey()}`;
 
   return {
     htmlNode,
@@ -51,18 +53,49 @@ export function createAppContainer(appInfo: interfaces.AppInfo) {
   };
 }
 
-export async function getRenderNode(domGetter: interfaces.DomGetter) {
-  assert(domGetter, `Invalid domGetter:\n ${domGetter}.`);
-  let appWrapperNode = domGetter;
+/**
+ *  Wait for the specified dom ready tool method
+ */
+function waitElementReady(selector, callback) {
+  const elem = document.querySelector(selector);
 
-  if (typeof domGetter === 'string') {
-    appWrapperNode = document.querySelector(domGetter);
-  } else if (typeof domGetter === 'function') {
-    appWrapperNode = await (domGetter as () => Element)();
-  } else if (typeof domGetter === 'object') {
-    appWrapperNode = domGetter;
+  if (elem !== null) {
+    callback(elem);
+    return;
   }
 
-  assert(appWrapperNode, `Invalid domGetter: ${domGetter}`);
+  setTimeout(function () {
+    waitElementReady(selector, callback);
+  }, 200);
+}
+
+function delay(duration) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, duration);
+  });
+}
+
+function waitElement(selector, timeout = 3000) {
+  const waitPromise = new Promise(function (resolve) {
+    waitElementReady(selector, function (elem: Element) {
+      return resolve(elem);
+    });
+  });
+  return Promise.race([delay(timeout), waitPromise]);
+}
+
+export async function getRenderNode(domGetter: interfaces.DomGetter) {
+  assert(domGetter, `Invalid domGetter:\n ${domGetter}.`);
+  let appWrapperNode;
+
+  if (typeof domGetter === 'string') {
+    appWrapperNode = (await waitElement(domGetter)) as
+      | Element
+      | null
+      | undefined;
+  } else if (typeof domGetter === 'function') {
+    appWrapperNode = await Promise.resolve(domGetter());
+  }
+  assert(appWrapperNode instanceof Element, `Invalid domGetter: ${domGetter}`);
   return appWrapperNode as Element;
 }

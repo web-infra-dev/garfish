@@ -34,7 +34,11 @@ yarn add garfish
 
 ## 文档
 
-[https://garfish.top/](https://garfish.top/)
+> 目前文档站点 ([Garfish](https://garfish.top/)) 仅提供了中文版本，不久后将提供英文版本文档
+
+- [关于 Garfish](https://garfish.top/guide)
+- [快速开始](https://garfish.top/quick-start)
+- [API](https://garfish.top/api)
 
 ## 功能
 
@@ -58,10 +62,6 @@ yarn add garfish
 🎯 高度可扩展的插件系统（coming soon...）
 
 - 提供业务插件满足业务方的各种定制需求
-
-## 社区
-
-[https://garfish.top/community/discuss](https://garfish.top/community/discuss)
 
 ## 感谢
 

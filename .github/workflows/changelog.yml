@@ -1,5 +1,4 @@
-name: Release
-
+name: ChangeLog
 on:
   push:
     tags-ignore:

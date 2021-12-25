@@ -19,7 +19,6 @@ function newRouter(basename) {
   const router = new VueRouter({
     mode: 'history',
     base: basename,
-    router,
     routes: [
       { path: '/', component: HelloGarfish },
       { path: '/test', component: Test },
@@ -34,14 +33,11 @@ function newRouter(basename) {
 export const provider = vueBridge({
   Vue,
   rootComponent: App,
-  appOptions: ({ basename }) => {
-    const router = newRouter(basename);
-    return {
-      el: '#app',
-      router,
-      store,
-    };
-  },
+  appOptions: ({ basename }) => ({
+    el: '#app',
+    router: newRouter(basename),
+    store,
+  }),
 });
 
 // There is no running show that the main application execution run, you can perform in micro front-end environment rendering

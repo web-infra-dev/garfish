@@ -8,13 +8,14 @@ GarfishInstance.router.beforeEach((to, from, next) => {
 });
 GarfishInstance.run(Config);
 
-const useRouterMode = true;
-
+const useRouterMode = false;
+let prevApp = null;
 document.getElementById('vueBtn').onclick = async () => {
   if (useRouterMode) {
     history.pushState({}, 'vue', '/garfish_master/vue'); // use router to load app
   } else {
-    const prevApp = await GarfishInstance.loadApp('vue', {
+    if (prevApp) prevApp.unmount();
+    prevApp = await GarfishInstance.loadApp('vue', {
       entry: 'http://localhost:2666',
       domGetter: '#submoduleByCunstom',
     });
@@ -27,7 +28,8 @@ document.getElementById('reactBtn').onclick = async () => {
   if (useRouterMode) {
     history.pushState({}, 'react', '/garfish_master/react');
   } else {
-    const prevApp = await GarfishInstance.loadApp('react', {
+    if (prevApp) prevApp.unmount();
+    prevApp = await GarfishInstance.loadApp('react', {
       entry: 'http://localhost:2444',
       domGetter: '#submoduleByCunstom',
     });

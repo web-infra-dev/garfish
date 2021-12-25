@@ -39,14 +39,17 @@ export class TemplateManager {
         counter++;
         collection[tag] = this.pretreatmentStore[tag];
       } else {
-        this.pretreatmentStore[tag] = collection[tag] = [];
+        collection[tag] = [];
       }
     }
 
     if (counter !== tags.length) {
       const traverse = (node: Node | Text) => {
         if (node.type !== 'element') return;
-        if (tags.indexOf(node.tagName as any) > -1) {
+        if (
+          tags.indexOf(node.tagName as any) > -1 &&
+          !this.pretreatmentStore[node.tagName]
+        ) {
           collection[node.tagName].push(node);
         }
         for (const child of node.children) traverse(child);

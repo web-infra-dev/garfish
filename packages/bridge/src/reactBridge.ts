@@ -126,63 +126,53 @@ function bootstrap(opts, props) {
   }
 }
 
-function mount(opts, props) {
-  return new Promise((resolve) => {
-    if (
-      !opts.suppressComponentDidCatchWarning &&
-      atLeastReact16(opts.React) &&
-      !opts.errorBoundary
-    ) {
-      if (!opts.rootComponent.prototype) {
-        console.warn(
-          `garfish-react-bridge: ${
-            props.name || props.appName || props.childAppName
-          }'s rootComponent does not implement an error boundary.  If using a functional component, consider providing an opts.errorBoundary to reactBridge(opts).`,
-        );
-      } else if (!opts.rootComponent.prototype.componentDidCatch) {
-        console.warn(
-          `garfish-react-bridge: ${
-            props.name || props.appName || props.childAppName
-          }'s rootComponent should implement componentDidCatch to avoid accidentally unmounting the entire garfish application.`,
-        );
-      }
+function mount(opts, appInfo, props) {
+  if (
+    !opts.suppressComponentDidCatchWarning &&
+    atLeastReact16(opts.React) &&
+    !opts.errorBoundary
+  ) {
+    if (!opts.rootComponent.prototype) {
+      console.warn(
+        `garfish-react-bridge: ${
+          appInfo.name || appInfo.appName || appInfo.childAppName
+        }'s rootComponent does not implement an error boundary.  If using a functional component, consider providing an opts.errorBoundary to reactBridge(opts).`,
+      );
+    } else if (!opts.rootComponent.prototype.componentDidCatch) {
+      console.warn(
+        `garfish-react-bridge: ${
+          appInfo.name || appInfo.appName || appInfo.childAppName
+        }'s rootComponent should implement componentDidCatch to avoid accidentally unmounting the entire garfish application.`,
+      );
     }
+  }
 
-    const whenMounted = function () {
-      resolve(this);
-    };
-
-    const elementToRender = getElementToRender(opts, props, whenMounted);
-    const domElement = chooseDomElementGetter(opts, props);
-    const renderResult = reactDomRender({
-      elementToRender,
-      domElement,
-      opts,
-    });
-    opts.domElements[props.name] = domElement;
-    opts.renderResults[props.name] = renderResult;
+  const elementToRender = getElementToRender(opts, appInfo, props);
+  const domElement = chooseDomElementGetter(opts, appInfo);
+  const renderResult = reactDomRender({
+    elementToRender,
+    domElement,
+    opts,
   });
+  opts.domElements[appInfo.name] = domElement;
+  opts.renderResults[appInfo.name] = renderResult;
 }
 
-function unmount(opts, props) {
-  return new Promise((resolve) => {
-    opts.unmountFinished = resolve;
+function unmount(opts, appInfo) {
+  const root = opts.renderResults[appInfo.name];
 
-    const root = opts.renderResults[props.name];
-
-    if (root && root.unmount) {
-      // React >= 18
-      const unmountResult = root.unmount();
-    } else {
-      // React < 18
-      opts.ReactDOM.unmountComponentAtNode(opts.domElements[props.name]);
-    }
-    delete opts.domElements[props.name];
-    delete opts.renderResults[props.name];
-  });
+  if (root && root.unmount) {
+    // React >= 18
+    const unmountResult = root.unmount();
+  } else {
+    // React < 18
+    opts.ReactDOM.unmountComponentAtNode(opts.domElements[appInfo.name]);
+  }
+  delete opts.domElements[appInfo.name];
+  delete opts.renderResults[appInfo.name];
 }
 
-function update(opts, props) {
+function update(opts, appInfo, props) {
   return new Promise((resolve) => {
     if (!opts.updateResolves[props.name]) {
       opts.updateResolves[props.name] = [];
@@ -190,14 +180,14 @@ function update(opts, props) {
 
     opts.updateResolves[props.name].push(resolve);
 
-    const elementToRender = getElementToRender(opts, props, null);
+    const elementToRender = getElementToRender(opts, appInfo, props);
     const renderRoot = opts.renderResults[props.name];
     if (renderRoot && renderRoot.render) {
       // React 18 with ReactDOM.createRoot()
       renderRoot.render(elementToRender);
     } else {
       // React 16 / 17 with ReactDOM.render()
-      const domElement = chooseDomElementGetter(opts, props);
+      const domElement = chooseDomElementGetter(opts, appInfo);
 
       // This is the old way to update a react application - just call render() again
       opts.ReactDOM.render(elementToRender, domElement);
@@ -254,9 +244,10 @@ function reactDomRender({ opts, elementToRender, domElement }) {
   return null;
 }
 
-function getElementToRender(opts, props, mountFinished) {
+function getElementToRender(opts, appInfo, props = {}) {
   const rootComponentElement = opts.React.createElement(
     opts.rootComponent,
+    appInfo,
     props,
   );
 
@@ -268,69 +259,25 @@ function getElementToRender(opts, props, mountFinished) {
       )
     : rootComponentElement;
 
-  if (
-    opts.errorBoundary ||
-    props.errorBoundary ||
-    opts.errorBoundaryClass ||
-    props.errorBoundaryClass
-  ) {
+  if (opts.errorBoundary || opts.errorBoundaryClass) {
     opts.errorBoundaryClass =
       opts.errorBoundaryClass ||
-      props.errorBoundaryClass ||
+      opts.errorBoundaryClass ||
       createErrorBoundary(opts, props);
     elementToRender = opts.React.createElement(
       opts.errorBoundaryClass,
+      appInfo,
       props,
       elementToRender,
     );
   }
-
-  // https://github.com/single-spa/single-spa-react/issues/112
-  elementToRender = opts.React.createElement(
-    SingleSpaRoot,
-    {
-      ...props,
-      mountFinished,
-      updateFinished() {
-        if (opts.updateResolves[props.name]) {
-          opts.updateResolves[props.name].forEach((r) => r());
-          delete opts.updateResolves[props.name];
-        }
-      },
-      unmountFinished() {
-        setTimeout(opts.unmountFinished);
-      },
-    },
-    elementToRender,
-  );
-
-  // This is a class component, since we need a mount hook and garfish-react-bridge supports React@15 (no useEffect available)
-  function SingleSpaRoot(_props) {
-    // eslint-disable-next-line no-restricted-globals
-    // SingleSpaRoot.displayName = `SingleSpaRoot(${_props.name})`;
-  }
-
-  SingleSpaRoot.prototype = Object.create(opts.React.Component.prototype);
-  SingleSpaRoot.prototype.componentDidMount = function () {
-    setTimeout(this.props.mountFinished);
-  };
-  SingleSpaRoot.prototype.componentWillUnmount = function () {
-    setTimeout(this.props.unmountFinished);
-  };
-  SingleSpaRoot.prototype.render = function () {
-    // componentDidUpdate doesn't seem to be called during root.render() for updates
-    setTimeout(this.props.updateFinished);
-
-    return this.props.children;
-  };
-
   return elementToRender;
 }
 
 function createErrorBoundary(opts, props) {
   // Avoiding babel output for class syntax and super()
   // to avoid bloat
-  function SingleSpaReactErrorBoundary(props) {
+  function GarfishSubAppReactErrorBoundary(props) {
     // super
     opts.React.Component.apply(this, arguments);
 
@@ -340,15 +287,15 @@ function createErrorBoundary(opts, props) {
     };
 
     (
-      SingleSpaReactErrorBoundary as any
+      GarfishSubAppReactErrorBoundary as any
     ).displayName = `ReactBridgeReactErrorBoundary(${props.name})`;
   }
 
-  SingleSpaReactErrorBoundary.prototype = Object.create(
+  GarfishSubAppReactErrorBoundary.prototype = Object.create(
     opts.React.Component.prototype,
   );
 
-  SingleSpaReactErrorBoundary.prototype.render = function () {
+  GarfishSubAppReactErrorBoundary.prototype.render = function () {
     if (this.state.caughtError) {
       const errorBoundary = opts.errorBoundary || props.errorBoundary;
 
@@ -362,7 +309,7 @@ function createErrorBoundary(opts, props) {
     }
   };
 
-  SingleSpaReactErrorBoundary.prototype.componentDidCatch = function (
+  GarfishSubAppReactErrorBoundary.prototype.componentDidCatch = function (
     err,
     info,
   ) {
@@ -372,11 +319,11 @@ function createErrorBoundary(opts, props) {
     });
   };
 
-  return SingleSpaReactErrorBoundary;
+  return GarfishSubAppReactErrorBoundary;
 }
 
-function chooseDomElementGetter(opts, props) {
-  const { dom: container } = props;
+function chooseDomElementGetter(opts, appInfo) {
+  const { dom: container } = appInfo;
   let el;
   if (typeof opts.el === 'string') {
     el = container.querySelector(opts.el);
@@ -387,7 +334,7 @@ function chooseDomElementGetter(opts, props) {
   if (!(el instanceof HTMLElement)) {
     throw Error(
       `react bridge's dom-element-getter-helpers: el is an invalid dom element for application'${
-        props.name
+        appInfo.name
       }'. Expected HTMLElement, received ${typeof el}`,
     );
   }

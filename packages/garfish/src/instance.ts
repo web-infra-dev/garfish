@@ -68,4 +68,4 @@ function createContext(): Garfish {
   return GarfishInstance;
 }
 
-export default createContext();
+export const GarfishInstance = createContext();

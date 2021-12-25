@@ -1,5 +1,5 @@
 ---
-title: Garfish methods
+title: API
 collapsed: false
 order: 3
 ---

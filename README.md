@@ -34,7 +34,11 @@ yarn add garfish
 
 ## Documentation
 
-[https://garfish.top/](https://garfish.top/)
+> The doc site ([Garfish](https://garfish.top/)) is only available in Chinese for now, we are planning to add English versions soon.
+
+- [About Garfish](https://garfish.top/guide)
+- [Quick Start](https://garfish.top/quick-start)
+- [API References](https://garfish.top/api)
 
 ## Functionality
 
@@ -58,10 +62,6 @@ yarn add garfish
 🎯 Highly scalable plugin mechanism (coming soon...)
 
 - Provide business plugins to meet various customization needs of business parties
-
-## community
-
-[https://garfish.top/community/discuss](https://garfish.top/community/discuss)
 
 ## credit
 

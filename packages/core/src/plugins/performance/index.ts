@@ -1,3 +1,4 @@
+import { getRenderNode } from '@garfish/utils';
 import { interfaces } from '../../index';
 import { SubAppObserver } from './subAppObserver';
 
@@ -10,10 +11,7 @@ export function GarfishPerformance() {
 
       async beforeLoad(appInfo) {
         if (!subAppMap[appInfo.name]) {
-          let appDomGetter = appInfo.domGetter;
-          if (typeof appInfo.domGetter === 'function') {
-            appDomGetter = await appInfo.domGetter();
-          }
+          const appDomGetter = await getRenderNode(appInfo.domGetter);
           subAppMap[appInfo.name] = new SubAppObserver({
             subAppRootSelector: appDomGetter as Element,
           });
