@@ -8,7 +8,7 @@ GarfishInstance.router.beforeEach((to, from, next) => {
 });
 GarfishInstance.run(Config);
 
-const useRouterMode = false;
+const useRouterMode = true;
 let prevApp = null;
 document.getElementById('vueBtn').onclick = async () => {
   if (useRouterMode) {

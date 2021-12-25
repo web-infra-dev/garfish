@@ -90,6 +90,33 @@ module.exports = {
 ```
 
   </TabItem>
+  <TabItem value="vite" label="Vite" default>
+
+```js
+import { htmlPlugin } from '@garfish/vite-plugin';
+
+// 注意：子应用使用 vite 时
+// 子应用不可以使用 cache: false 模式，因为 esmodule 内容无法重复执行
+// 子应用不可重复使用 app.mount，第二次渲染时只能使用 app.show
+export default defineConfig({
+  // 提供资源绝对路径，端口可自定义
+  base: 'http://localhost:3000/',
+  server: {
+    port: 3000,
+    cors: true,
+    // 提供资源绝对路径，端口可自定义
+    origin: 'http://localhost:3000',
+  },
+  plugins: [
+    // 使用 vite-plugin 的 html plugin，并定义 ID，改 ID 与 brdige 的 ID 需相同
+    htmlPlugin('vite-vue-sub-app', {
+      useDevMode: true,
+    }),
+  ],
+});
+```
+
+  </TabItem>
 </Tabs>
 
 ### 通过 Bridge 函数包装子应用
@@ -149,6 +176,26 @@ export const provider = vueBridge({
     el: '#app',
     router: newRouter(basename),
     store,
+  }),
+});
+```
+
+  </TabItem>
+  <TabItem value="Vue3" label="Vue3">
+
+```jsx
+import { h, createApp } from 'vue';
+import App from './App.vue';
+import { vueBridge } from '@garfish/bridge';
+
+export const provider = vueBridge({
+  createApp,
+  appId: 'vite-vue-sub-app',
+  appOptions: ({ basename }) => ({
+    el: '#app',
+    render() {
+      return h(App);
+    },
   }),
 });
 ```

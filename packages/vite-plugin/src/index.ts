@@ -41,14 +41,11 @@ export const htmlPlugin = (GarfishName, microOption: MicroOption = {}) => {
     const moduleSrc = script$.attr('src');
     let appendBase = '';
     if (microOption.useDevMode && !isProduction) {
-      appendBase = `(window.__GARFISH__ ? ('http://localhost:${port}/' + \'..\') : \'\') + `;
+      appendBase = `http://localhost:${port}${moduleSrc}`;
     }
     script$.attr(__SCRIPT_GLOBAL_APP_ID__, GarfishName);
-    script$.removeAttr('src');
+    if (appendBase) script$.attr('src', appendBase);
     // script$.removeAttr('type');
-    script$.html(`
-      import(${appendBase}'${moduleSrc}')
-    `);
     return script$;
   };
 
