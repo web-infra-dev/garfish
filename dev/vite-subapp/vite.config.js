@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import { htmlPlugin } from '@garfish/vite-plugin';
 import config from '../config.json';
 
-let portInfo = config['dev/vite-plugin'];
+let portInfo = config['dev/vite-subapp'];
 
 // https://vitejs.dev/config/
 export default defineConfig({

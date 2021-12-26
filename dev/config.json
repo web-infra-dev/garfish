@@ -23,7 +23,7 @@
     "pkgName": "@garfish-dev/vue2",
     "port": 2777
   },
-  "dev/vite-plugin": {
+  "dev/vite-subapp": {
     "pkgName": "@garfish-dev/vite-plugin",
     "port": 2888
   }
