@@ -95,9 +95,11 @@ module.exports = {
 ```js
 import { htmlPlugin } from '@garfish/vite-plugin';
 
-// 注意：子应用使用 vite 时
-// 子应用不可以使用 cache: false 模式，因为 esmodule 内容无法重复执行
-// 子应用不可重复使用 app.mount，第二次渲染时只能使用 app.show
+// 使用 Vite 应用作为子应用时需要注意：
+// 子应用必须使用缓存模式 cache: true 模式，路由驱动时默认使用 cache 模式，触发将 appInfo.cache = false（因为 esmodule 内容无法重复执行）
+// 子应用不可重复使用 app.mount，第二次渲染时只能使用 app.show，否则将走非缓存模式（因为 esmodule 内容无法重复执行）
+// 需要将子应用沙箱关闭 sandbox: false，否则可能会出现子应用部分代码在沙箱内执行，部分不在沙箱执行: Garfish.run({ apps: [{ name:'vite-app',entry:'xxx',sandbox: false }] })
+// 子应用的副作用将会发生逃逸，在子应用卸载后需要降对应全局的副作用清除
 export default defineConfig({
   // 提供资源绝对路径，端口可自定义
   base: 'http://localhost:3000/',

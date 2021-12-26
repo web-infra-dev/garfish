@@ -19,6 +19,7 @@ describe('whole process app render', () => {
 
   let popstateTriggerTime = 0;
   const popstateCallback = () => (popstateTriggerTime += 1);
+  const VueHomeTitle = 'Thank you for the vue2 applications use garfish';
 
   it('Switch to the Vue app', () => {
     cy.visit('http://localhost:2333');
@@ -107,7 +108,6 @@ describe('whole process app render', () => {
 
   it('Switch to the Vue2 app use js entry', () => {
     cy.window().then((win) => {
-      const HomeTitle = 'Thank you for the vue2 applications use garfish';
       const AboutTitle = 'Vue2 App about page';
 
       const AboutPage = () => {
@@ -116,7 +116,7 @@ describe('whole process app render', () => {
       };
 
       win.history.pushState({}, 'vue2', `${basename}/vue2`);
-      cy.contains('[data-test=title]', HomeTitle)
+      cy.contains('[data-test=title]', VueHomeTitle)
         .then(() => expect(popstateTriggerTime).to.equal(7))
         .then(AboutPage)
         .then(() => expect(popstateTriggerTime).to.equal(8));
@@ -128,10 +128,19 @@ describe('whole process app render', () => {
 
     cy.window().then((win) => {
       win.Garfish.router.push({ path: '/vite' });
-      cy.contains('[data-test=title]', HomeTitle).then(() => {
-        cy.get('button').dblclick();
-        cy.contains('button', 'count is: 2');
-      });
+      cy.contains('[data-test=title]', HomeTitle)
+        .then(() => {
+          cy.get('button').dblclick();
+          cy.contains('button', 'count is: 2');
+        })
+        .then(() => {
+          win.Garfish.router.push({ path: '/vue2' });
+          cy.contains('[data-test=title]', VueHomeTitle);
+        })
+        .then(() => {
+          win.Garfish.router.push({ path: '/vite' });
+          cy.contains('[data-test=title]', HomeTitle);
+        });
     });
   });
 });
