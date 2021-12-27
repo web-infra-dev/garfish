@@ -192,7 +192,7 @@ import { vueBridge } from '@garfish/bridge';
 
 export const provider = vueBridge({
   createApp,
-  appId: 'vite-vue-sub-app',
+  appId: 'vite-vue-sub-app', // 在 vite 应用时提供，该值与 htmlPlugin 第一个参数相同
   appOptions: ({ basename }) => ({
     el: '#app',
     render() {
