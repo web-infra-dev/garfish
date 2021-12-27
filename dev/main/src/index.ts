@@ -8,7 +8,7 @@ GarfishInstance.router.beforeEach((to, from, next) => {
 });
 GarfishInstance.run(Config);
 
-const useRouterMode = false;
+const useRouterMode = true;
 let prevApp = null;
 document.getElementById('vueBtn').onclick = async () => {
   if (useRouterMode) {
@@ -20,7 +20,7 @@ document.getElementById('vueBtn').onclick = async () => {
       domGetter: '#submoduleByCunstom',
     });
     console.log(prevApp);
-    prevApp && (await prevApp.mount());
+    prevApp && prevApp.mounted ? prevApp.show : await prevApp.mount();
   }
 };
 
@@ -34,7 +34,13 @@ document.getElementById('reactBtn').onclick = async () => {
       domGetter: '#submoduleByCunstom',
     });
     console.log(prevApp);
-    prevApp && (await prevApp.mount());
+    prevApp && prevApp.mounted ? prevApp.show : await prevApp.mount();
+  }
+};
+
+document.getElementById('viteBtn').onclick = async () => {
+  if (useRouterMode) {
+    history.pushState({}, 'vite', '/garfish_master/vite');
   }
 };
 

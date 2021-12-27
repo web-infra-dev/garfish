@@ -63,7 +63,6 @@ yarn add garfish
 
 - 提供业务插件满足业务方的各种定制需求
 
-
 ## 感谢
 
 - [Qiankun](https://github.com/umijs/qiankun) 是一款非常优秀的微前端框架，Garfish 的沙箱设计从中吸收了很多优秀的想法

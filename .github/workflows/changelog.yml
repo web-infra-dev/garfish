@@ -4,6 +4,8 @@ on:
     tags-ignore:
       - 'v*.*.*-alpha.*'
       - 'v*.*.*-beta.*'
+    tags:
+      - 'v*'
 
 jobs:
   release:

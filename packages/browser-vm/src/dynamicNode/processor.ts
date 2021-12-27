@@ -158,7 +158,7 @@ export class DynamicNodeProcessor {
       if (__DEV__) {
         warn(
           type === 'module'
-            ? `Does not support "esm" module script in sandbox. "${src}"`
+            ? `"esmodule" code will not be execute in sandbox "${src}"`
             : `Invalid resource type "${type}", "${src}"`,
         );
       }

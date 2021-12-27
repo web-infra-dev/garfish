@@ -63,7 +63,6 @@ yarn add garfish
 
 - Provide business plugins to meet various customization needs of business parties
 
-
 ## credit
 
 - [Qiankun](https://github.com/umijs/qiankun) is a very good micro front-end framework, Garfish sandbox design learned a lot of good ideas

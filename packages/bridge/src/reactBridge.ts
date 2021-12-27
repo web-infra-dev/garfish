@@ -2,6 +2,8 @@
 // Because the Garfish lifecycle does not agree with that of single-spa  part logical coupling in the framework
 // https://github.com/single-spa/single-spa-react/blob/main/src/single-spa-react.js
 
+import { __GARFISH_GLOBAL_APP_LIFECYCLE__ } from '@garfish/utils';
+
 // React context that gives any react component the single-spa props
 export let GarfishContext = null;
 
@@ -83,14 +85,15 @@ export function reactBridge(userOpts) {
     GarfishContext = opts.React.createContext();
   }
 
+  const providerLifeCycle = {
+    render: (props) => mount.call(this, opts, props),
+    destroy: (props) => unmount.call(this, opts, props),
+    update: (props) => opts.canUpdate && update.call(this, opts, props),
+  };
+
   const provider = async function (props) {
     await bootstrap.call(this, opts, props);
-    return {
-      render: (appInfo, props) => mount.call(this, opts, appInfo, props),
-      destroy: (appInfo, props) => unmount.call(this, opts, appInfo, props),
-      update: (appInfo, props) =>
-        opts.canUpdate && update.call(this, appInfo, props),
-    };
+    return providerLifeCycle;
   };
 
   if (
@@ -99,6 +102,14 @@ export function reactBridge(userOpts) {
     __GARFISH_EXPORTS__
   ) {
     __GARFISH_EXPORTS__.provider = provider;
+  }
+
+  // es module env
+  if (window[__GARFISH_GLOBAL_APP_LIFECYCLE__] && opts.appId) {
+    const subLifeCycle = window[__GARFISH_GLOBAL_APP_LIFECYCLE__][opts.appId];
+    if (subLifeCycle) {
+      subLifeCycle.defer(providerLifeCycle);
+    }
   }
   return provider;
 }
