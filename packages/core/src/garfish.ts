@@ -4,7 +4,6 @@ import { SyncHook, AsyncHook, PluginSystem } from '@garfish/hooks';
 import { warn, assert, isPlainObject, __GARFISH_FLAG__ } from '@garfish/utils';
 import {
   deepMergeConfig,
-  filterNestedConfig,
   generateAppOptions,
   createDefaultOptions,
 } from './config';
@@ -85,7 +84,6 @@ export class Garfish extends EventEmitter2 {
 
   run(options: interfaces.Options = {}) {
     if (this.running) {
-      // Nested scene can be repeated registration application
       if (__DEV__) {
         warn('Garfish is already running now, Cannot run Garfish repeatedly.');
       }

@@ -21,50 +21,11 @@ const appConfigList: Array<keyof interfaces.AppInfo | 'activeWhen'> = [
   'props',
   'sandbox',
   'cache',
-  'nested',
   'noCheckProvider',
   'protectVariable',
   'customLoader',
   ...appLifecycle().lifecycleKeys,
 ];
-
-const invalidNestedAttrs = [
-  'sandbox',
-  'autoRefreshApp',
-  'disableStatistics',
-  'disablePreloadApp',
-];
-
-export const filterNestedConfig = (
-  garfish: interfaces.Garfish,
-  config: interfaces.Options,
-  id: number,
-) => {
-  if (config.nested) {
-    invalidNestedAttrs.forEach((key) => {
-      if (key in config) {
-        delete config[key];
-        warn(`Nested scene does not support the configuration "${key}".`);
-      }
-    });
-  }
-
-  garfish.hooks.lifecycleKeys.forEach((key) => {
-    const fn = config[key];
-    const canCall = (info) => (info.nested = id);
-    const isInfo = (info) =>
-      isPlainObject(info) && hasOwn(info, 'name') && hasOwn(info, 'entry');
-
-    if (typeof fn === 'function') {
-      config[key] = function (...args) {
-        const info = args.find(isInfo);
-        if (!info) return fn.apply(this, args);
-        if (canCall(info)) return fn.apply(this, args);
-      };
-    }
-  });
-  return config;
-};
 
 // `props` may be responsive data
 export const deepMergeConfig = <T>(globalConfig, localConfig) => {
@@ -137,7 +98,7 @@ export const generateAppOptions = (
 };
 
 // Each main application needs to generate a new configuration
-export const createDefaultOptions = (nested = false) => {
+export const createDefaultOptions = () => {
   const config: interfaces.Options = {
     // global config
     appID: '',
@@ -176,8 +137,5 @@ export const createDefaultOptions = (nested = false) => {
     customLoader: null, // deprecated
   };
 
-  if (nested) {
-    invalidNestedAttrs.forEach((key) => delete config[key]);
-  }
   return config;
 };
