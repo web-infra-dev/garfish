@@ -9,13 +9,13 @@ module.exports = {
     config.output.jsonpFunction = 'react-garfish-exports';
     config.mode = process.env.TEST_ENV ? 'production' : 'development';
     config.output.publicPath = `http://localhost:${portInfo.port}/`;
-    config.plugins.push(
-      new webpack.BannerPlugin({
-        raw: true,
-        test: /.js$/,
-        banner: '/* empty */\n',
-      }),
-    );
+    // config.plugins.push(
+    //   new webpack.BannerPlugin({
+    //     raw: true,
+    //     test: /.js$/,
+    //     banner: '/* empty */\n',
+    //   }),
+    // );
     return config;
   },
 

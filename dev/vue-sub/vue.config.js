@@ -27,6 +27,6 @@ module.exports = {
       test: /\.mjs$/,
       use: [],
     });
-    config.plugins = [...config.plugins, new webpack.BannerPlugin('garfish')];
+    // config.plugins = [...config.plugins, new webpack.BannerPlugin('garfish')];
   },
 };
