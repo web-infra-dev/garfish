@@ -140,3 +140,109 @@ new Vue({
   <dt><strong>hide: Function</strong></dt>
   <dd>触发子应用的隐藏流程：隐藏子应用的渲染容器、执行 provider 提供的子应用 destroy 函数</dd>
 </dl>
+
+### 不需要缓存的手动加载方案：
+
+```js
+// options 是可选的，如果不传，默认会从 Garfish.options 上深拷贝一份过来
+const app = await Garfish.loadApp('appName', {
+  domGetter: () => document.getElementById('id'),
+});
+
+// 渲染：编译子应用的代码 -> 创建应用容器 -> 调用 provider.render 渲染
+// 注意：由于沙箱的实现，相同应用重复渲染，可能会导致内存泄漏问题
+const success = await app.mount();
+// 卸载：清除子应用的副作用 -> 调用 provider.destroy -> 销毁应用容器
+const success = await app.unmount();
+```
+
+### 需要缓存的手动加载方案（推荐使用缓存）
+
+```js
+const cache = true;
+const app = await Garfish.loadApp('appName', {
+  domGetter: () => document.getElementById('id'),
+});
+
+// 渲染
+if (cache && app.mounted) {
+  const success = app.show();
+} else {
+  const success = await app.mount();
+}
+// 卸载
+const success = app.hide();
+```
+
+### app.mount 做了哪些事情
+
+1. 创建 `app` 容器并添加到文档流上
+2. 编译子应用的代码
+3. 拿到子应用的 `provider`
+4. 调用 `app.options.beforeMount` 钩子
+5. 调用 `provider.render`
+6. 将 `app.display` 和 `app.mounted` 设置为 `true`
+7. 将 `app` set 到 `Garfish.activeApps` 中
+8. 调用 `app.options.afterMount` 钩子
+   > 如果渲染失败，`app.mount` 会返回 `false`，否则渲染成功会返回 `true`，你可以根据返回值做对应的处理。
+
+### app.unmount 做了哪些事件
+
+1. 调用 `app.options.beforeUnmount` 钩子
+2. 调用 `provider.destroy`
+3. 清除编译的副作用
+4. 将 `app` 的容器从文档流上移除
+5. 将 `app.display` 和 `app.mounted` 设置为 `false`
+6. 在 `Garfish.activeApps` 中移除当前的 `app` 实例
+7. 调用 `app.options.afterUnmount` 钩子
+   > 同上，可以根据返回值来判断是否卸载成功。
+
+### app.show 做了哪些事件
+
+1. 将 `app` 的容器添加到文档流上
+2. 调用 `provider.render`
+3. 将 `app.display` 设置为 `true`
+   > 同上，可以根据返回值来判断是否渲染成功。
+
+### app.hide 做了哪些事件
+
+1. 调用 `provider.destroy`
+2. 将 `app` 的容器从文档流上移除
+3. 将 `app.display` 设置为 `false`
+   > 同上，可以根据返回值来判断是否隐藏成功。
+
+### 缓存
+
+手动加载提供的了 `cache` 功能，以便复用 `app`，避免重复的编译代码造成的性能浪费，在 `Garfish.loadApp` 时，传入 `cache` 参数就可以。
+
+ 例如下面的代码：
+
+```js
+const app1 = await Garfish.loadApp('appName', {
+  cache: true,
+});
+
+const app2 = await Garfish.loadApp('appName', {
+  cache: true,
+});
+
+console.log(app1 === app2); // true
+```
+
+实际上，对于加载的 `promise` 也会是同一份，例如下面的 demo
+
+```js
+const promise1 = Garfish.loadApp('appName', {
+  cache: true,
+});
+
+const promise2 = Garfish.loadApp('appName', {
+  cache: true,
+});
+
+console.log(promise1 === promise2); // true
+
+const app1 = await promise1;
+const app2 = await promise2;
+console.log(app1 === app2); // true
+```
