@@ -5,15 +5,25 @@ import HelloWorld from './components/HelloWorld.vue';
 import Garfish from 'garfish';
 // console.log(Garfish);
 let GarfishInstance = new Garfish();
-GarfishInstance.loadApp({
-  entry: 'http://localhost:2444',
-  fetchOptions: {}
-});
+function mountApp() {
+  GarfishInstance.loadApp({
+    entry: 'http://localhost:2444',
+    fetchOptions: {}
+  }).then((appInstance)=>{
+    appInstance.mount({
+      domGetter: '#container'
+    });
+  })
+}
+mountApp();
 </script>
 
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + Vite" />
+  <div>
+    <img alt="Vue logo" src="./assets/logo.png" />
+    <HelloWorld msg="Hello Vue 3 + Vite" />
+    <div id="container"></div>
+  </div>
 </template>
 
 <style>
