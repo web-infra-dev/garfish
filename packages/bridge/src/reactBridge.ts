@@ -86,7 +86,9 @@ export function reactBridge(userOpts) {
   }
 
   const providerLifeCycle = {
-    render: (props) => mount.call(this, opts, props),
+    render: (props, userProps) => {
+      return mount.call(this, opts, props, userProps);
+    },
     destroy: (props) => unmount.call(this, opts, props),
     update: (props) => opts.canUpdate && update.call(this, opts, props),
   };
@@ -120,7 +122,20 @@ function bootstrap(opts, props) {
     return Promise.resolve();
   } else {
     // They passed a promise that resolves with the react component. Wait for it to resolve before mounting
-    return opts.loadRootComponent(props).then((resolvedComponent) => {
+
+    // return opts
+    //   .loadRootComponent({
+    //     ...props,
+    //   })
+    //   .then((resolvedComponent) => {
+    //     opts.rootComponent = resolvedComponent;
+    //   });
+
+    return Promise.resolve(() =>
+      opts.loadRootComponent({
+        ...props,
+      }),
+    ).then((resolvedComponent) => {
       opts.rootComponent = resolvedComponent;
     });
   }
@@ -245,11 +260,10 @@ function reactDomRender({ opts, elementToRender, domElement }) {
 }
 
 function getElementToRender(opts, appInfo, props = {}) {
-  const rootComponentElement = opts.React.createElement(
-    opts.rootComponent,
+  const rootComponentElement = opts.React.createElement(opts.rootComponent, {
     appInfo,
-    props,
-  );
+    userProp: props,
+  });
 
   let elementToRender = GarfishContext
     ? opts.React.createElement(
