@@ -34,6 +34,10 @@ export function appendChildTo<T extends Node>(node: Node, newChild: T): T {
   return appendChild.call(node, newChild);
 }
 
+export function appendTo(node: Node, ...args: (string | Node)[]) {
+  append.apply(node, args);
+}
+
 export function error(error: string | Error) {
   processError(error, (e, isString) => {
     if (isString) {
@@ -43,6 +47,8 @@ export function error(error: string | Error) {
     }
   });
 }
+
+export const SCRIPT_TYPES = ['', 'text/javascript', 'module'];
 
 export function assert(condition: any, msg?: string | Error) {
   if (!condition) {
@@ -99,7 +105,7 @@ function waitElement(selector, timeout = 3000) {
   return Promise.race([delay(timeout), waitPromise]);
 }
 
-async function getRenderNode(domGetter: string | (() => Element)) {
+export async function getRenderNode(domGetter: string | (() => Element)) {
   assert(domGetter, `Invalid domGetter:\n ${domGetter}.`);
 
   let appWrapperNode;

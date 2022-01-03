@@ -11,9 +11,10 @@ import './app.css';
 
 const LazyComponent = React.lazy(() => import('./components/lazyComponent.js'));
 
-export default function App({ basename }, props) {
+export default function App(appInfo, props) {
+  console.log(appInfo, props);
   return (
-    <Router basename={basename}>
+    <Router basename={appInfo.basename}>
       <div className="ReactApp">
         <ul className="nav-bas">
           <li>
