@@ -63,6 +63,9 @@ yarn add garfish
 
 - 提供业务插件满足业务方的各种定制需求
 
+## 贡献
+
+- [贡献指南](https://github.com/modern-js-dev/garfish/blob/master/CONTRIBUTING.md)
 
 ## 感谢
 

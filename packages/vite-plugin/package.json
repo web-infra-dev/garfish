@@ -1,12 +1,14 @@
 {
-  "name": "@garfish/loader",
+  "name": "@garfish/vite-plugin",
   "version": "1.2.13",
-  "description": "loader module.",
+  "description": "garfish vite plugin",
   "keywords": [
     "garfish",
-    "loader"
+    "vite",
+    "esm",
+    "esModule"
   ],
-  "author": "chentao.arthur <chentao.arthur@bytedance.com>",
+  "author": "zhouxiao <codingzx@gmail.com>",
   "homepage": "http://garfish.bytedance.com",
   "license": "MIT",
   "repository": {
@@ -31,12 +33,12 @@
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
   "dependencies": {
-    "@garfish/hooks": "workspace:*",
-    "@garfish/utils": "workspace:*"
+    "@garfish/utils": "workspace:*",
+    "cheerio": "^1.0.0-rc.10"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
   },
-  "gitHead": "e8bf48ea8ca8db408a4a0a1cdab8ce4a50ab279b"
+  "gitHead": "da33dd16bb9e99588f34079f8b961d0cf9f059fc"
 }

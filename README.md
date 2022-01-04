@@ -63,6 +63,9 @@ yarn add garfish
 
 - Provide business plugins to meet various customization needs of business parties
 
+## Contributing
+
+- [Contributing Guide](https://github.com/modern-js-dev/garfish/blob/master/CONTRIBUTING.md)
 
 ## credit
 

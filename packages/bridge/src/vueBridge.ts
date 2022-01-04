@@ -1,6 +1,7 @@
 // The logic of reactBridge is referenced from single-spa typography
 // Because the Garfish lifecycle does not agree with that of single-spa  part logical coupling in the framework
 // https://github.com/single-spa/single-spa-vue/blob/main/src/single-spa-vue.js
+import { __GARFISH_GLOBAL_APP_LIFECYCLE__ } from '@garfish/utils';
 
 const defaultOpts = {
   Vue: null, // vue2
@@ -8,11 +9,11 @@ const defaultOpts = {
   VueRouter: null,
 
   // required - one or the other
-  rootComponent: null,
   loadRootComponent: null,
 
   appOptions: null,
   handleInstance: null,
+  appId: null,
   el: null,
   canUpdate: true, // by default, allow parcels created with garfish-react-bridge to be updated
 };
@@ -43,12 +44,6 @@ export function vueBridge(userOpts) {
     );
   }
 
-  if (!opts.rootComponent && !opts.loadRootComponent) {
-    throw new Error(
-      'garfish-vue-bridge: must be passed opts.rootComponent or opts.loadRootComponent',
-    );
-  }
-
   if (
     opts.appOptions.el &&
     typeof opts.appOptions.el !== 'string' &&
@@ -64,23 +59,33 @@ export function vueBridge(userOpts) {
   // Just a shared object to store the mounted object state
   // key - name of single-spa app, since it is unique
   const mountedInstances = {};
+  const providerLifeCycle = {
+    render: (props) => mount.call(this, opts, mountedInstances, props),
+    destroy: (props) => unmount.call(this, opts, mountedInstances, props),
+    update: (props) =>
+      opts.canUpdate && update.call(this, opts, mountedInstances, props),
+  };
 
   const provider = async function (props) {
     await bootstrap.call(this, opts, props);
-    return {
-      render: (props) => mount.call(this, opts, mountedInstances, props),
-      destroy: (props) => unmount.call(this, opts, mountedInstances, props),
-      update: (props) =>
-        opts.canUpdate && update.call(this, opts, mountedInstances, props),
-    };
+    return providerLifeCycle;
   };
 
+  // in sandbox env
   if (
     window.__GARFISH__ &&
     typeof __GARFISH_EXPORTS__ === 'object' &&
     __GARFISH_EXPORTS__
   ) {
     __GARFISH_EXPORTS__.provider = provider;
+  }
+
+  // es module env
+  if (window[__GARFISH_GLOBAL_APP_LIFECYCLE__] && opts.appId) {
+    const subLifeCycle = window[__GARFISH_GLOBAL_APP_LIFECYCLE__][opts.appId];
+    if (subLifeCycle) {
+      subLifeCycle.defer(providerLifeCycle);
+    }
   }
   return provider;
 }

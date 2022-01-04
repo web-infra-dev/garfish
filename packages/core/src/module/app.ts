@@ -19,6 +19,8 @@ import {
   parseContentType,
   createAppContainer,
   setDocCurrentScript,
+  __SCRIPT_GLOBAL_APP_ID__,
+  __GARFISH_GLOBAL_APP_LIFECYCLE__,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
@@ -76,6 +78,8 @@ export class App {
   private resources: interfaces.ResourceModules;
   // Environment variables injected by garfish for linkage with child applications
   private globalEnvVariables: Record<string, any>;
+  // es-module save lifeCycle to appGlobalId，appGlobalId in script attr
+  private appGlobalId: string;
 
   constructor(
     context: Garfish,
@@ -492,6 +496,16 @@ export class App {
 
       script: (node) => {
         const mimeType = entryManager.findAttributeValue(node, 'type');
+        const appGlobalId = entryManager.findAttributeValue(
+          node,
+          __SCRIPT_GLOBAL_APP_ID__,
+        );
+
+        // app lifecycle save in appGlobalId
+        if (appGlobalId) {
+          this.appGlobalId = appGlobalId;
+        }
+
         if (mimeType) {
           if (!isJs(parseContentType(mimeType))) {
             return DOMApis.createElement(node);
@@ -504,10 +518,7 @@ export class App {
         if (jsManager) {
           if (jsManager.isModule()) {
             // EsModule cannot use eval and new Function to execute the code
-            warn(
-              'Garfish does not support "esmodule" at the moment,' +
-                'if you use "vite", please switch to other build tools.',
-            );
+            warn('"esmodule" code will not be execute in sandbox');
             return DOMApis.createElement(node);
           }
           const { url, scriptCode } = jsManager;
@@ -585,7 +596,13 @@ export class App {
       provider = customExports.provider;
     }
 
-    // The provider for the function, standard export content
+    // esmodule app global lifecycle in global variable
+    if (this.global[__GARFISH_GLOBAL_APP_LIFECYCLE__] && this.appGlobalId) {
+      provider =
+        this.global[__GARFISH_GLOBAL_APP_LIFECYCLE__][this.appGlobalId]
+          ?.provider;
+    }
+
     if (typeof provider === 'function') {
       provider = await provider(
         {
