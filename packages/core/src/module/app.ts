@@ -587,12 +587,14 @@ export class App {
 
     // The provider for the function, standard export content
     if (typeof provider === 'function') {
-      provider = await provider({
-        basename,
-        dom: rootElement,
-        ...(props || {}),
-        ...(appInfo.props || {}),
-      });
+      provider = await provider(
+        {
+          basename,
+          dom: rootElement,
+          ...(appInfo.props || {}),
+        },
+        appInfo.props,
+      );
     } else if (isPromise(provider)) {
       provider = await provider;
     }

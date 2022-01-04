@@ -153,7 +153,11 @@ function mount(opts, mountedInstances, props) {
       instance.root = instance.vueInstance.mount(appOptions.el);
     }
   } else {
+    // vue2 el options will auto replace render dom，garfish cache mode can't replace render dom https://cn.vuejs.org/v2/api/#el
+    delete appOptions.el;
     instance.vueInstance = new opts.Vue(appOptions);
+    instance.vueInstance.$mount();
+    instance.domEl.appendChild(instance.vueInstance.$el);
     if (instance.vueInstance.bind) {
       instance.vueInstance = instance.vueInstance.bind(instance.vueInstance);
     }

@@ -53,35 +53,27 @@ export default {
     if (hasInit) return;
     hasInit = true;
 
-    GarfishInstance.run({
-      basename: '/garfish_master/vue/micro-app',
-      nested: !!window.__GARFISH_PARENT__,
-      domGetter: ()=> document.querySelector('#micro-app-container'),
-      props:{
-        helloWorld: false
-      },
-      apps: [
-        {
-          name: 'vueApp',
-          entry: `http://localhost:${portInfo['dev/vue-sub'].port}`,
-          // basename: '/garfish_master/vue/micro-app',
-          activeWhen: '/vueApp',
-          cache: true,
-        },
-        {
-          name: 'reactApp',
-          entry: `http://localhost:${portInfo['dev/react'].port}`,
-          // basename: '/garfish_master/vue/micro-app',
-          activeWhen: '/reactApp',
-          cache: true
+    GarfishInstance.registerApp([
+      {
+        name: 'vueApp',
+        entry: `http://localhost:${portInfo['dev/vue-sub'].port}`,
+        basename: '/garfish_master/vue/micro-app',
+        activeWhen: '/vueApp',
+        domGetter: '#micro-app-container',
+        cache: false,
+        props: {
+          helloWorld: false
         }
-      ],
-      async beforeLoad(appInfo) {
-        console.log('开始加载了', appInfo);
-        // return Promise.resolve();
       },
-    });
-    // Can only be run once
+      {
+        name: 'reactApp',
+        entry: `http://localhost:${portInfo['dev/react'].port}`,
+        basename: '/garfish_master/vue/micro-app',
+        domGetter: '#micro-app-container',
+        activeWhen: '/reactApp',
+        cache: false
+      }
+    ]);
   }
 }
 </script>
