@@ -19,9 +19,21 @@ interface MountOptions {
   domGetter: string | (() => Element);
 }
 
+declare interface MicroAppRoot extends ShadowRoot {
+  frameElement?: HTMLIFrameElement;
+  documentElement?: HTMLHtmlElement;
+  head?: HTMLHeadElement;
+  body?: HTMLBodyElement;
+  // host: MicroAppElement;
+  document?: HTMLElement;
+}
+
+declare interface MicroAppElement extends HTMLElement {
+  _option: Options;
+}
+
 export class App {
   private iframeContext: HTMLIFrameElement;
-  private document: Document;
   private options: Options;
   private htmlText: string;
 
@@ -32,33 +44,39 @@ export class App {
 
   public async mount(options: MountOptions) {
     const container = await getRenderNode(options.domGetter);
-
-    await this.injectHtml(container);
+    await this.initShadowDom(container);
   }
 
-  private async injectHtml(container) {
-    const iframe = document.createElement('iframe');
-    iframe.src = this.options.JSRuntimePath || '';
-    iframe.hidden = true;
-    // iframe.setAttribute('display', 'none');
-
+  private async initShadowDom(container: Element) {
+    const iframeInstance = this.initJsRuntime();
     const appContainer = document.createElement('div');
-    const doc = document.createElement('m-document');
-    const appRoot = appContainer.attachShadow({ mode: 'closed' });
-    defineProperty(appRoot, 'frameElement', { value: iframe });
+    const shadowRoot: MicroAppRoot = appContainer.attachShadow({
+      mode: 'closed',
+    });
+    const subAppDocument = document.createElement('micro-document');
+
+    defineProperty(shadowRoot, 'frameElement', { value: iframeInstance });
     container.appendChild(appContainer);
-    defineProperty(appRoot, 'document', { value: doc });
+    defineProperty(shadowRoot, 'document', { value: subAppDocument });
 
     await Promise.all([
       new Promise((resolve) => {
-        addEventListenerTo(iframe, 'load', resolve, { once: true });
-        DocumentFragment.prototype.append.call(appRoot, iframe, doc);
+        addEventListenerTo(iframeInstance, 'load', resolve, { once: true });
+        DocumentFragment.prototype.append.call(
+          shadowRoot,
+          iframeInstance,
+          subAppDocument,
+        );
       }),
     ]);
+    this.injectBaseHtmlContainer(shadowRoot);
+  }
 
+  private injectBaseHtmlContainer(shadowRoot: MicroAppRoot) {
+    // init sub app
     const domParser = new DOMParser();
     const subAppDoc = domParser.parseFromString(this.htmlText, 'text/html');
-    defineProperties(appRoot, {
+    defineProperties(shadowRoot, {
       documentElement: {
         configurable: true,
         value: subAppDoc.documentElement,
@@ -73,13 +91,13 @@ export class App {
       },
     });
 
+    //TODO: need keep script in order to inject
     const newScripts: HTMLScriptElement[] = [];
     subAppDoc.querySelectorAll('script').forEach((script) => {
       const { type, attributes } = script;
       if (SCRIPT_TYPES.includes(type)) {
-        const newEl = (
-          appRoot as any
-        ).frameElement.contentDocument.createElement('script');
+        const newEl =
+          shadowRoot.frameElement.contentDocument.createElement('script');
         newEl.text = script.text;
         newEl.async = script.async; // fix: the default value of "async" is true
         for (let i = 0, { length } = attributes; i < length; ++i) {
@@ -90,8 +108,20 @@ export class App {
       }
     });
 
-    appendChildTo((appRoot as any).document, subAppDoc.documentElement);
+    // this.hijackNodeMethodsOfIframe(shadowRoot.frameElement.contentWindow);
+    requestAnimationFrame(() => {
+      appendChildTo(shadowRoot.document, subAppDoc.documentElement);
+      appendTo(shadowRoot.frameElement.contentDocument.body, ...newScripts);
+    });
+  }
 
-    appendTo((appRoot as any).frameElement.contentDocument.body, ...newScripts);
+  private hijackNodeMethodsOfIframe() {}
+
+  private initJsRuntime() {
+    const iframe = document.createElement('iframe');
+    iframe.src = this.options.JSRuntimePath || '';
+    iframe.hidden = true;
+    this.iframeContext = iframe;
+    return iframe;
   }
 }

@@ -33,4 +33,3 @@ export const provider = reactBridge({
 if (!window.__GARFISH__) {
   ReactDOM.render(<App basename={'/'} />, document.querySelector('#root'));
 }
-console.log('fucking !!!!!!!!!');
