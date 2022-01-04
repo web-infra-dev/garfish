@@ -83,7 +83,7 @@ module.exports = {
     // 保证在开发模式下应用端口不一样
     port: '8000',
     headers: {
-      // 保证子应用的资源支持跨域，在线上后需要保证子应用的资源在主应用的环境中加载不会存在跨域问题（**也需要限制范围注意安全问题**）
+      // 保证子应用的资源支持跨域，在上线后需要保证子应用的资源在主应用的环境中加载不会存在跨域问题（**也需要限制范围注意安全问题**）
       'Access-Control-Allow-Origin': '*',
     },
   },
@@ -100,7 +100,7 @@ import { htmlPlugin } from '@garfish/vite-plugin';
 // 子应用必须使用缓存模式 cache: true 模式，路由驱动时默认使用 cache 模式，触发将 appInfo.cache = false（因为 esmodule 内容无法重复执行）
 // 子应用不可重复使用 app.mount，第二次渲染时只能使用 app.show，否则将走非缓存模式（因为 esmodule 内容无法重复执行）
 // 需要将子应用沙箱关闭 sandbox: false，否则可能会出现子应用部分代码在沙箱内执行，部分不在沙箱执行: Garfish.run({ apps: [{ name:'vite-app',entry:'xxx',sandbox: false }] })
-// 子应用的副作用将会发生逃逸，在子应用卸载后需要降对应全局的副作用清除
+// 子应用的副作用将会发生逃逸，在子应用卸载后需要将对应全局的副作用清除
 export default defineConfig({
   // 提供资源绝对路径，端口可自定义
   base: 'http://localhost:3000/',
@@ -111,7 +111,7 @@ export default defineConfig({
     origin: 'http://localhost:3000',
   },
   plugins: [
-    // 使用 vite-plugin 的 html plugin，并定义 ID，改 ID 与 brdige 的 ID 需相同
+    // 使用 vite-plugin 的 html plugin，并定义 ID，该 ID 与 brdige 的 ID 需相同
     htmlPlugin('vite-vue-sub-app', {
       useDevMode: true,
     }),
@@ -215,7 +215,7 @@ export const provider = vueBridge({
   - 使用 Garfish 在主应用上调度管理子应用
 - 子应用的改造
   - 增加对应的构建配置
-  - 使用 `@garfish/bridge` 包提供的提供的包装后返回 `provider` 函数并导出
+  - 使用 `@garfish/bridge` 包提供的函数包装子应用后返回 `provider` 函数并导出
   - 子应用针对不同的框架类型，添加不同 `basename` 的设置方式
     - React 在根组件中获取 `basename` 将其传递至 `BrowserRouter` 的 `basename` 属性中
     - Vue 将 `basename` 传递至 `VueRouter` 的 `basename` 属性中
