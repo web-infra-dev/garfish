@@ -100,10 +100,12 @@ importers:
     specifiers:
       '@vitejs/plugin-vue': ^2.0.0
       garfish: workspace:*
+      shadowrealm-api: ^0.6.1
       vite: ^2.7.2
       vue: ^3.2.25
     dependencies:
       garfish: link:../../packages/garfish
+      shadowrealm-api: 0.6.1
       vue: 3.2.26
     devDependencies:
       '@vitejs/plugin-vue': 2.0.1_vite@2.7.10+vue@3.2.26
@@ -21950,6 +21952,10 @@ packages:
     dependencies:
       inherits: 2.0.4
       safe-buffer: 5.2.1
+
+  /shadowrealm-api/0.6.1:
+    resolution: {integrity: sha512-yrKy2T5/MD+ZzLKcNpQCcWCS++1d/2Pwgriigel+IVhKtXd74e5BT2LEiQbp+HmUtg+yZz4tI1yHLhdCRBrqMw==}
+    dev: false
 
   /shallow-clone/0.1.2:
     resolution: {integrity: sha1-WQnodLp3EG1zrEFM/sH/yofZcGA=}

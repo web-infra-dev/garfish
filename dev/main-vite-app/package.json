@@ -7,8 +7,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.2.25",
-    "garfish": "workspace:*"
+    "garfish": "workspace:*",
+    "shadowrealm-api": "^0.6.1",
+    "vue": "^3.2.25"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.0.0",

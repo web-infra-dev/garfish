@@ -73,6 +73,7 @@ export class App {
   }
 
   private injectBaseHtmlContainer(shadowRoot: MicroAppRoot) {
+    const { contentDocument, contentWindow } = shadowRoot.frameElement;
     // init sub app
     const domParser = new DOMParser();
     const subAppDoc = domParser.parseFromString(this.htmlText, 'text/html');
@@ -96,8 +97,7 @@ export class App {
     subAppDoc.querySelectorAll('script').forEach((script) => {
       const { type, attributes } = script;
       if (SCRIPT_TYPES.includes(type)) {
-        const newEl =
-          shadowRoot.frameElement.contentDocument.createElement('script');
+        const newEl = contentDocument.createElement('script');
         newEl.text = script.text;
         newEl.async = script.async; // fix: the default value of "async" is true
         for (let i = 0, { length } = attributes; i < length; ++i) {
@@ -111,11 +111,11 @@ export class App {
     // this.hijackNodeMethodsOfIframe(shadowRoot.frameElement.contentWindow);
     requestAnimationFrame(() => {
       appendChildTo(shadowRoot.document, subAppDoc.documentElement);
-      appendTo(shadowRoot.frameElement.contentDocument.body, ...newScripts);
+      appendTo(contentDocument.body, ...newScripts);
     });
   }
 
-  private hijackNodeMethodsOfIframe() {}
+  private hackNodeMethodsOfIframe() {}
 
   private initJsRuntime() {
     const iframe = document.createElement('iframe');
