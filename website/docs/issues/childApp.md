@@ -133,6 +133,13 @@ export const provider = () => {
 - Garfish 会将当前的路径传入激活函数分割以得到子应用的最长激活路径，并将 `basename` + `子应用最长激活路径传` 给子应用参数
 - **子应用如果本身具备路由，在微前端的场景下，必须把 basename 作为子应用的基础路径，没有基础路由，子应用的路由可能与主应用和其他应用发生冲突**
 
+## 子应用使用 style-component 切换子应用后样式丢失
+
+- 开启 Style-component 后在生产模式下 style 将会插入到 sheet 中（[React Styled Components stripped out from production build](https://stackoverflow.com/questions/53486470/react-styled-components-stripped-out-from-production-build)）
+- 应用重渲染后 style 重新插入后依然，但是 sheet 未恢复
+
+解决方案在使用 `style-component` 的子应用添加环境变量：`REACT_APP_SC_DISABLE_SPEEDY=true`
+
 ## 主子应用样式冲突
 
 ### arco-design 多版本样式冲突
