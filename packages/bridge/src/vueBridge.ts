@@ -60,7 +60,9 @@ export function vueBridge(userOpts) {
   // key - name of single-spa app, since it is unique
   const mountedInstances = {};
   const providerLifeCycle = {
-    render: (props) => mount.call(this, opts, mountedInstances, props),
+    render: (props, userProps) => {
+      mount.call(this, opts, mountedInstances, props, userProps);
+    },
     destroy: (props) => unmount.call(this, opts, mountedInstances, props),
     update: (props) =>
       opts.canUpdate && update.call(this, opts, mountedInstances, props),
@@ -90,29 +92,31 @@ export function vueBridge(userOpts) {
   return provider;
 }
 
-function bootstrap(opts) {
+function bootstrap(opts, props) {
   if (opts.loadRootComponent) {
-    return opts.loadRootComponent().then((root) => (opts.rootComponent = root));
+    return opts
+      .loadRootComponent(props)
+      .then((root) => (opts.rootComponent = root));
   } else {
     return Promise.resolve();
   }
 }
 
-function resolveAppOptions(opts, props) {
+function resolveAppOptions(opts, appInfo, userProps) {
   if (typeof opts.appOptions === 'function') {
-    return opts.appOptions(props);
+    return opts.appOptions({ appInfo, userProps });
   }
   return { ...opts.appOptions };
 }
 
-function mount(opts, mountedInstances, props) {
+function mount(opts, mountedInstances, props, userProps) {
   const instance = {
     domEl: null,
     vueInstance: null,
     root: null,
   };
 
-  const appOptions = resolveAppOptions(opts, props);
+  const appOptions = resolveAppOptions(opts, props, userProps);
 
   if (!(props.dom instanceof HTMLElement)) {
     throw Error(
@@ -145,9 +149,9 @@ function mount(opts, mountedInstances, props) {
   }
 
   appOptions.data = () => ({ ...appOptions.data, ...props });
-
   if (opts.createApp) {
     instance.vueInstance = opts.createApp(appOptions);
+    instance.vueInstance.use(appOptions.router);
     if (opts.handleInstance) {
       opts.handleInstance(instance.vueInstance, props);
       instance.root = instance.vueInstance.mount(appOptions.el);

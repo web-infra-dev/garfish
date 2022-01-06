@@ -3,7 +3,6 @@
 // https://github.com/single-spa/single-spa-react/blob/main/src/single-spa-react.js
 
 import { __GARFISH_GLOBAL_APP_LIFECYCLE__ } from '@garfish/utils';
-
 // React context that gives any react component the single-spa props
 export let GarfishContext = null;
 
@@ -122,20 +121,7 @@ function bootstrap(opts, props) {
     return Promise.resolve();
   } else {
     // They passed a promise that resolves with the react component. Wait for it to resolve before mounting
-
-    // return opts
-    //   .loadRootComponent({
-    //     ...props,
-    //   })
-    //   .then((resolvedComponent) => {
-    //     opts.rootComponent = resolvedComponent;
-    //   });
-
-    return Promise.resolve(() =>
-      opts.loadRootComponent({
-        ...props,
-      }),
-    ).then((resolvedComponent) => {
+    return opts.loadRootComponent(props).then((resolvedComponent) => {
       opts.rootComponent = resolvedComponent;
     });
   }
@@ -262,7 +248,7 @@ function reactDomRender({ opts, elementToRender, domElement }) {
 function getElementToRender(opts, appInfo, props = {}) {
   const rootComponentElement = opts.React.createElement(opts.rootComponent, {
     appInfo,
-    userProp: props,
+    userProps: props,
   });
 
   let elementToRender = GarfishContext
