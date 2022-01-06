@@ -19,6 +19,9 @@ export const provider = reactBridge({
   ReactDOM,
   el: '#root',
   rootComponent: App,
+  loadRootComponent: (props) => {
+    return Promise.resolve(App);
+  },
 });
 
 // export const provider = () => {
