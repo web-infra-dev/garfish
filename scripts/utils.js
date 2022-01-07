@@ -5,8 +5,8 @@ const step = (msg) => {
   console.log(chalk.cyan(msg));
 };
 
-const run = (bin, args, opts = {}) => {
-  return execa(bin, args, { stdio: 'inherit', ...opts });
+const run = async (bin, args, opts = {}) => {
+  return await execa(bin, args, { stdio: 'inherit', ...opts });
 };
 
 module.exports = {

@@ -110,7 +110,7 @@ export class App {
       exports: {},
       module: null,
       require: (key: string) => {
-        return this.global[key] || context.externals[key] || window[key];
+        return context.externals[key] || this.global[key] || window[key];
       },
     };
     this.cjsModules.module = this.cjsModules;
