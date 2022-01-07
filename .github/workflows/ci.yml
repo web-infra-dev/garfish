@@ -31,6 +31,8 @@ jobs:
       run: pnpm install --filter=\!garfish-docs --filter=\!@garfish-dev/\*
     - name: Run unit tests
       run: pnpm test
+    - name: codecov
+      run: npx codecov -f coverage/*.json
 
   e2e-test:
     runs-on: ubuntu-20.04
