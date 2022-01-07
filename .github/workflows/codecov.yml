@@ -30,6 +30,6 @@ jobs:
     - name: install dependency
       run: pnpm install --filter=\!garfish-docs --filter=\!@garfish-dev/\*
     - name: Run unit tests
-      run: pnpm test
+      run: pnpm test:coverage
     - name: codecov
       run: npx codecov -f coverage/*.json
