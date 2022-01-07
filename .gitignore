@@ -11,6 +11,7 @@ es/
 temp/
 /docs
 .npmrc
+**/pnpm-global
 
 # test result
 cypress/screenshots

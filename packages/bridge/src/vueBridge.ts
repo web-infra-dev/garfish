@@ -60,12 +60,12 @@ export function vueBridge(userOpts) {
   // key - name of single-spa app, since it is unique
   const mountedInstances = {};
   const providerLifeCycle = {
-    render: (props, userProps) => {
-      mount.call(this, opts, mountedInstances, props, userProps);
+    render: (appInfo, userProps) => {
+      mount.call(this, opts, mountedInstances, appInfo, userProps);
     },
-    destroy: (props) => unmount.call(this, opts, mountedInstances, props),
-    update: (props) =>
-      opts.canUpdate && update.call(this, opts, mountedInstances, props),
+    destroy: (appInfo) => unmount.call(this, opts, mountedInstances, appInfo),
+    update: (appInfo) =>
+      opts.canUpdate && update.call(this, opts, mountedInstances, appInfo),
   };
 
   const provider = async function (props) {
@@ -109,23 +109,23 @@ function resolveAppOptions(opts, appInfo, userProps) {
   return { ...opts.appOptions };
 }
 
-function mount(opts, mountedInstances, props, userProps) {
+function mount(opts, mountedInstances, appInfo, userProps) {
   const instance = {
     domEl: null,
     vueInstance: null,
     root: null,
   };
 
-  const appOptions = resolveAppOptions(opts, props, userProps);
+  const appOptions = resolveAppOptions(opts, appInfo, userProps);
 
-  if (!(props.dom instanceof HTMLElement)) {
+  if (!(appInfo.dom instanceof HTMLElement)) {
     throw Error(
-      `garfish-vue-bridge: Garfish runtime provides no dom attributes to mount， ${props.dom}`,
+      `garfish-vue-bridge: Garfish runtime provides no dom attributes to mount， ${appInfo.dom}`,
     );
   }
 
   if (appOptions.el) {
-    appOptions.el = props.dom.querySelector(appOptions.el);
+    appOptions.el = appInfo.dom.querySelector(appOptions.el);
     if (!appOptions.el) {
       throw Error(
         `
@@ -135,7 +135,7 @@ function mount(opts, mountedInstances, props, userProps) {
       );
     }
   } else {
-    appOptions.el = props.dom;
+    appOptions.el = appInfo.dom;
   }
 
   instance.domEl = appOptions.el;
@@ -148,14 +148,14 @@ function mount(opts, mountedInstances, props, userProps) {
     appOptions.data = {};
   }
 
-  appOptions.data = () => ({ ...appOptions.data, ...props });
+  appOptions.data = () => ({ ...appOptions.data, ...appInfo });
   if (opts.createApp) {
     instance.vueInstance = opts.createApp(appOptions);
     instance.vueInstance.use(appOptions.router);
     if (opts.handleInstance) {
-      opts.handleInstance(instance.vueInstance, props);
+      opts.handleInstance(instance.vueInstance, appInfo);
       instance.root = instance.vueInstance.mount(appOptions.el);
-      mountedInstances[props.appName] = instance;
+      mountedInstances[appInfo.appName] = instance;
 
       return instance.vueInstance;
     } else {
@@ -167,21 +167,21 @@ function mount(opts, mountedInstances, props, userProps) {
       instance.vueInstance = instance.vueInstance.bind(instance.vueInstance);
     }
     if (opts.handleInstance) {
-      opts.handleInstance(instance.vueInstance, props);
-      mountedInstances[props.appName] = instance;
+      opts.handleInstance(instance.vueInstance, appInfo);
+      mountedInstances[appInfo.appName] = instance;
       return instance.vueInstance;
     }
   }
 
-  mountedInstances[props.appName] = instance;
+  mountedInstances[appInfo.appName] = instance;
   return instance.vueInstance;
 }
 
-function update(opts, mountedInstances, props) {
-  const instance = mountedInstances[props.appName];
+function update(opts, mountedInstances, appInfo) {
+  const instance = mountedInstances[appInfo.appName];
   const data = {
     ...(opts.appOptions.data || {}),
-    ...props,
+    ...appInfo,
   };
   const root = instance.root || instance.vueInstance;
   for (const prop in data) {
@@ -189,8 +189,8 @@ function update(opts, mountedInstances, props) {
   }
 }
 
-function unmount(opts, mountedInstances, props) {
-  const instance = mountedInstances[props.appName];
+function unmount(opts, mountedInstances, appInfo) {
+  const instance = mountedInstances[appInfo.appName];
   if (opts.createApp) {
     instance.vueInstance.unmount(instance.domEl);
   } else {

@@ -85,11 +85,11 @@ export function reactBridge(userOpts) {
   }
 
   const providerLifeCycle = {
-    render: (props, userProps) => {
-      return mount.call(this, opts, props, userProps);
+    render: (appInfo, userProps) => {
+      return mount.call(this, opts, appInfo, userProps);
     },
-    destroy: (props) => unmount.call(this, opts, props),
-    update: (props) => opts.canUpdate && update.call(this, opts, props),
+    destroy: (appInfo) => unmount.call(this, opts, appInfo),
+    update: (appInfo) => opts.canUpdate && update.call(this, opts, appInfo),
   };
 
   const provider = async function (props) {
