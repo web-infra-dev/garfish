@@ -19,6 +19,7 @@ importers:
       axios: 0.24.0
       babel-polyfill: 6.26.0
       chalk: 4.1.2
+      codecov: ^3.1.0
       cross-env: 7.0.3
       cypress: 8.7.0
       esbuild-plugin-replace: 1.0.7
@@ -65,6 +66,7 @@ importers:
       axios: 0.24.0
       babel-polyfill: 6.26.0
       chalk: 4.1.2
+      codecov: 3.8.3
       cross-env: 7.0.3
       cypress: 8.7.0
       esbuild-plugin-replace: 1.0.7
@@ -8498,7 +8500,7 @@ packages:
     dev: false
 
   /agent-base/6.0.2:
-    resolution: {integrity: sha1-Sf/1hXfP7j83F2/qtMIuAPhtf3c=}
+    resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
     dependencies:
       debug: 4.3.2
@@ -8774,6 +8776,11 @@ packages:
   /argparse/2.0.1:
     resolution: {integrity: sha1-JG9Q88p4oyQPbJl+ipvR6sSeSzg=}
 
+  /argv/0.0.2:
+    resolution: {integrity: sha1-7L0W+JSbFXGDcRsb2jNPN4QBhas=}
+    engines: {node: '>=0.6.10'}
+    dev: true
+
   /aria-query/3.0.0:
     resolution: {integrity: sha1-ZbP8wcoRVajJrmTW7uKX8V1RM8w=}
     dependencies:
@@ -9006,14 +9013,14 @@ packages:
   /axios/0.21.4:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.14.4
+      follow-redirects: 1.14.4_debug@4.3.2
     transitivePeerDependencies:
       - debug
 
   /axios/0.24.0:
     resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
     dependencies:
-      follow-redirects: 1.14.4
+      follow-redirects: 1.14.4_debug@4.3.2
     transitivePeerDependencies:
       - debug
     dev: true
@@ -9142,7 +9149,7 @@ packages:
       loader-utils: 1.4.0
       make-dir: 3.1.0
       schema-utils: 2.7.1
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   /babel-loader/8.2.2_bc5a77be236f8c9ab8958078649c687f:
     resolution: {integrity: sha512-JvTd0/D889PQBtUXJ2PXaKU/pjZDMtHA9V2ecm+eNRmmBCMR09a+fmpGTNwnJtFmFl5Ei7Vy47LjBb+L0wQ99g==}
@@ -10417,6 +10424,21 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
+  /codecov/3.8.3:
+    resolution: {integrity: sha512-Y8Hw+V3HgR7V71xWH2vQ9lyS358CbGCldWlJFR0JirqoGtOoas3R3/OclRTvgUYFK29mmJICDPauVKmpqbwhOA==}
+    engines: {node: '>=4.0'}
+    deprecated: https://about.codecov.io/blog/codecov-uploader-deprecation-plan/
+    hasBin: true
+    dependencies:
+      argv: 0.0.2
+      ignore-walk: 3.0.4
+      js-yaml: 3.14.1
+      teeny-request: 7.1.1
+      urlgrey: 1.0.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /collapse-white-space/1.0.6:
     resolution: {integrity: sha1-5jYpwAFmZXkgYNu+t5xCI50sUoc=}
     dev: false
@@ -11009,7 +11031,7 @@ packages:
       postcss-value-parser: 4.1.0
       schema-utils: 2.7.1
       semver: 6.3.0
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   /css-loader/5.2.7_webpack@5.64.3:
     resolution: {integrity: sha512-Q7mOvpBNBG7YrVGMxRxcBJZFL75o+cH2abNASdibkj/fffYD8qWbInZrD0S9ccI6vZclF3DsHE7njGlLtaHbhg==}
@@ -13243,7 +13265,6 @@ packages:
     resolution: {integrity: sha1-9K8+qfNNiicc9YrSs3WfQx8LMY0=}
     dependencies:
       punycode: 1.4.1
-    dev: false
 
   /fastq/1.13.0:
     resolution: {integrity: sha512-YpkpUnK8od0o1hmeSc7UUs/eB/vIPWJYjKck2QKIzAf71Vm1AAQ3EbuZB3g2JIy+pg+ERD0vqI79KyZiB2e2Nw==}
@@ -13565,7 +13586,7 @@ packages:
       debug:
         optional: true
     dependencies:
-      debug: 4.3.2
+      debug: 4.3.2_supports-color@6.1.0
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -13757,7 +13778,7 @@ packages:
     resolution: {integrity: sha1-FQStJSMVjKpA20onh8sBQRmU6k8=}
 
   /fsevents/1.2.13:
-    resolution: {integrity: sha1-8yXLBFVZJCi88Rs4M3DvcOO/zDg=}
+    resolution: {integrity: sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==}
     engines: {node: '>= 4.0'}
     os: [darwin]
     deprecated: fsevents 1 will break on node v14+ and could be using insecure binaries. Upgrade to fsevents 2.
@@ -13768,7 +13789,7 @@ packages:
     optional: true
 
   /fsevents/2.1.2:
-    resolution: {integrity: sha1-TAofs0vGjlQ7S4Kp7Dkr+9qECAU=}
+    resolution: {integrity: sha512-R4wDiBwZ0KzpgOWetKDug1FZcYhqYnUYKtfZYt4mD5SBz76q0KR4Q9o7GIPamsVPGmW3EYPPJ0dOOjvx32ldZA==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     deprecated: '"Please update to latest v2.3 or v2.2"'
@@ -13777,7 +13798,7 @@ packages:
     optional: true
 
   /fsevents/2.3.2:
-    resolution: {integrity: sha1-ilJveLj99GI7cJ4Ll1xSwkwC/Ro=}
+    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     requiresBuild: true
@@ -14490,7 +14511,7 @@ packages:
       tapable: 1.1.3
       toposort: 1.0.7
       util.promisify: 1.0.0
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   /html-webpack-plugin/4.0.0-beta.11_webpack@4.42.0:
     resolution: {integrity: sha512-4Xzepf0qWxf8CGg7/WQM5qBB2Lc/NFI7MhU59eUDTkuQp3skZczH4UA1d6oQyDEIoMDgERVhRyTdtUPZ5s5HBg==}
@@ -14756,6 +14777,12 @@ packages:
 
   /iferr/0.1.5:
     resolution: {integrity: sha1-xg7taebY/bazEEofy8ocGS3FtQE=}
+
+  /ignore-walk/3.0.4:
+    resolution: {integrity: sha512-PY6Ii8o1jMRA1z4F2hRkH/xN59ox43DavKvD3oDpfurRlOJyAHpifIwpbdv1n4jt4ov0jSpw3kQ4GhJnpBL6WQ==}
+    dependencies:
+      minimatch: 3.0.4
+    dev: true
 
   /ignore/3.3.10:
     resolution: {integrity: sha512-Pgs951kaMm5GXP7MOvxERINe3gsaVjUWFm+UZPSq9xYriQAksyhg0csnS0KXSNRD5NmNdapXEpjxG49+AKh/ug==}
@@ -17305,7 +17332,7 @@ packages:
       sourcemap-codec: 1.4.8
 
   /make-dir/2.1.0:
-    resolution: {integrity: sha1-XwMQ4YuL6JjMBwCSlaMK5B6R5vU=}
+    resolution: {integrity: sha512-LS9X+dc8KLxXCb8dni79fLIIUA5VyZoyjSMCwTluaXA0o27cCK0bhXkpgw+sTXVpPy/lSO57ilRixqk0vDmtRA==}
     engines: {node: '>=6'}
     requiresBuild: true
     dependencies:
@@ -22548,6 +22575,12 @@ packages:
       end-of-stream: 1.4.4
       stream-shift: 1.0.1
 
+  /stream-events/1.0.5:
+    resolution: {integrity: sha512-E1GUzBSgvct8Jsb3v2X15pjzN1tYebtbLaMg+eBOUOAxgbLoSbT2NS91ckc5lJD1KfLjId+jXJRgo0qnV5Nerg==}
+    dependencies:
+      stubs: 3.0.0
+    dev: true
+
   /stream-http/2.8.3:
     resolution: {integrity: sha512-+TSkfINHDo4J+ZobQLWiMouQYB+UVYFttRA94FpEzzJ7ZdqcL4uUUQ7WkdkI4DSozGmgBUE/a47L+38PenXhUw==}
     dependencies:
@@ -22765,6 +22798,10 @@ packages:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
 
+  /stubs/3.0.0:
+    resolution: {integrity: sha1-6NK6H6nJBXAwPAMLaQD31fiavls=}
+    dev: true
+
   /style-loader/0.23.1:
     resolution: {integrity: sha512-XK+uv9kWwhZMZ1y7mysB+zoihsEj4wneFWAS5qoiLwzW0WzSqMrrsIy+a3zkQJq0ipFtBpX5W3MqyRIBF/WFGg==}
     engines: {node: '>= 0.12.0'}
@@ -22972,6 +23009,19 @@ packages:
       mkdirp: 1.0.4
       yallist: 4.0.0
     dev: false
+
+  /teeny-request/7.1.1:
+    resolution: {integrity: sha512-iwY6rkW5DDGq8hE2YgNQlKbptYpY5Nn2xecjQiNjOXWbKzPGUfmeUBCSQbbr306d7Z7U2N0TPl+/SwYRfua1Dg==}
+    engines: {node: '>=10'}
+    dependencies:
+      http-proxy-agent: 4.0.1
+      https-proxy-agent: 5.0.0
+      node-fetch: 2.6.5
+      stream-events: 1.0.5
+      uuid: 8.3.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
 
   /terminal-link/2.1.1:
     resolution: {integrity: sha512-un0FmiRUQNr5PJqy9kP7c40F5BOfpGlYTrxonDChEZB7pzZxRNp/bt+ymiy9/npwXya9KH99nJ/GXFIiUkYGFQ==}
@@ -23865,6 +23915,12 @@ packages:
       punycode: 1.3.2
       querystring: 0.2.0
 
+  /urlgrey/1.0.0:
+    resolution: {integrity: sha512-hJfIzMPJmI9IlLkby8QrsCykQ+SXDeO2W5Q9QTW3QpqZVTx4a/K7p8/5q+/isD8vsbVaFgql/gvAoQCRQ2Cb5w==}
+    dependencies:
+      fast-url-parser: 1.1.3
+    dev: true
+
   /use-composed-ref/1.1.0_react@16.14.0:
     resolution: {integrity: sha1-kiDk6UqXt7AtfSfq6rCzcDRDi7w=}
     peerDependencies:
@@ -24253,7 +24309,7 @@ packages:
     dev: false
 
   /watchpack-chokidar2/2.0.1:
-    resolution: {integrity: sha1-OFAAcu5uzmbzdpk2lQ6hdxvhyVc=}
+    resolution: {integrity: sha512-nCFfBIPKr5Sh61s4LPpy1Wtfi0HE8isJ3d2Yb5/Ppw2P2B/3eVSEBjKfN0fmHJSK14+31KwMKmcrzs2GM4P0Ww==}
     requiresBuild: true
     dependencies:
       chokidar: 2.1.8
@@ -24397,7 +24453,7 @@ packages:
       mime: 2.5.2
       mkdirp: 0.5.5
       range-parser: 1.2.1
-      webpack: 4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
       webpack-log: 2.0.0
 
   /webpack-dev-middleware/5.2.2_webpack@5.64.3:
