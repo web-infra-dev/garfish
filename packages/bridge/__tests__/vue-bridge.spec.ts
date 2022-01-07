@@ -7,16 +7,18 @@ const domElId = '#sub-app-container';
 const cssSelector = '#app';
 
 describe('vue-bridge', () => {
-  let Vue, props, $destroy, appContainer, container;
+  let Vue, props, $destroy, appContainer, container, $mount, $el;
 
   beforeEach(() => {
     Vue = jest.fn();
 
     Vue.mockImplementation(function () {
       this.$destroy = $destroy;
-      this.$el = { innerHTML: '' };
+      this.$mount = $mount;
+      this.$el = $el;
     });
 
+    $el = document.createElement('div');
     container = document.createElement('div');
     container.setAttribute('id', domElId.replace('#', ''));
     document.body.appendChild(container);
@@ -28,6 +30,7 @@ describe('vue-bridge', () => {
     props = { appName: 'test-app', basename: '/demo', dom: container };
 
     $destroy = jest.fn();
+    $mount = jest.fn();
   });
 
   afterEach(() => {
@@ -144,7 +147,8 @@ describe('vue-bridge', () => {
 
     lifeCycles.render(props);
     expect(Vue).toHaveBeenCalled();
-    expect(Vue.mock.calls[0][0].el).toBe(container);
+    // expect(Vue.mock.calls[0][0].el).toBe(container);
+    expect(container.contains($el)).toEqual(true);
     lifeCycles.destroy(props);
   });
 
