@@ -440,9 +440,15 @@ export class App {
   }
 
   private async renderTemplate() {
+    console.log('---renderTemplate 444 77');
+
     const { appInfo, entryManager, resources } = this;
     const { url: baseUrl, DOMApis } = entryManager;
     const { htmlNode, appContainer } = createAppContainer(appInfo);
+
+    console.log('htmlNode', htmlNode);
+
+    console.log('appContainer', appContainer);
 
     // Transformation relative path
     this.htmlNode = htmlNode;
@@ -474,9 +480,14 @@ export class App {
         if (!this.strictIsolation) {
           node = entryManager.cloneNode(node);
           node.tagName = 'div';
+
           node.attributes.push({
             key: __MockBody__,
             value: null,
+          });
+          node.attributes.push({
+            key: 'style',
+            value: 'height: 100%',
           });
         }
         return DOMApis.createElement(node);

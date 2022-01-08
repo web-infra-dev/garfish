@@ -33,7 +33,10 @@ export function createAppContainer(appInfo: interfaces.AppInfo) {
   // Create a temporary node, which is destroyed by the module itself
   let htmlNode: HTMLDivElement | HTMLHtmlElement =
     document.createElement('div');
+
   const appContainer = document.createElement('div');
+  htmlNode.style.height = '100%';
+  appContainer.style.height = '100%';
 
   if (appInfo.sandbox && appInfo.sandbox.strictIsolation) {
     htmlNode = document.createElement('html');

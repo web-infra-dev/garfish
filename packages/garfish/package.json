@@ -35,6 +35,7 @@
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
   "dependencies": {
+    "@garfish/bridge": "^1.2.13",
     "@garfish/browser-snapshot": "workspace:*",
     "@garfish/browser-vm": "workspace:*",
     "@garfish/core": "workspace:*",
