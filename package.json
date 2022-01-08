@@ -1,5 +1,6 @@
 {
   "private": true,
+  "version": "1.2.13",
   "description": "A powerful micro front-end framework",
   "scripts": {
     "dev": "pnpm run start --parallel --filter @garfish-dev/*",
@@ -24,7 +25,8 @@
     "format:md": "prettier --write \"**/*.md\"",
     "release": "node ./scripts/release.js",
     "release:canary": "node ./scripts/release.js --canary",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
   },
   "lint-staged": {
     "*.js": [
@@ -88,10 +90,23 @@
     "typescript": "4.4.3",
     "wait-on": "6.0.0",
     "workspace-tools": "0.16.2",
-    "zx": "4.2.0"
+    "zx": "4.2.0",
+    "@commitlint/cli": "^16.0.1",
+    "@commitlint/config-conventional": "^16.0.0",
+    "cz-customizable": "^6.3.0",
+    "conventional-changelog": "^3.1.25"
   },
   "engines": {
     "node": ">=14.13.0"
   },
-  "version": "1.2.13"
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-customizable"
+    }
+  }
 }
