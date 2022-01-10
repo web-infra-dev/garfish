@@ -1,0 +1,12 @@
+{
+  "name": "@garfish-dev/esm-app",
+  "version": "0.1.5",
+  "private": true,
+  "scripts": {
+    "start": "http-server ./src -p 2999",
+    "build": "cp -r src/. dist"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}
