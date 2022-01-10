@@ -14,10 +14,10 @@ import type {
   VariableDeclaration,
   ExportDefaultDeclaration,
   ImportSpecifier,
+  ImportExpression,
   ImportDeclaration,
   ExportAllDeclaration,
   ExportNamedDeclaration,
-  ImportExpression,
 } from 'estree';
 import type { Scope } from './scope';
 import { State, createState } from './state';
@@ -37,13 +37,13 @@ import {
   callExpression,
   objectProperty,
   blockStatement,
+  expressionStatement,
   objectExpression,
   memberExpression,
+  arrowFunctionExpression,
   variableDeclarator,
   variableDeclaration,
-  expressionStatement,
   functionDeclaration,
-  arrowFunctionExpression,
 } from './generated';
 
 export interface Output {
@@ -57,6 +57,7 @@ type ImportInfoData = (
 ) & {
   moduleName: string;
 };
+
 type ImportTransformNode = ReturnType<Compiler['generateImportTransformNode']>;
 
 interface CompilerOptions {
@@ -108,7 +109,7 @@ export class Compiler {
     this.state = createState(this.ast);
   }
 
-  parse() {
+  private parse() {
     const parser = new Parser(
       {
         locations: true,
@@ -126,7 +127,10 @@ export class Compiler {
     }
   }
 
-  checkImportNames(imports: ImportInfoData['imports'], moduleId: string) {
+  private checkImportNames(
+    imports: ImportInfoData['imports'],
+    moduleId: string,
+  ) {
     const exports = this.getChildModuleExports(moduleId);
     if (exports) {
       imports.forEach((item) => {
@@ -141,13 +145,13 @@ export class Compiler {
     }
   }
 
-  getChildModuleExports(moduleId: string) {
+  private getChildModuleExports(moduleId: string) {
     const storeId = transformUrl(this.opts.storeId, moduleId);
-    const output = runtime.store.resources[storeId] as ModuleOutput;
+    const output = runtime.resources[storeId] as ModuleOutput;
     return output ? output.exports : null;
   }
 
-  getImportInformation(node: ImportDeclaration) {
+  private getImportInformation(node: ImportDeclaration) {
     const imports = node.specifiers.map((n) => {
       const isDefault = isImportDefaultSpecifier(n);
       const isNamespace = isImportNamespaceSpecifier(n);
@@ -171,7 +175,7 @@ export class Compiler {
     };
   }
 
-  getImportInformationBySource(
+  private getImportInformationBySource(
     node: ExportNamedDeclaration | ExportAllDeclaration,
   ) {
     const imports = ((node as ExportNamedDeclaration).specifiers || []).map(
@@ -192,7 +196,7 @@ export class Compiler {
     };
   }
 
-  generateImportTransformNode(moduleName: string, moduleId: string) {
+  private generateImportTransformNode(moduleName: string, moduleId: string) {
     const varName = identifier(moduleName);
     const varExpr = callExpression(
       identifier(Compiler.keys.__VIRTUAL_IMPORT__),
@@ -202,7 +206,7 @@ export class Compiler {
     return variableDeclaration('const', [varNode]);
   }
 
-  generateIdentifierTransformNode(
+  private generateIdentifierTransformNode(
     nameOrInfo: string | ReturnType<Compiler['findIndexInData']>,
   ) {
     let info;
@@ -237,7 +241,7 @@ export class Compiler {
     }
   }
 
-  generateVirtualModuleSystem() {
+  private generateVirtualModuleSystem() {
     const exportNodes = this.exportInfos.map(({ name, refNode }) => {
       return objectProperty(
         identifier(name),
@@ -254,7 +258,7 @@ export class Compiler {
     );
   }
 
-  generateWrapperFunction() {
+  private generateWrapperFunction() {
     const params = [
       Compiler.keys.__VIRTUAL_IMPORT__,
       Compiler.keys.__VIRTUAL_EXPORT__,
@@ -274,7 +278,7 @@ export class Compiler {
     ];
   }
 
-  findIndexInData(refName: string, data: ImportInfoData) {
+  private findIndexInData(refName: string, data: ImportInfoData) {
     for (let i = 0; i < data.imports.length; i++) {
       const { name, alias } = data.imports[i];
       if (refName === alias || refName === name) {
@@ -283,7 +287,7 @@ export class Compiler {
     }
   }
 
-  findImportInfo(moduleId: string): [string?, VariableDeclaration?] {
+  private findImportInfo(moduleId: string): [string?, VariableDeclaration?] {
     for (const { data, transformNode } of this.importInfos) {
       if (data.moduleId === moduleId) {
         return [data.moduleName, transformNode];
@@ -292,7 +296,7 @@ export class Compiler {
     return [];
   }
 
-  isReferencedModuleVariable(scope: Scope, node: Identifier) {
+  private isReferencedModuleVariable(scope: Scope, node: Identifier) {
     const u = () =>
       Object.keys(scope.bindings).some((key) => {
         const { kind, references, constantViolations } = scope.bindings[key];
@@ -309,7 +313,7 @@ export class Compiler {
 
   // 1. export { a as default };
   // 2. export { default as x } from 'module';
-  processExportSpecifiers(
+  private processExportSpecifiers(
     node: ExportNamedDeclaration,
     state: State,
     ancestors: Array<Node>,
@@ -352,7 +356,7 @@ export class Compiler {
 
   // 1. export default 1;
   // 2. export const a = 1;
-  processExportNamedDeclaration(
+  private processExportNamedDeclaration(
     node: ExportNamedDeclaration | ExportDefaultDeclaration,
     state: State,
     ancestors: Array<Node>,
@@ -395,7 +399,7 @@ export class Compiler {
 
   // 1. export * from 'module';
   // 2. export * as x from 'module';
-  processExportAllDeclaration(
+  private processExportAllDeclaration(
     node: ExportAllDeclaration,
     state: State,
     ancestors: Array<Node>,
@@ -438,7 +442,11 @@ export class Compiler {
   }
 
   // 处理所有的 export
-  exportDeclarationVisitor(node: any, state: State, ancestors: Array<Node>) {
+  private exportDeclarationVisitor(
+    node: any,
+    state: State,
+    ancestors: Array<Node>,
+  ) {
     if (node.declaration) {
       this.processExportNamedDeclaration(node, state, [...ancestors]);
     } else if (node.specifiers) {
@@ -449,7 +457,11 @@ export class Compiler {
   }
 
   // 处理所有用到 esm 的引用
-  identifierVisitor(node: Identifier, state: State, ancestors: Array<Node>) {
+  private identifierVisitor(
+    node: Identifier,
+    state: State,
+    ancestors: Array<Node>,
+  ) {
     const parent = ancestors[ancestors.length - 2];
     if (isExportSpecifier(parent)) return;
     const scope = state.getScopeByAncestors(ancestors);
@@ -466,7 +478,7 @@ export class Compiler {
   }
 
   // Static import expression
-  importDeclarationVisitor(
+  private importDeclarationVisitor(
     node: ImportDeclaration,
     state: State,
     ancestors: Array<Node>,
@@ -491,7 +503,7 @@ export class Compiler {
   }
 
   // Dynamic import expression
-  importExpressionVisitor(
+  private importExpressionVisitor(
     node: ImportExpression,
     state: State,
     ancestors: Array<Node>,
@@ -504,7 +516,11 @@ export class Compiler {
   }
 
   // `import.meta`
-  importMetaVisitor(node: MetaProperty, state: State, ancestors: Array<Node>) {
+  private importMetaVisitor(
+    node: MetaProperty,
+    state: State,
+    ancestors: Array<Node>,
+  ) {
     if (node.meta.name === 'import') {
       const replacement = memberExpression(
         identifier(Compiler.keys.__VIRTUAL_IMPORT_META__),
@@ -514,7 +530,7 @@ export class Compiler {
     }
   }
 
-  generateCode() {
+  private generateCode() {
     const nameCounts = {};
     const getExports = ({ namespace, moduleId }) => {
       return namespace
@@ -567,7 +583,7 @@ export class Compiler {
     }
     this.consumed = true;
     const that = this;
-    const pack = (fn) => {
+    const c = (fn) => {
       return function () {
         fn.apply(that, arguments);
       };
@@ -576,15 +592,15 @@ export class Compiler {
     ancestor(
       this.ast as any,
       {
-        Identifier: pack(this.identifierVisitor),
+        Identifier: c(this.identifierVisitor),
         // `let x = 1` 和 `x = 2` acorn 给单独区分出来了
-        VariablePattern: pack(this.identifierVisitor),
-        MetaProperty: pack(this.importMetaVisitor),
-        ImportDeclaration: pack(this.importDeclarationVisitor),
-        ImportExpression: pack(this.importExpressionVisitor),
-        ExportAllDeclaration: pack(this.exportDeclarationVisitor),
-        ExportNamedDeclaration: pack(this.exportDeclarationVisitor),
-        ExportDefaultDeclaration: pack(this.exportDeclarationVisitor),
+        VariablePattern: c(this.identifierVisitor),
+        MetaProperty: c(this.importMetaVisitor),
+        ImportExpression: c(this.importExpressionVisitor),
+        ImportDeclaration: c(this.importDeclarationVisitor),
+        ExportAllDeclaration: c(this.exportDeclarationVisitor),
+        ExportNamedDeclaration: c(this.exportDeclarationVisitor),
+        ExportDefaultDeclaration: c(this.exportDeclarationVisitor),
       },
       null,
       this.state,

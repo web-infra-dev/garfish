@@ -23,13 +23,79 @@ import {
 
 export type State = ReturnType<typeof createState>;
 
+type Assignments = Set<
+  () => {
+    scope: Scope;
+    ids: Array<Identifier>;
+  }
+>;
+
+type ConstantViolations = Set<
+  () => {
+    scope: Scope;
+    node: Expression;
+  }
+>;
+
+type References = Set<
+  () => {
+    scope: Scope;
+    ids: Array<Identifier>;
+    type: 'identifier' | 'export';
+  }
+>;
+
 const virtualTypes = {
   Declaration: isDeclaration,
   BlockScoped: isBlockScoped,
   ForXStatement: isForXStatement,
   ExportDeclaration: isExportDeclaration,
 };
+
 const virtualTypesKeys = Object.keys(virtualTypes);
+
+function getParentScope(
+  scope: Scope,
+  condition: (node: Node) => boolean,
+): Scope | null {
+  do {
+    if (condition(scope.node)) {
+      return scope;
+    }
+  } while ((scope = scope.parent));
+  return null;
+}
+
+function execDeferQueue(state: State) {
+  const programParent = state.programParent;
+  state.defer.assignments.forEach((fn) => {
+    const { ids, scope } = fn();
+    for (const node of ids) {
+      if (!scope.getBinding(node.name)) {
+        programParent.addGlobal(node);
+      }
+      scope.registerConstantViolation(node.name, node);
+    }
+  });
+  state.defer.references.forEach((fn) => {
+    const { ids, type, scope } = fn();
+    for (const node of ids) {
+      const binding = scope.getBinding(node.name);
+      if (binding) {
+        binding.references.add(node);
+      } else if (type === 'identifier') {
+        programParent.addGlobal(node);
+      }
+    }
+  });
+  state.defer.constantViolations.forEach((fn) => {
+    const { node, scope } = fn();
+    const ids = getBindingIdentifiers(node);
+    for (const id of ids) {
+      scope.registerConstantViolation(id.name, node);
+    }
+  });
+}
 
 function walk(
   node: Node,
@@ -71,18 +137,6 @@ function walk(
   call(node, state);
 }
 
-function getParentScope(
-  scope: Scope,
-  condition: (node: Node) => boolean,
-): Scope | null {
-  do {
-    if (condition(scope.node)) {
-      return scope;
-    }
-  } while ((scope = scope.parent));
-  return null;
-}
-
 export function getBindingIdentifiers(node: Node): Array<Identifier> {
   const f = (node) => {
     if (isIdentifier(node)) {
@@ -104,61 +158,14 @@ export function getBindingIdentifiers(node: Node): Array<Identifier> {
   return f(node);
 }
 
-function execDeferQueue(state: State) {
-  const programParent = state.programParent;
-  state.defer.assignments.forEach((fn) => {
-    const { ids, scope } = fn();
-    for (const node of ids) {
-      if (!scope.getBinding(node.name)) {
-        programParent.addGlobal(node);
-      }
-      scope.registerConstantViolation(node.name, node);
-    }
-  });
-  state.defer.references.forEach((fn) => {
-    const { ids, type, scope } = fn();
-    for (const node of ids) {
-      const binding = scope.getBinding(node.name);
-      if (binding) {
-        binding.references.add(node);
-      } else if (type === 'identifier') {
-        programParent.addGlobal(node);
-      }
-    }
-  });
-  state.defer.constantViolations.forEach((fn) => {
-    const { node, scope } = fn();
-    const ids = getBindingIdentifiers(node);
-    for (const id of ids) {
-      scope.registerConstantViolation(id.name, node);
-    }
-  });
-}
-
 export function createState(ast: Node) {
   const state = {
     scopes: new WeakMap<Node, Scope>(),
     ancestors: new WeakMap<Node, Array<Node>>(),
     defer: {
-      assignments: new Set<
-        () => {
-          scope: Scope;
-          ids: Array<Identifier>;
-        }
-      >(),
-      constantViolations: new Set<
-        () => {
-          scope: Scope;
-          node: Expression;
-        }
-      >(),
-      references: new Set<
-        () => {
-          scope: Scope;
-          ids: Array<Identifier>;
-          type: 'identifier' | 'export';
-        }
-      >(),
+      references: new Set() as References,
+      assignments: new Set() as Assignments,
+      constantViolations: new Set() as ConstantViolations,
     },
 
     get programParent() {

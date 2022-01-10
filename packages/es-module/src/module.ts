@@ -1,29 +1,24 @@
-export type Module = Record<PropertyKey, any>;
+export type MemoryModule = Record<string, any>;
 
-export type NamespaceModule = Module & {
+export type Module = {
+  [key: string]: any;
   [Symbol.toStringTag]: 'Module';
 };
 
-export interface importObject {
-  meta: {
-    url: string;
-    __garfish: boolean;
-  };
-}
-
 function Module() {}
-export function createNamespaceModule(module: Module) {
-  const moduleObject: NamespaceModule = new Module();
-  Object.setPrototypeOf(moduleObject, null);
-  Object.defineProperty(moduleObject, Symbol.toStringTag, {
+
+export function createModule(memoryModule: MemoryModule) {
+  const module: Module = new Module();
+  Object.setPrototypeOf(module, null);
+  Object.defineProperty(module, Symbol.toStringTag, {
     value: 'Module',
     writable: false,
     enumerable: false,
     configurable: false,
   });
-  Object.keys(module).forEach((key) => {
-    const getter = Object.getOwnPropertyDescriptor(module, key).get;
-    Object.defineProperty(moduleObject, key, {
+  Object.keys(memoryModule).forEach((key) => {
+    const getter = Object.getOwnPropertyDescriptor(memoryModule, key).get;
+    Object.defineProperty(module, key, {
       enumerable: true,
       configurable: false,
       get: getter,
@@ -34,12 +29,12 @@ export function createNamespaceModule(module: Module) {
       },
     });
   });
-  Object.seal(moduleObject);
-  return moduleObject;
+  Object.seal(module);
+  return module;
 }
 
 export function createImportMeta(url: string) {
-  const metaObject: importObject = Object.create(null);
+  const metaObject: { url: string; __garfish: boolean } = Object.create(null);
   const set = (key, value) => {
     Object.defineProperty(metaObject, key, {
       value,

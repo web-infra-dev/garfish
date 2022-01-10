@@ -50,8 +50,24 @@ export class Scope {
     this.parent = parent;
   }
 
-  get isTopLevel() {
-    return isProgram(this.node);
+  private checkBlockScopedCollisions(
+    local: Binding,
+    kind: BindingKind,
+    name: string,
+  ) {
+    if (kind === 'param') return;
+    // 函数自己的声明规范中是一个独立的作用域，可以被覆盖
+    if (local.kind === 'local') return;
+    if (
+      kind === 'let' ||
+      local.kind === 'let' ||
+      local.kind === 'const' ||
+      local.kind === 'module' ||
+      // don't allow a local of param with a kind of let
+      (local.kind === 'param' && kind === 'const')
+    ) {
+      throw new Error(`Duplicate declaration "${name}"`);
+    }
   }
 
   registerLabel(node: LabeledStatement) {
@@ -107,22 +123,6 @@ export class Scope {
       }
       previousNode = scope.node;
     } while ((scope = scope.parent));
-  }
-
-  checkBlockScopedCollisions(local: Binding, kind: BindingKind, name: string) {
-    if (kind === 'param') return;
-    // 函数自己的声明规范中是一个独立的作用域，可以被覆盖
-    if (local.kind === 'local') return;
-    if (
-      kind === 'let' ||
-      local.kind === 'let' ||
-      local.kind === 'const' ||
-      local.kind === 'module' ||
-      // don't allow a local of param with a kind of let
-      (local.kind === 'param' && kind === 'const')
-    ) {
-      throw new Error(`Duplicate declaration "${name}"`);
-    }
   }
 
   registerBinding(kind: BindingKind, name: string, node: Node) {
