@@ -1,5 +1,5 @@
-import { Compiler } from './compiler/index';
 import { transformUrl } from '@garfish/utils';
+import { Output, Compiler } from './compiler/index';
 import {
   Module,
   NamespaceModule,
@@ -7,11 +7,20 @@ import {
   createNamespaceModule,
 } from './module';
 
+export type ModuleOutput = Output & {
+  storeId: string;
+  realUrl: string;
+  exports: Array<string>;
+};
+
 export const runtime = {
   store: {
-    resources: Object.create(null),
     namespace: new WeakMap<Module, NamespaceModule>(),
     modules: Object.create(null) as Record<string, Module>,
+    resources: Object.create(null) as Record<
+      string,
+      ModuleOutput | Promise<void>
+    >,
   },
 
   // atob 对中文不友好
@@ -37,7 +46,7 @@ export const runtime = {
 
   importModule(storeId: string, moduleId: string) {
     if (!this.store.modules[storeId]) {
-      const output = this.store.resources[storeId];
+      const output = this.store.resources[storeId] as ModuleOutput;
       if (!output) {
         throw new Error(`Module '${moduleId}' not found`);
       }
@@ -47,12 +56,12 @@ export const runtime = {
     return this.store.modules[storeId];
   },
 
-  async dynamicImportModule(parentOutput, moduleId: string) {
+  async dynamicImportModule(parentOutput: ModuleOutput, moduleId: string) {
     const storeId = transformUrl(parentOutput.storeId, moduleId);
     if (!this.store.modules[storeId]) {
       const requestUrl = transformUrl(parentOutput.realUrl, moduleId);
       await this.compileAndFetchCode(storeId, requestUrl);
-      const currentOutput = this.store.resources[storeId];
+      const currentOutput = this.store.resources[storeId] as ModuleOutput;
       const module = (this.store.modules[storeId] = {});
       this.execCode(currentOutput, module);
     }
@@ -68,22 +77,26 @@ export const runtime = {
     return wrapperModule;
   },
 
-  execCode(output, module: Module) {
+  execCode(output: ModuleOutput, module: Module) {
     const sourcemap = `\n//@ sourceMappingURL=${output.map}`;
-    (0, eval)(`${output.code}\n//${output.storeId}${sourcemap}`);
     const importMeta = createImportMeta(output.realUrl);
-    const namespace = (module) => this.getModuleNamespace(module);
-    const _export = (exportObject) => this.exportModule(module, exportObject);
-    const _import = (moduleId) => {
-      const currentStoreId = transformUrl(output.storeId, moduleId);
-      return this.importModule(currentStoreId, moduleId);
-    };
-    const dynamicImport = (moduleId: string) => {
-      return this.dynamicImportModule(output, moduleId);
-    };
-
+    (0, eval)(`${output.code}\n//${output.storeId}${sourcemap}`);
     const actuator = globalThis[Compiler.keys.__VIRTUAL_WRAPPER__];
-    actuator(_import, _export, namespace, importMeta, dynamicImport);
+
+    actuator(
+      (moduleId: string) => {
+        const currentStoreId = transformUrl(output.storeId, moduleId);
+        return this.importModule(currentStoreId, moduleId);
+      },
+      (exportObject: Record<string, () => any>) => {
+        return this.exportModule(module, exportObject);
+      },
+      (module: Module) => this.getModuleNamespace(module),
+      importMeta,
+      (moduleId: string) => {
+        return this.dynamicImportModule(output, moduleId);
+      },
+    );
   },
 
   compileAndFetchCode(storeId: string, url: string) {
@@ -113,11 +126,11 @@ export const runtime = {
             }),
           );
 
-          const output = generateCode();
+          const output = generateCode() as ModuleOutput;
           output.storeId = storeId;
           output.realUrl = realUrl;
           output.exports = exports;
-          output.map = await this.toBase64(output.map.toString());
+          output.map = await this.toBase64(output.map);
           this.store.resources[storeId] = output;
         } else {
           this.store.resources[storeId] = null;

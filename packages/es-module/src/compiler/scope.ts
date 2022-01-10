@@ -1,4 +1,12 @@
 // Inspired by `@babel/traverse`
+import type {
+  Node,
+  Identifier,
+  LabeledStatement,
+  ExportSpecifier,
+  ExportDefaultDeclaration,
+} from 'estree';
+
 import {
   isProgram,
   isPattern,
@@ -13,53 +21,63 @@ import {
 } from './types';
 import { getBindingIdentifiers } from './state';
 
-// type Kind =
-//  | "var" /* var declarator */
-//  | "let" /* let declarator, class declaration id, catch clause parameters */
-//  | "const" /* const declarator */
-//  | "module" /* import specifiers */
-//  | "hoisted" /* function declaration id */
-//  | "param" /* function declaration parameters */
-//  | "local" /* function expression id, class expression id */
-//  | "unknown"; /* export specifiers */
+type BindingKind =
+  | 'var' /* var declarator */
+  | 'let' /* let declarator, class declaration id, catch clause parameters */
+  | 'const' /* const declarator */
+  | 'module' /* import specifiers */
+  | 'hoisted' /* function declaration id */
+  | 'param' /* function declaration parameters */
+  | 'local' /* function expression id, class expression id */
+  | 'unknown'; /* export specifiers */
+
+export interface Binding {
+  kind: BindingKind;
+  node: Identifier;
+  references: Set<Identifier>;
+  constantViolations: Set<Node>;
+}
+
 export class Scope {
-  constructor(node, parent, state) {
+  public node: Node;
+  public parent?: Scope;
+  public labels = new Map();
+  public globals = Object.create(null);
+  public bindings = Object.create(null); // 原型只能是 null
+
+  constructor(node: Node, parent?: Scope) {
     this.node = node;
-    this.state = state;
     this.parent = parent;
-    this.labels = new Map();
-    this.globals = Object.create(null);
-    this.bindings = Object.create(null);
   }
 
   get isTopLevel() {
     return isProgram(this.node);
   }
 
-  registerLabel(node) {
+  registerLabel(node: LabeledStatement) {
     this.labels.set(node.label.name, node);
   }
 
-  addGlobal(node) {
+  addGlobal(node: Identifier) {
     this.globals[node.name] = node;
   }
 
-  reference(name, node) {
+  reference(name: string, node: Identifier) {
     const binding = this.getBinding(name);
     if (binding) {
       binding.references.add(node);
     }
   }
 
-  registerConstantViolation(name, node) {
+  registerConstantViolation(name: string, node: Node) {
     const binding = this.getBinding(name);
     if (binding) {
       binding.constantViolations.add(node);
     }
   }
 
-  getBinding(name) {
-    let scope = this;
+  getBinding(name: string) {
+    let scope: Scope = this;
     let previousNode;
 
     do {
@@ -91,7 +109,7 @@ export class Scope {
     } while ((scope = scope.parent));
   }
 
-  checkBlockScopedCollisions(local, kind, name) {
+  checkBlockScopedCollisions(local: Binding, kind: BindingKind, name: string) {
     if (kind === 'param') return;
     // 函数自己的声明规范中是一个独立的作用域，可以被覆盖
     if (local.kind === 'local') return;
@@ -101,13 +119,13 @@ export class Scope {
       local.kind === 'const' ||
       local.kind === 'module' ||
       // don't allow a local of param with a kind of let
-      (local.kind === 'param' && (kind === 'let' || kind === 'const'))
+      (local.kind === 'param' && kind === 'const')
     ) {
       throw new Error(`Duplicate declaration "${name}"`);
     }
   }
 
-  registerBinding(kind, name, node) {
+  registerBinding(kind: BindingKind, name: string, node: Node) {
     if (!kind) throw new ReferenceError('no `kind`');
     const binding = this.bindings[name];
 
@@ -130,7 +148,7 @@ export class Scope {
   }
 
   // @babel/types/src/retrievers/getBindingIdentifiers.ts
-  registerDeclaration(node) {
+  registerDeclaration(node: Node) {
     if (isLabeledStatement(node)) {
       this.registerLabel(node);
     } else if (isFunctionDeclaration(node)) {
@@ -145,7 +163,6 @@ export class Scope {
         }
       }
     } else if (isClassDeclaration(node)) {
-      if (node.declare) return;
       this.registerBinding('let', node.id.name, node);
     } else if (isImportDeclaration(node)) {
       const specifiers = node.specifiers;
@@ -153,7 +170,7 @@ export class Scope {
         this.registerBinding('module', specifier.local.name, specifier);
       }
     } else if (isExportDeclaration(node)) {
-      const { declaration } = node;
+      const { declaration } = node as ExportDefaultDeclaration;
       if (
         isClassDeclaration(declaration) ||
         isFunctionDeclaration(declaration) ||
@@ -162,7 +179,11 @@ export class Scope {
         this.registerDeclaration(declaration);
       }
     } else {
-      this.registerBinding('unknown', node.exported.name, node);
+      this.registerBinding(
+        'unknown',
+        (node as ExportSpecifier).exported.name,
+        node,
+      );
     }
   }
 }

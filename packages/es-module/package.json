@@ -33,12 +33,16 @@
   "dependencies": {
     "@garfish/loader": "workspace:*",
     "@garfish/utils": "workspace:*",
-    "acorn": "^8.7.0",
-    "acorn-walk": "^8.2.0",
-    "escodegen": "^2.0.0"
+    "acorn": "8.7.0",
+    "acorn-walk": "8.2.0",
+    "escodegen": "2.0.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
+  },
+  "devDependencies": {
+    "@types/escodegen": "^0.0.7",
+    "@types/estree": "^0.0.50"
   }
 }

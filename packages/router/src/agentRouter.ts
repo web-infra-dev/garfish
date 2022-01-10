@@ -25,10 +25,10 @@ export const normalAgent = () => {
 
     const rewrite = function (type: keyof History) {
       const hapi = history[type];
-      return function () {
+      return function (this: any) {
         const urlBefore = window.location.pathname + window.location.hash;
         const stateBefore = history?.state;
-        const res = hapi.apply(this as any, arguments);
+        const res = hapi.apply(this, arguments);
         const urlAfter = window.location.pathname + window.location.hash;
         const stateAfter = history?.state;
 

@@ -98,6 +98,9 @@ importers:
       workspace-tools: 0.16.2
       zx: 4.2.0
 
+  dev/esm-app:
+    specifiers: {}
+
   dev/main:
     specifiers:
       '@babel/core': ^7.7.2
@@ -368,15 +371,20 @@ importers:
     specifiers:
       '@garfish/loader': workspace:*
       '@garfish/utils': workspace:*
-      acorn: ^8.7.0
-      acorn-walk: ^8.2.0
-      escodegen: ^2.0.0
+      '@types/escodegen': ^0.0.7
+      '@types/estree': ^0.0.50
+      acorn: 8.7.0
+      acorn-walk: 8.2.0
+      escodegen: 2.0.0
     dependencies:
       '@garfish/loader': link:../loader
       '@garfish/utils': link:../utils
       acorn: registry.npmjs.org/acorn/8.7.0
       acorn-walk: registry.npmjs.org/acorn-walk/8.2.0
       escodegen: registry.npmjs.org/escodegen/2.0.0
+    devDependencies:
+      '@types/escodegen': 0.0.7
+      '@types/estree': 0.0.50
 
   packages/garfish:
     specifiers:
@@ -5920,7 +5928,7 @@ packages:
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
       glob: 7.2.0
-      graceful-fs: 4.2.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
       istanbul-lib-coverage: 3.0.1
       istanbul-lib-instrument: 4.0.3
       istanbul-lib-report: 3.0.0
@@ -6034,7 +6042,7 @@ packages:
       chalk: registry.npmjs.org/chalk/4.1.2
       convert-source-map: 1.8.0
       fast-json-stable-stringify: 2.1.0
-      graceful-fs: 4.2.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
       jest-haste-map: 27.3.1
       jest-regex-util: 27.0.6
       jest-util: 27.3.1
@@ -6727,6 +6735,10 @@ packages:
     dependencies:
       '@types/node': 16.9.6
 
+  /@types/escodegen/0.0.7:
+    resolution: {integrity: sha512-46oENdSRNEJXCNrPJoC3vRolZJpfeEm7yvATkd2bCncKFG0PUEyfBCaoacfpcXH4Y5RRuqdVj3J7TI+wwn2SbQ==}
+    dev: true
+
   /@types/eslint-scope/3.7.1:
     resolution: {integrity: sha512-SCFeogqiptms4Fg29WpOTk5nHIzfpKCemSN63ksBQYKTcXoJEmJagV+DhVmbapZzY4/5YaOV1nZwrsU79fFm1g==}
     dependencies:
@@ -6746,7 +6758,6 @@ packages:
 
   /@types/estree/0.0.50:
     resolution: {integrity: sha512-C6N5s2ZFtuZRj54k2/zyRhNDjJwwcViAM3Nbm8zjBpbqAdZ00mr0CFxvSKeO8Y/e03WVFLpQMdHYVfUd6SB+Hw==}
-    dev: false
 
   /@types/express-serve-static-core/4.17.24:
     resolution: {integrity: sha512-3UJuW+Qxhzwjq3xhwXm2onQcFHn76frIYVbTu+kn24LFxI+dEhdfISDFovPB8VpEgW8oQCTpRuCe+0zJxB7NEA==}
@@ -9852,7 +9863,7 @@ packages:
       chownr: 1.1.4
       figgy-pudding: 3.5.2
       glob: 7.2.0
-      graceful-fs: 4.2.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
       infer-owner: 1.0.4
       lru-cache: 5.1.1
       mississippi: 3.0.0
@@ -10176,7 +10187,7 @@ packages:
       readdirp: 2.2.1
       upath: 1.2.0
     optionalDependencies:
-      fsevents: 1.2.13
+      fsevents: registry.npmjs.org/fsevents/1.2.13
 
   /chokidar/3.5.2:
     resolution: {integrity: sha512-ekGhOnNVPgT77r4K/U3GDhu+FQ2S8TnK/s2KbIGXi0SZWuwkZ2QNyfWdZW+TVfn84DpEP7rLeCt2UI6bJ8GwbQ==}
@@ -10312,7 +10323,7 @@ packages:
       object-assign: 4.1.1
       string-width: 4.2.3
     optionalDependencies:
-      colors: 1.4.0
+      colors: registry.npmjs.org/colors/1.4.0
     dev: true
 
   /cli-truncate/2.1.0:
@@ -13449,7 +13460,7 @@ packages:
   /fs-extra/4.0.3:
     resolution: {integrity: sha512-q6rbdDd1o2mAnQreO7YADIxf/Whx4AHBiRf6d+/cVT8h44ss+lHgxf1FemcqDnQt9X3ct4McHr+JMGlYSsK7Cg==}
     dependencies:
-      graceful-fs: 4.2.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
       jsonfile: 4.0.0
       universalify: 0.1.2
 
@@ -13500,17 +13511,6 @@ packages:
 
   /fs.realpath/1.0.0:
     resolution: {integrity: sha1-FQStJSMVjKpA20onh8sBQRmU6k8=}
-
-  /fsevents/1.2.13:
-    resolution: {integrity: sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==}
-    engines: {node: '>= 4.0'}
-    os: [darwin]
-    deprecated: fsevents 1 will break on node v14+ and could be using insecure binaries. Upgrade to fsevents 2.
-    requiresBuild: true
-    dependencies:
-      bindings: 1.5.0
-      nan: 2.15.0
-    optional: true
 
   /function-bind/1.1.1:
     resolution: {integrity: sha1-pWiZ0+o8m6uHS7l3O3xe3pL0iV0=}
@@ -14508,14 +14508,6 @@ packages:
     engines: {node: '>=0.9.0'}
     dev: false
 
-  /image-size/0.5.5:
-    resolution: {integrity: sha1-Cd/Uq50g4p6xw+gLiZA3jfnjy5w=}
-    engines: {node: '>=0.10.0'}
-    hasBin: true
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /immediate/3.3.0:
     resolution: {integrity: sha512-HR7EVodfFUdQCTIeySw+WDRFJlPcLOJbXfwwZ7Oom6tjsvZ3bOkCDJHehQC3nxJrv7+f9XecwazynjU8e4Vw3Q==}
     dev: false
@@ -15424,7 +15416,7 @@ packages:
       ci-info: 3.2.0
       deepmerge: 4.2.2
       glob: 7.2.0
-      graceful-fs: 4.2.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
       jest-circus: 27.3.1
       jest-environment-jsdom: 27.3.1
       jest-environment-node: 27.3.1
@@ -15623,7 +15615,7 @@ packages:
       '@types/node': 16.9.6
       anymatch: 3.1.2
       fb-watchman: 2.0.1
-      graceful-fs: 4.2.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
       jest-regex-util: 27.0.6
       jest-serializer: 27.0.6
       jest-util: 27.3.1
@@ -15742,7 +15734,7 @@ packages:
       '@jest/types': 27.2.5
       '@types/stack-utils': 2.0.1
       chalk: registry.npmjs.org/chalk/4.1.2
-      graceful-fs: 4.2.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
       micromatch: 4.0.4
       pretty-format: 27.3.1
       slash: 3.0.0
@@ -15835,7 +15827,7 @@ packages:
     dependencies:
       '@jest/types': 27.2.5
       chalk: registry.npmjs.org/chalk/4.1.2
-      graceful-fs: 4.2.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
       jest-haste-map: 27.3.1
       jest-pnp-resolver: 1.2.2_jest-resolve@27.3.1
       jest-util: 27.3.1
@@ -15885,7 +15877,7 @@ packages:
       chalk: registry.npmjs.org/chalk/4.1.2
       emittery: 0.8.1
       exit: 0.1.2
-      graceful-fs: 4.2.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
       jest-docblock: 27.0.6
       jest-environment-jsdom: 27.3.1
       jest-environment-node: 27.3.1
@@ -15955,7 +15947,7 @@ packages:
       execa: 5.1.1
       exit: 0.1.2
       glob: 7.2.0
-      graceful-fs: 4.2.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
       jest-haste-map: 27.3.1
       jest-message-util: 27.3.1
       jest-mock: 27.3.0
@@ -16020,7 +16012,7 @@ packages:
       babel-preset-current-node-syntax: 1.0.1_@babel+core@7.15.5
       chalk: registry.npmjs.org/chalk/4.1.2
       expect: 27.3.1
-      graceful-fs: 4.2.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
       jest-diff: 27.3.1
       jest-get-type: 27.3.1
       jest-haste-map: 27.3.1
@@ -16419,7 +16411,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
 
   /jsonify/0.0.0:
     resolution: {integrity: sha1-LHS27kHZPKUbe1qu6PUDYx0lKnM=}
@@ -16634,13 +16626,13 @@ packages:
       copy-anything: 2.0.3
       tslib: 1.14.1
     optionalDependencies:
-      errno: 0.1.8
-      graceful-fs: 4.2.8
-      image-size: 0.5.5
-      make-dir: 2.1.0
-      mime: 1.6.0
-      native-request: 1.1.0
-      source-map: 0.6.1
+      errno: registry.npmjs.org/errno/0.1.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
+      image-size: registry.npmjs.org/image-size/0.5.5
+      make-dir: registry.npmjs.org/make-dir/2.1.0
+      mime: registry.npmjs.org/mime/1.6.0
+      native-request: registry.npmjs.org/native-request/1.1.0
+      source-map: registry.npmjs.org/source-map/0.6.1
     dev: true
 
   /leven/3.1.0:
@@ -16952,7 +16944,7 @@ packages:
     resolution: {integrity: sha512-VeIAFslyIerEJLXHziedo2basKbMKtTw3vfn5IzG0XTjhAVEJyNHnL2p7vc+wBDSdQuUpNw3M2u6xb9QsAY5Eg==}
     engines: {node: '>=4'}
     dependencies:
-      chalk: 2.4.2
+      chalk: registry.npmjs.org/chalk/2.4.2
 
   /log-symbols/4.1.0:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
@@ -17183,7 +17175,7 @@ packages:
     resolution: {integrity: sha512-jA0rdU5KoQMC0e6ppoNRtpp6vjFq6+NY7r8hywnC7V+1Xj/MtHwGIbB1QaK/dunyjWteJzmkpd7ooeWg10T7GA==}
     engines: {node: '>=4.3.0 <5.0.0 || >=5.10'}
     dependencies:
-      errno: 0.1.8
+      errno: registry.npmjs.org/errno/0.1.8
       readable-stream: 2.3.7
 
   /merge-deep/3.0.3:
@@ -17590,12 +17582,6 @@ packages:
   /napi-build-utils/1.0.2:
     resolution: {integrity: sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg==}
     dev: false
-
-  /native-request/1.1.0:
-    resolution: {integrity: sha512-uZ5rQaeRn15XmpgE0xoPL8YWqcX90VtCFglYwAgkvKM5e8fog+vePLAhHxuuv/gRkrQxIeh5U3q9sMNUrENqWw==}
-    requiresBuild: true
-    dev: true
-    optional: true
 
   /natural-compare/1.4.0:
     resolution: {integrity: sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=}
@@ -20961,7 +20947,7 @@ packages:
     resolution: {integrity: sha512-1JU/8q+VgFZyxwrJ+SVIOsh+KywWGpds3NTqikiKpDMZWScmAYyKIgqkO+ARvNWJfXeXR1zxz7aHF4u4CyH6vQ==}
     engines: {node: '>=0.10'}
     dependencies:
-      graceful-fs: 4.2.8
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
       micromatch: 3.1.10
       readable-stream: 2.3.7
 
@@ -21707,7 +21693,7 @@ packages:
       etag: 1.8.1
       fresh: 0.5.2
       http-errors: 1.7.3
-      mime: 1.6.0
+      mime: registry.npmjs.org/mime/1.6.0
       ms: 2.1.1
       on-finished: 2.3.0
       range-parser: 1.2.1
@@ -21987,7 +21973,7 @@ packages:
       define-property: 0.2.5
       extend-shallow: 2.0.1
       map-cache: 0.2.2
-      source-map: 0.5.7
+      source-map: registry.npmjs.org/source-map/0.5.7
       source-map-resolve: 0.5.3
       use: 3.1.1
 
@@ -24001,21 +23987,14 @@ packages:
       loose-envify: 1.4.0
     dev: false
 
-  /watchpack-chokidar2/2.0.1:
-    resolution: {integrity: sha512-nCFfBIPKr5Sh61s4LPpy1Wtfi0HE8isJ3d2Yb5/Ppw2P2B/3eVSEBjKfN0fmHJSK14+31KwMKmcrzs2GM4P0Ww==}
-    requiresBuild: true
-    dependencies:
-      chokidar: 2.1.8
-    optional: true
-
   /watchpack/1.7.5:
     resolution: {integrity: sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ==}
     dependencies:
       graceful-fs: 4.2.8
       neo-async: 2.6.2
     optionalDependencies:
-      chokidar: 3.5.2
-      watchpack-chokidar2: 2.0.1
+      chokidar: registry.npmjs.org/chokidar/3.5.2
+      watchpack-chokidar2: registry.npmjs.org/watchpack-chokidar2/2.0.1
 
   /watchpack/2.2.0:
     resolution: {integrity: sha512-up4YAn/XHgZHIxFBVCdlMiWDj6WaLKpwVeGQk2I5thdYxF/KmF0aaz6TfJZ/hfl1h/XlcDr7k1KH7ThDagpFaA==}
@@ -25208,6 +25187,45 @@ packages:
       ansi-styles: registry.npmjs.org/ansi-styles/4.3.0
       supports-color: registry.npmjs.org/supports-color/7.2.0
 
+  registry.npmjs.org/chokidar/2.1.8:
+    resolution: {integrity: sha512-ZmZUazfOzf0Nve7duiCKD23PFSCs4JPoYyccjUFF3aQkQadqBhfzhjkwBH2mNOG9cTBwhamM37EIsIkZw3nRgg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/chokidar/-/chokidar-2.1.8.tgz}
+    name: chokidar
+    version: 2.1.8
+    deprecated: Chokidar 2 will break on node v14+. Upgrade to chokidar 3 with 15x less dependencies.
+    dependencies:
+      anymatch: 2.0.0
+      async-each: 1.0.3
+      braces: 2.3.2
+      glob-parent: 3.1.0
+      inherits: 2.0.4
+      is-binary-path: 1.0.1
+      is-glob: 4.0.1
+      normalize-path: 3.0.0
+      path-is-absolute: 1.0.1
+      readdirp: 2.2.1
+      upath: 1.2.0
+    optionalDependencies:
+      fsevents: registry.npmjs.org/fsevents/1.2.13
+    optional: true
+
+  registry.npmjs.org/chokidar/3.5.2:
+    resolution: {integrity: sha512-ekGhOnNVPgT77r4K/U3GDhu+FQ2S8TnK/s2KbIGXi0SZWuwkZ2QNyfWdZW+TVfn84DpEP7rLeCt2UI6bJ8GwbQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/chokidar/-/chokidar-3.5.2.tgz}
+    name: chokidar
+    version: 3.5.2
+    engines: {node: '>= 8.10.0'}
+    requiresBuild: true
+    dependencies:
+      anymatch: 3.1.2
+      braces: 3.0.2
+      glob-parent: 5.1.2
+      is-binary-path: 2.1.0
+      is-glob: 4.0.3
+      normalize-path: 3.0.0
+      readdirp: 3.6.0
+    optionalDependencies:
+      fsevents: registry.npmjs.org/fsevents/2.3.2
+    optional: true
+
   registry.npmjs.org/color-convert/1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/color-convert/-/color-convert-1.9.3.tgz}
     name: color-convert
@@ -25233,6 +25251,15 @@ packages:
     name: color-name
     version: 1.1.4
 
+  registry.npmjs.org/colors/1.4.0:
+    resolution: {integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/colors/-/colors-1.4.0.tgz}
+    name: colors
+    version: 1.4.0
+    engines: {node: '>=0.1.90'}
+    requiresBuild: true
+    dev: true
+    optional: true
+
   registry.npmjs.org/csstype/3.0.9:
     resolution: {integrity: sha512-rpw6JPxK6Rfg1zLOYCSwle2GFOOsnjmDYDaBwEcwoOg4qlsIVCN789VkBZDJAGi4T07gI4YSutR43t9Zz4Lzuw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/csstype/-/csstype-3.0.9.tgz}
     name: csstype
@@ -25251,6 +25278,15 @@ packages:
     version: 3.0.0
     engines: {node: '>= 4'}
     optional: true
+
+  registry.npmjs.org/errno/0.1.8:
+    resolution: {integrity: sha512-dJ6oBr5SQ1VSd9qkk7ByRgb/1SH4JZjCHSW/mr63/QcXO9zLVxvJ6Oy13nio03rxpSnVDDjFor75SjVeZWPW/A==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/errno/-/errno-0.1.8.tgz}
+    name: errno
+    version: 0.1.8
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      prr: 1.0.1
 
   registry.npmjs.org/esbuild-android-arm64/0.13.15:
     resolution: {integrity: sha512-m602nft/XXeO8YQPUDVoHfjyRVPdPgjyyXOxZ44MK/agewFFkPa8tUo6lAzSWh5Ui5PB4KR9UIFTSBKh/RrCmg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/esbuild-android-arm64/-/esbuild-android-arm64-0.13.15.tgz}
@@ -25636,7 +25672,6 @@ packages:
     dependencies:
       bindings: 1.5.0
       nan: 2.15.0
-    dev: false
     optional: true
 
   registry.npmjs.org/fsevents/2.1.2:
@@ -25680,6 +25715,16 @@ packages:
     resolution: {integrity: sha512-WdZTbAByD+pHfl/g9QSsBIIwy8IT+EsPiKDs0KNX+zSHhdDLFKdZu0BQHljvO+0QI/BasbMSUa8wYNCZTvhslg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/hash-sum/-/hash-sum-2.0.0.tgz}
     name: hash-sum
     version: 2.0.0
+    optional: true
+
+  registry.npmjs.org/image-size/0.5.5:
+    resolution: {integrity: sha1-Cd/Uq50g4p6xw+gLiZA3jfnjy5w=, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/image-size/-/image-size-0.5.5.tgz}
+    name: image-size
+    version: 0.5.5
+    engines: {node: '>=0.10.0'}
+    hasBin: true
+    requiresBuild: true
+    dev: true
     optional: true
 
   registry.npmjs.org/js-tokens/4.0.0:
@@ -25728,10 +25773,38 @@ packages:
       js-tokens: registry.npmjs.org/js-tokens/4.0.0
     dev: false
 
+  registry.npmjs.org/make-dir/2.1.0:
+    resolution: {integrity: sha512-LS9X+dc8KLxXCb8dni79fLIIUA5VyZoyjSMCwTluaXA0o27cCK0bhXkpgw+sTXVpPy/lSO57ilRixqk0vDmtRA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/make-dir/-/make-dir-2.1.0.tgz}
+    name: make-dir
+    version: 2.1.0
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dependencies:
+      pify: 4.0.1
+      semver: 5.7.1
+    dev: true
+    optional: true
+
+  registry.npmjs.org/mime/1.6.0:
+    resolution: {integrity: sha512-x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/mime/-/mime-1.6.0.tgz}
+    name: mime
+    version: 1.6.0
+    engines: {node: '>=4'}
+    hasBin: true
+    requiresBuild: true
+
   registry.npmjs.org/minimist/1.2.5:
     resolution: {integrity: sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/minimist/-/minimist-1.2.5.tgz}
     name: minimist
     version: 1.2.5
+    optional: true
+
+  registry.npmjs.org/native-request/1.1.0:
+    resolution: {integrity: sha512-uZ5rQaeRn15XmpgE0xoPL8YWqcX90VtCFglYwAgkvKM5e8fog+vePLAhHxuuv/gRkrQxIeh5U3q9sMNUrENqWw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/native-request/-/native-request-1.1.0.tgz}
+    name: native-request
+    version: 1.1.0
+    requiresBuild: true
+    dev: true
     optional: true
 
   registry.npmjs.org/object-assign/4.1.1:
@@ -25786,6 +25859,12 @@ packages:
     name: react-is
     version: 16.13.1
     dev: false
+
+  registry.npmjs.org/source-map/0.5.7:
+    resolution: {integrity: sha1-igOdLRAh0i0eoUyA2OpGi6LvP8w=, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/source-map/-/source-map-0.5.7.tgz}
+    name: source-map
+    version: 0.5.7
+    engines: {node: '>=0.10.0'}
 
   registry.npmjs.org/source-map/0.6.1:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz}
@@ -25846,6 +25925,15 @@ packages:
       hash-sum: registry.npmjs.org/hash-sum/2.0.0
       loader-utils: registry.npmjs.org/loader-utils/2.0.0
       webpack: 4.46.0
+    optional: true
+
+  registry.npmjs.org/watchpack-chokidar2/2.0.1:
+    resolution: {integrity: sha512-nCFfBIPKr5Sh61s4LPpy1Wtfi0HE8isJ3d2Yb5/Ppw2P2B/3eVSEBjKfN0fmHJSK14+31KwMKmcrzs2GM4P0Ww==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/watchpack-chokidar2/-/watchpack-chokidar2-2.0.1.tgz}
+    name: watchpack-chokidar2
+    version: 2.0.1
+    requiresBuild: true
+    dependencies:
+      chokidar: registry.npmjs.org/chokidar/2.1.8
     optional: true
 
   registry.npmjs.org/word-wrap/1.2.3:

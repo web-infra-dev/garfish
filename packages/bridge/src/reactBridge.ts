@@ -51,7 +51,7 @@ declare global {
   }
 }
 
-export function reactBridge(userOpts) {
+export function reactBridge(this: any, userOpts) {
   if (typeof userOpts !== 'object') {
     throw new Error('garfish-react-bridge requires a configuration object');
   }
@@ -91,7 +91,7 @@ export function reactBridge(userOpts) {
     update: (props) => opts.canUpdate && update.call(this, opts, props),
   };
 
-  const provider = async function (props) {
+  const provider = async function (this: any, props) {
     await bootstrap.call(this, opts, props);
     return providerLifeCycle;
   };
@@ -277,7 +277,7 @@ function getElementToRender(opts, appInfo, props = {}) {
 function createErrorBoundary(opts, props) {
   // Avoiding babel output for class syntax and super()
   // to avoid bloat
-  function GarfishSubAppReactErrorBoundary(props) {
+  function GarfishSubAppReactErrorBoundary(this: any, props) {
     // super
     opts.React.Component.apply(this, arguments);
 

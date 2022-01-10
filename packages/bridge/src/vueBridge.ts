@@ -28,7 +28,7 @@ declare global {
   }
 }
 
-export function vueBridge(userOpts) {
+export function vueBridge(this: any, userOpts) {
   if (typeof userOpts !== 'object') {
     throw new Error('garfish-vue-bridge: requires a configuration object');
   }
@@ -66,7 +66,7 @@ export function vueBridge(userOpts) {
       opts.canUpdate && update.call(this, opts, mountedInstances, props),
   };
 
-  const provider = async function (props) {
+  const provider = async function (this: any, props) {
     await bootstrap.call(this, opts, props);
     return providerLifeCycle;
   };

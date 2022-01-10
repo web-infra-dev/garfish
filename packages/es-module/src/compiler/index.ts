@@ -1,8 +1,27 @@
 import { Parser } from 'acorn';
 import { ancestor } from 'acorn-walk';
 import { generate } from 'escodegen';
-import { runtime } from '../runtime';
-import { createState } from './state';
+import { transformUrl } from '@garfish/utils';
+import type {
+  Node,
+  Program,
+  Statement,
+  Identifier,
+  Expression,
+  MetaProperty,
+  CallExpression,
+  MemberExpression,
+  VariableDeclaration,
+  ExportDefaultDeclaration,
+  ImportSpecifier,
+  ImportDeclaration,
+  ExportAllDeclaration,
+  ExportNamedDeclaration,
+  ImportExpression,
+} from 'estree';
+import type { Scope } from './scope';
+import { State, createState } from './state';
+import { runtime, ModuleOutput } from '../runtime';
 import {
   isIdentifier,
   isVariableDeclaration,
@@ -27,6 +46,25 @@ import {
   arrowFunctionExpression,
 } from './generated';
 
+export interface Output {
+  map: string;
+  code: string;
+}
+
+type ImportInfoData = (
+  | ReturnType<Compiler['getImportInformation']>
+  | ReturnType<Compiler['getImportInformationBySource']>
+) & {
+  moduleName: string;
+};
+type ImportTransformNode = ReturnType<Compiler['generateImportTransformNode']>;
+
+interface CompilerOptions {
+  code: string;
+  storeId: string;
+  filename: string;
+}
+
 export class Compiler {
   static keys = {
     __VIRTUAL_IMPORT__: '__VIRTUAL_IMPORT__',
@@ -38,19 +76,34 @@ export class Compiler {
     __VIRTUAL_DYNAMIC_IMPORT__: '__VIRTUAL_DYNAMIC_IMPORT__',
   };
 
-  constructor(opts) {
+  private ast: Program;
+  private opts: CompilerOptions;
+  private state: ReturnType<typeof createState>;
+
+  private moduleCount = 0;
+  private consumed = false;
+  private importInfos: Array<{
+    data: ImportInfoData;
+    transformNode: ImportTransformNode;
+  }> = [];
+  private exportInfos: Array<{
+    name: string;
+    refNode: Identifier | CallExpression | MemberExpression;
+  }> = [];
+  private deferQueue = {
+    removes: new Set<() => void>(),
+    replaces: new Set<() => void>(),
+    importChecks: new Set<() => void>(),
+    identifierRefs: new Set<() => void>(),
+    exportNamespaces: new Set<{
+      moduleId: string;
+      namespace: string | undefined;
+      fn: (names: Array<string>) => void;
+    }>(),
+  };
+
+  constructor(opts: CompilerOptions) {
     this.opts = opts;
-    this.moduleCount = 0;
-    this.importInfos = [];
-    this.exportInfos = [];
-    this.deferQueue = {
-      removes: new Set(),
-      replaces: new Set(),
-      importChecks: new Set(),
-      identifierRefs: new Set(),
-      exportNamespaces: new Set(),
-    };
-    this.consumed = false;
     this.ast = this.parse();
     this.state = createState(this.ast);
   }
@@ -66,14 +119,14 @@ export class Compiler {
       this.opts.code,
     );
     try {
-      return parser.parse();
+      return parser.parse() as unknown as Program;
     } catch (e) {
       e.message += `(${this.opts.filename})`;
       throw e;
     }
   }
 
-  checkImportNames(imports, moduleId) {
+  checkImportNames(imports: ImportInfoData['imports'], moduleId: string) {
     const exports = this.getChildModuleExports(moduleId);
     if (exports) {
       imports.forEach((item) => {
@@ -88,19 +141,21 @@ export class Compiler {
     }
   }
 
-  getChildModuleExports(moduleId) {
-    const storeId = runtime.transformUrl(this.opts.storeId, moduleId);
-    const output = runtime.store.resources[storeId];
+  getChildModuleExports(moduleId: string) {
+    const storeId = transformUrl(this.opts.storeId, moduleId);
+    const output = runtime.store.resources[storeId] as ModuleOutput;
     return output ? output.exports : null;
   }
 
-  getImportInformation(node) {
+  getImportInformation(node: ImportDeclaration) {
     const imports = node.specifiers.map((n) => {
       const isDefault = isImportDefaultSpecifier(n);
       const isNamespace = isImportNamespaceSpecifier(n);
       const isSpecial = isDefault || isNamespace;
       const alias = isSpecial ? null : n.local.name;
-      const name = isSpecial ? n.local.name : n.imported.name;
+      const name = isSpecial
+        ? n.local.name
+        : (n as ImportSpecifier).imported.name;
       return {
         name,
         isDefault,
@@ -108,30 +163,36 @@ export class Compiler {
         alias: alias === name ? null : alias,
       };
     });
+
     return {
       imports,
       isExport: false,
-      moduleId: node.source.value,
+      moduleId: node.source.value as string,
     };
   }
 
-  getImportInformationBySource(node) {
-    const imports = (node.specifiers || []).map((n) => {
-      const alias = n.exported.name;
-      const name = n.local.name;
-      return {
-        name,
-        alias: alias === name ? null : alias,
-      };
-    });
+  getImportInformationBySource(
+    node: ExportNamedDeclaration | ExportAllDeclaration,
+  ) {
+    const imports = ((node as ExportNamedDeclaration).specifiers || []).map(
+      (n) => {
+        const alias = n.exported.name;
+        const name = n.local.name;
+        return {
+          name,
+          alias: alias === name ? null : alias,
+        };
+      },
+    );
+
     return {
       imports,
       isExport: true,
-      moduleId: node.source.value,
+      moduleId: node.source.value as string,
     };
   }
 
-  generateImportTransformNode(moduleName, moduleId) {
+  generateImportTransformNode(moduleName: string, moduleId: string) {
     const varName = identifier(moduleName);
     const varExpr = callExpression(
       identifier(Compiler.keys.__VIRTUAL_IMPORT__),
@@ -141,14 +202,16 @@ export class Compiler {
     return variableDeclaration('const', [varNode]);
   }
 
-  generateIdentifierTransformNode(nameOrInfo) {
+  generateIdentifierTransformNode(
+    nameOrInfo: string | ReturnType<Compiler['findIndexInData']>,
+  ) {
     let info;
     if (typeof nameOrInfo === 'string') {
-      for (const { data, isExport } of this.importInfos) {
-        if (!isExport) {
-          const res = this.findIndexInData(nameOrInfo, data);
-          if (res) {
-            info = res;
+      for (const { data } of this.importInfos) {
+        if (!data.isExport) {
+          const result = this.findIndexInData(nameOrInfo, data);
+          if (result) {
+            info = result;
             break;
           }
         }
@@ -186,7 +249,7 @@ export class Compiler {
       [objectExpression(exportNodes)],
     );
     this.ast.body.unshift(
-      exportCallExpression,
+      exportCallExpression as any,
       ...new Set(this.importInfos.map((val) => val.transformNode)),
     );
   }
@@ -205,12 +268,13 @@ export class Compiler {
       functionDeclaration(
         id,
         params,
-        blockStatement([directive, ...this.ast.body]),
+        // 此时的节点已经转换了，不再是 Program 类型
+        blockStatement([directive, ...(this.ast.body as Array<Statement>)]),
       ),
     ];
   }
 
-  findIndexInData(refName, data) {
+  findIndexInData(refName: string, data: ImportInfoData) {
     for (let i = 0; i < data.imports.length; i++) {
       const { name, alias } = data.imports[i];
       if (refName === alias || refName === name) {
@@ -219,16 +283,16 @@ export class Compiler {
     }
   }
 
-  findImportInfo(moduleId) {
-    for (const info of this.importInfos) {
-      if (info.data.moduleId === moduleId) {
-        return [info.data.moduleName, info.transformNode];
+  findImportInfo(moduleId: string): [string?, VariableDeclaration?] {
+    for (const { data, transformNode } of this.importInfos) {
+      if (data.moduleId === moduleId) {
+        return [data.moduleName, transformNode];
       }
     }
     return [];
   }
 
-  isReferencedModuleVariable(scope, node) {
+  isReferencedModuleVariable(scope: Scope, node: Identifier) {
     const u = () =>
       Object.keys(scope.bindings).some((key) => {
         const { kind, references, constantViolations } = scope.bindings[key];
@@ -245,9 +309,13 @@ export class Compiler {
 
   // 1. export { a as default };
   // 2. export { default as x } from 'module';
-  processExportSpecifiers(node, state, ancestors) {
+  processExportSpecifiers(
+    node: ExportNamedDeclaration,
+    state: State,
+    ancestors: Array<Node>,
+  ) {
     if (node.source) {
-      const moduleId = node.source.value;
+      const moduleId = node.source.value as string;
       const data = this.getImportInformationBySource(node);
       let [moduleName, transformNode] = this.findImportInfo(moduleId);
 
@@ -255,13 +323,18 @@ export class Compiler {
         moduleName = `__m${this.moduleCount++}__`;
         transformNode = this.generateImportTransformNode(moduleName, moduleId);
       }
-      data.moduleName = moduleName;
-      this.importInfos.push({ data, transformNode });
+
+      (data as ImportInfoData).moduleName = moduleName;
+      this.importInfos.push({ data: data as ImportInfoData, transformNode });
       this.deferQueue.importChecks.add(() =>
         this.checkImportNames(data.imports, moduleId),
       );
+
       node.specifiers.forEach((n) => {
-        const useInfo = this.findIndexInData(n.local.name, data);
+        const useInfo = this.findIndexInData(
+          n.local.name,
+          data as ImportInfoData,
+        );
         const refNode = this.generateIdentifierTransformNode(useInfo);
         this.exportInfos.push({ refNode, name: n.exported.name });
       });
@@ -279,7 +352,11 @@ export class Compiler {
 
   // 1. export default 1;
   // 2. export const a = 1;
-  processExportNamedDeclaration(node, state, ancestors) {
+  processExportNamedDeclaration(
+    node: ExportNamedDeclaration | ExportDefaultDeclaration,
+    state: State,
+    ancestors: Array<Node>,
+  ) {
     const isDefault = isExportDefaultDeclaration(node);
     const nodes = isVariableDeclaration(node.declaration)
       ? node.declaration.declarations
@@ -301,7 +378,10 @@ export class Compiler {
       this.deferQueue.replaces.add(() => {
         // 此时 declaration 可能已经被替换过了
         const varName = identifier(Compiler.keys.__VIRTUAL_DEFAULT__);
-        const varNode = variableDeclarator(varName, node.declaration);
+        const varNode = variableDeclarator(
+          varName,
+          node.declaration as Expression,
+        );
         state.replaceWith(variableDeclaration('const', [varNode]), ancestors);
       });
     } else if (isIdentifier(node.declaration)) {
@@ -315,8 +395,12 @@ export class Compiler {
 
   // 1. export * from 'module';
   // 2. export * as x from 'module';
-  processExportAllDeclaration(node, state, ancestors) {
-    const moduleId = node.source.value;
+  processExportAllDeclaration(
+    node: ExportAllDeclaration,
+    state: State,
+    ancestors: Array<Node>,
+  ) {
+    const moduleId = node.source.value as string;
     const data = this.getImportInformationBySource(node);
     const namespace = node.exported && node.exported.name;
     let [moduleName, transformNode] = this.findImportInfo(moduleId);
@@ -325,8 +409,10 @@ export class Compiler {
       moduleName = `__m${this.moduleCount++}__`;
       transformNode = this.generateImportTransformNode(moduleName, moduleId);
     }
-    data.moduleName = moduleName;
-    this.importInfos.push({ data, transformNode });
+
+    (data as ImportInfoData).moduleName = moduleName;
+    this.importInfos.push({ data: data as ImportInfoData, transformNode });
+
     this.deferQueue.removes.add(() => state.remove(ancestors));
     this.deferQueue.exportNamespaces.add({
       moduleId,
@@ -352,7 +438,7 @@ export class Compiler {
   }
 
   // 处理所有的 export
-  exportDeclarationVisitor(node, state, ancestors) {
+  exportDeclarationVisitor(node: any, state: State, ancestors: Array<Node>) {
     if (node.declaration) {
       this.processExportNamedDeclaration(node, state, [...ancestors]);
     } else if (node.specifiers) {
@@ -363,7 +449,7 @@ export class Compiler {
   }
 
   // 处理所有用到 esm 的引用
-  identifierVisitor(node, state, ancestors) {
+  identifierVisitor(node: Identifier, state: State, ancestors: Array<Node>) {
     const parent = ancestors[ancestors.length - 2];
     if (isExportSpecifier(parent)) return;
     const scope = state.getScopeByAncestors(ancestors);
@@ -380,9 +466,13 @@ export class Compiler {
   }
 
   // Static import expression
-  importDeclarationVisitor(node, state, ancestors) {
+  importDeclarationVisitor(
+    node: ImportDeclaration,
+    state: State,
+    ancestors: Array<Node>,
+  ) {
     ancestors = [...ancestors];
-    const moduleId = node.source.value;
+    const moduleId = node.source.value as string;
     const data = this.getImportInformation(node);
     let [moduleName, transformNode] = this.findImportInfo(moduleId);
 
@@ -390,8 +480,10 @@ export class Compiler {
       moduleName = `__m${this.moduleCount++}__`;
       transformNode = this.generateImportTransformNode(moduleName, moduleId);
     }
-    data.moduleName = moduleName;
-    this.importInfos.push({ data, transformNode });
+
+    (data as ImportInfoData).moduleName = moduleName;
+    this.importInfos.push({ data: data as ImportInfoData, transformNode });
+
     this.deferQueue.removes.add(() => state.remove(ancestors));
     this.deferQueue.importChecks.add(() =>
       this.checkImportNames(data.imports, moduleId),
@@ -399,7 +491,11 @@ export class Compiler {
   }
 
   // Dynamic import expression
-  importExpressionVisitor(node, state, ancestors) {
+  importExpressionVisitor(
+    node: ImportExpression,
+    state: State,
+    ancestors: Array<Node>,
+  ) {
     const replacement = callExpression(
       identifier(Compiler.keys.__VIRTUAL_DYNAMIC_IMPORT__),
       [node.source],
@@ -408,7 +504,7 @@ export class Compiler {
   }
 
   // `import.meta`
-  importMetaVisitor(node, state, ancestors) {
+  importMetaVisitor(node: MetaProperty, state: State, ancestors: Array<Node>) {
     if (node.meta.name === 'import') {
       const replacement = memberExpression(
         identifier(Compiler.keys.__VIRTUAL_IMPORT_META__),
@@ -417,11 +513,12 @@ export class Compiler {
       state.replaceWith(replacement, ancestors);
     }
   }
+
   generateCode() {
     const nameCounts = {};
     const getExports = ({ namespace, moduleId }) => {
       return namespace
-        ? [namespace]
+        ? [namespace as string]
         : this.getChildModuleExports(moduleId) || [];
     };
 
@@ -454,11 +551,14 @@ export class Compiler {
     this.generateVirtualModuleSystem();
     this.generateWrapperFunction();
 
-    return generate(this.ast, {
+    const output = generate(this.ast, {
       sourceMapWithCode: true,
       sourceMap: this.opts.filename,
       sourceContent: this.opts.code,
-    });
+    }) as unknown as Output;
+
+    output.map = output.map.toString();
+    return output;
   }
 
   transform() {
@@ -474,16 +574,14 @@ export class Compiler {
     };
 
     ancestor(
-      this.ast,
+      this.ast as any,
       {
         Identifier: pack(this.identifierVisitor),
-        VariablePattern: pack(this.identifierVisitor), // `let x = 1` 和 `x = 2` acorn 给单独区分出来了
-        // import.meta
+        // `let x = 1` 和 `x = 2` acorn 给单独区分出来了
+        VariablePattern: pack(this.identifierVisitor),
         MetaProperty: pack(this.importMetaVisitor),
-        // import
         ImportDeclaration: pack(this.importDeclarationVisitor),
         ImportExpression: pack(this.importExpressionVisitor),
-        // export
         ExportAllDeclaration: pack(this.exportDeclarationVisitor),
         ExportNamedDeclaration: pack(this.exportDeclarationVisitor),
         ExportDefaultDeclaration: pack(this.exportDeclarationVisitor),

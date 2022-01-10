@@ -408,7 +408,7 @@ export function setDocCurrentScript(
 export function _extends(d, b) {
   Object.setPrototypeOf(d, b);
 
-  function fNOP() {
+  function fNOP(this: any) {
     this.constructor = d;
   }
 
@@ -452,7 +452,7 @@ export const hookObjectProperty = <
 
     // To method packages a layer of a try after all the hooks to catch
     if (typeof hooked === 'function') {
-      hooked = function (...args: any) {
+      hooked = function (this: any, ...args: any) {
         try {
           return (hookedUnsafe as any).apply(this, args);
         } catch (e) {

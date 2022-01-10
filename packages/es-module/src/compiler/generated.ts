@@ -1,15 +1,34 @@
-export function identifier(name) {
+import type {
+  Literal,
+  Property,
+  Identifier,
+  CallExpression,
+  ObjectExpression,
+  MemberExpression,
+  AssignmentExpression,
+  ArrowFunctionExpression,
+  BlockStatement,
+  ExpressionStatement,
+  VariableDeclarator,
+  VariableDeclaration,
+  FunctionDeclaration,
+} from 'estree';
+
+export function identifier(name: string): Identifier {
   return { name, type: 'Identifier' };
 }
 
-export function literal(value) {
+export function literal(value: Literal['value']): Literal {
   return {
     value,
     type: 'Literal',
-  };
+  } as any;
 }
 
-export function variableDeclarator(id, init) {
+export function variableDeclarator(
+  id: VariableDeclarator['id'],
+  init: VariableDeclarator['init'],
+): VariableDeclarator {
   return {
     id,
     init,
@@ -18,7 +37,10 @@ export function variableDeclarator(id, init) {
 }
 
 // kind: 'var' | 'let' | 'const'
-export function variableDeclaration(kind, declarations) {
+export function variableDeclaration(
+  kind: VariableDeclaration['kind'],
+  declarations: VariableDeclaration['declarations'],
+): VariableDeclaration {
   return {
     kind,
     declarations,
@@ -26,9 +48,14 @@ export function variableDeclaration(kind, declarations) {
   };
 }
 
-export function callExpression(callee, _arguments) {
+export function callExpression(
+  callee: CallExpression['callee'],
+  _arguments: CallExpression['arguments'],
+  optional = false,
+): CallExpression {
   return {
     callee,
+    optional,
     arguments: _arguments,
     type: 'CallExpression',
   };
@@ -36,14 +63,14 @@ export function callExpression(callee, _arguments) {
 
 // kind: init | get | set
 export function objectProperty(
-  key,
-  value,
-  method,
-  kind = 'init',
+  key: Property['key'],
+  value: Property['value'],
+  kind: Property['kind'] = 'init',
+  method = false,
   computed = false,
   shorthand = false,
   decorators = null,
-) {
+): Property {
   return {
     key,
     value,
@@ -53,19 +80,27 @@ export function objectProperty(
     shorthand,
     decorators,
     type: 'Property',
-  };
+  } as any;
 }
 
-export function arrowFunctionExpression(params, body, async = false) {
+export function arrowFunctionExpression(
+  params: ArrowFunctionExpression['params'],
+  body: ArrowFunctionExpression['body'],
+  async = false,
+  expression = false,
+): ArrowFunctionExpression {
   return {
     params,
     body,
     async,
+    expression,
     type: 'ArrowFunctionExpression',
   };
 }
 
-export function objectExpression(properties) {
+export function objectExpression(
+  properties: ObjectExpression['properties'],
+): ObjectExpression {
   return {
     properties,
     type: 'ObjectExpression',
@@ -73,11 +108,11 @@ export function objectExpression(properties) {
 }
 
 export function memberExpression(
-  object,
-  property,
+  object: MemberExpression['object'],
+  property: MemberExpression['property'],
   computed = false,
   optional = null,
-) {
+): MemberExpression {
   return {
     object,
     property,
@@ -87,8 +122,11 @@ export function memberExpression(
   };
 }
 
-export function expressionStatement(expression, directive) {
-  const node = {
+export function expressionStatement(
+  expression: ExpressionStatement['expression'],
+  directive: string,
+): ExpressionStatement {
+  const node: any = {
     expression,
     type: 'ExpressionStatement',
   };
@@ -96,7 +134,7 @@ export function expressionStatement(expression, directive) {
   return node;
 }
 
-export function blockStatement(body) {
+export function blockStatement(body: BlockStatement['body']): BlockStatement {
   return {
     body,
     type: 'BlockStatement',
@@ -104,12 +142,12 @@ export function blockStatement(body) {
 }
 
 export function functionDeclaration(
-  id,
-  params,
-  body,
+  id: FunctionDeclaration['id'],
+  params: FunctionDeclaration['params'],
+  body: FunctionDeclaration['body'],
   generator = false,
   async = false,
-) {
+): FunctionDeclaration {
   return {
     id,
     params,
@@ -120,7 +158,11 @@ export function functionDeclaration(
   };
 }
 
-export function assignmentExpression(operator, left, right) {
+export function assignmentExpression(
+  operator: AssignmentExpression['operator'],
+  left: AssignmentExpression['left'],
+  right: AssignmentExpression['right'],
+): AssignmentExpression {
   return {
     operator,
     left,

@@ -2,8 +2,37 @@
 // https://babeljs.io/docs/en/babel-parser
 // Filter out ts, jsx related code judgments,
 // and modify the judgments to estree specifications
+import type {
+  Node,
+  Property,
+  Identifier,
+  RestElement,
+  ForInStatement,
+  ForOfStatement,
+  BlockStatement,
+  LabeledStatement,
+  ArrayPattern,
+  ObjectPattern,
+  AssignmentPattern,
+  ClassDeclaration,
+  CatchClause,
+  VariableDeclaration,
+  FunctionDeclaration,
+  FunctionExpression,
+  ArrowFunctionExpression,
+  ExportSpecifier,
+  ExportAllDeclaration,
+  ExportNamedDeclaration,
+  ExportDefaultDeclaration,
+  ImportDeclaration,
+  ImportDefaultSpecifier,
+  ImportNamespaceSpecifier,
+} from 'estree';
 
-function shallowEqual(actual, expected) {
+function shallowEqual<T extends object>(
+  actual: object,
+  expected: T,
+): actual is T {
   const keys = Object.keys(expected);
   for (const key of keys) {
     if (actual[key] !== expected[key]) {
@@ -13,63 +42,70 @@ function shallowEqual(actual, expected) {
   return true;
 }
 
-export function isIdentifier(node) {
+export function isIdentifier(node?: object): node is Identifier {
   if (!node) return false;
-  return node.type === 'Identifier';
+  return (node as Node).type === 'Identifier';
 }
 
-export function isVar(node) {
+export function isVar(node?: object): node is VariableDeclaration {
   return isVariableDeclaration(node, { kind: 'var' });
 }
 
-export function isLet(node) {
+export function isLet(node?: object) {
   return isVariableDeclaration(node) && node.kind !== 'var';
 }
 
-export function isProperty(node) {
+export function isProperty(node?: object): node is Property {
   if (!node) return false;
-  return node.type === 'Property';
+  return (node as Node).type === 'Property';
 }
 
-export function isBlockScoped(node) {
+export function isBlockScoped(node?: object) {
   return isFunctionDeclaration(node) || isClassDeclaration(node) || isLet(node);
 }
 
-export function isArrowFunctionExpression(node) {
+export function isArrowFunctionExpression(
+  node?: object,
+): node is ArrowFunctionExpression {
   if (!node) return false;
-  return node.type === 'ArrowFunctionExpression';
+  return (node as Node).type === 'ArrowFunctionExpression';
 }
 
-export function isForXStatement(node) {
+export function isForXStatement(
+  node?: object,
+): node is ForInStatement | ForOfStatement {
   if (!node) return false;
-  const nodeType = node.type;
+  const nodeType = (node as Node).type;
   return 'ForInStatement' === nodeType || 'ForOfStatement' === nodeType;
 }
 
-export function isBlockStatement(node) {
+export function isBlockStatement(node?: object): node is BlockStatement {
   if (!node) return false;
-  return node.type === 'BlockStatement';
+  return (node as Node).type === 'BlockStatement';
 }
 
-export function isFunctionExpression(node) {
+export function isFunctionExpression(
+  node?: object,
+): node is FunctionExpression {
   if (!node) return false;
-  return node.type === 'FunctionExpression';
+  return (node as Node).type === 'FunctionExpression';
 }
 
-export function isObjectMethod(node) {
+export function isObjectMethod(node?: object) {
   if (!node) return false;
-  if (node.type !== 'Property') return false;
+  if (!isProperty(node)) return false;
   return isFunction(node.value);
 }
 
-export function isFunction(node) {
+export function isFunction(node?: object) {
   if (!node) return false;
-  const nodeType = node.type;
+  const nodeType = (node as Node).type;
   if (
     'FunctionDeclaration' === nodeType ||
     'FunctionExpression' === nodeType ||
     'ArrowFunctionExpression' === nodeType ||
     'MethodDefinition' === nodeType ||
+    // @ts-ignore
     'ClassPrivateMethod' === nodeType // acorn 支持私有属性后，替换为 estree 的类型
   ) {
     return true;
@@ -78,29 +114,31 @@ export function isFunction(node) {
   return false;
 }
 
-export function isRestElement(node) {
+export function isRestElement(node?: object): node is RestElement {
   if (!node) return false;
-  return 'RestElement' === node.type;
+  return 'RestElement' === (node as Node).type;
 }
 
-export function isArrayPattern(node) {
+export function isArrayPattern(node?: object): node is ArrayPattern {
   if (!node) return false;
-  return 'ArrayPattern' === node.type;
+  return 'ArrayPattern' === (node as Node).type;
 }
 
-export function isObjectPattern(node) {
+export function isObjectPattern(node?: object): node is ObjectPattern {
   if (!node) return false;
-  return 'ObjectPattern' === node.type;
+  return 'ObjectPattern' === (node as Node).type;
 }
 
-export function isAssignmentPattern(node) {
+export function isAssignmentPattern(node?: object): node is AssignmentPattern {
   if (!node) return false;
-  return 'AssignmentPattern' === node.type;
+  return 'AssignmentPattern' === (node as Node).type;
 }
 
-export function isPattern(node) {
+export function isPattern(
+  node?: object,
+): node is ArrayPattern | ObjectPattern | AssignmentPattern {
   if (!node) return false;
-  const nodeType = node.type;
+  const nodeType = (node as Node).type;
   if (
     'AssignmentPattern' === nodeType ||
     'ArrayPattern' === nodeType ||
@@ -111,25 +149,27 @@ export function isPattern(node) {
   return false;
 }
 
-export function isCatchClause(node) {
+export function isCatchClause(node?: object): node is CatchClause {
   if (!node) return false;
-  return node.type === 'CatchClause';
+  return (node as Node).type === 'CatchClause';
 }
 
-export function isProgram(node) {
+export function isProgram(node?: object) {
   if (!node) return false;
-  return node.type === 'Program';
+  return (node as Node).type === 'Program';
 }
 
-export function isFunctionParent(node) {
+export function isFunctionParent(node?: object) {
   if (!node) return false;
-  const nodeType = node.type;
+  const nodeType = (node as Node).type;
   if (
     'FunctionDeclaration' === nodeType ||
     'FunctionExpression' === nodeType ||
     'ArrowFunctionExpression' === nodeType ||
     'MethodDefinition' === nodeType ||
+    // @ts-ignore
     'ClassPrivateMethod' === nodeType ||
+    // @ts-ignore
     'StaticBlock' === nodeType ||
     isObjectMethod(node)
   ) {
@@ -138,9 +178,9 @@ export function isFunctionParent(node) {
   return false;
 }
 
-export function isBlockParent(node) {
+export function isBlockParent(node?: object) {
   if (!node) return false;
-  const nodeType = node.type;
+  const nodeType = (node as Node).type;
   if (
     'BlockStatement' === nodeType ||
     'CatchClause' === nodeType ||
@@ -150,13 +190,15 @@ export function isBlockParent(node) {
     'FunctionDeclaration' === nodeType ||
     'FunctionExpression' === nodeType ||
     'Program' === nodeType ||
-    'ObjectMethod' === nodeType ||
     'SwitchStatement' === nodeType ||
     'WhileStatement' === nodeType ||
     'ArrowFunctionExpression' === nodeType ||
     'ForOfStatement' === nodeType ||
     'MethodDefinition' === nodeType ||
+    isObjectMethod(node) ||
+    // @ts-ignore
     'ClassPrivateMethod' === nodeType ||
+    // @ts-ignore
     'StaticBlock' === nodeType
   ) {
     return true;
@@ -164,19 +206,24 @@ export function isBlockParent(node) {
   return false;
 }
 
-export function isLabeledStatement(node) {
+export function isLabeledStatement(node?: object): node is LabeledStatement {
   if (!node) return false;
-  return node.type === 'LabeledStatement';
+  return (node as Node).type === 'LabeledStatement';
 }
 
-export function isFunctionDeclaration(node) {
+export function isFunctionDeclaration(
+  node?: object,
+): node is FunctionDeclaration {
   if (!node) return false;
-  return node.type === 'FunctionDeclaration';
+  return (node as Node).type === 'FunctionDeclaration';
 }
 
-export function isVariableDeclaration(node, opts) {
+export function isVariableDeclaration(
+  node?: object,
+  opts?: object,
+): node is VariableDeclaration {
   if (!node) return false;
-  const nodeType = node.type;
+  const nodeType = (node as Node).type;
   if (nodeType === 'VariableDeclaration') {
     if (typeof opts === 'undefined') {
       return true;
@@ -187,19 +234,26 @@ export function isVariableDeclaration(node, opts) {
   return false;
 }
 
-export function isClassDeclaration(node) {
+export function isClassDeclaration(node?: object): node is ClassDeclaration {
   if (!node) return false;
-  return node.type === 'ClassDeclaration';
+  return (node as Node).type === 'ClassDeclaration';
 }
 
-export function isExportAllDeclaration(node) {
+export function isExportAllDeclaration(
+  node?: object,
+): node is ExportAllDeclaration {
   if (!node) return false;
-  return node.type === 'ExportAllDeclaration';
+  return (node as Node).type === 'ExportAllDeclaration';
 }
 
-export function isExportDeclaration(node) {
+export function isExportDeclaration(
+  node?: object,
+): node is
+  | ExportAllDeclaration
+  | ExportDefaultDeclaration
+  | ExportNamedDeclaration {
   if (!node) return false;
-  const nodeType = node.type;
+  const nodeType = (node as Node).type;
   if (
     'ExportAllDeclaration' === nodeType ||
     'ExportDefaultDeclaration' === nodeType ||
@@ -210,34 +264,40 @@ export function isExportDeclaration(node) {
   return false;
 }
 
-export function isExportDefaultDeclaration(node) {
+export function isExportDefaultDeclaration(
+  node?: object,
+): node is ExportDefaultDeclaration {
   if (!node) return false;
-  return node.type === 'ExportDefaultDeclaration';
+  return (node as Node).type === 'ExportDefaultDeclaration';
 }
 
-export function isExportSpecifier(node) {
+export function isExportSpecifier(node?: object): node is ExportSpecifier {
   if (!node) return false;
-  return node.type === 'ExportSpecifier';
+  return (node as Node).type === 'ExportSpecifier';
 }
 
-export function isImportDeclaration(node) {
+export function isImportDeclaration(node?: object): node is ImportDeclaration {
   if (!node) return false;
-  return node.type === 'ImportDeclaration';
+  return (node as Node).type === 'ImportDeclaration';
 }
 
-export function isImportDefaultSpecifier(node) {
+export function isImportDefaultSpecifier(
+  node?: object,
+): node is ImportDefaultSpecifier {
   if (!node) return false;
-  return node.type === 'ImportDefaultSpecifier';
+  return (node as Node).type === 'ImportDefaultSpecifier';
 }
 
-export function isImportNamespaceSpecifier(node) {
+export function isImportNamespaceSpecifier(
+  node?: object,
+): node is ImportNamespaceSpecifier {
   if (!node) return false;
-  return node.type === 'ImportNamespaceSpecifier';
+  return (node as Node).type === 'ImportNamespaceSpecifier';
 }
 
-export function isDeclaration(node) {
+export function isDeclaration(node?: object) {
   if (!node) return false;
-  const nodeType = node.type;
+  const nodeType = (node as Node).type;
   if (
     'FunctionDeclaration' === nodeType ||
     'VariableDeclaration' === nodeType ||
@@ -252,7 +312,7 @@ export function isDeclaration(node) {
   return false;
 }
 
-export function isScope(node, parent) {
+export function isScope(node: Node, parent: Node) {
   if (isBlockStatement(node) && (isFunction(parent) || isCatchClause(parent))) {
     return false;
   }
@@ -262,9 +322,9 @@ export function isScope(node, parent) {
   return isScopable(node);
 }
 
-export function isScopable(node) {
+export function isScopable(node?: object) {
   if (!node) return false;
-  const nodeType = node.type;
+  const nodeType = (node as Node).type;
   if (
     'BlockStatement' === nodeType ||
     'CatchClause' === nodeType ||
@@ -281,21 +341,24 @@ export function isScopable(node) {
     'ClassDeclaration' === nodeType ||
     'ForOfStatement' === nodeType ||
     'MethodDefinition' === nodeType ||
+    isObjectMethod(node) ||
+    // @ts-ignore
     'ClassPrivateMethod' === nodeType ||
-    'StaticBlock' === nodeType ||
-    isObjectMethod(node)
+    // @ts-ignore
+    'StaticBlock' === nodeType
   ) {
     return true;
   }
   return false;
 }
 
-export function isReferenced(node, parent, grandparent) {
+export function isReferenced(node: Node, parent: Node, grandparent: Node) {
   switch (parent.type) {
     // yes: PARENT[NODE]
     // yes: NODE.child
     // no: parent.NODE
     case 'MemberExpression':
+    // @ts-ignore
     case 'OptionalMemberExpression': // acorn 还没有实现可选链
       if (parent.property === node) {
         return !!parent.computed;
@@ -316,6 +379,7 @@ export function isReferenced(node, parent, grandparent) {
     // no: class { get #NODE() {} }
     // no: class { #NODE() {} }
     // no: class { fn() { return this.#NODE; } }
+    // @ts-ignore
     case 'PrivateName': // acorn 还没有实现私有属性
       return false;
 
@@ -329,7 +393,8 @@ export function isReferenced(node, parent, grandparent) {
     //  depends: { NODE }
     //  depends: { key: NODE }
     case 'MethodDefinition': // babel 替换为了 ClassMethod
-    case 'ClassPrivateMethod':
+    // @ts-ignore
+    case 'ClassPrivateMethod': // acorn 还没有实现私有方法
     case 'Property':
       if (parent.key === node) {
         return !!parent.computed;
@@ -350,7 +415,9 @@ export function isReferenced(node, parent, grandparent) {
         return !!parent.computed;
       }
       return true;
-    case 'ClassPrivateProperty':
+    // @ts-ignore
+    case 'ClassPrivateProperty': // acorn 还没有实现
+      // @ts-ignore
       return parent.key !== node;
 
     // no: class NODE {}
@@ -400,7 +467,7 @@ export function isReferenced(node, parent, grandparent) {
     // yes: export { NODE as foo };
     // no: export { NODE as foo } from "foo";
     case 'ExportSpecifier':
-      if (grandparent?.source) {
+      if ((grandparent as ExportNamedDeclaration)?.source) {
         return false;
       }
       return parent.local === node;
@@ -416,6 +483,7 @@ export function isReferenced(node, parent, grandparent) {
       return false;
 
     // no: import "foo" assert { NODE: "json" }
+    // @ts-ignore
     case 'ImportAttribute': // acorn 还没有实现
       return false;
 
