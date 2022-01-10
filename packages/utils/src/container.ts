@@ -35,8 +35,6 @@ export function createAppContainer(appInfo: interfaces.AppInfo) {
     document.createElement('div');
 
   const appContainer = document.createElement('div');
-  htmlNode.style.height = '100%';
-  appContainer.style.height = '100%';
 
   if (appInfo.sandbox && appInfo.sandbox.strictIsolation) {
     htmlNode = document.createElement('html');
