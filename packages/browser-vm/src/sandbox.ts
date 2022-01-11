@@ -272,7 +272,14 @@ export class Sandbox {
   }
 
   execScript(code: string, env = {}, url = '', options?: ExecScriptOptions) {
-    const { async } = options || {};
+    const { async, isModule } = options || {};
+    if (isModule) {
+      warn(
+        'The vm sandbox does not support es module temporarily,' +
+          'you can use the "es-module" plugin to support it',
+      );
+      return;
+    }
     const { disableWith } = this.options;
     const { prepareList, overrideList } = this.replaceGlobalVariables;
 

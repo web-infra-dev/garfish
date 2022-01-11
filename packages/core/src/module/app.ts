@@ -1,6 +1,7 @@
 import { StyleManager, TemplateManager } from '@garfish/loader';
 import {
   Text,
+  Node,
   warn,
   assert,
   hasOwn,
@@ -37,6 +38,13 @@ export type CustomerLoader = (
 export type AppInfo = interfaces.AppInfo & {
   appId?: number;
 };
+
+export interface ExecScriptOptions {
+  node?: Node;
+  async?: boolean;
+  noEntry?: boolean;
+  isModule?: boolean;
+}
 
 let appId = 0;
 export const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
@@ -155,7 +163,7 @@ export class App {
     code: string,
     env: Record<string, any>,
     url?: string,
-    options?: { async?: boolean; noEntry?: boolean },
+    options?: ExecScriptOptions,
   ) {
     env = {
       ...this.getExecScriptEnv(options?.noEntry),
@@ -179,26 +187,32 @@ export class App {
     code: string,
     env: Record<string, any>,
     url?: string,
-    options?: { async?: boolean; noEntry?: boolean },
+    options?: ExecScriptOptions,
   ) {
-    const revertCurrentScript = setDocCurrentScript(
-      this.global.document,
-      code,
-      true,
-      url,
-      options?.async,
-    );
-    code += url ? `\n//# sourceURL=${url}\n` : '';
+    if (options.isModule) {
+      // If the node is an es module, the ability to use the browser directly
+      console.log(options.node);
+      this.entryManager.DOMApis.createElement(options.node);
+    } else {
+      const revertCurrentScript = setDocCurrentScript(
+        this.global.document,
+        code,
+        true,
+        url,
+        options?.async,
+      );
+      code += url ? `\n//# sourceURL=${url}\n` : '';
 
-    if (!hasOwn(env, 'window')) {
-      env = {
-        ...env,
-        window: this.global,
-      };
+      if (!hasOwn(env, 'window')) {
+        env = {
+          ...env,
+          window: this.global,
+        };
+      }
+
+      evalWithEnv(`;${code}`, env, this.global);
+      revertCurrentScript();
     }
-
-    evalWithEnv(`;${code}`, env, this.global);
-    revertCurrentScript();
   }
 
   async show() {
@@ -498,33 +512,29 @@ export class App {
 
       script: (node) => {
         const mimeType = entryManager.findAttributeValue(node, 'type');
+        const isModule = mimeType === 'module';
         const appGlobalId = entryManager.findAttributeValue(
           node,
           __SCRIPT_GLOBAL_APP_ID__,
         );
 
         // app lifecycle save in appGlobalId
-        if (appGlobalId) {
-          this.appGlobalId = appGlobalId;
-        }
-
+        if (appGlobalId) this.appGlobalId = appGlobalId;
         if (mimeType) {
-          if (!isJs(parseContentType(mimeType))) {
+          if (!isModule && !isJs(parseContentType(mimeType))) {
             return DOMApis.createElement(node);
           }
         }
+
         const jsManager = resources.js.find((manager) => {
           return !manager.async ? manager.isSameOrigin(node) : false;
         });
 
         if (jsManager) {
-          if (jsManager.isModule()) {
-            // EsModule cannot use eval and new Function to execute the code
-            warn('"esmodule" code will not be execute in sandbox');
-            return DOMApis.createElement(node);
-          }
           const { url, scriptCode } = jsManager;
           this.execScript(scriptCode, {}, url || this.appInfo.entry, {
+            node,
+            isModule,
             async: false,
             noEntry: toBoolean(
               entryManager.findAttributeValue(node, 'no-entry'),
@@ -598,7 +608,7 @@ export class App {
       provider = customExports.provider;
     }
 
-    // esmodule app global lifecycle in global variable
+    // esModule app global lifecycle in global variable
     if (this.global[__GARFISH_GLOBAL_APP_LIFECYCLE__] && this.appGlobalId) {
       provider =
         this.global[__GARFISH_GLOBAL_APP_LIFECYCLE__][this.appGlobalId]
