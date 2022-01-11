@@ -1,6 +1,6 @@
-import { Parser } from 'acorn';
 import { ancestor } from 'acorn-walk';
 import { generate } from 'escodegen';
+import { Parser, Node as AcornNode } from 'acorn';
 import { transformUrl } from '@garfish/utils';
 import type {
   Node,
@@ -21,7 +21,7 @@ import type {
 } from 'estree';
 import type { Scope } from './scope';
 import { State, createState } from './state';
-import { runtime, ModuleOutput } from '../runtime';
+import { Runtime, ModuleOutput } from '../runtime';
 import {
   isIdentifier,
   isVariableDeclaration,
@@ -46,11 +46,6 @@ import {
   functionDeclaration,
 } from './generated';
 
-export interface Output {
-  map: string;
-  code: string;
-}
-
 type ImportInfoData = (
   | ReturnType<Compiler['getImportInformation']>
   | ReturnType<Compiler['getImportInformationBySource']>
@@ -64,6 +59,12 @@ interface CompilerOptions {
   code: string;
   storeId: string;
   filename: string;
+  runtime: Runtime;
+}
+
+export interface Output {
+  map: string;
+  code: string;
 }
 
 export class Compiler {
@@ -78,7 +79,7 @@ export class Compiler {
   };
 
   private ast: Program;
-  private opts: CompilerOptions;
+  private options: CompilerOptions;
   private state: ReturnType<typeof createState>;
 
   private moduleCount = 0;
@@ -103,8 +104,8 @@ export class Compiler {
     }>(),
   };
 
-  constructor(opts: CompilerOptions) {
-    this.opts = opts;
+  constructor(options: CompilerOptions) {
+    this.options = options;
     this.ast = this.parse();
     this.state = createState(this.ast);
   }
@@ -115,14 +116,14 @@ export class Compiler {
         locations: true,
         sourceType: 'module',
         ecmaVersion: 'latest',
-        sourceFile: this.opts.filename,
+        sourceFile: this.options.filename,
       },
-      this.opts.code,
+      this.options.code,
     );
     try {
       return parser.parse() as unknown as Program;
     } catch (e) {
-      e.message += `(${this.opts.filename})`;
+      e.message += `(${this.options.filename})`;
       throw e;
     }
   }
@@ -138,7 +139,7 @@ export class Compiler {
         const checkName = item.isDefault ? 'default' : item.name;
         if (!exports.includes(checkName)) {
           throw SyntaxError(
-            `(${this.opts.filename}): The module '${moduleId}' does not provide an export named '${checkName}'`,
+            `(${this.options.filename}): The module '${moduleId}' does not provide an export named '${checkName}'`,
           );
         }
       });
@@ -146,8 +147,8 @@ export class Compiler {
   }
 
   private getChildModuleExports(moduleId: string) {
-    const storeId = transformUrl(this.opts.storeId, moduleId);
-    const output = runtime.resources[storeId] as ModuleOutput;
+    const storeId = transformUrl(this.options.storeId, moduleId);
+    const output = this.options.runtime.resources[storeId] as ModuleOutput;
     return output ? output.exports : null;
   }
 
@@ -569,8 +570,8 @@ export class Compiler {
 
     const output = generate(this.ast, {
       sourceMapWithCode: true,
-      sourceMap: this.opts.filename,
-      sourceContent: this.opts.code,
+      sourceMap: this.options.filename,
+      sourceContent: this.options.code,
     }) as unknown as Output;
 
     output.map = output.map.toString();
@@ -590,10 +591,9 @@ export class Compiler {
     };
 
     ancestor(
-      this.ast as any,
+      this.ast as unknown as AcornNode,
       {
         Identifier: c(this.identifierVisitor),
-        // `let x = 1` 和 `x = 2` acorn 给单独区分出来了
         VariablePattern: c(this.identifierVisitor),
         MetaProperty: c(this.importMetaVisitor),
         ImportExpression: c(this.importExpressionVisitor),

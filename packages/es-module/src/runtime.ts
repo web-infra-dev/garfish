@@ -1,5 +1,11 @@
-import { toBase64, transformUrl } from '@garfish/utils';
-import { Output, Compiler } from './compiler/index';
+import {
+  toBase64,
+  deepMerge,
+  transformUrl,
+  isPlainObject,
+} from '@garfish/utils';
+import { Loader, JavaScriptManager } from '@garfish/loader';
+import { Output, Compiler } from './compiler';
 import { Module, MemoryModule, createModule, createImportMeta } from './module';
 
 export type ModuleOutput = Output & {
@@ -8,10 +14,26 @@ export type ModuleOutput = Output & {
   exports: Array<string>;
 };
 
-class Runtime {
+export interface RuntimeOptions {
+  scope: string;
+  loader: Loader;
+}
+
+export class Runtime {
+  private options: RuntimeOptions;
   private modules = new WeakMap<MemoryModule, Module>();
   private memoryModules: Record<string, MemoryModule> = {};
   public resources: Record<string, ModuleOutput | Promise<void>> = {};
+
+  constructor(options?: RuntimeOptions) {
+    const defaultOptions = {
+      scope: 'default',
+      loader: new Loader(),
+    };
+    this.options = isPlainObject(options)
+      ? deepMerge(defaultOptions, options)
+      : defaultOptions;
+  }
 
   private getModule(memoryModule: MemoryModule) {
     if (!this.modules.has(memoryModule)) {
@@ -20,34 +42,7 @@ class Runtime {
     return this.modules.get(memoryModule);
   }
 
-  importMemoryModule(storeId: string) {
-    let memoryModule = this.memoryModules[storeId];
-    if (!memoryModule) {
-      const output = this.resources[storeId] as ModuleOutput;
-      if (!output) {
-        throw new Error(`Module '${storeId}' not found`);
-      }
-      memoryModule = this.memoryModules[storeId] = {};
-      this.execCode(output, memoryModule);
-    }
-    return memoryModule;
-  }
-
-  async dynamicImportMemoryModule(storeId: string, requestUrl: string) {
-    let memoryModule = this.memoryModules[storeId];
-    if (!memoryModule) {
-      await this.compileAndFetchCode(storeId, requestUrl);
-      const output = this.resources[storeId] as ModuleOutput;
-      if (!output) {
-        throw new Error(`Module '${storeId}' not found`);
-      }
-      memoryModule = this.memoryModules[storeId] = {};
-      this.execCode(output, memoryModule);
-    }
-    return this.getModule(memoryModule);
-  }
-
-  execCode(output: ModuleOutput, memoryModule: MemoryModule) {
+  private execCode(output: ModuleOutput, memoryModule: MemoryModule) {
     const sourcemap = `\n//@ sourceMappingURL=${output.map}`;
     (0, eval)(`${output.code}\n//${output.storeId}${sourcemap}`);
     const actuator = globalThis[Compiler.keys.__VIRTUAL_WRAPPER__];
@@ -84,27 +79,29 @@ class Runtime {
     );
   }
 
-  compileAndFetchCode(storeId: string, url: string) {
+  private compileAndFetchCode(storeId: string, url: string) {
     if (this.resources[storeId]) {
       return this.resources[storeId];
     }
-    const p = fetch(url)
-      .then(async (res) => {
-        const code = res.status >= 400 ? '' : await res.text();
-        return [code, res.url]; // 可能重定向了
-      })
-      .then(async ([code, realUrl]) => {
-        if (code) {
+    const { loader, scope } = this.options;
+    const p = loader
+      .load<JavaScriptManager>(scope, url)
+      .then(async ({ resourceManager }) => {
+        const { url, scriptCode } = resourceManager;
+
+        if (scriptCode) {
           const compiler = new Compiler({
-            code,
             storeId,
+            runtime: this,
+            code: scriptCode,
             filename: storeId,
           });
+
           const { imports, exports, generateCode } = compiler.transform();
           await Promise.all(
             imports.map(({ moduleId }) => {
               const curStoreId = transformUrl(storeId, moduleId);
-              const requestUrl = transformUrl(realUrl, moduleId);
+              const requestUrl = transformUrl(url, moduleId);
               return this.resources[curStoreId]
                 ? null
                 : this.compileAndFetchCode(curStoreId, requestUrl);
@@ -113,7 +110,7 @@ class Runtime {
 
           const output = generateCode() as ModuleOutput;
           output.storeId = storeId;
-          output.realUrl = realUrl;
+          output.realUrl = url;
           output.exports = exports;
           output.map = await toBase64(output.map);
           this.resources[storeId] = output;
@@ -123,6 +120,33 @@ class Runtime {
       });
     this.resources[storeId] = p;
     return p;
+  }
+
+  importMemoryModule(storeId: string) {
+    let memoryModule = this.memoryModules[storeId];
+    if (!memoryModule) {
+      const output = this.resources[storeId] as ModuleOutput;
+      if (!output) {
+        throw new Error(`Module '${storeId}' not found`);
+      }
+      memoryModule = this.memoryModules[storeId] = {};
+      this.execCode(output, memoryModule);
+    }
+    return memoryModule;
+  }
+
+  async dynamicImportMemoryModule(storeId: string, requestUrl: string) {
+    let memoryModule = this.memoryModules[storeId];
+    if (!memoryModule) {
+      await this.compileAndFetchCode(storeId, requestUrl);
+      const output = this.resources[storeId] as ModuleOutput;
+      if (!output) {
+        throw new Error(`Module '${storeId}' not found`);
+      }
+      memoryModule = this.memoryModules[storeId] = {};
+      this.execCode(output, memoryModule);
+    }
+    return this.getModule(memoryModule);
   }
 }
 
