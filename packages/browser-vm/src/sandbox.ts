@@ -1,6 +1,7 @@
 import { Loader } from '@garfish/loader';
 import {
   warn,
+  error,
   hasOwn,
   makeMap,
   isObject,
@@ -274,8 +275,8 @@ export class Sandbox {
   execScript(code: string, env = {}, url = '', options?: ExecScriptOptions) {
     const { async, isModule } = options || {};
     if (isModule) {
-      warn(
-        'The vm sandbox does not support es module temporarily,' +
+      error(
+        'The "vm sandbox" does not support "es module" script temporarily, ' +
           'you can use the "es-module" plugin to support it',
       );
       return;

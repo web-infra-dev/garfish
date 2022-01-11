@@ -191,8 +191,11 @@ export class App {
   ) {
     if (options.isModule) {
       // If the node is an es module, the ability to use the browser directly
-      console.log(options.node);
-      this.entryManager.DOMApis.createElement(options.node);
+      // this.entryManager.DOMApis.createElement(options.node);
+      const p = (0, eval)(`import('${url}')`);
+      p.then((module) => {
+        console.log(module, 't');
+      });
     } else {
       const revertCurrentScript = setDocCurrentScript(
         this.global.document,
@@ -520,7 +523,9 @@ export class App {
 
         // app lifecycle save in appGlobalId
         if (appGlobalId) this.appGlobalId = appGlobalId;
+
         if (mimeType) {
+          // Other script template
           if (!isModule && !isJs(parseContentType(mimeType))) {
             return DOMApis.createElement(node);
           }
