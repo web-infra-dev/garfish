@@ -25,7 +25,11 @@ describe('vue-bridge', () => {
     container.setAttribute('id', cssSelector.replace('#', ''));
     container.appendChild(appContainer);
 
-    props = { appName: 'test-app', basename: '/demo', dom: container };
+    props = {
+      appName: 'test-app',
+      basename: '/demo',
+      dom: container,
+    };
 
     $destroy = jest.fn();
   });
@@ -52,7 +56,9 @@ describe('vue-bridge', () => {
     expect(handleInstance).not.toHaveBeenCalled();
     expect($destroy).not.toHaveBeenCalled();
 
-    lifeCycles.render(props);
+    lifeCycles.render(props, {
+      store: { number: 1 },
+    });
     expect(Vue).toHaveBeenCalled();
     expect(handleInstance).toHaveBeenCalled();
     expect($destroy).not.toHaveBeenCalled();
@@ -71,8 +77,13 @@ describe('vue-bridge', () => {
     });
 
     const lifeCycles = await provider(props);
-    lifeCycles.render(props);
-    expect(appOptions.mock.calls[0][0]).toBe(props);
+    const userProps = {
+      store: { number: 1 },
+    };
+
+    lifeCycles.render({ appInfo: props }, userProps);
+
+    expect(appOptions.mock.calls[0][0]).toBe({ appInfo: props, userProps });
     lifeCycles.destroy(props);
   });
 
@@ -87,7 +98,9 @@ describe('vue-bridge', () => {
     });
 
     const lifeCycles = await provider(props);
-    lifeCycles.render(props);
+    lifeCycles.render(props, {
+      store: { number: 1 },
+    });
     expect(handleInstance.mock.calls[0][1]).toBe(props);
     lifeCycles.destroy(props);
   });
@@ -106,7 +119,9 @@ describe('vue-bridge', () => {
 
     const lifeCycles = await provider(props);
 
-    lifeCycles.render(props);
+    lifeCycles.render(props, {
+      store: { number: 1 },
+    });
     expect(opts.loadRootComponent).toHaveBeenCalled();
     expect(Vue.mock.calls[0][0].render).toBeDefined();
 
@@ -124,7 +139,9 @@ describe('vue-bridge', () => {
 
     const lifeCycles = await provider(props);
 
-    lifeCycles.render(props);
+    lifeCycles.render(props, {
+      store: { number: 1 },
+    });
     expect(Vue).toHaveBeenCalled();
     expect(Vue.mock.calls[0][0].data()).toBeTruthy();
     expect(Vue.mock.calls[0][0].data().appName).toBe('test-app');
@@ -142,7 +159,9 @@ describe('vue-bridge', () => {
 
     const lifeCycles = await provider(props);
 
-    lifeCycles.render(props);
+    lifeCycles.render(props, {
+      store: { number: 1 },
+    });
     expect(Vue).toHaveBeenCalled();
     expect(Vue.mock.calls[0][0].el).toBe(container);
     lifeCycles.destroy(props);
@@ -171,7 +190,9 @@ describe('vue-bridge', () => {
     });
     const lifeCycles = await provider(props);
 
-    lifeCycles.render(props);
+    lifeCycles.render(props, {
+      store: { number: 1 },
+    });
 
     expect(Vue.createApp).toHaveBeenCalled();
     // Vue 3 requires the data to be a function
@@ -204,7 +225,9 @@ describe('vue-bridge', () => {
     });
     const lifeCycles = await provider(props);
 
-    lifeCycles.render(props);
+    lifeCycles.render(props, {
+      store: { number: 1 },
+    });
 
     expect(createApp).toHaveBeenCalled();
     // Vue 3 requires the data to be a function
