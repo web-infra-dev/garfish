@@ -144,12 +144,28 @@ function App({ basename }) {
     </BrowserRouter>
   );
 }
+function RootComponent(props) {
+  /***
+   * 兼容 loadRootComponent 和 rootComponent 两种写法，rootComponent
+   * rootComponent 传递的 props 会包裹一层 appInfo 和 userProps，loadRootComponent 则将参数直接传递
+   * rootComponent 优先级高于loadRootComponent，二者同时存在时，只有 rootComponent 会生效
+   */
+  const basename = props.basename || props.appInfo?.basename;
+  const store = props.store || props.userProps?.store;
+
+  return <App basename={basename} store={store} />;
+}
 
 export const provider = reactBridge({
   React,
   ReactDOM,
   el: '#root',
-  rootComponent: App,
+  // rootComponent: pass a class or stateless function component
+  rootComponent: RootComponent,
+  // loadRootComponent:pass a promise that resolves with the react component. Wait for it to resolve before mounting
+  loadRootComponent: (props) => {
+    return Promise.resolve(RootComponent);
+  },
 });
 ```
 
@@ -174,11 +190,12 @@ function newRouter(basename) {
 export const provider = vueBridge({
   Vue,
   rootComponent: App,
-  appOptions: ({ basename }) => ({
-    el: '#app',
-    router: newRouter(basename),
-    store,
-  }),
+  appOptions: ({ appInfo, userProps }) => {
+    return {
+      el: '#app',
+      router: newRouter(appInfo.basename),
+    };
+  },
 });
 ```
 
@@ -193,12 +210,13 @@ import { vueBridge } from '@garfish/bridge';
 export const provider = vueBridge({
   createApp,
   appId: 'vite-vue-sub-app', // 在 vite 应用时提供，该值与 htmlPlugin 第一个参数相同
-  appOptions: ({ basename }) => ({
-    el: '#app',
-    render() {
-      return h(App);
-    },
-  }),
+  appOptions: ({ appInfo, userProps }) => {
+    return {
+      el: '#app',
+      render: () => h(App),
+      router: newRouter(appInfo.basename),
+    };
+  },
 });
 ```
 
