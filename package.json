@@ -25,8 +25,7 @@
     "format:md": "prettier --write \"**/*.md\"",
     "release": "node ./scripts/release.js",
     "release:canary": "node ./scripts/release.js --canary",
-    "postinstall": "husky install",
-    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
+    "postinstall": "husky install"
   },
   "lint-staged": {
     "*.js": [
