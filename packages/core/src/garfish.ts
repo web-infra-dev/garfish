@@ -142,7 +142,7 @@ export class Garfish extends EventEmitter2 {
     return this;
   }
 
-  async loadApp(
+  loadApp(
     appName: string,
     optionsOrUrl?: Omit<interfaces.AppInfo, 'name'>,
   ): Promise<interfaces.App | null> {

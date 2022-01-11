@@ -385,9 +385,9 @@ export class Compiler {
     state: State,
     ancestors: Array<Node>,
   ) {
+    const namespace = node.exported?.name;
     const moduleId = node.source.value as string;
     const data = this.getImportInformationBySource(node);
-    const namespace = node.exported && node.exported.name;
     let [moduleName, transformNode] = this.findImportInfo(moduleId);
 
     if (!moduleName) {

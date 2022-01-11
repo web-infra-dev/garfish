@@ -12,7 +12,7 @@ describe('vue-bridge', () => {
   beforeEach(() => {
     Vue = jest.fn();
 
-    Vue.mockImplementation(function () {
+    Vue.mockImplementation(function (this: any) {
       this.$destroy = $destroy;
       this.$mount = $mount;
       this.$el = $el;

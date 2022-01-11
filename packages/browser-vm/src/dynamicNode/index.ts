@@ -14,7 +14,7 @@ const mountElementMethods = [
 const removeChildElementMethods = ['removeChild'];
 
 function injector(current: Function, methodName: string) {
-  return function () {
+  return function (this: Element) {
     // prettier-ignore
     const el = methodName === 'insertAdjacentElement'
       ? arguments[1]
@@ -42,7 +42,7 @@ function injector(current: Function, methodName: string) {
 }
 
 function injectorRemoveChild(current: Function, methodName: string) {
-  return function () {
+  return function (this: Element) {
     const el = arguments[0];
     const sandbox = el && sandboxMap.get(el);
     const originProcess = () => {

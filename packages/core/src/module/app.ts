@@ -244,7 +244,7 @@ export class App {
     this.mounting = true;
     try {
       // add container and compile js with cjs
-      const asyncJsProcess = await this.compileAndRenderContainer();
+      const { asyncScripts } = await this.compileAndRenderContainer();
 
       // Good provider is set at compile time
       const provider = await this.getProvider();
@@ -257,7 +257,7 @@ export class App {
       this.context.activeApps.push(this);
       this.hooks.lifecycle.afterMount.emit(this.appInfo, this, false);
 
-      await asyncJsProcess;
+      await asyncScripts;
       if (!this.stopMountAndClearEffect()) return false;
     } catch (e) {
       this.entryManager.DOMApis.removeElement(this.appContainer);
@@ -330,31 +330,33 @@ export class App {
     await this.renderTemplate();
 
     // Execute asynchronous script
-    return new Promise<void>((resolve) => {
-      // Asynchronous script does not block the rendering process
-      setTimeout(() => {
-        if (this.stopMountAndClearEffect()) {
-          for (const jsManager of this.resources.js) {
-            if (jsManager.async) {
-              try {
-                this.execScript(
-                  jsManager.scriptCode,
-                  {},
-                  jsManager.url || this.appInfo.entry,
-                  {
-                    async: false,
-                    noEntry: true,
-                  },
-                );
-              } catch (e) {
-                this.hooks.lifecycle.errorMountApp.emit(e, this.appInfo);
+    return {
+      asyncScripts: new Promise<void>((resolve) => {
+        // Asynchronous script does not block the rendering process
+        setTimeout(() => {
+          if (this.stopMountAndClearEffect()) {
+            for (const jsManager of this.resources.js) {
+              if (jsManager.async) {
+                try {
+                  this.execScript(
+                    jsManager.scriptCode,
+                    {},
+                    jsManager.url || this.appInfo.entry,
+                    {
+                      async: false,
+                      noEntry: true,
+                    },
+                  );
+                } catch (e) {
+                  this.hooks.lifecycle.errorMountApp.emit(e, this.appInfo);
+                }
               }
             }
           }
-        }
-        resolve();
-      });
-    });
+          resolve();
+        });
+      }),
+    };
   }
 
   private canMount() {
@@ -578,7 +580,7 @@ export class App {
 
   private async checkAndGetProvider() {
     const { appInfo, rootElement, cjsModules, customExports } = this;
-    const { props, basename } = appInfo;
+    const { name, props, basename } = appInfo;
     let provider:
       | ((...args: any[]) => interfaces.Provider)
       | interfaces.Provider = null;
@@ -608,9 +610,9 @@ export class App {
         {
           basename,
           dom: rootElement,
-          ...(appInfo.props || {}),
+          ...(props || {}),
         },
-        appInfo.props,
+        props,
       );
     } else if (isPromise(provider)) {
       provider = await provider;
@@ -619,21 +621,21 @@ export class App {
     // The provider may be a function object
     if (!isObject(provider) && typeof provider !== 'function') {
       warn(
-        ` Invalid module content: ${appInfo.name}, you should return both render and destroy functions in provider function.`,
+        ` Invalid module content: ${name}, you should return both render and destroy functions in provider function.`,
       );
     }
 
     // If you have customLoader, the dojo.provide by user
     const hookRes = await (this.customLoader &&
-      this.customLoader(provider, appInfo, basename));
+      this.customLoader(provider as interfaces.Provider, appInfo, basename));
 
     if (hookRes) {
       const { mount, unmount } = hookRes || ({} as any);
       if (typeof mount === 'function' && typeof unmount === 'function') {
         mount._custom = true;
         unmount._custom = true;
-        provider.render = mount;
-        provider.destroy = unmount;
+        (provider as interfaces.Provider).render = mount;
+        (provider as interfaces.Provider).destroy = unmount;
       }
     }
 
@@ -644,7 +646,7 @@ export class App {
       assert('destroy' in provider, '"destroy" is required in provider.');
     }
 
-    this.provider = provider;
-    return provider;
+    this.provider = provider as interfaces.Provider;
+    return provider as interfaces.Provider;
   }
 }

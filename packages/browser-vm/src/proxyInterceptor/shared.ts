@@ -131,7 +131,7 @@ function transferProps(o: Function, n: Function) {
 // 5. After the bind after the objective function is new to instantiate, pointing to their own
 export function bind(fn, context: any) {
   const fNOP = function () {};
-  function bound() {
+  function bound(this: any) {
     const args = handlerParams(arguments);
     if (this instanceof bound) {
       const obj = new fn(...args);
