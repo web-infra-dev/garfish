@@ -1,9 +1,9 @@
 name: ChangeLog
 on:
   push:
-    tags-ignore:
-      - 'v*.*.*-alpha.*'
-      - 'v*.*.*-beta.*'
+    tags:
+      - 'v*'
+
 jobs:
   release:
     runs-on: ubuntu-latest
