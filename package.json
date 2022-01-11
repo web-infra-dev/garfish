@@ -62,6 +62,7 @@
     "chalk": "4.1.2",
     "cross-env": "7.0.3",
     "cypress": "8.7.0",
+    "cz-customizable": "^6.3.0",
     "esbuild-plugin-replace": "1.0.7",
     "eslint": "7.32.0",
     "eslint-plugin-vue": "7.19.1",
@@ -89,19 +90,10 @@
     "typescript": "4.4.3",
     "wait-on": "6.0.0",
     "workspace-tools": "0.16.2",
-    "zx": "4.2.0",
-    "@commitlint/cli": "^16.0.1",
-    "@commitlint/config-conventional": "^16.0.0",
-    "cz-customizable": "^6.3.0",
-    "conventional-changelog": "^3.1.25"
+    "zx": "4.2.0"
   },
   "engines": {
     "node": ">=14.13.0"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
   },
   "config": {
     "commitizen": {

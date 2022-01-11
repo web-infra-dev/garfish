@@ -444,9 +444,6 @@ export class App {
     const { url: baseUrl, DOMApis } = entryManager;
     const { htmlNode, appContainer } = createAppContainer(appInfo);
 
-    console.log('htmlNode', htmlNode);
-    console.log('appContainer', appContainer);
-
     // Transformation relative path
     this.htmlNode = htmlNode;
     this.appContainer = appContainer;
@@ -481,9 +478,6 @@ export class App {
           node.attributes.push({
             key: __MockBody__,
             value: null,
-          });
-          node.attributes.push({
-            key: 'style',
           });
         }
         return DOMApis.createElement(node);

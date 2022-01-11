@@ -2,31 +2,31 @@
 
 module.exports = {
   types: [
-    { value: 'feat', name: '✨ feat:     A new feature' },
-    { value: 'fix', name: '🐛 fix:      A bug fix' },
+    { value: 'feat', name: 'feat:     A new feature' },
+    { value: 'fix', name: 'fix:      A bug fix' },
     {
       value: 'chore',
-      name: '🤖 chore:    Changes to the build process or auxiliary tools and libraries such as documentation generation',
+      name: 'chore:    Changes to the build process or auxiliary tools and libraries such as documentation generation',
     },
     {
       value: 'style',
-      name: '💄 style:    Changes that do not affect the meaning of the code',
+      name: 'style:    Changes that do not affect the meaning of the code',
     },
-    { value: 'WIP', name: '💡 WIP:      Work in progress' },
+    { value: 'WIP', name: 'WIP:      Work in progress' },
     {
       value: 'refactor',
-      name: '🛠 refactor: A code change that neither fixes a bug nor adds a feature',
+      name: 'refactor: A code change that neither fixes a bug nor adds a feature',
     },
     {
       value: 'perf',
-      name: '📈 perf:     A code change that improves performance',
+      name: 'perf:     A code change that improves performance',
     },
-    { value: 'docs', name: '📚 docs:     Documentation only changes' },
-    { value: 'config', name: '📝 config:   modify or add configurations' },
-    { value: 'test', name: '💍 test:     Adding missing tests' },
-    { value: 'revert', name: '⏪ revert:   Revert to a commit' },
-    { value: 'release', name: '💖 release:  Create a release commit' },
-    { value: 'CI', name: '🔧 ci:       CI related changes' },
+    { value: 'docs', name: 'docs:     Documentation only changes' },
+    { value: 'config', name: 'config:   modify or add configurations' },
+    { value: 'test', name: 'test:     Adding missing tests' },
+    { value: 'revert', name: 'revert:   Revert to a commit' },
+    { value: 'release', name: 'release:  Create a release commit' },
+    { value: 'CI', name: 'ci:       CI related changes' },
   ],
   scopes: [
     { name: 'core' },
