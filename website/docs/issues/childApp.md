@@ -187,3 +187,14 @@ export default () => (
   </ConfigProvider>
 );
 ```
+
+## JS 错误上报 Script error 0
+
+- 一般错误收集的工具都是通过：
+  - `window.addEventListener('error', (...args) => { console.log(args) })`
+  - `window.addEventListener('unhandledrejection', (...args) => { console.log(args) })`
+- 如果能打印出 error 对象，但是只能拿到类似 Script error 0. 这类信息。说明当前 js error 跨域了【由于浏览器跨域的限制，非同域下的脚本执行抛错，捕获异常的时候，不能拿到详细的异常信息，只能拿到类似 Script error 0. 这类信息】。通常跨域的异常信息会被忽略，不会上报。可以通过一下方法验证是否跨域（如果输出 Script error 0. 则为跨域）
+
+> 解决方案
+
+由于浏览器跨域的限制，非同域下的脚本执行抛错，捕获异常的时候，不能拿到详细的异常信息，只能拿到类似 Script error 0. 这类信息。通常跨域的异常信息会被忽略，不会上报。解决方案： 所有 <script> 加载的资源加上`crossorigin="anonymous"
