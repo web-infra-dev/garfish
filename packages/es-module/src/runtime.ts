@@ -1,4 +1,4 @@
-import { transformUrl } from '@garfish/utils';
+import { toBase64, transformUrl } from '@garfish/utils';
 import { Output, Compiler } from './compiler/index';
 import { Module, MemoryModule, createModule, createImportMeta } from './module';
 
@@ -13,83 +13,73 @@ class Runtime {
   private memoryModules: Record<string, MemoryModule> = {};
   public resources: Record<string, ModuleOutput | Promise<void>> = {};
 
-  private toBase64(input: string) {
-    return new Promise<string>((resolve) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(new Blob([input]));
-      reader.onload = () => resolve(reader.result as string);
-    });
+  private getModule(memoryModule: MemoryModule) {
+    if (!this.modules.has(memoryModule)) {
+      this.modules.set(memoryModule, createModule(memoryModule));
+    }
+    return this.modules.get(memoryModule);
   }
 
-  private exportModule(
-    memoryModule: MemoryModule,
-    exportObject: Record<string, () => any>,
-  ) {
-    Object.keys(exportObject).forEach((key) => {
-      Object.defineProperty(memoryModule, key, {
-        enumerable: true,
-        get: exportObject[key],
-        set: () => {
-          throw new TypeError('Assignment to constant variable.');
-        },
-      });
-    });
-  }
-
-  private importModule(storeId: string, moduleId: string) {
-    if (!this.memoryModules[storeId]) {
+  importMemoryModule(storeId: string) {
+    let memoryModule = this.memoryModules[storeId];
+    if (!memoryModule) {
       const output = this.resources[storeId] as ModuleOutput;
       if (!output) {
-        throw new Error(`Module '${moduleId}' not found`);
+        throw new Error(`Module '${storeId}' not found`);
       }
-      const module = (this.memoryModules[storeId] = {});
-      this.execCode(output, module);
+      memoryModule = this.memoryModules[storeId] = {};
+      this.execCode(output, memoryModule);
     }
-    return this.memoryModules[storeId];
+    return memoryModule;
   }
 
-  private async dynamicImportModule(
-    parentOutput: ModuleOutput,
-    moduleId: string,
-  ) {
-    const storeId = transformUrl(parentOutput.storeId, moduleId);
-    if (!this.memoryModules[storeId]) {
-      const requestUrl = transformUrl(parentOutput.realUrl, moduleId);
+  async dynamicImportMemoryModule(storeId: string, requestUrl: string) {
+    let memoryModule = this.memoryModules[storeId];
+    if (!memoryModule) {
       await this.compileAndFetchCode(storeId, requestUrl);
-      const currentOutput = this.resources[storeId] as ModuleOutput;
-      const module = (this.memoryModules[storeId] = {});
-      this.execCode(currentOutput, module);
+      const output = this.resources[storeId] as ModuleOutput;
+      if (!output) {
+        throw new Error(`Module '${storeId}' not found`);
+      }
+      memoryModule = this.memoryModules[storeId] = {};
+      this.execCode(output, memoryModule);
     }
-    return this.getModuleNamespace(this.memoryModules[storeId]);
-  }
-
-  private getModuleNamespace(memoryModule: MemoryModule) {
-    if (this.modules.has(memoryModule)) {
-      return this.modules.get(memoryModule);
-    }
-    const wrapperModule = createModule(memoryModule);
-    this.modules.set(memoryModule, wrapperModule);
-    return wrapperModule;
+    return this.getModule(memoryModule);
   }
 
   execCode(output: ModuleOutput, memoryModule: MemoryModule) {
     const sourcemap = `\n//@ sourceMappingURL=${output.map}`;
-    const importMeta = createImportMeta(output.realUrl);
     (0, eval)(`${output.code}\n//${output.storeId}${sourcemap}`);
     const actuator = globalThis[Compiler.keys.__VIRTUAL_WRAPPER__];
 
     actuator(
-      (moduleId: string) => {
-        const currentStoreId = transformUrl(output.storeId, moduleId);
-        return this.importModule(currentStoreId, moduleId);
+      createImportMeta(output.realUrl),
+
+      (memoryModule: MemoryModule) => {
+        return this.getModule(memoryModule);
       },
+
+      (moduleId: string) => {
+        const storeId = transformUrl(output.storeId, moduleId);
+        const requestUrl = transformUrl(output.realUrl, moduleId);
+        return this.dynamicImportMemoryModule(storeId, requestUrl);
+      },
+
+      (moduleId: string) => {
+        const storeId = transformUrl(output.storeId, moduleId);
+        return this.importMemoryModule(storeId);
+      },
+
       (exportObject: Record<string, () => any>) => {
-        return this.exportModule(memoryModule, exportObject);
-      },
-      (memoryModule: MemoryModule) => this.getModuleNamespace(memoryModule),
-      importMeta,
-      (moduleId: string) => {
-        return this.dynamicImportModule(output, moduleId);
+        Object.keys(exportObject).forEach((key) => {
+          Object.defineProperty(memoryModule, key, {
+            enumerable: true,
+            get: exportObject[key],
+            set: () => {
+              throw new TypeError('Assignment to constant variable.');
+            },
+          });
+        });
       },
     );
   }
@@ -125,7 +115,7 @@ class Runtime {
           output.storeId = storeId;
           output.realUrl = realUrl;
           output.exports = exports;
-          output.map = await this.toBase64(output.map);
+          output.map = await toBase64(output.map);
           this.resources[storeId] = output;
         } else {
           this.resources[storeId] = null;

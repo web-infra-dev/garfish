@@ -433,6 +433,14 @@ export function mapObject(
   return destObject;
 }
 
+export function toBase64(input: string) {
+  return new Promise<string>((resolve) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(new Blob([input]));
+    reader.onload = () => resolve(reader.result as string);
+  });
+}
+
 export const hookObjectProperty = <
   T extends {},
   K extends keyof T,

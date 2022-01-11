@@ -260,11 +260,11 @@ export class Compiler {
 
   private generateWrapperFunction() {
     const params = [
+      Compiler.keys.__VIRTUAL_IMPORT_META__,
+      Compiler.keys.__VIRTUAL_NAMESPACE__,
+      Compiler.keys.__VIRTUAL_DYNAMIC_IMPORT__,
       Compiler.keys.__VIRTUAL_IMPORT__,
       Compiler.keys.__VIRTUAL_EXPORT__,
-      Compiler.keys.__VIRTUAL_NAMESPACE__,
-      Compiler.keys.__VIRTUAL_IMPORT_META__,
-      Compiler.keys.__VIRTUAL_DYNAMIC_IMPORT__,
     ].map((key) => identifier(key));
     const id = identifier(Compiler.keys.__VIRTUAL_WRAPPER__);
     const directive = expressionStatement(literal('use strict'), 'use strict');
