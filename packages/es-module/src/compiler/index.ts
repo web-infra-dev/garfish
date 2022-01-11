@@ -21,7 +21,7 @@ import type {
 } from 'estree';
 import type { Scope } from './scope';
 import { State, createState } from './state';
-import { Runtime, ModuleOutput } from '../runtime';
+import { Runtime, ModuleResource } from '../runtime';
 import {
   isIdentifier,
   isVariableDeclaration,
@@ -148,7 +148,7 @@ export class Compiler {
 
   private getChildModuleExports(moduleId: string) {
     const storeId = transformUrl(this.options.storeId, moduleId);
-    const output = this.options.runtime.resources[storeId] as ModuleOutput;
+    const output = this.options.runtime.resources[storeId] as ModuleResource;
     return output ? output.exports : null;
   }
 
@@ -257,26 +257,6 @@ export class Compiler {
       exportCallExpression as any,
       ...new Set(this.importInfos.map((val) => val.transformNode)),
     );
-  }
-
-  private generateWrapperFunction() {
-    const params = [
-      Compiler.keys.__VIRTUAL_IMPORT_META__,
-      Compiler.keys.__VIRTUAL_NAMESPACE__,
-      Compiler.keys.__VIRTUAL_DYNAMIC_IMPORT__,
-      Compiler.keys.__VIRTUAL_IMPORT__,
-      Compiler.keys.__VIRTUAL_EXPORT__,
-    ].map((key) => identifier(key));
-    const id = identifier(Compiler.keys.__VIRTUAL_WRAPPER__);
-    const directive = expressionStatement(literal('use strict'), 'use strict');
-    this.ast.body = [
-      functionDeclaration(
-        id,
-        params,
-        // 此时的节点已经转换了，不再是 Program 类型
-        blockStatement([directive, ...(this.ast.body as Array<Statement>)]),
-      ),
-    ];
   }
 
   private findIndexInData(refName: string, data: ImportInfoData) {
@@ -563,10 +543,7 @@ export class Compiler {
     this.deferQueue.identifierRefs.forEach((fn) => fn());
     this.deferQueue.replaces.forEach((fn) => fn());
     this.deferQueue.removes.forEach((fn) => fn());
-
-    // 生成转换后的代码
     this.generateVirtualModuleSystem();
-    this.generateWrapperFunction();
 
     const output = generate(this.ast, {
       sourceMapWithCode: true,

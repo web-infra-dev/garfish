@@ -7,5 +7,13 @@ Inspired by [virtual-es-module](virtual-es-module).
 ## Usage
 
 ```js
-import { esModulePlugin } from '@garfish/es-module';
+import Runtime from '@garfish/es-module';
+
+const runtime = new Runtime({
+  // options
+});
+
+runtime.asyncImport('./a.mjs').then((module) => {
+  console.log(module);
+});
 ```

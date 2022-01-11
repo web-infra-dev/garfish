@@ -18,7 +18,7 @@ export function getType(val: any) {
   return objectToString.call(val).slice(8, -1).toLowerCase();
 }
 
-export function isPromise(obj: any) {
+export function isPromise(obj: any): obj is Promise<any> {
   return isObject(obj) && typeof obj.then === 'function';
 }
 
@@ -122,6 +122,7 @@ export function evalWithEnv(
   code: string,
   params: Record<string, any>,
   context: any,
+  useStrict = false,
 ) {
   const keys = Object.keys(params);
   const nativeWindow = (0, eval)('window;');
@@ -134,7 +135,7 @@ export function evalWithEnv(
     nativeWindow[randomValKey] = params;
     nativeWindow[contextKey] = context;
     const evalInfo = [
-      `;(function(${keys.join(',')}){`,
+      `;(function(${keys.join(',')}){${useStrict ? '"use strict";' : ''}`,
       `\n}).call(window.${contextKey},${values.join(',')});`,
     ];
     const internalizeString = internFunc(evalInfo[0] + code + evalInfo[1]);
