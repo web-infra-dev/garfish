@@ -200,7 +200,7 @@ export class App {
         if (options.isInline) {
           const sourcemap = await createSourcemap(
             code,
-            `index.html&inline(${this.scriptCount}).js`,
+            `index.html(inline.${this.scriptCount}.js)`,
           );
           code = code.replace(IMPORT_REG, (k1, k2, k3) => {
             if (isAbsolute(k3)) return k1;
