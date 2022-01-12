@@ -185,7 +185,6 @@ importers:
       babel-loader: ^8.1.0
       babel-register: ^6.26.0
       babel-runtime: ^6.26.0
-      clean-webpack-plugin: ^3.0.0
       cross-env: ^7.0.3
       css-loader: ^5.2.7
       file-loader: ^6.2.0
@@ -236,7 +235,6 @@ importers:
       '@byted/goofy-deploy-sdk-garfish': 0.0.13
       babel-loader: 8.2.2_bc5a77be236f8c9ab8958078649c687f
       babel-register: 6.26.0
-      clean-webpack-plugin: 3.0.0_webpack@5.64.3
       cross-env: 7.0.3
       css-loader: 5.2.7_webpack@5.64.3
       file-loader: 6.2.0_webpack@5.64.3
@@ -270,7 +268,6 @@ importers:
       babel-loader: ^8.1.0
       babel-register: ^6.26.0
       babel-runtime: ^6.26.0
-      clean-webpack-plugin: ^3.0.0
       cross-env: ^7.0.3
       css-loader: ^5.2.7
       file-loader: ^6.2.0
@@ -316,7 +313,6 @@ importers:
       '@babel/runtime': 7.16.3
       babel-loader: 8.2.2_bc5a77be236f8c9ab8958078649c687f
       babel-register: 6.26.0
-      clean-webpack-plugin: 3.0.0_webpack@5.64.3
       cross-env: 7.0.3
       css-loader: 5.2.7_webpack@5.64.3
       file-loader: 6.2.0_webpack@5.64.3
@@ -349,7 +345,6 @@ importers:
       babel-loader: ^8.1.0
       babel-register: ^6.26.0
       babel-runtime: ^6.26.0
-      clean-webpack-plugin: ^3.0.0
       cross-env: ^7.0.3
       css-loader: ^5.2.7
       file-loader: ^6.2.0
@@ -395,7 +390,6 @@ importers:
       '@babel/runtime': 7.16.3
       babel-loader: 8.2.2_bc5a77be236f8c9ab8958078649c687f
       babel-register: 6.26.0
-      clean-webpack-plugin: 3.0.0_webpack@5.64.3
       cross-env: 7.0.3
       css-loader: 5.2.7_webpack@5.64.3
       file-loader: 6.2.0_webpack@5.64.3
@@ -479,7 +473,7 @@ importers:
   dev/app-vue-vite:
     specifiers:
       '@garfish/bridge': ^1.2.13
-      '@garfish/vite-plugin': workspace:*
+      '@garfish/vite-plugin': ~1.2.17
       '@vitejs/plugin-vue': ^1.10.2
       vite: ^2.7.0
       vue: ^3.2.23
@@ -9968,17 +9962,6 @@ packages:
   /clean-stack/2.2.0:
     resolution: {integrity: sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==}
     engines: {node: '>=6'}
-
-  /clean-webpack-plugin/3.0.0_webpack@5.64.3:
-    resolution: {integrity: sha512-MciirUH5r+cYLGCOL5JX/ZLzOZbVr1ot3Fw+KcvbhUb6PM+yycqd9ZhIlcigQ5gl+XhppNmw3bEFuaaMNyLj3A==}
-    engines: {node: '>=8.9.0'}
-    peerDependencies:
-      webpack: '*'
-    dependencies:
-      '@types/webpack': 4.41.31
-      del: 4.1.1
-      webpack: 5.64.3_webpack-cli@4.9.1
-    dev: true
 
   /cli-boxes/2.2.1:
     resolution: {integrity: sha512-y4coMcylgSCdVinjiDBuR8PCC2bLjyGTwEmPb9NHR/QaNU6EUOXcTY/s6VjGMD6ENSEaeQYHCY0GNGS5jfMwPw==}

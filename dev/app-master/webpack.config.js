@@ -2,7 +2,6 @@ import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { DefinePlugin } from 'webpack';
 import portMap from '../config.json';
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const appName = 'dev/main';
 const port = portMap[appName].port;
@@ -22,6 +21,9 @@ const webpackConfig = {
     main: './src/index.tsx',
   },
   output: {
+    clean: true,
+    filename: '[name].[contenthash].js',
+    chunkFilename: '[name].[contenthash].js',
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
     publicPath:
@@ -94,7 +96,6 @@ const webpackConfig = {
     allowedHosts: 'all',
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './public/index.html',
     }),

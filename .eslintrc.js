@@ -11,12 +11,12 @@ module.exports = {
   rules: {
     'no-unused-vars': 'off',
     // Fix "no-unused-vars" check on function parameters within TypeScript Types/Interfaces
-    '@typescript-eslint/no-unused-vars': [
-      'error',
-      // we are only using this rule to check for unused arguments since TS
-      // catches unused variables but not args.
-      { varsIgnorePattern: '.*', args: 'after-used', argsIgnorePattern: '^_' },
-    ],
+    // '@typescript-eslint/no-unused-vars': [
+    //   'error',
+    //   // we are only using this rule to check for unused arguments since TS
+    //   // catches unused variables but not args.
+    //   { varsIgnorePattern: '.*', args: 'after-used', argsIgnorePattern: '^_' },
+    // ],
     // most of the codebase are expected to be env agnostic
     'no-restricted-globals': ['error', ...NodeGlobals],
     // forbidden to use export default

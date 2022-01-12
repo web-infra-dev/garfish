@@ -1,5 +1,4 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 import portMap from '../config.json';
 
 const appName = 'dev/react17';
@@ -20,6 +19,9 @@ const webpackConfig = {
     main: './src/index.tsx',
   },
   output: {
+    clean: true,
+    filename: '[name].[contenthash].js',
+    chunkFilename: '[name].[contenthash].js',
     // 需要配置成 umd 规范
     libraryTarget: 'umd',
     // 修改不规范的代码格式，避免逃逸沙箱
@@ -105,7 +107,6 @@ const webpackConfig = {
     allowedHosts: 'all',
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './public/index.html',
     }),

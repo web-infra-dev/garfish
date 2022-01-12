@@ -16,6 +16,8 @@ module.exports = {
     return {
       entry: './src/main.js',
       output: {
+        filename: '[name].[contenthash].js',
+        chunkFilename: '[name].[contenthash].js',
         filename: 'index.js',
         libraryTarget: 'umd',
         globalObject: 'window',
