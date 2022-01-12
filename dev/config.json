@@ -1,30 +1,36 @@
 {
-  "dev/main-web-component": {
-    "pkgName": "@garfish-dev/main-web-component",
-    "port": 2222
-  },
   "dev/main": {
     "pkgName": "@garfish-dev/main",
-    "port": 2333
+    "port": 8090,
+    "publicPath": "//lf6-cdn-tos.bytescm.com/obj/static/garfish/example/new/app-master/"
   },
-  "dev/react": {
-    "pkgName": "@garfish-dev/react",
-    "port": 2444
+  "dev/react17": {
+    "pkgName": "@garfish-dev/react17",
+    "port": 8095,
+    "publicPath": "//lf6-cdn-tos.bytescm.com/obj/static/garfish/example/new/react17/app-react-17/"
   },
-  "dev/vue-sub": {
-    "pkgName": "@garfish-dev/vue-sub",
-    "port": 2555
+  "dev/react16": {
+    "pkgName": "@garfish-dev/react16",
+    "port": 8096,
+    "publicPath": "//lf6-cdn-tos.bytescm.com/obj/static/garfish/example/new/react16/app-react-16/"
   },
-  "dev/vue": {
-    "pkgName": "@garfish-dev/vue",
-    "port": 2666
+  "dev/vue3": {
+    "pkgName": "@garfish-dev/vue3",
+    "port": 8093,
+    "publicPath": "//lf6-cdn-tos.bytescm.com/obj/static/garfish/example/new/vue3/app-vue-3/"
   },
   "dev/vue2": {
     "pkgName": "@garfish-dev/vue2",
-    "port": 2777
+    "port": 8092,
+    "publicPath": "//lf6-cdn-tos.bytescm.com/obj/static/garfish/example/new/vue2/app-vue-2/"
   },
-  "dev/vite-subapp": {
-    "pkgName": "@garfish-dev/vite-subapp",
-    "port": 2888
+  "dev/vite": {
+    "pkgName": "@garfish-dev/vite",
+    "port": 8091
+  },
+  "dev/angular": {
+    "pkgName": "@garfish-dev/angular",
+    "port": 4200,
+    "publicPath": "//lf6-cdn-tos.bytescm.com/obj/static/garfish/example/new/angular/app-angular/"
   }
 }

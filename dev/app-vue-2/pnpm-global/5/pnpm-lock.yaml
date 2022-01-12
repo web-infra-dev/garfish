@@ -1,0 +1,7 @@
+lockfileVersion: 5.3
+
+specifiers:
+  '@garfish/bridge': ^1.2.13
+
+dependencies:
+  '@garfish/bridge': link:../../../../../../pnpm-global/5/node_modules/@garfish/bridge

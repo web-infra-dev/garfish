@@ -1,0 +1,54 @@
+.App {
+  height: 100%;
+  text-align: center;
+  background-color: #282c34;
+  font-size: calc(10px + 1.4vmin);
+  overflow: hidden;
+  color: white;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App ul {
+  display: inline-block;
+  list-style: none;
+  padding: 15px;
+}
+
+.App li {
+  display: inline-block;
+  list-style: none;
+  padding: 15px;
+}
+
+.App a:visited {
+  color: #61dafb;
+}
+
+.App a.tabActive {
+  color: #7fffd4;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.click-btn {
+  color: coral;
+  cursor: pointer;
+  margin-top: 6px;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
