@@ -1,7 +1,7 @@
 import './HomePage.css';
 
 const HomePage = () => {
-  return null;
+  return <div>welcome to garfish examples.</div>;
 };
 
 export default HomePage;
