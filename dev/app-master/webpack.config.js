@@ -25,7 +25,6 @@ const webpackConfig = {
     filename: '[name].[contenthash].js',
     chunkFilename: '[name].[contenthash].js',
     path: path.join(__dirname, 'dist'),
-    filename: '[name].js',
     publicPath:
       process.env.NODE_ENV === 'production'
         ? publicPath
