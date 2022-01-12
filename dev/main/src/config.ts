@@ -36,12 +36,18 @@ let defaultConfig: interfaces.Options = {
       cache: true,
       activeWhen: '/vite',
       entry: 'http://localhost:2888/',
+      sandbox: {
+        open: false,
+      },
     },
     {
       name: 'esm-app',
       cache: true,
       activeWhen: '/esmApp',
       entry: 'http://localhost:2999/',
+      sandbox: {
+        open: false,
+      },
     },
     // {
     //   name: 'react',
@@ -57,7 +63,7 @@ let defaultConfig: interfaces.Options = {
   protectVariable: ['MonitoringInstance', 'Garfish'],
   insulationVariable: ['setImmediate'],
   sandbox: {
-    open: false,
+    open: true,
     // strictIsolation: true,
   },
 

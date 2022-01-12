@@ -13,17 +13,16 @@
 </head>
 <body>
   <script type="module">
-    import { render } from './index.js';
+    import { render, destroy } from './index.js';
 
     if (!window.__GARFISH__) {
       render();
     }
     export function provider() {
+      console.log('Into esm app provider function');
       return {
         render,
-        destroy() {
-          console.log('esm app destroy');
-        },
+        destroy,
       }
     }
   </script>
