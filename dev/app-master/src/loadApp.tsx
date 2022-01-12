@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Garfish from '@byted/garfish';
+import Garfish from 'garfish';
 import { basename, loadApp } from './constant';
 const portMap = require('../../config.json');
 

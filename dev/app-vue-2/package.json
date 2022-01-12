@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@garfish/bridge": "1.2.14-beta-1641872856086.0",
+    "@garfish/bridge": "workspace:*",
     "core-js": "^3.6.5",
     "mobx-vue": "^2.1.0",
     "vue": "^2.6.11",

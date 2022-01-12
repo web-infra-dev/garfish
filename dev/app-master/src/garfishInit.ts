@@ -1,50 +1,13 @@
 import React from 'react';
-import Garfish from '@byted/garfish';
+import Garfish from 'garfish';
 import * as ReactDom from 'react-dom';
 import * as mobxReact from 'mobx-react';
 import * as ReactRouterDom from 'react-router-dom';
 import { store } from './store';
-import {
-  Goofy_RouterID,
-  garfishServerHttpUrl,
-  basename,
-  localApps,
-} from './constant';
-import { AppInfos, MicroFrontendModule } from './interface';
-import { getSubAppsById, getSubAppsByRouter } from './GoofyGarfishSDK';
-
-export const getAppsInfo = async ({ fromRemote }: { fromRemote: boolean }) => {
-  let apps: Array<AppInfos> = [];
-
-  if (fromRemote) {
-    // 获取 Goofy web 注册的 子应用
-    const res = await getSubAppsById({
-      url: garfishServerHttpUrl,
-      rid: Goofy_RouterID,
-    });
-
-    if (res.code === 0 && res.data && res.data.length > 0) {
-      res.data.map((v: MicroFrontendModule) => {
-        const item = {
-          name: v.name,
-          activeWhen: `/${v.name}`,
-          entry: v.source_url || '',
-        };
-        apps.push(item);
-      });
-      return apps;
-    }
-  }
-
-  return localApps;
-};
+import { basename, apps } from './constant';
 
 export const GarfishInit = async () => {
-  const apps: Array<AppInfos> = await getAppsInfo({
-    fromRemote: process.env.NODE_ENV === 'production',
-  });
   console.log('Garfish.run apps', apps);
-
   Garfish.setExternal({
     react: React,
     'react-dom': ReactDom,

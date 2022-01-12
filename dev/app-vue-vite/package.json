@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "vue": "^3.2.23",
-    "@garfish/bridge": "^1.2.13"
+    "@garfish/bridge": "workspace:*"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.10.2",

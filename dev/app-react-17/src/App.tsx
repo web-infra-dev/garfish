@@ -3,9 +3,7 @@ import { hot, setConfig } from 'react-hot-loader';
 import logo from './logo.svg';
 import './App.css';
 
-/***
- * 防止控制台后输入hmr 相关 warning
- */
+// 防止控制台后输入hmr 相关 warning
 setConfig({
   showReactDomPatchNotification: false,
 });

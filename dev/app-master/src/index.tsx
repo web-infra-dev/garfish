@@ -3,9 +3,8 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { store } from './store';
 import App from './App';
-import { basename } from './constant';
-import { GarfishInit, getAppsInfo } from './garfishInit';
-import { AppInfos } from './interface';
+import { basename, apps } from './constant';
+import { GarfishInit } from './garfishInit';
 import NotFound from './NotFound';
 import HomePage from './HomePage';
 
@@ -13,9 +12,6 @@ const LoadApp = React.lazy(() => import('./loadApp'));
 
 const render = async () => {
   await GarfishInit();
-  const apps: Array<AppInfos> = await getAppsInfo({
-    fromRemote: process.env.NODE_ENV === 'production',
-  });
 
   ReactDOM.render(
     <Router>

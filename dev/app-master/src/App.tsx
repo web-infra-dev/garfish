@@ -5,9 +5,7 @@ import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { basename, loadApp } from './constant';
 import './App.css';
 
-/***
- * 防止控制台后输入hmr 相关 warning
- */
+// 防止控制台后输入hmr 相关 warning
 setConfig({
   showReactDomPatchNotification: false,
 });

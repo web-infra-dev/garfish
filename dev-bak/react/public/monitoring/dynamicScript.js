@@ -1,1 +1,0 @@
-const st = 'hello world';

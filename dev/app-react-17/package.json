@@ -3,9 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@byted/garfish": "^6.1.14",
-    "@garfish/bridge": "^1.2.13",
-    "@garfish/core": "^1.2.13",
+    "@garfish/bridge": "workspace:*",
     "babel-runtime": "^6.26.0",
     "history": "^5.1.0",
     "react": "^17.0.2",
