@@ -528,10 +528,12 @@ export async function createSourcemap(code: string, filename: string) {
       version: 3,
       sources: [filename],
       sourcesContent: [code],
-      mappings: code
-        .split('\n')
-        .map(() => 'AACA')
-        .join(';'),
+      mappings:
+        ';' +
+        code
+          .split('\n')
+          .map(() => 'AACA')
+          .join(';'),
     }),
   );
   return `//@ sourceMappingURL=${content}`;
