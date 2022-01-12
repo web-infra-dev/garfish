@@ -193,7 +193,8 @@ export class App {
     url?: string,
     options?: ExecScriptOptions,
   ) {
-    // If the node is an es module, use native esmModule
+    // If the node is an es module, use native esmModule,
+    // But cannot support external and inject environment variables
     if (options.isModule) {
       this.esmQueue.add(async (next) => {
         if (options.isInline) {
