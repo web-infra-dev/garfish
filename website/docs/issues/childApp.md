@@ -198,3 +198,60 @@ export default () => (
 > 解决方案
 
 由于浏览器跨域的限制，非同域下的脚本执行抛错，捕获异常的时候，不能拿到详细的异常信息，只能拿到类似 Script error 0. 这类信息。通常跨域的异常信息会被忽略，不会上报。解决方案： 所有 `<script>` 加载的资源加上`crossorigin="anonymous"
+
+## cdn 第三方包未正确挂在在 window 上
+
+> 问题概述
+
+- 一般常见的基础库都有提供 cdn 的加载方式，这些 cdn 的基础库都会构建成 umd 格式，构建成 umd 格式的包，可以正常的支持各类环境的使用，当在浏览器环境时通常会将基础库的导出内容在 window 上添加一个环境变量，在基础库加载完成后可通过环境 window 上对应的环境变量使用基础库的一些方法
+- 但是在微前端的子应用内，会发现在对应的基础库 cdn 加载完成后并未有效的挂在在 window 环境变量上，由于 v5 版本之前获取子应用导出内容的规范，子应用的 js 代码会运行在 commonjs 环境中，由于基础库构建成为了 umd 包，umd 的构建行为判断在 commonjs 环境中会将环境变量放置 exports 中，所以并未放置 window 环境变量
+
+> 解决方案
+
+- 将对应的 cdn script 增加 no-entry 属性：`<script no-entry="true" src="xxx"></script>`，设置该属性后对应的 script 内容将不会运行在 commonjs 环境，对应的环境变量
+
+## 为什么需要子应用提供一个 Provider 函数
+
+- 这里的 `provider` 主要指在每个子应用入口处导出的 `provider` 函数 其中包括 `render` 和 `destroy` 函数
+- 为什么 Garfish 不像 `iframe` 并不需要提供额外的内容，子应用独立时如何运行，在微前端环境就如何运行呢
+
+> 原因
+
+- Garfish 的初衷并不是为了取代 `iframe`，而是为了将一个单体应用拆分成多个子应用后也能保证应用一体化的使用体验
+- 通过提供 `provider` 生命周期，我们可以在微前端应用中做到一下优化
+  - 在应用销毁时触发对应框架应用的销毁函数，已达到对框架类型的销毁操作，应用中得一些销毁 hook 也可以正常触发
+  - 在第二次应用加载时可以启动缓存模式
+    - 在应用第一次渲染时的路径为，html 下载=> html 拆分=> 渲染 dom => 渲染 style=> 执行 JS => 执行 provider 中的函数
+    - 在第二次渲染时可以将整个渲染流程简化为，还原子应用的 html 内容=> 执行 provider 中得渲染函数，因为子应用的真实执行环境并未被销毁，而是通过 render 和 destroy 控制对应应用的渲染和销毁
+  - 避免内存泄漏
+    - 由于目前 Garfish 框架的沙箱依赖于浏览器的 API，无法做到物理级别的隔离，由于 JavaScript 语法的灵活性和闭包的特性，第二次重复执行子应用代码可能会导致逃逸内容重复执行
+    - 采用缓存模式时，将不会执行所有代码，仅执行 render ，将会避免逃逸代码造成的内存问题
+
+> 弊端
+
+启动缓存模式后也存在一定弊端，第二遍执行时 render 中的逻辑获取的还是上一次的执行环境并不是一个全新的执行环境.
+
+下面代码中在缓存模式时和非缓存模式不同的表现
+
+- 在缓存模式中，多次渲染子应用会导致 list 数组的值持续增长，并导致影响业务逻辑
+- 在非缓存模式中，多次渲染子应用 list 数组的长度始终为 1
+
+```js
+const list = [];
+
+export const provider = () => {
+  return {
+    render: ({ dom, basename }) => {
+      list.push(1);
+      ReactDOM.render(
+        <React.StrictMode>
+          <App basename={basename} />
+        </React.StrictMode>,
+        dom.querySelector('#root'),
+      );
+    },
+    destroy: ({ dom, basename }) =>
+      ReactDOM.unmountComponentAtNode(dom.querySelector('#root')),
+  };
+};
+```
