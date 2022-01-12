@@ -207,7 +207,7 @@ export class App {
             return `${k2} '${transformUrl(url, k3)}'`;
           });
           url = URL.createObjectURL(
-            new Blob([`${code}\n//${sourcemap}`], { type: 'text/javascript' }),
+            new Blob([`${code}\n${sourcemap}`], { type: 'text/javascript' }),
           );
         }
         (0, eval)(`import('${url}')`).then((module) => {
@@ -618,9 +618,7 @@ export class App {
     }
 
     // esModule export
-    if (!this.esmQueue.init) {
-      await this.esmQueue.awaitCompletion();
-    }
+    await this.esmQueue.awaitCompletion();
     for (const module of this.esmModules) {
       if (module.provider) provider = module.provider;
     }

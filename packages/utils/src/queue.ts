@@ -4,8 +4,8 @@ interface Defer {
 }
 
 export class Queue {
-  public init = true;
   private fx = [];
+  private init = true;
   private lock = false;
   private finishDefers = new Set<Defer>();
 

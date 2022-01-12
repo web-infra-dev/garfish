@@ -5,16 +5,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>esm-app</title>
+  <style>
+    #esmAppContent {
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <div id="root"></div>
   <script type="module">
     import { render } from './index.js';
 
     if (!window.__GARFISH__) {
-      m.default();
+      render();
     }
-
     export function provider() {
       return {
         render,

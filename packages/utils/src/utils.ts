@@ -534,5 +534,5 @@ export async function createSourcemap(code: string, filename: string) {
         .join(';'),
     }),
   );
-  return `@ sourceMappingURL=${content}`;
+  return `//@ sourceMappingURL=${content}`;
 }
