@@ -1,6 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from 'antd';
-import { dynamicScriptUrl,dynamicErrorScriptUrl } from '../config';
+import { dynamicScriptUrl, dynamicErrorScriptUrl } from '../config';
+
+export function assert(condition, msg) {
+  if (!condition) {
+    throw Error(`Garfish error: ${msg}`);
+  }
+}
+
+function sandboxExpect() {
+  // jest can't window instanceof Window === false
+  assert(
+    window instanceof Window === true,
+    `expect window instanceof Window === true`,
+  );
+}
 
 export default function () {
   // init global val
@@ -14,25 +28,28 @@ export default function () {
   }
 
   function addDynamicScriptTestOnload() {
-    let sc = document.createElement("script");
-    sc.src = dynamicScriptUrl
+    let sc = document.createElement('script');
+    sc.src = dynamicScriptUrl;
     sc.onload = function () {
       window.dynamicScriptOnloadTag = true;
       document.head.removeChild(sc);
-    }
+    };
     document.head.appendChild(sc);
   }
 
   function addDynamicScriptTestOnerror() {
     //eslint-disable-next-line
-    let sc = document.createElement("script");
-    sc.src = dynamicErrorScriptUrl
+    let sc = document.createElement('script');
+    sc.src = dynamicErrorScriptUrl;
     sc.onerror = function () {
       window.dynamicScriptOnerrorTag = true;
-    }
+    };
     document.head.appendChild(sc);
   }
 
+  useEffect(() => {
+    sandboxExpect();
+  }, []);
 
   return (
     <div>

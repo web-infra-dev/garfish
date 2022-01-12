@@ -75,16 +75,8 @@ module.exports = {
         hashed: true,
         // For Docs using Chinese, The `language` is recommended to set to:
         // ```
-        language: ['zh'],
-        docsRouteBasePath: [
-          '/docs/',
-          '/api/',
-          '/issues',
-          '/community',
-          // '/blog/',
-          // '/configuration/',
-          // '/plugin/',
-        ],
+        language: ['en', 'zh'],
+        docsRouteBasePath: ['/guide', '/issues', '/quick-start', '/api'],
         docsDir: ['docs'],
         // ```
         // When applying `zh` in language, please install `nodejieba` in your project.

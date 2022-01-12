@@ -605,12 +605,14 @@ export class App {
     }
 
     if (typeof provider === 'function') {
-      provider = await provider({
-        basename,
-        dom: rootElement,
-        ...(props || {}),
-        ...(appInfo.props || {}),
-      });
+      provider = await provider(
+        {
+          basename,
+          dom: rootElement,
+          ...(appInfo.props || {}),
+        },
+        appInfo.props,
+      );
     } else if (isPromise(provider)) {
       provider = await provider;
     }

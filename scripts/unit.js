@@ -2,4 +2,12 @@
 const { run, step } = require('./utils');
 
 step('🔎 Unit testing...');
-run('jest', process.argv.slice(2, process.argv.length));
+
+(async () => {
+  try {
+    await run('jest', process.argv.slice(2, process.argv.length));
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+})();

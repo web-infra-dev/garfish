@@ -1,6 +1,5 @@
 {
   "private": true,
-  "version": "1.2.13",
   "description": "A powerful micro front-end framework",
   "scripts": {
     "dev": "pnpm run start --parallel --filter @garfish-dev/*",
@@ -10,8 +9,7 @@
     "build:watch": "cross-env WATCH=true pnpm build",
     "test:e2e": "zx scripts/e2e.js",
     "test:e2e:open": "cross-env TEST_ENV_OPEN=true zx scripts/e2e.js",
-    "test": "node scripts/unit.js",
-    "test:cover": "node scripts/unit.js --coverage",
+    "test": "node scripts/unit.js --collect-coverage",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "changeset": "npx changeset",
@@ -90,7 +88,8 @@
     "typescript": "4.4.3",
     "wait-on": "6.0.0",
     "workspace-tools": "0.16.2",
-    "zx": "4.2.0"
+    "zx": "4.2.0",
+    "codecov": "^3.1.0"
   },
   "engines": {
     "node": ">=14.13.0"
@@ -99,5 +98,6 @@
     "commitizen": {
       "path": "node_modules/cz-customizable"
     }
-  }
+  },
+  "version": "1.2.17"
 }

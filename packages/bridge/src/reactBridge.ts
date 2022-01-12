@@ -115,13 +115,13 @@ export function reactBridge(userOpts) {
   return provider;
 }
 
-function bootstrap(opts, props) {
+function bootstrap(opts, appInfo, props) {
   if (opts.rootComponent) {
     // This is a class or stateless function component
     return Promise.resolve();
   } else {
     // They passed a promise that resolves with the react component. Wait for it to resolve before mounting
-    return opts.loadRootComponent(props).then((resolvedComponent) => {
+    return opts.loadRootComponent(appInfo, props).then((resolvedComponent) => {
       opts.rootComponent = resolvedComponent;
     });
   }

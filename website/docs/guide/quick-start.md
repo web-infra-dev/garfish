@@ -74,7 +74,8 @@ module.exports = {
     // 修改不规范的代码格式，避免逃逸沙箱
     globalObject: 'window',
     // 请求确保每个子应用该值都不相同，否则可能出现 webpack chunk 互相影响的可能
-    jsonpFunction: 'vue-app-jsonpFunction', // webpack 5 不用配置该参数， webpack 5 将会直接使用 package.json name 作为唯一值，请确保应用间的 name 各不相同
+    // webpack 5 使用 chunkLoadingGlobal 代替，若不填 webpack 5 将会直接使用 package.json name 作为唯一值，请确保应用间的 name 各不相同
+    jsonpFunction: 'vue-app-jsonpFunction',
     // 保证子应用的资源路径变为绝对路径，避免子应用的相对资源在变为主应用上的相对资源，因为子应用和主应用在同一个文档流，相对路径是相对于主应用而言的
     publicPath: 'http://localhost:8000',
   },
@@ -82,7 +83,7 @@ module.exports = {
     // 保证在开发模式下应用端口不一样
     port: '8000',
     headers: {
-      // 保证子应用的资源支持跨域，在线上后需要保证子应用的资源在主应用的环境中加载不会存在跨域问题（**也需要限制范围注意安全问题**）
+      // 保证子应用的资源支持跨域，在上线后需要保证子应用的资源在主应用的环境中加载不会存在跨域问题（**也需要限制范围注意安全问题**）
       'Access-Control-Allow-Origin': '*',
     },
   },
@@ -99,7 +100,7 @@ import { htmlPlugin } from '@garfish/vite-plugin';
 // 子应用必须使用缓存模式 cache: true 模式，路由驱动时默认使用 cache 模式，触发将 appInfo.cache = false（因为 esmodule 内容无法重复执行）
 // 子应用不可重复使用 app.mount，第二次渲染时只能使用 app.show，否则将走非缓存模式（因为 esmodule 内容无法重复执行）
 // 需要将子应用沙箱关闭 sandbox: false，否则可能会出现子应用部分代码在沙箱内执行，部分不在沙箱执行: Garfish.run({ apps: [{ name:'vite-app',entry:'xxx',sandbox: false }] })
-// 子应用的副作用将会发生逃逸，在子应用卸载后需要降对应全局的副作用清除
+// 子应用的副作用将会发生逃逸，在子应用卸载后需要将对应全局的副作用清除
 export default defineConfig({
   // 提供资源绝对路径，端口可自定义
   base: 'http://localhost:3000/',
@@ -110,7 +111,7 @@ export default defineConfig({
     origin: 'http://localhost:3000',
   },
   plugins: [
-    // 使用 vite-plugin 的 html plugin，并定义 ID，改 ID 与 brdige 的 ID 需相同
+    // 使用 vite-plugin 的 html plugin，并定义 ID，该 ID 与 brdige 的 ID 需相同
     htmlPlugin('vite-vue-sub-app', {
       useDevMode: true,
     }),
@@ -121,7 +122,7 @@ export default defineConfig({
   </TabItem>
 </Tabs>
 
-### 通过 Bridge 函数包装子应用
+### 通过导出子应用生命周期
 
 <Tabs groupId="framework">
   <TabItem value="React" label="React" default>
@@ -221,6 +222,48 @@ export const provider = vueBridge({
 ```
 
   </TabItem>
+  <TabItem value="custom" label="custom" default>
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
+
+function App({ basename }) {
+  return (
+    <BrowserRouter basename={basename}>
+      <Link to="/">Home</Link>
+      <Switch>
+        <Route exact path="/">
+          <HelloGarfish />
+        </Route>
+      </Switch>
+    </BrowserRouter>
+  );
+}
+
+export const provider = () => ({
+  render: ({ dom, basename }) => {
+    // 和子应用独立运行时一样，将子应用渲染至对应的容器节点，根据不同的框架使用不同的渲染方式
+    ReactDOM.render(
+      <React.StrictMode>
+        <App basename={basename} />
+      </React.StrictMode>,
+      // 需要注意的一点是，子应用的入口是否为 HTML 类型（即在主应用的中配置子应用的 entry 地址为子应用的 html 地址），
+      // 如果为 HTML 类型，需要在 dom 的基础上选中子应用的渲染节点
+      // 如果为 JS 类型，则直接将 dom 作为渲染节点即可
+      dom.querySelector('#root'),
+    );
+  },
+  destroy: ({ dom, basename }) => {
+    // 使用框架提供的销毁函数销毁整个应用，已达到销毁框架中可能存在得副作用，并触发应用中的一些组件销毁函数
+    // 需要注意的时一定要保证对应框架得销毁函数使用正确，否则可能导致子应用未正常卸载影响其他子应用
+    ReactDOM.unmountComponentAtNode(dom.querySelector('#root'));
+  },
+});
+```
+
+  </TabItem>
 </Tabs>
 
 ## 总结
@@ -232,7 +275,7 @@ export const provider = vueBridge({
   - 使用 Garfish 在主应用上调度管理子应用
 - 子应用的改造
   - 增加对应的构建配置
-  - 使用 `@garfish/bridge` 包提供的提供的包装后返回 `provider` 函数并导出
+  - 使用 `@garfish/bridge` 包提供的函数包装子应用后返回 `provider` 函数并导出
   - 子应用针对不同的框架类型，添加不同 `basename` 的设置方式
     - React 在根组件中获取 `basename` 将其传递至 `BrowserRouter` 的 `basename` 属性中
     - Vue 将 `basename` 传递至 `VueRouter` 的 `basename` 属性中

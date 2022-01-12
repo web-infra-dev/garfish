@@ -36,11 +36,46 @@ if (window.__GARFISH__ && __GARFISH_EXPORTS__) {
 // webpack.config.js
 {
   output: {
+    // 需要配置成 umd 规范
     libraryTarget: 'umd',
+    // 修改不规范的代码格式，避免逃逸沙箱
     globalObject: 'window',
-    jsonpFunction: 'masterWebpackJsonp', // 于 `webpackjsonp` 可能会冲突，所以可以给子应用和主应用配置不同的 `webpackjsonp `函数。webpack 5 保证 package.json 中的 name 各不相同即可
+    // 请求确保每个子应用该值都不相同，否则可能出现 webpack chunk 互相影响的可能
+    // webpack 5 使用 chunkLoadingGlobal 代替，若不填 webpack 5 将会直接使用 package.json name 作为唯一值，请确保应用间的 name 各不相同
+    jsonpFunction: 'vue-app-jsonpFunction',
+    // 保证子应用的资源路径变为绝对路径，避免子应用的相对资源在变为主应用上的相对资源，因为子应用和主应用在同一个文档流，相对路径是相对于主应用而言的
+    publicPath: 'http://localhost:8000',
   },
 }
+```
+
+## 子应用销毁后重定向逻辑影响其他子应用
+
+可能原因，出现该问题的原因是子应用未正常销毁，当子应用未正常销毁时，其路由监听事件也未跟随子应用的销毁而销毁
+
+> React 应用解决方案
+
+- 需要保证渲染的节点和销毁的节点为同一个节点，否则导致 React 组件销毁不正常，[ReactDOM.unmountComponentAtNode API 使用说明](https://reactjs.org/docs/react-dom.html#unmountcomponentatnode)
+- 这里需要注意的是子应用的入口类型，如果子应用是构建为 js 入口时，则不存在 html 模板，可以直接将 dom 作为挂载点。但也需要保证渲染和销毁的为同一个节点
+
+```js
+export const provider = () => {
+  return {
+    render: ({ dom, basename }) => {
+      const root = dom ? dom.querySelector('#root') : document.querySelector('#root');
+      ReactDOM.render(
+        <React.StrictMode>
+          <App basename={basename} />
+        </React.StrictMode>,
+        root,
+      );
+    },
+    destroy: ({ dom, basename }) =>{
+      const root = dom ? dom.querySelector('#root') : document.querySelector('#root');
+      ReactDOM.unmountComponentAtNode(root),
+    }
+  };
+};
 ```
 
 ## 刷新直接返回子应用内容
@@ -98,6 +133,13 @@ if (window.__GARFISH__ && __GARFISH_EXPORTS__) {
 - Garfish 会将当前的路径传入激活函数分割以得到子应用的最长激活路径，并将 `basename` + `子应用最长激活路径传` 给子应用参数
 - **子应用如果本身具备路由，在微前端的场景下，必须把 basename 作为子应用的基础路径，没有基础路由，子应用的路由可能与主应用和其他应用发生冲突**
 
+## 子应用使用 style-component 切换子应用后样式丢失
+
+- 开启 Style-component 后在生产模式下 style 将会插入到 sheet 中（[React Styled Components stripped out from production build](https://stackoverflow.com/questions/53486470/react-styled-components-stripped-out-from-production-build)）
+- 应用重渲染后 style 重新插入后依然，但是 sheet 未恢复
+
+解决方案在使用 `style-component` 的子应用添加环境变量：`REACT_APP_SC_DISABLE_SPEEDY=true`
+
 ## 主子应用样式冲突
 
 ### arco-design 多版本样式冲突
@@ -145,3 +187,14 @@ export default () => (
   </ConfigProvider>
 );
 ```
+
+## JS 错误上报 Script error 0
+
+- 一般错误收集的工具都是通过：
+  - `window.addEventListener('error', (...args) => { console.log(args) })`
+  - `window.addEventListener('unhandledrejection', (...args) => { console.log(args) })`
+- 如果能打印出 error 对象，但是只能拿到类似 Script error 0. 这类信息。说明当前 js error 跨域了【由于浏览器跨域的限制，非同域下的脚本执行抛错，捕获异常的时候，不能拿到详细的异常信息，只能拿到类似 Script error 0. 这类信息】。通常跨域的异常信息会被忽略，不会上报。可以通过一下方法验证是否跨域（如果输出 Script error 0. 则为跨域）
+
+> 解决方案
+
+由于浏览器跨域的限制，非同域下的脚本执行抛错，捕获异常的时候，不能拿到详细的异常信息，只能拿到类似 Script error 0. 这类信息。通常跨域的异常信息会被忽略，不会上报。解决方案： 所有 `<script>` 加载的资源加上`crossorigin="anonymous"
