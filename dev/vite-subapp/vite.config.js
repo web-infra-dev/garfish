@@ -15,8 +15,8 @@ export default defineConfig({
   },
   plugins: [
     vue(),
-    htmlPlugin('vite-vue-sub-app', {
-      useDevMode: true,
-    }),
+    // htmlPlugin('vite-vue-sub-app', {
+    //   useDevMode: true,
+    // }),
   ],
 });

@@ -8,6 +8,21 @@
 </head>
 <body>
   <div id="root"></div>
-  <script type="module" src="./index.js"></script>
+  <script type="module">
+    import { render } from './index.js';
+
+    if (!window.__GARFISH__) {
+      m.default();
+    }
+
+    export function provider() {
+      return {
+        render,
+        destroy() {
+          console.log('esm app destroy');
+        },
+      }
+    }
+  </script>
 </body>
 </html>

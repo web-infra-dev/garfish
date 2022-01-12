@@ -1,8 +1,6 @@
 // The logic of reactBridge is referenced from single-spa typography
 // Because the Garfish lifecycle does not agree with that of single-spa  part logical coupling in the framework
 // https://github.com/single-spa/single-spa-vue/blob/main/src/single-spa-vue.js
-import { __GARFISH_GLOBAL_APP_LIFECYCLE__ } from '@garfish/utils';
-
 const defaultOpts = {
   Vue: null, // vue2
   createApp: null, // vue3
@@ -78,14 +76,6 @@ export function vueBridge(this: any, userOpts) {
     __GARFISH_EXPORTS__
   ) {
     __GARFISH_EXPORTS__.provider = provider;
-  }
-
-  // es module env
-  if (window[__GARFISH_GLOBAL_APP_LIFECYCLE__] && opts.appId) {
-    const subLifeCycle = window[__GARFISH_GLOBAL_APP_LIFECYCLE__][opts.appId];
-    if (subLifeCycle) {
-      subLifeCycle.defer(providerLifeCycle);
-    }
   }
   return provider;
 }

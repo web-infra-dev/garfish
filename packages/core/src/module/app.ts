@@ -6,9 +6,11 @@ import {
   assert,
   hasOwn,
   remove,
+  Queue,
   isJs,
   isObject,
   isPromise,
+  isAbsolute,
   toBoolean,
   findTarget,
   evalWithEnv,
@@ -18,10 +20,9 @@ import {
   getRenderNode,
   sourceListTags,
   parseContentType,
+  createSourcemap,
   createAppContainer,
   setDocCurrentScript,
-  __SCRIPT_GLOBAL_APP_ID__,
-  __GARFISH_GLOBAL_APP_LIFECYCLE__,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
@@ -43,12 +44,14 @@ export interface ExecScriptOptions {
   node?: Node;
   async?: boolean;
   noEntry?: boolean;
+  isInline?: boolean;
   isModule?: boolean;
 }
 
 let appId = 0;
-export const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
+const IMPORT_REG = /(import\s.+\sfrom\s)['"](.+)['"]/g;
 const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
+export const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 
 // Have the ability to App instance
 // 1. Provide static resource, the structure of the HTML, CSS, js.
@@ -61,13 +64,13 @@ export class App {
   public appId = appId++;
   public display = false;
   public mounted = false;
-  public esModule = false;
   public strictIsolation = false;
   public name: string;
   public isHtmlMode: boolean;
   public global: any = window;
   public appContainer: HTMLElement;
   public cjsModules: Record<string, any>;
+  public esmModules: Array<Record<string, any>> = [];
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
   public sourceList: Array<{ tagName: string; url: string }> = [];
@@ -79,15 +82,15 @@ export class App {
   /** @deprecated */
   public customLoader: CustomerLoader;
 
+  private scriptCount = 0;
   private active = false;
   private mounting = false;
   private unmounting = false;
   private context: Garfish;
+  private esmQueue = new Queue();
   private resources: interfaces.ResourceModules;
   // Environment variables injected by garfish for linkage with child applications
   private globalEnvVariables: Record<string, any>;
-  // es-module save lifeCycle to appGlobalId，appGlobalId in script attr
-  private appGlobalId: string;
 
   constructor(
     context: Garfish,
@@ -169,10 +172,11 @@ export class App {
       ...this.getExecScriptEnv(options?.noEntry),
       ...(env || {}),
     };
-
     const args = [this.appInfo, code, env, url, options] as const;
 
+    this.scriptCount++;
     this.hooks.lifecycle.beforeEval.emit(...args);
+
     try {
       this.runCode(code, env, url, options);
     } catch (e) {
@@ -189,12 +193,26 @@ export class App {
     url?: string,
     options?: ExecScriptOptions,
   ) {
+    // If the node is an es module, use native esmModule
     if (options.isModule) {
-      // If the node is an es module, the ability to use the browser directly
-      // this.entryManager.DOMApis.createElement(options.node);
-      const p = (0, eval)(`import('${url}')`);
-      p.then((module) => {
-        console.log(module, 't');
+      this.esmQueue.add(async (next) => {
+        if (options.isInline) {
+          const sourcemap = await createSourcemap(
+            code,
+            `index.html&inline(${this.scriptCount})`,
+          );
+          code = code.replace(IMPORT_REG, (k1, k2, k3) => {
+            if (isAbsolute(k3)) return k1;
+            return `${k2} '${transformUrl(url, k3)}'`;
+          });
+          url = URL.createObjectURL(
+            new Blob([`${code}\n//${sourcemap}`], { type: 'text/javascript' }),
+          );
+        }
+        (0, eval)(`import('${url}')`).then((module) => {
+          this.esmModules.push(module);
+          next();
+        });
       });
     } else {
       const revertCurrentScript = setDocCurrentScript(
@@ -205,14 +223,12 @@ export class App {
         options?.async,
       );
       code += url ? `\n//# sourceURL=${url}\n` : '';
-
       if (!hasOwn(env, 'window')) {
         env = {
           ...env,
           window: this.global,
         };
       }
-
       evalWithEnv(`;${code}`, env, this.global);
       revertCurrentScript();
     }
@@ -321,7 +337,6 @@ export class App {
 
   getExecScriptEnv(noEntry: boolean) {
     // The legacy of commonJS function support
-    if (this.esModule) return {};
     const envs = {
       [__GARFISH_EXPORTS__]: this.customExports,
       [__GARFISH_GLOBAL_ENV__]: this.globalEnvVariables,
@@ -516,13 +531,6 @@ export class App {
       script: (node) => {
         const mimeType = entryManager.findAttributeValue(node, 'type');
         const isModule = mimeType === 'module';
-        const appGlobalId = entryManager.findAttributeValue(
-          node,
-          __SCRIPT_GLOBAL_APP_ID__,
-        );
-
-        // app lifecycle save in appGlobalId
-        if (appGlobalId) this.appGlobalId = appGlobalId;
 
         if (mimeType) {
           // Other script template
@@ -530,7 +538,6 @@ export class App {
             return DOMApis.createElement(node);
           }
         }
-
         const jsManager = resources.js.find((manager) => {
           return !manager.async ? manager.isSameOrigin(node) : false;
         });
@@ -541,6 +548,7 @@ export class App {
             node,
             isModule,
             async: false,
+            isInline: jsManager.isInlineScript(),
             noEntry: toBoolean(
               entryManager.findAttributeValue(node, 'no-entry'),
             ),
@@ -600,7 +608,7 @@ export class App {
       | ((...args: any[]) => interfaces.Provider)
       | interfaces.Provider = null;
 
-    // cjs exports
+    // Cjs exports
     if (cjsModules.exports) {
       if (isPromise(cjsModules.exports))
         cjsModules.exports = await cjsModules.exports;
@@ -608,16 +616,17 @@ export class App {
       if (cjsModules.exports.provider) provider = cjsModules.exports.provider;
     }
 
+    // esModule export
+    if (!this.esmQueue.init) {
+      await this.esmQueue.awaitCompletion();
+    }
+    for (const module of this.esmModules) {
+      if (module.provider) provider = module.provider;
+    }
+
     // Custom export prior to export by default
     if (customExports.provider) {
       provider = customExports.provider;
-    }
-
-    // esModule app global lifecycle in global variable
-    if (this.global[__GARFISH_GLOBAL_APP_LIFECYCLE__] && this.appGlobalId) {
-      provider =
-        this.global[__GARFISH_GLOBAL_APP_LIFECYCLE__][this.appGlobalId]
-          ?.provider;
     }
 
     if (typeof provider === 'function') {

@@ -3,7 +3,7 @@
   "version": "0.1.5",
   "private": true,
   "scripts": {
-    "start": "http-server ./src -p 2999",
+    "start": "http-server ./src --cors -p 2999",
     "build": "cp -r src/. dist"
   },
   "publishConfig": {

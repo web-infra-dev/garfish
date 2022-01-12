@@ -521,3 +521,18 @@ export function safari13Deal() {
     },
   };
 }
+
+export async function createSourcemap(code: string, filename: string) {
+  const content = await toBase64(
+    JSON.stringify({
+      version: 3,
+      sources: [filename],
+      sourcesContent: [code],
+      mappings: code
+        .split('\n')
+        .map(() => 'AACA')
+        .join(';'),
+    }),
+  );
+  return `@ sourceMappingURL=${content}`;
+}

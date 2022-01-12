@@ -8,8 +8,9 @@ GarfishInstance.router.beforeEach((to, from, next) => {
 });
 GarfishInstance.run(Config);
 
-const useRouterMode = true;
 let prevApp = null;
+const useRouterMode = true;
+
 document.getElementById('vueBtn').onclick = async () => {
   if (useRouterMode) {
     history.pushState({}, 'vue', '/garfish_master/vue'); // use router to load app
@@ -41,6 +42,12 @@ document.getElementById('reactBtn').onclick = async () => {
 document.getElementById('viteBtn').onclick = async () => {
   if (useRouterMode) {
     history.pushState({}, 'vite', '/garfish_master/vite');
+  }
+};
+
+document.getElementById('esmBtn').onclick = async () => {
+  if (useRouterMode) {
+    history.pushState({}, 'esmApp', '/garfish_master/esmApp');
   }
 };
 
