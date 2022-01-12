@@ -7,6 +7,8 @@ const publicPath = portMap[appName].publicPath;
 
 module.exports = {
   output: {
+    filename: '[name].[contenthash].js',
+    chunkFilename: '[name].[contenthash].js',
     // 需要配置成 umd 规范
     libraryTarget: 'umd',
     // 修改不规范的代码格式，避免逃逸沙箱
