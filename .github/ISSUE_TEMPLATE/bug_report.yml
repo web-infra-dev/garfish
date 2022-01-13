@@ -37,7 +37,7 @@ body:
     id: system-info
     attributes:
       label: System Info
-      description: Output of `npx envinfo --system --npmPackages '{garfish,@garfish/*}' --binaries --browsers`
+      description: Output of `npx envinfo --system --npmPackages '{garfish,@garfish/*}' --binaries --browsers` (notice: Does not support monorepo, you need to enter the main application package.json location)
       render: shell
       placeholder: System, Binaries, Browsers
     validations:
