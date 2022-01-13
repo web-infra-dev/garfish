@@ -20,7 +20,7 @@ describe('whole process popstate event', () => {
     const VueHomeTitle = 'Thank you for the vue applications use garfish';
     const ReactHomeTitle = 'Thank you for the react applications use garfish';
 
-    cy.visit('http://localhost:2333');
+    cy.visit('http://localhost:8090');
 
     cy.window().then((win) => {
       // Monitoring popstate call time

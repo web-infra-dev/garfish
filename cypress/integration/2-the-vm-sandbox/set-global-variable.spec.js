@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-const basename = '/garfish_master';
+const basename = '/examples';
 
 describe('whole process vm sandbox set variable', () => {
   beforeEach(() => {

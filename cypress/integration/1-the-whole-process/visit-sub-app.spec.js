@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-const basename = '/garfish_master';
+const basename = '/examples';
 
 describe('whole process app render', () => {
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe('whole process app render', () => {
   const VueHomeTitle = 'Thank you for the vue2 applications use garfish';
 
   it('Switch to the Vue app', () => {
-    cy.visit('http://localhost:2333');
+    cy.visit('http://localhost:8090');
 
     cy.window().then((win) => {
       const HomeTitle = 'Thank you for the vue applications use garfish';
