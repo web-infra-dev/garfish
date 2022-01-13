@@ -1,11 +1,8 @@
 name: ChangeLog
 on:
   push:
-    branches:
-      - main
-      - master
     tags:
-      - 'v1.*.*'
+      - 'v*'
 
 jobs:
   release:
