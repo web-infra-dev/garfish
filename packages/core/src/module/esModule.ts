@@ -94,6 +94,7 @@ export class ESModuleLoader {
       const blobUrl = this.moduleCache[k5];
       return `${k2} '${blobUrl || k5}'`;
     });
+
     // Dynamic import
     code = code.replace(DYNAMIC_IMPORT_REG, (k1) => {
       return k1.replace('import', '_import_');
@@ -106,6 +107,7 @@ export class ESModuleLoader {
     for (const key in this.moduleCache) {
       URL.revokeObjectURL(this.moduleCache[key]);
     }
+    this.moduleCache = {};
     delete this.app.global[this.globalVarKey];
   }
 

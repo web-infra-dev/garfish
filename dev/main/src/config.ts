@@ -33,7 +33,7 @@ let defaultConfig: interfaces.Options = {
     },
     {
       name: 'vite-vue3',
-      cache: true,
+      cache: false,
       activeWhen: '/vite',
       entry: 'http://localhost:2888/',
       sandbox: {
@@ -42,7 +42,7 @@ let defaultConfig: interfaces.Options = {
     },
     {
       name: 'esm-app',
-      cache: true,
+      cache: false,
       activeWhen: '/esmApp',
       entry: 'http://localhost:2999/',
       sandbox: {
