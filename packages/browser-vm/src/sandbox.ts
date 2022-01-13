@@ -289,7 +289,7 @@ export class Sandbox {
           ? this.optimizeGlobalMethod(envKeys)
           : this.optimizeCode;
 
-      codeRef.code = `with(window) {;${optimizeCode + codeRef.code}}`;
+      codeRef.code = `with(window) {;${optimizeCode + codeRef.code}\n}`;
       params[this.tempVariable] = env;
     }
 

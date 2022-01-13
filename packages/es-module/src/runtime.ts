@@ -121,6 +121,37 @@ export class Runtime {
     };
   }
 
+  private async analysisModule(
+    code: string,
+    storeId: string,
+    baseRealUrl: string,
+  ) {
+    const compiler = new Compiler({
+      code,
+      storeId,
+      runtime: this,
+      filename: storeId,
+    });
+
+    const { imports, exports, generateCode } = compiler.transform();
+    await Promise.all(
+      imports.map(({ moduleId }) => {
+        const curStoreId = transformUrl(storeId, moduleId);
+        const requestUrl = transformUrl(baseRealUrl, moduleId);
+        return this.resources[curStoreId]
+          ? null
+          : this.compileAndFetchCode(curStoreId, requestUrl);
+      }),
+    );
+
+    const output = generateCode();
+    output.map = await toBase64(output.map);
+    (output as ModuleResource).storeId = storeId;
+    (output as ModuleResource).realUrl = baseRealUrl;
+    (output as ModuleResource).exports = exports;
+    return output as ModuleResource;
+  }
+
   compileAndFetchCode(storeId: string, url?: string): void | Promise<void> {
     if (this.resources[storeId]) return;
     if (!url) url = storeId;
@@ -131,30 +162,8 @@ export class Runtime {
         const { url, scriptCode } = resourceManager;
 
         if (scriptCode) {
-          const compiler = new Compiler({
-            storeId,
-            runtime: this,
-            code: scriptCode,
-            filename: storeId,
-          });
-
-          const { imports, exports, generateCode } = compiler.transform();
-          await Promise.all(
-            imports.map(({ moduleId }) => {
-              const curStoreId = transformUrl(storeId, moduleId);
-              const requestUrl = transformUrl(url, moduleId);
-              return this.resources[curStoreId]
-                ? null
-                : this.compileAndFetchCode(curStoreId, requestUrl);
-            }),
-          );
-
-          const output = generateCode();
-          output.map = await toBase64(output.map);
-          (output as ModuleResource).storeId = storeId;
-          (output as ModuleResource).realUrl = url;
-          (output as ModuleResource).exports = exports;
-          this.resources[storeId] = output as ModuleResource;
+          const output = await this.analysisModule(scriptCode, storeId, url);
+          this.resources[storeId] = output;
         } else {
           this.resources[storeId] = null;
         }
@@ -173,6 +182,12 @@ export class Runtime {
       return this.getModule(memoryModule);
     });
   }
-}
 
-export const runtime = new Runtime();
+  async importByCode(code: string, storeId: string, metaUrl?: string) {
+    if (!metaUrl) metaUrl = storeId;
+    const memoryModule = {};
+    const output = await this.analysisModule(code, storeId, metaUrl);
+    this.execCode(output as ModuleResource, memoryModule);
+    return this.getModule(memoryModule);
+  }
+}

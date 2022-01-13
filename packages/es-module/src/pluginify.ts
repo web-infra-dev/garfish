@@ -1,5 +1,5 @@
 import { error, evalWithEnv } from '@garfish/utils';
-import { interfaces } from '@garfish/core';
+import type { interfaces } from '@garfish/core';
 import { Runtime } from './runtime';
 
 // Export Garfish plugin
@@ -38,12 +38,14 @@ export function GarfishEsmModule() {
             url?: string,
             options?: interfaces.ExecScriptOptions,
           ) {
+            const codeRef = { code };
+            const appEnv = appInstance.getExecScriptEnv(options?.noEntry);
+            Object.assign(env, appEnv);
             if (!options.isModule) {
               return sandbox.execScript(code, env, url, options);
             }
-            const codeRef = { code };
-
             runtime.options.execCode = function (output, provider) {
+              Object.assign(env, provider);
               codeRef.code = `(() => {'use strict';${output.code}})()`;
 
               sandbox.hooks.lifecycle.beforeInvoke.emit(
@@ -53,11 +55,8 @@ export function GarfishEsmModule() {
                 options,
               );
 
-              const appEnv = appInstance.getExecScriptEnv(options?.noEntry);
-              Object.assign(env, appEnv, provider);
-              const params = sandbox.createExecParams(codeRef, env);
-
               try {
+                const params = sandbox.createExecParams(codeRef, env);
                 const sourcemap = `\n//@ sourceMappingURL=${output.map}`;
                 const code = `${codeRef.code}\n//${output.storeId}${sourcemap}`;
                 evalWithEnv(code, params, undefined, false);
@@ -74,7 +73,9 @@ export function GarfishEsmModule() {
             };
 
             appInstance.esmQueue.add(async (next) => {
-              await runtime.asyncImport(url, url);
+              options.isInline
+                ? await runtime.importByCode(codeRef.code, url)
+                : await runtime.asyncImport(url, url);
               next();
             });
           };
