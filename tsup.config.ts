@@ -21,6 +21,7 @@ export const baseTsup = (pkg): Options => {
       .join(''),
     esbuildPlugins: [
       replace({
+        include: /.(ts|js)$/,
         __TEST__: 'false',
         __VERSION__: `'${pkg.version}'`,
         __DEV__:
