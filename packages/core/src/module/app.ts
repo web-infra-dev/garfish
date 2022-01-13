@@ -71,7 +71,6 @@ export class App {
   public global: any = window;
   public appContainer: HTMLElement;
   public cjsModules: Record<string, any>;
-  public esmModules: Array<Record<string, any>> = [];
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
   public sourceList: Array<{ tagName: string; url: string }> = [];
