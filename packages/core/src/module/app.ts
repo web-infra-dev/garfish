@@ -27,6 +27,7 @@ import {
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
 import { appLifecycle } from '../lifecycle';
+import { ESModuleLoader } from './esModule';
 import { SubAppObserver } from '../plugins/performance/subAppObserver';
 
 /** @deprecated */
@@ -49,7 +50,6 @@ export interface ExecScriptOptions {
 }
 
 let appId = 0;
-const IMPORT_REG = /(import\s.+\sfrom\s)['"](.+)['"]/g;
 const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
 export const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 
@@ -62,6 +62,7 @@ export const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 // 5. Trigger the destruction: Perform the destroy function of child application, and applies the child node is removed from the document flow.
 export class App {
   public appId = appId++;
+  public scriptCount = 0;
   public display = false;
   public mounted = false;
   public strictIsolation = false;
@@ -75,6 +76,7 @@ export class App {
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
   public sourceList: Array<{ tagName: string; url: string }> = [];
   public appInfo: AppInfo;
+  public context: Garfish;
   public hooks: interfaces.AppHooks;
   public provider: interfaces.Provider;
   public entryManager: TemplateManager;
@@ -82,12 +84,11 @@ export class App {
   /** @deprecated */
   public customLoader: CustomerLoader;
 
-  private scriptCount = 0;
   private active = false;
   private mounting = false;
   private unmounting = false;
-  private context: Garfish;
   private esmQueue = new Queue();
+  private esModuleLoader = new ESModuleLoader(this);
   private resources: interfaces.ResourceModules;
   // Environment variables injected by garfish for linkage with child applications
   private globalEnvVariables: Record<string, any>;
@@ -193,27 +194,11 @@ export class App {
     url?: string,
     options?: ExecScriptOptions,
   ) {
-    // If the node is an es module, use native esmModule,
-    // But cannot support external and inject environment variables
+    // If the node is an es module, use native esmModule
     if (options.isModule) {
       this.esmQueue.add(async (next) => {
-        if (options.isInline) {
-          const sourcemap = await createSourcemap(
-            code,
-            `index.html(inline.${this.scriptCount}.js)`,
-          );
-          code = code.replace(IMPORT_REG, (k1, k2, k3) => {
-            if (isAbsolute(k3)) return k1;
-            return `${k2} '${transformUrl(url, k3)}'`;
-          });
-          url = URL.createObjectURL(
-            new Blob([`${code}\n${sourcemap}`], { type: 'text/javascript' }),
-          );
-        }
-        (0, eval)(`import('${url}')`).then((module) => {
-          this.esmModules.push(module);
-          next();
-        });
+        await this.esModuleLoader.load(code, env, url, options);
+        next();
       });
     } else {
       const revertCurrentScript = setDocCurrentScript(
@@ -323,6 +308,7 @@ export class App {
       this.provider = null;
       this.customExports = {};
       this.cjsModules.exports = {};
+      this.esModuleLoader.destroy();
       remove(this.context.activeApps, this);
       this.hooks.lifecycle.afterUnmount.emit(this.appInfo, this, false);
     } catch (e) {
@@ -609,18 +595,15 @@ export class App {
       | ((...args: any[]) => interfaces.Provider)
       | interfaces.Provider = null;
 
+    // esModule export
+    await this.esmQueue.awaitCompletion();
+
     // Cjs exports
     if (cjsModules.exports) {
       if (isPromise(cjsModules.exports))
         cjsModules.exports = await cjsModules.exports;
       // Is not set in the configuration of webpack library option
       if (cjsModules.exports.provider) provider = cjsModules.exports.provider;
-    }
-
-    // esModule export
-    await this.esmQueue.awaitCompletion();
-    for (const module of this.esmModules) {
-      if (module.provider) provider = module.provider;
     }
 
     // Custom export prior to export by default

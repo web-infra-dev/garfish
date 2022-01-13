@@ -18,7 +18,7 @@
     if (!window.__GARFISH__) {
       render();
     }
-    export function provider() {
+    __GARFISH_EXPORTS__.provider = function() {
       console.log('Into esm app provider function');
       return {
         render,

@@ -13,8 +13,11 @@ export const provider = vueBridge({
   }),
 });
 
-// 非微前端环境直接运行
 if (!window.__GARFISH__) {
+  // 非微前端环境直接运行
   let vueInstance = createApp(App);
   vueInstance.mount(document.querySelector('#app'));
+} else if (import.meta.env.PROD) {
+  // 生产环境则不是 esm 环境了
+  (__GARFISH_EXPORTS__ || exports).provider = provider;
 }
