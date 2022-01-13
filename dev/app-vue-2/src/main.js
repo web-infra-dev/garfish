@@ -61,7 +61,7 @@ function newRouter(basename) {
 export const provider = vueBridge({
   Vue,
   rootComponent: App,
-  appOptions: ({ appInfo, userProps }) => {
+  appOptions: ({ appInfo }) => {
     return {
       el: '#app',
       router: newRouter(appInfo.basename),
