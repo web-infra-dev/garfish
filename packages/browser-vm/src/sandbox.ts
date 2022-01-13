@@ -1,7 +1,6 @@
 import { Loader } from '@garfish/loader';
 import {
   warn,
-  error,
   hasOwn,
   makeMap,
   isObject,
@@ -11,6 +10,7 @@ import {
   isPlainObject,
   setDocCurrentScript,
 } from '@garfish/utils';
+import type { interfaces } from '@garfish/core';
 import { historyModule } from './modules/history';
 import { networkModule } from './modules/network';
 import { documentModule } from './modules/document';
@@ -23,12 +23,7 @@ import { makeElInjector } from './dynamicNode';
 import { sandboxLifecycle } from './lifecycle';
 import { optimizeMethods, createFakeObject, sandboxMap } from './utils';
 import { __garfishGlobal__, GARFISH_OPTIMIZE_NAME } from './symbolTypes';
-import {
-  Module,
-  SandboxOptions,
-  ExecScriptOptions,
-  ReplaceGlobalVariables,
-} from './types';
+import { Module, SandboxOptions, ReplaceGlobalVariables } from './types';
 import {
   createHas,
   createGetter,
@@ -272,69 +267,83 @@ export class Sandbox {
     return code;
   }
 
-  execScript(code: string, env = {}, url = '', options?: ExecScriptOptions) {
-    const { async, isModule } = options || {};
-    if (isModule) {
-      error(
-        'The "vm sandbox" does not support "es module" script temporarily, ' +
-          'you can use the "es-module" plugin to support it',
-      );
-      return;
-    }
+  createExecParams(codeRef: { code: string }, env: Record<string, any>) {
     const { disableWith } = this.options;
     const { prepareList, overrideList } = this.replaceGlobalVariables;
-
-    this.hooks.lifecycle.beforeInvoke.emit(url, env, options);
 
     if (prepareList) {
       prepareList.forEach((fn) => fn && fn());
     }
 
+    const params = {
+      window: this.global,
+      ...overrideList,
+    };
+
+    if (disableWith) {
+      Object.assign(params, env);
+    } else {
+      const envKeys = Object.keys(env);
+      const optimizeCode =
+        envKeys.length > 0
+          ? this.optimizeGlobalMethod(envKeys)
+          : this.optimizeCode;
+
+      codeRef.code = `with(window) {;${optimizeCode + codeRef.code}}`;
+      params[this.tempVariable] = env;
+    }
+
+    return params;
+  }
+
+  processExecError(
+    e: any,
+    url: string,
+    env: Record<string, any>,
+    options?: interfaces.ExecScriptOptions,
+  ) {
+    this.hooks.lifecycle.invokeError.emit(e, url, env, options);
+    // dispatch `window.onerror`
+    if (typeof this.global.onerror === 'function') {
+      const source = url || this.options.baseUrl;
+      const message = e instanceof Error ? e.message : String(e);
+      safeWrapper(() => {
+        this.global.onerror.call(this.global, message, source, null, null, e);
+      });
+    }
+    throw e;
+  }
+
+  execScript(
+    code: string,
+    env = {},
+    url = '',
+    options?: interfaces.ExecScriptOptions,
+  ) {
+    const codeRef = { code };
+    const { async } = options || {};
+
+    this.hooks.lifecycle.beforeInvoke.emit(codeRef, url, env, options);
+
     const revertCurrentScript = setDocCurrentScript(
       this.global.document,
-      code,
+      codeRef.code,
       false,
       url,
       async,
     );
 
     try {
-      code += `\n${url ? `//# sourceURL=${url}\n` : ''}`;
-
-      const params = {
-        window: this.global,
-        ...overrideList,
-      };
-
-      if (disableWith) {
-        Object.assign(params, env);
-      } else {
-        const envKeys = Object.keys(env);
-        const optimizeCode =
-          envKeys.length > 0
-            ? this.optimizeGlobalMethod(envKeys)
-            : this.optimizeCode;
-
-        code = `with(window) {;${optimizeCode + code}}`;
-        params[this.tempVariable] = env;
-      }
-
-      evalWithEnv(code, params, this.global);
+      const params = this.createExecParams(codeRef, env);
+      codeRef.code += `\n${url ? `//# sourceURL=${url}\n` : ''}`;
+      evalWithEnv(codeRef.code, params, this.global);
     } catch (e) {
-      this.hooks.lifecycle.invokeError.emit(e, url, env, options);
-      // dispatch `window.onerror`
-      if (typeof this.global.onerror === 'function') {
-        const source = url || this.options.baseUrl;
-        const message = e instanceof Error ? e.message : String(e);
-        safeWrapper(() => {
-          this.global.onerror.call(this.global, message, source, null, null, e);
-        });
-      }
-      throw e;
+      this.processExecError(e, url, env, options);
     } finally {
       revertCurrentScript();
     }
-    this.hooks.lifecycle.afterInvoke.emit(url, env, options);
+
+    this.hooks.lifecycle.afterInvoke.emit(codeRef, url, env, options);
   }
 
   static getNativeWindow() {

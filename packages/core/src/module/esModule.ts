@@ -1,6 +1,7 @@
 import type { JavaScriptManager } from '@garfish/loader';
 import { isAbsolute, transformUrl, createSourcemap } from '@garfish/utils';
-import type { App, ExecScriptOptions } from './app';
+import type { App } from './app';
+import { interfaces } from '../interface';
 
 const SOURCEMAP_REG = /[@#] sourceMappingURL=/g;
 const COMMENT_REG = /[^:]\/\/.*|\/\*[\w\W]*?\*\//g;
@@ -115,7 +116,7 @@ export class ESModuleLoader {
     code: string,
     env: Record<string, any>,
     url: string,
-    options: ExecScriptOptions,
+    options: interfaces.ExecScriptOptions,
   ) {
     return new Promise<void>(async (resolve) => {
       if (this.moduleCache[url]) {

@@ -16,6 +16,7 @@ export function createModule(memoryModule: MemoryModule) {
     enumerable: false,
     configurable: false,
   });
+
   Object.keys(memoryModule).forEach((key) => {
     const getter = Object.getOwnPropertyDescriptor(memoryModule, key).get;
     Object.defineProperty(module, key, {
@@ -29,6 +30,7 @@ export function createModule(memoryModule: MemoryModule) {
       },
     });
   });
+
   Object.seal(module);
   return module;
 }
@@ -43,6 +45,7 @@ export function createImportMeta(url: string) {
       configurable: true,
     });
   };
+
   set('url', url);
   set('__garfish', true);
   return { meta: metaObject };

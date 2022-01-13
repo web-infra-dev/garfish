@@ -1,4 +1,5 @@
 import GarfishInstance, { interfaces } from 'garfish';
+import { GarfishEsmModule } from '@garfish/es-module';
 import './monitoring';
 
 declare const Cypress: any;
@@ -36,18 +37,12 @@ let defaultConfig: interfaces.Options = {
       cache: false,
       activeWhen: '/vite',
       entry: 'http://localhost:2888/',
-      sandbox: {
-        open: false,
-      },
     },
     {
       name: 'esm-app',
       cache: false,
       activeWhen: '/esmApp',
       entry: 'http://localhost:2999/',
-      sandbox: {
-        open: false,
-      },
     },
     // {
     //   name: 'react',
@@ -66,6 +61,7 @@ let defaultConfig: interfaces.Options = {
     open: true,
     // strictIsolation: true,
   },
+  plugins: [GarfishEsmModule()],
 
   // beforeMount(appInfo) {
   //   console.log('beforeMount', appInfo);

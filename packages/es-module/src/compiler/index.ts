@@ -5,7 +5,6 @@ import { transformUrl } from '@garfish/utils';
 import type {
   Node,
   Program,
-  Statement,
   Identifier,
   Expression,
   MetaProperty,
@@ -36,14 +35,11 @@ import {
   identifier,
   callExpression,
   objectProperty,
-  blockStatement,
-  expressionStatement,
   objectExpression,
   memberExpression,
   arrowFunctionExpression,
   variableDeclarator,
   variableDeclaration,
-  functionDeclaration,
 } from './generated';
 
 type ImportInfoData = (

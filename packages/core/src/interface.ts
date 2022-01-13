@@ -132,4 +132,12 @@ export namespace interfaces {
 
   // You can be extended plugin type dynamic registration
   export interface Plugins {}
+
+  export interface ExecScriptOptions {
+    node?: Node;
+    async?: boolean;
+    noEntry?: boolean;
+    isInline?: boolean;
+    isModule?: boolean;
+  }
 }

@@ -1,7 +1,6 @@
 import { StyleManager, TemplateManager } from '@garfish/loader';
 import {
   Text,
-  Node,
   warn,
   assert,
   hasOwn,
@@ -10,7 +9,6 @@ import {
   isJs,
   isObject,
   isPromise,
-  isAbsolute,
   toBoolean,
   findTarget,
   evalWithEnv,
@@ -20,7 +18,6 @@ import {
   getRenderNode,
   sourceListTags,
   parseContentType,
-  createSourcemap,
   createAppContainer,
   setDocCurrentScript,
 } from '@garfish/utils';
@@ -41,14 +38,6 @@ export type AppInfo = interfaces.AppInfo & {
   appId?: number;
 };
 
-export interface ExecScriptOptions {
-  node?: Node;
-  async?: boolean;
-  noEntry?: boolean;
-  isInline?: boolean;
-  isModule?: boolean;
-}
-
 let appId = 0;
 const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
 export const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
@@ -66,6 +55,8 @@ export class App {
   public display = false;
   public mounted = false;
   public strictIsolation = false;
+  public esmQueue = new Queue();
+  public esModuleLoader = new ESModuleLoader(this);
   public name: string;
   public isHtmlMode: boolean;
   public global: any = window;
@@ -86,8 +77,6 @@ export class App {
   private active = false;
   private mounting = false;
   private unmounting = false;
-  private esmQueue = new Queue();
-  private esModuleLoader = new ESModuleLoader(this);
   private resources: interfaces.ResourceModules;
   // Environment variables injected by garfish for linkage with child applications
   private globalEnvVariables: Record<string, any>;
@@ -166,7 +155,7 @@ export class App {
     code: string,
     env: Record<string, any>,
     url?: string,
-    options?: ExecScriptOptions,
+    options?: interfaces.ExecScriptOptions,
   ) {
     env = {
       ...this.getExecScriptEnv(options?.noEntry),
@@ -191,7 +180,7 @@ export class App {
     code: string,
     env: Record<string, any>,
     url?: string,
-    options?: ExecScriptOptions,
+    options?: interfaces.ExecScriptOptions,
   ) {
     // If the node is an es module, use native esmModule
     if (options.isModule) {
@@ -531,7 +520,6 @@ export class App {
         if (jsManager) {
           const { url, scriptCode } = jsManager;
           this.execScript(scriptCode, {}, url || this.appInfo.entry, {
-            node,
             isModule,
             async: false,
             isInline: jsManager.isInlineScript(),

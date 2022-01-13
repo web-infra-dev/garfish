@@ -6,7 +6,7 @@ import {
   evalWithEnv,
   transformUrl,
 } from '@garfish/utils';
-import { Loader, JavaScriptManager } from '@garfish/loader';
+import { Loader, LoaderOptions, JavaScriptManager } from '@garfish/loader';
 import { Output, Compiler } from './compiler';
 import { Module, MemoryModule, createModule, createImportMeta } from './module';
 
@@ -18,7 +18,7 @@ export type ModuleResource = Output & {
 
 export interface RuntimeOptions {
   scope?: string;
-  loader?: Loader;
+  loaderOptions?: LoaderOptions;
   execCode?: (
     output: ModuleResource,
     provider: ReturnType<Runtime['generateProvider']>,
@@ -26,23 +26,26 @@ export interface RuntimeOptions {
 }
 
 export class Runtime {
-  private options: RuntimeOptions;
   private modules = new WeakMap<MemoryModule, Module>();
   private memoryModules: Record<string, MemoryModule> = {};
+  public loader: Loader;
+  public options: RuntimeOptions;
   public resources: Record<string, ModuleResource | Promise<void>> = {};
 
   constructor(options?: RuntimeOptions) {
     const defaultOptions = {
       scope: 'default',
-      loader: new Loader(),
+      loaderOptions: {},
     };
     this.options = isPlainObject(options)
       ? deepMerge(defaultOptions, options)
       : defaultOptions;
+    this.loader = new Loader(this.options.loaderOptions);
   }
 
   private execCode(output: ModuleResource, memoryModule: MemoryModule) {
     const provider = this.generateProvider(output, memoryModule);
+
     if (this.options.execCode) {
       this.options.execCode(output, provider);
     } else {
@@ -122,9 +125,8 @@ export class Runtime {
     if (this.resources[storeId]) return;
     if (!url) url = storeId;
 
-    const { loader, scope } = this.options;
-    const p = loader
-      .load<JavaScriptManager>(scope, url)
+    const p = this.loader
+      .load<JavaScriptManager>(this.options.scope, url)
       .then(async ({ resourceManager }) => {
         const { url, scriptCode } = resourceManager;
 
