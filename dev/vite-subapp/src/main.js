@@ -2,7 +2,7 @@ import { vueBridge } from '@garfish/bridge';
 import { h, createApp } from 'vue';
 import App from './App.vue';
 
-export const provider = vueBridge({
+vueBridge({
   createApp,
   appId: 'vite-vue-sub-app',
   appOptions: () => ({
@@ -13,8 +13,8 @@ export const provider = vueBridge({
   }),
 });
 
-// 非微前端环境直接运行
 if (!window.__GARFISH__) {
+  // 非微前端环境直接运行
   let vueInstance = createApp(App);
   vueInstance.mount(document.querySelector('#app'));
 }

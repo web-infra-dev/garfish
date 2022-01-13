@@ -17,12 +17,13 @@
 
     if (!window.__GARFISH__) {
       render();
-    }
-    export function provider() {
-      console.log('Into esm app provider function');
-      return {
-        render,
-        destroy,
+    } else {
+      __GARFISH_EXPORTS__.provider = function() {
+        console.log('Into esm app provider function');
+        return {
+          render,
+          destroy,
+        }
       }
     }
   </script>
