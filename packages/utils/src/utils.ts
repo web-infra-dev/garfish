@@ -522,6 +522,11 @@ export function safari13Deal() {
   };
 }
 
+const SOURCEMAP_REG = /[@#] sourceMappingURL=/g;
+export function haveSourcemap(code: string) {
+  return SOURCEMAP_REG.test(code);
+}
+
 export async function createSourcemap(code: string, filename: string) {
   const content = await toBase64(
     JSON.stringify({

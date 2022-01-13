@@ -41,43 +41,45 @@ export function GarfishEsmModule() {
             const codeRef = { code };
             const appEnv = appInstance.getExecScriptEnv(options?.noEntry);
             Object.assign(env, appEnv);
-            if (!options.isModule) {
-              return sandbox.execScript(code, env, url, options);
-            }
-            runtime.options.execCode = function (output, provider) {
-              Object.assign(env, provider);
-              codeRef.code = `(() => {'use strict';${output.code}})()`;
 
-              sandbox.hooks.lifecycle.beforeInvoke.emit(
-                codeRef,
-                url,
-                env,
-                options,
-              );
-
-              try {
-                const params = sandbox.createExecParams(codeRef, env);
+            if (options.isModule) {
+              runtime.options.execCode = function (output, provider) {
                 const sourcemap = `\n//@ sourceMappingURL=${output.map}`;
-                const code = `${codeRef.code}\n//${output.storeId}${sourcemap}`;
-                evalWithEnv(code, params, undefined, false);
-              } catch (e) {
-                sandbox.processExecError(e, url, env, options);
-              }
+                Object.assign(env, provider);
+                codeRef.code = `(() => {'use strict';${output.code}})()`;
 
-              sandbox.hooks.lifecycle.afterInvoke.emit(
-                codeRef,
-                url,
-                env,
-                options,
-              );
-            };
+                sandbox.hooks.lifecycle.beforeInvoke.emit(
+                  codeRef,
+                  url,
+                  env,
+                  options,
+                );
 
-            appInstance.esmQueue.add(async (next) => {
-              options.isInline
-                ? await runtime.importByCode(codeRef.code, url)
-                : await runtime.asyncImport(url, url);
-              next();
-            });
+                try {
+                  const params = sandbox.createExecParams(codeRef, env);
+                  const code = `${codeRef.code}\n//${output.storeId}${sourcemap}`;
+                  evalWithEnv(code, params, undefined, false);
+                } catch (e) {
+                  sandbox.processExecError(e, url, env, options);
+                }
+
+                sandbox.hooks.lifecycle.afterInvoke.emit(
+                  codeRef,
+                  url,
+                  env,
+                  options,
+                );
+              };
+
+              appInstance.esmQueue.add(async (next) => {
+                options.isInline
+                  ? await runtime.importByCode(codeRef.code, url)
+                  : await runtime.asyncImport(url, url);
+                next();
+              });
+            } else {
+              sandbox.execScript(code, env, url, options);
+            }
           };
         }
       },

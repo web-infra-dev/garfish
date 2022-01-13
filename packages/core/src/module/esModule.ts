@@ -1,9 +1,13 @@
 import type { JavaScriptManager } from '@garfish/loader';
-import { isAbsolute, transformUrl, createSourcemap } from '@garfish/utils';
+import {
+  isAbsolute,
+  transformUrl,
+  haveSourcemap,
+  createSourcemap,
+} from '@garfish/utils';
 import type { App } from './app';
 import { interfaces } from '../interface';
 
-const SOURCEMAP_REG = /[@#] sourceMappingURL=/g;
 const COMMENT_REG = /[^:]\/\/.*|\/\*[\w\W]*?\*\//g;
 const DYNAMIC_IMPORT_REG = /[\s\n;]?(import)[\s\n]*\(/g;
 const __GARFISH_ESM_ENV__ = '__GARFISH_ESM_ENV__';
@@ -43,7 +47,7 @@ export class ESModuleLoader {
       // eslint-disable-next-line prefer-const
       let { url, scriptCode } = resourceManager;
 
-      if (!SOURCEMAP_REG.test(scriptCode)) {
+      if (!haveSourcemap(scriptCode)) {
         sourcemap = await createSourcemap(scriptCode, requestUrl);
       }
       scriptCode = await this.analysisModule(
@@ -149,7 +153,7 @@ export class ESModuleLoader {
       }, '');
 
       let sourcemap = '';
-      if (!SOURCEMAP_REG.test(code)) {
+      if (!haveSourcemap(code)) {
         sourcemap = await createSourcemap(
           code,
           options.isInline

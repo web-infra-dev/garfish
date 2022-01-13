@@ -541,6 +541,7 @@ export class Compiler {
     this.deferQueue.removes.forEach((fn) => fn());
     this.generateVirtualModuleSystem();
 
+    // TODO: 兼容旧的 sourcemap
     const output = generate(this.ast, {
       sourceMapWithCode: true,
       sourceMap: this.options.filename,

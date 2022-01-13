@@ -3,6 +3,10 @@
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import HelloWorld from './components/HelloWorld.vue'
 import ImgLogo from './assets/logo.png';
+
+setTimeout(() => {
+  console.log(__GARFISH_EXPORTS__, 1);
+})
 </script>
 
 <template>
