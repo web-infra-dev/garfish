@@ -60,46 +60,34 @@ export async function mergeSourcemap(compiler: Compiler, output: Output) {
     return;
   }
 
-  let oldMap;
-  const base64Flag = 'base64,';
-  const mapInfo = compiler.sourcemapComment.replace(
-    /^[#@]\s?sourceMappingURL\s?=\s?/,
-    '',
-  );
-  const index = mapInfo.indexOf(base64Flag);
+  try {
+    let oldMap;
+    const flag = 'base64,';
+    const mapInfo = compiler.sourcemapComment.replace(
+      /^[#@]\s?sourceMappingURL\s?=\s?/,
+      '',
+    );
+    const index = mapInfo.indexOf(flag);
 
-  if (index > -1) {
-    try {
-      oldMap = JSON.parse(atob(mapInfo.slice(index + base64Flag.length)));
-    } catch(e) {
-      console.warn(e);
-    }
-  } else {
-    const {
-      filename,
-      runtime: {
-        loader,
-        options: { scope },
-      },
-    } = compiler.options;
-
-    try {
+    if (index > -1) {
+      oldMap = JSON.parse(atob(mapInfo.slice(index + flag.length)));
+    } else {
+      const {
+        filename,
+        runtime: {
+          loader,
+          options: { scope },
+        },
+      } = compiler.options;
       const requestUrl = transformUrl(filename, mapInfo);
       const { code } = await loader.load(scope, requestUrl);
       oldMap = JSON.parse(code);
-    } catch (e) {
-      console.warn(e);
     }
-  }
-
-  if (!oldMap || !oldMap.mappings) {
-    output.map = output.map.toString();
-    return;
-  }
-
-  try {
-    output.map = merge(oldMap, newMap);
-  } catch (e) {
+  
+    output.map = oldMap && oldMap.mappings
+      ? merge(oldMap, newMap)
+      : output.map.toString();
+  } catch(e) {
     output.map = output.map.toString();
     console.warn(e);
   }
