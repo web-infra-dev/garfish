@@ -104,13 +104,11 @@ const App = observer(({ store }: { store: any }) => {
             </a>
           </li>
 
-          <li className={getClassName('vue3/index')}>
-            <a onClick={() => navigate(`/${basename}/vue3/index`)}>vue3</a>
+          <li className={getClassName('vue3/home')}>
+            <a onClick={() => navigate(`/${basename}/vue3/home`)}>vue3</a>
           </li>
-          <li className={getClassName('vue3/about')}>
-            <a onClick={() => navigate(`/${basename}/vue3/about`)}>
-              vue3 About
-            </a>
+          <li className={getClassName('vue3/todo')}>
+            <a onClick={() => navigate(`/${basename}/vue3/todo`)}>vue3 todo</a>
           </li>
 
           <li className={getClassName('vue2/index')}>

@@ -2,16 +2,16 @@
     <div class="todo-list">
       <h3 data-test="title">Vue App todo list</h3>
       <div class="todo-add">
-        <el-input v-model="item.text" placeholder="任务描述" data-test="new-todo"></el-input>
-        <el-button class="add-btn" type="primary" plain @click="add" data-test="add-btn">
+        <input v-model="item.text" placeholder="任务描述" data-test="new-todo" />
+        <button class="add-btn" type="primary" plain @click="add" data-test="add-btn">
           添加
-        </el-button>
+        </button>
       </div>
       <div>
         <ul class="todo-list">
-           <li v-for="todo in todos" :key="todo.id">
+           <li v-for="todo in data.state.todos" :key="todo.id">
             {{ todo.text }}
-            <el-button
+            <button
               circle
               size="mini"
               type="danger"
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { useState } from '../store';
 
 export default {
   data() {
@@ -39,18 +39,17 @@ export default {
     }
   },
 
-  computed: mapState([
-    // 映射 this.count 为 store.state.count
-    'todos'
-  ]),
-
+  setup() {
+    return {
+      data: useState()
+    }
+  },
   methods: {
     add() {
-      this.$store.dispatch('add', this.item)
-      this.item = { text: '', done: false }
+      this.data.add(this.item)
     },
     done(id) {
-      this.$store.dispatch('done', id)
+      this.data.done(id);
     }
   }
 }

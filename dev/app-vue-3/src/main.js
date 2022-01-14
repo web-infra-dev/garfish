@@ -9,7 +9,7 @@ import HelloGarfish from './components/HelloGarfish.vue';
 import RemoteComponent from './components/remoteComponent.vue';
 
 const routes = [
-  { path: '/', component: HelloGarfish },
+  { path: '/home', component: HelloGarfish },
   { path: '/test', component: Test },
   { path: '/todo', component: ToDoList },
   { path: '/micro-*', component: MicroApp },

@@ -1,10 +1,20 @@
 <template>
   <div id="app">
     <div>
-      <router-link to="/">Home </router-link><br />
-      <router-link to="/todo">todo</router-link><br />
-      <router-link to="/micro-app">Micro app</router-link><br />
-      <router-link to="/remote-component">Remote component</router-link><br />
+      <ul>
+        <li>
+          <router-link to="/home">Home </router-link><br />
+        </li>
+        <li>
+            <router-link to="/todo">todo</router-link>
+        </li>
+        <li>
+            <router-link to="/micro-app">Micro app</router-link>
+        </li>
+        <li>
+            <router-link to="/remote-component">Remote component</router-link>
+        </li>
+      </ul>
     </div>
     <div class="view-content">
       <div>counter: {{ data.state.counter }}</div>
@@ -48,7 +58,24 @@ body {
 a {
   color: #4834d4;
 }
+
 h3 {
-  margin-bottom: 30px;
+  margin: 40px 0 0;
 }
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+  cursor: pointer;
+}
+a.router-link-active {
+  color: #ff4500
+}
+
 </style>
