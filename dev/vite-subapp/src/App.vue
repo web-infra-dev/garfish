@@ -5,7 +5,7 @@ import HelloWorld from './components/HelloWorld.vue'
 import ImgLogo from './assets/logo.png';
 
 setTimeout(() => {
-  console.log(__GARFISH_EXPORTS__, 1);
+  console.log(window, __GARFISH_EXPORTS__);
 })
 </script>
 

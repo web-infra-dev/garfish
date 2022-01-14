@@ -1,7 +1,7 @@
 import { ancestor } from 'acorn-walk';
 import { generate } from 'escodegen';
 import { Parser, Node as AcornNode } from 'acorn';
-import { transformUrl } from '@garfish/utils';
+import { transformUrl, haveSourcemap } from '@garfish/utils';
 import type {
   Node,
   Program,
@@ -65,16 +65,17 @@ export interface Output {
 
 export class Compiler {
   static keys = {
-    __VIRTUAL_IMPORT__: '__VIRTUAL_IMPORT__',
-    __VIRTUAL_EXPORT__: '__VIRTUAL_EXPORT__',
-    __VIRTUAL_DEFAULT__: '__VIRTUAL_DEFAULT__',
-    __VIRTUAL_WRAPPER__: '__VIRTUAL_WRAPPER__',
-    __VIRTUAL_NAMESPACE__: '__VIRTUAL_NAMESPACE__',
-    __VIRTUAL_IMPORT_META__: '__VIRTUAL_IMPORT_META__',
-    __VIRTUAL_DYNAMIC_IMPORT__: '__VIRTUAL_DYNAMIC_IMPORT__',
+    __GARFISH_IMPORT__: '__GARFISH_IMPORT__',
+    __GARFISH_EXPORT__: '__GARFISH_EXPORT__',
+    __GARFISH_DEFAULT__: '__GARFISH_DEFAULT__',
+    __GARFISH_WRAPPER__: '__GARFISH_WRAPPER__',
+    __GARFISH_NAMESPACE__: '__GARFISH_NAMESPACE__',
+    __GARFISH_IMPORT_META__: '__GARFISH_IMPORT_META__',
+    __GARFISH_DYNAMIC_IMPORT__: '__GARFISH_DYNAMIC_IMPORT__',
   };
 
   private ast: Program;
+  private parentSourcemap: string;
   private options: CompilerOptions;
   private state: ReturnType<typeof createState>;
 
@@ -113,6 +114,7 @@ export class Compiler {
         sourceType: 'module',
         ecmaVersion: 'latest',
         sourceFile: this.options.filename,
+        onComment: (isBlock, text) => this.onParseComment(isBlock, text),
       },
       this.options.code,
     );
@@ -121,6 +123,12 @@ export class Compiler {
     } catch (e) {
       e.message += `(${this.options.filename})`;
       throw e;
+    }
+  }
+
+  private onParseComment(isBlock: boolean, text: string) {
+    if (haveSourcemap(text)) {
+      this.parentSourcemap = text;
     }
   }
 
@@ -196,7 +204,7 @@ export class Compiler {
   private generateImportTransformNode(moduleName: string, moduleId: string) {
     const varName = identifier(moduleName);
     const varExpr = callExpression(
-      identifier(Compiler.keys.__VIRTUAL_IMPORT__),
+      identifier(Compiler.keys.__GARFISH_IMPORT__),
       [literal(moduleId)],
     );
     const varNode = variableDeclarator(varName, varExpr);
@@ -225,7 +233,7 @@ export class Compiler {
       const { i, data } = info;
       const item = data.imports[i];
       if (item.isNamespace) {
-        return callExpression(identifier(Compiler.keys.__VIRTUAL_NAMESPACE__), [
+        return callExpression(identifier(Compiler.keys.__GARFISH_NAMESPACE__), [
           identifier(data.moduleName),
         ]);
       } else {
@@ -246,7 +254,7 @@ export class Compiler {
       );
     });
     const exportCallExpression = callExpression(
-      identifier(Compiler.keys.__VIRTUAL_EXPORT__),
+      identifier(Compiler.keys.__GARFISH_EXPORT__),
       [objectExpression(exportNodes)],
     );
     this.ast.body.unshift(
@@ -347,7 +355,7 @@ export class Compiler {
       let name, refNode;
       if (isDefault) {
         name = 'default';
-        refNode = identifier(Compiler.keys.__VIRTUAL_DEFAULT__);
+        refNode = identifier(Compiler.keys.__GARFISH_DEFAULT__);
       } else {
         name = isIdentifier(node) ? node.name : node.id.name;
         refNode = identifier(name);
@@ -358,7 +366,7 @@ export class Compiler {
     if (isDefault) {
       this.deferQueue.replaces.add(() => {
         // 此时 declaration 可能已经被替换过了
-        const varName = identifier(Compiler.keys.__VIRTUAL_DEFAULT__);
+        const varName = identifier(Compiler.keys.__GARFISH_DEFAULT__);
         const varNode = variableDeclarator(
           varName,
           node.declaration as Expression,
@@ -403,7 +411,7 @@ export class Compiler {
           let refNode;
           if (name === namespace) {
             refNode = callExpression(
-              identifier(Compiler.keys.__VIRTUAL_NAMESPACE__),
+              identifier(Compiler.keys.__GARFISH_NAMESPACE__),
               [identifier(moduleName)],
             );
           } else {
@@ -486,7 +494,7 @@ export class Compiler {
     ancestors: Array<Node>,
   ) {
     const replacement = callExpression(
-      identifier(Compiler.keys.__VIRTUAL_DYNAMIC_IMPORT__),
+      identifier(Compiler.keys.__GARFISH_DYNAMIC_IMPORT__),
       [node.source],
     );
     state.replaceWith(replacement, ancestors);
@@ -500,14 +508,32 @@ export class Compiler {
   ) {
     if (node.meta.name === 'import') {
       const replacement = memberExpression(
-        identifier(Compiler.keys.__VIRTUAL_IMPORT_META__),
+        identifier(Compiler.keys.__GARFISH_IMPORT_META__),
         node.property,
       );
       state.replaceWith(replacement, ancestors);
     }
   }
 
-  private generateCode() {
+  private mergeParentSourcemap(output: Output) {
+    console.log(output.map);
+    if (!this.parentSourcemap) return '';
+    const base64Flag = 'base64,';
+    const root = this.parentSourcemap.replace(
+      /^[#@]\s?sourceMappingURL\s?=\s?/,
+      '',
+    );
+    const idx = root.indexOf(base64Flag);
+
+    if (idx > -1) {
+      const map = JSON.parse(atob(root.slice(idx + base64Flag.length)));
+      console.log(map);
+    } else {
+    }
+    return root;
+  }
+
+  private async generateCode() {
     const nameCounts = {};
     const getExports = ({ namespace, moduleId }) => {
       return namespace
@@ -541,13 +567,13 @@ export class Compiler {
     this.deferQueue.removes.forEach((fn) => fn());
     this.generateVirtualModuleSystem();
 
-    // TODO: 兼容旧的 sourcemap
     const output = generate(this.ast, {
       sourceMapWithCode: true,
       sourceMap: this.options.filename,
       sourceContent: this.options.code,
     }) as unknown as Output;
 
+    // await this.mergeParentSourcemap(output);
     output.map = output.map.toString();
     return output;
   }

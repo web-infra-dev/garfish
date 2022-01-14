@@ -88,24 +88,24 @@ export class Runtime {
 
   private generateProvider(output: ModuleResource, memoryModule: MemoryModule) {
     return {
-      [Compiler.keys.__VIRTUAL_IMPORT_META__]: createImportMeta(output.realUrl),
+      [Compiler.keys.__GARFISH_IMPORT_META__]: createImportMeta(output.realUrl),
 
-      [Compiler.keys.__VIRTUAL_NAMESPACE__]: (memoryModule: MemoryModule) => {
+      [Compiler.keys.__GARFISH_NAMESPACE__]: (memoryModule: MemoryModule) => {
         return this.getModule(memoryModule);
       },
 
-      [Compiler.keys.__VIRTUAL_IMPORT__]: (moduleId: string) => {
+      [Compiler.keys.__GARFISH_IMPORT__]: (moduleId: string) => {
         const storeId = transformUrl(output.storeId, moduleId);
         return this.import(storeId);
       },
 
-      [Compiler.keys.__VIRTUAL_DYNAMIC_IMPORT__]: (moduleId: string) => {
+      [Compiler.keys.__GARFISH_DYNAMIC_IMPORT__]: (moduleId: string) => {
         const storeId = transformUrl(output.storeId, moduleId);
         const requestUrl = transformUrl(output.realUrl, moduleId);
-        return this.asyncImport(storeId, requestUrl);
+        return this.dynamicImport(storeId, requestUrl);
       },
 
-      [Compiler.keys.__VIRTUAL_EXPORT__]: (
+      [Compiler.keys.__GARFISH_EXPORT__]: (
         exportObject: Record<string, () => any>,
       ) => {
         Object.keys(exportObject).forEach((key) => {
@@ -144,7 +144,7 @@ export class Runtime {
       }),
     );
 
-    const output = generateCode();
+    const output = await generateCode();
     output.map = await toBase64(output.map);
     (output as ModuleResource).storeId = storeId;
     (output as ModuleResource).realUrl = baseRealUrl;
@@ -152,7 +152,10 @@ export class Runtime {
     return output as ModuleResource;
   }
 
-  compileAndFetchCode(storeId: string, url?: string): void | Promise<void> {
+  private compileAndFetchCode(
+    storeId: string,
+    url?: string,
+  ): void | Promise<void> {
     if (this.resources[storeId]) return;
     if (!url) url = storeId;
 
@@ -176,7 +179,7 @@ export class Runtime {
     return this.importModule(storeId) as MemoryModule;
   }
 
-  asyncImport(storeId: string, requestUrl?: string) {
+  dynamicImport(storeId: string, requestUrl?: string) {
     const result = this.importModule(storeId, requestUrl || storeId);
     return Promise.resolve(result).then((memoryModule) => {
       return this.getModule(memoryModule);

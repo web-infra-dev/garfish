@@ -8,12 +8,31 @@ Inspired by [virtual-es-module](virtual-es-module).
 
 ```js
 import Runtime from '@garfish/es-module';
+const runtime = new Runtime();
 
-const runtime = new Runtime({
-  // options
-});
+const module = await runtime.dynamicImport('./a.mjs');
+console.log(module);
 
-runtime.asyncImport('./a.mjs').then((module) => {
-  console.log(module);
-});
+const module = await runtime.importByCode(`
+  import * as m from './a.mjs';
+  export default 1;
+`);
+console.log(module);
+```
+
+## Use in Garfish
+
+```js
+import { GarfishEsmModule } from '@garfish/es-module';
+
+Garfish.run({
+  ...,
+  plugins: [
+    ...,
+    GarfishEsmModule({
+      excludes: ['appName'],
+    }),
+  ],
+})
+
 ```

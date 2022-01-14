@@ -2,35 +2,49 @@ import { error, evalWithEnv } from '@garfish/utils';
 import type { interfaces } from '@garfish/core';
 import { Runtime } from './runtime';
 
+export interface Options {
+  excludes?: Array<string> | ((name: string) => boolean);
+}
+
 // Export Garfish plugin
-export function GarfishEsmModule() {
+export function GarfishEsmModule(options: Options = {}) {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
-    let isCloseSandbox = false;
+    let closeSandbox = false;
     const appModules = {};
+    const { excludes } = options;
     const pluginName = 'es-module';
+
+    const disable = (appId: number, appName: string) => {
+      if (closeSandbox || appModules[appId]) {
+        return true;
+      } else if (Array.isArray(excludes)) {
+        return excludes.includes(appName);
+      } else if (typeof excludes === 'function') {
+        return excludes(appName);
+      }
+      return false;
+    };
 
     return {
       name: pluginName,
 
       beforeBootstrap(options) {
         if (!options.sandbox || !options.sandbox.open) {
-          isCloseSandbox = true;
+          closeSandbox = true;
         } else if (options.sandbox.snapshot) {
           error('"es-module" plugin only supports "vm sandbox"');
         }
       },
 
       afterLoad(appInfo, appInstance) {
-        if (isCloseSandbox) return;
-        if (!appModules[appInstance.appId]) {
+        const { appId, name } = appInstance;
+        if (!disable(appId, name)) {
           // @ts-ignore
           const sandbox = appInstance.vmSandbox;
-          const runtime = new Runtime({
-            scope: appInfo.name,
-          });
+          const runtime = new Runtime({ scope: name });
 
+          appModules[appId] = runtime;
           runtime.loader = Garfish.loader;
-          appModules[appInstance.appId] = runtime;
 
           appInstance.runCode = function (
             code: string,
@@ -74,7 +88,7 @@ export function GarfishEsmModule() {
               appInstance.esmQueue.add(async (next) => {
                 options.isInline
                   ? await runtime.importByCode(codeRef.code, url)
-                  : await runtime.asyncImport(url, url);
+                  : await runtime.dynamicImport(url, url);
                 next();
               });
             } else {

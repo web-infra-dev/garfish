@@ -6,9 +6,7 @@ import type {
   ExportSpecifier,
   ExportDefaultDeclaration,
 } from 'estree';
-
 import {
-  isProgram,
   isPattern,
   isFunction,
   isLabeledStatement,
