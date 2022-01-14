@@ -69,7 +69,11 @@ export async function mergeSourcemap(compiler: Compiler, output: Output) {
   const index = mapInfo.indexOf(base64Flag);
 
   if (index > -1) {
-    oldMap = JSON.parse(atob(mapInfo.slice(index + base64Flag.length)));
+    try {
+      oldMap = JSON.parse(atob(mapInfo.slice(index + base64Flag.length)));
+    } catch(e) {
+      console.warn(e);
+    }
   } else {
     const {
       filename,
@@ -78,9 +82,9 @@ export async function mergeSourcemap(compiler: Compiler, output: Output) {
         options: { scope },
       },
     } = compiler.options;
-    const requestUrl = transformUrl(filename, mapInfo);
 
     try {
+      const requestUrl = transformUrl(filename, mapInfo);
       const { code } = await loader.load(scope, requestUrl);
       oldMap = JSON.parse(code);
     } catch (e) {
