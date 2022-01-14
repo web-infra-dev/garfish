@@ -21,7 +21,7 @@ importers:
       chalk: 4.1.2
       codecov: ^3.1.0
       cross-env: 7.0.3
-      cypress: 8.7.0
+      cypress: ^9.2.1
       esbuild-plugin-replace: 1.0.7
       eslint: 7.32.0
       eslint-plugin-vue: 7.19.1
@@ -68,7 +68,7 @@ importers:
       chalk: 4.1.2
       codecov: 3.8.3
       cross-env: 7.0.3
-      cypress: 8.7.0
+      cypress: 9.2.1
       esbuild-plugin-replace: 1.0.7
       eslint: 7.32.0
       eslint-plugin-vue: 7.19.1_eslint@7.32.0
@@ -210,87 +210,6 @@ importers:
       '@types/react-dom': 17.0.11
       babel-runtime: 6.26.0
       garfish: link:../../packages/garfish
-      history: 5.2.0
-      mobx: 6.3.12
-      mobx-react: 7.2.1_669b1e42b258bd2cd4755e495b844de0
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-router-dom: 6.2.1_react-dom@17.0.2+react@17.0.2
-      redux: 4.1.2
-      typescript: 4.5.4
-    devDependencies:
-      '@babel/core': 7.16.7
-      '@babel/plugin-proposal-class-properties': 7.16.7_@babel+core@7.16.7
-      '@babel/plugin-proposal-decorators': 7.16.7_@babel+core@7.16.7
-      '@babel/plugin-transform-react-jsx': 7.16.7_@babel+core@7.16.7
-      '@babel/plugin-transform-runtime': 7.16.8_@babel+core@7.16.7
-      '@babel/preset-env': 7.16.8_@babel+core@7.16.7
-      '@babel/preset-react': 7.16.7_@babel+core@7.16.7
-      '@babel/preset-typescript': 7.16.7_@babel+core@7.16.7
-      '@babel/register': 7.16.9_@babel+core@7.16.7
-      '@babel/runtime': 7.16.7
-      babel-loader: 8.2.3_70acdf73bf8b5ce90b5f0f8b0b09e0d8
-      babel-register: 6.26.0
-      cross-env: 7.0.3
-      css-loader: 5.2.7_webpack@5.66.0
-      file-loader: 6.2.0_webpack@5.66.0
-      html-webpack-plugin: 5.5.0_webpack@5.66.0
-      less: 3.13.1
-      less-loader: 5.0.0_less@3.13.1+webpack@5.66.0
-      mini-css-extract-plugin: 2.4.6_webpack@5.66.0
-      mobx-react-lite: 3.2.3_669b1e42b258bd2cd4755e495b844de0
-      react-hot-loader: 4.13.0_b3482aaf5744fc7c2aeb7941b0e0a78f
-      style-loader: 2.0.0_webpack@5.66.0
-      url-loader: 4.1.1_file-loader@6.2.0+webpack@5.66.0
-      webpack: 5.66.0_webpack-cli@4.9.1
-      webpack-cli: 4.9.1_ad725fab8cb7e49fac502828bebe26bc
-      webpack-dev-server: 4.7.3_webpack-cli@4.9.1+webpack@5.66.0
-
-  dev/app-master/package:
-    specifiers:
-      '@babel/core': ^7.13.15
-      '@babel/plugin-proposal-class-properties': ^7.16.0
-      '@babel/plugin-proposal-decorators': ^7.16.0
-      '@babel/plugin-transform-react-jsx': ^7.16.0
-      '@babel/plugin-transform-runtime': ^7.14.5
-      '@babel/preset-env': ^7.13.15
-      '@babel/preset-react': ^7.16.0
-      '@babel/preset-typescript': ^7.14.5
-      '@babel/register': ^7.13.14
-      '@babel/runtime': ^7.14.6
-      '@types/react': ^17
-      '@types/react-dom': ^17
-      babel-loader: ^8.1.0
-      babel-register: ^6.26.0
-      babel-runtime: ^6.26.0
-      cross-env: ^7.0.3
-      css-loader: ^5.2.7
-      file-loader: ^6.2.0
-      garfish: 1.2.17
-      history: ^5.1.0
-      html-webpack-plugin: ^5.3.1
-      less: ^3.13.1
-      less-loader: ^5.0.0
-      mini-css-extract-plugin: ^2.4.2
-      mobx: ^6.3.6
-      mobx-react: ^7.2.1
-      mobx-react-lite: ^3.2.2
-      react: ^17.0.2
-      react-dom: ^17.0.2
-      react-hot-loader: ^4.13.0
-      react-router-dom: ^6.0.2
-      redux: ^4.1.2
-      style-loader: ^2.0.0
-      typescript: ^4.1.2
-      url-loader: ^4.1.1
-      webpack: ^5.35.0
-      webpack-cli: ^4.6.0
-      webpack-dev-server: ^4.2.1
-    dependencies:
-      '@types/react': 17.0.38
-      '@types/react-dom': 17.0.11
-      babel-runtime: 6.26.0
-      garfish: link:../../../packages/garfish
       history: 5.2.0
       mobx: 6.3.12
       mobx-react: 7.2.1_669b1e42b258bd2cd4755e495b844de0
@@ -475,79 +394,6 @@ importers:
       webpack-cli: 4.9.1_ad725fab8cb7e49fac502828bebe26bc
       webpack-dev-server: 4.7.3_webpack-cli@4.9.1+webpack@5.66.0
 
-  dev/app-react-17/package:
-    specifiers:
-      '@babel/core': ^7.13.15
-      '@babel/plugin-proposal-class-properties': ^7.16.0
-      '@babel/plugin-proposal-decorators': ^7.16.0
-      '@babel/plugin-transform-react-jsx': ^7.16.0
-      '@babel/plugin-transform-runtime': ^7.14.5
-      '@babel/preset-env': ^7.13.15
-      '@babel/preset-react': ^7.16.0
-      '@babel/preset-typescript': ^7.14.5
-      '@babel/register': ^7.13.14
-      '@babel/runtime': ^7.14.6
-      '@garfish/bridge': 1.2.17
-      babel-loader: ^8.1.0
-      babel-register: ^6.26.0
-      babel-runtime: ^6.26.0
-      cross-env: ^7.0.3
-      css-loader: ^5.2.7
-      file-loader: ^6.2.0
-      history: ^5.1.0
-      html-webpack-plugin: ^5.3.1
-      less: ^3.13.1
-      less-loader: ^5.0.0
-      mini-css-extract-plugin: ^2.4.2
-      react: ^17.0.2
-      react-dom: ^17.0.2
-      react-hot-loader: ^4.13.0
-      react-router-dom: ^6.0.2
-      redux: ^4.1.2
-      style-loader: ^2.0.0
-      typescript: ^4.1.2
-      url-loader: ^4.1.1
-      web-vitals: ^1.1.2
-      webpack: ^5.35.0
-      webpack-cli: ^4.6.0
-      webpack-dev-server: ^4.2.1
-    dependencies:
-      '@garfish/bridge': link:../../../packages/bridge
-      babel-runtime: 6.26.0
-      history: 5.2.0
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-router-dom: 6.2.1_react-dom@17.0.2+react@17.0.2
-      redux: 4.1.2
-      typescript: 4.5.4
-      web-vitals: 1.1.2
-    devDependencies:
-      '@babel/core': 7.16.7
-      '@babel/plugin-proposal-class-properties': 7.16.7_@babel+core@7.16.7
-      '@babel/plugin-proposal-decorators': 7.16.7_@babel+core@7.16.7
-      '@babel/plugin-transform-react-jsx': 7.16.7_@babel+core@7.16.7
-      '@babel/plugin-transform-runtime': 7.16.8_@babel+core@7.16.7
-      '@babel/preset-env': 7.16.8_@babel+core@7.16.7
-      '@babel/preset-react': 7.16.7_@babel+core@7.16.7
-      '@babel/preset-typescript': 7.16.7_@babel+core@7.16.7
-      '@babel/register': 7.16.9_@babel+core@7.16.7
-      '@babel/runtime': 7.16.7
-      babel-loader: 8.2.3_70acdf73bf8b5ce90b5f0f8b0b09e0d8
-      babel-register: 6.26.0
-      cross-env: 7.0.3
-      css-loader: 5.2.7_webpack@5.66.0
-      file-loader: 6.2.0_webpack@5.66.0
-      html-webpack-plugin: 5.5.0_webpack@5.66.0
-      less: 3.13.1
-      less-loader: 5.0.0_less@3.13.1+webpack@5.66.0
-      mini-css-extract-plugin: 2.4.6_webpack@5.66.0
-      react-hot-loader: 4.13.0_react-dom@17.0.2+react@17.0.2
-      style-loader: 2.0.0_webpack@5.66.0
-      url-loader: 4.1.1_file-loader@6.2.0+webpack@5.66.0
-      webpack: 5.66.0_webpack-cli@4.9.1
-      webpack-cli: 4.9.1_ad725fab8cb7e49fac502828bebe26bc
-      webpack-dev-server: 4.7.3_webpack-cli@4.9.1+webpack@5.66.0
-
   dev/app-vue-2:
     specifiers:
       '@garfish/bridge': workspace:*
@@ -584,6 +430,7 @@ importers:
   dev/app-vue-3:
     specifiers:
       '@garfish/bridge': workspace:*
+      '@garfish/remote-module': workspace:*
       '@vue/cli-plugin-babel': ~4.5.0
       '@vue/cli-plugin-eslint': ~4.5.0
       '@vue/cli-service': ~4.5.0
@@ -592,6 +439,7 @@ importers:
       core-js: ^3.6.5
       eslint: ^6.7.2
       eslint-plugin-vue: ^7.0.0
+      garfish: workspace:*
       mobx-vue: ^2.1.0
       url-loader: ^4.1.1
       vue: ^3.2.21
@@ -599,40 +447,9 @@ importers:
       vuex: ^3.6.2
     dependencies:
       '@garfish/bridge': link:../../packages/bridge
+      '@garfish/remote-module': link:../../packages/remote-module
       core-js: 3.20.2
-      mobx-vue: 2.2.0_vue@3.2.26
-      vue: 3.2.26
-      vue-router: 4.0.12_vue@3.2.26
-      vuex: 3.6.2_vue@3.2.26
-    devDependencies:
-      '@vue/cli-plugin-babel': 4.5.15_f31494664f097394e35421ca86ea1d59
-      '@vue/cli-plugin-eslint': 4.5.15_159f9ca94908a7070131e2c321d72521
-      '@vue/cli-service': 4.5.15_27ec58a37db4a1b9b6ddac7e6b7e9105
-      '@vue/compiler-sfc': 3.2.26
-      babel-eslint: 10.1.0_eslint@6.8.0
-      eslint: 6.8.0
-      eslint-plugin-vue: 7.20.0_eslint@6.8.0
-      url-loader: 4.1.1
-
-  dev/app-vue-3/package:
-    specifiers:
-      '@garfish/bridge': 1.2.17
-      '@vue/cli-plugin-babel': ~4.5.0
-      '@vue/cli-plugin-eslint': ~4.5.0
-      '@vue/cli-service': ~4.5.0
-      '@vue/compiler-sfc': ^3.0.0
-      babel-eslint: ^10.1.0
-      core-js: ^3.6.5
-      eslint: ^6.7.2
-      eslint-plugin-vue: ^7.0.0
-      mobx-vue: ^2.1.0
-      url-loader: ^4.1.1
-      vue: ^3.2.21
-      vue-router: ^4.0.12
-      vuex: ^3.6.2
-    dependencies:
-      '@garfish/bridge': link:../../../packages/bridge
-      core-js: 3.20.2
+      garfish: link:../../packages/garfish
       mobx-vue: 2.2.0_vue@3.2.26
       vue: 3.2.26
       vue-router: 4.0.12_vue@3.2.26
@@ -6457,7 +6274,7 @@ packages:
   /@types/fs-extra/9.0.13:
     resolution: {integrity: sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==}
     dependencies:
-      '@types/node': 16.11.19
+      '@types/node': 17.0.8
     dev: true
 
   /@types/github-slugger/1.3.0:
@@ -6559,7 +6376,7 @@ packages:
   /@types/node-fetch/2.5.12:
     resolution: {integrity: sha512-MKgC4dlq4kKNa/mYrwpKfzQMB5X3ee5U6fSprkKpToBqBmX4nFZL9cW5jl6sWn+xpRJ7ypWh2yyqqr8UUCstSw==}
     dependencies:
-      '@types/node': 16.11.19
+      '@types/node': 17.0.8
       form-data: 3.0.1
     dev: true
 
@@ -6756,7 +6573,7 @@ packages:
     resolution: {integrity: sha512-8uALY5LTvSuHgloDVUvWP3pIauILm+8/0pDMokuDYIoNsOkSwd5AiHBTSEJjKTDcZr5z8UpgOWZkxBF4iJftoA==}
     requiresBuild: true
     dependencies:
-      '@types/node': 14.18.5
+      '@types/node': 17.0.8
     dev: true
     optional: true
 
@@ -10778,8 +10595,8 @@ packages:
     resolution: {integrity: sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=}
     dev: true
 
-  /cypress/8.7.0:
-    resolution: {integrity: sha512-b1bMC3VQydC6sXzBMFnSqcvwc9dTZMgcaOzT0vpSD+Gq1yFc+72JDWi55sfUK5eIeNLAtWOGy1NNb6UlhMvB+Q==}
+  /cypress/9.2.1:
+    resolution: {integrity: sha512-LVEe4yWCo4xO0Vd8iYjFHRyd5ulRvM56XqMgAdn05Qb9kJ6iJdO/MmjKD8gNd768698cp1FDuSmFQZHVZGk+Og==}
     engines: {node: '>=12.0.0'}
     hasBin: true
     requiresBuild: true
@@ -10819,7 +10636,6 @@ packages:
       ospath: 1.2.2
       pretty-bytes: 5.6.0
       proxy-from-env: 1.0.0
-      ramda: 0.27.2
       request-progress: 3.0.0
       supports-color: 8.1.1
       tmp: 0.2.1
@@ -19523,10 +19339,6 @@ packages:
   /quick-lru/4.0.1:
     resolution: {integrity: sha512-ARhCpm70fzdcvNQfPoy49IaanKkTlRWF2JMzqhcJbhSFRZv7nPTvZJdcY7301IPmvW+/p0RgIWnQDLJxifsQ7g==}
     engines: {node: '>=8'}
-    dev: true
-
-  /ramda/0.27.2:
-    resolution: {integrity: sha512-SbiLPU40JuJniHexQSAgad32hfwd+DRUdwF2PlVuI5RZD0/vahUco7R8vD86J/tcEKKF9vZrUVwgtmGCqlCKyA==}
     dev: true
 
   /randombytes/2.1.0:

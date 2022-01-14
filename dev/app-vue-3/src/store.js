@@ -1,17 +1,14 @@
-import { observable, computed, action } from 'mobx';
+import { reactive, readonly, provide, inject } from 'vue';
 
-export default class Store {
-  @observable price = 2;
-  @observable amount = 1;
+export const stateSymbol = Symbol('state');
+export const incrementSymbol = Symbol('increment');
 
-  @computed get total() {
-    return this.price * this.amount;
-  }
+export const createState = () => {
+  const state = reactive({ counter: 0 });
+  const increment = () => state.counter++;
+  return { increment, state: readonly(state) };
+};
 
-  @action.bound
-  increment() {
-    this.amount += 1;
-  }
-}
+export const useState = () => inject(stateSymbol);
 
-export const store = new Store();
+export const provideState = () => provide(stateSymbol, createState());

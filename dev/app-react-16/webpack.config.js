@@ -101,7 +101,7 @@ const webpackConfig = {
     hot: true,
     // open: true,
     historyApiFallback: true,
-    port: 8096,
+    port,
     headers: {
       'Access-Control-Allow-Origin': '*',
     },

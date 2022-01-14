@@ -1,47 +1,20 @@
-import * as Vue from 'vue';
-import { h, createApp } from 'vue';
-// import * as VueRouter from 'vue-router'
+import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import { vueBridge } from '@garfish/bridge';
+import { stateSymbol, createState } from './store.js';
 import App from './App.vue';
-import About from './components/About.vue';
-import Index from './components/Index.vue';
-// import { store } from "./store.js"
+import Test from './components/test.vue';
+import ToDoList from './components/todo.vue';
+import MicroApp from './components/microApp.vue';
+import HelloGarfish from './components/HelloGarfish.vue';
+import RemoteComponent from './components/remoteComponent.vue';
 
 const routes = [
-  { path: '/about', component: About },
-  { path: '/index', component: Index },
+  { path: '/', component: HelloGarfish },
+  { path: '/test', component: Test },
+  { path: '/todo', component: ToDoList },
+  { path: '/micro-*', component: MicroApp },
+  { path: '/remote-component', component: RemoteComponent },
 ];
-
-if (!window.__GARFISH__) {
-  const router = createRouter({
-    history: createWebHistory('/examples/subapp/vue3'),
-    routes,
-  });
-  const app = createApp(App);
-  app.use(router);
-  app.mount('#app');
-}
-
-// export function provider({ dom, basename }) {
-//   let app = null
-//   return {
-//     render() {
-//       app = createApp(App)
-//       const router = createRouter({
-//         history: createWebHistory(basename),
-//         routes,
-//       });
-//       app.use(router)
-//       app.mount(dom? dom.querySelector('#app'): document.querySelector('#app'))
-//     },
-//     destroy() {
-//       if (app) {
-//         app.unmount(dom? dom.querySelector('#app'): document.querySelector('#app'))
-//       }
-//     },
-//   };
-// }
 
 function newRouter(basename) {
   const router = createRouter({
@@ -52,14 +25,51 @@ function newRouter(basename) {
   return router;
 }
 
-export const provider = vueBridge({
-  Vue,
-  rootComponent: App,
-  appOptions: ({ appInfo, userProps }) => {
-    return {
-      el: '#app',
-      render: () => h(App, { appInfo, userProps }),
-      router: newRouter(appInfo.basename),
-    };
-  },
-});
+// export const provider = vueBridge({
+//   Vue,
+//   rootComponent: App,
+//   appOptions: ({ basename }) => ({
+//     el: '#app',
+//     router: newRouter(basename),
+//     store,
+//   }),
+// });
+
+export function provider({ dom, basename }) {
+  let app = null;
+  return {
+    render() {
+      app = createApp(App);
+
+      app.provide(stateSymbol, createState());
+
+      const router = createRouter({
+        history: createWebHistory(basename),
+        routes,
+      });
+      app.use(router);
+      app.mount(
+        dom ? dom.querySelector('#app') : document.querySelector('#app'),
+      );
+    },
+    destroy() {
+      if (app) {
+        app.unmount(
+          dom ? dom.querySelector('#app') : document.querySelector('#app'),
+        );
+      }
+    },
+  };
+}
+
+// There is no running show that the main application execution run, you can perform in micro front-end environment rendering
+if (!window.__GARFISH__) {
+  const router = createRouter({
+    history: createWebHistory('/examples/subapp/vue3'),
+    routes: newRouter('/examples/subapp/vue3'),
+  });
+  const app = createApp(App);
+  app.provide(stateSymbol, createState());
+  app.use(router);
+  app.mount('#app');
+}
