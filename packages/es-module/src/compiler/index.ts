@@ -39,8 +39,8 @@ import {
   variableDeclaration,
 } from './generated';
 import type { Scope } from './scope';
+import { mergeSourcemap } from './mergeMap';
 import { State, createState } from './state';
-import { mergeSourcemap } from './mergeSourcemap';
 import { Runtime, ModuleResource } from '../runtime';
 
 type ImportInfoData = (
