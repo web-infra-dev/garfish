@@ -8,6 +8,8 @@ import {
 import { transformUrl } from '@garfish/utils';
 import type { Output, Compiler } from './index';
 
+const PREFIX_REG = /^[#@]\s?sourceMappingURL\s?=\s?/;
+
 function merge(oldMap: RawSourceMap, newMap: RawSourceMap) {
   const oldMapConsumer = new SourceMapConsumer(oldMap);
   const newMapConsumer = new SourceMapConsumer(newMap);
@@ -48,7 +50,6 @@ function merge(oldMap: RawSourceMap, newMap: RawSourceMap) {
   return mergedMapGenerator.toString();
 }
 
-const PREFIX_REG = /^[#@]\s?sourceMappingURL\s?=\s?/;
 export async function mergeSourcemap(compiler: Compiler, output: Output) {
   if (!compiler.sourcemapComment) {
     output.map = output.map.toString();
