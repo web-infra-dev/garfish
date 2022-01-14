@@ -32,6 +32,7 @@ export function GarfishEsmModule(options: Options = {}) {
         if (!options.sandbox || !options.sandbox.open) {
           closeSandbox = true;
         } else if (options.sandbox.snapshot) {
+          // `Garfish/core` by default supports esm with closed sandbox and esm with snapshot sandbox
           error('"es-module" plugin only supports "vm sandbox"');
         }
       },
@@ -52,11 +53,12 @@ export function GarfishEsmModule(options: Options = {}) {
             url?: string,
             options?: interfaces.ExecScriptOptions,
           ) {
-            const codeRef = { code };
             const appEnv = appInstance.getExecScriptEnv(options?.noEntry);
             Object.assign(env, appEnv);
 
             if (options.isModule) {
+              const codeRef = { code };
+
               runtime.options.execCode = function (output, provider) {
                 const sourcemap = `\n//@ sourceMappingURL=${output.map}`;
                 Object.assign(env, provider);
