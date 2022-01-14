@@ -1,5 +1,5 @@
 import GarfishInstance, { interfaces } from 'garfish';
-import { GarfishEsmModule } from '@garfish/es-module';
+import { GarfishEsModule } from '@garfish/es-module';
 import './monitoring';
 
 declare const Cypress: any;
@@ -61,7 +61,7 @@ let defaultConfig: interfaces.Options = {
     open: true,
     // strictIsolation: true,
   },
-  plugins: [GarfishEsmModule()],
+  plugins: [GarfishEsModule()],
 
   // beforeMount(appInfo) {
   //   console.log('beforeMount', appInfo);

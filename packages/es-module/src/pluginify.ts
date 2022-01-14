@@ -6,8 +6,7 @@ export interface Options {
   excludes?: Array<string> | ((name: string) => boolean);
 }
 
-// Export Garfish plugin
-export function GarfishEsmModule(options: Options = {}) {
+export function GarfishEsModule(options: Options = {}) {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     let closeSandbox = false;
     const appModules = {};
