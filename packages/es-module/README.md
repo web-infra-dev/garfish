@@ -25,13 +25,13 @@ console.log(module);
 ## Use in Garfish
 
 ```js
-import { GarfishEsmModule } from '@garfish/es-module';
+import { GarfishEsModule } from '@garfish/es-module';
 
 Garfish.run({
   ...
   plugins: [
     ...
-    GarfishEsmModule({
+    GarfishEsModule({
       excludes: ['appName'],
     }),
   ],
