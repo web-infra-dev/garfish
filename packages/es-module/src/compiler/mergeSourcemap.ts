@@ -48,12 +48,12 @@ function merge(oldMap: RawSourceMap, newMap: RawSourceMap) {
   return mergedMapGenerator.toString();
 }
 
+const PREFIX_REG = /^[#@]\s?sourceMappingURL\s?=\s?/;
 export async function mergeSourcemap(compiler: Compiler, output: Output) {
   if (!compiler.sourcemapComment) {
     output.map = output.map.toString();
     return;
   }
-
   const newMap = (output.map as any).toJSON();
   if (!newMap.mappings) {
     output.map = output.map.toString();
@@ -63,10 +63,7 @@ export async function mergeSourcemap(compiler: Compiler, output: Output) {
   try {
     let oldMap;
     const flag = 'base64,';
-    const mapInfo = compiler.sourcemapComment.replace(
-      /^[#@]\s?sourceMappingURL\s?=\s?/,
-      '',
-    );
+    const mapInfo = compiler.sourcemapComment.trim().replace(PREFIX_REG, '');
     const index = mapInfo.indexOf(flag);
 
     if (index > -1) {
