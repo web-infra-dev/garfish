@@ -18,9 +18,6 @@ import type {
   ExportAllDeclaration,
   ExportNamedDeclaration,
 } from 'estree';
-import type { Scope } from './scope';
-import { State, createState } from './state';
-import { Runtime, ModuleResource } from '../runtime';
 import {
   isIdentifier,
   isVariableDeclaration,
@@ -41,6 +38,10 @@ import {
   variableDeclarator,
   variableDeclaration,
 } from './generated';
+import type { Scope } from './scope';
+import { State, createState } from './state';
+import { mergeSourcemap } from './mergeSourcemap';
+import { Runtime, ModuleResource } from '../runtime';
 
 type ImportInfoData = (
   | ReturnType<Compiler['getImportInformation']>
@@ -75,8 +76,6 @@ export class Compiler {
   };
 
   private ast: Program;
-  private parentSourcemap: string;
-  private options: CompilerOptions;
   private state: ReturnType<typeof createState>;
 
   private moduleCount = 0;
@@ -100,6 +99,9 @@ export class Compiler {
       fn: (names: Array<string>) => void;
     }>(),
   };
+
+  public options: CompilerOptions;
+  public sourcemapComment: string;
 
   constructor(options: CompilerOptions) {
     this.options = options;
@@ -128,7 +130,7 @@ export class Compiler {
 
   private onParseComment(isBlock: boolean, text: string) {
     if (haveSourcemap(text)) {
-      this.parentSourcemap = text;
+      this.sourcemapComment = text;
     }
   }
 
@@ -515,24 +517,6 @@ export class Compiler {
     }
   }
 
-  private mergeParentSourcemap(output: Output) {
-    console.log(output.map);
-    if (!this.parentSourcemap) return '';
-    const base64Flag = 'base64,';
-    const root = this.parentSourcemap.replace(
-      /^[#@]\s?sourceMappingURL\s?=\s?/,
-      '',
-    );
-    const idx = root.indexOf(base64Flag);
-
-    if (idx > -1) {
-      const map = JSON.parse(atob(root.slice(idx + base64Flag.length)));
-      console.log(map);
-    } else {
-    }
-    return root;
-  }
-
   private async generateCode() {
     const nameCounts = {};
     const getExports = ({ namespace, moduleId }) => {
@@ -573,8 +557,7 @@ export class Compiler {
       sourceContent: this.options.code,
     }) as unknown as Output;
 
-    // await this.mergeParentSourcemap(output);
-    output.map = output.map.toString();
+    await mergeSourcemap(this, output);
     return output;
   }
 

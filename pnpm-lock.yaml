@@ -378,12 +378,14 @@ importers:
       acorn: 8.7.0
       acorn-walk: 8.2.0
       escodegen: 2.0.0
+      source-map: 0.6.1
     dependencies:
       '@garfish/loader': link:../loader
       '@garfish/utils': link:../utils
       acorn: registry.npmjs.org/acorn/8.7.0
       acorn-walk: registry.npmjs.org/acorn-walk/8.2.0
       escodegen: registry.npmjs.org/escodegen/2.0.0
+      source-map: registry.npmjs.org/source-map/0.6.1
     devDependencies:
       '@types/escodegen': 0.0.7
       '@types/estree': 0.0.50

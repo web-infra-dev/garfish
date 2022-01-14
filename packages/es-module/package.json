@@ -35,7 +35,8 @@
     "@garfish/utils": "workspace:*",
     "acorn": "8.7.0",
     "acorn-walk": "8.2.0",
-    "escodegen": "2.0.0"
+    "escodegen": "2.0.0",
+    "source-map": "0.6.1"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
