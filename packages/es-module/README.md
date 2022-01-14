@@ -10,9 +10,11 @@ Inspired by [virtual-es-module](https://github.com/imtaotao/virtual-es-module).
 import Runtime from '@garfish/es-module';
 const runtime = new Runtime();
 
+// Start by url
 const module = await runtime.dynamicImport('./a.mjs');
 console.log(module);
 
+// Start by code
 const module = await runtime.importByCode(`
   import * as m from './a.mjs';
   export default 1;
@@ -26,9 +28,9 @@ console.log(module);
 import { GarfishEsmModule } from '@garfish/es-module';
 
 Garfish.run({
-  ...,
+  ...
   plugins: [
-    ...,
+    ...
     GarfishEsmModule({
       excludes: ['appName'],
     }),
