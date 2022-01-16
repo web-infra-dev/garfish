@@ -14,15 +14,15 @@ import { observable, computed, action } from 'mobx';
 
 class Store {
   @observable price = 0;
-  @observable amount = 1;
+  @observable counter = 1;
 
   @computed get total() {
-    return this.price * this.amount;
+    return this.price * this.counter;
   }
 
   @action.bound
   increment() {
-    this.amount++;
+    this.counter++;
   }
 }
 
@@ -41,7 +41,7 @@ Garfish.run({
 ```js
 const store = window.Garfish.props.store;
 const price = store.price;
-const amount = store.amount;
+const counter = store.counter;
 store.increment();
 ```
 

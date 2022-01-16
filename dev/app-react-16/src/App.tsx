@@ -29,7 +29,7 @@ const App = ({ basename = '', store = {} }: AppTypes) => {
                 "hello, 我是 react 子应用，版本是 v16, 执行操作：store.increment()"
               );
               store.increment();
-              console.log("子应用获取 store.amount:", store.amount);
+              console.log("子应用获取 store.counter:", store.counter);
             }}
           >
             click me

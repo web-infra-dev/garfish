@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { hot, setConfig } from 'react-hot-loader';
 import { observer } from 'mobx-react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
@@ -15,6 +15,15 @@ const App = observer(({ store }: { store: any }) => {
   const location = useLocation();
   const [isLoadApp, setIsLoadApp] = useState<boolean>(false);
   const [activeApp, setActiveApp] = useState(store.activeApp);
+  const storeRef = useRef(store);
+
+  // 当 store 变化时，才 emit stateChange
+  useEffect(() => {
+    if (storeRef.current !== store.counter) {
+      storeRef.current = JSON.stringify(store);
+      window?.Garfish.channel.emit('stateChange');
+    }
+  }, [JSON.stringify(store)]);
 
   useEffect(() => {
     !location.pathname.includes(loadApp) && setIsLoadApp(false);
@@ -70,11 +79,11 @@ const App = observer(({ store }: { store: any }) => {
           </span>
 
           <span className="increment" onClick={() => store.increment()}>
-            store 通信
+            increase
           </span>
 
-          <span className="master-store">
-            store: {JSON.stringify(store)} total: {store.total}
+          <span className="master-store" style={{ color: 'crimson' }}>
+            <span>counter: {store.counter} </span>
           </span>
         </div>
 

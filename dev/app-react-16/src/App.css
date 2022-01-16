@@ -15,13 +15,11 @@
 .App ul {
   display: inline-block;
   list-style: none;
-  padding: 15px;
 }
 
 .App li {
   display: inline-block;
   list-style: none;
-  padding: 15px;
 }
 
 .App a:visited {

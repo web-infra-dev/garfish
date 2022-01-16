@@ -1,5 +1,8 @@
+import { createContext } from 'react';
 import App from './App';
 import './App.css';
+
+export const SubAppContext = createContext({});
 
 const RootComponent = (props) => {
   /***
@@ -9,7 +12,12 @@ const RootComponent = (props) => {
    */
   const basename = props.basename || props.appInfo?.basename;
   const store = props.store || props.userProps?.store;
-  return <App basename={basename} store={store} />;
+
+  return (
+    <SubAppContext.Provider value={{ basename, store }}>
+      <App />
+    </SubAppContext.Provider>
+  );
 };
 
 export default RootComponent;

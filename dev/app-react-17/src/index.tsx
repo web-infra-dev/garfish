@@ -3,6 +3,11 @@ import ReactDOM from 'react-dom';
 import { reactBridge } from '@garfish/bridge';
 import RootComponent from './root';
 
+const getRootDom = (props: any) =>
+  props.dom
+    ? props.dom.querySelector('#root')
+    : document.querySelector('#root');
+
 // provider 写法：
 // export const provider = (props) => {
 //   const root = props.dom
@@ -20,6 +25,11 @@ import RootComponent from './root';
 //   };
 // };
 
+// 渲染
+const render = (props: any) => {
+  ReactDOM.render(<RootComponent {...props} />, getRootDom(props));
+};
+
 // reactBridge 写法：
 export const provider = reactBridge({
   React,
@@ -27,10 +37,12 @@ export const provider = reactBridge({
   // el: pass your mount node
   el: '#root',
   // rootComponent: pass a class or stateless function component
-  rootComponent: RootComponent,
+  // rootComponent: RootComponent,
   // loadRootComponent: passed a promise that resolves with the react component. Wait for it to resolve before mounting
   loadRootComponent: (props) => {
-    return Promise.resolve(RootComponent);
+    // 监听props 的改变，重新触发 render
+    window?.Garfish.channel.on('stateChange', () => render(props));
+    return Promise.resolve(() => <RootComponent {...props} />);
   },
 });
 

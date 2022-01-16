@@ -1,7 +1,7 @@
 import { observable, computed, action, makeAutoObservable } from 'mobx';
 class Store {
   @observable price = 2;
-  @observable amount = 1;
+  @observable counter = 1;
   @observable activeApp = '';
 
   constructor() {
@@ -9,12 +9,12 @@ class Store {
   }
 
   @computed get total() {
-    return this.price * this.amount;
+    return this.price * this.counter;
   }
 
   @action.bound
   increment() {
-    this.amount++;
+    this.counter++;
   }
 
   @action.bound
