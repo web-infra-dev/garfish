@@ -2,10 +2,10 @@ import type { JavaScriptManager } from '@garfish/loader';
 import { isAbsolute, transformUrl, createSourcemap } from '@garfish/utils';
 import type { App, ExecScriptOptions } from './app';
 
+const __GARFISH_ESM_ENV__ = '__GARFISH_ESM_ENV__';
 const SOURCEMAP_REG = /[@#] sourceMappingURL=/g;
 const COMMENT_REG = /[^:]\/\/.*|\/\*[\w\W]*?\*\//g;
-const DYNAMIC_IMPORT_REG = /([\s\n;=\(:>{\+\-\!><]+|^)import[\s\n]*\(/g;
-const __GARFISH_ESM_ENV__ = '__GARFISH_ESM_ENV__';
+const DYNAMIC_IMPORT_REG = /([\s\n;=\(:>{><\+\-\!&|]+|^)import[\s\n]*\([^\(\)]+\);?[^\s{]/g;
 
 export class ESModuleLoader {
   private app: App;
