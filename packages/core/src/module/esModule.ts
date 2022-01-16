@@ -5,7 +5,7 @@ import type { App, ExecScriptOptions } from './app';
 const __GARFISH_ESM_ENV__ = '__GARFISH_ESM_ENV__';
 const SOURCEMAP_REG = /[@#] sourceMappingURL=/g;
 const COMMENT_REG = /[^:]\/\/.*|\/\*[\w\W]*?\*\//g;
-const DYNAMIC_IMPORT_REG = /([\s\n;=\(:>{><\+\-\!&|]+|^)import[\s\n]*\([^\(\)]+\)(?!\s?{)/g;
+const DYNAMIC_IMPORT_REG = /([\s\n;=\(:>{><\+\-\!&|]+|^)import[\s\n]*\([^\(\)]+\)(?![\s\n]*{)/g;
 
 export class ESModuleLoader {
   private app: App;
