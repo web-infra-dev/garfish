@@ -2,11 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { store } from './store';
-import App from './App';
+
+import App from './pages/root';
 import { basename, apps } from './constant';
 import { GarfishInit } from './garfishInit';
-import NotFound from './NotFound';
-import HomePage from './HomePage';
+import NotFound from './pages/notFound/NotFound';
+import HomePage from './pages/home';
 
 const LoadApp = React.lazy(() => import('./loadApp'));
 
@@ -17,16 +18,29 @@ const render = async () => {
     <Router>
       <Routes>
         <Route path={`${basename}`} element={<App store={store} />}>
-          <Route path="home" element={<HomePage />} />
+          <Route path="home" element={<HomePage store={store} />} />
           {/* 使用 loadApp 懒加载组件 */}
-          <Route
+          {/* <Route
             path="loadApp/*"
             element={
               <React.Suspense fallback={<h1>Loading profile...</h1>}>
-                <LoadApp appName="loadApp_app" domID="submodule-2" />
+                <div
+                  style={{ display: 'flex', justifyContent: 'space-around' }}
+                >
+                  <LoadApp
+                    id="loadApp_vite"
+                    domID="submodule-2"
+                    appName="dev/vite"
+                  />
+                  <LoadApp
+                    id="loadApp_react16"
+                    domID="submodule-3"
+                    appName="dev/react16"
+                  />
+                </div>
               </React.Suspense>
             }
-          />
+          /> */}
         </Route>
 
         <Route path="/" element={<App store={store} />}></Route>
@@ -58,7 +72,11 @@ const render = async () => {
           path={`${basename}/vue2/loadApp`}
           element={
             <React.Suspense fallback={<h1>Loading profile...</h1>}>
-              <LoadApp appName="loadApp_app" domID="submodule-2" />
+              <LoadApp
+                id="loadApp_react16"
+                appName="loadApp_app"
+                domID="submodule-2"
+              />
             </React.Suspense>
           }
         ></Route>

@@ -3,6 +3,7 @@ import Garfish from 'garfish';
 import * as ReactDom from 'react-dom';
 import * as mobxReact from 'mobx-react';
 import * as ReactRouterDom from 'react-router-dom';
+import { Message } from '@arco-design/web-react';
 import { store } from './store';
 import { basename, apps } from './constant';
 
@@ -16,7 +17,7 @@ export const GarfishInit = async () => {
   });
 
   Garfish.channel.on('event', (msg: string) => {
-    console.log('主应用收到消息：', msg);
+    Message.success(`主应用收到消息：${msg}`);
   });
 
   Garfish.router.beforeEach((to, from, next) => {

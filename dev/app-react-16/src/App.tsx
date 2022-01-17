@@ -19,6 +19,7 @@ const App = ({ basename = '', store = {} }: AppTypes) => {
   const Index = () => {
     return (
       <div>
+        <input type="text" />
         This is Home Page.
         {/* {window.Garfish && (
           <div
@@ -52,8 +53,9 @@ const App = ({ basename = '', store = {} }: AppTypes) => {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
 
+        <p> React v16.</p>
         <p>
-          Edit <code>src/App.js</code> and save to reload.This is React16.
+          Edit <code>src/App.js</code> and save to reload.
         </p>
 
         <ul>

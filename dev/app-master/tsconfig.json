@@ -32,7 +32,9 @@
   "exclude": ["node_modules"],
   "include": [
     "src/**/*.ts",
-    "src/**/*.tsx"
+    "src/**/*.tsx",
+    "./typings.d.ts"
+
   ],
   "paths": {
     "@/*": ["src/*"]

@@ -1,14 +1,14 @@
 .App {
-  height: 100%;
+  /* height: 100%; */
   text-align: center;
   background-color: #282c34;
-  font-size: calc(10px + 1.4vmin);
+  font-size: 18px;
   overflow: hidden;
   color: white;
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 200px;
   pointer-events: none;
 }
 

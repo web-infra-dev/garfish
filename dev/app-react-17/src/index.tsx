@@ -39,6 +39,7 @@ export const provider = reactBridge({
   // rootComponent: pass a class or stateless function component
   // rootComponent: RootComponent,
   // loadRootComponent: passed a promise that resolves with the react component. Wait for it to resolve before mounting
+
   loadRootComponent: (props) => {
     // 监听props 的改变，重新触发 render
     window?.Garfish.channel.on('stateChange', () => render(props));

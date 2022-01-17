@@ -2,19 +2,20 @@
   height: 100%;
   text-align: center;
   background-color: #282c34;
-  font-size: calc(10px + 1.4vmin);
+  font-size: 18px;
   overflow: hidden;
   color: white;
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 200px;
   pointer-events: none;
 }
 
 .App ul {
   display: inline-block;
   list-style: none;
+  padding: 0 10px;
 }
 
 .App li {

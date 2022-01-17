@@ -1,6 +1,7 @@
 import { createContext } from 'react';
 import App from './App';
 import './App.css';
+import { BrowserRouter } from 'react-router-dom';
 
 export const SubAppContext = createContext({});
 
@@ -15,7 +16,9 @@ const RootComponent = (props) => {
 
   return (
     <SubAppContext.Provider value={{ basename, store }}>
-      <App />
+      <BrowserRouter basename={basename}>
+        <App />
+      </BrowserRouter>
     </SubAppContext.Provider>
   );
 };

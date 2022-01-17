@@ -18,6 +18,11 @@ class Store {
   }
 
   @action.bound
+  decrement() {
+    this.counter--;
+  }
+
+  @action.bound
   setActiveApp(name) {
     this.activeApp = name;
   }

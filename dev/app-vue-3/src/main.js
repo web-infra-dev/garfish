@@ -40,9 +40,7 @@ export function provider({ dom, basename }) {
   return {
     render() {
       app = createApp(App);
-
       app.provide(stateSymbol, createState());
-
       const router = createRouter({
         history: createWebHistory(basename),
         routes,
