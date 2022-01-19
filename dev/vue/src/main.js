@@ -38,8 +38,7 @@ export const provider = vueBridge({
     return Promise.resolve(App);
   },
   handleInstance: (vueInstance, { basename, dom, appName, props }) => {
-    console.log({ basename, dom, appName, props });
-    vueInstance.use();
+    console.log(vueInstance, basename, dom, appName, props);
   },
   appOptions: ({ basename, dom, appName, props }) => {
     console.log({ basename, dom, appName, props });
