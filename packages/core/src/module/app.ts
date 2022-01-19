@@ -110,11 +110,11 @@ export class App {
       exports: {},
       module: null,
       require: (key: string) => {
-        const package = this.global[key] || context.externals[key] || window[key];
-        if (!package) {
+        const pkg = this.global[key] || context.externals[key] || window[key];
+        if (!pkg) {
            warn(`Package "${key}" is not found`);
         }
-        return package;
+        return pkg;
       },
     };
     this.cjsModules.module = this.cjsModules;
