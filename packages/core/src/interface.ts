@@ -47,32 +47,30 @@ export namespace interfaces {
   }
 
   export interface Provider {
-    destroy: (
-      {
-        appName,
-        dom,
-        appRenderInfo,
-      }: {
-        appName: string;
-        dom: Element | ShadowRoot | Document;
-        appRenderInfo: AppRenderInfo;
-      },
-      props: Record<string, any>,
-    ) => void;
-    render: (
-      {
-        appName,
-        dom,
-        basename,
-        appRenderInfo,
-      }: {
-        appName: String;
-        dom: Element | ShadowRoot | Document;
-        basename: string;
-        appRenderInfo: AppRenderInfo;
-      },
-      props: Record<string, any>,
-    ) => void;
+    destroy: ({
+      appName,
+      dom,
+      appRenderInfo,
+      props,
+    }: {
+      appName: string;
+      dom: Element | ShadowRoot | Document;
+      appRenderInfo: AppRenderInfo;
+      props: Record<string, any>;
+    }) => void;
+    render: ({
+      appName,
+      dom,
+      basename,
+      appRenderInfo,
+      props,
+    }: {
+      appName: String;
+      dom: Element | ShadowRoot | Document;
+      basename: string;
+      appRenderInfo: AppRenderInfo;
+      props: Record<string, any>;
+    }) => void;
   }
 
   export interface SandboxConfig {

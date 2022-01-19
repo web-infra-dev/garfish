@@ -133,7 +133,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 
-function App({ basename }) {
+function App({ basename, dom, appName, props }) {
   return (
     <BrowserRouter basename={basename}>
       <Link to="/">Home</Link>
@@ -147,10 +147,18 @@ function App({ basename }) {
 }
 
 export const provider = reactBridge({
+  // required
   React,
+  // required
   ReactDOM,
+  // 若指定el选项，请保证 el节点存在于当前 document 对象中
   el: '#root',
+  // 根组件
   rootComponent: App,
+  // 返回一个 promise, 可在 mounting 前执行异步操作
+  loadRootComponent: ({ basename, dom, appName, props }) => {
+    return Promise.resolve(App);
+  },
 });
 ```
 
@@ -173,13 +181,24 @@ function newRouter(basename) {
 }
 
 export const provider = vueBridge({
+  // required
   Vue,
+  // 非必须, 在 vite 应用时提供，该值与 htmlPlugin 第一个参数相同
+  appId: 'vue2',
+  // 根组件
   rootComponent: App,
-  appOptions: ({ basename }) => ({
+  // 返回一个 promise, 可在 mounting 前执行异步操作
+  loadRootComponent: ({ basename, dom, appName, props }) => {
+    return Promise.resolve(App);
+  },
+  appOptions: ({ basename, dom, appName, props }) => ({
+    // 若指定el选项，请保证 el节点存在于当前 document 对象中
     el: '#app',
     router: newRouter(basename),
-    store,
   }),
+  handleInstance: (vueInstance, { basename }) => {
+    // received vueInstance, do something
+  },
 });
 ```
 
@@ -188,18 +207,40 @@ export const provider = vueBridge({
 
 ```jsx
 import { h, createApp } from 'vue';
+import { createRouter, createWebHistory } from 'vue-router';
 import App from './App.vue';
 import { vueBridge } from '@garfish/bridge';
 
 export const provider = vueBridge({
+  // required
   createApp,
-  appId: 'vite-vue-sub-app', // 在 vite 应用时提供，该值与 htmlPlugin 第一个参数相同
-  appOptions: ({ basename }) => ({
+  //非必须，在 vite 应用时提供，该值与 htmlPlugin 第一个参数相同
+  appId: 'vue3',
+  // 根组件
+  rootComponent: App,
+  // 返回一个 promise, 可在 mounting 前执行异步操作
+  loadRootComponent: ({ basename, dom, appName, props }) => {
+    return Promise.resolve(App);
+  },
+  appOptions: ({ basename, dom, appName, props }) => ({
+    // 若指定el选项，请保证el节点存在于当前document对象中
     el: '#app',
-    render() {
-      return h(App);
-    },
+    render: () => h(App),
   }),
+  // received vueInstance, do something
+  handleInstance: (vueInstance, { basename }) => {
+    const routes = [
+      { path: '/index', component: Index },
+      { path: '/home', component: Home },
+    ];
+    const router = createRouter({
+      history: createWebHistory(basename),
+      base: basename,
+      routes,
+    });
+    vueInstance.use(router);
+    vueInstance.provide(stateSymbol, createState());
+  },
 });
 ```
 
@@ -240,7 +281,9 @@ export const provider = () => ({
   destroy: ({ dom, basename }) => {
     // 使用框架提供的销毁函数销毁整个应用，已达到销毁框架中可能存在得副作用，并触发应用中的一些组件销毁函数
     // 需要注意的时一定要保证对应框架得销毁函数使用正确，否则可能导致子应用未正常卸载影响其他子应用
-    ReactDOM.unmountComponentAtNode(dom.querySelector('#root'));
+    ReactDOM.unmountComponentAtNode(
+      dom ? dom.querySelector('#root') : document.querySelector('#root'),
+    );
   },
 });
 ```

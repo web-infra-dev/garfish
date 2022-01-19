@@ -33,11 +33,19 @@ function newRouter(basename) {
 export const provider = vueBridge({
   Vue,
   rootComponent: App,
-  appOptions: ({ basename }) => ({
-    el: '#app',
-    router: newRouter(basename),
-    store,
-  }),
+  loadRootComponent: ({ basename, dom, appName, props }) => {
+    return Promise.resolve(App);
+  },
+  handleInstance: (vueInstance, { basename }) => {
+    // vueInstance.use(newRouter(basename))
+  },
+  appOptions: ({ basename, dom, appName, props }) => {
+    return {
+      el: '#app',
+      router: newRouter(basename),
+      store,
+    };
+  },
 });
 
 // There is no running show that the main application execution run, you can perform in micro front-end environment rendering

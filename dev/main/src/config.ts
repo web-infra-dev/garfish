@@ -58,7 +58,10 @@ let defaultConfig: interfaces.Options = {
     open: true,
     // strictIsolation: true,
   },
-
+  props: {
+    appName: 'react',
+    company: 'bytedance',
+  },
   // beforeMount(appInfo) {
   //   console.log('beforeMount', appInfo);
   // },
