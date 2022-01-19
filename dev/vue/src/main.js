@@ -34,12 +34,15 @@ export const provider = vueBridge({
   Vue,
   rootComponent: App,
   loadRootComponent: ({ basename, dom, appName, props }) => {
+    console.log({ basename, dom, appName, props });
     return Promise.resolve(App);
   },
-  handleInstance: (vueInstance, { basename }) => {
-    // vueInstance.use(newRouter(basename))
+  handleInstance: (vueInstance, { basename, dom, appName, props }) => {
+    console.log({ basename, dom, appName, props });
+    vueInstance.use();
   },
   appOptions: ({ basename, dom, appName, props }) => {
+    console.log({ basename, dom, appName, props });
     return {
       el: '#app',
       router: newRouter(basename),
