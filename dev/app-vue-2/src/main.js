@@ -3,7 +3,7 @@ import VueRouter from 'vue-router';
 import App from './App.vue';
 import About from './components/About.vue';
 import Index from './components/Index.vue';
-// import { vueBridge } from '@garfish/bridge';
+import { vueBridge } from '@garfish/bridge';
 
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
@@ -35,32 +35,35 @@ function newRouter(basename) {
   return router;
 }
 
-let vm;
+// let vm;
 // 子应用提供 provider 函数:
-export function provider({ dom, basename }) {
-  return {
-    render() {
-      vm = new Vue({
-        router: newRouter(basename),
-        render: (h) => h(App),
-      }).$mount();
-      dom.appendChild(vm.$el);
-    },
-    destroy() {
-      vm.$destroy();
-      vm.$el.parentNode && vm.$el.parentNode.removeChild(vm.$el);
-    },
-  };
-}
+// export function provider({ dom, basename }) {
+//   return {
+//     render() {
+//       vm = new Vue({
+//         router: newRouter(basename),
+//         render: (h) => h(App),
+//       }).$mount();
+//       dom.appendChild(vm.$el);
+//     },
+//     destroy() {
+//       vm.$destroy();
+//       vm.$el.parentNode && vm.$el.parentNode.removeChild(vm.$el);
+//     },
+//   };
+// }
 
 // 使用 vueBridge 函数:
-// export const provider = vueBridge({
-//   Vue,
-//   rootComponent: App,
-//   appOptions: ({ appInfo }) => {
-//     return {
-//       el: '#app',
-//       router: newRouter(appInfo.basename),
-//     };
-//   },
-// });
+export const provider = vueBridge({
+  Vue,
+  rootComponent: App,
+  loadRootComponent: () => Promise.resolve(App),
+  appOptions: ({ basename }) => ({
+    el: '#app',
+    router: newRouter(basename),
+  }),
+  handleInstance: (vueInstance, { basename }) => {
+    console.log('vue2 handleInstance', vueInstance, basename);
+    // vueInstance.use(newRouter(basename))
+  },
+});

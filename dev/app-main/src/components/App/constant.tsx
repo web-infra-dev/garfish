@@ -1,18 +1,14 @@
-import {
-  IconSun,
-  IconSchedule,
-  IconBulb,
-  IconQqZone,
-  IconSend,
-  IconVoice,
-  IconCommand,
-} from '@arco-design/web-react/icon';
 import './index.less';
+import reactSvg from '../../static/icons/React.svg';
+import vueSvg from '../../static/icons/Vue.svg';
+import viteSvg from '../../static/icons/Vite.svg';
+import angularSvg from '../../static/icons/Angular.svg';
+import multiInstanceSvg from '../../static/icons/MultiInstance.svg';
 
 export const subAppMenus = [
   {
     key: 'react17',
-    icon: <IconSun />,
+    icon: <img src={reactSvg} className="sidebar-item-icon" />,
     title: '【子应用】react17',
     routes: [
       { path: 'react17/home', title: '【订单列表】' },
@@ -21,7 +17,7 @@ export const subAppMenus = [
   },
   {
     key: 'react16',
-    icon: <IconSchedule />,
+    icon: <img src={reactSvg} className="sidebar-item-icon" />,
     title: '【子应用】react16',
     routes: [
       { path: 'react16/home', title: '首页' },
@@ -30,7 +26,7 @@ export const subAppMenus = [
   },
   {
     key: 'vue3',
-    icon: <IconBulb />,
+    icon: <img src={vueSvg} className="sidebar-item-icon" />,
     title: '【子应用】vue3',
     routes: [
       { path: 'vue3/home', title: '首页' },
@@ -39,7 +35,7 @@ export const subAppMenus = [
   },
   {
     key: 'vue2',
-    icon: <IconQqZone />,
+    icon: <img src={vueSvg} className="sidebar-item-icon" />,
     title: '【子应用】vue2',
     routes: [
       { path: 'vue2/home', title: '首页' },
@@ -48,7 +44,7 @@ export const subAppMenus = [
   },
   {
     key: 'vite',
-    icon: <IconSend />,
+    icon: <img src={viteSvg} className="sidebar-item-icon" />,
     title: '【子应用】vite',
     routes: [
       // { path: 'vue2/home', title: '首页' },
@@ -57,7 +53,7 @@ export const subAppMenus = [
   },
   {
     key: 'angular',
-    icon: <IconVoice />,
+    icon: <img src={angularSvg} className="sidebar-item-icon" />,
     title: '【子应用】angular',
     routes: [
       { path: 'angular/home', title: '首页' },
@@ -66,7 +62,7 @@ export const subAppMenus = [
   },
   {
     key: 'loadApp',
-    icon: <IconCommand />,
+    icon: <img src={multiInstanceSvg} className="sidebar-item-icon" />,
     title: '【多实例】',
     routes: [],
   },

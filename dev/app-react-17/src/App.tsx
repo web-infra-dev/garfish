@@ -1,14 +1,16 @@
+import { useState } from 'react';
 import { Routes, Route, NavLink } from 'react-router-dom';
 import { hot, setConfig } from 'react-hot-loader';
 import logo from './logo.svg';
-import './App.css';
-import { Grid, Button } from '@arco-design/web-react';
+import './App.less';
+import { Layout, Grid, Button, Modal } from '@arco-design/web-react';
 import { SubAppContext } from './root';
 import Home from './Home';
 import About from './About';
 
 const Row = Grid.Row;
 const Col = Grid.Col;
+const Content = Layout.Content;
 
 // 防止控制台后输入hmr 相关 warning
 setConfig({
@@ -20,46 +22,55 @@ export interface IProps {
 }
 
 const App = () => {
+  const [visible, setVisible] = useState(false);
   return (
     <SubAppContext.Consumer>
       {({ basename, store }: IProps) => {
         return (
-          <Row
-            className="grid-demo"
-            gutter={[24, 12]}
-            style={{
-              marginBottom: 16,
-              backgroundColor: 'var(--color-fill-2)',
-            }}
-          >
-            <Col span={8} className="col-btn">
-              <Button
-                onClick={() => {
-                  window.history.replaceState(null, '', '/examples/home');
-                }}
-                type="primary"
-              >
-                【子应用react17】返回主应用
-              </Button>
+          <Content>
+            <Row
+              className="grid-demo"
+              gutter={[24, 12]}
+              style={{
+                marginBottom: 16,
+                backgroundColor: 'var(--color-fill-2)',
+              }}
+            >
+              <Col span={8} className="col-btn">
+                <Button
+                  onClick={() => {
+                    // window.history.replaceState(null, '', '/examples/home');
+                    window.Garfish.router.replace({ path: '/home' });
+                  }}
+                  type="primary"
+                >
+                  【子应用react17】返回主应用
+                </Button>
 
-              <Button
-                onClick={() =>
-                  window?.Garfish.channel.emit(
-                    'event',
-                    'hello, 我是 react17 子应用',
-                  )
-                }
-                type="primary"
-              >
-                【子应用 react17】和主应用通信
-              </Button>
+                <Button onClick={() => setVisible(true)} type="primary">
+                  【子应用】测试 Modal
+                </Button>
 
-              <Button onClick={() => store && store.increment()} type="primary">
-                【子应用 react17】操作全局状态（increase counter）
-              </Button>
-            </Col>
-            <Col span={16}>
-              <div className="App">
+                <Button
+                  onClick={() =>
+                    window?.Garfish.channel.emit(
+                      'event',
+                      'hello, 我是 react17 子应用',
+                    )
+                  }
+                  type="primary"
+                >
+                  【子应用 react17】和主应用通信
+                </Button>
+
+                <Button
+                  onClick={() => store && store.increment()}
+                  type="primary"
+                >
+                  【子应用 react17】操作全局状态（increase counter）
+                </Button>
+              </Col>
+              <Col span={16}>
                 <header className="App-header">
                   <img src={logo} className="App-logo" alt="logo" />
                   <p>This is React17.</p>
@@ -106,9 +117,22 @@ const App = () => {
                     <Route path="/about" element={<About />}></Route>
                   </Routes>
                 </header>
-              </div>
-            </Col>
-          </Row>
+              </Col>
+            </Row>
+            <Modal
+              title="Sub APP React 17"
+              visible={visible}
+              onOk={() => setVisible(false)}
+              onCancel={() => setVisible(false)}
+              autoFocus={false}
+              focusLock={true}
+            >
+              <p>
+                You can customize modal body text by the current situation. This
+                modal will be closed immediately once you press the OK button.
+              </p>
+            </Modal>
+          </Content>
         );
       }}
     </SubAppContext.Consumer>

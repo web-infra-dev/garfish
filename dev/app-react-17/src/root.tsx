@@ -1,7 +1,9 @@
 import { createContext } from 'react';
+import { ConfigProvider } from '@arco-design/web-react';
 import App from './App';
-import './App.css';
+import './App.less';
 import { BrowserRouter } from 'react-router-dom';
+import { prefixCls } from './constant';
 
 export const SubAppContext = createContext({});
 
@@ -15,11 +17,13 @@ const RootComponent = (props) => {
   const store = props.store || props.userProps?.store;
 
   return (
-    <SubAppContext.Provider value={{ basename, store }}>
-      <BrowserRouter basename={basename}>
-        <App />
-      </BrowserRouter>
-    </SubAppContext.Provider>
+    <ConfigProvider prefixCls={prefixCls}>
+      <SubAppContext.Provider value={{ basename, store }}>
+        <BrowserRouter basename={basename}>
+          <App />
+        </BrowserRouter>
+      </SubAppContext.Provider>
+    </ConfigProvider>
   );
 };
 

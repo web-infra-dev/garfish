@@ -61,6 +61,7 @@ const webpackConfig = {
           {
             loader: 'less-loader',
             options: { javascriptEnabled: true },
+            // path.resolve(__dirname, './src/less/variable.less')
           },
         ],
       },

@@ -49,6 +49,13 @@ const HomePage = observer(({ store }) => {
       }}
     >
       <Col span={8} className="col-btn">
+        <Button
+          type="primary"
+          onClick={() => navigate(`/${basename}/react17/home`)}
+        >
+          【主应用】跳转子应用 react17
+        </Button>
+
         <Button onClick={() => setVisible(true)} type="primary">
           【主应用】测试 Modal
         </Button>
@@ -72,20 +79,12 @@ const HomePage = observer(({ store }) => {
             </Button> */}
           </div>
         )}
-
-        <Button
-          type="primary"
-          onClick={() => navigate(`/${basename}/react17/home`)}
-        >
-          【主应用】跳转子应用 react17
-        </Button>
       </Col>
       <Col span={16}>
-        {!app && <img style={{ width: '400px' }} src={logo} alt="" />}
         <div id="submodule"></div>
       </Col>
       <Modal
-        title="Modal Title"
+        title="Main APP"
         visible={visible}
         onOk={() => setVisible(false)}
         onCancel={() => setVisible(false)}

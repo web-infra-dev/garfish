@@ -1,45 +1,32 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { Layout, Menu, Breadcrumb, Button } from '@arco-design/web-react';
 import {
-  Layout,
-  Menu,
-  Breadcrumb,
-  Message,
-  Grid,
-  Modal,
-  Button,
-} from '@arco-design/web-react';
-import {
-  IconHome,
   IconCaretRight,
   IconCaretLeft,
   IconPlus,
   IconMinus,
 } from '@arco-design/web-react/icon';
 import './index.less';
-import logo from './Garfish.png';
 import { basename } from '../../constant';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { hot, setConfig } from 'react-hot-loader';
 import { subAppMenus } from './constant';
-import HomePage from '../home';
+import logo from '../../static/img/Garfish.png';
+import homeSvg from '../../static/icons/Home.svg';
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
-
 const Sider = Layout.Sider;
 const Header = Layout.Header;
 const Footer = Layout.Footer;
 const Content = Layout.Content;
 
-const Row = Grid.Row;
-const Col = Grid.Col;
-
 setConfig({
   showReactDomPatchNotification: false,
 });
 
-const RootComponent = observer(({ store }: { store: any }) => {
+const App = observer(({ store }: { store: any }) => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const storeRef = useRef(store);
   const [selectedKeys, setSelectedKeys] = useState<Array<string>>([]);
@@ -56,12 +43,12 @@ const RootComponent = observer(({ store }: { store: any }) => {
   }, [JSON.stringify(store)]);
 
   useEffect(() => {
-    const _path = location.pathname.replace(`/${basename}/`, '');
-    console.log('_path', _path);
-
-    setSelectedKeys([_path]);
-    setBreadcrumbData(_path.split('/'));
-    store.setActiveApp(_path);
+    if (location.pathname !== '/' && location.pathname !== `/${basename}`) {
+      const _path = location.pathname.replace(`/${basename}/`, '');
+      setSelectedKeys([_path]);
+      setBreadcrumbData(_path.split('/'));
+      store.setActiveApp(_path);
+    }
   }, [location]);
 
   const handleCollapsed = useCallback(() => {
@@ -100,17 +87,16 @@ const RootComponent = observer(({ store }: { store: any }) => {
     });
   };
   return (
-    <Layout className="layout-collapse-demo">
+    <Layout>
       <Sider
         collapsed={collapsed}
         resizeDirections={['right']}
         collapsible
         trigger={null}
         breakpoint="xl"
-        style={{ width: 220, minWidth: 50 }}
       >
-        <div>
-          <img src={logo} className="logo" alt="logo" />
+        <div className="logo">
+          <img src={logo} alt="logo" />
           {!collapsed && <h1> Garfish example</h1>}
         </div>
 
@@ -120,7 +106,7 @@ const RootComponent = observer(({ store }: { store: any }) => {
           style={{ width: '100%' }}
         >
           <MenuItem key="home" onClick={() => navigate(`/${basename}/home`)}>
-            <IconHome />
+            <img src={homeSvg} className="sidebar-item-icon" />
             【主应用】首页
           </MenuItem>
           {getSubMenu()}
@@ -128,7 +114,7 @@ const RootComponent = observer(({ store }: { store: any }) => {
       </Sider>
       <Layout>
         <Header>
-          <Button shape="round" className="trigger" onClick={handleCollapsed}>
+          <Button shape="round" onClick={handleCollapsed}>
             {collapsed ? <IconCaretRight /> : <IconCaretLeft />}
           </Button>
           <h3 className="trigger" style={{ display: 'inline-block' }}>
@@ -148,17 +134,19 @@ const RootComponent = observer(({ store }: { store: any }) => {
           </Button>
         </Header>
         <Layout style={{ padding: '0 24px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
-            {breadcrumbData.map((v) => (
-              <Breadcrumb.Item key={v}>{v}</Breadcrumb.Item>
-            ))}
-          </Breadcrumb>
+          {
+            <Breadcrumb style={{ margin: '16px 0' }}>
+              {breadcrumbData.map((v) => (
+                <Breadcrumb.Item key={v}>{v}</Breadcrumb.Item>
+              ))}
+            </Breadcrumb>
+          }
+
           <Content>
             <Outlet />
             <div id="submodule"></div>
             <div id="sub-container"></div>
           </Content>
-
           <Footer> </Footer>
         </Layout>
       </Layout>
@@ -166,4 +154,4 @@ const RootComponent = observer(({ store }: { store: any }) => {
   );
 });
 
-export default hot(module)(RootComponent);
+export default hot(module)(App);

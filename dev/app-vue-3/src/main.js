@@ -1,3 +1,4 @@
+// import * as Vue from 'vue';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { stateSymbol, createState } from './store.js';
@@ -7,6 +8,8 @@ import ToDoList from './components/todo.vue';
 import MicroApp from './components/microApp.vue';
 import HelloGarfish from './components/HelloGarfish.vue';
 import RemoteComponent from './components/remoteComponent.vue';
+// import { vueBridge } from '@garfish/bridge';
+// import store from "./store"
 
 const routes = [
   { path: '/home', component: HelloGarfish },
@@ -26,13 +29,22 @@ function newRouter(basename) {
 }
 
 // export const provider = vueBridge({
-//   Vue,
-//   rootComponent: App,
+//   createApp,
+//   appId: 'vue',
+//   // rootComponent: App,
+//   loadRootComponent: () => {
+//     console.log(basename, dom , appName);
+//     return Promise.resolve(App)
+//   },
 //   appOptions: ({ basename }) => ({
 //     el: '#app',
+//     render: () => h(App),
 //     router: newRouter(basename),
-//     store,
 //   }),
+//   handleInstance: (vueInstance, {basename}) => {
+//     vueInstance.use(newRouter(basename))
+//     vueInstance.provide(stateSymbol, createState());
+//   }
 // });
 
 export function provider({ dom, basename }) {

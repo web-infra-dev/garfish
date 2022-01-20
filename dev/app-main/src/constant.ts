@@ -1,6 +1,7 @@
 import { getProxyHost } from './util';
 const portMap = require('../../config.json');
 
+export const prefixCls = 'main-app';
 export const loadApp = 'loadApp';
 export const basename = 'examples';
 export const apps = [

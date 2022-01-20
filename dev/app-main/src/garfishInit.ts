@@ -142,7 +142,7 @@ export const GarfishInit = async () => {
       },
       // 在路由发生变化时并且未匹配到任何子应用时触发
       onNotMatchRouter(path) {
-        console.log('子应用路由未匹配', path);
+        // console.log('子应用路由未匹配', path);
       },
     });
   } catch (error) {

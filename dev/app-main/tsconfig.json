@@ -34,7 +34,6 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "./typings.d.ts"
-
   ],
   "paths": {
     "@/*": ["src/*"]
