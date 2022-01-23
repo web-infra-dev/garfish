@@ -28,6 +28,7 @@ export const __GARFISH_BEFORE_ROUTER_EVENT__ = 'garfish:before-routing-event';
 
 export interface Options {
   basename?: string;
+  listening?: boolean;
   current?: CurrentRouterInfo;
   autoRefreshApp?: boolean;
   apps: Array<interfaces.AppInfo>;
@@ -40,7 +41,7 @@ export interface Options {
 }
 
 export const RouterConfig: Options = {
-  basename: '',
+  basename: '/',
   current: {
     fullPath: '/',
     path: '/',
@@ -55,6 +56,7 @@ export const RouterConfig: Options = {
   deactive: () => Promise.resolve(),
   routerChange: () => {},
   autoRefreshApp: true,
+  listening: true,
 };
 
 export function set<T extends keyof Options>(field: T, value: Options[T]) {
