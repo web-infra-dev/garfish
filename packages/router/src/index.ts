@@ -1,5 +1,6 @@
 import { interfaces } from '@garfish/core';
 import { createKey } from '@garfish/utils';
+import { RouterConfig } from './config';
 import router, {
   initRedirect,
   RouterInterface,
@@ -52,6 +53,9 @@ export function GarfishRouter(_args?: Options) {
           Garfish.options;
 
         async function active(appInfo: interfaces.AppInfo, rootPath: string) {
+          // In the listening state, trigger the rendering of the application
+          if (!RouterConfig.listening) return;
+
           const { name, cache = true, active } = appInfo;
           if (active) return active(appInfo, rootPath);
           appInfo.rootPath = rootPath;
@@ -126,6 +130,7 @@ export function GarfishRouter(_args?: Options) {
           autoRefreshApp,
           notMatch: onNotMatchRouter,
           apps: appList,
+          listening: true,
         };
         listenRouterAndReDirect(listenOptions);
       },

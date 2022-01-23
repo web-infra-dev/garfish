@@ -66,7 +66,7 @@ function waitElementReady(selector, callback) {
 
   setTimeout(function () {
     waitElementReady(selector, callback);
-  }, 200);
+  }, 50);
 }
 
 function delay(duration) {
