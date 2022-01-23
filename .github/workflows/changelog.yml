@@ -1,4 +1,5 @@
 name: ChangeLog
+
 on:
   push:
     tags:
@@ -7,17 +8,14 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [14.17.0]
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '14'
+          registry-url: https://registry.npmjs.org/
       - run: npx conventional-github-releaser -p angular
         env:
           CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{secrets.GITHUB_TOKEN}}
