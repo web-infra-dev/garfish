@@ -63,7 +63,7 @@ const App = observer(({ store }: { store: any }) => {
       storeRef.current = JSON.stringify(store);
       window?.Garfish.channel.emit('stateChange');
     }
-  }, [JSON.stringify(store.counter)]);
+  }, [JSON.stringify(store.counter), location]);
 
   useEffect(() => {
     const _path = location.pathname.replace(`/${basename}/`, '');
@@ -110,8 +110,7 @@ const App = observer(({ store }: { store: any }) => {
       ) : (
         <MenuItem
           key={v.key}
-          // onClick={() => navigate(`/${basename}/${v.key}`)}
-          onClick={() => Garfish.router.push({ path: `/${v.path}` })}
+          onClick={() => Garfish.router.push({ path: v.path })}
         >
           {v.icon}
           {v.title}

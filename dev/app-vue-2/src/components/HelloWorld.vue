@@ -2,7 +2,7 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <ul>
-      <li><a><router-link to="/index">Index</router-link></a></li>
+      <li><a><router-link to="/home">Index</router-link></a></li>
       |
       <li><a><router-link to="/about">About</router-link></a></li>
     </ul>

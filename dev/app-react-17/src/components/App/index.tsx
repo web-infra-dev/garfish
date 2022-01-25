@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Menu } from '@arco-design/web-react';
 import './index.less';
 import { Layout, Grid, Modal, Message } from '@arco-design/web-react';
@@ -10,6 +10,7 @@ import {
   channelWithMainStr,
   increaseStr,
   hmrStr,
+  toVue3Str,
 } from '../../constant';
 
 const Row = Grid.Row;
@@ -26,14 +27,19 @@ const App = () => {
   const [visible, setVisible] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState<Array<string>>(['1']);
   const handleMsg = (msg) => Message.info(msg);
-
   const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
     window?.Garfish?.channel.on('sayHello', handleMsg);
     return () => {
       window?.Garfish.channel.removeListener('sayHello', handleMsg);
     };
   }, []);
+
+  useEffect(() => {
+    setSelectedKeys([location.pathname.replace('/', '')]);
+  }, [location]);
 
   return (
     <SubAppContext.Consumer>
@@ -48,13 +54,13 @@ const App = () => {
                 backgroundColor: 'var(--color-fill-2)',
               }}
             >
-              <Col span={8} className="col-btn">
+              <Col span={8} className="card-columns">
                 <CardItem
                   title="返回主应用"
-                  onClick={() => {
-                    // window.history.replaceState(null, '', '/examples/main/home');
-                    window.Garfish.router.replace({ path: '/main/home' });
-                  }}
+                  onClick={() =>
+                    // window.history.replaceState(null, '', '/examples/main/home')
+                    window.Garfish.router.push({ path: '/main' })
+                  }
                   href="https://garfish.top/api/router"
                   markdownStr={backToMainStr}
                 />
@@ -62,10 +68,15 @@ const App = () => {
                 <CardItem
                   title="跳转vue3"
                   onClick={() => {
+                    // window.history.replaceState(
+                    //   null,
+                    //   '',
+                    //   '/examples/vue3/home',
+                    // );
                     window.Garfish.router.push({ path: '/vue3/home' });
                   }}
                   href="https://garfish.top/api/router"
-                  markdownStr={channelWithMainStr}
+                  markdownStr={toVue3Str}
                 />
 
                 <CardItem
@@ -86,18 +97,12 @@ const App = () => {
                 />
 
                 <CardItem
-                  title="操作全局状态（increase counter）"
+                  title="increase global counter"
                   onClick={() => store && store.increment()}
-                  href="https://garfish.top/api/channel"
                   markdownStr={increaseStr}
                 />
 
-                <CardItem
-                  title="应用热更新(hmr)"
-                  onClick={() => store && store.increment()}
-                  href="https://garfish.top/api/channel"
-                  markdownStr={hmrStr}
-                />
+                <CardItem title="支持应用热更新(hmr)" markdownStr={hmrStr} />
 
                 <CardItem
                   title="获取主应用window变量"
@@ -127,7 +132,7 @@ const App = () => {
                     员工列表
                   </MenuItem>
                   <MenuItem
-                    key="about"
+                    key="detail"
                     onClick={() => navigate({ pathname: '/detail?id=002' })}
                   >
                     员工详情

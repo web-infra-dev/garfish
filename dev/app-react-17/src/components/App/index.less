@@ -32,7 +32,13 @@
     background-color: #fff !important;
     padding: 6px !important;
     margin: 0 !important;
+
+    .card-columns {
+      max-height: 800px;
+      overflow: scroll;
+    }
   }
+
   ul {
     display: inline-block;
     list-style: none;
@@ -46,9 +52,8 @@
   .@{prefix}-card {
     // width: 400px;
     margin-bottom: 20px;
-
-    .@{prefix}-btn{
-      margin-bottom: 0!important;
+    .@{prefix}-btn {
+      margin-bottom: 0 !important;
     }
     .@{prefix}-link-icon {
       margin-right: 2px;
@@ -70,9 +75,9 @@
     justify-content: flex-start;
     align-items: center;
     padding: 10px !important;
-     .content-wrapper {
+    .content-wrapper {
       width: 400px;
-     }
+    }
 
     .@{prefix}-link {
       margin: 0 4px;
@@ -118,11 +123,6 @@
 
     .App a.active {
       color: cadetblue;
-    }
-    .click-btn {
-      color: coral;
-      cursor: pointer;
-      margin-top: 6px;
     }
   }
   @media (prefers-reduced-motion: no-preference) {

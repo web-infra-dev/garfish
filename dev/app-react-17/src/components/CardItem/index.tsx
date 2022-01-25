@@ -4,8 +4,8 @@ import AppLink from '../Link';
 
 interface ICardItemProps {
   title: string;
-  onClick: () => any;
-  href: string;
+  onClick?: () => any;
+  href?: string;
   content?: any;
   markdownStr?: string;
 }
@@ -17,9 +17,14 @@ const CardItem = (props: ICardItemProps) => {
       hoverable
       title={
         <>
-          <Button size="mini" type="text" onClick={onClick}>
-            {title}
-          </Button>
+          {onClick ? (
+            <Button size="mini" type={'text'} onClick={onClick}>
+              {title}
+            </Button>
+          ) : (
+            <span className="title">{title}</span>
+          )}
+
           <Divider type="vertical" />
           <AppLink href={href}>details </AppLink>
         </>

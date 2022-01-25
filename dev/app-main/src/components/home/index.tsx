@@ -16,6 +16,7 @@ import {
   toSubAppStr,
   loadAppStr,
   channelStr,
+  upgradeStr,
 } from '../mdStr';
 
 const Row = Grid.Row;
@@ -25,13 +26,13 @@ const TabPane = Tabs.TabPane;
 
 const HomePage = observer(({ store }) => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('1');
+  const [activeTab, setActiveTab] = useState('basicInfo');
   const [text, setText] = useState('【主应用】手动挂载应用');
   const [app, setApp] = useState<any>(null);
   const [loadAsync, setLoadAsync] = useState(false);
 
   const loadApplication = useCallback(async () => {
-    setActiveTab('3');
+    setActiveTab('loadApp');
     if (!app) {
       setLoadAsync(true);
 
@@ -74,7 +75,6 @@ const HomePage = observer(({ store }) => {
       <Col span={8} className="col-btn">
         <CardItem
           title="访问独立子应用"
-          onClick={() => {}}
           href="https://garfish.top/quick-start"
           content={
             <div className="content-wrapper">
@@ -88,11 +88,13 @@ const HomePage = observer(({ store }) => {
         />
 
         <CardItem
-          title="跳转子应用 react17"
+          title="跳转子应用 react17 详情页"
           onClick={() => {
             // navigate(`/${basename}/react17`);
-            // Garfish.router.push({ path: '/react17/home' });
-            Garfish.router.push({ path: '/react17/detail?id=002' });
+            Garfish.router.push({
+              path: '/react17/detail',
+              query: { id: '002' },
+            });
           }}
           href="https://garfish.top/api/router/#routerpush"
           markdownStr={toSubAppStr}
@@ -105,37 +107,41 @@ const HomePage = observer(({ store }) => {
           markdownStr={loadAppStr}
         />
 
-        <CardItem
+        {/* <CardItem
           title="与子应用通信"
           onClick={() => {
             window?.Garfish.channel.emit('sayHello', 'hello, i am main app');
           }}
           href="https://garfish.top/api/channel"
           markdownStr={channelStr}
-        />
+        /> */}
 
-        <CardItem
+        {/* <CardItem
           title="设置window变量"
           onClick={() => {
             window.testName = 'danping';
           }}
           href="https://garfish.top/api/channel"
           markdownStr={channelStr}
-        />
+        /> */}
       </Col>
 
       <Col span={16}>
         <Tabs activeTab={activeTab} onChange={setActiveTab}>
-          <TabPane key="1" title="example信息">
+          <TabPane key="basicInfo" title="example信息">
             <MDEditor.Markdown source={basicInfoStr} linkTarget="_blank" />
           </TabPane>
-          <TabPane key="2" title="已实现feature">
+          <TabPane key="features" title="已实现feature">
             <MDEditor.Markdown source={featuresStr} linkTarget="_blank" />
           </TabPane>
-          <TabPane key="3" title="子应用挂载">
+          <TabPane key="loadApp" title="子应用挂载">
             <div id="loadApp_mount">
               {loadAsync && <Spin style={{ marginTop: '200px' }} />}
             </div>
+          </TabPane>
+
+          <TabPane key="upgrade" title="如何升级">
+            <MDEditor.Markdown source={upgradeStr} linkTarget="_blank" />
           </TabPane>
         </Tabs>
       </Col>

@@ -10,7 +10,7 @@ Vue.use(VueRouter);
 
 const routes = [
   { path: '/about', component: About },
-  { path: '/index', component: Index },
+  { path: '/home', component: Index },
 ];
 
 if (!window.__GARFISH__) {

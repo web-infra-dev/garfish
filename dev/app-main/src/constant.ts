@@ -27,8 +27,10 @@ export const apps = [
   },
   {
     name: 'vue2',
-    // activeWhen 函数式写法，当 path 中包含"/vue2" 时返回 true,app vue2 将会自动挂载至页面中，手动挂在时可不填写该参数
-    activeWhen: (path) => path.includes('/vue2'),
+    // activeWhen 函数式写法
+    // 当 path 中包含 "vue2" 且不包含 newRegister(动态注册的应用)时返回 true,app vue2 将会自动挂载至页面中，手动挂在时可不填写该参数
+    activeWhen: (path) =>
+      path.includes('vue2') && !path.includes('newRegister'),
     entry: getProxyHost(portMap['dev/vue2'].port),
   },
   {
@@ -36,7 +38,6 @@ export const apps = [
     activeWhen: '/vite',
     entry: getProxyHost(portMap['dev/vite'].port),
   },
-  // angular 目前加载有问题，暂时注释掉
   {
     name: 'angular',
     activeWhen: '/angular',

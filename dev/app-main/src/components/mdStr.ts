@@ -109,3 +109,27 @@ useEffect(() => {
 window?.Garfish.channel.emit('sayHello', 'hello, i am main app');
 \`\`\`
 `;
+
+export const upgradeStr = `
+\`\`\`javascript
+- 外部用户 升级 garfish 包
+npm update garfish
+yarn update garfish
+pnpm update garfish
+
+- 内部用户升级 @byted/garfish 包
+npm update @byted/garfish
+yarn update @byted/garfish
+pnpm update @byted/garfish
+
+由于 内部包 @byted/garfish 依赖外部包 garfish, 当 garfish 升级时 @byted/garfish 的依赖可能不会自动升级。
+可以尝试如下方式升级隐式依赖，保证使用的是最新版本的包。
+
+- npm 升级隐式依赖
+npm update garfish --depth 10
+- yarn 升级隐式依赖
+yarn update garfish --depth 10
+- pnpm 升级隐式依赖
+npm update garfish --depth 10
+\`\`\`
+`;

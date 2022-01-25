@@ -5,15 +5,17 @@ import {
   Route,
   Navigate,
 } from 'react-router-dom';
-import { ConfigProvider } from '@arco-design/web-react';
+import { ConfigProvider, Spin } from '@arco-design/web-react';
 import { store } from '../../store';
 import App from '../../components/App';
 import { basename, apps, prefixCls } from '../../constant';
 import NotFound from '../../components/notFound';
 import HomePage from '../../components/home';
 import { hot, setConfig } from 'react-hot-loader';
+import './index.less';
 
 const LoadApp = React.lazy(() => import('../loadApp'));
+const mainHome = 'main/home';
 
 setConfig({
   showReactDomPatchNotification: false,
@@ -25,23 +27,20 @@ const RootComponent = () => {
       <Router>
         <Routes>
           <Route path={`${basename}`} element={<App store={store} />}>
-            <Route path="main/home/*" element={<HomePage store={store} />} />
+            <Route
+              path={`${mainHome}/*`}
+              element={<HomePage store={store} />}
+            />
             {/* 使用 loadApp 懒加载组件 */}
             <Route
               path="loadApp/*"
               element={
-                <Suspense fallback={<h1>Loading profile...</h1>}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-around',
-                      paddingTop: '60px',
-                    }}
-                  >
+                <Suspense fallback={<Spin />}>
+                  <div className="loadApp-wrapper">
                     <LoadApp
-                      id="loadApp_vite"
+                      id="loadApp_vue2"
                       domID="submodule-2"
-                      appName="dev/vite"
+                      appName="dev/vue2"
                     />
                     <LoadApp
                       id="loadApp_react16"
@@ -56,12 +55,12 @@ const RootComponent = () => {
 
           <Route
             path="/"
-            element={<Navigate replace to={`${basename}/main/home`} />}
+            element={<Navigate replace to={`${basename}/${mainHome}`} />}
           />
 
           <Route
             path="examples/"
-            element={<Navigate replace to="main/home" />}
+            element={<Navigate replace to={mainHome} />}
           />
 
           <Route

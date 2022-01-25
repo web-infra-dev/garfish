@@ -103,7 +103,7 @@ export const GarfishInit = async () => {
        * 加载子应用结束后触发该函数，支持异步函数，可以在该函数中执行异步操作，所有子应用加载完成后都会触发该函数的调用
        */
       afterLoad(appInfo) {
-        console.log('子应用加载完成', appInfo);
+        console.log('子应用加载完成', appInfo.name);
         store.setActiveApp(appInfo.name);
       },
       /***

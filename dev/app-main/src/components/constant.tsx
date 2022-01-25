@@ -42,7 +42,7 @@ export const subAppMenus = [
     icon: <img src={vueSvg} className="sidebar-item-icon" />,
     title: '【子应用】vue2',
     routes: [
-      { path: 'vue2/index', title: '首页' },
+      { path: 'vue2/home', title: '首页' },
       { path: 'vue2/about', title: '关于' },
     ],
   },

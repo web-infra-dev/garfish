@@ -3,6 +3,7 @@ import Garfish from '@byted/garfish';
 import { Spin } from '@arco-design/web-react';
 import { basename, loadApp } from '../../constant';
 import portMap from '../../../../config.json';
+import './index.less';
 
 function LoadApp({ id, appName, domID }) {
   const [app, setApp] = useState<any>();
@@ -11,14 +12,14 @@ function LoadApp({ id, appName, domID }) {
     // 模拟异步请求
     return new Promise<any>((resolve, reject) => {
       setTimeout(async () => {
-        const _app = await Garfish.loadApp(id, {
+        const app = await Garfish.loadApp(id, {
           entry: `http://localhost:${portMap[appName].port}`,
           basename: `${basename}/${loadApp}`,
           domGetter: () => document.getElementById(domID),
           // 缓存设置，建议开启缓存避免重复的编译代码造成的性能浪费
           cache: true,
         });
-        resolve(_app);
+        resolve(app);
       }, 1000);
     });
   };
@@ -38,14 +39,11 @@ function LoadApp({ id, appName, domID }) {
   }, [app]);
 
   return (
-    <div id={domID} style={{ textAlign: 'center' }}>
-      {!app ? (
+    <div id={domID} className="app-item">
+      {!app && (
         <div style={{ marginTop: '10%' }}>
-          {' '}
-          <Spin />{' '}
+          <Spin />
         </div>
-      ) : (
-        ''
       )}
     </div>
   );

@@ -40,7 +40,7 @@ if (!window.__GARFISH__) {
 export const provider = vueBridge({
   createApp,
   appId: 'vue',
-  // rootComponent: App,
+  rootComponent: App,
   loadRootComponent: ({ basename, dom, appName, props }) => {
     console.log(basename, dom, appName, props);
     return Promise.resolve(App);

@@ -110,7 +110,11 @@ export class App {
       exports: {},
       module: null,
       require: (key: string) => {
-        return this.global[key] || context.externals[key] || window[key];
+        const pkg = this.global[key] || context.externals[key] || window[key];
+        if (!pkg) {
+          warn(`Package "${key}" is not found`);
+        }
+        return pkg;
       },
     };
     this.cjsModules.module = this.cjsModules;
@@ -401,15 +405,13 @@ export class App {
   // Calls to render do compatible with two different sandbox
   private callRender(provider: interfaces.Provider, isMount: boolean) {
     if (provider && provider.render) {
-      provider.render(
-        {
-          appName: this.appInfo.name,
-          dom: this.rootElement,
-          basename: this.appInfo.basename,
-          appRenderInfo: { isMount },
-        },
-        this.appInfo.props,
-      );
+      provider.render({
+        appName: this.appInfo.name,
+        dom: this.rootElement,
+        basename: this.appInfo.basename,
+        appRenderInfo: { isMount },
+        props: this.appInfo.props,
+      });
     }
   }
 
@@ -417,14 +419,12 @@ export class App {
   private callDestroy(provider: interfaces.Provider, isUnmount: boolean) {
     const { rootElement, appContainer } = this;
     if (provider && provider.destroy) {
-      provider.destroy(
-        {
-          appName: this.appInfo.name,
-          dom: rootElement,
-          appRenderInfo: { isUnmount },
-        },
-        this.appInfo.props,
-      );
+      provider.destroy({
+        appName: this.appInfo.name,
+        dom: rootElement,
+        appRenderInfo: { isUnmount },
+        props: this.appInfo.props,
+      });
     }
     this.entryManager.DOMApis.removeElement(appContainer);
   }
