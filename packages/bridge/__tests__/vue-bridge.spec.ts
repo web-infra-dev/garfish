@@ -142,7 +142,7 @@ describe('vue-bridge', () => {
     lifeCycles.destroy({ ...appInfo, props });
   });
 
-  it('handleInstance` function will recieve the props provided at mount', async () => {
+  it('handleInstance function will recieve the props provided at mount', async () => {
     const handleInstance = jest.fn((instance, props) => props);
     const provider = vueBridge({
       Vue,

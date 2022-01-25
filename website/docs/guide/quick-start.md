@@ -151,7 +151,8 @@ export const provider = reactBridge({
   React,
   // required
   ReactDOM,
-  // 若指定el选项，请保证 el节点存在于当前 document 对象中
+  // 非必填。若指定el选项，请保证 el节点存在于当前 document 对象中
+  // 注意: el 节点是针对入口模式为 HTML 模式的。在 JS 入口模式下是不存在 el 概念的，在此模式下可以不用传 el
   el: '#root',
   // 根组件
   rootComponent: App,

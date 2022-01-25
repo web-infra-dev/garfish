@@ -123,7 +123,7 @@ describe('react-bridge', () => {
     expect(ReactDOM.unmountComponentAtNode).toHaveBeenCalled();
   });
 
-  it(`mounts and unmounts a React component with a 'renderType' of 'hydrate'`, async () => {
+  it("mounts and unmounts a React component with a 'renderType' of 'hydrate'", async () => {
     const provider = reactBridge({
       React,
       ReactDOM,
@@ -177,7 +177,7 @@ describe('react-bridge', () => {
     lifeCycles.destroy(props);
   });
 
-  describe(`opts.el`, () => {
+  describe('opts.el', () => {
     it("mounts into the div you provided in the opts.el if you provide an 'el' in opts", async () => {
       const opts = {
         React,
