@@ -91,8 +91,8 @@ export function reactBridge(userOpts) {
     update: (props) => opts.canUpdate && update.call(this, opts, props),
   };
 
-  const provider = async function (props) {
-    await bootstrap.call(this, opts, props);
+  const provider = async function (appInfo, props) {
+    await bootstrap.call(this, opts, appInfo, props);
     return providerLifeCycle;
   };
 
@@ -115,14 +115,19 @@ export function reactBridge(userOpts) {
 }
 
 function bootstrap(opts, appInfo, props) {
-  if (opts.rootComponent) {
+  if (opts.loadRootComponent) {
+    // They passed a promise that resolves with the react component. Wait for it to resolve before mounting
+    return opts
+      .loadRootComponent({
+        ...appInfo,
+        props,
+      })
+      .then((resolvedComponent) => {
+        opts.rootComponent = resolvedComponent;
+      });
+  } else {
     // This is a class or stateless function component
     return Promise.resolve();
-  } else {
-    // They passed a promise that resolves with the react component. Wait for it to resolve before mounting
-    return opts.loadRootComponent(appInfo, props).then((resolvedComponent) => {
-      opts.rootComponent = resolvedComponent;
-    });
   }
 }
 
@@ -244,7 +249,7 @@ function reactDomRender({ opts, elementToRender, domElement }) {
   return null;
 }
 
-function getElementToRender(opts, appInfo, props = {}) {
+function getElementToRender(opts, appInfo, props = null) {
   const rootComponentElement = opts.React.createElement(
     opts.rootComponent,
     appInfo,
