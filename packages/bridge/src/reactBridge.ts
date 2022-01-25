@@ -244,7 +244,7 @@ function reactDomRender({ opts, elementToRender, domElement }) {
   return null;
 }
 
-function getElementToRender(opts, appInfo, props = {}) {
+function getElementToRender(opts, appInfo, props = null) {
   const rootComponentElement = opts.React.createElement(
     opts.rootComponent,
     appInfo,
@@ -271,6 +271,7 @@ function getElementToRender(opts, appInfo, props = {}) {
       elementToRender,
     );
   }
+
   return elementToRender;
 }
 

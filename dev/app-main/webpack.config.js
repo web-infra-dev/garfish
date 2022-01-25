@@ -21,7 +21,8 @@ const webpackConfig = {
     main: './src/index.tsx',
   },
   output: {
-    clean: true,
+    // 开发环境设置 true 将会导致热更新失效
+    clean: process.env.NODE_ENV === 'production' ? true : false,
     filename: '[name].[contenthash].js',
     chunkFilename: '[name].[contenthash].js',
     path: path.join(__dirname, 'dist'),
@@ -66,7 +67,7 @@ const webpackConfig = {
         ],
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
+        test: /\.(png|jpg|gif|svg|ico)$/,
         loader: 'file-loader',
         options: {
           name: '[name].[ext]?[hash]',
@@ -98,10 +99,14 @@ const webpackConfig = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
+      favicon: path.resolve(__dirname, './src/static/favicon.ico'),
     }),
     new DefinePlugin({
       'process.env.inIDE': isInWebIDE(),
       'process.env.WEBIDE_PODID': JSON.stringify(process.env.WEBIDE_PODID),
+    }),
+    new DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
   ],
 };

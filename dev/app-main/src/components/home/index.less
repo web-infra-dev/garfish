@@ -1,0 +1,52 @@
+@import '../../less/variable.less';
+
+.@{prefix}-card {
+  // width: 400px;
+  margin-bottom: 20px;
+
+  .@{prefix}-btn{
+    margin-bottom: 0!important;
+  }
+  .@{prefix}-link-icon {
+    margin-right: 2px;
+  }
+
+  .@{prefix}-divider-vertical {
+    height: 14px;
+    margin: 0 3px 0 0;
+  }
+}
+.@{prefix}-card-header {
+  padding: 0 !important;
+  font-size: 14px !important;
+  height: 36px !important;
+}
+
+.@{prefix}-card-body {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 10px !important;
+   .content-wrapper {
+    width: 400px;
+   }
+
+  .@{prefix}-link {
+    margin: 0 4px;
+    padding: 2px;
+  }
+
+
+  .card-content {
+    width: 340px;
+    overflow: scroll;
+  }
+  .card-custom-hover-style {
+    transition-property: all;
+  }
+
+  .card-custom-hover-style:hover {
+    transform: translateY(-4px);
+  }
+
+}

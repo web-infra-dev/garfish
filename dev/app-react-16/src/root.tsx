@@ -1,21 +1,29 @@
-import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import React, { createContext } from 'react';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import App from './App';
 import './App.css';
+export const SubAppContext = createContext({});
+import { hot, setConfig } from 'react-hot-loader';
+const PageNotFound = () => <div>Page not found! </div>;
+
+setConfig({
+  showReactDomPatchNotification: false,
+});
 
 const RootComponent = (props) => {
-  /***
-   * 兼容 loadRootComponent 和 rootComponent 两种写法
-   * rootComponent 传递的 props 会包裹一层 appInfo 和 userProps，loadRootComponent 则将参数直接传递
-   * rootComponent 优先级高于loadRootComponent， 二者同时存在时，只有 rootComponent 会生效
-   */
-  const basename = props.basename || props.appInfo?.basename;
-  const store = props.store || props.userProps?.store;
+  const { basename, store } = props;
   return (
-    <BrowserRouter basename={basename}>
-      <App basename={basename} store={store} />
-    </BrowserRouter>
+    <SubAppContext.Provider value={{ basename, store }}>
+      <BrowserRouter basename={basename}>
+        <Switch>
+          <Route exact path="/" component={() => <Redirect to="/home" />} />
+          <Route exact path="/home" component={() => <App />} />
+          <Route exact path="/about" component={() => <App />} />
+          <Route exact path="*" component={() => <PageNotFound />} />
+        </Switch>
+      </BrowserRouter>
+    </SubAppContext.Provider>
   );
 };
 
-export default RootComponent;
+export default hot(module)(RootComponent);

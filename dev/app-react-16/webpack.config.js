@@ -1,6 +1,6 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import portMap from '../config.json';
-
+import { DefinePlugin } from 'webpack';
 const appName = 'dev/react16';
 const port = portMap[appName].port;
 const publicPath = portMap[appName].publicPath;
@@ -19,7 +19,8 @@ const webpackConfig = {
     main: './src/index.tsx',
   },
   output: {
-    clean: true,
+    // 开发环境设置 true 将会导致热更新失效
+    clean: process.env.NODE_ENV === 'production' ? true : false,
     filename: '[name].[contenthash].js',
     chunkFilename: '[name].[contenthash].js',
     // 需要配置成 umd 规范
@@ -110,6 +111,9 @@ const webpackConfig = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
+    }),
+    new DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
   ],
 };

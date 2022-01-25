@@ -1,36 +1,59 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Modal, Grid, Button, Message } from '@arco-design/web-react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { basename } from '../../constant';
+import { Modal, Grid, Tabs } from '@arco-design/web-react';
+import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react';
-import { loadAppFunc } from '../../loadApp';
-import './index.css';
-import logo from '../../static/img/undraw_docusaurus_mountain.svg';
+import { loadAppFunc } from '../loadApp/loadAppFunc';
+import { Spin } from '@arco-design/web-react';
+import './index.less';
+import Garfish from 'garfish';
+import MDEditor from '@uiw/react-md-editor';
+import AppLink from '../Link';
+import CardItem from '../CardItem';
+import { subAppslinks } from '../constant';
+import {
+  basicInfoStr,
+  featuresStr,
+  toSubAppStr,
+  loadAppStr,
+  channelStr,
+} from '../mdStr';
 
 const Row = Grid.Row;
 const Col = Grid.Col;
 
+const TabPane = Tabs.TabPane;
+
 const HomePage = observer(({ store }) => {
   const navigate = useNavigate();
-  const [visible, setVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState('1');
+  const [text, setText] = useState('【主应用】手动挂载应用');
   const [app, setApp] = useState<any>(null);
+  const [loadAsync, setLoadAsync] = useState(false);
 
   const loadApplication = useCallback(async () => {
-    console.log('loadApplication');
+    setActiveTab('3');
+    if (!app) {
+      setLoadAsync(true);
 
-    const app = await loadAppFunc({
-      id: 'loadApp_vite',
-      domID: 'submodule',
-      appName: 'dev/vite',
-    });
+      Garfish.router.push({
+        path: '/main/home/detail',
+        query: { id: '002' },
+      });
 
-    // const app = await loadAppFunc({
-    //   id: 'loadApp_vite',
-    //   domID: 'submodule',
-    //   appName: 'dev/react16',
-    // });
+      const app = await loadAppFunc({
+        id: 'loadApp_react17',
+        domID: 'loadApp_mount',
+        appName: 'dev/react17',
+        basename: '/examples/main/home',
+      });
 
-    setApp(app);
+      setApp(app);
+      setLoadAsync(false);
+      setText('隐藏');
+    } else {
+      app.display ? setText('显示') : setText('隐藏');
+      app.display ? app.hide() : app.show();
+    }
   }, [app]);
 
   useEffect(() => {
@@ -49,53 +72,73 @@ const HomePage = observer(({ store }) => {
       }}
     >
       <Col span={8} className="col-btn">
-        <Button
-          type="primary"
-          onClick={() => navigate(`/${basename}/react17/home`)}
-        >
-          【主应用】跳转子应用 react17
-        </Button>
+        <CardItem
+          title="访问独立子应用"
+          onClick={() => {}}
+          href="https://garfish.top/quick-start"
+          content={
+            <div className="content-wrapper">
+              {Object.entries(subAppslinks).map(([key, value]) => (
+                <AppLink key={key} href={value}>
+                  {key}
+                </AppLink>
+              ))}
+            </div>
+          }
+        />
 
-        <Button onClick={() => setVisible(true)} type="primary">
-          【主应用】测试 Modal
-        </Button>
+        <CardItem
+          title="跳转子应用 react17"
+          onClick={() => {
+            // navigate(`/${basename}/react17`);
+            // Garfish.router.push({ path: '/react17/home' });
+            Garfish.router.push({ path: '/react17/detail?id=002' });
+          }}
+          href="https://garfish.top/api/router/#routerpush"
+          markdownStr={toSubAppStr}
+        />
 
-        <Button onClick={loadApplication} type="primary">
-          【主应用】手动挂载应用
-        </Button>
-        {app && (
-          <div>
-            <Button onClick={() => (app.display ? app.hide() : app.show())}>
-              display toggle
-            </Button>
+        <CardItem
+          title={text}
+          onClick={loadApplication}
+          href="https://garfish.top/api/loadApp"
+          markdownStr={loadAppStr}
+        />
 
-            {/* <Button
-              onClick={() => {
-                app.unmount();
-                setApp(undefined);
-              }}
-            >
-              {app ? '销毁' : '挂载'}
-            </Button> */}
-          </div>
-        )}
+        <CardItem
+          title="与子应用通信"
+          onClick={() => {
+            window?.Garfish.channel.emit('sayHello', 'hello, i am main app');
+          }}
+          href="https://garfish.top/api/channel"
+          markdownStr={channelStr}
+        />
+
+        <CardItem
+          title="设置window变量"
+          onClick={() => {
+            window.testName = 'danping';
+          }}
+          href="https://garfish.top/api/channel"
+          markdownStr={channelStr}
+        />
       </Col>
+
       <Col span={16}>
-        <div id="submodule"></div>
+        <Tabs activeTab={activeTab} onChange={setActiveTab}>
+          <TabPane key="1" title="example信息">
+            <MDEditor.Markdown source={basicInfoStr} linkTarget="_blank" />
+          </TabPane>
+          <TabPane key="2" title="已实现feature">
+            <MDEditor.Markdown source={featuresStr} linkTarget="_blank" />
+          </TabPane>
+          <TabPane key="3" title="子应用挂载">
+            <div id="loadApp_mount">
+              {loadAsync && <Spin style={{ marginTop: '200px' }} />}
+            </div>
+          </TabPane>
+        </Tabs>
       </Col>
-      <Modal
-        title="Main APP"
-        visible={visible}
-        onOk={() => setVisible(false)}
-        onCancel={() => setVisible(false)}
-        autoFocus={false}
-        focusLock={true}
-      >
-        <p>
-          You can customize modal body text by the current situation. This modal
-          will be closed immediately once you press the OK button.
-        </p>
-      </Modal>
     </Row>
   );
 });

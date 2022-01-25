@@ -52,7 +52,6 @@ export default {
   mounted () {
     if (hasInit) return;
     hasInit = true;
-
     GarfishInstance.registerApp([
       {
         name: 'vueApp',

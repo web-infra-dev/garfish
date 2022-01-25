@@ -1,29 +1,35 @@
 <template>
-    <div class="todo-list">
-      <h3 data-test="title">Vue App todo list</h3>
-      <div class="todo-add">
-        <input v-model="item.text" placeholder="任务描述" data-test="new-todo" />
-        <button class="add-btn" type="primary" plain @click="add" data-test="add-btn">
-          添加
-        </button>
-      </div>
-      <div>
-        <ul class="todo-list">
-           <li v-for="todo in data.state.todos" :key="todo.id">
-            {{ todo.text }}
-            <button
-              circle
-              size="mini"
-              type="danger"
-              class="delete-btn"
-              icon="el-icon-delete"
-              v-if="!todo.done"
-              @click="done(todo.id)"
-            />
-          </li>
-        </ul>
-      </div>
+  <div class="todo-list">
+    <h3 data-test="title">Vue App todo list</h3>
+    <div class="todo-add">
+      <input v-model="item.text" placeholder="任务描述" data-test="new-todo" />
+      <button
+        class="add-btn"
+        type="primary"
+        plain
+        @click="add"
+        data-test="add-btn"
+      >
+        添加
+      </button>
     </div>
+    <div>
+      <ul class="todo-list">
+        <li v-for="todo in data.state.todos" :key="todo.id">
+          {{ todo.text }}
+          <button
+            circle
+            size="mini"
+            type="danger"
+            class="delete-btn"
+            icon="el-icon-delete"
+            v-if="!todo.done"
+            @click="done(todo.id)"
+          />
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -31,28 +37,28 @@ import { useState } from '../store';
 
 export default {
   data() {
-    return  {
+    return {
       item: {
         text: '',
-        done: false
-      }
-    }
+        done: false,
+      },
+    };
   },
 
   setup() {
     return {
-      data: useState()
-    }
+      data: useState(),
+    };
   },
   methods: {
     add() {
-      this.data.add(this.item)
+      this.data.add(this.item);
     },
     done(id) {
       this.data.done(id);
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>

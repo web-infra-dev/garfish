@@ -27,6 +27,7 @@ if (!window.__GARFISH__) {
 }
 
 function newRouter(basename) {
+  console.log('==basename', basename);
   const router = new VueRouter({
     mode: 'history',
     routes,
@@ -57,13 +58,20 @@ function newRouter(basename) {
 export const provider = vueBridge({
   Vue,
   rootComponent: App,
-  loadRootComponent: () => Promise.resolve(App),
-  appOptions: ({ basename }) => ({
-    el: '#app',
-    router: newRouter(basename),
-  }),
-  handleInstance: (vueInstance, { basename }) => {
-    console.log('vue2 handleInstance', vueInstance, basename);
+  loadRootComponent: ({ basename, dom, appName, props }) => {
+    console.log(basename, dom, appName, props);
+    return Promise.resolve(App);
+  },
+
+  appOptions: ({ basename, dom, appName, props }) => {
+    console.log(basename, dom, appName, props);
+    return {
+      el: '#app',
+      router: newRouter(basename),
+    };
+  },
+  handleInstance: (vueInstance, { basename, dom, appName, props }) => {
+    console.log(basename, dom, appName, props);
     // vueInstance.use(newRouter(basename))
   },
 });

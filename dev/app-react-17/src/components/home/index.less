@@ -1,0 +1,136 @@
+@import '../../less/variable.less';
+
+.@{prefix}-layout-content {
+  .@{prefix}-layout-header {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    background: var(--color-bg-3);
+
+    .trigger {
+      width: 110px;
+      margin-left: 20px;
+    }
+  }
+  .@{prefix}-card-header {
+    height: 36px !important;
+  }
+
+  .@{prefix}-row-justify-start,
+  .@{prefix}-col {
+    background-color: #fff !important;
+    padding: 6px !important;
+    margin: 0 !important;
+  }
+  ul {
+    display: inline-block;
+    list-style: none;
+    padding: 0 10px;
+  }
+  li {
+    display: inline-block;
+    list-style: none;
+  }
+
+  .@{prefix}-card {
+    // width: 400px;
+    margin-bottom: 20px;
+
+    .@{prefix}-btn{
+      margin-bottom: 0!important;
+    }
+    .@{prefix}-link-icon {
+      margin-right: 2px;
+    }
+
+    .@{prefix}-divider-vertical {
+      height: 14px;
+      margin: 0 3px 0 0;
+    }
+  }
+  .@{prefix}-card-header {
+    padding: 0 !important;
+    font-size: 14px !important;
+    height: 36px !important;
+  }
+
+  .@{prefix}-card-body {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px !important;
+     .content-wrapper {
+      width: 400px;
+     }
+
+    .@{prefix}-link {
+      margin: 0 4px;
+      padding: 2px;
+    }
+    .card-content {
+      width: 340px;
+      overflow: scroll;
+    }
+    .card-custom-hover-style {
+      transition-property: all;
+    }
+
+    .card-custom-hover-style:hover {
+      transform: translateY(-4px);
+    }
+  }
+  .App-header {
+    height: 100%;
+    text-align: center;
+    background-color: #282c34;
+    font-size: 18px;
+    overflow: hidden;
+    color: white;
+    a {
+      color: deeppink;
+      display: inline-block;
+      margin: 0 10px;
+    }
+    a.active {
+      color: aquamarine;
+    }
+
+    .App-logo {
+      height: 200px;
+      pointer-events: none;
+    }
+
+    .App a:visited {
+      color: #61dafb;
+    }
+
+    .App a.active {
+      color: cadetblue;
+    }
+    .click-btn {
+      color: coral;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+      animation: App-logo-spin infinite 20s linear;
+    }
+  }
+
+  .click-btn {
+    color: coral;
+    cursor: pointer;
+    margin-top: 6px;
+  }
+
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}

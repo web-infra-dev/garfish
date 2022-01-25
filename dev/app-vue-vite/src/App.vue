@@ -12,13 +12,21 @@ import ImgLogo from './assets/logo.png';
   </div>
 </template>
 
-<style>
+<style lang="less" scope="vite">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+
+  background: currentColor;
+  margin: 0;
+  padding: 20px;
+  border-radius: 4px;
+
+  h1, p {
+    color: #42b983;
+  }
 }
 </style>
