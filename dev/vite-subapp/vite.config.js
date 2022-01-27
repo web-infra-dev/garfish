@@ -1,9 +1,8 @@
-import { defineConfig, PluginOption } from 'vite';
+import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import { htmlPlugin } from '@garfish/vite-plugin';
 import config from '../config.json';
 
-let portInfo = config['dev/vite-subapp'];
+const portInfo = config['dev/vite-subapp'];
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,10 +12,5 @@ export default defineConfig({
     cors: true,
     origin: `http://localhost:${portInfo.port}`,
   },
-  plugins: [
-    vue(),
-    htmlPlugin('vite-vue-sub-app', {
-      useDevMode: true,
-    }),
-  ],
+  plugins: [vue()],
 });

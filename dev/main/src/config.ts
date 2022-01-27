@@ -33,9 +33,21 @@ let defaultConfig: interfaces.Options = {
     },
     {
       name: 'vite-vue3',
-      cache: true,
+      cache: false,
       activeWhen: '/vite',
       entry: 'http://localhost:2888/',
+      sandbox: {
+        open: false,
+      },
+    },
+    {
+      name: 'esm-app',
+      cache: false,
+      activeWhen: '/esmApp',
+      entry: 'http://localhost:2999/',
+      sandbox: {
+        open: false,
+      },
     },
     // {
     //   name: 'react',
@@ -48,11 +60,7 @@ let defaultConfig: interfaces.Options = {
   ],
   autoRefreshApp: false,
   disablePreloadApp: true,
-  protectVariable: [
-    'MonitoringInstance',
-    'Garfish',
-    '__GARFISH_GLOBAL_APP_LIFECYCLE__',
-  ],
+  protectVariable: ['MonitoringInstance', 'Garfish'],
   insulationVariable: ['setImmediate'],
   sandbox: {
     open: true,
@@ -80,7 +88,7 @@ GarfishInstance.registerApp({
   cache: false,
   // basename: '/garfish_master',
   entry: 'http://localhost:2444',
-  // domGetter: ()=>document.querySelector('#submoduleByRouter'),
+  // domGetter: () => document.querySelector('#submoduleByRouter'),
   props: {
     appName: 'react',
   },

@@ -6,6 +6,12 @@ import { vueBridge } from '../src/vueBridge';
 const domElId = '#sub-app-container';
 const cssSelector = '#app';
 
+interface Vue {
+  $el: Element;
+  $destroy: (...args: Array<any>) => void;
+  $mount: (...args: Array<any>) => void;
+}
+
 describe('vue-bridge', () => {
   let Vue,
     props,
@@ -22,7 +28,7 @@ describe('vue-bridge', () => {
   beforeEach(() => {
     Vue = jest.fn();
 
-    Vue.mockImplementation(function () {
+    Vue.mockImplementation(function (this: Vue) {
       this.$destroy = $destroy;
       this.$mount = $mount;
       this.$el = $el;

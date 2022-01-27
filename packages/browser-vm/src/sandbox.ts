@@ -1,6 +1,7 @@
 import { Loader } from '@garfish/loader';
 import {
   warn,
+  error,
   hasOwn,
   makeMap,
   isObject,

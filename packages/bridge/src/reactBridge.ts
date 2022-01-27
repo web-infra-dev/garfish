@@ -2,8 +2,6 @@
 // Because the Garfish lifecycle does not agree with that of single-spa  part logical coupling in the framework
 // https://github.com/single-spa/single-spa-react/blob/main/src/single-spa-react.js
 
-import { __GARFISH_GLOBAL_APP_LIFECYCLE__ } from '@garfish/utils';
-
 // React context that gives any react component the single-spa props
 export let GarfishContext = null;
 
@@ -51,7 +49,7 @@ declare global {
   }
 }
 
-export function reactBridge(userOpts) {
+export function reactBridge(this: any, userOpts) {
   if (typeof userOpts !== 'object') {
     throw new Error('garfish-react-bridge requires a configuration object');
   }
@@ -91,7 +89,7 @@ export function reactBridge(userOpts) {
     update: (props) => opts.canUpdate && update.call(this, opts, props),
   };
 
-  const provider = async function (appInfo, props) {
+  const provider = async function (this: any, appInfo, props) {
     await bootstrap.call(this, opts, appInfo, props);
     return providerLifeCycle;
   };
@@ -102,14 +100,6 @@ export function reactBridge(userOpts) {
     __GARFISH_EXPORTS__
   ) {
     __GARFISH_EXPORTS__.provider = provider;
-  }
-
-  // es module env
-  if (window[__GARFISH_GLOBAL_APP_LIFECYCLE__] && opts.appId) {
-    const subLifeCycle = window[__GARFISH_GLOBAL_APP_LIFECYCLE__][opts.appId];
-    if (subLifeCycle) {
-      subLifeCycle.defer(providerLifeCycle);
-    }
   }
   return provider;
 }
@@ -282,7 +272,7 @@ function getElementToRender(opts, appInfo, props = null) {
 function createErrorBoundary(opts, props) {
   // Avoiding babel output for class syntax and super()
   // to avoid bloat
-  function GarfishSubAppReactErrorBoundary(props) {
+  function GarfishSubAppReactErrorBoundary(this: any, props) {
     // super
     opts.React.Component.apply(this, arguments);
 

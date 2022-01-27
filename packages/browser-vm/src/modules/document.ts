@@ -27,7 +27,7 @@ export const documentModule = (sandbox: Sandbox) => {
   });
   const fakeHTMLDocumentProto = Object.create(fakeDocumentProto);
 
-  const fakeDocumentCtor = function Document() {
+  const fakeDocumentCtor = function Document(this: Document) {
     if (!(this instanceof fakeDocumentCtor)) {
       throw new TypeError(
         // eslint-disable-next-line quotes
@@ -41,7 +41,7 @@ export const documentModule = (sandbox: Sandbox) => {
     return docInstance;
   };
 
-  const fakeHTMLDocumentCtor = function HTMLDocument() {
+  const fakeHTMLDocumentCtor = function HTMLDocument(this: HTMLDocument) {
     if (!(this instanceof fakeHTMLDocumentCtor)) {
       throw new TypeError(
         // eslint-disable-next-line quotes
