@@ -8,14 +8,14 @@ import {
 import { ConfigProvider, Spin } from '@arco-design/web-react';
 import { store } from '../../store';
 import App from '../../components/App';
-import { basename, apps, prefixCls } from '../../constant';
-import NotFound from '../../components/notFound';
+import { basename, localApps, prefixCls } from '../../constant';
+import NotFound from '../PageNotFound';
 import HomePage from '../../components/home';
 import { hot, setConfig } from 'react-hot-loader';
 import './index.less';
 
 const LoadApp = React.lazy(() => import('../loadApp'));
-const mainHome = 'main/home';
+const mainHome = 'main/index';
 
 setConfig({
   showReactDomPatchNotification: false,
@@ -26,7 +26,7 @@ const RootComponent = () => {
     <ConfigProvider prefixCls={prefixCls}>
       <Router>
         <Routes>
-          <Route path={`${basename}`} element={<App store={store} />}>
+          <Route path={basename} element={<App store={store} />}>
             <Route
               path={`${mainHome}/*`}
               element={<HomePage store={store} />}
@@ -40,12 +40,12 @@ const RootComponent = () => {
                     <LoadApp
                       id="loadApp_vue2"
                       domID="submodule-2"
-                      appName="dev/vue2"
+                      appName="vue2"
                     />
                     <LoadApp
                       id="loadApp_react16"
                       domID="submodule-3"
-                      appName="dev/react16"
+                      appName="react16"
                     />
                   </div>
                 </Suspense>
@@ -69,7 +69,7 @@ const RootComponent = () => {
           />
 
           {/* 路由注册 */}
-          {apps.map((v) => {
+          {localApps.map((v) => {
             return (
               <Route
                 key={v.name}

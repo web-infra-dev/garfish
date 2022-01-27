@@ -3,6 +3,8 @@ class Store {
   @observable price = 2;
   @observable counter = 1;
   @observable activeApp = '';
+  @observable apps = [];
+  @observable isMounted = undefined;
 
   constructor() {
     makeAutoObservable(this);
@@ -25,6 +27,14 @@ class Store {
   @action.bound
   setActiveApp(name) {
     this.activeApp = name;
+  }
+
+  setApps(apps) {
+    this.apps = apps;
+  }
+
+  setIsMounted(isMounted) {
+    this.isMounted = isMounted;
   }
 }
 

@@ -64,4 +64,7 @@ export interface MicroFrontendDataRes {
 
   // 在平台定义的菜单信息
   menu?: string;
+
+  // 子应用访问地址
+  gfurl?: string;
 }

@@ -1,5 +1,6 @@
 import ReactDOM from 'react-dom';
 import RootComponent from './components/root';
+import Error from './components/ErrorBoundary';
 
 let _root;
 let _props;
@@ -47,7 +48,7 @@ export const provider = (props) => {
 //     window?.Garfish.channel.on('stateChange', render);
 //     return Promise.resolve(() => <RootComponent {...props} />);
 //   },
-//   errorBoundary: () => <span>Error</span>,
+//   errorBoundary: () => <Error />
 // });
 
 // 这能够让子应用独立运行起来，以保证后续子应用能脱离主应用独立运行，方便调试、开发

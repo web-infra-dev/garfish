@@ -58,8 +58,8 @@ const App = () => {
                 <CardItem
                   title="返回主应用"
                   onClick={() =>
-                    // window.history.replaceState(null, '', '/examples/main/home')
-                    window.Garfish.router.push({ path: '/main' })
+                    // window.history.replaceState(null, '', '/examples/main/index')
+                    window.Garfish.router.push({ path: '/main/index' })
                   }
                   href="https://garfish.top/api/router"
                   markdownStr={backToMainStr}

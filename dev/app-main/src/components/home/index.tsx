@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Modal, Grid, Tabs } from '@arco-design/web-react';
+import { Grid, Tabs } from '@arco-design/web-react';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { loadAppFunc } from '../loadApp/loadAppFunc';
@@ -9,9 +9,9 @@ import Garfish from 'garfish';
 import MDEditor from '@uiw/react-md-editor';
 import AppLink from '../Link';
 import CardItem from '../CardItem';
-import { subAppslinks } from '../constant';
 import {
-  basicInfoStr,
+  basicInfoStr_dev,
+  basicInfoStr_prod,
   featuresStr,
   toSubAppStr,
   loadAppStr,
@@ -37,15 +37,15 @@ const HomePage = observer(({ store }) => {
       setLoadAsync(true);
 
       Garfish.router.push({
-        path: '/main/home/detail',
+        path: '/main/index/detail',
         query: { id: '002' },
       });
 
       const app = await loadAppFunc({
         id: 'loadApp_react17',
         domID: 'loadApp_mount',
-        appName: 'dev/react17',
-        basename: '/examples/main/home',
+        appName: 'vue2',
+        basename: '/examples/main/index',
       });
 
       setApp(app);
@@ -78,9 +78,15 @@ const HomePage = observer(({ store }) => {
           href="https://garfish.top/quick-start"
           content={
             <div className="content-wrapper">
-              {Object.entries(subAppslinks).map(([key, value]) => (
-                <AppLink key={key} href={value}>
-                  {key}
+              {/* {Object.entries(subAppslinks).map(([key, value]) => (
+								<AppLink key={key} href={value}>
+									{key}
+								</AppLink>
+							))} */}
+
+              {store.apps.map((v: any) => (
+                <AppLink key={v.name} href={v.entry}>
+                  {v.name}
                 </AppLink>
               ))}
             </div>
@@ -107,14 +113,14 @@ const HomePage = observer(({ store }) => {
           markdownStr={loadAppStr}
         />
 
-        {/* <CardItem
+        <CardItem
           title="与子应用通信"
-          onClick={() => {
-            window?.Garfish.channel.emit('sayHello', 'hello, i am main app');
-          }}
+          onClick={() =>
+            window?.Garfish.channel.emit('sayHello', 'hello, i am main app')
+          }
           href="https://garfish.top/api/channel"
           markdownStr={channelStr}
-        /> */}
+        />
 
         {/* <CardItem
           title="设置window变量"
@@ -129,7 +135,14 @@ const HomePage = observer(({ store }) => {
       <Col span={16}>
         <Tabs activeTab={activeTab} onChange={setActiveTab}>
           <TabPane key="basicInfo" title="example信息">
-            <MDEditor.Markdown source={basicInfoStr} linkTarget="_blank" />
+            <MDEditor.Markdown
+              source={
+                process.env.NODE_ENV === 'development'
+                  ? basicInfoStr_dev
+                  : basicInfoStr_prod
+              }
+              linkTarget="_blank"
+            />
           </TabPane>
           <TabPane key="features" title="已实现feature">
             <MDEditor.Markdown source={featuresStr} linkTarget="_blank" />

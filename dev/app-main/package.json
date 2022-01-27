@@ -19,10 +19,6 @@
     "@uiw/react-md-editor": "^3.9.3",
     "mobx-react-lite": "^3.2.2"
   },
-  "scripts": {
-    "start": "NODE_ENV=development webpack-dev-server --hot",
-    "build": "NODE_ENV=production webpack --progress"
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -61,5 +57,9 @@
     "css-loader": "^5.2.7",
     "url-loader": "^4.1.1",
     "file-loader": "^6.2.0"
+  },
+  "scripts": {
+    "start": "NODE_ENV=development webpack-dev-server --hot",
+    "build": "NODE_ENV=production webpack --progress"
   }
 }

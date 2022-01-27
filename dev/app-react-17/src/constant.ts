@@ -2,7 +2,8 @@ export const prefixCls = 'sub-app-react17';
 
 export const backToMainStr = `
 \`\`\`javascript
-window.history.replaceState(null, '', '/examples/main/home');
+// window.history.replaceState(null, '', '/examples/main/index');
+window.Garfish.router.push({ path: '/main' })
 \`\`\`
 `;
 

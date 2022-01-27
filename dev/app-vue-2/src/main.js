@@ -17,7 +17,6 @@ if (!window.__GARFISH__) {
   const router = new VueRouter({
     mode: 'history',
     routes,
-    base: '/examples/subapp/vue2',
   });
 
   new Vue({
@@ -27,7 +26,6 @@ if (!window.__GARFISH__) {
 }
 
 function newRouter(basename) {
-  console.log('==basename', basename);
   const router = new VueRouter({
     mode: 'history',
     routes,

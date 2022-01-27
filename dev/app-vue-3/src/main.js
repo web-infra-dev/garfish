@@ -30,7 +30,7 @@ function newRouter(basename) {
 
 // There is no running show that the main application execution run, you can perform in micro front-end environment rendering
 if (!window.__GARFISH__) {
-  const router = newRouter('/examples/subapp/vue3');
+  const router = newRouter('/');
   const app = createApp(App);
   app.provide(stateSymbol, createState());
   app.use(router);

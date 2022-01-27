@@ -4,7 +4,13 @@ const portMap = require('../../config.json');
 export const prefixCls = 'main-app';
 export const loadApp = 'loadApp';
 export const basename = 'examples';
-export const apps = [
+
+// 此 ID 为 Goofy 平台主应用注册路由，可上Goofy 平台查看（限字节内部用户）
+export const Goofy_RouterID = 27303;
+export const garfishServerHttpUrl =
+  'https://goofy.bytedance.net/api/garfish_mod/v1/modlist';
+
+export const localApps = [
   {
     // 每个应用的 name 需要保持唯一
     name: 'react17',
@@ -27,17 +33,17 @@ export const apps = [
   },
   {
     name: 'vue2',
-    // activeWhen 函数式写法
-    // 当 path 中包含 "vue2" 且不包含 newRegister(动态注册的应用)时返回 true,app vue2 将会自动挂载至页面中，手动挂在时可不填写该参数
-    activeWhen: (path) =>
-      path.includes('vue2') && !path.includes('newRegister'),
+    // activeWhen 函数式写法，当 path 中包含"/vue2" 时返回 true,app vue2 将会自动挂载至页面中，手动挂在时可不填写该参数
+    activeWhen: (path) => path.includes('/vue2'),
     entry: getProxyHost(portMap['dev/vue2'].port),
   },
+
   {
     name: 'vite',
     activeWhen: '/vite',
     entry: getProxyHost(portMap['dev/vite'].port),
   },
+  // angular 目前加载有问题，暂时注释掉
   {
     name: 'angular',
     activeWhen: '/angular',

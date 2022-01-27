@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Switch, Route, NavLink, useLocation } from 'react-router-dom';
 import { hot, setConfig } from 'react-hot-loader';
 import logo from './logo.svg';
-import './App.css';
+import './App.less';
 import { SubAppContext } from './root';
 
 setConfig({
@@ -15,16 +15,11 @@ type AppTypes = {
 };
 
 const Index = () => {
-  return (
-    <div>
-      <input type="text" />
-      This is Home Page.
-    </div>
-  );
+  return <div style={{ marginBottom: '30px' }}>This is Home Page.</div>;
 };
 
 const About = () => {
-  return <div>This is About Page. </div>;
+  return <div style={{ marginBottom: '30px' }}>This is About Page. </div>;
 };
 
 export interface IProps {
@@ -73,8 +68,8 @@ const App = ({ basename = '', store = {} }: AppTypes) => {
                 </li>
               </ul>
               <Switch>
-                <Route path="/" exact component={Index}></Route>
-                <Route path="/about" component={About}></Route>
+                <Route path="/home" exact component={Index}></Route>
+                <Route path="/about" exact component={About}></Route>
               </Switch>
             </header>
           </div>

@@ -7,7 +7,7 @@ import multiInstanceSvg from '../static/icons/MultiInstance.svg';
 export const subAppMenus = [
   {
     key: 'react17',
-    path: '/eact17',
+    path: '/react17',
     icon: <img src={reactSvg} className="sidebar-item-icon" />,
     title: '【子应用】react17',
     routes: [
@@ -33,7 +33,7 @@ export const subAppMenus = [
     title: '【子应用】vue3',
     routes: [
       { path: 'vue3/home', title: '首页' },
-      { path: 'vue3/about', title: '关于' },
+      { path: 'vue3/todo', title: '待办' },
     ],
   },
   {
@@ -68,15 +68,9 @@ export const subAppMenus = [
     path: '/loadApp',
     icon: <img src={multiInstanceSvg} className="sidebar-item-icon" />,
     title: '【多实例】',
-    routes: [],
+    routes: [
+      { path: 'loadApp/home', title: '首页' },
+      { path: 'loadApp/about', title: '关于' },
+    ],
   },
 ];
-
-export const subAppslinks = {
-  react17: 'http://localhost:8091',
-  react16: 'http://localhost:8092',
-  vue3: 'http://localhost:8093/examples/subapp/vue3/',
-  vue2: 'http://localhost:8094/examples/subapp/vue2/',
-  vite: 'http://localhost:8095/examples/subapp/vite/',
-  angular: 'http://localhost:4200/examples/subapp/angular/',
-};

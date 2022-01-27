@@ -1,10 +1,17 @@
 import React, { createContext } from 'react';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Switch,
+  Route,
+  MemoryRouter,
+  Redirect,
+} from 'react-router-dom';
 import App from './App';
-import './App.css';
+import PageNotFound from './PageNotFound';
+import './App.less';
+
 export const SubAppContext = createContext({});
 import { hot, setConfig } from 'react-hot-loader';
-const PageNotFound = () => <div>Page not found! </div>;
 
 setConfig({
   showReactDomPatchNotification: false,
@@ -12,16 +19,22 @@ setConfig({
 
 const RootComponent = (props) => {
   const { basename, store } = props;
+
+  const routes = (
+    <Switch>
+      <Route exact path="/" component={() => <Redirect to="/home" />} />
+      <Route exact path="/home" component={() => <App />} />
+      <Route exact path="/about" component={() => <App />} />
+      <Route exact path="*" component={() => <PageNotFound />} />
+    </Switch>
+  );
   return (
     <SubAppContext.Provider value={{ basename, store }}>
-      <BrowserRouter basename={basename}>
-        <Switch>
-          <Route exact path="/" component={() => <Redirect to="/home" />} />
-          <Route exact path="/home" component={() => <App />} />
-          <Route exact path="/about" component={() => <App />} />
-          <Route exact path="*" component={() => <PageNotFound />} />
-        </Switch>
-      </BrowserRouter>
+      {location.pathname.includes('loadApp') ? (
+        <MemoryRouter> {routes} </MemoryRouter>
+      ) : (
+        <BrowserRouter basename={basename}>{routes}</BrowserRouter>
+      )}
     </SubAppContext.Provider>
   );
 };

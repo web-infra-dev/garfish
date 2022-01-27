@@ -254,6 +254,7 @@ importers:
 
   dev/app-react-16:
     specifiers:
+      '@arco-design/web-react': ^2.28.2
       '@babel/core': ^7.13.15
       '@babel/plugin-proposal-class-properties': ^7.16.0
       '@babel/plugin-proposal-decorators': ^7.16.0
@@ -290,6 +291,7 @@ importers:
       webpack-cli: ^4.6.0
       webpack-dev-server: ^4.2.1
     dependencies:
+      '@arco-design/web-react': 2.28.2_react-dom@16.14.0+react@16.14.0
       '@garfish/bridge': link:../../packages/bridge
       '@types/react-router-dom': 5.3.2
       babel-runtime: 6.26.0
@@ -442,7 +444,7 @@ importers:
   dev/app-vue-3:
     specifiers:
       '@garfish/bridge': workspace:*
-      '@garfish/remote-module': workspace:*
+      '@garfish/remote-module': 1.3.0
       '@vue/cli-plugin-babel': ~4.5.0
       '@vue/cli-plugin-eslint': ~4.5.0
       '@vue/cli-service': ~4.5.0
@@ -1182,6 +1184,31 @@ packages:
       react-dom: 17.0.2_react@17.0.2
       react-focus-lock: 2.7.1_react@17.0.2
       react-transition-group: 4.4.2_react-dom@17.0.2+react@17.0.2
+      resize-observer-polyfill: 1.5.1
+      scroll-into-view-if-needed: 2.2.20
+      shallowequal: 1.1.0
+    transitivePeerDependencies:
+      - '@types/react'
+    dev: false
+
+  /@arco-design/web-react/2.28.2_react-dom@16.14.0+react@16.14.0:
+    resolution: {integrity: sha512-vsb2aH4XZ+DjWG+oIfAs7XitrCNeWJ6KG7SNc/a1qDpMTcs0Njmj2ZJOtTzu+ZcAjhiqjaUmpvy4h+yziKByUQ==}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      '@arco-design/color': 0.4.0
+      '@babel/runtime': 7.16.7
+      b-tween: 0.3.3
+      b-validate: 1.3.1
+      compute-scroll-into-view: 1.0.17
+      dayjs: 1.10.7
+      lodash: 4.17.21
+      number-precision: 1.5.1
+      react: 16.14.0
+      react-dom: 16.14.0_react@16.14.0
+      react-focus-lock: 2.7.1_react@16.14.0
+      react-transition-group: 4.4.2_react-dom@16.14.0+react@16.14.0
       resize-observer-polyfill: 1.5.1
       scroll-into-view-if-needed: 2.2.20
       shallowequal: 1.1.0
@@ -20410,6 +20437,15 @@ packages:
       pure-color: 1.3.0
     dev: false
 
+  /react-clientside-effect/1.2.5_react@16.14.0:
+    resolution: {integrity: sha512-2bL8qFW1TGBHozGGbVeyvnggRpMjibeZM2536AKNENLECutp2yfs44IL8Hmpn8qjFQ2K7A9PnYf3vc7aQq/cPA==}
+    peerDependencies:
+      react: ^15.3.0 || ^16.0.0 || ^17.0.0
+    dependencies:
+      '@babel/runtime': 7.16.7
+      react: 16.14.0
+    dev: false
+
   /react-clientside-effect/1.2.5_react@17.0.2:
     resolution: {integrity: sha512-2bL8qFW1TGBHozGGbVeyvnggRpMjibeZM2536AKNENLECutp2yfs44IL8Hmpn8qjFQ2K7A9PnYf3vc7aQq/cPA==}
     peerDependencies:
@@ -20501,6 +20537,22 @@ packages:
       react-clientside-effect: 1.2.5_react@17.0.2
       use-callback-ref: 1.2.5_b08e3c15324cbe90a6ff8fcd416c932c
       use-sidecar: 1.0.5_react@17.0.2
+    transitivePeerDependencies:
+      - '@types/react'
+    dev: false
+
+  /react-focus-lock/2.7.1_react@16.14.0:
+    resolution: {integrity: sha512-ImSeVmcrLKNMqzUsIdqOkXwTVltj79OPu43oT8tVun7eIckA4VdM7UmYUFo3H/UC2nRVgagMZGFnAOQEDiDYcA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@babel/runtime': 7.16.7
+      focus-lock: 0.10.1
+      prop-types: 15.8.1
+      react: 16.14.0
+      react-clientside-effect: 1.2.5_react@16.14.0
+      use-callback-ref: 1.2.5_react@16.14.0
+      use-sidecar: 1.0.5_react@16.14.0
     transitivePeerDependencies:
       - '@types/react'
     dev: false
@@ -20776,6 +20828,20 @@ packages:
       use-latest: 1.2.0_react@16.14.0
     transitivePeerDependencies:
       - '@types/react'
+    dev: false
+
+  /react-transition-group/4.4.2_react-dom@16.14.0+react@16.14.0:
+    resolution: {integrity: sha512-/RNYfRAMlZwDSr6z4zNKV6xu53/e2BuaBbGhbyYIXTrmgu/bGHzmqOs7mJSJBHy9Ud+ApHx3QjrkKSp1pxvlFg==}
+    peerDependencies:
+      react: '>=16.6.0'
+      react-dom: '>=16.6.0'
+    dependencies:
+      '@babel/runtime': 7.16.7
+      dom-helpers: 5.2.1
+      loose-envify: 1.4.0
+      prop-types: 15.8.1
+      react: 16.14.0
+      react-dom: 16.14.0_react@16.14.0
     dev: false
 
   /react-transition-group/4.4.2_react-dom@17.0.2+react@17.0.2:
@@ -24005,6 +24071,19 @@ packages:
       react: 17.0.2
     dev: false
 
+  /use-callback-ref/1.2.5_react@16.14.0:
+    resolution: {integrity: sha512-gN3vgMISAgacF7sqsLPByqoePooY3n2emTH59Ur5d/M8eg4WTWu1xp8i8DHjohftIyEx0S08RiYxbffr4j8Peg==}
+    engines: {node: '>=8.5.0'}
+    peerDependencies:
+      '@types/react': ^16.8.0 || ^17.0.0
+      react: ^16.8.0 || ^17.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      react: 16.14.0
+    dev: false
+
   /use-callback-ref/1.2.5_react@17.0.2:
     resolution: {integrity: sha512-gN3vgMISAgacF7sqsLPByqoePooY3n2emTH59Ur5d/M8eg4WTWu1xp8i8DHjohftIyEx0S08RiYxbffr4j8Peg==}
     engines: {node: '>=8.5.0'}
@@ -24049,6 +24128,17 @@ packages:
     dependencies:
       react: 16.14.0
       use-isomorphic-layout-effect: 1.1.1_react@16.14.0
+    dev: false
+
+  /use-sidecar/1.0.5_react@16.14.0:
+    resolution: {integrity: sha1-//8qF8HfQuNIYktpm6blwiBSfys=}
+    engines: {node: '>=8.5.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0
+    dependencies:
+      detect-node-es: 1.1.0
+      react: 16.14.0
+      tslib: 1.14.1
     dev: false
 
   /use-sidecar/1.0.5_react@17.0.2:

@@ -2,11 +2,6 @@
   "name": "@garfish-dev/vue2",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "start": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
-  },
   "dependencies": {
     "@garfish/bridge": "workspace:*",
     "core-js": "^3.6.5",
@@ -44,5 +39,10 @@
     "last 2 versions",
     "not dead",
     "not ie 11"
-  ]
+  ],
+  "scripts": {
+    "start": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  }
 }

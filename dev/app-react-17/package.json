@@ -15,10 +15,6 @@
     "mobx": "^6.3.6",
     "@arco-design/web-react": "^2.28.1"
   },
-  "scripts": {
-    "start": "NODE_ENV=development webpack-dev-server --hot",
-    "build": "NODE_ENV=production webpack --progress"
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -58,5 +54,9 @@
     "webpack-cli": "^4.6.0",
     "webpack-dev-server": "^4.2.1",
     "@uiw/react-md-editor": "^3.9.3"
+  },
+  "scripts": {
+    "start": "NODE_ENV=development webpack-dev-server --hot",
+    "build": "NODE_ENV=production webpack --progress"
   }
 }

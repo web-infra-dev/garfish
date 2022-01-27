@@ -8,6 +8,7 @@ import {
   Form,
   Input,
   Space,
+  Spin,
 } from '@arco-design/web-react';
 import {
   IconCaretRight,
@@ -111,6 +112,9 @@ const App = observer(({ store }: { store: any }) => {
         <MenuItem
           key={v.key}
           onClick={() => Garfish.router.push({ path: v.path })}
+          // onClick={() => {
+          // 	navigate({ pathname: `/${basename}/${v.path}` });
+          // }}
         >
           {v.icon}
           {v.title}
@@ -157,10 +161,11 @@ const App = observer(({ store }: { store: any }) => {
         collapsible
         trigger={null}
         breakpoint="xl"
+        style={{ height: '100vh' }}
       >
         <div
           className="logo"
-          onClick={() => navigate(`/${basename}/main/home`)}
+          onClick={() => navigate(`/${basename}/main/index`)}
         >
           <img src={logo} alt="logo" />
         </div>
@@ -181,8 +186,8 @@ const App = observer(({ store }: { store: any }) => {
           style={{ width: '100%' }}
         >
           <MenuItem
-            key="main/home"
-            onClick={() => navigate(`/${basename}/main/home`)}
+            key="main/index"
+            onClick={() => navigate(`/${basename}/main/index`)}
           >
             <img src={homeSvg} className="sidebar-item-icon" />
             【主应用】首页
@@ -230,7 +235,11 @@ const App = observer(({ store }: { store: any }) => {
           }
           <Content>
             <Outlet />
-            <div id="submodule"></div>
+            <div id="submodule">
+              {!store.isMounted && store.isMounted !== undefined && (
+                <Spin style={{ marginTop: '20%' }} />
+              )}
+            </div>
             <div id="sub-container"></div>
           </Content>
           <Footer> </Footer>

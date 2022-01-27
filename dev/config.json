@@ -6,7 +6,7 @@
   "dev/react17": {
     "pkgName": "@garfish-dev/react17",
     "port": 8091
-   },
+  },
   "dev/react16": {
     "pkgName": "@garfish-dev/react16",
     "port": 8092

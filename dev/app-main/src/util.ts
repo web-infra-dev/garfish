@@ -2,5 +2,5 @@
 export const getProxyHost = (port) => {
   return process.env.inIDE
     ? `//${port}-${process.env.WEBIDE_PODID || ''}.webide-boe.byted.org`
-    : `http://localhost:${port}/`;
+    : `http://localhost:${port}`;
 };

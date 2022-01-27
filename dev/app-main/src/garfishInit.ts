@@ -5,10 +5,19 @@ import * as mobxReact from 'mobx-react';
 import * as ReactRouterDom from 'react-router-dom';
 import { Message } from '@arco-design/web-react';
 import { store } from './store';
-import { basename, apps } from './constant';
+import { AppInfos, MicroFrontendModule } from './interface';
+import {
+  Goofy_RouterID,
+  garfishServerHttpUrl,
+  basename,
+  localApps,
+} from './constant';
 
 export const GarfishInit = async () => {
+  const apps = localApps;
   console.log('Garfish.run apps', apps);
+
+  store.setApps(apps);
   Garfish.setExternal({
     react: React,
     'react-dom': ReactDom,
@@ -97,6 +106,7 @@ export const GarfishInit = async () => {
        * 开始加载子应用前触发该函数，支持异步函数，可以在该函数中执行异步操作，当返回 false 时表示中断子应用的加载以及后续流程，所有子应用加载都会触发该函数的调用
        */
       beforeLoad(appInfo) {
+        store.setIsMounted(false);
         console.log('子应用开始加载', appInfo.name);
       },
       /***
@@ -120,6 +130,7 @@ export const GarfishInit = async () => {
       // 在子应用渲染后触发该函数
       afterMount(appInfo) {
         console.log('子应用渲染结束', appInfo.name);
+        store.setIsMounted(true);
       },
       /***
        * 渲染异常触发该函数的调用，填写该函数之后错误将不会向上丢出, 全局无法捕获，提供给开发者决定如何处理错误
