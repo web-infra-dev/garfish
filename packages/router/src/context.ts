@@ -39,11 +39,12 @@ export const registerRouter = (Apps: Array<interfaces.AppInfo>) => {
  */
 export const listenRouterAndReDirect = ({
   apps,
-  basename,
+  basename = '/',
   autoRefreshApp,
   active,
   deactive,
   notMatch,
+  listening = true,
 }: Options) => {
   // 注册子应用、注册激活、销毁钩子
   registerRouter(apps);
@@ -56,6 +57,7 @@ export const listenRouterAndReDirect = ({
     active,
     deactive,
     notMatch,
+    listening,
   });
 
   // 开始监听路由变化触发、子应用更新。重载默认初始子应用

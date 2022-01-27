@@ -1,14 +1,15 @@
 {
-  "name": "@garfish/core",
+  "name": "@garfish/vite-plugin",
   "version": "1.3.0",
-  "description": "core module.",
+  "description": "garfish vite plugin",
   "keywords": [
     "garfish",
-    "core",
-    "micro front-end"
+    "vite",
+    "esm",
+    "esModule"
   ],
-  "author": "zhouxiao<codingzx@gmail.com>",
-  "homepage": "https://github.com/bytedance/garfish",
+  "author": "zhouxiao <codingzx@gmail.com>",
+  "homepage": "http://garfish.bytedance.com",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -32,10 +33,8 @@
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
   "dependencies": {
-    "@garfish/hooks": "workspace:*",
-    "@garfish/loader": "workspace:*",
     "@garfish/utils": "workspace:*",
-    "eventemitter2": "^6.4.5"
+    "cheerio": "^1.0.0-rc.10"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
