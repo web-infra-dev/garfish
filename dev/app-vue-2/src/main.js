@@ -5,11 +5,12 @@ import store from './store';
 import App from './App.vue';
 import Tasks from './components/Tasks.vue';
 import ToDoList from './components/todo.vue';
-import MicroApp from './components/microApp.vue';
 import HelloGarfish from './components/HelloGarfish.vue';
 import RemoteComponent from './components/remoteComponent.vue';
 import 'element-ui/lib/theme-chalk/index.css';
 import { vueBridge } from '@garfish/bridge';
+
+const MicroApp = import('./components/microApp.vue');
 
 Vue.use(ElementUI);
 Vue.use(VueRouter);
@@ -23,7 +24,7 @@ function newRouter(basename) {
       { path: '/home', component: HelloGarfish },
       { path: '/tasks', component: Tasks },
       { path: '/toDoList', component: ToDoList },
-      { path: '/micro-*', component: MicroApp },
+      { path: '/micro-*', component: () => MicroApp },
       { path: '/remote-component', component: RemoteComponent },
     ],
   });

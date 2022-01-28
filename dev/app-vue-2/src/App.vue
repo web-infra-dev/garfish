@@ -4,7 +4,7 @@
             <router-link to="/home">home </router-link><br />
             <router-link to="/toDoList">toDoList</router-link><br />
             <router-link to="/tasks">tasks</router-link><br />
-            <router-link to="/micro-app">Micro app</router-link><br />
+            <router-link to="/micro-app" v-if="GARFISH">Micro app</router-link><br />
             <router-link to="/remote-component">Remote component</router-link><br />
         </div>
         <div class="view-content">
@@ -16,7 +16,12 @@
 <script>
 export default {
     name: 'App',
-    props: ['basename']
+    props: ['basename'],
+    data() {
+        return {
+          GARFISH: window.__GARFISH__
+        }
+    },
 }
 </script>
 
