@@ -6,12 +6,12 @@ import {
   Navigate,
 } from 'react-router-dom';
 import { ConfigProvider, Spin } from '@arco-design/web-react';
+import { hot, setConfig } from 'react-hot-loader';
 import { store } from '../../store';
 import App from '../../components/App';
 import { basename, localApps, prefixCls } from '../../constant';
 import NotFound from '../PageNotFound';
 import HomePage from '../../components/home';
-import { hot, setConfig } from 'react-hot-loader';
 import './index.less';
 
 const LoadApp = React.lazy(() => import('../loadApp'));
@@ -19,6 +19,7 @@ const mainHome = 'main/index';
 
 setConfig({
   showReactDomPatchNotification: false,
+  reloadHooks: false,
 });
 
 const RootComponent = () => {

@@ -1,4 +1,6 @@
 import ReactDOM from 'react-dom';
+import React from 'react';
+import { reactBridge } from '@garfish/bridge';
 import RootComponent from './components/root';
 import Error from './components/ErrorBoundary';
 
@@ -46,9 +48,10 @@ export const provider = (props) => {
 //     _props = props;
 //     // 监听props 的改变，重新触发 render
 //     window?.Garfish.channel.on('stateChange', render);
-//     return Promise.resolve(() => <RootComponent {...props} />);
+//     // return Promise.resolve(() => <RootComponent {...props} />);
+//     return Promise.resolve(RootComponent);
 //   },
-//   errorBoundary: () => <Error />
+//   errorBoundary: () => <Error />,
 // });
 
 // 这能够让子应用独立运行起来，以保证后续子应用能脱离主应用独立运行，方便调试、开发

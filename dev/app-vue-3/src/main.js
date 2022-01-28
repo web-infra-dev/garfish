@@ -3,20 +3,13 @@ import { h, createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { stateSymbol, createState } from './store.js';
 import App from './App.vue';
-import Test from './components/test.vue';
 import ToDoList from './components/todo.vue';
-// import MicroApp from './components/microApp.vue';
 import HelloGarfish from './components/HelloGarfish.vue';
-import RemoteComponent from './components/remoteComponent.vue';
 import { vueBridge } from '@garfish/bridge';
-// import store from "./store"
 
 const routes = [
   { path: '/home', component: HelloGarfish },
-  { path: '/test', component: Test },
-  { path: '/todo', component: ToDoList },
-  // { path: '/micro-*', component: MicroApp },
-  { path: '/remote-component', component: RemoteComponent },
+  { path: '/toDoList', component: ToDoList },
 ];
 
 function newRouter(basename) {

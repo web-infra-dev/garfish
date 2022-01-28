@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Menu } from '@arco-design/web-react';
 import './index.less';
-import { Layout, Grid, Modal, Message } from '@arco-design/web-react';
+import { Layout, Grid, Modal, Message, Input } from '@arco-design/web-react';
 import { SubAppContext } from '../root';
 import CardItem from '../CardItem';
 import {
@@ -47,7 +47,6 @@ const App = () => {
         return (
           <Content>
             <Row
-              className="grid-demo"
               gutter={[24, 12]}
               style={{
                 marginBottom: 16,
@@ -102,16 +101,14 @@ const App = () => {
                   markdownStr={increaseStr}
                 />
 
-                <CardItem title="支持应用热更新(hmr)" markdownStr={hmrStr} />
-
-                <CardItem
+                {/* <CardItem
                   title="获取主应用window变量"
                   onClick={() => {
                     console.log(' window.testName');
                   }}
                   href="https://garfish.top/api/channel"
                   markdownStr={hmrStr}
-                />
+                /> */}
               </Col>
               <Col span={16}>
                 <Menu

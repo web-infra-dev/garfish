@@ -33,7 +33,7 @@ export const subAppMenus = [
     title: '【子应用】vue3',
     routes: [
       { path: 'vue3/home', title: '首页' },
-      { path: 'vue3/todo', title: '待办' },
+      { path: 'vue3/toDoList', title: 'toDoList' },
     ],
   },
   {
@@ -43,7 +43,10 @@ export const subAppMenus = [
     title: '【子应用】vue2',
     routes: [
       { path: 'vue2/home', title: '首页' },
-      { path: 'vue2/about', title: '关于' },
+      { path: 'vue2/toDoList', title: 'toDoList' },
+      { path: 'vue2/tasks', title: '任务管理' },
+      { path: 'vue2/micro-app', title: '微应用' },
+      { path: 'vue2/remote-component', title: '远程加载' },
     ],
   },
   {

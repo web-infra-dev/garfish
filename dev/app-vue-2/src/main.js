@@ -1,75 +1,61 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import ElementUI from 'element-ui';
+import store from './store';
 import App from './App.vue';
-import About from './components/About.vue';
-import Index from './components/Index.vue';
+import Tasks from './components/Tasks.vue';
+import ToDoList from './components/todo.vue';
+import MicroApp from './components/microApp.vue';
+import HelloGarfish from './components/HelloGarfish.vue';
+import RemoteComponent from './components/remoteComponent.vue';
+import 'element-ui/lib/theme-chalk/index.css';
 import { vueBridge } from '@garfish/bridge';
 
-Vue.config.productionTip = false;
+Vue.use(ElementUI);
 Vue.use(VueRouter);
-
-const routes = [
-  { path: '/about', component: About },
-  { path: '/home', component: Index },
-];
-
-if (!window.__GARFISH__) {
-  const router = new VueRouter({
-    mode: 'history',
-    routes,
-  });
-
-  new Vue({
-    router,
-    render: (h) => h(App),
-  }).$mount('#app');
-}
+Vue.config.productionTip = false;
 
 function newRouter(basename) {
   const router = new VueRouter({
     mode: 'history',
-    routes,
     base: basename,
+    routes: [
+      { path: '/home', component: HelloGarfish },
+      { path: '/tasks', component: Tasks },
+      { path: '/toDoList', component: ToDoList },
+      { path: '/micro-*', component: MicroApp },
+      { path: '/remote-component', component: RemoteComponent },
+    ],
   });
   return router;
 }
 
-// let vm;
-// 子应用提供 provider 函数:
-// export function provider({ dom, basename }) {
-//   return {
-//     render() {
-//       vm = new Vue({
-//         router: newRouter(basename),
-//         render: (h) => h(App),
-//       }).$mount();
-//       dom.appendChild(vm.$el);
-//     },
-//     destroy() {
-//       vm.$destroy();
-//       vm.$el.parentNode && vm.$el.parentNode.removeChild(vm.$el);
-//     },
-//   };
-// }
-
-// 使用 vueBridge 函数:
 export const provider = vueBridge({
   Vue,
   rootComponent: App,
   loadRootComponent: ({ basename, dom, appName, props }) => {
-    console.log(basename, dom, appName, props);
+    console.log({ basename, dom, appName, props });
     return Promise.resolve(App);
   },
-
+  handleInstance: (vueInstance, { basename, dom, appName, props }) => {
+    console.log(vueInstance, basename, dom, appName, props);
+  },
   appOptions: ({ basename, dom, appName, props }) => {
-    console.log(basename, dom, appName, props);
+    console.log({ basename, dom, appName, props });
     return {
       el: '#app',
       router: newRouter(basename),
+      store,
     };
   },
-  handleInstance: (vueInstance, { basename, dom, appName, props }) => {
-    console.log(basename, dom, appName, props);
-    // vueInstance.use(newRouter(basename))
-  },
 });
+
+// There is no running show that the main application execution run, you can perform in micro front-end environment rendering
+if (!window.__GARFISH__) {
+  const router = newRouter('/');
+  new Vue({
+    store,
+    router,
+    render: (h) => h(App),
+  }).$mount('#app');
+}

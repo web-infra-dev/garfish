@@ -5,13 +5,7 @@ import * as mobxReact from 'mobx-react';
 import * as ReactRouterDom from 'react-router-dom';
 import { Message } from '@arco-design/web-react';
 import { store } from './store';
-import { AppInfos, MicroFrontendModule } from './interface';
-import {
-  Goofy_RouterID,
-  garfishServerHttpUrl,
-  basename,
-  localApps,
-} from './constant';
+import { basename, localApps } from './constant';
 
 export const GarfishInit = async () => {
   const apps = localApps;
@@ -67,7 +61,7 @@ export const GarfishInit = async () => {
         strictIsolation: false,
 
         /***
-         *  覆盖子应用的执行上下文，使用自定义的执行上下文，例如子应用 localStorage 使用当前主应用 localStorage
+         * 覆盖子应用的执行上下文，使用自定义的执行上下文，例如子应用 localStorage 使用当前主应用 localStorage
          * 仅在 snapshot: false 时有效
          */
         modules: [() => ({ override: { localStorage: window.localStorage } })],
@@ -108,6 +102,7 @@ export const GarfishInit = async () => {
       beforeLoad(appInfo) {
         store.setIsMounted(false);
         console.log('子应用开始加载', appInfo.name);
+        // return false;
       },
       /***
        * 加载子应用结束后触发该函数，支持异步函数，可以在该函数中执行异步操作，所有子应用加载完成后都会触发该函数的调用

@@ -1,5 +1,8 @@
 @import '../../less/variable.less';
 
+.@{prefix}-input {
+  // background: pink;
+}
 .@{prefix}-card {
   margin-bottom: 20px;
 
@@ -14,43 +17,44 @@
     height: 14px;
     margin: 0 3px 0 0;
   }
-}
-.@{prefix}-card-header {
-  padding: 0 !important;
-  font-size: 14px !important;
-  height: 36px !important;
-  .title {
-    font-size: 13px;
-    display: inline-block;
-    margin-right: 10px;
+
+  .@{prefix}-card-header {
+    padding: 0 !important;
+    font-size: 14px !important;
+    height: 36px !important;
+    .title {
+      font-size: 13px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+  }
+
+  .@{prefix}-card-body {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px !important;
+     .content-wrapper {
+      width: 400px;
+     }
+
+    .@{prefix}-link {
+      margin: 0 4px;
+      padding: 2px;
+    }
+
+
+    .card-content {
+      width: 340px;
+      overflow: scroll;
+    }
+    .card-custom-hover-style {
+      transition-property: all;
+    }
+
+    .card-custom-hover-style:hover {
+      transform: translateY(-4px);
+    }
   }
 }
 
-.@{prefix}-card-body {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 10px !important;
-   .content-wrapper {
-    width: 400px;
-   }
-
-  .@{prefix}-link {
-    margin: 0 4px;
-    padding: 2px;
-  }
-
-
-  .card-content {
-    width: 340px;
-    overflow: scroll;
-  }
-  .card-custom-hover-style {
-    transition-property: all;
-  }
-
-  .card-custom-hover-style:hover {
-    transform: translateY(-4px);
-  }
-
-}

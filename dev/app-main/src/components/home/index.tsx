@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Grid, Tabs } from '@arco-design/web-react';
+import { Grid, Tabs, Input, Checkbox } from '@arco-design/web-react';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { loadAppFunc } from '../loadApp/loadAppFunc';
@@ -65,25 +65,18 @@ const HomePage = observer(({ store }) => {
 
   return (
     <Row
-      className="grid-demo"
       gutter={[24, 12]}
       style={{
         marginBottom: 16,
         backgroundColor: 'var(--color-fill-2)',
       }}
     >
-      <Col span={8} className="col-btn">
+      <Col span={8} className="card-columns">
         <CardItem
           title="访问独立子应用"
           href="https://garfish.top/quick-start"
           content={
             <div className="content-wrapper">
-              {/* {Object.entries(subAppslinks).map(([key, value]) => (
-								<AppLink key={key} href={value}>
-									{key}
-								</AppLink>
-							))} */}
-
               {store.apps.map((v: any) => (
                 <AppLink key={v.name} href={v.entry}>
                   {v.name}
@@ -111,6 +104,13 @@ const HomePage = observer(({ store }) => {
           onClick={loadApplication}
           href="https://garfish.top/api/loadApp"
           markdownStr={loadAppStr}
+        />
+
+        <CardItem
+          title="测试热更新"
+          onClick={() => setActiveTab('HMR')}
+          href="https://garfish.top/api/channel"
+          markdownStr={channelStr}
         />
 
         <CardItem
@@ -152,7 +152,6 @@ const HomePage = observer(({ store }) => {
               {loadAsync && <Spin style={{ marginTop: '200px' }} />}
             </div>
           </TabPane>
-
           <TabPane key="upgrade" title="如何升级">
             <MDEditor.Markdown source={upgradeStr} linkTarget="_blank" />
           </TabPane>

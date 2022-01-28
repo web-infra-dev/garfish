@@ -6,12 +6,12 @@ import {
   MemoryRouter,
   Redirect,
 } from 'react-router-dom';
+import { hot, setConfig } from 'react-hot-loader';
 import App from './App';
 import PageNotFound from './PageNotFound';
 import './App.less';
 
 export const SubAppContext = createContext({});
-import { hot, setConfig } from 'react-hot-loader';
 
 setConfig({
   showReactDomPatchNotification: false,

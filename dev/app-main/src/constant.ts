@@ -5,11 +5,6 @@ export const prefixCls = 'main-app';
 export const loadApp = 'loadApp';
 export const basename = 'examples';
 
-// 此 ID 为 Goofy 平台主应用注册路由，可上Goofy 平台查看（限字节内部用户）
-export const Goofy_RouterID = 27303;
-export const garfishServerHttpUrl =
-  'https://goofy.bytedance.net/api/garfish_mod/v1/modlist';
-
 export const localApps = [
   {
     // 每个应用的 name 需要保持唯一

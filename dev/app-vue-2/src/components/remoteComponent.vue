@@ -17,7 +17,7 @@ import {
 
 setModuleConfig({
   alias: {
-    Component: 'http://localhost:2666/remoteModule.js',
+    Component: 'http://localhost:8094/remoteModule.js',
   },
 })
 

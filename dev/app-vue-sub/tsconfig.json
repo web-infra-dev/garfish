@@ -31,7 +31,7 @@
   },
   "exclude": ["node_modules"],
   "include": [
-    "src-2-3",
+    "src",
   ],
   "paths": {
     "@/*": ["src/*"]

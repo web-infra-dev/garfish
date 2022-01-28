@@ -161,7 +161,7 @@ const App = observer(({ store }: { store: any }) => {
         collapsible
         trigger={null}
         breakpoint="xl"
-        style={{ height: '100vh' }}
+        // style={{ height: '100vh' }}
       >
         <div
           className="logo"

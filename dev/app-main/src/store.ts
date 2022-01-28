@@ -24,15 +24,15 @@ class Store {
     this.counter--;
   }
 
-  @action.bound
+  @action
   setActiveApp(name) {
     this.activeApp = name;
   }
-
+  @action
   setApps(apps) {
     this.apps = apps;
   }
-
+  @action
   setIsMounted(isMounted) {
     this.isMounted = isMounted;
   }

@@ -19,14 +19,8 @@ import ImgLogo from './assets/logo.png';
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-
-  background: currentColor;
   margin: 0;
   padding: 20px;
   border-radius: 4px;
-
-  h1, p {
-    color: #42b983;
-  }
 }
 </style>
