@@ -15,7 +15,6 @@ import {
   setModuleConfig,
 } from '@garfish/remote-module';
 import portMap from '../../../config.json'
-
 const port = portMap['dev/vue-sub'].port;
 const publicPath = portMap['dev/vue-sub'].publicPath;
 

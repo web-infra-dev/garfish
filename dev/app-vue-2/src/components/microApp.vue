@@ -36,7 +36,7 @@ export default {
 
         GarfishInstance.registerApp([{
                 name: 'vueApp',
-                entry: `http://localhost:${portInfo['dev/vue-sub'].port}`,
+                entry: process.env.NODE_ENV === 'production' ?  `http:${portInfo['dev/vue-sub'].publicPath}` : `http://localhost:${portInfo['dev/vue-sub'].port}`,
                 basename: '/examples/vue2/micro-app',
                 activeWhen: '/vueApp',
                 domGetter: '#micro-app-container',
@@ -47,7 +47,7 @@ export default {
             },
             {
                 name: 'reactApp',
-                entry: `http://localhost:${portInfo['dev/react16'].port}`,
+                entry: process.env.NODE_ENV === 'production' ? `http:${portInfo['dev/react16'].publicPath}` : `http://localhost:${portInfo['dev/react16'].port}`,
                 basename: '/examples/vue2/micro-app',
                 domGetter: '#micro-app-container',
                 activeWhen: '/reactApp',
@@ -60,9 +60,8 @@ export default {
 
 <style lang="less">
 #micro-app-container {
-  width: 800px;
-  height: 400px;
-  margin: 40px auto;
+    width: 800px;
+    height: 400px;
+    margin: 40px auto;
 }
-
 </style>
