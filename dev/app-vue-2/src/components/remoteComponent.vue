@@ -22,7 +22,7 @@ const publicPath = portMap['dev/vue-sub'].publicPath;
 setModuleConfig({
   alias: {
     Component: process.env.NODE_ENV === 'production'
-      ? publicPath
+      ? `http://${publicPath}remoteModule.js`
       : `http://localhost:${port}/remoteModule.js`
   },
 })
