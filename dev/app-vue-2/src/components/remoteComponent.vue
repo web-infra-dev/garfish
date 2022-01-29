@@ -14,10 +14,16 @@ import {
   loadModule,
   setModuleConfig,
 } from '@garfish/remote-module';
+import portMap from '../../../config.json'
+
+const port = portMap['dev/vue-sub'].port;
+const publicPath = portMap['dev/vue-sub'].publicPath;
 
 setModuleConfig({
   alias: {
-    Component: 'http://localhost:8094/remoteModule.js',
+    Component: process.env.NODE_ENV === 'production'
+      ? publicPath
+      : `http://localhost:${port}/remoteModule.js`
   },
 })
 
