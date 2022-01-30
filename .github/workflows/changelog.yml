@@ -1,5 +1,4 @@
-name: ChangeLog
-
+name: changelog
 on:
   push:
     tags:
