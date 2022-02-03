@@ -67,23 +67,26 @@ export function GarfishRouter(_args?: Options) {
             cache: true,
             domGetter: appInfo.domGetter,
           });
-          app.appInfo.basename = rootPath;
 
-          const call = async (app: interfaces.App, isRender: boolean) => {
-            if (!app) return;
-            const isDes = cache && app.mounted;
-            if (isRender) {
-              return await app[isDes ? 'show' : 'mount']();
-            } else {
-              return app[isDes ? 'hide' : 'unmount']();
+          if (app) {
+            app.appInfo.basename = rootPath;
+
+            const call = async (app: interfaces.App, isRender: boolean) => {
+              if (!app) return;
+              const isDes = cache && app.mounted;
+              if (isRender) {
+                return await app[isDes ? 'show' : 'mount']();
+              } else {
+                return app[isDes ? 'hide' : 'unmount']();
+              }
+            };
+
+            Garfish.apps[name] = app;
+            unmounts[name] = () => call(app, false);
+
+            if (currentApp === activeApp) {
+              await call(app, true);
             }
-          };
-
-          Garfish.apps[name] = app;
-          unmounts[name] = () => call(app, false);
-
-          if (currentApp === activeApp) {
-            await call(app, true);
           }
         }
 
