@@ -17,9 +17,12 @@ export const createState = () => {
   };
 
   const add = (item) => {
+    console.log('--add item', item);
     state.id += 1;
     item.id = state.id;
+    // item.id =  state.todos.length + 1;
     state.todos.push(item);
+    console.log('state.todos', state.todos);
   };
 
   const getDoneTodos = (state) => {

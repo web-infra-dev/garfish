@@ -32,7 +32,11 @@ export const localApps = [
     activeWhen: (path) => path.includes('/vue2'),
     entry: getProxyHost(portMap['dev/vue2'].port),
   },
-
+  {
+    name: 'vue-sub',
+    activeWhen: '/vue-sub',
+    entry: getProxyHost(portMap['dev/vue-sub'].port),
+  },
   {
     name: 'vite',
     activeWhen: '/vite',

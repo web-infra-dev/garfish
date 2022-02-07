@@ -2,6 +2,8 @@ export default {
   state: {
     id: 1,
     todos: [{ id: 1, text: 'default todo', done: false }],
+    basename: '',
+    mainAppProps: {},
   },
 
   mutations: {
@@ -13,6 +15,12 @@ export default {
       item.id = state.id;
       state.todos.push(item);
     },
+    setProps(state, item) {
+      state.mainAppProps = item;
+    },
+    setBasename(state, basename) {
+      state.basename = basename;
+    },
   },
 
   actions: {
@@ -21,6 +29,12 @@ export default {
     },
     add(context, item) {
       context.commit('add', item);
+    },
+    setProps(context, item) {
+      context.commit('setProps', item);
+    },
+    setBasename(context, basename) {
+      context.commit('setBasename', basename);
     },
   },
 

@@ -112,9 +112,6 @@ const App = observer(({ store }: { store: any }) => {
         <MenuItem
           key={v.key}
           onClick={() => Garfish.router.push({ path: v.path })}
-          // onClick={() => {
-          // 	navigate({ pathname: `/${basename}/${v.path}` });
-          // }}
         >
           {v.icon}
           {v.title}
@@ -161,7 +158,6 @@ const App = observer(({ store }: { store: any }) => {
         collapsible
         trigger={null}
         breakpoint="xl"
-        // style={{ height: '100vh' }}
       >
         <div
           className="logo"

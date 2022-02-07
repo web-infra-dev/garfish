@@ -36,6 +36,8 @@ export const provider = vueBridge({
   rootComponent: App,
   loadRootComponent: ({ basename, dom, appName, props }) => {
     console.log({ basename, dom, appName, props });
+    store.dispatch('setBasename', basename);
+    store.dispatch('setProps', props);
     return Promise.resolve(App);
   },
   handleInstance: (vueInstance, { basename, dom, appName, props }) => {

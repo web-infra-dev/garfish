@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     add() {
-      this.data.add(this.item);
+      this.data.add(JSON.parse(JSON.stringify(this.item)));
     },
     done(id) {
       this.data.done(id);

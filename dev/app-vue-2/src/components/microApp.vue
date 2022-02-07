@@ -15,12 +15,15 @@
 // 嵌套场景
 import GarfishInstance from 'garfish';
 import portInfo from '../../../config.json';
+import { mapState } from 'vuex';
+
 
 let hasInit = false;
 export default {
     name: 'App',
-    props: ['basename'],
-
+    computed: mapState(
+        ['basename', 'mainAppProps']
+    ),
     methods: {
         async loadApp() {
             window.Garfish.router.push({ path: '/examples/vue2/micro-app/vueApp', basename: '/' })
@@ -33,11 +36,15 @@ export default {
     mounted() {
         if (hasInit) return;
         hasInit = true;
+        console.log('this.basename', this.basename);
+        const apps = this.mainAppProps.store.apps;
+        const react16_entry = process.env.NODE_ENV === 'production' ? apps.find(v => v.name === 'react16').entry : `http://localhost:${portInfo['dev/react16'].port}`;
+        const vueSub_entry = process.env.NODE_ENV === 'production' ? apps.find(v => v.name === 'vue-sub').entry : `http://localhost:${portInfo['dev/vue-sub'].port}`;
 
         GarfishInstance.registerApp([{
                 name: 'vueApp',
-                entry: process.env.NODE_ENV === 'production' ?  `http:${portInfo['dev/vue-sub'].publicPath}` : `http://localhost:${portInfo['dev/vue-sub'].port}`,
-                basename: '/examples/vue2/micro-app',
+                entry: vueSub_entry,
+                basename: `/${this.basename}/micro-app`,
                 activeWhen: '/vueApp',
                 domGetter: '#micro-app-container',
                 cache: false,
@@ -47,8 +54,8 @@ export default {
             },
             {
                 name: 'reactApp',
-                entry: process.env.NODE_ENV === 'production' ? `http:${portInfo['dev/react16'].publicPath}` : `http://localhost:${portInfo['dev/react16'].port}`,
-                basename: '/examples/vue2/micro-app',
+                entry: react16_entry,
+                basename: `/${this.basename}/micro-app`,
                 domGetter: '#micro-app-container',
                 activeWhen: '/reactApp',
                 cache: false
