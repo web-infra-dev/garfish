@@ -10,7 +10,6 @@ import {
   isJs,
   isObject,
   isPromise,
-  isAbsolute,
   toBoolean,
   findTarget,
   evalWithEnv,
@@ -20,7 +19,6 @@ import {
   getRenderNode,
   sourceListTags,
   parseContentType,
-  createSourcemap,
   createAppContainer,
   setDocCurrentScript,
 } from '@garfish/utils';
