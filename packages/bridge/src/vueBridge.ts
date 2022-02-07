@@ -7,6 +7,7 @@ const defaultOpts = {
   VueRouter: null,
 
   // required - one or the other
+  rootComponent: null,
   loadRootComponent: null,
 
   appOptions: null,
@@ -64,8 +65,8 @@ export function vueBridge(this: any, userOpts) {
       opts.canUpdate && update.call(this, opts, mountedInstances, props),
   };
 
-  const provider = async function (this: any, props) {
-    await bootstrap.call(this, opts, props);
+  const provider = async function (this: any, appInfo, props) {
+    await bootstrap.call(this, opts, appInfo, props);
     return providerLifeCycle;
   };
 
@@ -80,9 +81,14 @@ export function vueBridge(this: any, userOpts) {
   return provider;
 }
 
-function bootstrap(opts) {
+function bootstrap(opts, appInfo, props) {
   if (opts.loadRootComponent) {
-    return opts.loadRootComponent().then((root) => (opts.rootComponent = root));
+    return opts
+      .loadRootComponent({
+        ...appInfo,
+        props,
+      })
+      .then((root) => (opts.rootComponent = root));
   } else {
     return Promise.resolve();
   }
@@ -114,10 +120,7 @@ function mount(opts, mountedInstances, props) {
     appOptions.el = props.dom.querySelector(appOptions.el);
     if (!appOptions.el) {
       throw Error(
-        `
-          If appOptions.el is provided to garfish, the dom element must exist in the dom. Was provided as ${appOptions.el}.
-          If use js as sub application entry resource please don't provider el options
-        `,
+        `If appOptions.el is provided to garfish, the dom element must exist in the dom. Was provided as ${appOptions.el}.If use js as sub application entry resource please don't provider el options`,
       );
     }
   } else {

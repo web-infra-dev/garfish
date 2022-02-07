@@ -12,7 +12,6 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.10.2",
-    "@garfish/vite-plugin": "workspace:*",
     "vite": "^2.7.0"
   }
 }

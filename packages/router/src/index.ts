@@ -1,5 +1,6 @@
 import { interfaces } from '@garfish/core';
 import { createKey } from '@garfish/utils';
+import { RouterConfig } from './config';
 import router, {
   initRedirect,
   RouterInterface,
@@ -52,6 +53,9 @@ export function GarfishRouter(_args?: Options) {
           Garfish.options;
 
         async function active(appInfo: interfaces.AppInfo, rootPath: string) {
+          // In the listening state, trigger the rendering of the application
+          if (!RouterConfig.listening) return;
+
           const { name, cache = true, active } = appInfo;
           if (active) return active(appInfo, rootPath);
           appInfo.rootPath = rootPath;
@@ -63,23 +67,26 @@ export function GarfishRouter(_args?: Options) {
             cache: true,
             domGetter: appInfo.domGetter,
           });
-          app.appInfo.basename = rootPath;
 
-          const call = async (app: interfaces.App, isRender: boolean) => {
-            if (!app) return;
-            const isDes = cache && app.mounted;
-            if (isRender) {
-              return await app[isDes ? 'show' : 'mount']();
-            } else {
-              return app[isDes ? 'hide' : 'unmount']();
+          if (app) {
+            app.appInfo.basename = rootPath;
+
+            const call = async (app: interfaces.App, isRender: boolean) => {
+              if (!app) return;
+              const isDes = cache && app.mounted;
+              if (isRender) {
+                return await app[isDes ? 'show' : 'mount']();
+              } else {
+                return app[isDes ? 'hide' : 'unmount']();
+              }
+            };
+
+            Garfish.apps[name] = app;
+            unmounts[name] = () => call(app, false);
+
+            if (currentApp === activeApp) {
+              await call(app, true);
             }
-          };
-
-          Garfish.apps[name] = app;
-          unmounts[name] = () => call(app, false);
-
-          if (currentApp === activeApp) {
-            await call(app, true);
           }
         }
 
@@ -126,6 +133,7 @@ export function GarfishRouter(_args?: Options) {
           autoRefreshApp,
           notMatch: onNotMatchRouter,
           apps: appList,
+          listening: true,
         };
         listenRouterAndReDirect(listenOptions);
       },

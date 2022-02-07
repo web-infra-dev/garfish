@@ -81,11 +81,10 @@ export async function mergeSourcemap(compiler: Compiler, output: Output) {
       const { code } = await loader.load(scope, requestUrl);
       oldMap = JSON.parse(code);
     }
-  
-    output.map = oldMap && oldMap.mappings
-      ? merge(oldMap, newMap)
-      : output.map.toString();
-  } catch(e) {
+
+    output.map =
+      oldMap && oldMap.mappings ? merge(oldMap, newMap) : output.map.toString();
+  } catch (e) {
     output.map = output.map.toString();
     console.warn(e);
   }

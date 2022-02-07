@@ -1,16 +1,17 @@
 import type { JavaScriptManager } from '@garfish/loader';
 import {
   isAbsolute,
-  transformUrl,
   haveSourcemap,
+  transformUrl,
   createSourcemap,
 } from '@garfish/utils';
-import type { App } from './app';
 import { interfaces } from '../interface';
+import type { App } from './app';
 
-const COMMENT_REG = /[^:]\/\/.*|\/\*[\w\W]*?\*\//g;
-const DYNAMIC_IMPORT_REG = /([\s\n;]+|^)import[\s\n]*\(/g;
 const __GARFISH_ESM_ENV__ = '__GARFISH_ESM_ENV__';
+const COMMENT_REG = /[^:]\/\/.*|\/\*[\w\W]*?\*\//g;
+const DYNAMIC_IMPORT_REG =
+  /([\s\n;=\(:>{><\+\-\!&|]+|^)import[\s\n]*\([^\(\)]+\)(?![\s\n]*{)/g;
 
 export class ESModuleLoader {
   private app: App;

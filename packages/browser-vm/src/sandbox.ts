@@ -1,6 +1,7 @@
 import { Loader } from '@garfish/loader';
 import {
   warn,
+  error,
   hasOwn,
   makeMap,
   isObject,
@@ -174,11 +175,17 @@ export class Sandbox {
       set: createSetter(this),
       defineProperty: createDefineProperty(this),
       deleteProperty: createDeleteProperty(this),
+      getPrototypeOf() {
+        return Object.getPrototypeOf(window);
+      },
     };
 
     const parentHandlers = {
       ...baseHandlers,
       has: createHas(this),
+      getPrototypeOf() {
+        return Object.getPrototypeOf(window);
+      },
     };
 
     // In fact, they are all proxy windows, but the problem of `var a = xx` can be solved through has

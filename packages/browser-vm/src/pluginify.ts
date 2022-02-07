@@ -95,12 +95,12 @@ function createOptions(Garfish: interfaces.Garfish) {
       if (
         !canSupport ||
         !appInstance ||
-        appInstance.vmSandbox ||
+        appInstance?.vmSandbox ||
         appInfo.sandbox === false || // Ensure that old versions compatible
         appInfo.sandbox.open === false ||
         appInfo.sandbox.snapshot
       ) {
-        if (appInstance.vmSandbox)
+        if (appInstance?.vmSandbox)
           appInstance.global = appInstance.vmSandbox.global;
         return;
       }
