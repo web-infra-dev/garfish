@@ -42,7 +42,6 @@ export const localApps = [
     activeWhen: '/vite',
     entry: getProxyHost(portMap['dev/vite'].port),
   },
-  // angular 目前加载有问题，暂时注释掉
   {
     name: 'angular',
     activeWhen: '/angular',

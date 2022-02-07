@@ -22,7 +22,7 @@ const publicPath = portMap['dev/vue2'].publicPath;
 setModuleConfig({
   alias: {
     Component: process.env.NODE_ENV === 'production'
-      ? `http://${publicPath}remoteModule.js`
+      ? `${window.location.protocol}//${publicPath}remoteModule.js`
       : `http://localhost:${port}/remoteModule.js`
   },
 })
