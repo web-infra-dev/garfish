@@ -107,13 +107,6 @@ const HomePage = observer(({ store }) => {
         />
 
         <CardItem
-          title="测试热更新"
-          onClick={() => setActiveTab('HMR')}
-          href="https://garfish.top/api/channel"
-          markdownStr={channelStr}
-        />
-
-        <CardItem
           title="与子应用通信"
           onClick={() =>
             window?.Garfish.channel.emit('sayHello', 'hello, i am main app')

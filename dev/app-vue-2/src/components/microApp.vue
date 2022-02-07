@@ -36,7 +36,6 @@ export default {
     mounted() {
         if (hasInit) return;
         hasInit = true;
-        console.log('this.basename', this.basename);
         const apps = this.mainAppProps.store.apps;
         const react16_entry = process.env.NODE_ENV === 'production' ? apps.find(v => v.name === 'react16').entry : `http://localhost:${portInfo['dev/react16'].port}`;
         const vueSub_entry = process.env.NODE_ENV === 'production' ? apps.find(v => v.name === 'vue-sub').entry : `http://localhost:${portInfo['dev/vue-sub'].port}`;

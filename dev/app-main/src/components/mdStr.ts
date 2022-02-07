@@ -28,30 +28,36 @@ export const basicInfoStr_dev = `
 ### Garfish example 基本信息
 
 - garfish 版本: v1.2.17
-- 全局 basename: '/examples'
+- 全局 basename: 'examples'
 - 主应用信息
   - react: v17
   - react-router-dom: v6
-  - basename: '/'
+  - basename: 'examples'
   - 访问地址: 'http://localhost:8090'
 
 - 子应用信息
   - react17
+    - activeWhen: '/react17',
     - basename: 'examples/react17'
     - 独立应用访问地址: 'http://localhost:8091'
   - react16:
+    - activeWhen: '/react16',
     - basename: 'examples/react16'
     - 独立应用访问地址:'http://localhost:8092'
   - vue3:
+    - activeWhen: '/vue3',
     - basename: 'examples/vue3'
     - 独立应用访问地址: 'http://localhost:8093'
   - vue2:
+    - activeWhen: (path) => path.includes('/vue2'),
     - basename: 'examples/vue2'
     - 独立应用访问地址: 'http://localhost:8094'
   - vite:
+    - activeWhen: '/vite',
     - basename: 'examples/vite'
     - 独立应用访问地址: 'http://localhost:8095'
   - angular:
+    - activeWhen: '/angular',
     - basename: 'examples/angular'
     - 独立应用访问地址: 'http://localhost:4200'
 \`\`\`
@@ -60,31 +66,37 @@ export const basicInfoStr_dev = `
 export const basicInfoStr_prod = `
 \`\`\`javascript
 ### Garfish example 基本信息
-- 全局 basename: '/examples'
+- 全局 basename: 'examples'
 - garfish 版本: v1.2.17
 - 主应用信息
   - react: v17
   - react-router-dom: v6
-  - basename: '/'
+  - basename: 'examples'
   - 访问地址: 'http://garfish.bytedance.net/examples/main'
 
 - 子应用信息
   - react17
+    - activeWhen: '/react17',
     - basename: 'examples/react17'
     - 独立应用访问地址: 'http://garfish.bytedance.net/examples/subapp/react17'
   - react16:
+    - activeWhen: '/react16',
     - basename: 'examples/react16'
     - 独立应用访问地址: 'http://garfish.bytedance.net/examples/subapp/react16'
   - vue3:
+    - activeWhen: '/vue3',
     - basename: 'examples/vue3'
     - 独立应用访问地址: 'http://garfish.bytedance.net/examples/subapp/vue3'
   - vue2:
+    - activeWhen: (path) => path.includes('/vue2'),
     - basename: 'examples/vue2'
     - 独立应用访问地址: 'http://garfish.bytedance.net/examples/subapp/vue2'
   - vite:
+    - activeWhen: '/vite',
     - basename: 'examples/vite'
     - 独立应用访问地址: 'http://garfish.bytedance.net/examples/subapp/vite/'
   - angular:
+    - activeWhen: '/angular',
     - basename: 'examples/angular'
     - 独立应用访问地址: 'http://garfish.bytedance.net/examples/angular'
 \`\`\`
@@ -107,10 +119,10 @@ export const featuresStr = `
 - loadApp 异步加载添加 loading 状态
 - 页面路由不匹配时 404 页面兜底
 - css 隔离能力(arco + prefix)
-- 全局状态更新与应用监听变化 rerender
+- 全局状态更新页面重渲染
 - react & vue 应用内部状态管理
 - reactBridge 支持 errorBoundary
-- 
+-
 \`\`\`
 `;
 
