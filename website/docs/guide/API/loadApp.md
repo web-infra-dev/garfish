@@ -60,7 +60,7 @@ function App() {
 </template>
 
 <script>
-  import Garfish 'garfish';
+  import Garfish from 'garfish';
   let appInstance = null;
   export default {
     name: 'App',
