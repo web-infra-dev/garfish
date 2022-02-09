@@ -1,4 +1,4 @@
-import { calculateObjectSize } from './utils';
+import type { Manager, CacheValue } from './index';
 
 export const cachedDataSet = new WeakSet();
 
@@ -28,12 +28,12 @@ export class AppCacheContainer {
     this.maxSize = maxSize;
     FILE_TYPES.forEach((key) => {
       this.recorder[key] = 0;
-      this[key] = new Map<string, any>();
+      this[key] = new Map<string, CacheValue<Manager>>();
     });
   }
 
-  bufferPool(type: FileTypes | typeof DEFAULT_POLL) {
-    return this[type] as Map<string, any>;
+  private bufferPool(type: FileTypes | typeof DEFAULT_POLL) {
+    return this[type] as Map<string, CacheValue<Manager>>;
   }
 
   has(url: string) {
@@ -48,8 +48,8 @@ export class AppCacheContainer {
     }
   }
 
-  set(url: string, data: any, type: FileTypes) {
-    const curSize = cachedDataSet.has(data) ? 0 : calculateObjectSize(data);
+  set(url: string, data: CacheValue<Manager>, type: FileTypes) {
+    const curSize = cachedDataSet.has(data) ? 0 : data.size;
     const totalSize = this.totalSize + curSize;
 
     if (totalSize < this.maxSize) {

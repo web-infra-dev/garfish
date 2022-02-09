@@ -1,12 +1,11 @@
 import { SyncHook, SyncWaterfallHook, PluginSystem } from '@garfish/hooks';
 import {
-  warn,
   error,
   isJs,
   isCss,
   isHtml,
-  __LOADER_FLAG__,
   isJsonp,
+  __LOADER_FLAG__,
 } from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
@@ -31,14 +30,17 @@ export interface LoaderOptions {
   maxSize?: number;
 }
 
-interface LoadedHookArgs<T extends Manager> {
+export interface CacheValue<T extends Manager> {
+  url: string;
+  code: string;
+  size: number;
+  fileType: FileTypes | '';
+  resourceManager: T | null;
+}
+
+export interface LoadedHookArgs<T extends Manager> {
   result: Response;
-  value: {
-    url: string;
-    code: string;
-    fileType: FileTypes | '';
-    resourceManager: T | null;
-  };
+  value: CacheValue<T>;
 }
 
 export class Loader {
@@ -168,6 +170,7 @@ export class Loader {
             url,
             resourceManager,
             fileType: fileType || '',
+            size: new Blob([code]).size,
             code: resourceManager ? '' : code,
           },
         });
