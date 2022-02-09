@@ -171,7 +171,7 @@ export class Loader {
             resourceManager,
             fileType: fileType || '',
             code: resourceManager ? '' : code,
-            size: size || new Blob([code]).size,
+            size: size || code.length,
           },
         });
 
