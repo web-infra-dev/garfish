@@ -1,9 +1,4 @@
-import {
-  error,
-  isPrimitive,
-  isPlainObject,
-  parseContentType,
-} from '@garfish/utils';
+import { error, parseContentType } from '@garfish/utils';
 import { Manager, Loader } from './index';
 
 export async function request(url: string, config: RequestInit) {
@@ -14,8 +9,15 @@ export async function request(url: string, config: RequestInit) {
   }
   const code = await result.text();
   const type = result.headers.get('content-type');
+  const size = Number(result.headers.get('content-size'));
   const mimeType = parseContentType(type);
-  return { code, result, mimeType };
+
+  return {
+    code,
+    result,
+    mimeType,
+    size: Number.isNaN(size) ? size : null,
+  };
 }
 
 export function copyResult(result) {

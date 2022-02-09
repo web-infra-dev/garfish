@@ -136,7 +136,7 @@ export class Loader {
     });
 
     loadingList[url] = request(resOpts.url, resOpts.requestConfig)
-      .then(({ code, mimeType, result }) => {
+      .then(({ code, size, mimeType, result }) => {
         let managerCtor, fileType: FileTypes;
 
         if (isModule) {
@@ -170,8 +170,8 @@ export class Loader {
             url,
             resourceManager,
             fileType: fileType || '',
-            size: new Blob([code]).size,
             code: resourceManager ? '' : code,
+            size: size || new Blob([code]).size,
           },
         });
 
