@@ -1,27 +1,21 @@
+name: Changelog
 
-name: ChangeLog
 on:
   push:
-    branches:
-      - main
-      - master
     tags:
-      - 'v1.*.*'
+      - 'v*'
 
 jobs:
   release:
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        node-version: [14.17.0]
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-      with:
-        ref: ${{ github.event.inputs.branch }}
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npx conventional-github-releaser -p angular
-      env:
-        CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          registry-url: https://registry.npmjs.org/
+      - run: npx conventional-github-releaser -p angular
+        env:
+          CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{secrets.GITHUB_TOKEN}}
