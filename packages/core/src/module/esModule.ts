@@ -67,7 +67,7 @@ export class ESModuleLoader {
         url,
       );
       const blobUrl = this.createBlobUrl(
-        `import.meta.url='${url}';${envVarStr}${scriptCode}\n${''}`,
+        `import.meta.url='${url}';${envVarStr}${scriptCode}\n${sourcemap}`,
       );
       this.moduleCache[saveUrl] = blobUrl;
     }
@@ -116,7 +116,7 @@ export class ESModuleLoader {
         k5 = transformUrl(baseUrl, k5);
       }
       const blobUrl = this.moduleCache[k5];
-      return `${k2} '${blobUrl || k5}'`;
+      return `${k2}'${blobUrl || k5}'`;
     });
 
     // Dynamic import
@@ -182,9 +182,7 @@ export class ESModuleLoader {
       }
 
       code = await this.analysisModule(code, envVarStr, url, url);
-      code = `import.meta.url='${url}';${envVarStr}${code}\n;window.${
-        this.globalVarKey
-      }.resolve();\n${''}`;
+      code = `import.meta.url='${url}';${envVarStr}${code}\n;window.${this.globalVarKey}.resolve();\n${sourcemap}`;
 
       this.app.global[this.globalVarKey] = env;
       const blobUrl = this.createBlobUrl(code);
