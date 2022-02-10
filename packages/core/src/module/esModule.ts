@@ -28,12 +28,19 @@ export class ESModuleLoader {
   }
 
   private execModuleCode(blobUrl: string) {
-    // TODO: Don't use eval, it will cause sandbox escape
     return (0, eval)(`import('${blobUrl}')`);
   }
 
-  private createBlobUrl(code: string) {
+  // TODO: base64 is too slow, but it can solve the problem of sourcemap debugging
+  private async createBlobUrl(code: string) {
     return URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
+  }
+
+  private setBlobUrl(saveId: string, blobUrl: string) {
+    if (this.moduleCache[saveId]) {
+      URL.revokeObjectURL(this.moduleCache[saveId]);
+    }
+    this.moduleCache[saveId] = blobUrl;
   }
 
   private haveSourcemap(code: string) {
@@ -65,10 +72,10 @@ export class ESModuleLoader {
         saveUrl,
         url,
       );
-      const blobUrl = this.createBlobUrl(
+      const blobUrl = await this.createBlobUrl(
         `import.meta.url='${url}';${envVarStr}${scriptCode}\n${sourcemap}`,
       );
-      this.moduleCache[saveUrl] = blobUrl;
+      this.setBlobUrl(saveUrl, blobUrl);
     }
   }
 
@@ -115,6 +122,7 @@ export class ESModuleLoader {
         k5 = transformUrl(baseUrl, k5);
       }
       const blobUrl = this.moduleCache[k5];
+      // TODO: filter string
       return `${k2}'${blobUrl || k5}'`;
     });
 
@@ -184,9 +192,9 @@ export class ESModuleLoader {
       code = `import.meta.url='${url}';${envVarStr}${code}\n;window.${this.globalVarKey}.resolve();\n${sourcemap}`;
 
       this.app.global[this.globalVarKey] = env;
-      const blobUrl = this.createBlobUrl(code);
+      const blobUrl = await this.createBlobUrl(code);
       if (!options.isInline) {
-        this.moduleCache[url] = blobUrl;
+        this.setBlobUrl(url, blobUrl);
       }
       this.execModuleCode(blobUrl);
     });
