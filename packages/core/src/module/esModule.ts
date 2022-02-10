@@ -5,7 +5,7 @@ import type { App, ExecScriptOptions } from './app';
 const __GARFISH_ESM_ENV__ = '__GARFISH_ESM_ENV__';
 const COMMENT_REG = /[^:]\/\/.*|\/\*[\w\W]*?\*\//g;
 const DYNAMIC_IMPORT_REG =
-  /([\s\n;=\(:>{><\+\-\!&|]+|^)import[\s\n]*\([^\(\)]+\)(?![\s\n]*{)/g;
+  /([\s\n;=\(:>{><\+\-\!&|]+|^)import[\s\n]*\([\s\S]+\)(?![\s\n]*{)/g;
 
 // Template strings are not processed because they are too complex
 const STRING_REG = new RegExp(
