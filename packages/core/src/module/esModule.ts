@@ -8,6 +8,17 @@ const COMMENT_REG = /[^:]\/\/.*|\/\*[\w\W]*?\*\//g;
 const DYNAMIC_IMPORT_REG =
   /([\s\n;=\(:>{><\+\-\!&|]+|^)import[\s\n]*\([^\(\)]+\)(?![\s\n]*{)/g;
 
+// Template strings are not processed because they are too complex
+const STRING_REG = new RegExp(
+  // eslint-disable-next-line quotes
+  `((import|export)\\s?([^.'"]*(from)?\\s*))?${["'", '"']
+    .map((c) => {
+      return `(${c}((\\\\${c})?[^${c}\\\\]*)(\\\\${c})?[^${c}]*(\\\\${c})?${c})`;
+    })
+    .join('|')}`,
+  'g',
+);
+
 export class ESModuleLoader {
   private app: App;
   private globalVarKey: string;
@@ -59,6 +70,14 @@ export class ESModuleLoader {
     }
   }
 
+  // Remove comment and string
+  private removeExtraString(code: string) {
+    code = ' ' + code.replace(COMMENT_REG, '');
+    return code.replace(STRING_REG, (k1) => {
+      return k1.startsWith('import') || k1.startsWith('export') ? k1 : '';
+    });
+  }
+
   private async analysisModule(
     code: string,
     envVarStr,
@@ -66,9 +85,10 @@ export class ESModuleLoader {
     realUrl: string,
   ) {
     let matchRes;
-    const analysisCode = ' ' + code.replace(COMMENT_REG, '');
+    const analysisCode = this.removeExtraString(code);
     // Each module requires a brand new regular object
-    const IMPORT_REG = /((import|export)\s?([^'"]*from\s*)?)['"]([^\n;]+)['"]/g;
+    const IMPORT_REG =
+      /((import|export)\s?([^'"]*from\s*)?)['"]([^\n'";]+)['"]/g;
     const dynamicImport = `var _import_=(url)=>window.${this.globalVarKey}.import(url,'${baseUrl}','${realUrl}');`;
 
     while ((matchRes = IMPORT_REG.exec(analysisCode))) {
