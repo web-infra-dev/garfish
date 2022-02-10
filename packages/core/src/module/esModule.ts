@@ -6,7 +6,6 @@ const __GARFISH_ESM_ENV__ = '__GARFISH_ESM_ENV__';
 const COMMENT_REG = /[^:]\/\/.*|\/\*[\w\W]*?\*\//g;
 const DYNAMIC_IMPORT_REG =
   /([\s\n;=\(:>{><\+\-\!&|]+|^)import[\s\n]*\([\s\S]+\)(?![\s\n]*{)/g;
-
 // Template strings are not processed because they are too complex
 const STRING_REG = new RegExp(
   // eslint-disable-next-line quotes
@@ -17,10 +16,6 @@ const STRING_REG = new RegExp(
     .join('|')}`,
   'g',
 );
-
-const haveSourcemap = (code: string) => {
-  return /[@#] sourceMappingURL=/g.test(code);
-};
 
 export class ESModuleLoader {
   private app: App;
@@ -41,6 +36,10 @@ export class ESModuleLoader {
     return URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
   }
 
+  private haveSourcemap(code: string) {
+    return /[@#] sourceMappingURL=/g.test(code);
+  }
+
   private async fetchModuleResource(
     envVarStr: string,
     saveUrl: string,
@@ -57,7 +56,7 @@ export class ESModuleLoader {
       // eslint-disable-next-line prefer-const
       let { url, scriptCode } = resourceManager;
 
-      if (!haveSourcemap(scriptCode)) {
+      if (!this.haveSourcemap(scriptCode)) {
         sourcemap = await createSourcemap(scriptCode, requestUrl);
       }
       scriptCode = await this.analysisModule(
@@ -172,7 +171,7 @@ export class ESModuleLoader {
       }, '');
 
       let sourcemap = '';
-      if (!haveSourcemap(code)) {
+      if (!this.haveSourcemap(code)) {
         sourcemap = await createSourcemap(
           code,
           options.isInline
