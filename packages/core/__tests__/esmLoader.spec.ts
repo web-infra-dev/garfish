@@ -11,7 +11,7 @@ describe('Core: esm loader', () => {
       console.log(1/*f*/2)
     `.trim()
     code = code.replace(COMMENT_REG, '');
-    expect(code).toBe('a\n      console.log(12)');
+    expect(code).toBe('a\n     \n     \n      \n      \n      console.log(12)');
   })
 
   it('string reg', () => {
@@ -20,7 +20,7 @@ describe('Core: esm loader', () => {
     expect(code).toBe(`const a = ;const b = ;const c = ;const tao = `);
     code = `import a from './x.js';const d = "import a from './x.js'"`;
     code = code.replace(STRING_REG, '');
-    expect(code).toBe(`const d =`);
+    expect(code).toBe(`;const d =`);
   })
 
   it('dynamic import reg', () => {
