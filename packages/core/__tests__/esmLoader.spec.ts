@@ -20,7 +20,7 @@ describe('Core: esm loader', () => {
     expect(code).toBe(`const a = ;const b = ;const c = ;const tao = `);
     code = `import a from './x.js';const d = "import a from './x.js'"`;
     code = code.replace(STRING_REG, '');
-    expect(code).toBe(`;const d =`);
+    expect(code).toBe(`;const d = `);
   })
 
   it('dynamic import reg', () => {
