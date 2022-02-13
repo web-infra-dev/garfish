@@ -3,11 +3,11 @@ import { isAbsolute, transformUrl, createSourcemap } from '@garfish/utils';
 import type { App, ExecScriptOptions } from './app';
 
 const __GARFISH_ESM_ENV__ = '__GARFISH_ESM_ENV__';
-const COMMENT_REG = /[^:]\/\/.*|\/\*[\w\W]*?\*\//g;
-const DYNAMIC_IMPORT_REG =
+export const COMMENT_REG = /[^:]\/\/.*|\/\*[\w\W]*?\*\//g;
+export const DYNAMIC_IMPORT_REG =
   /([\s\n;=\(:>{><\+\-\!&|]+|^)import[\s\n]*\([\s\S]+\)(?![\s\n]*{)/g;
 // Template strings are not processed because they are too complex
-const STRING_REG = new RegExp(
+export const STRING_REG = new RegExp(
   // eslint-disable-next-line quotes
   `((import|export)\\s?([^.'"]*(from)?\\s*))?${["'", '"']
     .map((c) => {
