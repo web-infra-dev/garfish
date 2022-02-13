@@ -11,11 +11,11 @@ describe('Core: esm loader', () => {
       console.log(1/*f*/2)
     `.trim()
     code = code.replace(COMMENT_REG, '');
-    expect(code).toBe('a\nconsole.log(12)');
+    expect(code).toBe('a\n      console.log(12)');
   })
 
   it('string reg', () => {
-    let code = `const a = 'chen';const b = "tao";const c = 'ch\'en';const tao = "t\"tao"`;
+    let code = `const a = 'chen';const b = "tao";const c = 'ch\\'en';const tao = "t\\"tao"`;
     code = code.replace(STRING_REG, '');
     expect(code).toBe(`const a = ;const b = ;const c = ;const tao = `);
     code = `import a from './x.js';const d = "import a from './x.js'"`;

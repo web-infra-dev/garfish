@@ -5,7 +5,7 @@ import type { App, ExecScriptOptions } from './app';
 const __GARFISH_ESM_ENV__ = '__GARFISH_ESM_ENV__';
 export const COMMENT_REG = /[^:]\/\/.*|\/\*[\w\W]*?\*\//g;
 export const DYNAMIC_IMPORT_REG =
-  /([\s\n;=\(:>{><\+\-\!&|]+|^)import[\s\n]*\([\s\S]+\)(?![\s\n]*{)/g;
+  /([\s\n;=\(:>{><\+\-\!&|]{1}|^)import[\s\n]*\((?![^\(\)]\)+[\s\n]*{)/g;
 // Template strings are not processed because they are too complex
 export const STRING_REG = new RegExp(
   // eslint-disable-next-line quotes
