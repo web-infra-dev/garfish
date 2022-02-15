@@ -1256,13 +1256,13 @@ packages:
     dev: false
 
   /@arco-design/color/0.4.0:
-    resolution: {integrity: sha1-b7RqMzpqHF5MVjL3WPGAeZAYKAw=}
+    resolution: {integrity: sha512-s7p9MSwJgHeL8DwcATaXvWT3m2SigKpxx4JA1BGPHL4gfvaQsmQfrLBDpjOJFJuJ2jG2dMt3R3P8Pm9E65q18g==}
     dependencies:
       color: 3.2.1
     dev: false
 
   /@arco-design/web-react/2.29.0_b8fdba992ce7d797017dc07106486496:
-    resolution: {integrity: sha512-YdgS5p79kLmVSc5chgCMZlCbCwntJTCqSa6hRT/6qHKEiH/u9zC5liiVj6iTHoqPfK3K5Sj/GEDSkObvbY36gw==}
+    resolution: {c-YdgS5p79kLmVSc5chgCMZlCbCwntJTCqSa6hRT/6qHKEiH/u9zC5liiVj6iTHoqPfK3K5Sj/GEDSkObvbY36gw==: null, registry: http://registry.npmjs.org/, tarball: http://registry.npmjs.org/@arco-design/web-react/-/web-react-2.29.0.tgz}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
@@ -1287,7 +1287,7 @@ packages:
     dev: false
 
   /@arco-design/web-react/2.29.0_react-dom@16.14.0+react@16.14.0:
-    resolution: {integrity: sha512-YdgS5p79kLmVSc5chgCMZlCbCwntJTCqSa6hRT/6qHKEiH/u9zC5liiVj6iTHoqPfK3K5Sj/GEDSkObvbY36gw==}
+    resolution: {c-YdgS5p79kLmVSc5chgCMZlCbCwntJTCqSa6hRT/6qHKEiH/u9zC5liiVj6iTHoqPfK3K5Sj/GEDSkObvbY36gw==: null, registry: http://registry.npmjs.org/, tarball: http://registry.npmjs.org/@arco-design/web-react/-/web-react-2.29.0.tgz}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
@@ -1312,7 +1312,7 @@ packages:
     dev: false
 
   /@arco-design/web-react/2.29.0_react-dom@17.0.2+react@17.0.2:
-    resolution: {integrity: sha512-YdgS5p79kLmVSc5chgCMZlCbCwntJTCqSa6hRT/6qHKEiH/u9zC5liiVj6iTHoqPfK3K5Sj/GEDSkObvbY36gw==}
+    resolution: {c-YdgS5p79kLmVSc5chgCMZlCbCwntJTCqSa6hRT/6qHKEiH/u9zC5liiVj6iTHoqPfK3K5Sj/GEDSkObvbY36gw==: null, registry: http://registry.npmjs.org/, tarball: http://registry.npmjs.org/@arco-design/web-react/-/web-react-2.29.0.tgz}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
@@ -7446,7 +7446,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.15_typescript@4.4.3
+      '@vue/cli-service': 4.5.15_33a4d7b51a28e9cdc5a208514629e00a
       '@vue/cli-shared-utils': 4.5.15
     dev: true
 
@@ -7455,7 +7455,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.15_typescript@4.4.3
+      '@vue/cli-service': 4.5.15_33a4d7b51a28e9cdc5a208514629e00a
     dev: true
 
   /@vue/cli-service/4.5.15_33a4d7b51a28e9cdc5a208514629e00a:
@@ -11873,7 +11873,7 @@ packages:
     dev: true
 
   /emojis-list/3.0.0:
-    resolution: {integrity: sha1-VXBmIEatKeLpFucariYKvf9Pang=}
+    resolution: {integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==}
     engines: {node: '>= 4'}
 
   /emoticon/3.2.0:
@@ -13805,7 +13805,7 @@ packages:
     resolution: {integrity: sha1-FQStJSMVjKpA20onh8sBQRmU6k8=}
 
   /fsevents/1.2.13:
-    resolution: {integrity: sha1-8yXLBFVZJCi88Rs4M3DvcOO/zDg=}
+    resolution: {integrity: sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==}
     engines: {node: '>= 4.0'}
     os: [darwin]
     deprecated: fsevents 1 will break on node v14+ and could be using insecure binaries. Upgrade to fsevents 2.
@@ -13817,7 +13817,7 @@ packages:
     optional: true
 
   /fsevents/2.3.2:
-    resolution: {integrity: sha1-ilJveLj99GI7cJ4Ll1xSwkwC/Ro=}
+    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     requiresBuild: true
@@ -17300,7 +17300,7 @@ packages:
     engines: {node: '>=0.10.0'}
 
   /loose-envify/1.4.0:
-    resolution: {integrity: sha1-ce5R+nvkyuwaY4OffmgtgTLTDK8=}
+    resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
     hasBin: true
     dependencies:
       js-tokens: 4.0.0
@@ -17365,7 +17365,7 @@ packages:
       pify: 3.0.0
 
   /make-dir/2.1.0:
-    resolution: {integrity: sha1-XwMQ4YuL6JjMBwCSlaMK5B6R5vU=}
+    resolution: {integrity: sha512-LS9X+dc8KLxXCb8dni79fLIIUA5VyZoyjSMCwTluaXA0o27cCK0bhXkpgw+sTXVpPy/lSO57ilRixqk0vDmtRA==}
     engines: {node: '>=6'}
     dependencies:
       pify: 4.0.1
@@ -18412,7 +18412,7 @@ packages:
     resolution: {integrity: sha1-tKr7k+OustgXTKU88WOrfXMIMF8=}
 
   /nice-napi/1.0.2:
-    resolution: {integrity: sha1-3Aq1oerCDOVIgC/FaG6qa8ZUkns=}
+    resolution: {integrity: sha512-px/KnJAJZf5RuBGcfD+Sp2pAKq0ytz8j+1NehvgIGFkvtvFrDM3T8E4x/JJODXK9WZow8RRGrbA9QQ3hs+pDhA==}
     os: ['!win32']
     requiresBuild: true
     dependencies:
@@ -25176,7 +25176,7 @@ packages:
     dev: true
 
   /watchpack-chokidar2/2.0.1:
-    resolution: {integrity: sha1-OFAAcu5uzmbzdpk2lQ6hdxvhyVc=}
+    resolution: {integrity: sha512-nCFfBIPKr5Sh61s4LPpy1Wtfi0HE8isJ3d2Yb5/Ppw2P2B/3eVSEBjKfN0fmHJSK14+31KwMKmcrzs2GM4P0Ww==}
     requiresBuild: true
     dependencies:
       chokidar: 2.1.8
