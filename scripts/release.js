@@ -5,6 +5,7 @@ const currentVersion = require('../package.json').version;
 const args = require('minimist')(process.argv.slice(2));
 const fs = require('fs');
 const path = require('path');
+const dayjs = require('dayjs');
 
 const actionPublishCanary =
   ['preminor', 'prepatch'].includes(args.version) && process.env.CI;
@@ -85,7 +86,7 @@ async function test() {
 async function bumpVersion() {
   let version = args.version;
   if (version && actionPublishCanary) {
-    const hash = +new Date();
+    const hash = dayjs().format('YYYYMMDDHHmmss');
     version = semver.inc(currentVersion, version, 'beta-' + hash);
   }
 
