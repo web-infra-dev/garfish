@@ -3,10 +3,19 @@ import { isAbsolute, transformUrl, createSourcemap } from '@garfish/utils';
 import type { App, ExecScriptOptions } from './app';
 
 const __GARFISH_ESM_ENV__ = '__GARFISH_ESM_ENV__';
-const SOURCEMAP_REG = /[@#] sourceMappingURL=/g;
-const COMMENT_REG = /[^:]\/\/.*|\/\*[\w\W]*?\*\//g;
-const DYNAMIC_IMPORT_REG =
-  /([\s\n;=\(:>{><\+\-\!&|]+|^)import[\s\n]*\([^\(\)]+\)(?![\s\n]*{)/g;
+export const COMMENT_REG = /[^:]\/\/.*|\/\*[\w\W]*?\*\//g;
+export const DYNAMIC_IMPORT_REG =
+  /([\s\n;=\(:>{><\+\-\!&|]{1}|^)import[\s\n]*\((?![^\(\)]\)+[\s\n]*{)/g;
+// Template strings are not processed because they are too complex
+export const STRING_REG = new RegExp(
+  // eslint-disable-next-line quotes
+  `((import|export)\\s?([^.'"]*(from)?\\s*))?${["'", '"']
+    .map((c) => {
+      return `(${c}((\\\\${c})?[^${c}\\\\]*)(\\\\${c})?[^${c}]*(\\\\${c})?${c})`;
+    })
+    .join('|')}`,
+  'g',
+);
 
 export class ESModuleLoader {
   private app: App;
@@ -19,12 +28,23 @@ export class ESModuleLoader {
   }
 
   private execModuleCode(blobUrl: string) {
-    // TODO: Don't use eval, it will cause sandbox escape
     return (0, eval)(`import('${blobUrl}')`);
   }
 
-  private createBlobUrl(code: string) {
+  // TODO: base64 is too slow, but it can solve the problem of sourcemap debugging
+  private async createBlobUrl(code: string) {
     return URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
+  }
+
+  private setBlobUrl(saveId: string, blobUrl: string) {
+    if (this.moduleCache[saveId]) {
+      URL.revokeObjectURL(this.moduleCache[saveId]);
+    }
+    this.moduleCache[saveId] = blobUrl;
+  }
+
+  private haveSourcemap(code: string) {
+    return /[@#] sourceMappingURL=/g.test(code);
   }
 
   private async fetchModuleResource(
@@ -43,7 +63,7 @@ export class ESModuleLoader {
       // eslint-disable-next-line prefer-const
       let { url, scriptCode } = resourceManager;
 
-      if (!SOURCEMAP_REG.test(scriptCode)) {
+      if (!this.haveSourcemap(scriptCode)) {
         sourcemap = await createSourcemap(scriptCode, requestUrl);
       }
       scriptCode = await this.analysisModule(
@@ -52,11 +72,19 @@ export class ESModuleLoader {
         saveUrl,
         url,
       );
-      const blobUrl = this.createBlobUrl(
+      const blobUrl = await this.createBlobUrl(
         `import.meta.url='${url}';${envVarStr}${scriptCode}\n${sourcemap}`,
       );
-      this.moduleCache[saveUrl] = blobUrl;
+      this.setBlobUrl(saveUrl, blobUrl);
     }
+  }
+
+  // Remove comment and string
+  private removeExtraCode(code: string) {
+    code = ' ' + code.replace(COMMENT_REG, '');
+    return code.replace(STRING_REG, (k1) => {
+      return k1.startsWith('import') || k1.startsWith('export') ? k1 : '';
+    });
   }
 
   private async analysisModule(
@@ -66,9 +94,10 @@ export class ESModuleLoader {
     realUrl: string,
   ) {
     let matchRes;
-    const analysisCode = ' ' + code.replace(COMMENT_REG, '');
+    const analysisCode = this.removeExtraCode(code);
     // Each module requires a brand new regular object
-    const IMPORT_REG = /((import|export)\s?([^'"]*from\s*)?)['"]([^\n;]+)['"]/g;
+    const IMPORT_REG =
+      /((import|export)\s?([^'"]*from\s*)?)['"]([^\n'";]+)['"]/g;
     const dynamicImport = `var _import_=(url)=>window.${this.globalVarKey}.import(url,'${baseUrl}','${realUrl}');`;
 
     while ((matchRes = IMPORT_REG.exec(analysisCode))) {
@@ -93,7 +122,8 @@ export class ESModuleLoader {
         k5 = transformUrl(baseUrl, k5);
       }
       const blobUrl = this.moduleCache[k5];
-      return `${k2} '${blobUrl || k5}'`;
+      // TODO: filter string
+      return `${k2}'${blobUrl || k5}'`;
     });
 
     // Dynamic import
@@ -149,7 +179,7 @@ export class ESModuleLoader {
       }, '');
 
       let sourcemap = '';
-      if (!SOURCEMAP_REG.test(code)) {
+      if (!this.haveSourcemap(code)) {
         sourcemap = await createSourcemap(
           code,
           options.isInline
@@ -162,9 +192,9 @@ export class ESModuleLoader {
       code = `import.meta.url='${url}';${envVarStr}${code}\n;window.${this.globalVarKey}.resolve();\n${sourcemap}`;
 
       this.app.global[this.globalVarKey] = env;
-      const blobUrl = this.createBlobUrl(code);
+      const blobUrl = await this.createBlobUrl(code);
       if (!options.isInline) {
-        this.moduleCache[url] = blobUrl;
+        this.setBlobUrl(url, blobUrl);
       }
       this.execModuleCode(blobUrl);
     });
