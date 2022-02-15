@@ -169,7 +169,7 @@ importers:
 
   dev/app-main:
     specifiers:
-      '@arco-design/web-react': ^2.28.1
+      '@arco-design/web-react': 2.29.0
       '@babel/core': ^7.13.15
       '@babel/plugin-proposal-class-properties': ^7.16.0
       '@babel/plugin-proposal-decorators': ^7.16.0
@@ -256,7 +256,7 @@ importers:
 
   dev/app-react-16:
     specifiers:
-      '@arco-design/web-react': ^2.28.2
+      '@arco-design/web-react': 2.29.0
       '@babel/core': ^7.13.15
       '@babel/plugin-proposal-class-properties': ^7.16.0
       '@babel/plugin-proposal-decorators': ^7.16.0
@@ -335,7 +335,7 @@ importers:
 
   dev/app-react-17:
     specifiers:
-      '@arco-design/web-react': ^2.28.1
+      '@arco-design/web-react': 2.29.0
       '@babel/core': ^7.13.15
       '@babel/plugin-proposal-class-properties': ^7.16.0
       '@babel/plugin-proposal-decorators': ^7.16.0
@@ -2169,7 +2169,7 @@ packages:
       '@babel/core': ^7.0.0-0
     dependencies:
       '@babel/core': 7.12.9
-      '@babel/helper-plugin-utils': 7.10.4
+      '@babel/helper-plugin-utils': 7.16.7
       '@babel/plugin-syntax-object-rest-spread': 7.8.3_@babel+core@7.12.9
       '@babel/plugin-transform-parameters': 7.16.7_@babel+core@7.12.9
     dev: false
@@ -4613,7 +4613,7 @@ packages:
       tslib: 2.3.1
       update-notifier: 5.1.0
       url-loader: 4.1.1_file-loader@6.2.0+webpack@5.68.0
-      wait-on: 6.0.1
+      wait-on: 6.0.0
       webpack: 5.68.0
       webpack-bundle-analyzer: 4.5.0
       webpack-dev-server: 4.7.4_webpack@5.68.0
@@ -5089,7 +5089,7 @@ packages:
       parse-numeric-range: 1.3.0
       postcss: 8.4.6
       prism-react-renderer: 1.3.1_react@16.14.0
-      prismjs: 1.26.0
+      prismjs: 1.25.0
       prop-types: 15.8.1
       react: 16.14.0
       react-dom: 16.14.0_react@16.14.0
@@ -8286,7 +8286,7 @@ packages:
       ajv:
         optional: true
     dependencies:
-      ajv: 8.9.0
+      ajv: 8.10.0
 
   /ajv-keywords/3.5.2_ajv@6.12.6:
     resolution: {integrity: sha512-5p6WTN0DdTGVQk6VjcEju19IgaHudalcfabD7yhDGeA6bcQnmL+CpveLJq/3hvfwd1aof6L386Ougkx6RfyMIQ==}
@@ -8326,6 +8326,7 @@ packages:
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
       uri-js: 4.4.1
+    dev: true
 
   /algoliasearch-helper/3.7.0_algoliasearch@4.12.1:
     resolution: {integrity: sha512-XJ3QfERBLfeVCyTVx80gon7r3/rgm/CE8Ha1H7cbablRe/X7SfYQ14g/eO+MhjVKIQp+gy9oC6G5ilmLwS1k6w==}
@@ -8746,7 +8747,6 @@ packages:
       follow-redirects: 1.14.8
     transitivePeerDependencies:
       - debug
-    dev: true
 
   /axios/0.24.0:
     resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
@@ -8755,14 +8755,6 @@ packages:
     transitivePeerDependencies:
       - debug
     dev: true
-
-  /axios/0.25.0:
-    resolution: {integrity: sha512-cD8FOb0tRH3uuEe6+evtAbgJtfxr7ly3fQjYcMcuPlgkwVS9xboaVIpcDV+cYQe+yGykgwZCs1pzjntcGa6l5g==}
-    dependencies:
-      follow-redirects: 1.14.8
-    transitivePeerDependencies:
-      - debug
-    dev: false
 
   /axobject-query/2.0.2:
     resolution: {integrity: sha512-MCeek8ZH7hKyO1rWUbKNQBbl4l2eY0ntk7OGi+q0RlafrCnfPxC06WZA+uebCfmYp4mNU9jRBP1AhGyf8+W3ww==}
@@ -9994,7 +9986,7 @@ packages:
     requiresBuild: true
     dependencies:
       glob: 5.0.15
-      node-addon-api: 4.3.0
+      node-addon-api: 3.2.1
       rimraf: 2.7.1
       underscore: 1.13.2
     dev: false
@@ -11684,6 +11676,13 @@ packages:
     dependencies:
       domelementtype: 1.3.1
       entities: 1.1.2
+    dev: false
+
+  /dom-serializer/0.2.2:
+    resolution: {integrity: sha512-2/xPb3ORsQ42nHYiSunXkDjPLBaEj/xTwUO4B7XCZQTRk7EBtTOPaygh10YAAh2OI1Qrp6NWfpAhzswj0ydt9g==}
+    dependencies:
+      domelementtype: 2.2.0
+      entities: 2.2.0
 
   /dom-serializer/1.3.2:
     resolution: {integrity: sha512-5c54Bk5Dw4qAxNOI1pFEizPSjVsx5+bpJKmL2kPn8JhBUq2q09tTCa3mjijun2NfK78NMouDYNMBkOrPZiS+ig==}
@@ -11735,14 +11734,14 @@ packages:
   /domutils/1.5.1:
     resolution: {integrity: sha1-3NhIiib1Y9YQeeSMn3t+Mjc2gs8=}
     dependencies:
-      dom-serializer: 0.1.1
+      dom-serializer: 0.2.2
       domelementtype: 1.3.1
     dev: false
 
   /domutils/1.7.0:
     resolution: {integrity: sha512-Lgd2XcJ/NjEw+7tFvfKxOzCYKZsdct5lczQ2ZaQY8Djz7pfAD3Gbp8ySJWtreII/vDlMVmxwa6pHmdxIYgttDg==}
     dependencies:
-      dom-serializer: 0.1.1
+      dom-serializer: 0.2.2
       domelementtype: 1.3.1
 
   /domutils/2.8.0:
@@ -11971,6 +11970,7 @@ packages:
 
   /entities/1.1.2:
     resolution: {integrity: sha512-f2LZMYl1Fzu7YSBKg+RoROelpOaNrcGmE9AZubeDfrCEia483oW4MI4VyFd5VNHIgQ/7qm1I0wUHK1eJnn2y2w==}
+    dev: false
 
   /entities/2.2.0:
     resolution: {integrity: sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==}
@@ -20760,11 +20760,6 @@ packages:
   /prismjs/1.25.0:
     resolution: {integrity: sha512-WCjJHl1KEWbnkQom1+SzftbtXMKQoezOCYs5rECqMN+jP+apI7ftoflyqigqzopSO3hMhTEb0mFClA8lkolgEg==}
 
-  /prismjs/1.26.0:
-    resolution: {integrity: sha512-HUoH9C5Z3jKkl3UunCyiD5jwk0+Hz0fIgQ2nbwU2Oo/ceuTAQAg+pPVnfdt2TJWRVLcxKh9iuoYDUSc8clb5UQ==}
-    engines: {node: '>=6'}
-    dev: false
-
   /private/0.1.8:
     resolution: {integrity: sha1-I4Hts2ifelPWUxkAYPz4ItLzaP8=}
     engines: {node: '>= 0.6'}
@@ -25173,21 +25168,6 @@ packages:
       rxjs: 7.5.4
     transitivePeerDependencies:
       - debug
-    dev: true
-
-  /wait-on/6.0.1:
-    resolution: {integrity: sha512-zht+KASY3usTY5u2LgaNqn/Cd8MukxLGjdcZxT2ns5QzDmTFc4XoWBgC+C/na+sMRZTuVygQoMYwdcVjHnYIVw==}
-    engines: {node: '>=10.0.0'}
-    hasBin: true
-    dependencies:
-      axios: 0.25.0
-      joi: 17.6.0
-      lodash: 4.17.21
-      minimist: 1.2.5
-      rxjs: 7.5.4
-    transitivePeerDependencies:
-      - debug
-    dev: false
 
   /walker/1.0.8:
     resolution: {integrity: sha512-ts/8E8l5b7kY0vlWLewOkDXMmPdLcVV4GmOQLyxuSswIJsweeFZtAsMF7k1Nszz+TYBQrlYRmzOnr398y1JemQ==}
