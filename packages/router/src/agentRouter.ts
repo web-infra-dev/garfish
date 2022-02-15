@@ -35,9 +35,10 @@ export const normalAgent = () => {
         const e = createEvent(type);
         (e as any).arguments = arguments;
 
-        if (urlBefore !== urlAfter || stateBefore !== stateAfter) {
-          if (history.state && history.state === 'object')
-            delete history.state[__GARFISH_ROUTER_UPDATE_FLAG__];
+        if (
+          urlBefore !== urlAfter ||
+          JSON.stringify(stateBefore) !== JSON.stringify(stateAfter)
+        ) {
           window.dispatchEvent(
             new CustomEvent(__GARFISH_BEFORE_ROUTER_EVENT__, {
               detail: {
@@ -73,7 +74,7 @@ export const normalAgent = () => {
         // Stop trigger collection function, fire again match rendering
         if (event && typeof event === 'object' && (event as any).garfish)
           return;
-        if (history.state && history.state === 'object')
+        if (history.state && typeof history.state === 'object')
           delete history.state[__GARFISH_ROUTER_UPDATE_FLAG__];
         window.dispatchEvent(
           new CustomEvent(__GARFISH_BEFORE_ROUTER_EVENT__, {
