@@ -9,11 +9,10 @@ export function GarfishPerformance() {
     return {
       name: 'performance',
 
-      async beforeLoad(appInfo) {
+      beforeLoad(appInfo) {
         if (!subAppMap[appInfo.name]) {
-          const appDomGetter = await getRenderNode(appInfo.domGetter);
           subAppMap[appInfo.name] = new SubAppObserver({
-            subAppRootSelector: appDomGetter as Element,
+            subAppRootSelector: appInfo.domGetter,
           });
         }
         subAppMap[appInfo.name].subAppBeforeLoad(appInfo.entry);

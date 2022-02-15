@@ -7,7 +7,7 @@ enum ElementType {
   ELEMENT = 1,
 }
 
-function Attributes({ name, value }) {
+function Attributes(this: any, { name, value }) {
   this.key = name;
   this.value = value;
 }

@@ -1,8 +1,6 @@
 // The logic of reactBridge is referenced from single-spa typography
 // Because the Garfish lifecycle does not agree with that of single-spa  part logical coupling in the framework
 // https://github.com/single-spa/single-spa-vue/blob/main/src/single-spa-vue.js
-import { __GARFISH_GLOBAL_APP_LIFECYCLE__ } from '@garfish/utils';
-
 const defaultOpts = {
   Vue: null, // vue2
   createApp: null, // vue3
@@ -29,7 +27,7 @@ declare global {
   }
 }
 
-export function vueBridge(userOpts) {
+export function vueBridge(this: any, userOpts) {
   if (typeof userOpts !== 'object') {
     throw new Error('garfish-vue-bridge: requires a configuration object');
   }
@@ -67,7 +65,7 @@ export function vueBridge(userOpts) {
       opts.canUpdate && update.call(this, opts, mountedInstances, props),
   };
 
-  const provider = async function (appInfo, props) {
+  const provider = async function (this: any, appInfo, props) {
     await bootstrap.call(this, opts, appInfo, props);
     return providerLifeCycle;
   };
@@ -79,14 +77,6 @@ export function vueBridge(userOpts) {
     __GARFISH_EXPORTS__
   ) {
     __GARFISH_EXPORTS__.provider = provider;
-  }
-
-  // es module env
-  if (window[__GARFISH_GLOBAL_APP_LIFECYCLE__] && opts.appId) {
-    const subLifeCycle = window[__GARFISH_GLOBAL_APP_LIFECYCLE__][opts.appId];
-    if (subLifeCycle) {
-      subLifeCycle.defer(providerLifeCycle);
-    }
   }
   return provider;
 }

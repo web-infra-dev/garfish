@@ -1,4 +1,4 @@
-import { filterAndWrapEventListener } from '@garfish/utils';
+// import { filterAndWrapEventListener } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 
 type Opts = boolean | AddEventListenerOptions;
@@ -9,7 +9,12 @@ export function listenerModule(_sandbox: Sandbox) {
   const rawAddEventListener = window.addEventListener;
   const rawRemoveEventListener = window.removeEventListener;
 
-  function addListener(type: string, listener: Listener, options?: Opts) {
+  function addListener(
+    this: any,
+    type: string,
+    listener: Listener,
+    options?: Opts,
+  ) {
     const curListeners = listeners.get(type) || [];
     listeners.set(type, [...curListeners, listener]);
 
@@ -28,6 +33,7 @@ export function listenerModule(_sandbox: Sandbox) {
   }
 
   function removeListener(
+    this: any,
     type: string,
     listener: Listener,
     options?: boolean | EventListenerOptions,

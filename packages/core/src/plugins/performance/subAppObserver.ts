@@ -1,4 +1,5 @@
-import { warn } from '@garfish/utils';
+import { getRenderNode, warn } from '@garfish/utils';
+import { interfaces } from '../../interface';
 
 // Child app performance monitoring tools
 interface PerformanceData {
@@ -21,7 +22,7 @@ interface Config {
 }
 
 interface IOptions {
-  subAppRootSelector: Element | string;
+  subAppRootSelector: interfaces.DomGetter;
   domObserverMaxTime?: number;
   waitSubAppNotifyMaxTime?: number;
   observeConfig?: Config;
@@ -38,7 +39,7 @@ export class SubAppObserver {
   private subAppBeforeMountTime: number;
   private subAppStartPageShowTime: number;
   private subAppPageShowTime: number;
-  private domQuerySelector: Element | string;
+  private domQuerySelector: interfaces.DomGetter;
   private finishAction: string;
   private config: Config;
   private isRecordFinish: boolean;
@@ -173,14 +174,11 @@ export class SubAppObserver {
     this.isStartShowFlag = true;
   }
 
-  private _subAppStartObserver() {
+  private async _subAppStartObserver() {
     try {
-      const targetNode =
-        typeof this.domQuerySelector === 'string'
-          ? (document.querySelector(this.domQuerySelector) as HTMLElement)
-          : (this.domQuerySelector as HTMLElement);
+      const targetNode = await getRenderNode(this.domQuerySelector);
       this.observer.observe(targetNode, this.config);
-      this._subAppClickEventObserver(targetNode);
+      this._subAppClickEventObserver(targetNode as HTMLElement);
     } catch (e) {
       warn(e);
     }

@@ -1,5 +1,6 @@
 import {
   warn,
+  Queue,
   isAbsolute,
   transformUrl,
   callTestCallback,
@@ -14,6 +15,9 @@ const isMobile =
     navigator.userAgent,
   );
 
+// Using queues, to avoid interference with the normal request
+const requestQueue = new Queue();
+
 const isSlowNetwork = () =>
   (navigator as any).connection
     ? (navigator as any).connection.saveData ||
@@ -27,38 +31,6 @@ export const requestIdleCallback =
   __TEST__ || typeof idleCallback !== 'function'
     ? window.setTimeout
     : idleCallback;
-
-// Using queues, to avoid interference with the normal request
-export const requestQueue = {
-  fx: [],
-  init: true,
-  lock: false,
-
-  add(fn: (...args: any) => any) {
-    this.fx.push(fn);
-    if (this.init) {
-      this.lock = false;
-      this.init = false;
-      this.next();
-    }
-  },
-
-  next() {
-    if (!this.lock) {
-      this.lock = true;
-      if (this.fx.length === 0) {
-        this.init = true;
-      }
-      const fn = this.fx.shift();
-      if (fn) {
-        fn(() => {
-          this.lock = false;
-          this.next();
-        });
-      }
-    }
-  },
-};
 
 // Test size, catch mistakes, avoid preload first screen white during parsing error
 function safeLoad(

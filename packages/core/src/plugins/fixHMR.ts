@@ -16,17 +16,11 @@ export function GarfishHMRPlugin() {
         let webpackHotUpdateName = 'webpackHotUpdate';
         let webpackHotUpdate = (window as any)[webpackHotUpdateName];
 
+        // 查找 webpackHotUpdate 函数
         for (const i in window) {
           if (i.includes('webpackHotUpdate')) {
             webpackHotUpdateName = i;
             webpackHotUpdate = window[i];
-          }
-        }
-
-        for (const i in window) {
-          if (i.includes('webpackHotUpdate')) {
-            webpackHotUpdate = window[i];
-            webpackHotUpdateName = i;
           }
         }
 

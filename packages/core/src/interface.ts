@@ -37,8 +37,8 @@ export namespace interfaces {
     | (() => Promise<Element>);
 
   export interface LoaderResult {
-    mount: () => void;
-    unmount: () => void;
+    mount: interfaces.Provider['render'];
+    unmount: interfaces.Provider['destroy'];
   }
 
   export interface AppRenderInfo {
