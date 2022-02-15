@@ -180,6 +180,7 @@ importers:
       '@babel/preset-typescript': ^7.14.5
       '@babel/register': ^7.13.14
       '@babel/runtime': ^7.14.6
+      '@pmmmwh/react-refresh-webpack-plugin': ^0.5.4
       '@types/react': ^17
       '@types/react-dom': ^17
       '@uiw/react-md-editor': ^3.9.3
@@ -201,6 +202,7 @@ importers:
       react: ^17.0.2
       react-dom: ^17.0.2
       react-hot-loader: ^4.13.0
+      react-refresh: ^0.11.0
       react-router-dom: ^6.0.2
       redux: ^4.1.2
       style-loader: ^2.0.0
@@ -236,6 +238,7 @@ importers:
       '@babel/preset-typescript': 7.16.7_@babel+core@7.16.7
       '@babel/register': 7.16.9_@babel+core@7.16.7
       '@babel/runtime': 7.16.7
+      '@pmmmwh/react-refresh-webpack-plugin': 0.5.4_135924179a99dd8fd73caca4f7be10cd
       babel-loader: 8.2.3_70acdf73bf8b5ce90b5f0f8b0b09e0d8
       babel-register: 6.26.0
       cross-env: 7.0.3
@@ -246,6 +249,7 @@ importers:
       less-loader: 5.0.0_less@3.13.1+webpack@5.66.0
       mini-css-extract-plugin: 2.4.6_webpack@5.66.0
       react-hot-loader: 4.13.0_b3482aaf5744fc7c2aeb7941b0e0a78f
+      react-refresh: 0.11.0
       style-loader: 2.0.0_webpack@5.66.0
       url-loader: 4.1.1_file-loader@6.2.0+webpack@5.66.0
       webpack: 5.66.0_webpack-cli@4.9.1
@@ -266,6 +270,7 @@ importers:
       '@babel/register': ^7.13.14
       '@babel/runtime': ^7.14.6
       '@garfish/bridge': workspace:*
+      '@pmmmwh/react-refresh-webpack-plugin': ^0.5.4
       '@types/react-router-dom': ^5.3.2
       babel-loader: ^8.1.0
       babel-register: ^6.26.0
@@ -280,7 +285,7 @@ importers:
       mini-css-extract-plugin: ^2.4.2
       react: ^16.13.1
       react-dom: ^16.13.1
-      react-hot-loader: ^4.13.0
+      react-refresh: ^0.11.0
       react-router-dom: ^5.2.0
       redux: ^4.1.2
       style-loader: ^2.0.0
@@ -313,6 +318,7 @@ importers:
       '@babel/preset-typescript': 7.16.7_@babel+core@7.16.7
       '@babel/register': 7.16.9_@babel+core@7.16.7
       '@babel/runtime': 7.16.7
+      '@pmmmwh/react-refresh-webpack-plugin': 0.5.4_135924179a99dd8fd73caca4f7be10cd
       babel-loader: 8.2.3_70acdf73bf8b5ce90b5f0f8b0b09e0d8
       babel-register: 6.26.0
       cross-env: 7.0.3
@@ -322,7 +328,7 @@ importers:
       less: 3.13.1
       less-loader: 5.0.0_less@3.13.1+webpack@5.66.0
       mini-css-extract-plugin: 2.4.6_webpack@5.66.0
-      react-hot-loader: 4.13.0_react-dom@16.14.0+react@16.14.0
+      react-refresh: 0.11.0
       style-loader: 2.0.0_webpack@5.66.0
       url-loader: 4.1.1_file-loader@6.2.0+webpack@5.66.0
       webpack: 5.66.0_webpack-cli@4.9.1
@@ -343,6 +349,7 @@ importers:
       '@babel/register': ^7.13.14
       '@babel/runtime': ^7.14.6
       '@garfish/bridge': workspace:*
+      '@pmmmwh/react-refresh-webpack-plugin': ^0.5.4
       '@uiw/react-md-editor': ^3.9.3
       babel-loader: ^8.1.0
       babel-register: ^6.26.0
@@ -358,7 +365,7 @@ importers:
       mobx: ^6.3.6
       react: ^17.0.2
       react-dom: ^17.0.2
-      react-hot-loader: ^4.13.0
+      react-refresh: ^0.11.0
       react-router-dom: ^6.0.2
       redux: ^4.1.2
       style-loader: ^2.0.0
@@ -391,6 +398,7 @@ importers:
       '@babel/preset-typescript': 7.16.7_@babel+core@7.16.7
       '@babel/register': 7.16.9_@babel+core@7.16.7
       '@babel/runtime': 7.16.7
+      '@pmmmwh/react-refresh-webpack-plugin': 0.5.4_135924179a99dd8fd73caca4f7be10cd
       '@uiw/react-md-editor': 3.9.3_react-dom@17.0.2+react@17.0.2
       babel-loader: 8.2.3_70acdf73bf8b5ce90b5f0f8b0b09e0d8
       babel-register: 6.26.0
@@ -401,7 +409,7 @@ importers:
       less: 3.13.1
       less-loader: 5.0.0_less@3.13.1+webpack@5.66.0
       mini-css-extract-plugin: 2.4.6_webpack@5.66.0
-      react-hot-loader: 4.13.0_react-dom@17.0.2+react@17.0.2
+      react-refresh: 0.11.0
       style-loader: 2.0.0_webpack@5.66.0
       url-loader: 4.1.1_file-loader@6.2.0+webpack@5.66.0
       webpack: 5.66.0_webpack-cli@4.9.1
@@ -5886,6 +5894,46 @@ packages:
       - supports-color
     dev: true
 
+  /@pmmmwh/react-refresh-webpack-plugin/0.5.4_135924179a99dd8fd73caca4f7be10cd:
+    resolution: {integrity: sha512-zZbZeHQDnoTlt2AF+diQT0wsSXpvWiaIOZwBRdltNFhG1+I3ozyaw7U/nBiUwyJ0D+zwdXp0E3bWOl38Ag2BMw==}
+    engines: {node: '>= 10.13'}
+    peerDependencies:
+      '@types/webpack': 4.x || 5.x
+      react-refresh: '>=0.10.0 <1.0.0'
+      sockjs-client: ^1.4.0
+      type-fest: '>=0.17.0 <3.0.0'
+      webpack: '>=4.43.0 <6.0.0'
+      webpack-dev-server: 3.x || 4.x
+      webpack-hot-middleware: 2.x
+      webpack-plugin-serve: 0.x || 1.x
+    peerDependenciesMeta:
+      '@types/webpack':
+        optional: true
+      sockjs-client:
+        optional: true
+      type-fest:
+        optional: true
+      webpack-dev-server:
+        optional: true
+      webpack-hot-middleware:
+        optional: true
+      webpack-plugin-serve:
+        optional: true
+    dependencies:
+      ansi-html-community: 0.0.8
+      common-path-prefix: 3.0.0
+      core-js-pure: 3.20.2
+      error-stack-parser: 2.0.6
+      find-up: 5.0.0
+      html-entities: 2.3.2
+      loader-utils: 2.0.2
+      react-refresh: 0.11.0
+      schema-utils: 3.1.1
+      source-map: 0.7.3
+      webpack: 5.66.0_webpack-cli@4.9.1
+      webpack-dev-server: 4.7.3_webpack-cli@4.9.1+webpack@5.66.0
+    dev: true
+
   /@polka/url/1.0.0-next.21:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
     dev: false
@@ -10040,6 +10088,10 @@ packages:
       has-own-prop: 2.0.0
       repeat-string: 1.6.1
 
+  /common-path-prefix/3.0.0:
+    resolution: {integrity: sha1-fQB6fgfFjEtNX0MxMaGRQbKfEeA=}
+    dev: true
+
   /common-tags/1.8.2:
     resolution: {integrity: sha512-gk/Z852D2Wtb//0I+kRFNKKE9dIIVirjoqPoA1wJU+XePVXZfGeBpk45+A1rKO4Q43prqWBNY/MiIeRLbPWUaA==}
     engines: {node: '>=4.0.0'}
@@ -10287,7 +10339,6 @@ packages:
   /core-js-pure/3.20.2:
     resolution: {integrity: sha512-CmWHvSKn2vNL6p6StNp1EmMIfVY/pqn3JLAjfZQ8WZGPOlGoO92EkX9/Mk81i6GxvoPXjUqEQnpM3rJ5QxxIOg==}
     requiresBuild: true
-    dev: false
 
   /core-js/2.6.12:
     resolution: {integrity: sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==}
@@ -13020,7 +13071,6 @@ packages:
     dependencies:
       locate-path: 6.0.0
       path-exists: 4.0.0
-    dev: false
 
   /find-yarn-workspace-root/1.2.1:
     resolution: {integrity: sha1-QOuObnwlAt36old8F28iFCL4YNs=}
@@ -16526,7 +16576,6 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       p-locate: 5.0.0
-    dev: false
 
   /lodash.assignin/4.2.0:
     resolution: {integrity: sha1-uo31+4QesKPoBEIysOJjqNxqKKI=}
@@ -18384,7 +18433,6 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yocto-queue: 0.1.0
-    dev: false
 
   /p-locate/3.0.0:
     resolution: {integrity: sha512-x+12w/To+4GFfgJhBEpiDcLozRJGegY+Ei7/z0tSLkMmxGZNybVMSfWj9aJn8Z5Fc7dBUNJOOVgPv2H7IwulSQ==}
@@ -18403,7 +18451,6 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       p-limit: 3.1.0
-    dev: false
 
   /p-map/2.1.0:
     resolution: {integrity: sha512-y3b8Kpd8OAN444hxfBbFfj1FY/RjtTd8tzYwhUqNYXx0fXx2iX4maP4Qr6qhIKbQXI02wTLAda4fYUbDagTUFw==}
@@ -20575,52 +20622,6 @@ packages:
       source-map: 0.7.3
     dev: true
 
-  /react-hot-loader/4.13.0_react-dom@16.14.0+react@16.14.0:
-    resolution: {integrity: sha1-wn6UCFgcKmePUxbmnAYbIm3GogI=}
-    engines: {node: '>= 6'}
-    peerDependencies:
-      '@types/react': '^15.0.0 || ^16.0.0 || ^17.0.0 '
-      react: '^15.0.0 || ^16.0.0 || ^17.0.0 '
-      react-dom: '^15.0.0 || ^16.0.0 || ^17.0.0 '
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-    dependencies:
-      fast-levenshtein: 2.0.6
-      global: 4.4.0
-      hoist-non-react-statics: 3.3.2
-      loader-utils: 1.4.0
-      prop-types: 15.8.1
-      react: 16.14.0
-      react-dom: 16.14.0_react@16.14.0
-      react-lifecycles-compat: 3.0.4
-      shallowequal: 1.1.0
-      source-map: 0.7.3
-    dev: true
-
-  /react-hot-loader/4.13.0_react-dom@17.0.2+react@17.0.2:
-    resolution: {integrity: sha1-wn6UCFgcKmePUxbmnAYbIm3GogI=}
-    engines: {node: '>= 6'}
-    peerDependencies:
-      '@types/react': '^15.0.0 || ^16.0.0 || ^17.0.0 '
-      react: '^15.0.0 || ^16.0.0 || ^17.0.0 '
-      react-dom: '^15.0.0 || ^16.0.0 || ^17.0.0 '
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-    dependencies:
-      fast-levenshtein: 2.0.6
-      global: 4.4.0
-      hoist-non-react-statics: 3.3.2
-      loader-utils: 1.4.0
-      prop-types: 15.8.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-lifecycles-compat: 3.0.4
-      shallowequal: 1.1.0
-      source-map: 0.7.3
-    dev: true
-
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -20707,6 +20708,11 @@ packages:
       vfile: 5.3.0
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /react-refresh/0.11.0:
+    resolution: {integrity: sha512-F27qZr8uUqwhWZboondsPx8tnC3Ct3SxZA3V5WyEvujRyyNv0VYPhoBg1gZ8/MV5tubQp76Trw8lTv9hzRBa+A==}
+    engines: {node: '>=0.10.0'}
     dev: true
 
   /react-router-config/5.1.1_react-router@5.2.1+react@16.14.0:
@@ -25558,7 +25564,6 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
-    dev: false
 
   /yorkie/2.0.0:
     resolution: {integrity: sha1-kkEZEtQ1IU4SxRwq4Qk+VLa7g9k=}

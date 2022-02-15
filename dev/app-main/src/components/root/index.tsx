@@ -6,7 +6,6 @@ import {
   Navigate,
 } from 'react-router-dom';
 import { ConfigProvider, Spin } from '@arco-design/web-react';
-import { hot, setConfig } from 'react-hot-loader';
 import { store } from '../../store';
 import App from '../../components/App';
 import { basename, localApps, prefixCls } from '../../constant';
@@ -16,11 +15,6 @@ import './index.less';
 
 const LoadApp = React.lazy(() => import('../loadApp'));
 const mainHome = 'main/index';
-
-setConfig({
-  showReactDomPatchNotification: false,
-  reloadHooks: false,
-});
 
 const RootComponent = () => {
   return (
@@ -118,4 +112,4 @@ const RootComponent = () => {
   );
 };
 
-export default hot(module)(RootComponent);
+export default RootComponent;

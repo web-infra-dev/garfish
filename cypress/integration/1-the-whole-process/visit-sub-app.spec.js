@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
 const basename = '/examples';
+const resizeObserverLoopErrRe = /^[^(ResizeObserver loop limit exceeded)]/;
 
 describe('whole process app render', () => {
   beforeEach(() => {
@@ -15,6 +16,13 @@ describe('whole process app render', () => {
         },
       },
     });
+
+    Cypress.on('uncaught:exception', (err) => {
+      /* returning false here prevents Cypress from failing the test */
+      if (resizeObserverLoopErrRe.test(err.message)) {
+        return false;
+      }
+    });
   });
 
   let popstateTriggerTime = 0;
@@ -25,7 +33,7 @@ describe('whole process app render', () => {
     cy.visit('http://localhost:8090');
 
     cy.window().then((win) => {
-      const HomeTitle = 'Thank you for the vue applications use garfish';
+      const HomeTitle = 'Thank you for the vue2 applications use garfish';
       const TodoTitle = 'Vue App todo list';
       const RemoteComponentTitle = 'Vue App remote component';
       // Monitoring popstate call time
@@ -33,7 +41,7 @@ describe('whole process app render', () => {
 
       const TodoListPage = () => {
         // todo list page
-        win.history.pushState({}, 'vue', `${basename}/vue/todo`);
+        win.history.pushState({}, 'vue2', `${basename}/vue2/toDoList`);
         cy.contains('[data-test=title]', TodoTitle);
         cy.get('.todo-list li').contains('default todo');
         // add todo item
@@ -61,7 +69,7 @@ describe('whole process app render', () => {
 
       const RemoteComponent = () => {
         // remote component
-        win.history.pushState({}, 'vue', `${basename}/vue/remote-component`);
+        win.history.pushState({}, 'vue', `${basename}/vue2/remote-component`);
         cy.contains(RemoteComponentTitle);
         cy.contains('old text---chen');
         cy.contains('old text---tao');
@@ -70,7 +78,7 @@ describe('whole process app render', () => {
         cy.contains('new text---tao');
       };
 
-      win.history.pushState({}, 'vue', `${basename}/vue`);
+      win.history.pushState({}, 'vue2', `${basename}/vue2/home`);
       cy.contains('[data-test=title]', HomeTitle)
         .then(() => expect(popstateTriggerTime).to.equal(1))
         .then(TodoListPage)
@@ -81,15 +89,19 @@ describe('whole process app render', () => {
   });
 
   it('Switch to the React app use Garfish router ', () => {
-    const HomeTitle = 'Thank you for the react applications use garfish';
+    const HomeTitle = 'Thank you for the React applications use garfish.';
     const LazyTitle = 'React sub App lazyComponent';
     const RemoteComponentTitle = 'React sub App remote component';
 
     cy.window().then((win) => {
+      expect(popstateTriggerTime).to.equal(4);
+
       const lazyComponent = () => {
+        expect(popstateTriggerTime).to.equal(6);
         // lazy component
-        win.Garfish.router.push({ path: '/react/lazy-component' });
+        win.Garfish.router.push({ path: '/react17/lazy-component' });
         cy.contains('[data-test=title]', LazyTitle);
+        expect(popstateTriggerTime).to.equal(6);
       };
 
       // const RemoteComponent = () => {
@@ -98,30 +110,30 @@ describe('whole process app render', () => {
       //   cy.contains('[data-test=title]', RemoteComponentTitle);
       // };
 
-      win.Garfish.router.push({ path: '/react' });
+      win.Garfish.router.push({ path: '/react17/home' });
       cy.contains('[data-test=title]', HomeTitle)
         .then(lazyComponent)
-        // .then(RemoteComponent)
-        .then(() => expect(popstateTriggerTime).to.equal(6));
+        .then(() => expect(popstateTriggerTime).to.equal(7));
     });
   });
 
-  it('Switch to the Vue2 app use js entry', () => {
-    cy.window().then((win) => {
-      const AboutTitle = 'Vue2 App about page';
+  // TODO: exmaple 中还未增加 js 入口案例
+  // it('Switch to the Vue2 app use js entry', () => {
+  //   cy.window().then((win) => {
+  //     const AboutTitle = 'Vue2 App about page';
 
-      const AboutPage = () => {
-        win.history.pushState({}, 'vue', `${basename}/vue2/about`);
-        cy.contains('[data-test=title]', AboutTitle);
-      };
+  //     const AboutPage = () => {
+  //       win.history.pushState({}, 'vue', `${basename}/vue2/about`);
+  //       cy.contains('[data-test=title]', AboutTitle);
+  //     };
 
-      win.history.pushState({}, 'vue2', `${basename}/vue2`);
-      cy.contains('[data-test=title]', VueHomeTitle)
-        .then(() => expect(popstateTriggerTime).to.equal(7))
-        .then(AboutPage)
-        .then(() => expect(popstateTriggerTime).to.equal(8));
-    });
-  });
+  //     win.history.pushState({}, 'vue2', `${basename}/vue2`);
+  //     cy.contains('[data-test=title]', VueHomeTitle)
+  //       .then(() => expect(popstateTriggerTime).to.equal(7))
+  //       .then(AboutPage)
+  //       .then(() => expect(popstateTriggerTime).to.equal(8));
+  //   });
+  // });
 
   it('Switch to the Vite app', () => {
     const HomeTitle = 'Hello Vue 3 + Vite';
@@ -134,7 +146,7 @@ describe('whole process app render', () => {
           cy.contains('button', 'count is: 2');
         })
         .then(() => {
-          win.Garfish.router.push({ path: '/vue2' });
+          win.Garfish.router.push({ path: '/vue2/home' });
           cy.contains('[data-test=title]', VueHomeTitle);
         })
         .then(() => {

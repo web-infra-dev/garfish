@@ -10,10 +10,14 @@ const Home = () => (
       return (
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <p>
+          <h3
+            data-test="title"
+            style={{ marginTop: '30px', marginBottom: '30px' }}
+          >
             Thank you for the React applications use garfish.
-            <span style={{ color: 'aqua' }}> This is React17.</span>
-          </p>
+            <span style={{ color: 'aqua' }}>This is React17. </span>
+          </h3>
+
           <p>
             Edit <code>src/App.js</code> and save to reload.
           </p>

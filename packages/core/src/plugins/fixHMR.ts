@@ -12,10 +12,26 @@ export function GarfishHMRPlugin() {
       bootstrap() {
         if (hasInit) return;
         hasInit = true;
-        const webpackHotUpdate = (window as any).webpackHotUpdate;
+
+        let webpackHotUpdateName = 'webpackHotUpdate';
+        let webpackHotUpdate = (window as any)[webpackHotUpdateName];
+
+        for (const i in window) {
+          if (i.includes('webpackHotUpdate')) {
+            webpackHotUpdateName = i;
+            webpackHotUpdate = window[i];
+          }
+        }
+
+        for (const i in window) {
+          if (i.includes('webpackHotUpdate')) {
+            webpackHotUpdate = window[i];
+            webpackHotUpdateName = i;
+          }
+        }
 
         if (typeof webpackHotUpdate === 'function') {
-          (window as any).webpackHotUpdate = function () {
+          (window as any)[webpackHotUpdateName] = function () {
             isHotUpdate = true;
             return webpackHotUpdate.apply(this, arguments);
           };
@@ -26,8 +42,10 @@ export function GarfishHMRPlugin() {
 
             Garfish.activeApps.forEach((app) => {
               if (app.mounted) {
-                app.display && app.hide();
-                app.show();
+                setTimeout(() => {
+                  app.display && app.hide();
+                  app.show();
+                });
               }
             });
           });

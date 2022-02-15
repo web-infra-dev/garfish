@@ -21,12 +21,7 @@ props.store.increment();
 
 export const hmrStr = `
 \`\`\`javascript
-import { hot, setConfig } from 'react-hot-loader';
 
-const App = () => {
-  return <div> App Component. </div>
-}
-export default hot(module)(App);
 \`\`\`
 `;
 

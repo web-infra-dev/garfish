@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import React, { createContext, Suspense } from 'react';
 import { ConfigProvider } from '@arco-design/web-react';
 import App from '../App';
 import Home from '../home';
@@ -9,12 +9,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { prefixCls } from '../../constant';
 import { Routes, Route, Navigate } from 'react-router-dom';
 export const SubAppContext = createContext({});
-import { hot, setConfig } from 'react-hot-loader';
-
-// 防止控制台后输入hmr 相关 warning
-setConfig({
-  showReactDomPatchNotification: false,
-});
+const LazyComponent = React.lazy(() => import('../lazyComponent'));
 
 const RootComponent = (_props) => {
   const { basename, store } = _props;
@@ -27,6 +22,14 @@ const RootComponent = (_props) => {
               <Route path="/home" element={<Home />}></Route>
               <Route path="/list" element={<List />}></Route>
               <Route path="/detail" element={<Detail />}></Route>
+              <Route
+                path="/lazy-component"
+                element={
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <LazyComponent />
+                  </Suspense>
+                }
+              ></Route>
             </Route>
             <Route path="*" element={<PageNotFound />} />
           </Routes>
@@ -36,4 +39,4 @@ const RootComponent = (_props) => {
   );
 };
 
-export default hot(module)(RootComponent);
+export default RootComponent;

@@ -6,16 +6,11 @@ import {
   MemoryRouter,
   Redirect,
 } from 'react-router-dom';
-import { hot, setConfig } from 'react-hot-loader';
 import App from './App';
 import PageNotFound from './PageNotFound';
 import './App.less';
 
 export const SubAppContext = createContext({});
-
-setConfig({
-  showReactDomPatchNotification: false,
-});
 
 const RootComponent = (props) => {
   const { basename, store } = props;
@@ -25,6 +20,7 @@ const RootComponent = (props) => {
       <Route exact path="/" component={() => <Redirect to="/home" />} />
       <Route exact path="/home" component={() => <App />} />
       <Route exact path="/about" component={() => <App />} />
+      <Route exact path="/vm-sandbox" component={() => <App />} />
       <Route exact path="*" component={() => <PageNotFound />} />
     </Switch>
   );
@@ -39,4 +35,4 @@ const RootComponent = (props) => {
   );
 };
 
-export default hot(module)(RootComponent);
+export default RootComponent;

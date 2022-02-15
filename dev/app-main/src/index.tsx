@@ -2,9 +2,17 @@ import ReactDOM from 'react-dom';
 import { GarfishInit } from './garfishInit';
 import RootComponent from './components/root';
 
-const render = async () => {
+const render = async (_ROOT) => {
   await GarfishInit();
-  ReactDOM.render(<RootComponent />, document.getElementById('root'));
+  ReactDOM.render(<_ROOT />, document.getElementById('root'));
 };
 
-render();
+render(RootComponent);
+
+// 开启热更新：
+if ((module as any).hot) {
+  (module as any).hot.accept(['./components/root'], () => {
+    const _ROOT = require('./components/root').default;
+    render(_ROOT);
+  });
+}

@@ -1,6 +1,8 @@
 declare interface Window {
   Garfish: any;
   __GARFISH__: any;
+  dynamicScriptOnloadTag: boolean;
+  dynamicScriptOnerrorTag: boolean;
 }
 
 declare module '*.css';

@@ -42,18 +42,23 @@ const formItemLayout = {
   },
 };
 
+// let popstateTriggerTime = 0;
+// const popstateCallback = () => {
+//   popstateTriggerTime += 1;
+//   console.log('popstateTriggerTime', popstateTriggerTime);
+// };
+// window.addEventListener('popstate', popstateCallback);
+
 const App = observer(({ store }: { store: any }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const storeRef = useRef(store);
-
   const [subAppMenus, setSubAppMenus] =
     useState<Array<any>>(defaultSubAppMenus);
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [visible, setVisible] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState<Array<string>>([]);
   const [breadcrumbData, setBreadcrumbData] = useState<Array<string>>([]);
-  const [openKeys, setOpenkeys] = useState<Array<string>>([]);
   const defaultOpenKeys = [
     location.pathname.replace(`/${basename}/`, '').split('/')[0],
   ];
@@ -71,7 +76,6 @@ const App = observer(({ store }: { store: any }) => {
     if (_path) {
       setSelectedKeys([_path]);
       setBreadcrumbData(_path.split('/'));
-      setOpenkeys([...openKeys, ..._path.split('/')]);
       store.setActiveApp(_path);
     }
   }, [location]);
@@ -96,11 +100,17 @@ const App = observer(({ store }: { store: any }) => {
             return (
               <MenuItem
                 key={k.path}
-                onClick={() =>
-                  Garfish.router.push({
-                    path: k.path,
-                    query: k.query,
-                  })
+                onClick={
+                  () =>
+                    Garfish.router.push({
+                      path: k.path,
+                      query: k.query,
+                    })
+                  // window.history.pushState(
+                  //   {},
+                  //   'react',
+                  //   `/${basename}/${k.path}`,
+                  // )
                 }
               >
                 {k.title}
@@ -158,6 +168,7 @@ const App = observer(({ store }: { store: any }) => {
         collapsible
         trigger={null}
         breakpoint="xl"
+        style={{ height: '100vh' }}
       >
         <div
           className="logo"
@@ -168,16 +179,6 @@ const App = observer(({ store }: { store: any }) => {
 
         <Menu
           defaultOpenKeys={defaultOpenKeys}
-          openKeys={openKeys}
-          onClickSubMenu={(v) => {
-            const _index = openKeys.findIndex((k) => k === v);
-            if (_index !== -1) {
-              openKeys.splice(_index, 1);
-              setOpenkeys(openKeys);
-            } else {
-              setOpenkeys([...openKeys, v]);
-            }
-          }}
           selectedKeys={selectedKeys}
           style={{ width: '100%' }}
         >
@@ -211,7 +212,7 @@ const App = observer(({ store }: { store: any }) => {
             <IconMinus />
           </Button>
 
-          <Button
+          {/* <Button
             size="mini"
             style={{ margin: '0 10px' }}
             type="primary"
@@ -219,7 +220,17 @@ const App = observer(({ store }: { store: any }) => {
             onClick={() => setVisible(true)}
           >
             新增应用
-          </Button>
+          </Button> */}
+          <div style={{ marginLeft: '10px' }}>
+            热更新测试：
+            <span className="hmr-text">Hello, Garfish!</span>
+            <Input
+              type="text"
+              size="mini"
+              style={{ width: '330px', display: 'inline-block' }}
+              placeholder="请输入后改变 Hello, Garfish! 文案样式, 输入框状态仍保留"
+            />
+          </div>
         </Header>
         <Layout style={{ padding: '0 24px' }}>
           {
