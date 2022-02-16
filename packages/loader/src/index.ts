@@ -98,6 +98,7 @@ export class Loader {
     scope: string,
     url: string,
     isModule = false,
+    isIncludeCredentials = false,
   ): Promise<LoadedHookArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
 
@@ -130,6 +131,8 @@ export class Loader {
     }
 
     const requestConfig = mergeConfig(this, url);
+    // Tells browsers to include credentials in both same- and cross-origin requests, and always use any credentials sent back in responses.
+    requestConfig.credentials = isIncludeCredentials ? 'include' : undefined;
     const resOpts = this.hooks.lifecycle.beforeLoad.emit({
       url,
       requestConfig,
