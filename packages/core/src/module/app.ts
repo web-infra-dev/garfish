@@ -1,10 +1,12 @@
 import { StyleManager, TemplateManager } from '@garfish/loader';
 import {
   Text,
+  Node,
   warn,
   assert,
   hasOwn,
   remove,
+  Queue,
   isJs,
   isObject,
   isPromise,
@@ -19,12 +21,11 @@ import {
   parseContentType,
   createAppContainer,
   setDocCurrentScript,
-  __SCRIPT_GLOBAL_APP_ID__,
-  __GARFISH_GLOBAL_APP_LIFECYCLE__,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
 import { appLifecycle } from '../lifecycle';
+import { ESModuleLoader } from './esModule';
 import { SubAppObserver } from '../plugins/performance/subAppObserver';
 
 /** @deprecated */
@@ -38,9 +39,17 @@ export type AppInfo = interfaces.AppInfo & {
   appId?: number;
 };
 
+export interface ExecScriptOptions {
+  node?: Node;
+  async?: boolean;
+  noEntry?: boolean;
+  isInline?: boolean;
+  isModule?: boolean;
+}
+
 let appId = 0;
-export const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
+export const __GARFISH_EXPORTS__ = '__GARFISH_EXPORTS__';
 
 // Have the ability to App instance
 // 1. Provide static resource, the structure of the HTML, CSS, js.
@@ -51,9 +60,9 @@ const __GARFISH_GLOBAL_ENV__ = '__GARFISH_GLOBAL_ENV__';
 // 5. Trigger the destruction: Perform the destroy function of child application, and applies the child node is removed from the document flow.
 export class App {
   public appId = appId++;
+  public scriptCount = 0;
   public display = false;
   public mounted = false;
-  public esModule = false;
   public strictIsolation = false;
   public name: string;
   public isHtmlMode: boolean;
@@ -64,6 +73,7 @@ export class App {
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
   public sourceList: Array<{ tagName: string; url: string }> = [];
   public appInfo: AppInfo;
+  public context: Garfish;
   public hooks: interfaces.AppHooks;
   public provider: interfaces.Provider;
   public entryManager: TemplateManager;
@@ -74,12 +84,11 @@ export class App {
   private active = false;
   private mounting = false;
   private unmounting = false;
-  private context: Garfish;
+  private esmQueue = new Queue();
+  private esModuleLoader = new ESModuleLoader(this);
   private resources: interfaces.ResourceModules;
   // Environment variables injected by garfish for linkage with child applications
   private globalEnvVariables: Record<string, any>;
-  // es-module save lifeCycle to appGlobalId，appGlobalId in script attr
-  private appGlobalId: string;
 
   constructor(
     context: Garfish,
@@ -159,16 +168,17 @@ export class App {
     code: string,
     env: Record<string, any>,
     url?: string,
-    options?: { async?: boolean; noEntry?: boolean },
+    options?: ExecScriptOptions,
   ) {
     env = {
       ...this.getExecScriptEnv(options?.noEntry),
       ...(env || {}),
     };
-
     const args = [this.appInfo, code, env, url, options] as const;
 
+    this.scriptCount++;
     this.hooks.lifecycle.beforeEval.emit(...args);
+
     try {
       this.runCode(code, env, url, options);
     } catch (e) {
@@ -183,26 +193,32 @@ export class App {
     code: string,
     env: Record<string, any>,
     url?: string,
-    options?: { async?: boolean; noEntry?: boolean },
+    options?: ExecScriptOptions,
   ) {
-    const revertCurrentScript = setDocCurrentScript(
-      this.global.document,
-      code,
-      true,
-      url,
-      options?.async,
-    );
-    code += url ? `\n//# sourceURL=${url}\n` : '';
-
-    if (!hasOwn(env, 'window')) {
-      env = {
-        ...env,
-        window: this.global,
-      };
+    // If the node is an es module, use native esmModule
+    if (options.isModule) {
+      this.esmQueue.add(async (next) => {
+        await this.esModuleLoader.load(code, env, url, options);
+        next();
+      });
+    } else {
+      const revertCurrentScript = setDocCurrentScript(
+        this.global.document,
+        code,
+        true,
+        url,
+        options?.async,
+      );
+      code += url ? `\n//# sourceURL=${url}\n` : '';
+      if (!hasOwn(env, 'window')) {
+        env = {
+          ...env,
+          window: this.global,
+        };
+      }
+      evalWithEnv(`;${code}`, env, this.global);
+      revertCurrentScript();
     }
-
-    evalWithEnv(`;${code}`, env, this.global);
-    revertCurrentScript();
   }
 
   async show() {
@@ -248,7 +264,7 @@ export class App {
     this.mounting = true;
     try {
       // add container and compile js with cjs
-      const asyncJsProcess = await this.compileAndRenderContainer();
+      const { asyncScripts } = await this.compileAndRenderContainer();
 
       // Good provider is set at compile time
       const provider = await this.getProvider();
@@ -261,7 +277,7 @@ export class App {
       this.context.activeApps.push(this);
       this.hooks.lifecycle.afterMount.emit(this.appInfo, this, false);
 
-      await asyncJsProcess;
+      await asyncScripts;
       if (!this.stopMountAndClearEffect()) return false;
     } catch (e) {
       this.entryManager.DOMApis.removeElement(this.appContainer);
@@ -293,6 +309,7 @@ export class App {
       this.provider = null;
       this.customExports = {};
       this.cjsModules.exports = {};
+      this.esModuleLoader.destroy();
       remove(this.context.activeApps, this);
       this.hooks.lifecycle.afterUnmount.emit(this.appInfo, this, false);
     } catch (e) {
@@ -308,7 +325,6 @@ export class App {
 
   getExecScriptEnv(noEntry: boolean) {
     // The legacy of commonJS function support
-    if (this.esModule) return {};
     const envs = {
       [__GARFISH_EXPORTS__]: this.customExports,
       [__GARFISH_GLOBAL_ENV__]: this.globalEnvVariables,
@@ -334,31 +350,33 @@ export class App {
     await this.renderTemplate();
 
     // Execute asynchronous script
-    return new Promise<void>((resolve) => {
-      // Asynchronous script does not block the rendering process
-      setTimeout(() => {
-        if (this.stopMountAndClearEffect()) {
-          for (const jsManager of this.resources.js) {
-            if (jsManager.async) {
-              try {
-                this.execScript(
-                  jsManager.scriptCode,
-                  {},
-                  jsManager.url || this.appInfo.entry,
-                  {
-                    async: false,
-                    noEntry: true,
-                  },
-                );
-              } catch (e) {
-                this.hooks.lifecycle.errorMountApp.emit(e, this.appInfo);
+    return {
+      asyncScripts: new Promise<void>((resolve) => {
+        // Asynchronous script does not block the rendering process
+        setTimeout(() => {
+          if (this.stopMountAndClearEffect()) {
+            for (const jsManager of this.resources.js) {
+              if (jsManager.async) {
+                try {
+                  this.execScript(
+                    jsManager.scriptCode,
+                    {},
+                    jsManager.url || this.appInfo.entry,
+                    {
+                      async: false,
+                      noEntry: true,
+                    },
+                  );
+                } catch (e) {
+                  this.hooks.lifecycle.errorMountApp.emit(e, this.appInfo);
+                }
               }
             }
           }
-        }
-        resolve();
-      });
-    });
+          resolve();
+        });
+      }),
+    };
   }
 
   private canMount() {
@@ -496,18 +514,11 @@ export class App {
 
       script: (node) => {
         const mimeType = entryManager.findAttributeValue(node, 'type');
-        const appGlobalId = entryManager.findAttributeValue(
-          node,
-          __SCRIPT_GLOBAL_APP_ID__,
-        );
-
-        // app lifecycle save in appGlobalId
-        if (appGlobalId) {
-          this.appGlobalId = appGlobalId;
-        }
+        const isModule = mimeType === 'module';
 
         if (mimeType) {
-          if (!isJs(parseContentType(mimeType))) {
+          // Other script template
+          if (!isModule && !isJs(parseContentType(mimeType))) {
             return DOMApis.createElement(node);
           }
         }
@@ -516,14 +527,12 @@ export class App {
         });
 
         if (jsManager) {
-          if (jsManager.isModule()) {
-            // EsModule cannot use eval and new Function to execute the code
-            warn('"esmodule" code will not be execute in sandbox');
-            return DOMApis.createElement(node);
-          }
           const { url, scriptCode } = jsManager;
           this.execScript(scriptCode, {}, url || this.appInfo.entry, {
+            node,
+            isModule,
             async: false,
+            isInline: jsManager.isInlineScript(),
             noEntry: toBoolean(
               entryManager.findAttributeValue(node, 'no-entry'),
             ),
@@ -578,12 +587,15 @@ export class App {
 
   private async checkAndGetProvider() {
     const { appInfo, rootElement, cjsModules, customExports } = this;
-    const { props, basename } = appInfo;
+    const { name, props, basename } = appInfo;
     let provider:
       | ((...args: any[]) => interfaces.Provider)
       | interfaces.Provider = null;
 
-    // cjs exports
+    // esModule export
+    await this.esmQueue.awaitCompletion();
+
+    // Cjs exports
     if (cjsModules.exports) {
       if (isPromise(cjsModules.exports))
         cjsModules.exports = await cjsModules.exports;
@@ -596,21 +608,14 @@ export class App {
       provider = customExports.provider;
     }
 
-    // esmodule app global lifecycle in global variable
-    if (this.global[__GARFISH_GLOBAL_APP_LIFECYCLE__] && this.appGlobalId) {
-      provider =
-        this.global[__GARFISH_GLOBAL_APP_LIFECYCLE__][this.appGlobalId]
-          ?.provider;
-    }
-
     if (typeof provider === 'function') {
       provider = await provider(
         {
           basename,
           dom: rootElement,
-          ...(appInfo.props || {}),
+          ...(props || {}),
         },
-        appInfo.props,
+        props,
       );
     } else if (isPromise(provider)) {
       provider = await provider;
@@ -619,21 +624,21 @@ export class App {
     // The provider may be a function object
     if (!isObject(provider) && typeof provider !== 'function') {
       warn(
-        ` Invalid module content: ${appInfo.name}, you should return both render and destroy functions in provider function.`,
+        ` Invalid module content: ${name}, you should return both render and destroy functions in provider function.`,
       );
     }
 
     // If you have customLoader, the dojo.provide by user
     const hookRes = await (this.customLoader &&
-      this.customLoader(provider, appInfo, basename));
+      this.customLoader(provider as interfaces.Provider, appInfo, basename));
 
     if (hookRes) {
       const { mount, unmount } = hookRes || ({} as any);
       if (typeof mount === 'function' && typeof unmount === 'function') {
         mount._custom = true;
         unmount._custom = true;
-        provider.render = mount;
-        provider.destroy = unmount;
+        (provider as interfaces.Provider).render = mount;
+        (provider as interfaces.Provider).destroy = unmount;
       }
     }
 
@@ -644,7 +649,7 @@ export class App {
       assert('destroy' in provider, '"destroy" is required in provider.');
     }
 
-    this.provider = provider;
-    return provider;
+    this.provider = provider as interfaces.Provider;
+    return provider as interfaces.Provider;
   }
 }

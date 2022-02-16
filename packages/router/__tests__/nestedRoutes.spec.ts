@@ -4,7 +4,6 @@ import { interfaces } from '@garfish/core';
 describe('Router: test active and refreshApp', () => {
   let activeInfos: Array<interfaces.AppInfo> = [];
 
-  const deactiveApp = null;
   const mockPopEventFn = jest.fn();
 
   const options = {

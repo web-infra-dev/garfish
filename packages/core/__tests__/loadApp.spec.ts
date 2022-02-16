@@ -1,6 +1,6 @@
 import Garfish from '../src/index';
 import fetchMock from 'jest-fetch-mock';
-import { vueAppHtml, vueAppRenderNode } from './resource/vue-app';
+import { vueAppHtml, vueAppRenderNode } from './resource/vueApp';
 import {
   appContainerId,
   __MockBody__,

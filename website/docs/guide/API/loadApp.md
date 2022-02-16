@@ -60,23 +60,23 @@ function App() {
 </template>
 
 <script>
-  import Garfish 'garfish';
+  import Garfish from 'garfish';
   let appInstance = null;
   export default {
     name: 'App',
-    async mounted () {
-      appInstance = await Garfish.loadApp('react-app',{
+    async mounted() {
+      appInstance = await Garfish.loadApp('react-app', {
         entry: 'http://localhost:8093',
         domGetter: '#container',
         basename: '/react-app',
-        cache: true
+        cache: true,
       });
       // 若已经渲染触发 show，只有首次渲染触发 mount，后面渲染都可以触发 show 提供性能
-      appInstance.mounted? appInstance.show() : await appInstance.mount();
+      appInstance.mounted ? appInstance.show() : await appInstance.mount();
     },
-    destroyed () {
+    destroyed() {
       appInstance.hide();
-    }
+    },
   };
 </script>
 <style></style>

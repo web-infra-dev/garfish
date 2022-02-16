@@ -8,9 +8,9 @@ const dts = process.env.DTS === 'false' ? false : true;
 
 export const baseTsup = (pkg): Options => {
   const options: Options = {
+    dts,
     sourcemap,
     clean: true,
-    dts: dts,
     watch: watch ? 'src/' : false,
     format: ['esm', 'cjs', 'iife'],
     legacyOutput: true,

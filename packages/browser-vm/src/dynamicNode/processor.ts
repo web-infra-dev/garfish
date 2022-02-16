@@ -121,10 +121,11 @@ export class DynamicNodeProcessor {
   // Load dynamic js script
   private addDynamicScriptNode() {
     const { src, type } = this.el;
+    const isModule = type === 'module';
     const mimeType = parseContentType(type);
     const code = this.el.textContent || this.el.text || '';
 
-    if (!type || isJs(mimeType) || isJsonp(mimeType, src)) {
+    if (!type || isJs(mimeType) || isModule || isJsonp(mimeType, src)) {
       // The "src" higher priority
       const { baseUrl, namespace = '' } = this.sandbox.options;
       if (src) {
@@ -132,7 +133,10 @@ export class DynamicNodeProcessor {
         this.sandbox.loader.load<JavaScriptManager>(namespace, fetchUrl).then(
           ({ resourceManager: { url, scriptCode } }) => {
             // It is necessary to ensure that the code execution error cannot trigger the `el.onerror` event
-            this.sandbox.execScript(scriptCode, {}, url, { noEntry: true });
+            this.sandbox.execScript(scriptCode, {}, url, {
+              isModule,
+              noEntry: true,
+            });
             this.dispatchEvent('load');
           },
           (e) => {
@@ -154,14 +158,6 @@ export class DynamicNodeProcessor {
       this.el[__REMOVE_NODE__] = () =>
         this.DOMApis.removeElement(scriptCommentNode);
       return scriptCommentNode;
-    } else {
-      if (__DEV__) {
-        warn(
-          type === 'module'
-            ? `"esmodule" code will not be execute in sandbox "${src}"`
-            : `Invalid resource type "${type}", "${src}"`,
-        );
-      }
     }
     return this.el;
   }
