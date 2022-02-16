@@ -64,4 +64,24 @@ describe('hooks plugin', () => {
     plugin.lifecycle.b.emit();
     expect(j).toBe(1);
   });
+
+  it('data check', () => {
+    const plugin = new PluginSystem({
+      a: new SyncHook<[string], void>(),
+    });
+
+    const obj = {
+      name: 'test',
+      a(s) {
+        expect(s).toBe('chen');
+      },
+    };
+    const spy = jest.spyOn(obj, 'a');
+    plugin.usePlugin(obj);
+    plugin.lifecycle.a.emit('chen');
+
+    expect(spy).toHaveBeenCalled();
+    spy.mockReset();
+    spy.mockRestore();
+  });
 });
