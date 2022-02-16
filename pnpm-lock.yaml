@@ -448,7 +448,6 @@ importers:
   dev/app-vue-3:
     specifiers:
       '@garfish/bridge': workspace:*
-      '@garfish/remote-module': workspace:*
       '@vue/cli-plugin-babel': ~4.5.0
       '@vue/cli-plugin-eslint': ~4.5.0
       '@vue/cli-service': ~4.5.0
@@ -464,7 +463,6 @@ importers:
       vuex: ^3.6.2
     dependencies:
       '@garfish/bridge': link:../../packages/bridge
-      '@garfish/remote-module': link:../../packages/remote-module
       core-js: 3.20.2
       mobx-vue: 2.2.0_vue@3.2.26
       vue: 3.2.26
@@ -479,45 +477,6 @@ importers:
       eslint: 6.8.0
       eslint-plugin-vue: 7.20.0_eslint@6.8.0
       url-loader: 4.1.1
-
-  dev/app-vue-sub:
-    specifiers:
-      '@garfish/bridge': workspace:*
-      '@garfish/remote-module': workspace:*
-      '@vue/cli-plugin-babel': ~4.5.0
-      '@vue/cli-plugin-eslint': ~4.5.0
-      '@vue/cli-service': ^4.5.15
-      babel-eslint: ^10.1.0
-      core-js: ^3.6.5
-      element-ui: ^2.15.6
-      eslint: ^6.7.2
-      eslint-plugin-vue: ^6.2.2
-      garfish: workspace:*
-      mobx-vue: ^2.1.0
-      url-loader: ^4.1.1
-      vue: ^2.6.14
-      vue-router: ^3.5.3
-      vue-template-compiler: ^2.6.14
-      vuex: ^3.6.2
-    dependencies:
-      '@garfish/bridge': link:../../packages/bridge
-      '@garfish/remote-module': link:../../packages/remote-module
-      core-js: 3.20.2
-      garfish: link:../../packages/garfish
-      mobx-vue: 2.2.0_vue@2.6.14
-      vue: 2.6.14
-      vue-router: 3.5.3
-      vuex: 3.6.2_vue@2.6.14
-    devDependencies:
-      '@vue/cli-plugin-babel': 4.5.15_4c1e5ebbf041a85328f9984e4ede8f8a
-      '@vue/cli-plugin-eslint': 4.5.15_159f9ca94908a7070131e2c321d72521
-      '@vue/cli-service': 4.5.15_daaec740214156bd7a1b7d7855d908a4
-      babel-eslint: 10.1.0_eslint@6.8.0
-      element-ui: 2.15.6_vue@2.6.14
-      eslint: 6.8.0
-      eslint-plugin-vue: 6.2.2_eslint@6.8.0
-      url-loader: 4.1.1
-      vue-template-compiler: 2.6.14
 
   dev/app-vue-vite:
     specifiers:
@@ -7164,7 +7123,7 @@ packages:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
       eslint: '>= 1.6.0 < 7.0.0'
     dependencies:
-      '@vue/cli-service': 4.5.15_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.5.15_27ec58a37db4a1b9b6ddac7e6b7e9105
       '@vue/cli-shared-utils': 4.5.15
       eslint: 6.8.0
       eslint-loader: 2.2.1_eslint@6.8.0+webpack@4.46.0
@@ -7182,7 +7141,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.15_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.5.15_27ec58a37db4a1b9b6ddac7e6b7e9105
       '@vue/cli-shared-utils': 4.5.15
     dev: true
 
@@ -7191,7 +7150,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.15_daaec740214156bd7a1b7d7855d908a4
+      '@vue/cli-service': 4.5.15_27ec58a37db4a1b9b6ddac7e6b7e9105
     dev: true
 
   /@vue/cli-service/4.5.15_27ec58a37db4a1b9b6ddac7e6b7e9105:
