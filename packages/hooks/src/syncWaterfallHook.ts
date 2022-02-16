@@ -24,9 +24,7 @@ export class SyncWaterfallHook<T> extends SyncHook<[T], T> {
             break;
           }
         }
-        if (!illegalResult) {
-          result = tempResult;
-        }
+        if (!illegalResult) result = tempResult;
       } catch (e) {
         __DEV__ && warn(e);
         this.onerror(e);
