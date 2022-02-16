@@ -1,9 +1,9 @@
 import { ArgsType, SyncHook } from './syncHook';
 
-type CallbackReturnType = void | boolean | Promise<void | boolean>;
+type CallbackReturnType = void | false | Promise<void | false>;
 
 export class AsyncHook<T> extends SyncHook<T, CallbackReturnType> {
-  emit(...data: ArgsType<T>): Promise<void | boolean> {
+  emit(...data: ArgsType<T>): Promise<void | false> {
     let result;
     const ls = Array.from(this.listeners);
     if (ls.length > 0) {

@@ -1,7 +1,6 @@
 /// <reference types="cypress" />
 
 import GarfishInstance from 'garfish';
-import { AsyncWaterfallHook } from '@garfish/hooks';
 import { Config } from './config';
 
 GarfishInstance.router.beforeEach((to, from, next) => {

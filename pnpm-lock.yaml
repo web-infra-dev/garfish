@@ -112,7 +112,6 @@ importers:
       '@babel/plugin-transform-runtime': ^7.11.0
       '@babel/preset-env': ^7.7.1
       '@babel/runtime': ^7.12.1
-      '@garfish/hooks': workspace:*
       babel-loader: ^8.0.6
       css-loader: ^3.2.0
       garfish: workspace:*
@@ -132,7 +131,6 @@ importers:
       webpack-dev-server: ^3.9.0
     dependencies:
       '@babel/runtime': 7.15.4
-      '@garfish/hooks': link:../../packages/hooks
       garfish: link:../../packages/garfish
       mobx: 6.3.3
       react: 16.14.0
@@ -189,6 +187,7 @@ importers:
   dev/react:
     specifiers:
       '@garfish/bridge': workspace:*
+      '@garfish/remote-module': workspace:*
       '@testing-library/jest-dom': 5.15.0
       '@testing-library/react': ^9.3.2
       '@testing-library/user-event': 13.3.0
@@ -202,6 +201,7 @@ importers:
       react-shadow-dom-retarget-events: ^1.0.11
     dependencies:
       '@garfish/bridge': link:../../packages/bridge
+      '@garfish/remote-module': link:../../packages/remote-module
       '@testing-library/jest-dom': 5.15.0
       '@testing-library/react': 9.5.0_react-dom@16.14.0+react@16.14.0
       '@testing-library/user-event': 13.3.0
@@ -10478,7 +10478,7 @@ packages:
     resolution: {integrity: sha1-p9BVi9icQveV3UIyj3QIMcpTvCU=}
 
   /color-name/1.1.4:
-    resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==, registry: https://registry.yarnpkg.com/}
+    resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
 
   /color-string/1.6.0:
     resolution: {integrity: sha512-c/hGS+kRWJutUBEngKKmk4iH3sD59MBkoxVapS/0wgpCz2u7XsNloxknyvBhzwEs1IbV36D9PwqLPJ2DTu3vMA==}
@@ -14115,7 +14115,7 @@ packages:
   /hoist-non-react-statics/3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
     dependencies:
-      react-is: 16.13.1
+      react-is: registry.npmjs.org/react-is/16.13.1
     dev: false
 
   /homedir-polyfill/1.0.3:

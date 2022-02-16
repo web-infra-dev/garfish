@@ -14,7 +14,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-shadow-dom-retarget-events": "^1.0.11",
-    "@garfish/bridge": "workspace:*"
+    "@garfish/bridge": "workspace:*",
+    "@garfish/remote-module": "workspace:*"
   },
   "scripts": {
     "start": "WDS_SOCKET_PORT=2444 PORT=2444 BROWSER=none react-app-rewired start",

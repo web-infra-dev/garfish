@@ -98,7 +98,7 @@ describe('hooks', () => {
     expect(i).toBe(2);
 
     hook1.once(async () => {
-      return false;
+      return false as false;
     });
     hook1.on(() => {
       i++;

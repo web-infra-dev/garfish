@@ -2,7 +2,7 @@ import { warn, error, isObject } from '@garfish/utils';
 import { SyncHook } from './syncHook';
 import { checkReturnData } from './syncWaterfallHook';
 
-type CallbackReturnType<T> = T | boolean | Promise<T | boolean>;
+type CallbackReturnType<T> = T | false | Promise<T | false>;
 
 export class AsyncWaterfallHook<T extends Record<string, any>> extends SyncHook<
   [T],
@@ -15,7 +15,7 @@ export class AsyncWaterfallHook<T extends Record<string, any>> extends SyncHook<
     this.type = type;
   }
 
-  emit(data: T): Promise<T | boolean> {
+  emit(data: T): Promise<T | false> {
     if (!isObject(data)) {
       error(`"${this.type}" hook response data must be an object.`);
     }
@@ -29,7 +29,7 @@ export class AsyncWaterfallHook<T extends Record<string, any>> extends SyncHook<
         return data;
       };
 
-      const call = (prevData: T | boolean) => {
+      const call = (prevData: T | false) => {
         if (prevData === false) {
           return false;
         } else if (checkReturnData(data, prevData)) {
