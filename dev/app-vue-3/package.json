@@ -8,8 +8,7 @@
     "mobx-vue": "^2.1.0",
     "vue": "^3.2.21",
     "vue-router": "^4.0.12",
-    "vuex": "^3.6.2",
-    "@garfish/remote-module": "workspace:*"
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
