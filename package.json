@@ -86,7 +86,11 @@
     "workspace-tools": "0.16.2",
     "zx": "4.2.0",
     "codecov": "^3.1.0",
-    "@testing-library/jest-dom": "^5.16.1"
+    "@testing-library/jest-dom": "^5.16.1",
+    "@vue/cli-plugin-babel": "4.5.15",
+    "@vue/cli-plugin-eslint": "4.5.15",
+    "@vue/cli-service": "4.5.15",
+    "eslint-plugin-vue": "7.19.1"
   },
   "engines": {
     "node": ">=14.13.0"
