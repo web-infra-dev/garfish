@@ -4,7 +4,7 @@ import { checkReturnData } from './syncWaterfallHook';
 
 type CallbackReturnType<T> = T | boolean | Promise<T | boolean>;
 
-export class AsyncWaterfallHook<T> extends SyncHook<
+export class AsyncWaterfallHook<T extends Record<string, any>> extends SyncHook<
   [T],
   CallbackReturnType<T>
 > {

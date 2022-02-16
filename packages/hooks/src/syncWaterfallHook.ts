@@ -13,7 +13,10 @@ export function checkReturnData(originData, returnData) {
   return true;
 }
 
-export class SyncWaterfallHook<T> extends SyncHook<[T], T> {
+export class SyncWaterfallHook<T extends Record<string, any>> extends SyncHook<
+  [T],
+  T
+> {
   public onerror: (errMsg: string | Error) => void = error;
 
   constructor(type: string) {

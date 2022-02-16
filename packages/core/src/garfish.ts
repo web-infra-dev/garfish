@@ -1,5 +1,5 @@
-import { EventEmitter2 } from 'eventemitter2';
 import { Loader } from '@garfish/loader';
+import { EventEmitter2 } from 'eventemitter2';
 import { warn, assert, isPlainObject, __GARFISH_FLAG__ } from '@garfish/utils';
 import {
   SyncHook,
