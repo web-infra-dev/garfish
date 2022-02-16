@@ -22,6 +22,10 @@ function fetchStaticResources(
       .map((node) => {
         const src = entryManager.findAttributeValue(node, 'src');
         const type = entryManager.findAttributeValue(node, 'type');
+        const crossOrigin = entryManager.findAttributeValue(
+          node,
+          'crossorigin',
+        );
 
         // There should be no embedded script in the script element tag with the src attribute specified
         if (src) {
@@ -31,7 +35,7 @@ function fetchStaticResources(
           // Scripts with "async" attribute will make the rendering process very complicated,
           // we have a preload mechanism, so we don’t need to deal with it.
           return loader
-            .load<JavaScriptManager>(appName, fetchUrl)
+            .load<JavaScriptManager>(appName, fetchUrl, undefined, crossOrigin)
             .then(({ resourceManager: jsManager }) => {
               jsManager.setDep(node);
               jsManager.setMimeType(type);
