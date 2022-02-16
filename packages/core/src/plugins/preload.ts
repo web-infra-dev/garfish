@@ -149,7 +149,6 @@ export function GarfishPreloadPlugin() {
 
       beforeLoad(appInfo) {
         setRanking(appInfo.name);
-        return Promise.resolve(true);
       },
 
       registerApp(appInfos) {
