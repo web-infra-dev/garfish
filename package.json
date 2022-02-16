@@ -73,7 +73,7 @@
     "lint-staged": "11.2.6",
     "lodash": "4.17.21",
     "minimist": "1.2.5",
-    "pnpm": "6.23.2",
+    "pnpm": "^6.31.0",
     "prettier": "2.4.1",
     "prettier-eslint-cli": "5.0.1",
     "rimraf": "3.0.2",
@@ -86,11 +86,7 @@
     "workspace-tools": "0.16.2",
     "zx": "4.2.0",
     "codecov": "^3.1.0",
-    "@testing-library/jest-dom": "^5.16.1",
-    "@vue/cli-plugin-babel":"^4.5.15",
-    "@vue/cli-plugin-eslint": "^4.5.15",
-    "@vue/cli-service": "^4.5.15",
-    "eslint-plugin-vue": "^8.4.1"
+    "@testing-library/jest-dom": "^5.16.1"
   },
   "engines": {
     "node": ">=14.13.0"
