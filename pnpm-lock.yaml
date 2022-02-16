@@ -495,9 +495,9 @@ importers:
       garfish: workspace:*
       mobx-vue: ^2.1.0
       url-loader: ^4.1.1
-      vue: 2.6.14
+      vue: ^2.6.14
       vue-router: ^3.5.3
-      vue-template-compiler: 2.6.14
+      vue-template-compiler: ^2.6.14
       vuex: ^3.6.2
     dependencies:
       '@garfish/bridge': link:../../packages/bridge
