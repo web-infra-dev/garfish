@@ -43,6 +43,11 @@ export interface LoadedHookArgs<T extends Manager> {
   value: CacheValue<T>;
 }
 
+export enum CrossOriginCredentials {
+  anonymous = 'same-origin',
+  'use-credentials' = 'include',
+}
+
 export class Loader {
   public personalId = __LOADER_FLAG__;
   public StyleManager = StyleManager;
@@ -98,7 +103,7 @@ export class Loader {
     scope: string,
     url: string,
     isModule = false,
-    isIncludeCredentials = false,
+    crossOrigin: HTMLScriptElement['crossOrigin'] = 'anonymous',
   ): Promise<LoadedHookArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
 
@@ -132,7 +137,7 @@ export class Loader {
 
     const requestConfig = mergeConfig(this, url);
     // Tells browsers to include credentials in both same- and cross-origin requests, and always use any credentials sent back in responses.
-    requestConfig.credentials = isIncludeCredentials ? 'include' : undefined;
+    requestConfig.credentials = CrossOriginCredentials[crossOrigin];
     const resOpts = this.hooks.lifecycle.beforeLoad.emit({
       url,
       requestConfig,

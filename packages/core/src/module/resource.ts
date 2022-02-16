@@ -35,12 +35,7 @@ function fetchStaticResources(
           // Scripts with "async" attribute will make the rendering process very complicated,
           // we have a preload mechanism, so we don’t need to deal with it.
           return loader
-            .load<JavaScriptManager>(
-              appName,
-              fetchUrl,
-              undefined,
-              crossOrigin === 'use-credentials',
-            )
+            .load<JavaScriptManager>(appName, fetchUrl, undefined, crossOrigin)
             .then(({ resourceManager: jsManager }) => {
               jsManager.setDep(node);
               jsManager.setMimeType(type);
