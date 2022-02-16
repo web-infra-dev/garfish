@@ -1,7 +1,13 @@
 import { EventEmitter2 } from 'eventemitter2';
 import { Loader } from '@garfish/loader';
-import { SyncHook, AsyncHook, PluginSystem } from '@garfish/hooks';
 import { warn, assert, isPlainObject, __GARFISH_FLAG__ } from '@garfish/utils';
+import {
+  SyncHook,
+  AsyncHook,
+  SyncWaterfallHook,
+  AsyncWaterfallHook,
+  PluginSystem,
+} from '@garfish/hooks';
 import {
   deepMergeConfig,
   generateAppOptions,
@@ -17,7 +23,12 @@ import { GarfishPreloadPlugin } from './plugins/preload';
 import { GarfishPerformance } from './plugins/performance';
 
 const DEFAULT_PROPS = new WeakMap();
-const HOOKS_API = { SyncHook, AsyncHook };
+const HOOKS_API = {
+  SyncHook,
+  AsyncHook,
+  SyncWaterfallHook,
+  AsyncWaterfallHook,
+};
 
 export class Garfish extends EventEmitter2 {
   public running = false;

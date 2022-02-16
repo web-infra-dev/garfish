@@ -32,13 +32,13 @@ describe('Core: esm loader', () => {
   it('dynamic import reg', () => {
     let code =
       // eslint-disable-next-line quotes
-      "import('a');const obj = { import(a) {} };import(a + fn() + 'a');";
+      "import('a');const obj = { import(a) {\nimport('b')\n} };import(a + fn(import(a + b)) + 'a');";
     code = code.replace(DYNAMIC_IMPORT_REG, (k1) =>
       k1.replace('import', '_import_'),
     );
     expect(code).toBe(
       // eslint-disable-next-line quotes
-      "_import_('a');const obj = { import(a) {} };_import_(a + fn() + 'a');",
+      "_import_('a');const obj = { import(a) {\n_import_('b')\n} };_import_(a + fn(_import_(a + b)) + 'a');",
     );
   });
 });

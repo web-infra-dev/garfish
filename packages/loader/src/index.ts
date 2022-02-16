@@ -97,7 +97,7 @@ export class Loader {
   load<T extends Manager>(
     scope: string,
     url: string,
-    isModule = false,
+    isRemoteModule = false,
   ): Promise<LoadedHookArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
 
@@ -139,7 +139,7 @@ export class Loader {
       .then(({ code, size, mimeType, result }) => {
         let managerCtor, fileType: FileTypes;
 
-        if (isModule) {
+        if (isRemoteModule) {
           fileType = FileTypes.module;
           managerCtor = ModuleManager;
         } else if (isHtml(mimeType) || /\.html$/.test(result.url)) {

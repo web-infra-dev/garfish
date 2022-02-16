@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
 import GarfishInstance from 'garfish';
+import { AsyncWaterfallHook } from '@garfish/hooks';
 import { Config } from './config';
 
 GarfishInstance.router.beforeEach((to, from, next) => {
@@ -54,7 +55,7 @@ document.getElementById('esmBtn').onclick = async () => {
 // Plugin test
 const hooks = GarfishInstance.createPluginSystem(({ SyncHook, AsyncHook }) => {
   return {
-    create: new AsyncHook<[number], string>(),
+    create: new AsyncHook<[number]>(),
   };
 });
 
@@ -62,8 +63,26 @@ hooks.usePlugin({
   name: 'test',
   create(a) {
     console.log(a);
-    return '';
   },
 });
 
 hooks.lifecycle.create.emit(123);
+
+async function f() {
+  const hook = new AsyncWaterfallHook<{ name: string }>('test');
+
+  // @ts-ignore
+  hook.on(async () => {
+    return '';
+  });
+  hook.on(async (data) => {
+    data.name += '2';
+    return data;
+  });
+
+  const obj = { fn() {} };
+  hook.onerror = obj.fn;
+
+  const data = await hook.emit({ name: 'chen' });
+}
+f();
