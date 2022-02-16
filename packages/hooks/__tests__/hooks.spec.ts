@@ -169,10 +169,14 @@ describe('hooks', () => {
       data.name += '1';
       return data;
     });
-    hook.on(async (data) => {
-      expect(data.name).toBe('chen1');
-      data.name += '2';
-      return data;
+    hook.on((data) => {
+      return new Promise((resolve) => {
+        expect(data.name).toBe('chen1');
+        data.name += '2';
+        setTimeout(() => {
+          resolve(data);
+        }, 10);
+      });
     });
     hook.once(async (data) => {
       expect(data.name).toBe('chen12');
