@@ -215,4 +215,25 @@ describe('hooks', () => {
     spy.mockReset();
     spy.mockRestore();
   });
+
+  it('AsyncWaterfallHook block', async () => {
+    const hook = new AsyncWaterfallHook<{ n: number }>('test');
+
+    hook.on((data) => {
+      return data.n > 0 ? false : data;
+    });
+    hook.on((data) => {
+      data.n++;
+      return data;
+    });
+
+    let obj = { n: 0 };
+    let data = await hook.emit(obj);
+    expect(data).toEqual({ n: 1 });
+    expect(obj === data).toBe(true);
+
+    obj = { n: 1 };
+    data = await hook.emit({ n: 1 });
+    expect(data).toBe(false);
+  });
 });

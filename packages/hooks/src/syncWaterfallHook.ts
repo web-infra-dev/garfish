@@ -22,6 +22,9 @@ export class SyncWaterfallHook<T> extends SyncHook<[T], T> {
   }
 
   emit(data: T) {
+    if (!isObject(data)) {
+      error(`"${this.type}" hook response data must be an object.`);
+    }
     for (const fn of this.listeners) {
       try {
         const tempData = fn(data);

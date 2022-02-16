@@ -51,38 +51,3 @@ document.getElementById('esmBtn').onclick = async () => {
     history.pushState({}, 'esmApp', '/garfish_master/esmApp');
   }
 };
-
-// Plugin test
-const hooks = GarfishInstance.createPluginSystem(({ SyncHook, AsyncHook }) => {
-  return {
-    create: new AsyncHook<[number]>(),
-  };
-});
-
-hooks.usePlugin({
-  name: 'test',
-  create(a) {
-    console.log(a);
-  },
-});
-
-hooks.lifecycle.create.emit(123);
-
-async function f() {
-  const hook = new AsyncWaterfallHook<{ name: string }>('test');
-
-  // @ts-ignore
-  hook.on(async () => {
-    return '';
-  });
-  hook.on(async (data) => {
-    data.name += '2';
-    return data;
-  });
-
-  const obj = { fn() {} };
-  hook.onerror = obj.fn;
-
-  const data = await hook.emit({ name: 'chen' });
-}
-f();

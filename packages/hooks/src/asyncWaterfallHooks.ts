@@ -1,8 +1,13 @@
-import { warn, error } from '@garfish/utils';
+import { warn, error, isObject } from '@garfish/utils';
 import { SyncHook } from './syncHook';
 import { checkReturnData } from './syncWaterfallHook';
 
-export class AsyncWaterfallHook<T> extends SyncHook<[T], Promise<T> | T> {
+type CallbackReturnType<T> = T | boolean | Promise<T | boolean>;
+
+export class AsyncWaterfallHook<T> extends SyncHook<
+  [T],
+  CallbackReturnType<T>
+> {
   public onerror: (errMsg: string | Error) => void = error;
 
   constructor(type: string) {
@@ -10,8 +15,12 @@ export class AsyncWaterfallHook<T> extends SyncHook<[T], Promise<T> | T> {
     this.type = type;
   }
 
-  emit(data: T) {
+  emit(data: T): Promise<T | boolean> {
+    if (!isObject(data)) {
+      error(`"${this.type}" hook response data must be an object.`);
+    }
     const ls = Array.from(this.listeners);
+
     if (ls.length > 0) {
       let i = 0;
       const processError = (e) => {
@@ -20,18 +29,16 @@ export class AsyncWaterfallHook<T> extends SyncHook<[T], Promise<T> | T> {
         return data;
       };
 
-      const call = (prevData: T) => {
-        if (checkReturnData(data, prevData)) {
-          data = prevData;
+      const call = (prevData: T | boolean) => {
+        if (prevData === false) {
+          return false;
+        } else if (checkReturnData(data, prevData)) {
+          data = prevData as T;
           if (i < ls.length) {
-            let curResult;
             try {
-              curResult = ls[i++](data);
+              return Promise.resolve(ls[i++](data)).then(call, processError);
             } catch (e) {
-              processError(e);
-            }
-            if (curResult) {
-              return Promise.resolve(curResult).then(call, processError);
+              return processError(e);
             }
           }
         } else {
@@ -41,7 +48,7 @@ export class AsyncWaterfallHook<T> extends SyncHook<[T], Promise<T> | T> {
         }
         return data;
       };
-      data = call(data);
+      return Promise.resolve(call(data));
     }
     return Promise.resolve(data);
   }
