@@ -17,7 +17,8 @@
     "experimentalDecorators": true,
     "paths": {
       "@garfish/*": ["packages/*/src"]
-    }
+    },
+    "types": ["node", "jest", "@testing-library/jest-dom"],
   },
   "include": [
     "packages/*/src",

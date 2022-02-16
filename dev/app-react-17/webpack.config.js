@@ -125,7 +125,6 @@ const webpackConfig = {
       // },
     },
   },
-
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
@@ -133,7 +132,6 @@ const webpackConfig = {
     new DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
-    isDevelopment && new ReactRefreshWebpackPlugin(),
-  ],
+  ].concat(isDevelopment ? [new ReactRefreshWebpackPlugin()] : []),
 };
 export default webpackConfig;
