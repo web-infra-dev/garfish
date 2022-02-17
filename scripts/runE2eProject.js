@@ -20,20 +20,23 @@ function runAllExample() {
       Promise.all(ports.map((port) => killPort(port)))
         // build all demo or dev all example
         .then(() => {
-          step('\n building dev project...');
-          return $`pnpm update cypress && pnpm run build --parallel --filter "@garfish-dev/*"`;
+          // step('\n building dev project...');
+          // return $`pnpm run build --parallel --filter "@garfish-dev/*"`;
+
+          step('\n run dev project...');
+          return $`pnpm start --filter "@garfish-dev/*" --parallel`;
         })
-        .then(() => {
-          step('\n http-server dev dist...');
-          Object.keys(portMap).forEach((pkgPath) => {
-            // history api fallback
-            if (pkgPath === 'dev/main') {
-              $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} --proxy http://localhost:${portMap[pkgPath].port}?`;
-            } else {
-              $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port}`;
-            }
-          });
-        })
+        // .then(() => {
+        //   step('\n http-server dev dist...');
+        //   Object.keys(portMap).forEach((pkgPath) => {
+        //     // history api fallback
+        //     if (pkgPath === 'dev/main') {
+        //       $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} --proxy http://localhost:${portMap[pkgPath].port}?`;
+        //     } else {
+        //       $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port}`;
+        //     }
+        //   });
+        // })
         .then(() => waitOn(opts))
         .catch((err) => {
           console.error(err);
