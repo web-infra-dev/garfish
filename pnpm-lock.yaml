@@ -1180,7 +1180,7 @@ packages:
     dev: false
 
   /@arco-design/web-react/2.28.1_b3482aaf5744fc7c2aeb7941b0e0a78f:
-    resolution: {integrity: sha512-6mDlcmvDOwnRLb0Eei1Awi+WfT4MM+gQWuUL7hwi2Q/Av0VA5IRvHQxW4lvsuceXYNgG/DEM+OnEHaYywk1Uzw==}
+    resolution: {integrity: sha512-QErEK7/D4L34bkWgGbBvwk2exA7mbipKO6h1fEcTITtMgHyJOqk1vBYhaCMs3jkrZPCV0KdEyKo0j10XCOMZag==}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
@@ -1205,7 +1205,7 @@ packages:
     dev: false
 
   /@arco-design/web-react/2.28.1_react-dom@17.0.2+react@17.0.2:
-    resolution: {integrity: sha512-6mDlcmvDOwnRLb0Eei1Awi+WfT4MM+gQWuUL7hwi2Q/Av0VA5IRvHQxW4lvsuceXYNgG/DEM+OnEHaYywk1Uzw==}
+    resolution: {integrity: sha512-QErEK7/D4L34bkWgGbBvwk2exA7mbipKO6h1fEcTITtMgHyJOqk1vBYhaCMs3jkrZPCV0KdEyKo0j10XCOMZag==}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
