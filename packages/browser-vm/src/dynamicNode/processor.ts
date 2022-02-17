@@ -131,7 +131,7 @@ export class DynamicNodeProcessor {
       if (src) {
         const fetchUrl = baseUrl ? transformUrl(baseUrl, src) : src;
         this.sandbox.loader
-          .load<JavaScriptManager>(namespace, fetchUrl, undefined, crossOrigin)
+          .load<JavaScriptManager>(namespace, fetchUrl, false, crossOrigin)
           .then(
             ({ resourceManager: { url, scriptCode } }) => {
               // It is necessary to ensure that the code execution error cannot trigger the `el.onerror` event

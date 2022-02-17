@@ -178,8 +178,9 @@ export class Loader {
             url,
             resourceManager,
             fileType: fileType || '',
-            code: resourceManager ? '' : code,
+            // For performance reasons, take an approximation
             size: size || code.length,
+            code: resourceManager ? '' : code,
           },
         });
 
