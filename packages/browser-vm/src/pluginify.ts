@@ -13,6 +13,7 @@ declare module '@garfish/core' {
 
   export namespace interfaces {
     export interface SandboxConfig {
+      allowNetworkModule?: boolean;
       modules?: Array<Module> | Record<string, Module>;
     }
 
@@ -111,9 +112,10 @@ function createOptions(Garfish: interfaces.Garfish) {
           namespace: appInfo.name,
           sourceList: appInstance.sourceList,
           baseUrl: appInstance.entryManager.url,
-          strictIsolation: appInfo.sandbox?.strictIsolation,
-          modules: compatibleOldModule(appInfo.sandbox.modules),
-          disableWith: appInfo.sandbox?.disableWith || false,
+          modules: compatibleOldModule(appInfo.sandbox?.modules || []),
+          disableWith: Boolean(appInfo.sandbox?.disableWith),
+          strictIsolation: Boolean(appInfo.sandbox?.strictIsolation),
+          allowNetworkModule: Boolean(appInfo.sandbox?.allowNetworkModule),
 
           el: () => appInstance.htmlNode,
 

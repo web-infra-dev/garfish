@@ -39,7 +39,6 @@ import {
 
 let id = 0;
 const defaultModules: Array<Module> = [
-  // networkModule,
   timeoutModule,
   intervalModule,
   historyModule,
@@ -96,6 +95,7 @@ export class Sandbox {
       sourceList: [],
       disableWith: false,
       strictIsolation: false,
+      allowNetworkModule: false,
       el: () => null,
       protectVariable: () => [],
       insulationVariable: () => [],
@@ -216,6 +216,12 @@ export class Sandbox {
     const prepareList = [];
     const overrideList = {};
     const allModules = defaultModules.concat(this.options.modules);
+
+    // Optionally fix network requests,
+    // if default settings will affect optimization measures of `goofy`
+    if (this.options.allowNetworkModule) {
+      allModules.push(networkModule);
+    }
 
     for (const module of allModules) {
       if (typeof module === 'function') {

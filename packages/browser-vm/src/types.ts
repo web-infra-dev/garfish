@@ -23,6 +23,7 @@ export interface SandboxOptions {
   baseUrl?: string;
   disableWith?: boolean;
   strictIsolation?: boolean;
+  allowNetworkModule?: boolean;
   modules?: Array<Module>;
   sourceList?: Array<{ tagName: string; url: string }>;
   loaderOptions?: LoaderOptions;

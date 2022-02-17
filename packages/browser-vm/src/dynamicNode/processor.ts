@@ -4,6 +4,7 @@ import {
   warn,
   isJs,
   isCss,
+  isJsonp,
   DOMApis,
   makeMap,
   findTarget,
@@ -13,7 +14,6 @@ import {
   sourceListTags,
   parseContentType,
   __REMOVE_NODE__,
-  isJsonp,
 } from '@garfish/utils';
 import { rootElm } from '../utils';
 import { Sandbox } from '../sandbox';
