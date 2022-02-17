@@ -56,8 +56,9 @@ jobs:
       run:  pnpm build
     - name: Run cypress test
       uses: cypress-io/github-action@v2
+      run: pnpm install --filter=\!garfish-docs
       with:
-        install: true
+        install: false
         start: node scripts/devCypress.js
         wait-on: 'http://localhost:8090,http://localhost:8091,http://localhost:8092,http://localhost:8093,http://localhost:8094,http://localhost:8095,http://localhost:4200'
         wait-on-timeout: 300
