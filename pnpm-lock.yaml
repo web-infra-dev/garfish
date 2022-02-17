@@ -19,7 +19,7 @@ importers:
       chalk: 4.1.2
       codecov: ^3.1.0
       cross-env: 7.0.3
-      cypress: ^9.2.1
+      cypress: ^9.2.2
       esbuild-plugin-replace: 1.0.7
       eslint: 7.32.0
       execa: 4.1.0
@@ -63,7 +63,7 @@ importers:
       chalk: 4.1.2
       codecov: 3.8.3
       cross-env: 7.0.3
-      cypress: 9.2.1
+      cypress: 9.5.0
       esbuild-plugin-replace: 1.0.7
       eslint: 7.32.0
       execa: 4.1.0
@@ -4361,7 +4361,7 @@ packages:
     dev: true
 
   /@cypress/xvfb/1.2.4:
-    resolution: {integrity: sha1-La9C6CdbOfSqU8FCFOVXvRTndIo=}
+    resolution: {integrity: sha512-skbBzPggOVYCbnGgV+0dmBdW/s77ZkAOXIC1knS8NagwDjBrNC1LuXtQJeiN6l+m7lzmHtaoUw/ctJKdqkG57Q==}
     dependencies:
       debug: 3.2.7
       lodash.once: 4.1.1
@@ -6632,8 +6632,8 @@ packages:
       '@types/mime': 1.3.2
       '@types/node': 17.0.8
 
-  /@types/sinonjs__fake-timers/6.0.4:
-    resolution: {integrity: sha512-IFQTJARgMUBF+xVd2b+hIgXWrZEjND3vJtRCvIelcFB5SIXfjV4bOHbHJ0eXKh+0COrBRc8MqteKAz/j88rE0A==}
+  /@types/sinonjs__fake-timers/8.1.1:
+    resolution: {integrity: sha512-0kSuKjAS0TrGLJ0M/+8MaFkGsQhZpB6pxOmvS3K8FYI72K//YmdfoW9X2qPsAKh1mkwxGD5zib9s1FIFed6E8g==}
     dev: true
 
   /@types/sizzle/2.3.3:
@@ -8136,7 +8136,7 @@ packages:
     resolution: {integrity: sha1-UlILiuW1aSFbNU78DKo/4eRaitw=}
 
   /arch/2.2.0:
-    resolution: {integrity: sha1-G8R4GPMFdk8jqzMGsL/AhsWinRE=}
+    resolution: {integrity: sha512-Of/R0wqp83cgHozfIYLbBMnej79U/SVGOOyuB3VVFv1NRM/PSFMK12x9KVtiYzJqmnU5WR2qp0Z5rHb7sWGnFQ==}
     dev: true
 
   /are-we-there-yet/1.1.7:
@@ -8335,7 +8335,7 @@ packages:
     dev: true
 
   /at-least-node/1.0.0:
-    resolution: {integrity: sha1-YCzUtG6EStTv/JKoARo8RuAjjcI=}
+    resolution: {integrity: sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==}
     engines: {node: '>= 4.0.0'}
 
   /atob/2.1.2:
@@ -8903,7 +8903,7 @@ packages:
       readable-stream: 3.6.0
 
   /blob-util/2.0.2:
-    resolution: {integrity: sha1-O048KBERu38REoUYAGzcYLQDoes=}
+    resolution: {integrity: sha512-T7JQa+zsXXEa6/8ZhHcQEW1UFfVM49Ts65uBkFL6fz2QmrElqmbajIDJvuA0tEhRe5eIjpV9ZF+0RfZR9voJFQ==}
     dev: true
 
   /blob/0.0.5:
@@ -8919,7 +8919,7 @@ packages:
     dev: true
 
   /bluebird/3.7.2:
-    resolution: {integrity: sha1-nyKcFb4nJFT/qXOs4NvueaGww28=}
+    resolution: {integrity: sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==}
 
   /bmp-js/0.1.0:
     resolution: {integrity: sha1-4Fpj95amwf8l9Hcex62twUjAcjM=}
@@ -10771,8 +10771,8 @@ packages:
     resolution: {integrity: sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=}
     dev: true
 
-  /cypress/9.2.1:
-    resolution: {integrity: sha512-LVEe4yWCo4xO0Vd8iYjFHRyd5ulRvM56XqMgAdn05Qb9kJ6iJdO/MmjKD8gNd768698cp1FDuSmFQZHVZGk+Og==}
+  /cypress/9.5.0:
+    resolution: {integrity: sha512-rC5QPolKsVjJ8QJZ7IeZ6HlKM4gswBGZc0XvoAJNL8urQCSL8zTX0A/ai/h35WfF47NQ0iSZnwIXBlHX3MOUIQ==}
     engines: {node: '>=12.0.0'}
     hasBin: true
     requiresBuild: true
@@ -10780,11 +10780,12 @@ packages:
       '@cypress/request': 2.88.10
       '@cypress/xvfb': 1.2.4
       '@types/node': 14.18.5
-      '@types/sinonjs__fake-timers': 6.0.4
+      '@types/sinonjs__fake-timers': 8.1.1
       '@types/sizzle': 2.3.3
       arch: 2.2.0
       blob-util: 2.0.2
       bluebird: 3.7.2
+      buffer: 5.7.1
       cachedir: 2.3.0
       chalk: 4.1.2
       check-more-types: 2.24.0
@@ -10813,10 +10814,10 @@ packages:
       pretty-bytes: 5.6.0
       proxy-from-env: 1.0.0
       request-progress: 3.0.0
+      semver: 7.3.5
       supports-color: 8.1.1
       tmp: 0.2.1
       untildify: 4.0.0
-      url: 0.11.0
       yauzl: 2.10.0
     dev: true
 
@@ -12521,7 +12522,7 @@ packages:
       strip-final-newline: 2.0.0
 
   /executable/4.1.1:
-    resolution: {integrity: sha1-QVMr/zYdPlevTXY7cFgtsY9dEzw=}
+    resolution: {integrity: sha512-8iA79xD3uAch729dUG8xaaBBFGaEa0wdD2VkYLFHwlqosEj/jT66AzcreRDSgV7ehnNLBW2WR5jIXwGKjVdTLg==}
     engines: {node: '>=4'}
     dependencies:
       pify: 2.3.0
@@ -12614,7 +12615,7 @@ packages:
     dev: true
 
   /extend/3.0.2:
-    resolution: {integrity: sha1-+LETa0Bx+9jrFAr/hYsQGewpFfo=}
+    resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
 
   /external-editor/3.1.0:
     resolution: {integrity: sha512-hMQ4CX1p1izmuLYyZqLMO/qGNw10wSv9QDCPfzXfyFrOaCSSoRfqE1Kf1s5an66J5JZC62NewG+mK49jOCtQew==}
@@ -13311,7 +13312,7 @@ packages:
     dev: true
 
   /getos/3.2.1:
-    resolution: {integrity: sha1-ATTR9OAOtGFExanArE3Ah8uyfcU=}
+    resolution: {integrity: sha512-U56CfOK17OKgTVqozZjUKNdkfEv6jk5WISBJ8SHoagjE6L69zOwl3Z+O8myjY9MEW3i2HPWQBt/LTbCgcC973Q==}
     dependencies:
       async: 3.2.3
     dev: true
@@ -19965,7 +19966,7 @@ packages:
     dev: true
 
   /pretty-bytes/5.6.0:
-    resolution: {integrity: sha1-NWJW9kOAR3PIL2RyP+eMksYr6us=}
+    resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
     engines: {node: '>=6'}
     dev: true
 
@@ -20138,7 +20139,7 @@ packages:
     resolution: {integrity: sha1-8FKijacOYYkX7wqKw0wa5aaChrM=}
 
   /psl/1.8.0:
-    resolution: {integrity: sha1-kyb4vPsBOtzABf3/BWrM4CDlHCQ=}
+    resolution: {integrity: sha512-RIdOzyoavK+hA18OGGWDqUTsCLhtA7IcZ/6NCs4fFJaHBDab+pDDmDIByWFRQJq2Cd7r1OoQxBGKOaztq+hjIQ==}
     dev: true
 
   /public-encrypt/4.0.3:
