@@ -15,6 +15,7 @@ export interface BeforeLoadArgs {
 
 export interface afterLoadArgs {
   url: string;
+  code: string;
   exports: Record<string, any>;
 }
 
@@ -26,4 +27,7 @@ export const hooks = new PluginSystem({
     'asyncBeforeLoadModule',
   ),
   afterLoadModule: new SyncWaterfallHook<afterLoadArgs>('afterLoadModule'),
+  asyncAfterLoadModule: new AsyncWaterfallHook<afterLoadArgs>(
+    'asyncAfterLoadModule',
+  ),
 });

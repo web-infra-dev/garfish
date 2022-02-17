@@ -57,10 +57,16 @@ export async function loadModule(
         if (typeof adapter === 'function') {
           exports = adapter(exports);
         }
-        exports = hooks.lifecycle.afterLoadModule.emit({
+        const hookResult = await hooks.lifecycle.asyncAfterLoadModule.emit({
           url,
           exports,
-        }).exports;
+          code: data.resourceManager.moduleCode,
+        });
+        if (hookResult === false) {
+          return null;
+        }
+        exports = hookResult.exports;
+
         cacheModules[urlWithVersion] = exports;
         if (isPromise(exports)) {
           exports = await exports;

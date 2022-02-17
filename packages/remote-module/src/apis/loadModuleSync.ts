@@ -3,8 +3,8 @@ import {
   ModuleInfo,
   cacheModules,
   purifyOptions,
-  getModuleCode,
   prettifyError,
+  getModuleManager,
 } from '../common';
 import { hooks } from '../hooks';
 import { Actuator } from '../actuator';
@@ -57,7 +57,7 @@ export function loadModuleSync(
     isPromise(module) && throwWarn(alias, url);
     result = getValueInObject(module, segments);
   } else {
-    const manager = getModuleCode(url);
+    const manager = getModuleManager(url);
     assert(
       manager,
       `Synchronously load module must load resources in advance. "${url}"`,
@@ -71,7 +71,12 @@ export function loadModuleSync(
       if (typeof adapter === 'function') {
         exports = adapter(exports);
       }
-      exports = hooks.lifecycle.afterLoadModule.emit({ url, exports }).exports;
+      exports = hooks.lifecycle.afterLoadModule.emit({
+        url,
+        exports,
+        code: manager.moduleCode,
+      }).exports;
+
       isPromise(exports) && throwWarn(alias, url);
       cacheModules[urlWithVersion] = exports;
       result = getValueInObject(exports, segments);
