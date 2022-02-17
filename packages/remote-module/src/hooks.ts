@@ -23,7 +23,7 @@ export const hooks = new PluginSystem({
   initModule: new SyncHook<[Actuator], any>('initModule'),
   beforeLoadModule: new SyncWaterfallHook<BeforeLoadArgs>('beforeLoadModule'),
   asyncBeforeLoadModule: new AsyncWaterfallHook<BeforeLoadArgs>(
-    'beforeLoadModule',
+    'asyncBeforeLoadModule',
   ),
   afterLoadModule: new SyncWaterfallHook<afterLoadArgs>('afterLoadModule'),
 });
