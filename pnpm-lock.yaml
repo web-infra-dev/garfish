@@ -406,6 +406,45 @@ importers:
       webpack-cli: 4.9.1_ad725fab8cb7e49fac502828bebe26bc
       webpack-dev-server: 4.7.3_webpack-cli@4.9.1+webpack@5.66.0
 
+  dev/app-vue:
+    specifiers:
+      '@garfish/bridge': workspace:*
+      '@garfish/remote-module': workspace:*
+      '@vue/cli-plugin-babel': ~4.5.0
+      '@vue/cli-plugin-eslint': ~4.5.0
+      '@vue/cli-service': ~4.5.0
+      babel-eslint: ^10.1.0
+      core-js: ^3.6.5
+      element-ui: ^2.15.6
+      eslint: ^6.7.2
+      eslint-plugin-vue: ^8.4.1
+      garfish: workspace:*
+      mobx-vue: ^2.1.0
+      url-loader: ^4.1.1
+      vue: ~2.6.14
+      vue-router: ^3.5.3
+      vue-template-compiler: ~2.6.14
+      vuex: ^3.6.2
+    dependencies:
+      '@garfish/bridge': link:../../packages/bridge
+      '@garfish/remote-module': link:../../packages/remote-module
+      core-js: 3.20.2
+      garfish: link:../../packages/garfish
+      mobx-vue: 2.2.0_vue@2.6.14
+      vue: 2.6.14
+      vue-router: 3.5.3
+      vuex: 3.6.2_vue@2.6.14
+    devDependencies:
+      '@vue/cli-plugin-babel': 4.5.15_4c1e5ebbf041a85328f9984e4ede8f8a
+      '@vue/cli-plugin-eslint': 4.5.15_159f9ca94908a7070131e2c321d72521
+      '@vue/cli-service': 4.5.15_daaec740214156bd7a1b7d7855d908a4
+      babel-eslint: 10.1.0_eslint@6.8.0
+      element-ui: 2.15.6_vue@2.6.14
+      eslint: 6.8.0
+      eslint-plugin-vue: 8.4.1_eslint@6.8.0
+      url-loader: 4.1.1
+      vue-template-compiler: 2.6.14
+
   dev/app-vue-2:
     specifiers:
       '@garfish/bridge': workspace:*
@@ -7430,8 +7469,8 @@ packages:
       prettier: 2.4.1
     dev: true
 
-  /@vue/devtools-api/6.0.0-beta.21.1:
-    resolution: {integrity: sha512-FqC4s3pm35qGVeXRGOjTsRzlkJjrBLriDS9YXbflHLsfA9FrcKzIyWnLXoNm+/7930E8rRakXuAc2QkC50swAw==}
+  /@vue/devtools-api/6.0.12:
+    resolution: {integrity: sha512-iO/4FIezHKXhiDBdKySCvJVh8/mZPxHpiQrTy+PXVqJZgpTPTdHy4q8GXulaY+UKEagdkBb0onxNQZ0LNiqVhw==}
     dev: false
 
   /@vue/preload-webpack-plugin/1.1.2_502c618fc8a7d35df07e93275324a2d0:
@@ -16608,7 +16647,7 @@ packages:
     dev: false
 
   /magic-string/0.25.7:
-    resolution: {integrity: sha1-P0l9b9NMZpxnmNy4IfLvMfVEUFE=}
+    resolution: {integrity: sha512-4CrMT5DOHTDk4HYDlzmwu4FVCcIYI8gauveasrdCu2IKIFOJ3f0v/8MDGJCDL9oD2ppz/Av1b0Nj345H9M+XIA==}
     dependencies:
       sourcemap-codec: 1.4.8
 
@@ -24258,7 +24297,7 @@ packages:
     peerDependencies:
       vue: ^3.0.0
     dependencies:
-      '@vue/devtools-api': 6.0.0-beta.21.1
+      '@vue/devtools-api': 6.0.12
       vue: 3.2.26
     dev: false
 
