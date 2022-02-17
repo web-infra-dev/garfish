@@ -94,8 +94,6 @@ module.exports = {
   <TabItem value="vite" label="Vite" default>
 
 ```js
-import { htmlPlugin } from '@garfish/vite-plugin';
-
 // 使用 Vite 应用作为子应用时需要注意：
 // 子应用必须使用缓存模式 cache: true 模式，路由驱动时默认使用 cache 模式，触发将 appInfo.cache = false（因为 esmodule 内容无法重复执行）
 // 子应用不可重复使用 app.mount，第二次渲染时只能使用 app.show，否则将走非缓存模式（因为 esmodule 内容无法重复执行）
@@ -110,12 +108,6 @@ export default defineConfig({
     // 提供资源绝对路径，端口可自定义
     origin: 'http://localhost:3000',
   },
-  plugins: [
-    // 使用 vite-plugin 的 html plugin，并定义 ID，该 ID 与 brdige 的 ID 需相同
-    htmlPlugin('vite-vue-sub-app', {
-      useDevMode: true,
-    }),
-  ],
 });
 ```
 
