@@ -406,6 +406,45 @@ importers:
       webpack-cli: 4.9.1_ad725fab8cb7e49fac502828bebe26bc
       webpack-dev-server: 4.7.3_webpack-cli@4.9.1+webpack@5.66.0
 
+  dev/app-vue:
+    specifiers:
+      '@garfish/bridge': workspace:*
+      '@garfish/remote-module': workspace:*
+      '@vue/cli-plugin-babel': ~4.5.0
+      '@vue/cli-plugin-eslint': ~4.5.0
+      '@vue/cli-service': ~4.5.0
+      babel-eslint: ^10.1.0
+      core-js: ^3.6.5
+      element-ui: ^2.15.6
+      eslint: ^6.7.2
+      eslint-plugin-vue: ^8.4.1
+      garfish: workspace:*
+      mobx-vue: ^2.1.0
+      url-loader: ^4.1.1
+      vue: ~2.6.14
+      vue-router: ^3.5.3
+      vue-template-compiler: ~2.6.14
+      vuex: ^3.6.2
+    dependencies:
+      '@garfish/bridge': link:../../packages/bridge
+      '@garfish/remote-module': link:../../packages/remote-module
+      core-js: 3.20.2
+      garfish: link:../../packages/garfish
+      mobx-vue: 2.2.0_vue@2.6.14
+      vue: 2.6.14
+      vue-router: 3.5.3
+      vuex: 3.6.2_vue@2.6.14
+    devDependencies:
+      '@vue/cli-plugin-babel': 4.5.15_4c1e5ebbf041a85328f9984e4ede8f8a
+      '@vue/cli-plugin-eslint': 4.5.15_159f9ca94908a7070131e2c321d72521
+      '@vue/cli-service': 4.5.15_daaec740214156bd7a1b7d7855d908a4
+      babel-eslint: 10.1.0_eslint@6.8.0
+      element-ui: 2.15.6_vue@2.6.14
+      eslint: 6.8.0
+      eslint-plugin-vue: 8.4.1_eslint@6.8.0
+      url-loader: 4.1.1
+      vue-template-compiler: 2.6.14
+
   dev/app-vue-2:
     specifiers:
       '@garfish/bridge': workspace:*
@@ -479,45 +518,6 @@ importers:
       eslint: 6.8.0
       eslint-plugin-vue: 7.20.0_eslint@6.8.0
       url-loader: 4.1.1
-
-  dev/app-vue-sub:
-    specifiers:
-      '@garfish/bridge': workspace:*
-      '@garfish/remote-module': workspace:*
-      '@vue/cli-plugin-babel': ~4.5.0
-      '@vue/cli-plugin-eslint': ~4.5.0
-      '@vue/cli-service': ~4.5.0
-      babel-eslint: ^10.1.0
-      core-js: ^3.6.5
-      element-ui: ^2.15.6
-      eslint: ^6.7.2
-      eslint-plugin-vue: ^8.4.1
-      garfish: workspace:*
-      mobx-vue: ^2.1.0
-      url-loader: ^4.1.1
-      vue: ~2.6.14
-      vue-router: ^3.5.3
-      vue-template-compiler: ~2.6.14
-      vuex: ^3.6.2
-    dependencies:
-      '@garfish/bridge': link:../../packages/bridge
-      '@garfish/remote-module': link:../../packages/remote-module
-      core-js: 3.20.2
-      garfish: link:../../packages/garfish
-      mobx-vue: 2.2.0_vue@2.6.14
-      vue: 2.6.14
-      vue-router: 3.5.3
-      vuex: 3.6.2_vue@2.6.14
-    devDependencies:
-      '@vue/cli-plugin-babel': 4.5.15_4c1e5ebbf041a85328f9984e4ede8f8a
-      '@vue/cli-plugin-eslint': 4.5.15_159f9ca94908a7070131e2c321d72521
-      '@vue/cli-service': 4.5.15_daaec740214156bd7a1b7d7855d908a4
-      babel-eslint: 10.1.0_eslint@6.8.0
-      element-ui: 2.15.6_vue@2.6.14
-      eslint: 6.8.0
-      eslint-plugin-vue: 8.4.1_eslint@6.8.0
-      url-loader: 4.1.1
-      vue-template-compiler: 2.6.14
 
   dev/app-vue-vite:
     specifiers:
@@ -13713,7 +13713,7 @@ packages:
     engines: {node: '>=8'}
 
   /has/1.0.3:
-    resolution: {integrity: sha1-ci18v8H2qoJB8W3YFOAR4fQeh5Y=}
+    resolution: {integrity: sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==}
     engines: {node: '>= 0.4.0'}
     dependencies:
       function-bind: 1.1.1
@@ -24215,7 +24215,7 @@ packages:
       debug: 4.3.3
       eslint: 6.8.0
       eslint-scope: 7.1.1
-      eslint-visitor-keys: 3.1.0
+      eslint-visitor-keys: 3.3.0
       espree: 9.3.1
       esquery: 1.4.0
       lodash: 4.17.21

@@ -2,9 +2,7 @@ import Vue from 'vue';
 import App from './App.vue';
 import store from './store';
 import VueRouter from 'vue-router';
-import ToDoList from './components/todo.vue';
 import HelloWorld from './components/HelloWorld.vue';
-import Test from './components/test.vue';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import { vueBridge } from '@garfish/bridge';
@@ -17,11 +15,7 @@ function newRouter(basename) {
   const router = new VueRouter({
     mode: 'history',
     base: basename,
-    routes: [
-      { path: '/', component: HelloWorld },
-      { path: '/test', component: Test },
-      { path: '/todo', component: ToDoList },
-    ],
+    routes: [{ path: '/', component: HelloWorld }],
   });
   return router;
 }
