@@ -3,8 +3,8 @@ import VueRouter from 'vue-router';
 import ElementUI from 'element-ui';
 import store from './store';
 import App from './App.vue';
-import Tasks from './components/Tasks.vue';
-import ToDoList from './components/todo.vue';
+import TaskComponent from './components/Tasks.vue';
+import TodoListComponent from './components/todo.vue';
 import HelloGarfish from './components/HelloGarfish.vue';
 import RemoteComponent from './components/remoteComponent.vue';
 import 'element-ui/lib/theme-chalk/index.css';
@@ -22,8 +22,8 @@ function newRouter(basename) {
     base: basename,
     routes: [
       { path: '/home', component: HelloGarfish },
-      { path: '/tasks', component: Tasks },
-      { path: '/toDoList', component: ToDoList },
+      { path: '/tasks', component: TaskComponent },
+      { path: '/toDoList', component: TodoListComponent },
       { path: '/micro-*', component: () => MicroApp },
       { path: '/remote-component', component: RemoteComponent },
     ],

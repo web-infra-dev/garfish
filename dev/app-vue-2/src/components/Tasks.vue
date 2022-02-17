@@ -20,6 +20,7 @@
 <script>
 import { mapState } from 'vuex'
 export default {
+    name: 'TaskComponent',
     data() {
         return {
             item: {

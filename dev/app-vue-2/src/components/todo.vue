@@ -30,6 +30,7 @@
 import { mapState } from 'vuex';
 
 export default {
+  name: 'TodoListComponent',
   data() {
     return  {
       item: {
