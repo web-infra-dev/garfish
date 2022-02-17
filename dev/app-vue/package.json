@@ -15,7 +15,8 @@
     "core-js": "^3.6.5",
     "vue": "~2.6.14",
     "vue-router": "^3.5.3",
-    "vuex": "^3.6.2"
+    "vuex": "^3.6.2",
+    "vue-loader": "^15.9.8"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
