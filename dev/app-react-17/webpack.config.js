@@ -40,12 +40,12 @@ const webpackConfig = {
       ? `//${getProxyHost(port)}/`
       : `http://localhost:${port}/`,
   },
-  externals: {
-    react: 'react',
-    'react-dom': 'react-dom',
-    'react-router-dom': 'react-router-dom',
-    'mobx-react': 'mobx-react',
-  },
+  // externals: {
+  //   react: 'react',
+  //   'react-dom': 'react-dom',
+  //   'react-router-dom': 'react-router-dom',
+  //   'mobx-react': 'mobx-react',
+  // },
   node: false, // 避免 global 逃逸
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.json'],
