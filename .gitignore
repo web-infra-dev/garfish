@@ -12,6 +12,7 @@ temp/
 /docs
 .npmrc
 **/.angular
+.editorconfig
 
 # test result
 cypress/screenshots
@@ -42,5 +43,3 @@ package-lock.json
 yarn.lock
 **/package-lock.json
 **/yarn.lock
-
-**/pnpm-global
