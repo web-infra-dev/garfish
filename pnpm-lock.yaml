@@ -463,6 +463,7 @@ importers:
       mobx-vue: ^2.1.0
       url-loader: ^4.1.1
       vue: ~2.6.14
+      vue-loader: ^15.9.8
       vue-router: ^3.5.3
       vue-template-compiler: ~2.6.14
       vuex: ^3.6.2
@@ -473,6 +474,7 @@ importers:
       garfish: link:../../packages/garfish
       mobx-vue: 2.2.0_vue@2.6.14
       vue: 2.6.14
+      vue-loader: 15.9.8_vue-template-compiler@2.6.14
       vue-router: 3.5.3
       vuex: 3.6.2_vue@2.6.14
     devDependencies:
