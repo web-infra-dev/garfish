@@ -420,6 +420,7 @@ importers:
       eslint-plugin-vue: ^8.4.1
       garfish: workspace:*
       mobx-vue: ^2.1.0
+      url-loader: ^4.1.1
       vue: ^2.6.14
       vue-router: ^3.5.3
       vue-template-compiler: ^2.6.14
@@ -441,6 +442,7 @@ importers:
       element-ui: 2.15.6_vue@2.6.14
       eslint: 6.8.0
       eslint-plugin-vue: 8.4.1_eslint@6.8.0
+      url-loader: 4.1.1
       vue-template-compiler: 2.6.14
 
   dev/app-vue-3:
@@ -490,6 +492,7 @@ importers:
       eslint-plugin-vue: ^8.4.1
       garfish: workspace:*
       mobx-vue: ^2.1.0
+      url-loader: ^4.1.1
       vue: ^2.6.14
       vue-router: ^3.5.3
       vue-template-compiler: ^2.6.14
@@ -511,6 +514,7 @@ importers:
       element-ui: 2.15.6_vue@2.6.14
       eslint: 6.8.0
       eslint-plugin-vue: 8.4.1_eslint@6.8.0
+      url-loader: 4.1.1
       vue-template-compiler: 2.6.14
 
   dev/app-vue-vite:
