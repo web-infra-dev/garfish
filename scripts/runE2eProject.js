@@ -21,7 +21,7 @@ function runAllExample() {
         // build all demo or dev all example
         .then(() => {
           step('\n building dev project...');
-          return $`pnpm build && pnpm run build --parallel --filter "@garfish-dev/*"`;
+          return $`pnpm update cypress && pnpm run build --parallel --filter "@garfish-dev/*"`;
         })
         .then(() => {
           step('\n http-server dev dist...');
