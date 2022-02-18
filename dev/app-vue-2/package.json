@@ -13,7 +13,7 @@
     "garfish": "workspace:*",
     "mobx-vue": "^2.1.0",
     "core-js": "^3.6.5",
-    "vue": "~2.6.14",
+    "vue": "2.6.14",
     "vue-router": "^3.5.3",
     "vuex": "^3.6.2",
     "vue-loader": "^15.9.8"
@@ -25,7 +25,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^8.4.1",
-    "vue-template-compiler": "~2.6.14",
+    "vue-template-compiler": "2.6.14",
     "element-ui": "^2.15.6",
     "url-loader": "^4.1.1"
   },

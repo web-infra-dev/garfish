@@ -38,9 +38,5 @@
   "dev/esm-app": {
     "pkgName": "@garfish-dev/esm-app",
     "port": 2999
-  },
-  "dev/vue-sub": {
-    "pkgName": "@garfish-dev/vue-sub",
-    "port": 2555
   }
 }
