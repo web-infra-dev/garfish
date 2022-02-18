@@ -52,9 +52,9 @@ jobs:
     - name: Install pnpm
       run: curl -f https://get.pnpm.io/v6.14.js | node - add --global pnpm@6
     - name: install dependency
-      run: pnpm install
+      run: pnpm install --filter=@garfish-dev/vue-sub
     - name: build
-      run:  pnpm build --filter=!garfish-docs --filter=@garfish-dev/vue-sub
+      run:  pnpm build --filter=@garfish-dev/vue-sub
     - name: Run cypress test
       uses: cypress-io/github-action@v2
       with:
