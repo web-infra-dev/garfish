@@ -1275,7 +1275,7 @@ packages:
     dev: false
 
   /@arco-design/web-react/2.28.2_react-dom@16.14.0+react@16.14.0:
-    resolution: {integrity: sha512-vsb2aH4XZ+DjWG+oIfAs7XitrCNeWJ6KG7SNc/a1qDpMTcs0Njmj2ZJOtTzu+ZcAjhiqjaUmpvy4h+yziKByUQ==}
+    resolution: {integrity: sha512-GLVzw9c+j8feSOdOv1Qk/XrQSt40bjlZOYtnLcJ0re6lpNyxbqtTxVXeoP1SsZeUcgTiYoSUS4e+7HVXUsJSqA==}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
