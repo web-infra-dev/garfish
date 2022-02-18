@@ -40,9 +40,6 @@ jobs:
         node-version: [14.17.0]
     steps:
     - uses: actions/checkout@v2
-    - uses: pnpm/action-setup@v2.0.1
-      with:
-        version: 6.20.3
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
@@ -51,7 +48,7 @@ jobs:
     - name: Install pnpm
       run: curl -f https://get.pnpm.io/v6.14.js | node - add --global pnpm@6
     - name: install dependency
-      run: pnpm install --filter=\!garfish-docs
+      run: pnpm install
     - name: build
       run:  pnpm build
     - name: Run cypress test
