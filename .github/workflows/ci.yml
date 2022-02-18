@@ -58,7 +58,7 @@ jobs:
     - name: logger vue dep
       run: cat dev/app-vue/node_modules/vue/package.json
     - name: build
-      run:  pnpm build --filter=@garfish-dev/vue-sub
+      run:  pnpm build --filter=@garfish-dev/vue-sub --filter=@garfish/*
     - name: Run cypress test
       uses: cypress-io/github-action@v2
       with:
