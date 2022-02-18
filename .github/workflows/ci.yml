@@ -52,9 +52,9 @@ jobs:
     - name: Install pnpm
       run: curl -f https://get.pnpm.io/v6.14.js | node - add --global pnpm@6
     - name: install dependency
-      run: pnpm install
+      run: pnpm install --filter=\!garfish-docs
     - name: build
-      run:  pnpm run build --filter=@garfish/* --filter=garfish --filter=@garfish-dev/*
+      run:  pnpm build
     - name: Run cypress test
       uses: cypress-io/github-action@v2
       with:
