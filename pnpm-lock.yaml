@@ -463,7 +463,7 @@ importers:
       mobx-vue: ^2.1.0
       url-loader: ^4.1.1
       vue: 2.6.14
-      vue-loader: 17.0.0
+      vue-loader: ^16.0.0-beta.8
       vue-router: 3.5.3
       vue-template-compiler: 2.6.14
       vuex: 3.6.2
@@ -474,7 +474,7 @@ importers:
       garfish: link:../../packages/garfish
       mobx-vue: 2.2.0_vue@2.6.14
       vue: 2.6.14
-      vue-loader: 17.0.0
+      vue-loader: 16.8.3
       vue-router: 3.5.3
       vuex: 3.6.2_vue@2.6.14
     devDependencies:
@@ -24724,7 +24724,6 @@ packages:
       chalk: 4.1.2
       hash-sum: 2.0.0
       loader-utils: 2.0.2
-    dev: true
 
   /vue-loader/16.8.3_webpack@4.46.0:
     resolution: {integrity: sha512-7vKN45IxsKxe5GcVCbc2qFU5aWzyiLrYJyUuMz4BQLKctCj/fmCa0w6fGiiQ2cLFetNcek1ppGJQDCup0c1hpA==}
@@ -24737,16 +24736,6 @@ packages:
       loader-utils: 2.0.2
       webpack: 4.46.0
     dev: true
-
-  /vue-loader/17.0.0:
-    resolution: {integrity: sha512-OWSXjrzIvbF2LtOUmxT3HYgwwubbfFelN8PAP9R9dwpIkj48TVioHhWWSx7W7fk+iF5cgg3CBJRxwTdtLU4Ecg==}
-    peerDependencies:
-      webpack: ^4.1.0 || ^5.0.0-0
-    dependencies:
-      chalk: 4.1.2
-      hash-sum: 2.0.0
-      loader-utils: 2.0.2
-    dev: false
 
   /vue-router/3.5.3:
     resolution: {integrity: sha512-FUlILrW3DGitS2h+Xaw8aRNvGTwtuaxrRkNSHWTizOfLUie7wuYwezeZ50iflRn8YPV5kxmU2LQuu3nM/b3Zsg==}
