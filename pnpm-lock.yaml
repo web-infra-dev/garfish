@@ -413,6 +413,7 @@ importers:
       '@vue/cli-plugin-babel': 4.5.0
       '@vue/cli-plugin-eslint': 4.5.0
       '@vue/cli-service': 4.5.0
+      '@vue/component-compiler-utils': 3.1.2
       babel-eslint: 10.1.0
       core-js: ^3.6.5
       element-ui: ^2.15.6
@@ -439,6 +440,7 @@ importers:
       '@vue/cli-plugin-babel': 4.5.0_94aebdfb574b16fdfedf4c799fdc3514
       '@vue/cli-plugin-eslint': 4.5.0_f29ccfad51a698c7c8cc61a308f276d2
       '@vue/cli-service': 4.5.0_daaec740214156bd7a1b7d7855d908a4
+      '@vue/component-compiler-utils': 3.1.2
       babel-eslint: 10.1.0_eslint@6.8.0
       element-ui: 2.15.6_vue@2.6.14
       eslint: 6.8.0
@@ -7602,6 +7604,21 @@ packages:
       '@vue/compiler-dom': 3.2.26
       '@vue/shared': 3.2.26
     dev: false
+
+  /@vue/component-compiler-utils/3.1.2:
+    resolution: {integrity: sha512-QLq9z8m79mCinpaEeSURhnNCN6djxpHw0lpP/bodMlt5kALfONpryMthvnrQOlTcIKoF+VoPi+lPHUYeDFPXug==}
+    dependencies:
+      consolidate: 0.15.1
+      hash-sum: 1.0.2
+      lru-cache: 4.1.5
+      merge-source-map: 1.1.0
+      postcss: 7.0.39
+      postcss-selector-parser: 6.0.8
+      source-map: 0.6.1
+      vue-template-es2015-compiler: 1.9.1
+    optionalDependencies:
+      prettier: 1.19.1
+    dev: true
 
   /@vue/component-compiler-utils/3.3.0:
     resolution: {integrity: sha512-97sfH2mYNU+2PzGrmK2haqffDpVASuib9/w2/noxiFi31Z54hW+q3izKQXXQZSNhtiUpAI36uSuYepeBe4wpHQ==}

@@ -10,23 +10,24 @@
   "dependencies": {
     "@garfish/bridge": "workspace:*",
     "@garfish/remote-module": "workspace:*",
+    "core-js": "^3.6.5",
     "garfish": "workspace:*",
     "mobx-vue": "^2.1.0",
-    "core-js": "^3.6.5",
     "vue": "2.6.14",
+    "vue-loader": "17.0.0",
     "vue-router": "3.5.3",
-    "vuex": "3.6.2",
-    "vue-loader": "17.0.0"
+    "vuex": "3.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "4.5.0",
     "@vue/cli-plugin-eslint": "4.5.0",
     "@vue/cli-service": "4.5.0",
+    "@vue/component-compiler-utils": "3.1.2",
     "babel-eslint": "10.1.0",
+    "element-ui": "^2.15.6",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "8.4.1",
-    "vue-template-compiler": "2.6.14",
-    "element-ui": "^2.15.6"
+    "vue-template-compiler": "2.6.14"
   },
   "eslintConfig": {
     "root": true,
