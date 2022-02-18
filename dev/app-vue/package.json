@@ -26,7 +26,7 @@
     "element-ui": "^2.15.6",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "8.4.1",
-    "vue-loader": "^16.0.0-beta.8",
+    "vue-loader": "^16.0.0",
     "vue-template-compiler": "2.6.14"
   },
   "eslintConfig": {
