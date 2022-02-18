@@ -54,7 +54,7 @@ jobs:
     - name: install dependency
       run: pnpm install
     - name: build
-      run:  pnpm run build --filter=@garfish/* --filter=@garfish-dev/*
+      run:  pnpm run build --filter=@garfish/* --filter=garfish --filter=@garfish-dev/*
     - name: Run cypress test
       uses: cypress-io/github-action@v2
       with:
