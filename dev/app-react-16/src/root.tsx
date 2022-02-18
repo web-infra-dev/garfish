@@ -6,8 +6,8 @@ import {
   MemoryRouter,
   Redirect,
 } from 'react-router-dom';
-import App from './app';
-import PageNotFound from './pageNotFound';
+import App from './App';
+import PageNotFound from './PageNotFound';
 import './App.less';
 
 export const SubAppContext = createContext({});

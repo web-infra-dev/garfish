@@ -1,10 +1,10 @@
 import React, { createContext, Suspense } from 'react';
 import { ConfigProvider } from '@arco-design/web-react';
-import App from '../app';
+import App from '../App';
 import Home from '../home';
 import Detail from '../detail';
 import List from '../list';
-import PageNotFound from '../pageNotFound';
+import PageNotFound from '../PageNotFound';
 import { BrowserRouter } from 'react-router-dom';
 import { prefixCls } from '../../constant';
 import { Routes, Route, Navigate } from 'react-router-dom';

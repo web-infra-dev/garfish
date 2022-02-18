@@ -1,5 +1,5 @@
 import { SubAppContext } from '../root';
-import { IProps } from '../app';
+import { IProps } from '../App';
 import { useSearchParams } from 'react-router-dom';
 import { detail } from '../constant';
 import { Descriptions } from '@arco-design/web-react';

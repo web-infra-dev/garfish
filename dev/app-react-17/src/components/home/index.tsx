@@ -1,5 +1,5 @@
 import { SubAppContext } from '../root';
-import { IProps } from '../app';
+import { IProps } from '../App';
 import logo from './logo.svg';
 import './index.less';
 import { Button } from '@arco-design/web-react';

@@ -1,6 +1,6 @@
 import { Button, Card, Divider } from '@arco-design/web-react';
 import MDEditor from '@uiw/react-md-editor';
-import AppLink from '../link';
+import AppLink from '../Link';
 
 interface ICardItemProps {
   title: string;

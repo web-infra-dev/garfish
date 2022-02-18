@@ -1,6 +1,6 @@
 import { Table, Button } from '@arco-design/web-react';
 import { SubAppContext } from '../root';
-import { IProps } from '../app';
+import { IProps } from '../App';
 import { useNavigate } from 'react-router-dom';
 import { data } from '../constant';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { reactBridge } from '@garfish/bridge';
 import RootComponent from './root';
-import Error from './errorBoundary';
+import Error from './ErrorBoundary';
 
 // 在首次加载和执行时会触发该函数
 // export const provider = (props) => {

@@ -4,7 +4,7 @@ import { Menu } from '@arco-design/web-react';
 import './index.less';
 import { Layout, Grid, Modal, Message, Input } from '@arco-design/web-react';
 import { SubAppContext } from '../root';
-import CardItem from '../cardItem';
+import CardItem from '../CardItem';
 import {
   backToMainStr,
   channelWithMainStr,

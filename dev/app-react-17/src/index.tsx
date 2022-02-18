@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import { reactBridge } from '@garfish/bridge';
 import RootComponent from './components/root';
-import Error from './components/errorBoundary';
+import Error from './components/ErrorBoundary';
 
 let _root;
 let _props;
