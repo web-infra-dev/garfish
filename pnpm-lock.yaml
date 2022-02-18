@@ -562,7 +562,7 @@ importers:
       eslint: ^6.7.2
       eslint-plugin-vue: 7.19.1
       regenerator-runtime: ^0.13.9
-      vue: ^2.6.11
+      vue: ~2.6.14
       vue-router: ^3.4.3
       vue-template-compiler: ~2.6.14
       vuex: ^3.5.1
