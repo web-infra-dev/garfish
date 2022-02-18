@@ -11,6 +11,7 @@ es/
 temp/
 /docs
 .npmrc
+**/.angular
 
 # test result
 cypress/screenshots
