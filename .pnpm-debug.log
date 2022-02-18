@@ -1,0 +1,24 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1,
+    "workspacePrefix": "/Users/bytedance/github/garfish"
+  },
+  "1 info pnpm": {
+    "err": {
+      "name": "Error",
+      "message": "not found: instsall",
+      "code": "ENOENT",
+      "stack": "Error: not found: instsall\n    at getNotFoundError (/Users/bytedance/.nvm/versions/node/v14.18.3/pnpm-global/5/node_modules/.pnpm/pnpm@6.30.0/node_modules/pnpm/dist/pnpm.cjs:41576:51)\n    at Function.whichSync [as sync] (/Users/bytedance/.nvm/versions/node/v14.18.3/pnpm-global/5/node_modules/.pnpm/pnpm@6.30.0/node_modules/pnpm/dist/pnpm.cjs:41653:13)\n    at getCommandAbsolutePathSync (/Users/bytedance/.nvm/versions/node/v14.18.3/pnpm-global/5/node_modules/.pnpm/pnpm@6.30.0/node_modules/pnpm/dist/pnpm.cjs:43218:44)\n    at default_1 (/Users/bytedance/.nvm/versions/node/v14.18.3/pnpm-global/5/node_modules/.pnpm/pnpm@6.30.0/node_modules/pnpm/dist/pnpm.cjs:43227:32)\n    at /Users/bytedance/.nvm/versions/node/v14.18.3/pnpm-global/5/node_modules/.pnpm/pnpm@6.30.0/node_modules/pnpm/dist/pnpm.cjs:178035:39"
+    }
+  },
+  "2 error pnpm": {
+    "code": "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL",
+    "prefix": "/Users/bytedance/github/garfish",
+    "err": {
+      "name": "pnpm",
+      "message": "not found: instsall",
+      "code": "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL",
+      "stack": "Error: not found: instsall\n    at getNotFoundError (/Users/bytedance/.nvm/versions/node/v14.18.3/pnpm-global/5/node_modules/.pnpm/pnpm@6.30.0/node_modules/pnpm/dist/pnpm.cjs:41576:51)\n    at Function.whichSync [as sync] (/Users/bytedance/.nvm/versions/node/v14.18.3/pnpm-global/5/node_modules/.pnpm/pnpm@6.30.0/node_modules/pnpm/dist/pnpm.cjs:41653:13)\n    at getCommandAbsolutePathSync (/Users/bytedance/.nvm/versions/node/v14.18.3/pnpm-global/5/node_modules/.pnpm/pnpm@6.30.0/node_modules/pnpm/dist/pnpm.cjs:43218:44)\n    at default_1 (/Users/bytedance/.nvm/versions/node/v14.18.3/pnpm-global/5/node_modules/.pnpm/pnpm@6.30.0/node_modules/pnpm/dist/pnpm.cjs:43227:32)\n    at /Users/bytedance/.nvm/versions/node/v14.18.3/pnpm-global/5/node_modules/.pnpm/pnpm@6.30.0/node_modules/pnpm/dist/pnpm.cjs:178035:39"
+    }
+  }
+}
