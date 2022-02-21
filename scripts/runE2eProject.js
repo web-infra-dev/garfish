@@ -21,7 +21,7 @@ function runAllExample() {
         // build all demo or dev all example
         .then(() => {
           step('\n building dev project...');
-          return $`pnpm run build --parallel --filter "@garfish-dev/*" --filter=\!@garfish-dev/vue3`;
+          return $`pnpm run build --parallel --filter "@garfish-dev/*"`;
         })
         .then(() => {
           step('\n http-server dev dist...');
