@@ -64,6 +64,7 @@ let defaultConfig: interfaces.Options = {
   insulationVariable: ['setImmediate'],
   sandbox: {
     open: true,
+    fixBaseUrl: false,
     // strictIsolation: true,
   },
   props: {
