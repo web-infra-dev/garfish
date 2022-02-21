@@ -22,13 +22,14 @@ describe('whole process vm sandbox set variable', () => {
         protectVariable: ['dynamicScriptOnloadTag', 'dynamicScriptOnerrorTag'],
       },
     });
-    cy.visit(`http://localhost:8090${basename}/react16/vm-sandbox`);
   });
 
   it('add script onload event', () => {
     const ProxyVariableTitle = 'vm sandbox';
+    cy.visit('http://localhost:8090');
 
     cy.window().then((win) => {
+      win.history.pushState({}, 'react16', `${basename}/react16/vm-sandbox`);
       cy.contains('[data-test=title]', ProxyVariableTitle)
         .then(() => {
           return cy

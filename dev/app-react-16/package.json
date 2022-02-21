@@ -53,7 +53,8 @@
     "webpack-cli": "^4.6.0",
     "webpack-dev-server": "^4.2.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
-    "react-refresh": "^0.11.0"
+    "react-refresh": "^0.11.0",
+    "copy-webpack-plugin": "^10.2.4"
   },
   "scripts": {
     "start": "NODE_ENV=development webpack-dev-server --hot",

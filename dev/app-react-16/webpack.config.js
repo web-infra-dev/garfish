@@ -5,6 +5,7 @@ const appName = 'dev/react16';
 const port = portMap[appName].port;
 const publicPath = portMap[appName].publicPath;
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const isInWebIDE = () => {
   return Boolean(process.env.IDE_PLATFORM);
@@ -115,6 +116,9 @@ const webpackConfig = {
     }),
     new DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    }),
+    new CopyPlugin({
+      patterns: [{ from: 'public/dynamic.js', to: './' }],
     }),
   ].concat(isDevelopment ? [new ReactRefreshWebpackPlugin()] : []),
 };

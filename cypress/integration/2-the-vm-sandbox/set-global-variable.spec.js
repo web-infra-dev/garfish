@@ -16,11 +16,12 @@ describe('whole process vm sandbox set variable', () => {
   });
 
   it('set global history variable', () => {
-    cy.visit(`http://localhost:8090${basename}/react16/vm-sandbox`);
+    // cy.visit(`http://localhost:8090${basename}/react16/vm-sandbox`);
 
     const ProxyVariableTitle = 'vm sandbox';
-
+    cy.visit('http://localhost:8090');
     cy.window().then((win) => {
+      win.history.pushState({}, 'react16', `${basename}/react16/vm-sandbox`);
       cy.contains('[data-test=title]', ProxyVariableTitle)
         .then(() => {
           expect(win.history.scrollRestoration).to.equal('auto');
