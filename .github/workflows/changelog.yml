@@ -2,7 +2,7 @@ name: ReleaseLog
 on:
   push:
     tags:
-      - v1.*
+      - 'v*'
 jobs:
   release:
     runs-on: ubuntu-latest

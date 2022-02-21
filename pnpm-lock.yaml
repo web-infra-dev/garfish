@@ -34,6 +34,7 @@ importers:
       http-server: 13.0.2
       husky: 7.0.4
       install: 0.13.0
+      isomorphic-fetch: ^3.0.0
       jest: 27.3.1
       jest-fetch-mock: ^3.0.3
       kill-port: 1.6.1
@@ -82,6 +83,7 @@ importers:
       http-server: 13.0.2
       husky: 7.0.4
       install: 0.13.0
+      isomorphic-fetch: 3.0.0
       jest: 27.3.1
       jest-fetch-mock: 3.0.3
       kill-port: 1.6.1
@@ -15384,6 +15386,13 @@ packages:
     resolution: {integrity: sha1-TkMekrEalzFjaqH5yNHMvP2reN8=}
     engines: {node: '>=0.10.0'}
 
+  /isomorphic-fetch/3.0.0:
+    resolution: {integrity: sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==}
+    dependencies:
+      node-fetch: 2.6.6
+      whatwg-fetch: 3.6.2
+    dev: true
+
   /isstream/0.1.2:
     resolution: {integrity: sha1-R+Y/evVa+m+S4VAOaQ64uFKcCZo=}
     dev: true
@@ -25248,6 +25257,10 @@ packages:
     resolution: {integrity: sha512-b5lim54JOPN9HtzvK9HFXvBma/rnfFeqsic0hSpjtDbVxR3dJKLc+KB4V6GgiGOvl7CY/KNh8rxSo9DKQrnUEw==}
     dependencies:
       iconv-lite: 0.4.24
+    dev: true
+
+  /whatwg-fetch/3.6.2:
+    resolution: {integrity: sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==}
     dev: true
 
   /whatwg-mimetype/2.3.0:
