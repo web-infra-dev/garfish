@@ -36,7 +36,7 @@ function runAllExample() {
           Object.keys(portMap).forEach((pkgPath) => {
             // history api fallback
             if (pkgPath === 'dev/main') {
-              $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} --proxy http://127.0.0.1:${portMap[pkgPath].port}?`;
+              $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} --proxy http://localhost:${portMap[pkgPath].port}?`;
             } else {
               $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port}`;
             }
