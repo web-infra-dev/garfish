@@ -24,7 +24,7 @@
     "format:md": "prettier --write \"**/*.md\"",
     "release": "node ./scripts/release.js",
     "release:canary": "node ./scripts/release.js --canary",
-    "postinstall": "husky install"
+    "postinstall": "node scripts/installVue2.js && husky install"
   },
   "lint-staged": {
     "*.js": [
