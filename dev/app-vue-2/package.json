@@ -27,7 +27,8 @@
     "eslint-plugin-vue": "^8.4.1",
     "vue-template-compiler": "~2.6.14",
     "element-ui": "^2.15.6",
-    "url-loader": "^4.1.1"
+    "url-loader": "^4.1.1",
+    "less-loader": "^5.0.0"
   },
   "eslintConfig": {
     "root": true,
