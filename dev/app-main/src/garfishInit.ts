@@ -34,7 +34,6 @@ export const GarfishInit = async () => {
 
   try {
     console.log('Garfish.run');
-
     Garfish.run(Config);
   } catch (error) {
     console.log('garfish init error', error);

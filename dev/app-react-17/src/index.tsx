@@ -11,48 +11,46 @@ const getRootDom = (props: any) =>
     ? props.dom.querySelector('#root')
     : document.querySelector('#root');
 
-const render = () => ReactDOM.render(<RootComponent {..._props} />, _root);
+export const render = () =>
+  ReactDOM.render(<RootComponent {..._props} />, _root);
 
 // provider 写法：
-export const provider = (props) => {
-  const root = getRootDom(props);
-  _root = root;
-  _props = props;
+// export const provider = (props) => {
+//   const root = getRootDom(props);
+//   _root = root;
+//   _props = props;
 
-  return {
-    render() {
-      window?.Garfish.channel.on('stateChange', render);
-      ReactDOM.render(<RootComponent {...props} />, root);
-    },
-    destroy({ dom }) {
-      window?.Garfish.channel.removeListener('stateChange', render);
-      ReactDOM.unmountComponentAtNode(
-        dom ? dom.querySelector('#root') : document.querySelector('#root'),
-      );
-    },
-  };
-};
+//   return {
+//     render() {
+//       window?.Garfish.channel.on('stateChange', render);
+//       ReactDOM.render(<RootComponent {...props} />, root);
+//     },
+//     destroy({ dom }) {
+//       console.log('-------destroy');
+//       window?.Garfish.channel.removeListener('stateChange', render);
+//       ReactDOM.unmountComponentAtNode(
+//         dom ? dom.querySelector('#root') : document.querySelector('#root'),
+//       );
+//     },
+//   };
+// };
 
 // TODO: reactBridge 写法(待补充 reactBridge destory 前的hook 函数)
-// export const provider = reactBridge({
-//   React,
-//   ReactDOM,
-//   // el: pass your mount node
-//   el: '#root',
-//   // rootComponent: pass a class or stateless function component
-//   rootComponent: RootComponent,
-//   // loadRootComponent: passed a promise that resolves with the react component. Wait for it to resolve before mounting
-//   loadRootComponent: (props) => {
-//     const root = getRootDom(props);
-//     _root = root;
-//     _props = props;
-//     // 监听props 的改变，重新触发 render
-//     window?.Garfish.channel.on('stateChange', render);
-//     // return Promise.resolve(() => <RootComponent {...props} />);
-//     return Promise.resolve(RootComponent);
-//   },
-//   errorBoundary: () => <Error />,
-// });
+export const provider = reactBridge({
+  React,
+  ReactDOM,
+  el: '#root', //mount node
+  rootComponent: RootComponent, // a class or stateless function component
+  // loadRootComponent: a promise that resolves with the react component. Wait for it to resolve before mounting
+  loadRootComponent: (props) => {
+    const root = getRootDom(props);
+    _root = root;
+    _props = props;
+    return Promise.resolve(() => <RootComponent {...props} />);
+    // return Promise.resolve(RootComponent);
+  },
+  errorBoundary: () => <Error />,
+});
 
 // 这能够让子应用独立运行起来，以保证后续子应用能脱离主应用独立运行，方便调试、开发
 if (!window.__GARFISH__) {

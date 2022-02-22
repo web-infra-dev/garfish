@@ -52,7 +52,7 @@ const formItemLayout = {
 const App = observer(({ store }: { store: any }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const storeRef = useRef(store);
+  const storeRef = useRef(JSON.stringify(store));
   const [subAppMenus, setSubAppMenus] =
     useState<Array<any>>(defaultSubAppMenus);
   const [collapsed, setCollapsed] = useState<boolean>(false);
@@ -65,9 +65,9 @@ const App = observer(({ store }: { store: any }) => {
 
   // 当 store.counter 变化时，才 emit stateChange
   useEffect(() => {
-    if (storeRef.current !== store.counter) {
-      storeRef.current = JSON.stringify(store);
+    if (JSON.parse(storeRef.current).counter !== store.counter) {
       window?.Garfish.channel.emit('stateChange');
+      storeRef.current = JSON.stringify(store);
     }
   }, [JSON.stringify(store.counter), location]);
 
@@ -212,7 +212,7 @@ const App = observer(({ store }: { store: any }) => {
             <IconMinus />
           </Button>
 
-          {/* <Button
+          <Button
             size="mini"
             style={{ margin: '0 10px' }}
             type="primary"
@@ -220,7 +220,7 @@ const App = observer(({ store }: { store: any }) => {
             onClick={() => setVisible(true)}
           >
             新增应用
-          </Button> */}
+          </Button>
           <div style={{ marginLeft: '10px' }}>
             热更新测试：
             <span className="hmr-text">Hello, Garfish!</span>
