@@ -212,7 +212,7 @@ const App = observer(({ store }: { store: any }) => {
             <IconMinus />
           </Button>
 
-          <Button
+          {/* <Button
             size="mini"
             style={{ margin: '0 10px' }}
             type="primary"
@@ -220,7 +220,7 @@ const App = observer(({ store }: { store: any }) => {
             onClick={() => setVisible(true)}
           >
             新增应用
-          </Button>
+          </Button> */}
           <div style={{ marginLeft: '10px' }}>
             热更新测试：
             <span className="hmr-text">Hello, Garfish!</span>
