@@ -15,8 +15,7 @@
     "core-js": "^3.6.5",
     "vue": "2.6.13",
     "vue-router": "^3.5.3",
-    "vuex": "^3.6.2",
-    "vue-loader": "17.0.0"
+    "vuex": "^3.6.2"
   },
   "dependenciesMeta": {
     "vue-template-compiler": {
@@ -38,7 +37,8 @@
     "eslint-plugin-vue": "^8.4.1",
     "vue-template-compiler": "2.6.13",
     "element-ui": "^2.15.6",
-    "less-loader": "^5.0.0"
+    "less-loader": "^5.0.0",
+    "vue-loader": "15.9.8"
   },
   "eslintConfig": {
     "root": true,
