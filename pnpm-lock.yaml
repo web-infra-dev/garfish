@@ -501,6 +501,10 @@ importers:
       url-loader: 4.1.1
       vue-template-compiler: 2.6.13
     dependenciesMeta:
+      '@vue/cli-service':
+        injected: true
+      vue-loader:
+        injected: true
       vue-template-compiler:
         injected: true
 
