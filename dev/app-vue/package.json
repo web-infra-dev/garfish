@@ -18,6 +18,11 @@
     "vuex": "^3.6.2",
     "vue-loader": "^17.0.0"
   },
+  "dependenciesMeta": {
+    "vue-template-compiler": {
+      "injected": true
+    }
+  },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
