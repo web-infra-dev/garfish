@@ -24,6 +24,9 @@
     },
     "vue-loader": {
       "injected": true
+    },
+    "@vue/cli-service": {
+      "injected": true
     }
   },
   "devDependencies": {

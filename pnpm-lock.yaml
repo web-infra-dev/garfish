@@ -451,6 +451,8 @@ importers:
       less-loader: 5.0.0
       vue-template-compiler: 2.6.13
     dependenciesMeta:
+      '@vue/cli-service':
+        injected: true
       vue-loader:
         injected: true
       vue-template-compiler:
