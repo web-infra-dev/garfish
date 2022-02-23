@@ -29,7 +29,7 @@ function runAllExample() {
         // })
         .then(() => {
           step('\n building dev project...');
-          return $`pnpm run build --parallel --filter "@garfish-dev/*"`;
+          return $`pnpm run build --parallel --filter "@garfish-dev/vue-sub" --filter "@garfish-dev/vue2"`;
         })
         .then(() => {
           step('\n http-server dev dist...');
