@@ -451,6 +451,8 @@ importers:
       vue-loader: 15.9.8_vue-template-compiler@2.6.13
       vue-template-compiler: 2.6.13
     dependenciesMeta:
+      vue:
+        injected: true
       vue-template-compiler:
         injected: true
 
