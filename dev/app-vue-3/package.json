@@ -6,7 +6,7 @@
     "@garfish/bridge": "workspace:*",
     "core-js": "^3.6.5",
     "mobx-vue": "^2.1.0",
-    "vue": "^2.2.21",
+    "vue": "^3.2.21",
     "vue-router": "^4.0.12",
     "vuex": "^3.6.2",
     "@garfish/remote-module": "1.3.0"
