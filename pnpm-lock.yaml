@@ -10,14 +10,14 @@ importers:
       '@jsdevtools/version-bump-prompt': 6.1.0
       '@koa/cors': 3.1.0
       '@ls-lint/ls-lint': 1.10.0
-      '@testing-library/jest-dom': ^5.16.1
+      '@testing-library/jest-dom': ^5.16.2
       '@types/jest': 27.0.2
       '@typescript-eslint/eslint-plugin': 5.4.0
       '@typescript-eslint/parser': 5.4.0
       axios: 0.24.0
       babel-polyfill: 6.26.0
       chalk: 4.1.2
-      codecov: ^3.1.0
+      codecov: ^3.8.3
       cross-env: 7.0.3
       cypress: ^9.5.0
       esbuild-plugin-replace: 1.0.7
@@ -36,7 +36,7 @@ importers:
       lint-staged: 11.2.6
       lodash: 4.17.21
       minimist: 1.2.5
-      pnpm: ^6.31.0
+      pnpm: ^6.32.1
       prettier: 2.4.1
       prettier-eslint-cli: 5.0.1
       rimraf: 3.0.2
@@ -9248,7 +9248,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001312
-      electron-to-chromium: 1.4.71
+      electron-to-chromium: 1.4.72
       escalade: 3.1.1
       node-releases: 2.0.2
       picocolors: 1.0.0
@@ -11616,8 +11616,8 @@ packages:
     requiresBuild: true
     dev: true
 
-  /electron-to-chromium/1.4.71:
-    resolution: {integrity: sha512-Hk61vXXKRb2cd3znPE9F+2pLWdIOmP7GjiTj45y6L3W/lO+hSnUSUhq+6lEaERWBdZOHbk2s3YV5c9xVl3boVw==}
+  /electron-to-chromium/1.4.72:
+    resolution: {integrity: sha512-9LkRQwjW6/wnSfevR21a3k8sOJ+XWSH7kkzs9/EUenKmuDkndP3W9y1yCZpOxufwGbX3JV8glZZSDb4o95zwXQ==}
 
   /element-ui/2.15.6_vue@2.6.13:
     resolution: {integrity: sha512-rcYXEKd/j2G0AgficAOk1Zd1AsnHRkhmrK4yLHmNOiimU2JfsywgfKUjMoFuT6pQx0luhovj8lFjpE4Fnt58Iw==}
@@ -15670,7 +15670,7 @@ packages:
     resolution: {integrity: sha512-czwUz525rkOFDJxfKK6mYfIs9zBKILyrZQxjz3ABhjQXhbhFsSbo1HW/BFcsDnfJYJWA6thRR5/TUY2qs5W99Q==}
     engines: {node: '>=8'}
     dependencies:
-      '@babel/core': 7.16.12
+      '@babel/core': 7.17.5
       '@babel/parser': 7.17.3
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.0
@@ -23451,7 +23451,7 @@ packages:
     dependencies:
       '@istanbuljs/schema': 0.1.3
       glob: 7.2.0
-      minimatch: 3.0.4
+      minimatch: 3.1.2
     dev: true
 
   /text-table/0.2.0:
