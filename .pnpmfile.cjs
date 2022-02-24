@@ -1,7 +1,6 @@
 function readPackage(pkg, context) {
-  // Override the manifest of foo@1.x after downloading it from the registry
+  // vue-template-compiler use vue as devDependency and use file protocol
   if (pkg.name === 'vue-template-compiler' && pkg.version.startsWith('2.')) {
-    // Replace bar@x.x.x with bar@2.0.0
     pkg.devDependencies = {
       ...pkg.devDependencies,
       vue: '^2.0.0'
