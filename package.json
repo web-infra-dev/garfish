@@ -23,8 +23,7 @@
     "format:js": "prettier --write --parser typescript \"(packages|scripts)/**/*.js\"",
     "format:md": "prettier --write \"**/*.md\"",
     "release": "node ./scripts/release.js",
-    "release:canary": "node ./scripts/release.js --canary",
-    "postinstall": "node scripts/installVue2.js && husky install"
+    "release:canary": "node ./scripts/release.js --canary"
   },
   "lint-staged": {
     "*.js": [
