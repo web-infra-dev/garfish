@@ -24,6 +24,9 @@
   "dependenciesMeta": {
     "vue": {
       "injected": true
+    },
+    "@vue/cli-service": {
+      "injected": true
     }
   },
   "eslintConfig": {
