@@ -21,6 +21,5 @@
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
-    "target": "es5",
   }
 }

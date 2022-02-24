@@ -61,7 +61,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less" scope="app-vue3">
 .todo-list {
   display: flex;
   flex-direction: column;
