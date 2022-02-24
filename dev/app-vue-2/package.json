@@ -17,11 +17,6 @@
     "vue-router": "^3.5.3",
     "vuex": "^3.6.2"
   },
-  "dependenciesMeta": {
-    "vue-template-compiler": {
-      "injected": true
-    }
-  },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",

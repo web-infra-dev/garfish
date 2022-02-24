@@ -20,9 +20,6 @@
   "dependenciesMeta": {
     "vue-template-compiler": {
       "injected": true
-    },
-    "vue": {
-      "injected": true
     }
   },
   "devDependencies": {
