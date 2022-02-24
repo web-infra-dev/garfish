@@ -20,12 +20,6 @@
   "dependenciesMeta": {
     "vue-template-compiler": {
       "injected": true
-    },
-    "vue-loader": {
-      "injected": true
-    },
-    "@vue/cli-service": {
-      "injected": true
     }
   },
   "devDependencies": {
