@@ -26,6 +26,9 @@
     },
     "@vue/cli-service": {
       "injected": true
+    },
+    "@vue/component-compiler-utils": {
+      "injected": true
     }
   },
   "devDependencies": {

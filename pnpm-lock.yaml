@@ -453,6 +453,8 @@ importers:
     dependenciesMeta:
       '@vue/cli-service':
         injected: true
+      '@vue/component-compiler-utils':
+        injected: true
       vue-loader:
         injected: true
       vue-template-compiler:
@@ -542,6 +544,9 @@ importers:
       eslint: 6.8.0
       eslint-plugin-vue: 7.20.0_eslint@6.8.0
       url-loader: 4.1.1
+    dependenciesMeta:
+      vue:
+        injected: true
 
   dev/app-vue-vite:
     specifiers:
