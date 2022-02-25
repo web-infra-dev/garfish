@@ -1,6 +1,6 @@
 ---
 title: 使用 Web component（beta）
-slug: /guide/develop/web-component
+slug: /guide/develop/webComponent
 order: 1
 ---
 

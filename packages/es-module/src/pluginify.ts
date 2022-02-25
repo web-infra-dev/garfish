@@ -1,4 +1,4 @@
-import { error, evalWithEnv } from '@garfish/utils';
+import { evalWithEnv } from '@garfish/utils';
 import type { interfaces } from '@garfish/core';
 import { Runtime } from './runtime';
 
@@ -10,12 +10,11 @@ export function GarfishEsModule(options: Options = {}) {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     const appModules = {};
     const { excludes } = options;
-    const pluginName = 'es-module';
 
     const disable = (
-      appInfo: interfaces.AppInfo,
       appId: number,
       appName: string,
+      appInfo: interfaces.AppInfo,
     ) => {
       if (appModules[appId]) return true;
       if (!appInfo.sandbox || !appInfo.sandbox.open) return true;
@@ -25,11 +24,11 @@ export function GarfishEsModule(options: Options = {}) {
     };
 
     return {
-      name: pluginName,
+      name: 'es-module',
 
       afterLoad(appInfo, appInstance) {
         const { appId, name } = appInstance;
-        if (!disable(appInfo, appId, name)) {
+        if (!disable(appId, name, appInfo)) {
           const sandbox = appInstance.vmSandbox;
           const runtime = new Runtime({ scope: name });
 

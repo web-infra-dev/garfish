@@ -70,6 +70,7 @@ export const provider = () => {
         root,
       );
     },
+
     destroy: ({ dom, basename }) =>{
       const root = dom ? dom.querySelector('#root') : document.querySelector('#root');
       ReactDOM.unmountComponentAtNode(root),
@@ -250,8 +251,46 @@ export const provider = () => {
         dom.querySelector('#root'),
       );
     },
-    destroy: ({ dom, basename }) =>
-      ReactDOM.unmountComponentAtNode(dom.querySelector('#root')),
+
+    destroy: ({ dom, basename }) => {
+      ReactDOM.unmountComponentAtNode(dom.querySelector('#root'));
+    },
   };
 };
+```
+
+## ESModule
+
+Garfish 核心库默认支持 esModule，但是只在关掉沙箱或者为快照沙箱时，才能够使用。
+
+```js
+Garfish.run({
+  ...
+  apps: [
+    {
+      name: 'vue'，
+      activeWhen: '/vue',
+      entry: 'http://localhost:8080',
+      sandbox: {
+        open: false,
+        // snapshot: true, 或者只开启快照沙箱
+      },
+    }，
+  ]，
+})
+```
+
+如果需要在 vm 沙箱下开启 esModule 的能力，需要使用 `@garfish/es-module` 插件。
+
+> 弊端
+
+`@garfish/es-module` 会在运行时分析子应用的源码做一层 esModule polyfill，他会带来很严重的性能问题，如果你的项目不是很需要在 vm 沙箱下使用 esModule 就不应该使用此插件。在未来我们会优化此插件的性能，但这需要时间。
+
+```js
+import { GarfishEsModule } from '@garfish/es-module';
+
+Garfish.run({
+  ...
+  plugins: [GarfishEsModule()],
+})
 ```
