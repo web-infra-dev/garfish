@@ -47,6 +47,6 @@ export function createImportMeta(url: string) {
   };
 
   set('url', url);
-  set('__garfish', true);
+  set('__garfishPolyfill__', true);
   return { meta: metaObject };
 }

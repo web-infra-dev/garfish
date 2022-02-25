@@ -79,7 +79,7 @@ export function GarfishEsModule(options: Options = {}) {
               appInstance.esmQueue.add(async (next) => {
                 options.isInline
                   ? await runtime.importByCode(codeRef.code, url)
-                  : await runtime.dynamicImport(url, url);
+                  : await runtime.importByUrl(url, url);
                 next();
               });
             } else {

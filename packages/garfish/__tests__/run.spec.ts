@@ -1,30 +1,21 @@
+import fetch from 'node-fetch';
 import Garfish from '@garfish/core';
 import { GarfishRouter } from '@garfish/router';
-import fetchMock from 'jest-fetch-mock';
 import {
-  reactAppHtml,
-  reactAppRootNode,
-  reactAppRootText,
-  vueAppHtml,
-  vueAppRootNode,
-  vueAppRootText,
-} from '@garfish/utils';
-import {
-  appContainerId,
   __MockBody__,
   __MockHead__,
   __MockHtml__,
+  appContainerId,
 } from '@garfish/utils';
-global.fetch = fetchMock;
 
-const vuePath = 'http://garfish-mock.com/vue-app';
-const reactPath = 'http://garfish-mock.com/react-app';
+const vueAppRootNode = 'vue-app';
+const vueAppRootText = 'vue app init page';
+const reactAppRootNode = 'react-app';
+const reactAppRootText = 'react app init page';
 
 function waitFor(delay = 50) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(false);
-    }, delay);
+  return new Promise<void>((resolve) => {
+    setTimeout(() => resolve(), delay);
   });
 }
 
@@ -52,50 +43,29 @@ async function noRenderApp(container: Element) {
   expect(appContainer).toHaveLength(0);
 }
 
-let GarfishInstance: Garfish;
 describe('Core: run methods', () => {
-  beforeEach(() => {
-    // https://www.npmjs.com/package/jest-fetch-mock
-    fetchMock.mockIf(/^https?:\/\/garfish-mock.com.*$/, (req) => {
-      if (req.url.endsWith('/vue-app')) {
-        return Promise.resolve({
-          body: vueAppHtml,
-          headers: {
-            'Content-Type': 'text/html',
-          },
-        });
-      } else if (req.url.endsWith('/react-app')) {
-        return Promise.resolve({
-          body: reactAppHtml,
-          headers: {
-            'Content-Type': 'text/html',
-          },
-        });
-      } else {
-        return Promise.resolve({
-          status: 404,
-          body: 'Not Found',
-        });
-      }
-    });
+  let GarfishInstance: Garfish;
 
-    fetchMock.doMock();
-    GarfishInstance = new Garfish({
-      plugins: [GarfishRouter()],
-    });
+  beforeEach(() => {
+    (globalThis as any).fetch = fetch;
+    GarfishInstance = new Garfish({});
+
     GarfishInstance.run({
-      domGetter: '#container',
       basename: '/',
+      domGetter: '#container',
+      plugins: [GarfishRouter()],
       apps: [
         {
           name: 'vue-app',
           activeWhen: '/vue-app',
-          entry: vuePath,
+          entry:
+            'http://localhost:3310/garfish/__tests__/resources/vueApp.html',
         },
         {
           name: 'react-app',
           activeWhen: '/react-app',
-          entry: reactPath,
+          entry:
+            'http://localhost:3310/garfish/__tests__/resources/reactApp.html',
         },
       ],
     });

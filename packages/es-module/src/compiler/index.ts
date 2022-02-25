@@ -354,15 +354,16 @@ export class Compiler {
       : [node.declaration];
 
     nodes.forEach((node) => {
-      let name, refNode;
       if (isDefault) {
-        name = 'default';
-        refNode = identifier(Compiler.keys.__GARFISH_DEFAULT__);
+        const name = 'default';
+        const refNode = identifier(Compiler.keys.__GARFISH_DEFAULT__);
+        this.exportInfos.push({ name, refNode });
       } else {
-        name = isIdentifier(node) ? node.name : node.id.name;
-        refNode = identifier(name);
+        const names = state.getBindingIdentifiers(node.id);
+        names.forEach(({ name }) => {
+          this.exportInfos.push({ name, refNode: identifier(name) });
+        });
       }
-      this.exportInfos.push({ name, refNode });
     });
 
     if (isDefault) {

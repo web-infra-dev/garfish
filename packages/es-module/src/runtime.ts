@@ -102,7 +102,7 @@ export class Runtime {
       [Compiler.keys.__GARFISH_DYNAMIC_IMPORT__]: (moduleId: string) => {
         const storeId = transformUrl(output.storeId, moduleId);
         const requestUrl = transformUrl(output.realUrl, moduleId);
-        return this.dynamicImport(storeId, requestUrl);
+        return this.importByUrl(storeId, requestUrl);
       },
 
       [Compiler.keys.__GARFISH_EXPORT__]: (
@@ -179,7 +179,7 @@ export class Runtime {
     return this.importModule(storeId) as MemoryModule;
   }
 
-  dynamicImport(storeId: string, requestUrl?: string) {
+  importByUrl(storeId: string, requestUrl?: string) {
     const result = this.importModule(storeId, requestUrl || storeId);
     return Promise.resolve(result).then((memoryModule) => {
       return this.getModule(memoryModule);
