@@ -88,7 +88,7 @@ export function isJsonp(mt: mimeType, src: string) {
     const { type, subtype } = mt || {};
     if (
       type === 'application' &&
-      subtype === 'json' &&
+      (subtype === 'json' || subtype === 'octet-stream') &&
       callbackRegExp.test(search)
     ) {
       return true;
