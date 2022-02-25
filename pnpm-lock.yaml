@@ -23,6 +23,7 @@ importers:
       codecov: ^3.1.0
       cross-env: 7.0.3
       cypress: 8.7.0
+      dayjs: ^1.10.7
       esbuild-plugin-replace: 1.0.7
       eslint: 7.32.0
       eslint-plugin-vue: 7.19.1
@@ -72,6 +73,7 @@ importers:
       codecov: 3.8.3
       cross-env: 7.0.3
       cypress: 8.7.0
+      dayjs: 1.10.7
       esbuild-plugin-replace: 1.0.7
       eslint: 7.32.0
       eslint-plugin-vue: 7.19.1_eslint@7.32.0
@@ -4831,7 +4833,7 @@ packages:
       react-dom: 16.14.0_react@16.14.0
       react-error-overlay: 6.0.9
       react-helmet: 6.1.0_react@16.14.0
-      react-loadable: registry.npmjs.org/@docusaurus/react-loadable/5.5.2_react@16.14.0
+      react-loadable: /@docusaurus/react-loadable/5.5.2_react@16.14.0
       react-loadable-ssr-addon-v5-slorber: 1.0.1_6c35c61b48eccfef78be14efabf8a089
       react-router: 5.2.1_react@16.14.0
       react-router-config: 5.1.1_react-router@5.2.1+react@16.14.0
@@ -13534,7 +13536,7 @@ packages:
     optional: true
 
   /fsevents/2.1.2:
-    resolution: {integrity: sha512-R4wDiBwZ0KzpgOWetKDug1FZcYhqYnUYKtfZYt4mD5SBz76q0KR4Q9o7GIPamsVPGmW3EYPPJ0dOOjvx32ldZA==}
+    resolution: {integrity: sha1-TAofs0vGjlQ7S4Kp7Dkr+9qECAU=}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     deprecated: '"Please update to latest v2.3 or v2.2"'
@@ -17084,7 +17086,7 @@ packages:
       sourcemap-codec: 1.4.8
 
   /make-dir/2.1.0:
-    resolution: {integrity: sha512-LS9X+dc8KLxXCb8dni79fLIIUA5VyZoyjSMCwTluaXA0o27cCK0bhXkpgw+sTXVpPy/lSO57ilRixqk0vDmtRA==}
+    resolution: {integrity: sha1-XwMQ4YuL6JjMBwCSlaMK5B6R5vU=}
     engines: {node: '>=6'}
     requiresBuild: true
     dependencies:
@@ -20762,7 +20764,7 @@ packages:
       webpack: '>=4.41.1 || 5.x'
     dependencies:
       '@babel/runtime': 7.16.3
-      react-loadable: registry.npmjs.org/@docusaurus/react-loadable/5.5.2_react@16.14.0
+      react-loadable: /@docusaurus/react-loadable/5.5.2_react@16.14.0
       webpack: 5.64.3
     dev: false
 
