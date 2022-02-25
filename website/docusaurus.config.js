@@ -1,5 +1,3 @@
-const path = require('path');
-
 module.exports = {
   title: 'Garfish',
   tagline: '微前端解决方案',
@@ -76,7 +74,7 @@ module.exports = {
         // For Docs using Chinese, The `language` is recommended to set to:
         // ```
         language: ['en', 'zh'],
-        docsRouteBasePath: ['/guide', '/issues', '/quick-start', '/api'],
+        docsRouteBasePath: ['/guide', '/issues', '/quickStart', '/api'],
         docsDir: ['docs'],
         // ```
         // When applying `zh` in language, please install `nodejieba` in your project.

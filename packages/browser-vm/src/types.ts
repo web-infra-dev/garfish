@@ -21,6 +21,7 @@ export interface ReplaceGlobalVariables {
 export interface SandboxOptions {
   namespace: string;
   baseUrl?: string;
+  fixBaseUrl?: boolean;
   disableWith?: boolean;
   strictIsolation?: boolean;
   allowNetworkModule?: boolean;

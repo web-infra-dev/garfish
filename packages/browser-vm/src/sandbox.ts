@@ -1,7 +1,6 @@
 import { Loader } from '@garfish/loader';
 import {
   warn,
-  error,
   hasOwn,
   makeMap,
   isObject,
@@ -39,6 +38,7 @@ import {
 
 let id = 0;
 const defaultModules: Array<Module> = [
+  networkModule,
   timeoutModule,
   intervalModule,
   historyModule,
@@ -95,7 +95,7 @@ export class Sandbox {
       sourceList: [],
       disableWith: false,
       strictIsolation: false,
-      allowNetworkModule: false,
+      fixBaseUrl: false,
       el: () => null,
       protectVariable: () => [],
       insulationVariable: () => [],

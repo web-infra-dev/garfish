@@ -115,7 +115,7 @@ function createOptions(Garfish: interfaces.Garfish) {
           modules: compatibleOldModule(appInfo.sandbox?.modules || []),
           disableWith: Boolean(appInfo.sandbox?.disableWith),
           strictIsolation: Boolean(appInfo.sandbox?.strictIsolation),
-          allowNetworkModule: Boolean(appInfo.sandbox?.allowNetworkModule),
+          fixBaseUrl: Boolean(appInfo.sandbox?.fixBaseUrl),
 
           el: () => appInstance.htmlNode,
 
