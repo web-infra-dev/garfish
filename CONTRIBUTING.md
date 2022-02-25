@@ -17,7 +17,7 @@ npm i -g pnpm
 Clone this repo to your local machine and install the dependencies.
 
 ```bash
-pnpm run setup
+pnpm install
 ```
 
 ## Development

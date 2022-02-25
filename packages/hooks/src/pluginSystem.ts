@@ -43,6 +43,7 @@ export class PluginSystem<T extends Record<string, any>> {
     assert(plugin, `plugin "${pluginName}" is not registered.`);
 
     for (const key in plugin) {
+      if (key === 'name') continue;
       this.lifecycle[key].remove(plugin[key as string]);
     }
   }
