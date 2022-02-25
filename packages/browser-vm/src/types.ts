@@ -24,7 +24,6 @@ export interface SandboxOptions {
   fixBaseUrl?: boolean;
   disableWith?: boolean;
   strictIsolation?: boolean;
-  allowNetworkModule?: boolean;
   modules?: Array<Module>;
   sourceList?: Array<{ tagName: string; url: string }>;
   loaderOptions?: LoaderOptions;

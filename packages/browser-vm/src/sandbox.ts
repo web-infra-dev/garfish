@@ -217,12 +217,6 @@ export class Sandbox {
     const overrideList = {};
     const allModules = defaultModules.concat(this.options.modules);
 
-    // Optionally fix network requests,
-    // if default settings will affect optimization measures of `goofy`
-    if (this.options.allowNetworkModule) {
-      allModules.push(networkModule);
-    }
-
     for (const module of allModules) {
       if (typeof module === 'function') {
         const { recover, override, created, prepare } = module(this) || {};
