@@ -29,6 +29,7 @@ export function GarfishEsModule(options: Options = {}) {
       afterLoad(appInfo, appInstance) {
         const { appId, name } = appInstance;
         if (!disable(appId, name, appInfo)) {
+          // @ts-ignore
           const sandbox = appInstance.vmSandbox;
           const runtime = new Runtime({ scope: name });
 
