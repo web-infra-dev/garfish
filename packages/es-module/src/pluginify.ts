@@ -8,38 +8,28 @@ export interface Options {
 
 export function GarfishEsModule(options: Options = {}) {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
-    let closeSandbox = false;
     const appModules = {};
     const { excludes } = options;
     const pluginName = 'es-module';
 
-    const disable = (appId: number, appName: string) => {
-      if (closeSandbox || appModules[appId]) {
-        return true;
-      } else if (Array.isArray(excludes)) {
-        return excludes.includes(appName);
-      } else if (typeof excludes === 'function') {
-        return excludes(appName);
-      }
+    const disable = (
+      appInfo: interfaces.AppInfo,
+      appId: number,
+      appName: string,
+    ) => {
+      if (appModules[appId]) return true;
+      if (!appInfo.sandbox || !appInfo.sandbox.open) return true;
+      if (Array.isArray(excludes)) return excludes.includes(appName);
+      if (typeof excludes === 'function') return excludes(appName);
       return false;
     };
 
     return {
       name: pluginName,
 
-      beforeBootstrap(options) {
-        if (!options.sandbox || !options.sandbox.open) {
-          closeSandbox = true;
-        } else if (options.sandbox.snapshot) {
-          // `Garfish/core` by default supports esm with closed sandbox and esm with snapshot sandbox
-          error('"es-module" plugin only supports "vm sandbox"');
-        }
-      },
-
       afterLoad(appInfo, appInstance) {
         const { appId, name } = appInstance;
-        if (!disable(appId, name)) {
-          // @ts-ignore
+        if (!disable(appInfo, appId, name)) {
           const sandbox = appInstance.vmSandbox;
           const runtime = new Runtime({ scope: name });
 

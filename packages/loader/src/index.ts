@@ -1,12 +1,11 @@
 import { SyncHook, SyncWaterfallHook, PluginSystem } from '@garfish/hooks';
 import {
-  warn,
   error,
   isJs,
   isCss,
   isHtml,
-  __LOADER_FLAG__,
   isJsonp,
+  __LOADER_FLAG__,
 } from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
@@ -31,14 +30,22 @@ export interface LoaderOptions {
   maxSize?: number;
 }
 
-interface LoadedHookArgs<T extends Manager> {
+export interface CacheValue<T extends Manager> {
+  url: string;
+  code: string;
+  size: number;
+  fileType: FileTypes | '';
+  resourceManager: T | null;
+}
+
+export interface LoadedHookArgs<T extends Manager> {
   result: Response;
-  value: {
-    url: string;
-    code: string;
-    fileType: FileTypes | '';
-    resourceManager: T | null;
-  };
+  value: CacheValue<T>;
+}
+
+export enum CrossOriginCredentials {
+  anonymous = 'same-origin',
+  'use-credentials' = 'include',
 }
 
 export class Loader {
@@ -95,7 +102,8 @@ export class Loader {
   load<T extends Manager>(
     scope: string,
     url: string,
-    isModule = false,
+    isRemoteModule = false,
+    crossOrigin: HTMLScriptElement['crossOrigin'] = 'anonymous',
   ): Promise<LoadedHookArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
 
@@ -128,16 +136,18 @@ export class Loader {
     }
 
     const requestConfig = mergeConfig(this, url);
+    // Tells browsers to include credentials in both same- and cross-origin requests, and always use any credentials sent back in responses.
+    requestConfig.credentials = CrossOriginCredentials[crossOrigin];
     const resOpts = this.hooks.lifecycle.beforeLoad.emit({
       url,
       requestConfig,
     });
 
     loadingList[url] = request(resOpts.url, resOpts.requestConfig)
-      .then(({ code, mimeType, result }) => {
+      .then(({ code, size, mimeType, result }) => {
         let managerCtor, fileType: FileTypes;
 
-        if (isModule) {
+        if (isRemoteModule) {
           fileType = FileTypes.module;
           managerCtor = ModuleManager;
         } else if (isHtml(mimeType) || /\.html$/.test(result.url)) {
@@ -168,6 +178,8 @@ export class Loader {
             url,
             resourceManager,
             fileType: fileType || '',
+            // For performance reasons, take an approximation
+            size: size || code.length,
             code: resourceManager ? '' : code,
           },
         });

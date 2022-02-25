@@ -208,6 +208,7 @@ describe('vue-bridge', () => {
     lifeCycles.destroy({ ...appInfo, props });
   });
 
+  // eslint-disable-next-line quotes
   it("mounts into the garfish-vue-bridge div if you don't provide an 'el' in appOptions", async () => {
     const provider = vueBridge({
       Vue,

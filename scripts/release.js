@@ -1,10 +1,10 @@
+const fs = require('fs');
+const semver = require('semver');
+const dayjs = require('dayjs');
+const args = require('minimist')(process.argv.slice(2));
 const bumpPrompt = require('@jsdevtools/version-bump-prompt');
 const { run, step } = require('./utils');
-const semver = require('semver');
 const currentVersion = require('../package.json').version;
-const args = require('minimist')(process.argv.slice(2));
-const fs = require('fs');
-const path = require('path');
 
 const actionPublishCanary =
   ['preminor', 'prepatch'].includes(args.version) && process.env.CI;
@@ -85,7 +85,7 @@ async function test() {
 async function bumpVersion() {
   let version = args.version;
   if (version && actionPublishCanary) {
-    const hash = +new Date();
+    const hash = dayjs().format('YYYYMMDDHHmmss');
     version = semver.inc(currentVersion, version, 'beta-' + hash);
   }
 
@@ -100,8 +100,8 @@ async function bumpVersion() {
 async function pushToGithub(selectVersion) {
   // push to GitHub
   await run('git', ['tag', `v${selectVersion.newVersion}`]);
-  await run('git', ['push', 'origin', '--tags']);
   await run('git', ['push']);
+  await run('git', ['push', 'origin', '--tags']);
 }
 
 async function publish(version) {

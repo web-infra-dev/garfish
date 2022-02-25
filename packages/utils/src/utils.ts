@@ -434,10 +434,10 @@ export function mapObject(
   return destObject;
 }
 
-export function toBase64(input: string) {
+export function toBase64(input: string, mimeType?: string) {
   return new Promise<string>((resolve) => {
     const reader = new FileReader();
-    reader.readAsDataURL(new Blob([input]));
+    reader.readAsDataURL(new Blob([input], { type: mimeType }));
     reader.onload = () => resolve(reader.result as string);
   });
 }

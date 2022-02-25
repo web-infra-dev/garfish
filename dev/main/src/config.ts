@@ -38,7 +38,7 @@ let defaultConfig: interfaces.Options = {
       activeWhen: '/vite',
       entry: 'http://localhost:2888/',
       sandbox: {
-        open: false,
+        open: true,
       },
     },
     {
@@ -47,7 +47,7 @@ let defaultConfig: interfaces.Options = {
       activeWhen: '/esmApp',
       entry: 'http://localhost:2999/',
       sandbox: {
-        open: false,
+        open: true,
       },
     },
     {
@@ -71,6 +71,7 @@ let defaultConfig: interfaces.Options = {
   insulationVariable: ['setImmediate'],
   sandbox: {
     open: true,
+    fixBaseUrl: false,
     // strictIsolation: true,
   },
   plugins: [GarfishEsModule()],

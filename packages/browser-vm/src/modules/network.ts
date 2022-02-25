@@ -13,7 +13,10 @@ export function networkModule(sandbox: Sandbox) {
   const xhrSet = new Set<fakeXMLHttpRequest>();
   const fetchSet = new Set<AbortController>();
   const needFix = (url) =>
-    baseUrl && typeof url === 'string' && !isAbsolute(url);
+    sandbox.options.fixBaseUrl &&
+    baseUrl &&
+    typeof url === 'string' &&
+    !isAbsolute(url);
 
   class fakeXMLHttpRequest extends XMLHttpRequest {
     constructor() {
@@ -29,6 +32,10 @@ export function networkModule(sandbox: Sandbox) {
       if (needFix(arguments[1])) {
         arguments[1] = transformUrl(baseUrl, arguments[1]);
       }
+      sandbox.options.sourceList.push({
+        tagName: 'xmlhttprequest',
+        url: arguments[1],
+      });
       return super.open.apply(this, arguments);
     }
 
@@ -59,6 +66,7 @@ export function networkModule(sandbox: Sandbox) {
     if (needFix(input)) {
       input = transformUrl(baseUrl, input);
     }
+    sandbox.options.sourceList.push({ tagName: 'fetch', url: input });
     let controller;
     if (!hasOwn(options, 'signal') && window.AbortController) {
       controller = new window.AbortController();

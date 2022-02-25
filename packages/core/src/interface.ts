@@ -78,6 +78,7 @@ export namespace interfaces {
     snapshot?: boolean;
     disableWith?: boolean;
     strictIsolation?: boolean;
+    fixBaseUrl?: boolean;
   }
 
   export interface Config {
