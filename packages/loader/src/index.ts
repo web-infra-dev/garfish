@@ -102,7 +102,7 @@ export class Loader {
   load<T extends Manager>(
     scope: string,
     url: string,
-    isModule = false,
+    isRemoteModule = false,
     crossOrigin: HTMLScriptElement['crossOrigin'] = 'anonymous',
   ): Promise<LoadedHookArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
@@ -147,7 +147,7 @@ export class Loader {
       .then(({ code, size, mimeType, result }) => {
         let managerCtor, fileType: FileTypes;
 
-        if (isModule) {
+        if (isRemoteModule) {
           fileType = FileTypes.module;
           managerCtor = ModuleManager;
         } else if (isHtml(mimeType) || /\.html$/.test(result.url)) {
@@ -178,8 +178,9 @@ export class Loader {
             url,
             resourceManager,
             fileType: fileType || '',
-            code: resourceManager ? '' : code,
+            // For performance reasons, take an approximation
             size: size || code.length,
+            code: resourceManager ? '' : code,
           },
         });
 

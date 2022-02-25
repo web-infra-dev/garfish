@@ -1,10 +1,9 @@
+const fs = require('fs');
+const semver = require('semver');
+const args = require('minimist')(process.argv.slice(2));
 const bumpPrompt = require('@jsdevtools/version-bump-prompt');
 const { run, step } = require('./utils');
-const semver = require('semver');
 const currentVersion = require('../package.json').version;
-const args = require('minimist')(process.argv.slice(2));
-const fs = require('fs');
-const path = require('path');
 
 const actionPublishCanary =
   ['preminor', 'prepatch'].includes(args.version) && process.env.CI;

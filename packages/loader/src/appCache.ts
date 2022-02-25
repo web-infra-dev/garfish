@@ -5,7 +5,7 @@ export const cachedDataSet = new WeakSet();
 export enum FileTypes {
   js = 'js',
   css = 'css',
-  module = 'module',
+  module = 'module', // remote module
   template = 'template',
 }
 

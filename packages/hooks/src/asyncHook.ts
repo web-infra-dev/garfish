@@ -1,6 +1,8 @@
 import { ArgsType, SyncHook } from './syncHook';
 
-export class AsyncHook<T, K> extends SyncHook<T, K> {
+type CallbackReturnType = void | false | Promise<void | false>;
+
+export class AsyncHook<T> extends SyncHook<T, CallbackReturnType> {
   emit(...data: ArgsType<T>): Promise<void | false> {
     let result;
     const ls = Array.from(this.listeners);

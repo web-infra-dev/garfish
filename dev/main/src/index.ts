@@ -50,20 +50,3 @@ document.getElementById('esmBtn').onclick = async () => {
     history.pushState({}, 'esmApp', '/garfish_master/esmApp');
   }
 };
-
-// Plugin test
-const hooks = GarfishInstance.createPluginSystem(({ SyncHook, AsyncHook }) => {
-  return {
-    create: new AsyncHook<[number], string>(),
-  };
-});
-
-hooks.usePlugin({
-  name: 'test',
-  create(a) {
-    console.log(a);
-    return '';
-  },
-});
-
-hooks.lifecycle.create.emit(123);

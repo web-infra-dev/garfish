@@ -30,8 +30,8 @@
     "registry": "https://registry.npmjs.org"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.1",
     "garfish": "workspace:*",
+    "@babel/runtime": "^7.12.1",
     "mobx": "^6.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
