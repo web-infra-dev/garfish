@@ -72,7 +72,7 @@ export const loader: Loader = (() => {
   return new Loader();
 })();
 
-export const getModuleCode = (url: string) => {
+export const getModuleManager = (url: string) => {
   // It should be noted that if there is a redirect, `manager.url` is the url after the redirect
   return resourcesStore.find((manager) => manager.url === url);
 };

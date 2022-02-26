@@ -1,0 +1,44 @@
+{
+  "name": "@garfish-dev/react",
+  "version": "0.1.5",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "5.15.0",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "13.3.0",
+    "antd": "^4.9.4",
+    "classnames": "^2.3.1",
+    "react": "^16.13.1",
+    "react-app-rewired": "^2.1.6",
+    "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.1",
+    "react-shadow-dom-retarget-events": "^1.0.11",
+    "@garfish/bridge": "workspace:*",
+    "@garfish/remote-module": "workspace:*"
+  },
+  "scripts": {
+    "start": "WDS_SOCKET_PORT=2444 PORT=2444 BROWSER=none react-app-rewired start",
+    "build": "rimraf dist && react-app-rewired build && cp -r build dist",
+    "test": "react-app-rewired test",
+    "eject": "react-scripts eject"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

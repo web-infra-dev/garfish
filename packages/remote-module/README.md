@@ -22,6 +22,7 @@ exports.Two = function () {
 ```jsx
 import React from 'React';
 import {
+  hooks,
   preload,
   esModule,
   loadModule,
@@ -29,6 +30,8 @@ import {
   setModuleConfig,
   cacheModules,
 } from '@garfish/remote-module';
+
+console.log(hooks); // See the documentation for `@garfish/hooks`
 
 setModuleConfig({
   externals: { React }, // Environment variables required by remoteModules

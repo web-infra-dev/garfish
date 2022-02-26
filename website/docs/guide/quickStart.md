@@ -1,6 +1,6 @@
 ---
 title: 快速开始
-slug: /quick-start
+slug: /quickStart
 order: 2
 ---
 
@@ -94,7 +94,6 @@ module.exports = {
   <TabItem value="vite" label="Vite" default>
 
 ```js
-
 // 使用 Vite 应用作为子应用时需要注意：
 // 子应用必须使用缓存模式 cache: true 模式，路由驱动时默认使用 cache 模式，触发将 appInfo.cache = false（因为 esmodule 内容无法重复执行）
 // 子应用不可重复使用 app.mount，第二次渲染时只能使用 app.show，否则将走非缓存模式（因为 esmodule 内容无法重复执行）

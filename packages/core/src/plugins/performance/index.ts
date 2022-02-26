@@ -16,7 +16,6 @@ export function GarfishPerformance() {
           });
         }
         subAppMap[appInfo.name].subAppBeforeLoad(appInfo.entry);
-        return true;
       },
 
       afterLoad(appInfo, appInstance: interfaces.App) {

@@ -11,14 +11,17 @@ import { hooks } from '../hooks';
 import { Actuator } from '../actuator';
 import { processAlias, getValueInObject } from './setModuleConfig';
 
-export function loadModule(
+export async function loadModule(
   urlOrAlias: string,
   options?: ModuleInfo,
 ): Promise<Record<string, any> | null> {
-  const data = hooks.lifecycle.beforeLoadModule.emit({
+  const data = await hooks.lifecycle.asyncBeforeLoadModule.emit({
     options,
     url: urlOrAlias,
   });
+  if (data === false) {
+    return null;
+  }
 
   urlOrAlias = data.url;
   options = data.options;
@@ -54,10 +57,16 @@ export function loadModule(
         if (typeof adapter === 'function') {
           exports = adapter(exports);
         }
-        exports = hooks.lifecycle.afterLoadModule.emit({
+        const hookResult = await hooks.lifecycle.asyncAfterLoadModule.emit({
           url,
           exports,
-        }).exports;
+          code: data.resourceManager.moduleCode,
+        });
+        if (hookResult === false) {
+          return null;
+        }
+        exports = hookResult.exports;
+
         cacheModules[urlWithVersion] = exports;
         if (isPromise(exports)) {
           exports = await exports;
@@ -71,8 +80,6 @@ export function loadModule(
         } else {
           throw prettifyError(e, alias, url);
         }
-      } finally {
-        fetchLoading[urlWithVersion] = null;
       }
     }
     return result;
@@ -80,11 +87,16 @@ export function loadModule(
 
   if (fetchLoading[urlWithVersion]) {
     return fetchLoading[urlWithVersion].then(() => {
+      // The modules are the same, but the aliases may be different
       return Promise.resolve(cacheModules[urlWithVersion]).then((m) =>
         getValueInObject(m, segments),
       );
     });
+  } else {
+    fetchLoading[urlWithVersion] = asyncLoadProcess().then((data) => {
+      fetchLoading[urlWithVersion] = null;
+      return data;
+    });
+    return fetchLoading[urlWithVersion];
   }
-  fetchLoading[urlWithVersion] = asyncLoadProcess();
-  return fetchLoading[urlWithVersion];
 }
