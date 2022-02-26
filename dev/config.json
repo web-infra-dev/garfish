@@ -30,13 +30,5 @@
   "dev/angular": {
     "pkgName": "@garfish-dev/angular",
     "port": 4200
-  },
-  "dev/vite-subapp": {
-    "pkgName": "@garfish-dev/vite-subapp",
-    "port": 2888
-  },
-  "dev/esm-app": {
-    "pkgName": "@garfish-dev/esm-app",
-    "port": 2999
   }
 }
