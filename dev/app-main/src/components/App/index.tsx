@@ -42,13 +42,6 @@ const formItemLayout = {
   },
 };
 
-// let popstateTriggerTime = 0;
-// const popstateCallback = () => {
-//   popstateTriggerTime += 1;
-//   console.log('popstateTriggerTime', popstateTriggerTime);
-// };
-// window.addEventListener('popstate', popstateCallback);
-
 const App = observer(({ store }: { store: any }) => {
   const navigate = useNavigate();
   const location = useLocation();

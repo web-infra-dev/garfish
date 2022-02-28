@@ -47,7 +47,6 @@ export const provider = reactBridge({
     _root = root;
     _props = props;
     return Promise.resolve(() => <RootComponent {...props} />);
-    // return Promise.resolve(RootComponent);
   },
   errorBoundary: () => <Error />,
 });

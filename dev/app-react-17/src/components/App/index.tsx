@@ -32,6 +32,7 @@ const App = () => {
 
   useEffect(() => {
     window?.Garfish?.channel.on('sayHello', handleMsg);
+
     return () => {
       window?.Garfish.channel.removeListener('sayHello', handleMsg);
     };
