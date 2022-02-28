@@ -63,7 +63,8 @@ export const subAppMenus = [
     title: '【子应用】angular',
     routes: [
       { path: 'angular/home', title: '首页' },
-      { path: 'angular/dashboard', title: '关于' },
+      { path: 'angular/dashboard', title: 'dashboard' },
+      { path: 'angular/list', title: 'list' },
     ],
   },
   {
