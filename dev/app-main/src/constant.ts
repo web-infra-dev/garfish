@@ -1,11 +1,14 @@
 import { getProxyHost } from './util';
 import portMap from '../../config.json';
+import GarfishInstance from 'garfish';
 
 export const prefixCls = 'main-app';
 export const loadApp = 'loadApp';
 export const basename = 'examples';
 
-export const localApps = [
+type AppInfo = NonNullable<Parameters<typeof GarfishInstance.run>[0]>['apps'];
+
+export const localApps: AppInfo = [
   {
     // 每个应用的 name 需要保持唯一
     name: 'react17',
@@ -41,6 +44,8 @@ export const localApps = [
     name: 'vite',
     activeWhen: '/vite',
     entry: getProxyHost(portMap['dev/vite'].port),
+    // 沙箱关闭 sandbox: false否则可能会出现子应用部分代码在沙箱内执行，部分不在沙箱执行
+    sandbox: false,
   },
   {
     name: 'angular',

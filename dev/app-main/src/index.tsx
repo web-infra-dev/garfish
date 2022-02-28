@@ -2,8 +2,8 @@ import ReactDOM from 'react-dom';
 import { GarfishInit } from './garfishInit';
 import RootComponent from './components/root';
 
-const render = async (_ROOT) => {
-  await GarfishInit();
+const render = (_ROOT) => {
+  GarfishInit();
   ReactDOM.render(<_ROOT />, document.getElementById('root'));
 };
 

@@ -64,15 +64,16 @@ const RootComponent = () => {
           />
 
           {/* 路由注册 */}
-          {localApps.map((v) => {
-            return (
-              <Route
-                key={v.name}
-                path={`${basename}${v.activeWhen}/*`}
-                element={<App store={store} />}
-              ></Route>
-            );
-          })}
+          {localApps &&
+            localApps.map((v) => {
+              return (
+                <Route
+                  key={v.name}
+                  path={`${basename}${v.activeWhen}/*`}
+                  element={<App store={store} />}
+                ></Route>
+              );
+            })}
 
           {/* 由于vue2 的 activeWhen 返回的是函数，需要在这里静态注册路由 */}
           <Route
