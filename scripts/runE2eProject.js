@@ -16,30 +16,27 @@ const opts = {
 function runAllExample() {
   // Usage with promises
   if (process.env.CI) {
-    return (
-      Promise.all(ports.map((port) => killPort(port)))
-        // build all demo or dev all example
-        .then(() => {
-          step('\n building dev project...');
-          return $`pnpm run build --parallel --filter "@garfish-dev/*"`;
-        })
-        .then(() => {
-          step('\n http-server dev dist...');
-          Object.keys(portMap).forEach((pkgPath) => {
-            // history api fallback
-            if (pkgPath === 'dev/main') {
-              $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} --proxy http://localhost:${portMap[pkgPath].port}?`;
-            } else {
-              $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port}`;
-            }
-          });
-        })
-        .then(() => waitOn(opts))
-        .catch((err) => {
-          console.error(err);
-          ports.forEach((port) => killPort(port));
-        })
-    );
+    return Promise.all(ports.map((port) => killPort(port)))
+      .then(() => {
+        step('\n building dev project...');
+        return $`pnpm run build --parallel --filter "@garfish-dev/*"`;
+      })
+      .then(() => {
+        step('\n http-server dev dist...');
+        Object.keys(portMap).forEach((pkgPath) => {
+          // history api fallback
+          if (pkgPath === 'dev/main') {
+            $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} --proxy http://localhost:${portMap[pkgPath].port}?`;
+          } else {
+            $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port}`;
+          }
+        });
+      })
+      .then(() => waitOn(opts))
+      .catch((err) => {
+        console.error(err);
+        ports.forEach((port) => killPort(port));
+      });
   } else {
     return (
       Promise.all(ports.map((port) => killPort(port)))
