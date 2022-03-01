@@ -18,12 +18,70 @@ export let GarfishContext = null;
 //   // ignore
 // }
 
+type OptionalKeys<T> = {
+  [K in keyof T]: T extends Record<K, T[K]> ? K : never;
+}[keyof T];
+
+type RequiredKeys<T> = {
+  [K in keyof T]: T extends Record<K, T[K]> ? never : K;
+}[keyof T];
+
+type FilterOptional<T> = Pick<T, Exclude<OptionalKeys<T>, undefined>>;
+type FilterRequired<T> = Pick<T, Exclude<RequiredKeys<T>, undefined>>;
+
+type PartialEither<T, K extends keyof any> = {
+  [P in Exclude<keyof FilterOptional<T>, K>]-?: T[P];
+} & { [P in Exclude<keyof FilterRequired<T>, K>]?: T[P] } & {
+  [P in Extract<keyof T, K>]?: undefined;
+};
+
+type Object = {
+  [name: string]: any;
+};
+
+export type EitherOr<O extends Object, L extends string, R extends string> = (
+  | PartialEither<Pick<O, L | R>, L>
+  | PartialEither<Pick<O, L | R>, R>
+  | PartialEither<Pick<O, L | R>, ''>
+) &
+  Omit<O, L | R>;
+
+type RequiredOpts = {
+  React: any;
+  ReactDOM: any;
+};
+
+type RequireAtLeastOneOpts = EitherOr<
+  {
+    rootComponent: any;
+    loadRootComponent: (opts: any) => Promise<any>;
+  },
+  'rootComponent',
+  'loadRootComponent'
+>;
+
+type OptionalOpts = {
+  renderType: any;
+  errorBoundary: any;
+  errorBoundaryClass: any;
+  el: any;
+  canUpdate?: Boolean; // by default, allow parcels created with garfish-react-bridge to be updated
+  suppressComponentDidCatchWarning?: Boolean;
+  domElements: Record<string, any>;
+  renderResults: any;
+  updateResolves: any;
+};
+
+export type OptsTypes = RequiredOpts &
+  RequireAtLeastOneOpts &
+  Partial<OptionalOpts>;
+
 const defaultOpts = {
   // required opts
   React: null,
   ReactDOM: null,
 
-  // required - one or the other
+  // required - one or the other or both
   rootComponent: null,
   loadRootComponent: null,
 
@@ -49,7 +107,7 @@ declare global {
   }
 }
 
-export function reactBridge(this: any, userOpts) {
+export function reactBridge(this: any, userOpts: OptsTypes) {
   if (typeof userOpts !== 'object') {
     throw new Error('garfish-react-bridge requires a configuration object');
   }
