@@ -1,6 +1,5 @@
 {
   "name": "@garfish-dev/main",
-  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "garfish": "workspace:*",

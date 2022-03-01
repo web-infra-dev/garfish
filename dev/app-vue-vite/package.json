@@ -1,6 +1,5 @@
 {
   "name": "@garfish-dev/vite",
-  "version": "0.0.0",
   "private": true,
   "scripts": {
     "start": "vite",

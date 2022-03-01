@@ -1,6 +1,5 @@
 {
   "name": "@garfish-dev/react16",
-  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@garfish/bridge": "workspace:*",
