@@ -1,5 +1,5 @@
 {
-  "name": "@garfish-dev/esm-app",
+  "name": "@garfish-dev/esm",
   "version": "0.1.5",
   "private": true,
   "scripts": {
@@ -8,5 +8,8 @@
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.0"
   }
 }

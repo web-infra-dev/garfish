@@ -74,7 +74,7 @@ const HomePage = observer(({ store }) => {
       <Col span={8} className="card-columns">
         <CardItem
           title="访问独立子应用"
-          href="https://garfish.top/quick-start"
+          href="https://garfish.top/quickStart"
           content={
             <div className="content-wrapper">
               {store.apps.map((v: any) => (

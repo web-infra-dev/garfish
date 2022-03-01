@@ -1,6 +1,6 @@
 import path from 'path';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { DefinePlugin } from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import portMap from '../config.json';
 
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
@@ -28,11 +28,12 @@ const webpackConfig = {
     filename: '[name].[contenthash].js',
     chunkFilename: '[name].[contenthash].js',
     path: path.join(__dirname, 'dist'),
+    // prettier-ignore
     publicPath: !isDevelopment
       ? publicPath
       : isInWebIDE()
-      ? `//${getProxyHost(port)}/`
-      : `http://localhost:${port}/`,
+        ? `//${getProxyHost(port)}/`
+        : `http://localhost:${port}/`,
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
