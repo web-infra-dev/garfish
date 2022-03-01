@@ -7,8 +7,7 @@ function readPackage(pkg, context) {
     }
     pkg.peerDependencies = {
       vue: '^2.0.0',
-    };
-
+    }
     context.log('vue => vue@2 in dependencies of vue-template-compiler');
   }
 

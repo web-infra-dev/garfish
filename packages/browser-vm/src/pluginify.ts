@@ -13,7 +13,6 @@ declare module '@garfish/core' {
 
   export namespace interfaces {
     export interface SandboxConfig {
-      allowNetworkModule?: boolean;
       modules?: Array<Module> | Record<string, Module>;
     }
 

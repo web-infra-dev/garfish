@@ -5,13 +5,13 @@
 </template>
 
 <script>
-export default {
-  name: 'alertError',
-  methods: {
-    alertError (){
-      // throw Error('subApp normal error');
-      window.a.a.a = true;
-    }
-  },
-}
+  export default {
+    name: 'alertError',
+    methods: {
+      alertError() {
+        // throw Error('subApp normal error');
+        window.a.a.a = true;
+      }
+    },
+  }
 </script>

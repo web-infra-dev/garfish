@@ -115,7 +115,7 @@ export const featuresStr = `
 - 使用 Garfish.loadApp 动态加载子应用
 - 使用 Garfish.registerApp 动态注册子应用
 - activeWhen 为函数使用场景
-- 子应用挂载完成前 laoding 状态
+- 子应用挂载完成前 loading 状态
 - loadApp 异步加载添加 loading 状态
 - 页面路由不匹配时 404 页面兜底
 - css 隔离能力(arco + prefix)
