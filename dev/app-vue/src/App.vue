@@ -11,8 +11,8 @@
     props: ['basename'],
     methods: {
       loadApp () {
-        window.Garfish.router.push({ path: '/vueApp', basename: this.basename })
-      }
+        window.Garfish.router.push({ path: '/vueApp', basename: this.basename });
+      },
     },
   }
 </script>

@@ -19,7 +19,7 @@
     props: ['basename'],
     data() {
       return {
-        GARFISH: window.__GARFISH__
+        GARFISH: window.__GARFISH__,
       }
     },
   }
