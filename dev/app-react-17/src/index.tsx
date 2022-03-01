@@ -48,7 +48,7 @@ export const provider = reactBridge({
     _props = props;
     return Promise.resolve(() => <RootComponent {...props} />);
   },
-  errorBoundary: () => <Error />,
+  errorBoundary: (e: any) => <Error />,
 });
 
 // 这能够让子应用独立运行起来，以保证后续子应用能脱离主应用独立运行，方便调试、开发

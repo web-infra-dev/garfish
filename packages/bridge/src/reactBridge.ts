@@ -18,63 +18,39 @@ export let GarfishContext = null;
 //   // ignore
 // }
 
-type OptionalKeys<T> = {
-  [K in keyof T]: T extends Record<K, T[K]> ? K : never;
-}[keyof T];
-
-type RequiredKeys<T> = {
-  [K in keyof T]: T extends Record<K, T[K]> ? never : K;
-}[keyof T];
-
-type FilterOptional<T> = Pick<T, Exclude<OptionalKeys<T>, undefined>>;
-type FilterRequired<T> = Pick<T, Exclude<RequiredKeys<T>, undefined>>;
-
-type PartialEither<T, K extends keyof any> = {
-  [P in Exclude<keyof FilterOptional<T>, K>]-?: T[P];
-} & { [P in Exclude<keyof FilterRequired<T>, K>]?: T[P] } & {
-  [P in Extract<keyof T, K>]?: undefined;
-};
-
-type Object = {
-  [name: string]: any;
-};
-
-export type EitherOr<O extends Object, L extends string, R extends string> = (
-  | PartialEither<Pick<O, L | R>, L>
-  | PartialEither<Pick<O, L | R>, R>
-  | PartialEither<Pick<O, L | R>, ''>
-) &
-  Omit<O, L | R>;
-
 type RequiredOpts = {
   React: any;
   ReactDOM: any;
 };
 
-type RequireAtLeastOneOpts = EitherOr<
-  {
-    rootComponent: any;
-    loadRootComponent: (opts: any) => Promise<any>;
-  },
-  'rootComponent',
-  'loadRootComponent'
->;
-
 type OptionalOpts = {
-  renderType: any;
-  errorBoundary: any;
-  errorBoundaryClass: any;
-  el: any;
-  canUpdate?: Boolean; // by default, allow parcels created with garfish-react-bridge to be updated
-  suppressComponentDidCatchWarning?: Boolean;
-  domElements: Record<string, any>;
-  renderResults: any;
-  updateResolves: any;
+  renderType: Function | string;
+  errorBoundary: (e) => any;
+  errorBoundaryClass: HTMLElement;
+  el: string;
+  canUpdate: Boolean; // by default, allow parcels created with garfish-react-bridge to be updated
+  suppressComponentDidCatchWarning: Boolean;
+  domElements: Record<string, HTMLElement>;
+  renderResults: Record<string, any>;
+  updateResolves: Record<string, any>;
 };
 
-export type OptsTypes = RequiredOpts &
-  RequireAtLeastOneOpts &
-  Partial<OptionalOpts>;
+interface CommonConfig extends RequiredOpts, Partial<OptionalOpts> {}
+type OptionalConfig =
+  | {
+      rootComponent: any;
+      loadRootComponent?: (opts: any) => Promise<any>;
+    }
+  | {
+      rootComponent?: any;
+      loadRootComponent: (opts: any) => Promise<any>;
+    }
+  | {
+      rootComponent: any;
+      loadRootComponent: (opts: any) => Promise<any>;
+    };
+
+type OptsTypes = CommonConfig & OptionalConfig;
 
 const defaultOpts = {
   // required opts

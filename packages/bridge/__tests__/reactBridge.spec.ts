@@ -105,7 +105,7 @@ describe('react-bridge', () => {
         React,
         ReactDOM,
         loadRootComponent,
-        errorBoundary: {},
+        errorBoundary: {} as any,
       }),
     ).toThrow();
   });
