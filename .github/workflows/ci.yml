@@ -18,7 +18,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: pnpm/action-setup@v2.0.1
       with:
-        version: 6.20.3
+        version: 6.32.1
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
@@ -42,7 +42,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: pnpm/action-setup@v2.0.1
       with:
-        version: 6.20.3
+        version: 6.32.1
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
@@ -59,7 +59,7 @@ jobs:
       with:
         install: false
         start: node scripts/devCypress.js
-        wait-on: 'http://localhost:2333,http://localhost:2444,http://localhost:2555,http://localhost:2666,http://localhost:2777'
+        wait-on: 'http://localhost:8090,http://localhost:8091,http://localhost:8092,http://localhost:8093,http://localhost:8094,http://localhost:8095,http://localhost:4200'
         wait-on-timeout: 120
         parallel: true
         record: true

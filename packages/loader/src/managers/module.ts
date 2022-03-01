@@ -1,6 +1,7 @@
 export class ModuleManager {
   public moduleCode: string;
   public url: string | null;
+  public originUrl?: string;
   public alias: string | null;
 
   constructor(moduleCode: string, url?: string) {

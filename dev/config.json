@@ -1,34 +1,34 @@
 {
-  "dev/main-web-component": {
-    "pkgName": "@garfish-dev/main-web-component",
-    "port": 2222
-  },
   "dev/main": {
     "pkgName": "@garfish-dev/main",
-    "port": 2333
+    "port": 8090
+   },
+  "dev/react17": {
+    "pkgName": "@garfish-dev/react17",
+    "port": 8091
   },
-  "dev/react": {
-    "pkgName": "@garfish-dev/react",
-    "port": 2444
+  "dev/react16": {
+    "pkgName": "@garfish-dev/react16",
+    "port": 8092
+   },
+  "dev/vue3": {
+    "pkgName": "@garfish-dev/vue3",
+    "port": 8093
+   },
+  "dev/vue2": {
+    "pkgName": "@garfish-dev/vue2",
+    "port": 8094
+   },
+  "dev/vite": {
+    "pkgName": "@garfish-dev/vite",
+    "port": 8095
   },
   "dev/vue-sub": {
     "pkgName": "@garfish-dev/vue-sub",
-    "port": 2555
-  },
-  "dev/vue": {
-    "pkgName": "@garfish-dev/vue",
-    "port": 2666
-  },
-  "dev/vue2": {
-    "pkgName": "@garfish-dev/vue2",
-    "port": 2777
-  },
-  "dev/vite-subapp": {
-    "pkgName": "@garfish-dev/vite-subapp",
-    "port": 2888
-  },
-  "dev/esm-app": {
-    "pkgName": "@garfish-dev/esm-app",
-    "port": 2999
+    "port": 8096
+   },
+  "dev/angular": {
+    "pkgName": "@garfish-dev/angular",
+    "port": 4200
   }
 }

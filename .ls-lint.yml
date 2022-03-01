@@ -5,12 +5,12 @@ ls:
     .d.ts: camelCase
     .spec.ts: camelCase | PascalCase
 
-  dev/*/{src}:
-    .js: camelCase
-    .ts: camelCase
-    .jsx: camelCase
-    .tsx: camelCase
-    .d.ts: camelCase
+  # dev/*/{src}:
+  #   .js: camelCase
+  #   .ts: camelCase
+  #   .jsx: camelCase
+  #   .tsx: camelCase
+  #   .d.ts: camelCase
 
   website/{src,docs}:
     .js: camelCase
