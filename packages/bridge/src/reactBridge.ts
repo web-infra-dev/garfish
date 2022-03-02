@@ -4,6 +4,7 @@
 
 // React context that gives any react component the single-spa props
 export let GarfishContext = null;
+import { ReactNode } from 'react';
 
 // try {
 //   // garfish-react-bridge is usable as a global script, as a systemjs module, and other
@@ -18,22 +19,34 @@ export let GarfishContext = null;
 //   // ignore
 // }
 
-type RequiredOpts = {
+interface RequiredOpts {
   React: any;
   ReactDOM: any;
-};
+}
+type renderTypes =
+  | 'createRoot'
+  | 'unstable_createRoot'
+  | 'createBlockingRoot'
+  | 'unstable_createBlockingRoot'
+  | 'render'
+  | 'hydrate';
 
-type OptionalOpts = {
-  renderType: Function | string;
-  errorBoundary: (e) => any;
+interface OptionalOpts {
+  renderType: renderTypes | (() => renderTypes);
+  errorBoundary: (
+    caughtError: boolean,
+    info: string,
+    props: any,
+  ) => ReactNode | null;
+
   errorBoundaryClass: HTMLElement;
   el: string;
   canUpdate: Boolean; // by default, allow parcels created with garfish-react-bridge to be updated
   suppressComponentDidCatchWarning: Boolean;
   domElements: Record<string, HTMLElement>;
-  renderResults: Record<string, any>;
-  updateResolves: Record<string, any>;
-};
+  renderResults: Record<string, ReactNode | null>;
+  updateResolves: Record<string, ReactNode | Array<any>>;
+}
 
 interface CommonConfig extends RequiredOpts, Partial<OptionalOpts> {}
 type OptionalConfig =
@@ -52,7 +65,7 @@ type OptionalConfig =
 
 type OptsTypes = CommonConfig & OptionalConfig;
 
-const defaultOpts = {
+const defaultOpts: OptsTypes = {
   // required opts
   React: null,
   ReactDOM: null,

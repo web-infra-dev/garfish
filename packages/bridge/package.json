@@ -37,6 +37,19 @@
     "@garfish/router": "workspace:*",
     "@garfish/utils": "workspace:*"
   },
+
+  "peerDependencies": {
+    "react": ">=16",
+    "react-dom": ">=16"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
