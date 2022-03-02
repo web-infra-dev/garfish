@@ -1,6 +1,5 @@
 {
   "name": "@garfish-dev/esm",
-  "version": "0.1.5",
   "private": true,
   "scripts": {
     "start": "http-server ./src --cors -p 2999",
