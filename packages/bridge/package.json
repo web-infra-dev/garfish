@@ -38,7 +38,8 @@
     "@garfish/utils": "workspace:*"
   },
   "devDependencies":{
-    "react": ">=16"
+    "react": ">=16",
+    "react-dom": ">=16"
   },
   "peerDependencies": {
     "react": ">=16",
