@@ -1,6 +1,6 @@
 {
   "name": "@garfish-dev/angular",
-  "version": "0.0.0",
+  "private": true,
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -10,7 +10,6 @@
     "e2e": "ng e2e",
     "builder": "@angular-builders/custom-webpack:dev-server"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^13.1.1",
     "@angular/common": "^13.1.1",

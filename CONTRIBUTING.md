@@ -4,7 +4,7 @@
 
 ## Requirement
 
-`Node.js >= 14.13.0`
+`Node.js >= 16.10`
 
 ## Setup (locally)
 

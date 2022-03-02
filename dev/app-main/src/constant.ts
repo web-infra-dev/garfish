@@ -31,7 +31,7 @@ export const localApps: AppInfo = [
   },
   {
     name: 'vue2',
-    // activeWhen 函数式写法，当 path 中包含"/vue2" 时返回 true,app vue2 将会自动挂载至页面中，手动挂在时可不填写该参数
+    // activeWhen 函数式写法，当 path 中包含 "/vue2" 时返回 true,app vue2 将会自动挂载至页面中，手动挂在时可不填写该参数
     activeWhen: (path) => path.includes('/vue2'),
     entry: getProxyHost(portMap['dev/vue2'].port),
   },
@@ -44,7 +44,7 @@ export const localApps: AppInfo = [
     name: 'vite',
     activeWhen: '/vite',
     entry: getProxyHost(portMap['dev/vite'].port),
-    // 沙箱关闭 sandbox: false否则可能会出现子应用部分代码在沙箱内执行，部分不在沙箱执行
+    // 沙箱关闭 sandbox: false 否则可能会出现子应用部分代码在沙箱内执行，部分不在沙箱执行
     sandbox: false,
   },
   {
