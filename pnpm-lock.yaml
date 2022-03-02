@@ -557,12 +557,17 @@ importers:
       '@garfish/core': workspace:*
       '@garfish/router': workspace:*
       '@garfish/utils': workspace:*
+      react: '>=16'
+      react-dom: '>=16'
     dependencies:
       '@garfish/browser-snapshot': link:../browser-snapshot
       '@garfish/browser-vm': link:../browser-vm
       '@garfish/core': link:../core
       '@garfish/router': link:../router
       '@garfish/utils': link:../utils
+    devDependencies:
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
 
   packages/browser-snapshot:
     specifiers:
@@ -20134,7 +20139,6 @@ packages:
       object-assign: 4.1.1
       react: 17.0.2
       scheduler: 0.20.2
-    dev: false
 
   /react-error-overlay/6.0.10:
     resolution: {integrity: sha512-mKR90fX7Pm5seCOfz8q9F+66VCc1PGsWSBxKbITjfKVQHMNF2zudxHnMdJiB1fRCb+XsbQV9sO9DCkgsMQgBIA==}
@@ -20445,7 +20449,6 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: false
 
   /read-cache/1.0.0:
     resolution: {integrity: sha1-5mTvMRYRZsl1HNvo28+GtftY93Q=}
@@ -21272,7 +21275,6 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: false
 
   /schema-utils/1.0.0:
     resolution: {integrity: sha512-i27Mic4KovM/lnGsy8whRCHhc7VicJajAjTrYg11K9zfZXnYIt4k5F+kZkwjnrhKzLic/HLU4j11mjsz2G/75g==}
