@@ -15,9 +15,9 @@ describe('es module', () => {
   });
 
   // 重定向测试，如果网络不稳定可以注释掉
-  it('resource redirect', async () => {
-    await _import_('./case/resourceRedirect/m1.js');
-  });
+  // it('resource redirect', async () => {
+  //   await _import_('./case/resourceRedirect/m1.js');
+  // });
 
   it('export declaration', async () => {
     await _import_('./case/exportDeclaration/m1.js');

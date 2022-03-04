@@ -8,6 +8,7 @@ Inspired by [virtual-es-module](https://github.com/imtaotao/virtual-es-module).
 
 ```js
 import Runtime from '@garfish/es-module';
+// One runtime, one project
 const runtime = new Runtime();
 
 const module = await runtime.importByUrl('./a.mjs');
@@ -22,7 +23,7 @@ console.log(module);
 
 ## Use in Garfish
 
-> `@garfish/es-module` will bring serious above-the-fold performance problems, child applications should not use this plugin in production environments.
+> `@garfish/es-module` will bring serious above-the-fold performance problems, child applications should not use `esModule` in production environments.
 
 ```js
 import { GarfishEsModule } from '@garfish/es-module';

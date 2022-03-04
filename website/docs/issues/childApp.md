@@ -282,9 +282,7 @@ Garfish.run({
 
 如果需要在 vm 沙箱下开启 esModule 的能力，需要使用 `@garfish/es-module` 插件。
 
-> 弊端
-
-`@garfish/es-module` 会在运行时分析子应用的源码做一层 esModule polyfill，他会带来很严重的性能问题，如果你的项目不是很需要在 vm 沙箱下使用 esModule 就不应该使用此插件。在未来我们会优化此插件的性能，但这需要时间。
+> `@garfish/es-module` 会在运行时分析子应用的源码做一层 esModule polyfill，他会带来很严重的首屏性能问题，如果你的项目不是很需要在 vm 沙箱下使用 esModule 就不应该使用此插件。在短期的规划中，我们会尝试使用 wasm 来优化整个编译性能。在未来如果 [module-fragments](https://github.com/tc39/proposal-module-fragments) 提案成功进入标准并成熟后，我们也会尝试使用此方案，但这需要时间。
 
 ```js
 import { GarfishEsModule } from '@garfish/es-module';
@@ -294,3 +292,5 @@ Garfish.run({
   plugins: [GarfishEsModule()],
 })
 ```
+
+例如当子项目使用 `vite` 开发时，你可以在开发模式下使用 esModule 模式，生产环境可以打包为原始的无 esModule 的模式。
