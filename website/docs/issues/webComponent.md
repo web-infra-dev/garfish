@@ -142,10 +142,10 @@ npm install @garfish/bridge --save
   <TabItem value="React" label="React" default>
 
 ```jsx
-import { reactBridge } from '@garfish/bridge';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
+import { reactBridge } from '@garfish/bridge';
 
 function App({ basename }) {
   return (
@@ -164,8 +164,8 @@ function App({ basename }) {
 export const provider = reactBridge({
   React,
   ReactDOM,
-  domElementGetter: '#root', // 应用的挂载点，如果子应用打包为 JS 入口，可不填写
   rootComponent: App,
+  domElementGetter: '#root', // 应用的挂载点，如果子应用打包为 JS 入口，可不填写
 });
 ```
 
@@ -179,9 +179,9 @@ import { vueBridge } from '@garfish/bridge';
 
 function newRouter(basename) {
   const router = new VueRouter({
+    router,
     mode: 'history',
     base: basename,
-    router,
     routes: [{ path: '/', component: HelloGarfish }],
   });
   return router;
@@ -193,9 +193,9 @@ export const provider = vueBridge({
   appOptions: ({ basename }) => {
     const router = newRouter(basename);
     return {
-      el: '#app',
-      router,
       store,
+      router,
+      el: '#app',
     };
   },
 });
@@ -221,6 +221,7 @@ module.exports = {
     // 保证子应用的资源路径变为绝对路径，避免子应用的相对资源在变为主应用上的相对资源，因为子应用和主应用在同一个文档流，相对路径是相对于主应用而言的
     publicPath: 'http://localhost:8000',
   },
+
   devServer: {
     // 保证在开发模式下应用端口不一样
     port: '8000',

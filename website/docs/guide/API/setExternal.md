@@ -43,6 +43,7 @@ module.exports = {
     // 保证子应用的资源路径变为绝对路径，避免子应用的相对资源在变为主应用上的相对资源，因为子应用和主应用在同一个文档流，相对路径是相对于主应用而言的
     publicPath: 'http://localhost:8000',
   },
+
   externals: {
     vue: 'vue',
   },

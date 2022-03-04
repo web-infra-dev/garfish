@@ -59,7 +59,7 @@ export const basicInfoStr_dev = `
   - angular:
     - activeWhen: '/angular',
     - basename: 'examples/angular'
-    - 独立应用访问地址: 'http://localhost:4200'
+    - 独立应用访问地址: 'http://localhost:8097'
 \`\`\`
 `;
 

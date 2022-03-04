@@ -14,8 +14,8 @@ import Garfish from 'garfish';
 Garfish.registerApp({
   name: 'vue-app',
   basename: '/demo',
-  entry: 'http://localhost:3000',
   activeWhen: '/vue-app',
+  entry: 'http://localhost:3000',
   props: {
     msg: 'vue-app msg',
   },
@@ -25,13 +25,13 @@ Garfish.registerApp({
 Garfish.registerApp([
   {
     name: 'vue-app',
-    entry: 'http://localhost:3000',
     activeWhen: '/vue-app',
+    entry: 'http://localhost:3000',
   },
   {
     name: 'react-app',
-    entry: 'http://localhost:2000',
     activeWhen: '/react-app',
+    entry: 'http://localhost:2000',
   },
 ]);
 ```

@@ -24,13 +24,12 @@ npm install garfish --save
 ```js
 // index.js（主应用入口处）
 import Garfish from 'garfish';
-/*
-  当执行 `Garfish.run` 后，此时 `Garfish` 框架将会启动路由劫持能力
-  当浏览器的地址发生变化时，`Garfish` 框架内部便会立即触发匹配逻辑当应用符合匹配逻辑时将会自动将应用挂载至页面中
-  并依次触发子应用加载、渲染过程中的生命周期
-  跳转至: /react 时，自动挂载 react 应用
-  跳转至: /vue 时，自动挂载 vue 应用
-*/
+
+// 当执行 `Garfish.run` 后，此时 `Garfish` 框架将会启动路由劫持能力
+// 当浏览器的地址发生变化时，`Garfish` 框架内部便会立即触发匹配逻辑当应用符合匹配逻辑时将会自动将应用挂载至页面中
+// 并依次触发子应用加载、渲染过程中的生命周期
+// 跳转至: /react 时，自动挂载 react 应用
+// 跳转至: /vue 时，自动挂载 vue 应用
 Garfish.run({
   basename: '/',
   domGetter: '#subApp',

@@ -1,7 +1,7 @@
-import { store } from './store';
-import { basename, localApps } from './constant';
 import GarfishInstance from 'garfish';
 import { GarfishEsModule } from '@garfish/es-module';
+import { store } from './store';
+import { basename, localApps } from './constant';
 
 declare const Cypress: any;
 type RunInfo = NonNullable<Parameters<typeof GarfishInstance.run>[0]>;
