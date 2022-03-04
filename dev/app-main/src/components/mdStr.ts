@@ -72,33 +72,32 @@ export const basicInfoStr_prod = `
   - react: v17
   - react-router-dom: v6
   - basename: 'examples'
-  - 访问地址: 'http://garfish.bytedance.net/examples/main'
 
 - 子应用信息
   - react17
     - activeWhen: '/react17',
     - basename: 'examples/react17'
-    - 独立应用访问地址: 'http://garfish.bytedance.net/examples/subapp/react17'
+
   - react16:
     - activeWhen: '/react16',
     - basename: 'examples/react16'
-    - 独立应用访问地址: 'http://garfish.bytedance.net/examples/subapp/react16'
+
   - vue3:
     - activeWhen: '/vue3',
     - basename: 'examples/vue3'
-    - 独立应用访问地址: 'http://garfish.bytedance.net/examples/subapp/vue3'
+
   - vue2:
     - activeWhen: (path) => path.includes('/vue2'),
     - basename: 'examples/vue2'
-    - 独立应用访问地址: 'http://garfish.bytedance.net/examples/subapp/vue2'
+
   - vite:
     - activeWhen: '/vite',
     - basename: 'examples/vite'
-    - 独立应用访问地址: 'http://garfish.bytedance.net/examples/subapp/vite/'
+
   - angular:
     - activeWhen: '/angular',
     - basename: 'examples/angular'
-    - 独立应用访问地址: 'http://garfish.bytedance.net/examples/angular'
+
 \`\`\`
 `;
 
