@@ -10,7 +10,6 @@ function readPackage(pkg, context) {
     }
     context.log('vue => vue@2 in dependencies of vue-template-compiler');
   }
-
   return pkg;
 }
 
