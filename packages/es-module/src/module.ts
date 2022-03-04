@@ -1,4 +1,7 @@
+
 export type MemoryModule = Record<string, any>;
+
+export type MetaObject = { url: string; __garfishPolyfill__: boolean };
 
 export type Module = {
   [key: string]: any;
@@ -36,7 +39,7 @@ export function createModule(memoryModule: MemoryModule) {
 }
 
 export function createImportMeta(url: string) {
-  const metaObject: { url: string; __garfish: boolean } = Object.create(null);
+  const metaObject: MetaObject = Object.create(null);
   const set = (key, value) => {
     Object.defineProperty(metaObject, key, {
       value,
