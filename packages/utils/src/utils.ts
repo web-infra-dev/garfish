@@ -512,7 +512,7 @@ export function safari13Deal() {
     // Object.defineProperty is used to implement, so defineProperty is triggered when set is triggered
     // but the descriptor values ​​writable, enumerable, and configurable on safari 13.x version are set to false for the second time
     handleDescriptor(descriptor: PropertyDescriptor) {
-      if ((fromSetFlag = true)) {
+      if ((fromSetFlag === true)) {
         fromSetFlag = false;
         if (descriptor?.writable === false) descriptor.writable = true;
         if (descriptor?.enumerable === false) descriptor.enumerable = true;
@@ -542,4 +542,48 @@ export async function createSourcemap(code: string, filename: string) {
     }),
   );
   return `//@ sourceMappingURL=${content}`;
+}
+
+// Unit test server
+export function mockStaticServer(baseDir: string, filterKeywords?: Array<string>) {
+  if (__TEST__) {
+    const fs = require('fs');
+    const path = require('path');
+    const fetchMock = require('jest-fetch-mock');
+  
+    const match = (input: Request) => {
+      return Array.isArray(filterKeywords)
+        ? !filterKeywords.some(words => input.url.includes(words))
+        : true
+    }
+
+    fetchMock.enableMocks();
+    fetchMock.doMock();
+    require('isomorphic-fetch');
+
+    fetchMock.mockIf(match, req => {
+      let pathname = req.url;
+      if (isAbsolute(req.url)) {
+        pathname = new URL(req.url).pathname;
+      }
+
+      const fullDir = path.resolve(baseDir, `./${pathname}`);
+      const { ext } = path.parse(fullDir);
+      const miniType = ext === '.html'
+        ? 'text/html'
+        : ext === '.js'
+          ? 'text/javascript'
+          : ext === '.css'
+            ? 'text/css'
+            : 'text/plain';
+
+      return Promise.resolve({
+        url: req.url,
+        body: fs.readFileSync(fullDir, 'utf-8'),
+        headers: {
+          'Content-Type': miniType,
+        },
+      });
+    })
+  }
 }

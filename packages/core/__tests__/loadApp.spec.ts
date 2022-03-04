@@ -1,19 +1,20 @@
-import fetch from 'node-fetch';
 import {
   __MockBody__,
   __MockHead__,
   __MockHtml__,
   appContainerId,
+  mockStaticServer,
 } from '@garfish/utils';
 import Garfish from '../src/index';
 
 describe('Core: load process', () => {
   let GarfishInstance;
   const vueAppRenderNode = 'hello-world';
-  const vueSubAppEntry = 'http://localhost:3310/core/__tests__/vueApp.html';
+  const vueSubAppEntry = './vueApp.html';
+
+  mockStaticServer(__dirname);
 
   beforeEach(() => {
-    (globalThis as any).fetch = fetch;
     GarfishInstance = new Garfish({});
   });
 

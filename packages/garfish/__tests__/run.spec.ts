@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import Garfish from '@garfish/core';
 import { GarfishRouter } from '@garfish/router';
 import {
@@ -6,6 +5,7 @@ import {
   __MockHead__,
   __MockHtml__,
   appContainerId,
+  mockStaticServer,
 } from '@garfish/utils';
 
 const vueAppRootNode = 'vue-app';
@@ -46,8 +46,9 @@ async function noRenderApp(container: Element) {
 describe('Core: run methods', () => {
   let GarfishInstance: Garfish;
 
+  mockStaticServer(__dirname);
+
   beforeEach(() => {
-    (globalThis as any).fetch = fetch;
     GarfishInstance = new Garfish({});
 
     GarfishInstance.run({
@@ -58,14 +59,12 @@ describe('Core: run methods', () => {
         {
           name: 'vue-app',
           activeWhen: '/vue-app',
-          entry:
-            'http://localhost:3310/garfish/__tests__/resources/vueApp.html',
+          entry: './resources/vueApp.html',
         },
         {
           name: 'react-app',
           activeWhen: '/react-app',
-          entry:
-            'http://localhost:3310/garfish/__tests__/resources/reactApp.html',
+          entry: './resources/reactApp.html',
         },
       ],
     });

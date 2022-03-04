@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { mockStaticServer } from '@garfish/utils';
 import { Sandbox } from '../src/sandbox';
 
 declare global {
@@ -8,9 +8,10 @@ declare global {
 }
 
 describe('Sandbox: dynamic script', () => {
+  mockStaticServer(__dirname);
+
   let sandbox: Sandbox;
-  const secondScriptUrl =
-    'http://localhost:3310/browser-vm/__tests__/resources/eventTask.js';
+  const secondScriptUrl = './resources/eventTask.js';
 
   const go = (code: string) => {
     return `

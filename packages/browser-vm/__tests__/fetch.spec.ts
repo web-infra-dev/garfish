@@ -1,10 +1,10 @@
-import { Sandbox } from '../src/sandbox';
 import 'isomorphic-fetch';
+import { Sandbox } from '../src/sandbox';
 
 describe('Init', () => {
   window.dispatchEvent = () => true;
 
-  // fetch methods auto fix base url
+  // Fetch methods auto fix base url
   it('fetch methods', (next) => {
     const sandbox = new Sandbox({
       namespace: 'vue',
@@ -14,12 +14,11 @@ describe('Init', () => {
     const opts = sandbox.options;
     expect(opts.baseUrl).toEqual('http://localhost:9999');
     expect(opts.fixBaseUrl).toBe(true);
-    sandbox.execScript(
-      `
-      window.fetch('sub/config.json')
-      .catch(() => {})
-      .finally(next);
-    `,
+    sandbox.execScript(`
+        window.fetch('sub/config.json')
+        .catch(() => {})
+        .finally(next);
+      `,
       { next },
     );
     expect(sandbox.options.sourceList[0]).toMatchObject({
