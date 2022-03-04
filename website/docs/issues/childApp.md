@@ -74,7 +74,7 @@ export const provider = () => {
     destroy: ({ dom, basename }) =>{
       const root = dom ? dom.querySelector('#root') : document.querySelector('#root');
       ReactDOM.unmountComponentAtNode(root),
-    }
+    },
   };
 };
 ```
@@ -275,8 +275,8 @@ Garfish.run({
         open: false,
         // snapshot: true, 或者只开启快照沙箱
       },
-    }，
-  ]，
+    },
+  ],
 })
 ```
 

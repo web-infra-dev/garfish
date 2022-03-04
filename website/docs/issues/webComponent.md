@@ -113,11 +113,13 @@ function App() {
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import ReactApp from './component/ReactApp.vue';
+
 const router = new VueRouter({
   mode: 'history',
   base: '/',
   routers: [{ path: '/react-app', component: ReactApp }],
 });
+
 new Vue({
   router,
   store,
