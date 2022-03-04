@@ -1,5 +1,5 @@
-import { GarfishInstance } from './instance';
 import { interfaces } from '@garfish/core';
+import { GarfishInstance } from './instance';
 
 export interface CustomOptions {
   loading: (loadingParams: { isLoading: boolean; error: Error }) => Element;

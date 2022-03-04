@@ -125,6 +125,7 @@ function walk(
 
     // 递归调用
     base[type](node as any, st, call as any);
+
     if (found) found(node, st || (ancestors as any), ancestors);
     if (isCurrentNode && virtualFnKeys.length > 0) {
       for (const key of virtualFnKeys) {

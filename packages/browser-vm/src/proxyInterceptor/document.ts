@@ -3,9 +3,9 @@ import {
   makeMap,
   isObject,
   findTarget,
+  safari13Deal,
   __MockBody__,
   __MockHead__,
-  safari13Deal,
 } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 import { rootElm, sandboxMap } from '../utils';

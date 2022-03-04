@@ -132,8 +132,8 @@ export class Runtime {
       runtime: this,
       filename: storeId,
     });
-
     const { imports, exports, generateCode } = compiler.transform();
+
     await Promise.all(
       imports.map(({ moduleId }) => {
         const curStoreId = transformUrl(storeId, moduleId);
