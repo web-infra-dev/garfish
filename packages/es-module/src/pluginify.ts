@@ -17,9 +17,11 @@ export function GarfishEsModule(options: Options = {}) {
       appInfo: interfaces.AppInfo,
     ) => {
       if (appModules[appId]) return true;
-      if (!appInfo.sandbox || !appInfo.sandbox.open) return true;
       if (Array.isArray(excludes)) return excludes.includes(appName);
       if (typeof excludes === 'function') return excludes(appName);
+      if (appInfo.sandbox === false || appInfo.sandbox.open === false) {
+        return true;
+      }
       return false;
     };
 

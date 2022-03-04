@@ -4,7 +4,6 @@ import App from './App.vue';
 
 vueBridge({
   createApp,
-  appId: 'vite-vue',
   appOptions: () => ({
     el: '#app',
     render() {
@@ -15,6 +14,6 @@ vueBridge({
 
 if (!window.__GARFISH__) {
   // 非微前端环境直接运行
-  let vueInstance = createApp(App);
+  const vueInstance = createApp(App);
   vueInstance.mount(document.querySelector('#app'));
 }

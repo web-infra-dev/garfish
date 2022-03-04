@@ -1,4 +1,3 @@
-// import * as Vue from 'vue';
 import { h, createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { stateSymbol, createState } from './store.js';
@@ -32,12 +31,14 @@ if (!window.__GARFISH__) {
 
 export const provider = vueBridge({
   createApp,
-  appId: 'vue',
+  
   rootComponent: App,
+
   loadRootComponent: ({ basename, dom, appName, props }) => {
     console.log(basename, dom, appName, props);
     return Promise.resolve(App);
   },
+
   appOptions: ({ basename, dom, appName, props }) => {
     console.log(basename, dom, appName, props);
     return {
@@ -46,6 +47,7 @@ export const provider = vueBridge({
       router: newRouter(basename),
     };
   },
+
   handleInstance: (vueInstance, { basename, dom, appName, props }) => {
     console.log(basename, dom, appName, props);
     vueInstance.use(newRouter(basename));
