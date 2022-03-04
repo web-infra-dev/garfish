@@ -23,7 +23,7 @@ console.log(module);
 
 ## Use in Garfish
 
-> `@garfish/es-module` will bring serious above-the-fold performance problems, child applications should not use `esModule` in production environments.
+`@garfish/es-module` will bring serious above-the-fold performance problems, child applications should not use `esModule` in production environments.
 
 ```js
 import { GarfishEsModule } from '@garfish/es-module';
