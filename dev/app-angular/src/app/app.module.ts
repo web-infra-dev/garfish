@@ -3,10 +3,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
-import { TopBarComponent } from './top-bar/top-bar.component';
+import { TopBarComponent } from './topBar/topBar.component';
 import { HomeComponent } from './home/home.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { ProductListComponent } from './product-list/product-list.component';
+import { ProductListComponent } from './productList/productList.component';
 import { PageNotFoundComponent } from './pageNotFound/pageNotFound.component';
 
 @NgModule({
