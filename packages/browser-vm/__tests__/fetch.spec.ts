@@ -14,7 +14,8 @@ describe('Init', () => {
     const opts = sandbox.options;
     expect(opts.baseUrl).toEqual('http://localhost:9999');
     expect(opts.fixBaseUrl).toBe(true);
-    sandbox.execScript(`
+    sandbox.execScript(
+      `
         window.fetch('sub/config.json')
         .catch(() => {})
         .finally(next);

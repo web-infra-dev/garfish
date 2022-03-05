@@ -1,4 +1,3 @@
-
 export type MemoryModule = Record<string, any>;
 
 export type MetaObject = { url: string; __garfishPolyfill__: boolean };

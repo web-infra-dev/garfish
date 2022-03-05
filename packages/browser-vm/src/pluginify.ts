@@ -106,7 +106,7 @@ function createOptions(Garfish: interfaces.Garfish) {
         }
         return;
       }
-    
+
       rewriteAppAndSandbox(
         Garfish,
         appInstance,

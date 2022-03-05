@@ -1,4 +1,4 @@
-import { mockStaticServer } from  '@garfish/utils';
+import { mockStaticServer } from '@garfish/utils';
 import { Runtime } from '../src/runtime';
 
 describe('es module', () => {
@@ -6,7 +6,7 @@ describe('es module', () => {
   const _import_ = (entry: string) => {
     entry = new URL(entry, 'http://localhost').href;
     return runtime.importByUrl(entry);
-  }
+  };
 
   mockStaticServer(__dirname, ['lodash']);
 

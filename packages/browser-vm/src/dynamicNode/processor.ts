@@ -53,7 +53,7 @@ export class DynamicNodeProcessor {
       src && (this.el.src = transformUrl(baseUrl, src));
       href && (this.el.href = transformUrl(baseUrl, href));
       const url = this.el.src || this.el.href;
-      
+
       if (url) {
         this.sandbox.options?.sourceList.push({
           tagName: this.el.tagName,

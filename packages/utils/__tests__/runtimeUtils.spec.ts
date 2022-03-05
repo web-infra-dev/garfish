@@ -124,11 +124,15 @@ describe('Garfish shared runtimeUtils', () => {
     expect(isAbsolute('http://x.com/a.js')).toBe(true);
     expect(isAbsolute('http://x.com/a.js?x=1')).toBe(true);
     expect(isAbsolute('data:text/html;base64,YQ==')).toBe(true);
-    expect(isAbsolute('blob:https://garfish.top/832a2821-8580-4099-85c8-509bf48aee50')).toBe(true);
+    expect(
+      isAbsolute(
+        'blob:https://garfish.top/832a2821-8580-4099-85c8-509bf48aee50',
+      ),
+    ).toBe(true);
     expect(isAbsolute('a.js')).toBe(false);
     expect(isAbsolute('/a.js')).toBe(false);
     expect(isAbsolute('./a.js')).toBe(false);
-  })
+  });
 
   it('deepMerge', () => {
     expect(deepMerge.length).toBe(4);
