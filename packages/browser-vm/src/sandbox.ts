@@ -80,7 +80,7 @@ export class Sandbox {
   >();
 
   private optimizeCode = ''; // To optimize the with statement
-  private tempVariable = '__sandbox_temp_vars__';
+  private envVariable = '__GARFISH_SANDBOX_ENV_VAR__';
 
   constructor(options: SandboxOptions) {
     // Default sandbox config
@@ -268,7 +268,7 @@ export class Sandbox {
 
     if (tempEnvKeys.length > 0) {
       code = tempEnvKeys.reduce((prevCode, name) => {
-        return `${prevCode} let ${name} = ${this.tempVariable}.${name};`;
+        return `${prevCode} let ${name} = ${this.envVariable}.${name};`;
       }, code);
     }
     return code;
@@ -297,7 +297,7 @@ export class Sandbox {
           : this.optimizeCode;
 
       codeRef.code = `with(window) {;${optimizeCode + codeRef.code}\n}`;
-      params[this.tempVariable] = env;
+      params[this.envVariable] = env;
     }
 
     return params;
