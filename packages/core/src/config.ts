@@ -113,6 +113,7 @@ export const createDefaultOptions = () => {
     domGetter: () => document.createElement('div'),
     sandbox: {
       snapshot: false,
+      fixBaseUrl: false,
       disableWith: false,
       strictIsolation: false,
     },

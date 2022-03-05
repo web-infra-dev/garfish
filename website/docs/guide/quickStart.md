@@ -93,11 +93,9 @@ module.exports = {
   <TabItem value="vite" label="Vite" default>
 
 ```js
-// 使用 Vite 应用作为子应用时需要注意：
-// 子应用必须使用缓存模式 cache: true 模式，路由驱动时默认使用 cache 模式，触发将 appInfo.cache = false（因为 esmodule 内容无法重复执行）
-// 子应用不可重复使用 app.mount，第二次渲染时只能使用 app.show，否则将走非缓存模式（因为 esmodule 内容无法重复执行）
-// 需要将子应用沙箱关闭 sandbox: false，否则可能会出现子应用部分代码在沙箱内执行，部分不在沙箱执行: Garfish.run({ apps: [{ name:'vite-app',entry:'xxx',sandbox: false }] })
-// 子应用的副作用将会发生逃逸，在子应用卸载后需要将对应全局的副作用清除
+// 使用 Vite 应用作为子应用时（未使用 @garfish/es-module 插件）需要注意：
+// 1. 需要将子应用沙箱关闭 Garfish.run({ apps: [{ ..., sandbox: false }] })
+// 2. 子应用的副作用将会发生逃逸，在子应用卸载后需要将对应全局的副作用清除
 export default defineConfig({
   // 提供资源绝对路径，端口可自定义
   base: 'http://localhost:3000/',
@@ -119,9 +117,9 @@ export default defineConfig({
   <TabItem value="React" label="React" default>
 
 ```jsx
-import { reactBridge } from '@garfish/bridge';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { reactBridge } from '@garfish/bridge';
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 
 function App({ basename, dom, appName, props }) {
@@ -175,19 +173,20 @@ function newRouter(basename) {
 export const provider = vueBridge({
   // required
   Vue,
-  // 非必须, 在 vite 应用时提供，该值与 htmlPlugin 第一个参数相同
-  appId: 'vue2',
   // 根组件
   rootComponent: App,
+
   // 返回一个 promise, 可在 mounting 前执行异步操作
   loadRootComponent: ({ basename, dom, appName, props }) => {
     return Promise.resolve(App);
   },
+
   appOptions: ({ basename, dom, appName, props }) => ({
     // 若指定el选项，请保证 el节点存在于当前 document 对象中
     el: '#app',
     router: newRouter(basename),
   }),
+
   handleInstance: (vueInstance, { basename }) => {
     // received vueInstance, do something
   },
@@ -206,19 +205,20 @@ import { vueBridge } from '@garfish/bridge';
 export const provider = vueBridge({
   // required
   createApp,
-  //非必须，在 vite 应用时提供，该值与 htmlPlugin 第一个参数相同
-  appId: 'vue3',
   // 根组件
   rootComponent: App,
+
   // 返回一个 promise, 可在 mounting 前执行异步操作
   loadRootComponent: ({ basename, dom, appName, props }) => {
     return Promise.resolve(App);
   },
+
   appOptions: ({ basename, dom, appName, props }) => ({
     // 若指定el选项，请保证el节点存在于当前document对象中
     el: '#app',
     render: () => h(App),
   }),
+
   // received vueInstance, do something
   handleInstance: (vueInstance, { basename }) => {
     const routes = [
@@ -270,6 +270,7 @@ export const provider = () => ({
       dom.querySelector('#root'),
     );
   },
+
   destroy: ({ dom, basename }) => {
     // 使用框架提供的销毁函数销毁整个应用，已达到销毁框架中可能存在得副作用，并触发应用中的一些组件销毁函数
     // 需要注意的时一定要保证对应框架得销毁函数使用正确，否则可能导致子应用未正常卸载影响其他子应用
