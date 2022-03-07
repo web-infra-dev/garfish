@@ -246,8 +246,8 @@ export class DynamicNodeProcessor {
     else if (this.is('style')) {
       parentNode = this.findParentNodeInApp(context, 'head');
       const manager = new StyleManager(this.el.textContent);
-      manager.setScope(namespace);
       manager.correctPath(baseUrl);
+      manager.setAppName(namespace);
       this.el.textContent = manager.transformCode(manager.styleCode);
       convertedNode = this.el;
       this.sandbox.dynamicStyleSheetElementSet.add(this.el);

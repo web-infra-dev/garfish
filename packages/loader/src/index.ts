@@ -173,7 +173,7 @@ export class Loader {
 
         // Set css scope
         if (fileType === FileTypes.css) {
-          (resourceManager as StyleManager).setScope(scope);
+          (resourceManager as StyleManager).setAppName(scope);
         }
 
         // The results will be cached this time.

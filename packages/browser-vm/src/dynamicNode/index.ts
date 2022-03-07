@@ -19,14 +19,14 @@ function injector(current: Function, methodName: string) {
     const el = methodName === 'insertAdjacentElement'
       ? arguments[1]
       : arguments[0];
-    const sandbox = el && sandboxMap.get(el);
+    const sandbox = sandboxMap.get(el);
     const originProcess = () => current.apply(this, arguments);
 
-    if (this?.tagName?.toLowerCase() === 'style') {
+    if (el && this?.tagName?.toLowerCase() === 'style') {
       const { baseUrl, namespace } = sandbox?.options || {};
       const manager = new StyleManager(el.textContent);
-      manager.setScope(namespace);
       manager.correctPath(baseUrl);
+      manager.setAppName(namespace);
       el.textContent = manager.transformCode(manager.styleCode);
       return originProcess();
     }

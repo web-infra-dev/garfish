@@ -6,12 +6,12 @@ const MATCH_CSS_URL = /url\(['"]?([^\)]+?)['"]?\)/g;
 export class StyleManager {
   public styleCode: string;
   public url: string | null;
-  public scope: string | null;
+  public appName: string | null;
 
   private depsStack = new Set();
 
   constructor(styleCode: string, url?: string) {
-    this.scope = null;
+    this.appName = null;
     this.url = url || null;
     this.styleCode = styleCode;
   }
@@ -37,8 +37,8 @@ export class StyleManager {
     this.depsStack.add(node);
   }
 
-  setScope(scope: string) {
-    this.scope = scope;
+  setAppName(appName: string) {
+    this.appName = appName;
   }
 
   isSameOrigin(node: Node) {

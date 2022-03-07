@@ -66,7 +66,7 @@ class Compiler {
             : s === 'head'
               ? '[__GarfishMockHead__]'
               : s;
-      return `#${this.prefix} ${s}`;
+      return `${this.prefix} ${s}`;
     });
   }
 
