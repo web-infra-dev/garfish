@@ -12,7 +12,6 @@ const defaultOpts = {
 
   appOptions: null,
   handleInstance: null,
-  appId: null,
   el: null,
   canUpdate: true, // by default, allow parcels created with garfish-react-bridge to be updated
 };

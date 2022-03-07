@@ -3,6 +3,7 @@
 
 module.exports = {
   clearMocks: true,
+  testTimeout: 20000,
   testEnvironment: 'jsdom',
   preset: 'jest-puppeteer',
   coverageDirectory: 'coverage',

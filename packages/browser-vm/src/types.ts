@@ -31,11 +31,3 @@ export interface SandboxOptions {
   protectVariable?: () => Array<PropertyKey>;
   insulationVariable?: () => Array<PropertyKey>;
 }
-
-export interface ExecScriptOptions {
-  node?: Node; // Don't delete this type
-  async?: boolean;
-  noEntry?: boolean;
-  isInline?: boolean;
-  isModule?: boolean;
-}

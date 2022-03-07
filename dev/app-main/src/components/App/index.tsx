@@ -1,3 +1,4 @@
+import Garfish from 'garfish';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import {
   Layout,
@@ -16,15 +17,15 @@ import {
   IconPlus,
   IconMinus,
 } from '@arco-design/web-react/icon';
-import './index.less';
-import { basename } from '../../constant';
-import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { observer } from 'mobx-react';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
+import { basename } from '../../constant';
 import { subAppMenus as defaultSubAppMenus } from '../constant';
 import logo from '../../static/img/Garfish.png';
 import homeSvg from '../../static/icons/Home.svg';
-import Garfish from 'garfish';
 import newSvg from '../../static/icons/New.svg';
+import './index.less';
+
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;

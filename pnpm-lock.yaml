@@ -17,7 +17,6 @@ importers:
       codecov: ^3.8.3
       cross-env: 7.0.3
       cypress: ^9.5.0
-      dayjs: ^1.10.7
       esbuild-plugin-replace: 1.0.7
       eslint: 7.32.0
       execa: 4.1.0
@@ -29,8 +28,6 @@ importers:
       jest: 27.3.1
       jest-fetch-mock: ^3.0.3
       kill-port: 1.6.1
-      koa: 2.13.4
-      koa-route: 3.2.0
       lint-staged: 11.2.6
       lodash: 4.17.21
       minimist: 1.2.5
@@ -60,7 +57,6 @@ importers:
       codecov: 3.8.3
       cross-env: 7.0.3
       cypress: 9.5.0
-      dayjs: 1.10.7
       esbuild-plugin-replace: 1.0.7
       eslint: 7.32.0
       execa: 4.1.0
@@ -72,8 +68,6 @@ importers:
       jest: 27.3.1
       jest-fetch-mock: 3.0.3
       kill-port: 1.6.1
-      koa: 2.13.4
-      koa-route: 3.2.0
       lint-staged: 11.2.6
       lodash: 4.17.21
       minimist: 1.2.5
@@ -178,6 +172,7 @@ importers:
       '@babel/preset-typescript': ^7.14.5
       '@babel/register': ^7.13.14
       '@babel/runtime': ^7.14.6
+      '@garfish/es-module': workspace:*
       '@pmmmwh/react-refresh-webpack-plugin': ^0.5.4
       '@types/react': ^17
       '@types/react-dom': ^17
@@ -210,6 +205,7 @@ importers:
       webpack-dev-server: ^4.2.1
     dependencies:
       '@arco-design/web-react': 2.29.1_b8fdba992ce7d797017dc07106486496
+      '@garfish/es-module': link:../../packages/es-module
       '@types/react': 17.0.39
       '@types/react-dom': 17.0.11
       '@uiw/react-md-editor': 3.9.6_b8fdba992ce7d797017dc07106486496
@@ -596,6 +592,27 @@ importers:
       '@garfish/loader': link:../loader
       '@garfish/utils': link:../utils
       eventemitter2: 6.4.5
+
+  packages/es-module:
+    specifiers:
+      '@garfish/loader': workspace:*
+      '@garfish/utils': workspace:*
+      '@types/escodegen': ^0.0.7
+      '@types/estree': ^0.0.50
+      acorn: 8.7.0
+      acorn-walk: 8.2.0
+      escodegen: 2.0.0
+      source-map: 0.6.1
+    dependencies:
+      '@garfish/loader': link:../loader
+      '@garfish/utils': link:../utils
+      acorn: 8.7.0
+      acorn-walk: 8.2.0
+      escodegen: 2.0.0
+      source-map: 0.6.1
+    devDependencies:
+      '@types/escodegen': 0.0.7
+      '@types/estree': 0.0.50
 
   packages/garfish:
     specifiers:
@@ -1651,7 +1668,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/helper-validator-identifier': 7.16.7
-      chalk: 2.4.2
+      chalk: registry.npmjs.org/chalk/2.4.2
       js-tokens: 4.0.0
 
   /@babel/parser/7.17.3:
@@ -4561,7 +4578,7 @@ packages:
       chalk: 4.1.2
       emittery: 0.8.1
       exit: 0.1.2
-      graceful-fs: 4.2.9
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.9
       jest-changed-files: 27.5.1
       jest-config: 27.5.1
       jest-haste-map: 27.5.1
@@ -5540,6 +5557,10 @@ packages:
     resolution: {integrity: sha512-9AonUzyTjXXhEOa0DnqpzZi6VHlqKMswga9EXjpXnnqxwLtdvPPtlO8evrI5D9S6asFRCQ6v+wpiUKbw+vKqyg==}
     dependencies:
       '@types/ms': 0.7.31
+
+  /@types/escodegen/0.0.7:
+    resolution: {integrity: sha512-46oENdSRNEJXCNrPJoC3vRolZJpfeEm7yvATkd2bCncKFG0PUEyfBCaoacfpcXH4Y5RRuqdVj3J7TI+wwn2SbQ==}
+    dev: true
 
   /@types/eslint-scope/3.7.3:
     resolution: {integrity: sha512-PB3ldyrcnAicT35TWPs5IcwKD8S333HMaa2VVv4+wdvebJkjWuW/xESoB8IwRcog8HYVYamb1g/R31Qv5Bx03g==}
@@ -7413,7 +7434,7 @@ packages:
     resolution: {integrity: sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA==}
     engines: {node: '>=4'}
     dependencies:
-      color-convert: 1.9.3
+      color-convert: registry.npmjs.org/color-convert/1.9.3
 
   /ansi-styles/4.3.0:
     resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==}
@@ -8204,10 +8225,6 @@ packages:
       tryer: 1.0.1
     dev: true
 
-  /big.js/3.2.0:
-    resolution: {integrity: sha512-+hN/Zh2D08Mx65pZ/4g5bsmNiZUuChDiQfTUQ7qJr4/kuopCr88xZsAXv6mBoZEsUI4OuGHlX59qE94K2mMW8Q==}
-    dev: true
-
   /big.js/5.2.2:
     resolution: {integrity: sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==}
 
@@ -8219,14 +8236,6 @@ packages:
   /binary-extensions/2.2.0:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
-
-  /bindings/1.5.0:
-    resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
-    requiresBuild: true
-    dependencies:
-      file-uri-to-path: 1.0.0
-    dev: true
-    optional: true
 
   /bl/4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
@@ -8616,14 +8625,6 @@ packages:
       unset-value: 1.0.0
     dev: true
 
-  /cache-content-type/1.0.1:
-    resolution: {integrity: sha512-IKufZ1o4Ut42YUrZSo8+qnMTrFuKkvyoLXUywKz9GJ5BrhOFGhLdkx9sG4KAnVvbY6kEcSFjLQul+DVmBm2bgA==}
-    engines: {node: '>= 6.0.0'}
-    dependencies:
-      mime-types: 2.1.34
-      ylru: 1.2.1
-    dev: true
-
   /cache-loader/4.1.0_webpack@4.46.0:
     resolution: {integrity: sha512-ftOayxve0PwKzBF/GLsZNC9fJBXl8lkZE3TOsjkboHfVHVkL39iUEs1FO07A33mizmci5Dudt38UZrrYXDtbhw==}
     engines: {node: '>= 8.9.0'}
@@ -8875,6 +8876,25 @@ packages:
       parse5-htmlparser2-tree-adapter: 6.0.1
       tslib: 2.3.1
     dev: false
+
+  /chokidar/2.1.8:
+    resolution: {integrity: sha512-ZmZUazfOzf0Nve7duiCKD23PFSCs4JPoYyccjUFF3aQkQadqBhfzhjkwBH2mNOG9cTBwhamM37EIsIkZw3nRgg==}
+    deprecated: Chokidar 2 does not receive security updates since 2019. Upgrade to chokidar 3 with 15x fewer dependencies
+    dependencies:
+      anymatch: 2.0.0
+      async-each: 1.0.3
+      braces: 2.3.2
+      glob-parent: 3.1.0
+      inherits: 2.0.4
+      is-binary-path: 1.0.1
+      is-glob: 4.0.3
+      normalize-path: 3.0.0
+      path-is-absolute: 1.0.1
+      readdirp: 2.2.1
+      upath: 1.2.0
+    optionalDependencies:
+      fsevents: registry.npmjs.org/fsevents/1.2.13
+    dev: true
 
   /chokidar/3.5.3:
     resolution: {integrity: sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==}
@@ -9441,14 +9461,6 @@ packages:
   /cookie/0.4.2:
     resolution: {integrity: sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==}
     engines: {node: '>= 0.6'}
-
-  /cookies/0.8.0:
-    resolution: {integrity: sha512-8aPsApQfebXnuI+537McwYsDtjVxGm8gTIzQI3FDW6t5t/DAhERxtnbEPN/8RX+uZthoz4eCOgloXaE5cYyNow==}
-    engines: {node: '>= 0.8'}
-    dependencies:
-      depd: 2.0.0
-      keygrip: 1.1.0
-    dev: true
 
   /copy-anything/2.0.6:
     resolution: {integrity: sha512-1j20GZTsvKNkc4BY3NpMOM8tt///wY3FpIzozTOFO2ffuZcV61nojHXVKIy3WM+7ADCy5FVhdZYHYDdgTU0yJw==}
@@ -10312,10 +10324,6 @@ packages:
     resolution: {integrity: sha1-JJXduvbrh0q7Dhvp3yLS5aVEMmw=}
     dev: true
 
-  /deep-equal/1.0.1:
-    resolution: {integrity: sha1-9dJgKStmDghO/0zbyfCK0yR0SLU=}
-    dev: true
-
   /deep-equal/1.1.1:
     resolution: {integrity: sha512-yd9c5AdiqVcR+JjcwUQb9DkhJc8ngNr0MahEBGvDiJw8puWab2yZlh+nkasOnZP+EGTAP6rRp2JzJhJZzvNF8g==}
     dependencies:
@@ -10332,7 +10340,6 @@ packages:
 
   /deep-is/0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
-    dev: true
 
   /deepmerge/1.5.2:
     resolution: {integrity: sha512-95k0GDqvBjZavkuvzx/YqVLv/6YYa17fz6ILMSf7neqQITCPbnfEnQvEgMPNjH4kgobe7+WIL0yJEHku+H3qtQ==}
@@ -10456,11 +10463,6 @@ packages:
     resolution: {integrity: sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=}
     engines: {node: '>= 0.6'}
 
-  /depd/2.0.0:
-    resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
-    engines: {node: '>= 0.8'}
-    dev: true
-
   /dependency-graph/0.11.0:
     resolution: {integrity: sha512-JeMq7fEshyepOWDfcfHK06N3MhyPhz++vtqWhMT5O9A3K42rdsEDpfdVqjaqaAhsw6a+ZqeDvQVtD0hFHQWrzg==}
     engines: {node: '>= 0.6.0'}
@@ -10479,11 +10481,6 @@ packages:
 
   /destroy/1.0.4:
     resolution: {integrity: sha1-l4hXRCxEdJ5CBmE+N5RiBYJqvYA=}
-
-  /destroy/1.1.0:
-    resolution: {integrity: sha512-R5QZrOXxSs0JDUIU/VANvRJlQVMts9C0L76HToQdPdlftfZCE7W6dyH0G4GZ5UW9fRqUOhAoCE2aGekuu+3HjQ==}
-    engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
-    dev: true
 
   /detab/2.0.4:
     resolution: {integrity: sha512-8zdsQA5bIkoRECvCrNKPla84lyoR7DSAyf7p0YgXzBO9PDJx8KntPUay7NS6yp+KdxdVtiE5SpHKtbp2ZQyA9g==}
@@ -10825,11 +10822,6 @@ packages:
   /emoji-regex/8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
 
-  /emojis-list/2.1.0:
-    resolution: {integrity: sha1-TapNnbAPmBmIDHn6RXrlsJof04k=}
-    engines: {node: '>= 0.10'}
-    dev: true
-
   /emojis-list/3.0.0:
     resolution: {integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==}
     engines: {node: '>= 4'}
@@ -11110,7 +11102,6 @@ packages:
       optionator: 0.8.3
     optionalDependencies:
       source-map: registry.npmjs.org/source-map/0.6.1
-    dev: true
 
   /eslint-loader/2.2.1_eslint@6.8.0+webpack@4.46.0:
     resolution: {integrity: sha512-RLgV9hoCVsMLvOxCuNjdqOrUqIj9oJg8hF44vzJaYqsAHuY9G2YAeN3joQ9nxP0p5Th9iFSIpKo+SD8KISxXRg==}
@@ -11766,7 +11757,6 @@ packages:
 
   /fast-levenshtein/2.0.6:
     resolution: {integrity: sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=}
-    dev: true
 
   /fast-url-parser/1.1.3:
     resolution: {integrity: sha1-9K8+qfNNiicc9YrSs3WfQx8LMY0=}
@@ -11903,12 +11893,6 @@ packages:
     resolution: {integrity: sha512-Qe/5NJrgIOlwijpq3B7BEpzPFcgzggOTagZmkXQY4LA6bsXKTUstK7Wp12lEJ/mLKTpvIZxmIuRcLYWT6ov9lw==}
     engines: {node: '>=6'}
     dev: false
-
-  /file-uri-to-path/1.0.0:
-    resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
-    requiresBuild: true
-    dev: true
-    optional: true
 
   /filesize/3.6.1:
     resolution: {integrity: sha512-7KjR1vv6qnicaPMi1iiTcI85CyYwRO/PSFCu6SvqL8jN2Wjt/NIYQTFtFs7fSDCYOstUkEWIQGFUg5YZQfjlcg==}
@@ -12258,7 +12242,7 @@ packages:
   /fs-write-stream-atomic/1.0.10:
     resolution: {integrity: sha1-tH31NJPvkR33VzHnCp3tAYnbQMk=}
     dependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.9
       iferr: 0.1.5
       imurmurhash: 0.1.4
       readable-stream: 2.3.7
@@ -12295,7 +12279,7 @@ packages:
       color-support: 1.1.3
       console-control-strings: 1.1.0
       has-unicode: 2.0.1
-      object-assign: 4.1.1
+      object-assign: registry.npmjs.org/object-assign/4.1.1
       signal-exit: 3.0.7
       string-width: 4.2.3
       strip-ansi: 6.0.1
@@ -12723,10 +12707,6 @@ packages:
     resolution: {integrity: sha1-XkdHk/fqmEPRu5nCPu9J/xJv/zk=}
     dev: true
 
-  /has-flag/3.0.0:
-    resolution: {integrity: sha1-tdRU3CGZriJWmfNGfloH87lVuv0=}
-    engines: {node: '>=4'}
-
   /has-flag/4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
@@ -13070,7 +13050,7 @@ packages:
   /hoist-non-react-statics/3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
     dependencies:
-      react-is: 16.13.1
+      react-is: registry.npmjs.org/react-is/16.13.1
     dev: false
 
   /home-or-tmp/2.0.0:
@@ -13234,14 +13214,6 @@ packages:
       domhandler: 4.3.0
       domutils: 2.8.0
       entities: 2.2.0
-
-  /http-assert/1.5.0:
-    resolution: {integrity: sha512-uPpH7OKX4H25hBmU6G1jWNaqJGpTXxey+YOUizJUAgu0AjLUeC8D73hTrhvDS5D+GJN1DN1+hhc/eF/wpxtp0w==}
-    engines: {node: '>= 0.8'}
-    dependencies:
-      deep-equal: 1.0.1
-      http-errors: 1.8.1
-    dev: true
 
   /http-cache-semantics/4.1.0:
     resolution: {integrity: sha512-carPklcUh7ROWRK7Cv27RPtdhYhUsela/ue5/jKzjegVvXDqM2ILE9Q2BGn9JZJh1g87cp56su/FgQSzcWS8cQ==}
@@ -13996,13 +13968,6 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /is-generator-function/1.0.10:
-    resolution: {integrity: sha512-jsEjy9l3yiXEQ+PsXdmBwEPcOxaXWLspKdplFUVI9vq1iZgIekeC0L167qeu86czQaxed3q/Uzuw0swL0irL8A==}
-    engines: {node: '>= 0.4'}
-    dependencies:
-      has-tostringtag: 1.0.0
-    dev: true
-
   /is-glob/3.1.0:
     resolution: {integrity: sha1-e6WuJCF4BKxwcHuWkiVnSGzD6Eo=}
     engines: {node: '>=0.10.0'}
@@ -14262,6 +14227,7 @@ packages:
 
   /isarray/0.0.1:
     resolution: {integrity: sha1-ihis/Kmo9Bd+Cav8YDiTmwXR7t8=}
+    dev: false
 
   /isarray/1.0.0:
     resolution: {integrity: sha1-u5NdSFgsuhaMBoNJV6VKPgcSTxE=}
@@ -14449,7 +14415,7 @@ packages:
       '@jest/types': 27.5.1
       chalk: 4.1.2
       exit: 0.1.2
-      graceful-fs: 4.2.9
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.9
       import-local: 3.1.0
       jest-config: 27.5.1
       jest-util: 27.5.1
@@ -14814,7 +14780,7 @@ packages:
       '@types/node': 17.0.21
       chalk: 4.1.2
       ci-info: 3.3.0
-      graceful-fs: 4.2.9
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.9
       picomatch: 2.3.1
     dev: true
 
@@ -15174,13 +15140,6 @@ packages:
       - utf-8-validate
     dev: true
 
-  /keygrip/1.1.0:
-    resolution: {integrity: sha512-iYSchDJ+liQ8iwbSI2QqsQOvqv58eJCEanyJPJi+Khyu8smkcKSFUCbPwzFcL7YVtZ6eONjqRX/38caJ7QjRAQ==}
-    engines: {node: '>= 0.6'}
-    dependencies:
-      tsscmp: 1.0.6
-    dev: true
-
   /keyv/3.1.0:
     resolution: {integrity: sha512-9ykJ/46SN/9KPM/sichzQ7OvXyGDYKGTaDlKMGCAlg2UK8KRy4jb0d8sFc+0Tt0YYnThq8X2RZgCg74RPxgcVA==}
     dependencies:
@@ -15238,59 +15197,6 @@ packages:
   /klona/2.0.5:
     resolution: {integrity: sha512-pJiBpiXMbt7dkzXe8Ghj/u4FfXOOa98fPW+bihOJ4SjnoijweJrNThJfd3ifXpXhREjpoF2mZVH1GfS9LV3kHQ==}
     engines: {node: '>= 8'}
-
-  /koa-compose/4.1.0:
-    resolution: {integrity: sha512-8ODW8TrDuMYvXRwra/Kh7/rJo9BtOfPc6qO8eAfC80CnCvSjSl0bkRM24X6/XBBEyj0v1nRUQ1LyOy3dbqOWXw==}
-    dev: true
-
-  /koa-convert/2.0.0:
-    resolution: {integrity: sha512-asOvN6bFlSnxewce2e/DK3p4tltyfC4VM7ZwuTuepI7dEQVcvpyFuBcEARu1+Hxg8DIwytce2n7jrZtRlPrARA==}
-    engines: {node: '>= 10'}
-    dependencies:
-      co: 4.6.0
-      koa-compose: 4.1.0
-    dev: true
-
-  /koa-route/3.2.0:
-    resolution: {integrity: sha1-dimLmaa8+p44yrb+XHmocz51i84=}
-    dependencies:
-      debug: 4.3.3
-      methods: 1.1.2
-      path-to-regexp: 1.8.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
-  /koa/2.13.4:
-    resolution: {integrity: sha512-43zkIKubNbnrULWlHdN5h1g3SEKXOEzoAlRsHOTFpnlDu8JlAOZSMJBLULusuXRequboiwJcj5vtYXKB3k7+2g==}
-    engines: {node: ^4.8.4 || ^6.10.1 || ^7.10.1 || >= 8.1.4}
-    dependencies:
-      accepts: 1.3.8
-      cache-content-type: 1.0.1
-      content-disposition: 0.5.4
-      content-type: 1.0.4
-      cookies: 0.8.0
-      debug: 4.3.3
-      delegates: 1.0.0
-      depd: 2.0.0
-      destroy: 1.1.0
-      encodeurl: 1.0.2
-      escape-html: 1.0.3
-      fresh: 0.5.2
-      http-assert: 1.5.0
-      http-errors: 1.8.1
-      is-generator-function: 1.0.10
-      koa-compose: 4.1.0
-      koa-convert: 2.0.0
-      on-finished: 2.4.1
-      only: 0.0.2
-      parseurl: 1.3.3
-      statuses: 1.5.0
-      type-is: 1.6.18
-      vary: 1.1.2
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
 
   /latest-version/3.1.0:
     resolution: {integrity: sha1-ogU4P+oyKzO1rjsYq+4NwvNW7hU=}
@@ -15405,7 +15311,6 @@ packages:
     dependencies:
       prelude-ls: 1.1.2
       type-check: 0.3.2
-    dev: true
 
   /levn/0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -15531,9 +15436,9 @@ packages:
   /loader-utils/0.2.17:
     resolution: {integrity: sha1-+G5jdNQyBabmxg6RlvF8Apm/s0g=}
     dependencies:
-      big.js: 3.2.0
-      emojis-list: 2.1.0
-      json5: 0.5.1
+      big.js: registry.npmjs.org/big.js/3.2.0
+      emojis-list: registry.npmjs.org/emojis-list/2.1.0
+      json5: registry.npmjs.org/json5/0.5.1
       object-assign: 4.1.1
     dev: true
 
@@ -15684,7 +15589,7 @@ packages:
     resolution: {integrity: sha512-VeIAFslyIerEJLXHziedo2basKbMKtTw3vfn5IzG0XTjhAVEJyNHnL2p7vc+wBDSdQuUpNw3M2u6xb9QsAY5Eg==}
     engines: {node: '>=4'}
     dependencies:
-      chalk: 2.4.2
+      chalk: registry.npmjs.org/chalk/2.4.2
     dev: true
 
   /log-symbols/4.1.0:
@@ -15799,6 +15704,7 @@ packages:
   /make-dir/2.1.0:
     resolution: {integrity: sha512-LS9X+dc8KLxXCb8dni79fLIIUA5VyZoyjSMCwTluaXA0o27cCK0bhXkpgw+sTXVpPy/lSO57ilRixqk0vDmtRA==}
     engines: {node: '>=6'}
+    requiresBuild: true
     dependencies:
       pify: 4.0.1
       semver: 5.7.1
@@ -16788,12 +16694,6 @@ packages:
       thenify-all: 1.6.0
     dev: true
 
-  /nan/2.15.0:
-    resolution: {integrity: sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==}
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /nanoid/3.3.1:
     resolution: {integrity: sha512-n6Vs/3KGyxPQd6uO0eH4Bv0ojGSUvuLlIHtC3Y0kEO23YRge8H9x1GCzLn28YX0H66pMkxuaeESFq4tKISKwdw==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -16856,6 +16756,7 @@ packages:
 
   /node-addon-api/3.2.1:
     resolution: {integrity: sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A==}
+    dev: false
 
   /node-addon-api/4.3.0:
     resolution: {integrity: sha512-73sE9+3UaLYYFmDsFZnqCInzPyh3MqIwZO9cw58yIqAZhONrrabrYyYe3TuIqtIiOuTXVhsGau8hcrhhwSsDIQ==}
@@ -16886,13 +16787,6 @@ packages:
   /node-forge/1.2.1:
     resolution: {integrity: sha512-Fcvtbb+zBcZXbTTVwqGA5W+MKBj56UjVRevvchv5XrcyXbmNdesfZL37nlcWOfpgHhgmxApw3tQbTr4CqNmX4w==}
     engines: {node: '>= 6.13.0'}
-
-  /node-gyp-build/4.3.0:
-    resolution: {integrity: sha512-iWjXZvmboq0ja1pUGULQBexmxq8CV4xBhX7VDOTbL7ZR4FOowwY/VOtRxBN/yKxmdGoIp4j5ysNT4u3S2pDQ3Q==}
-    hasBin: true
-    requiresBuild: true
-    dev: true
-    optional: true
 
   /node-gyp/8.4.1:
     resolution: {integrity: sha512-olTJRgUtAb/hOXG0E93wZDs5YiJlgbXxTwQAFHyNlRsXQnYzUaF2aGgujZbw+hR8aF4ZG/rST57bWMWD16jr9w==}
@@ -17279,13 +17173,6 @@ packages:
     dependencies:
       ee-first: 1.1.1
 
-  /on-finished/2.4.1:
-    resolution: {integrity: sha512-oVlzkg3ENAhCk2zdv7IJwd/QUD4z2RxRwpkcGY8psCVcCYZNq4wYnVWALHM+brtuJjePWiYF/ClmuDr8Ch5+kg==}
-    engines: {node: '>= 0.8'}
-    dependencies:
-      ee-first: 1.1.1
-    dev: true
-
   /on-headers/1.0.2:
     resolution: {integrity: sha512-pZAE+FJLoyITytdqK0U5s+FIpjN0JP3OzFi/u8Rx+EV5/W+JTWGXG8xFzevE7AjBfDqHv/8vL8qQsIhHnqRkrA==}
     engines: {node: '>= 0.8'}
@@ -17307,10 +17194,6 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       mimic-fn: 2.1.0
-
-  /only/0.0.2:
-    resolution: {integrity: sha1-Kv3oTQPlC5qO3EROMGEKcCle37Q=}
-    dev: true
 
   /open/6.4.0:
     resolution: {integrity: sha512-IFenVPgF70fSm1keSd2iDBIDIBZkroLeuffXq+wKTzTJlBpesFWojV9lb8mzOfaAzM1sr7HQHuO0vtV0zYekGg==}
@@ -17356,7 +17239,6 @@ packages:
       prelude-ls: 1.1.2
       type-check: 0.3.2
       word-wrap: 1.2.3
-    dev: true
 
   /optionator/0.9.1:
     resolution: {integrity: sha512-74RlY5FCnhq4jRxVUPKDaRwrVNXMqsGsiW6AJw4XK8hmtm10wC0ypZBLw5IIp85NZMr91+qd1RvvENwg7jjRFw==}
@@ -17374,7 +17256,7 @@ packages:
     resolution: {integrity: sha512-eNwHudNbO1folBP3JsZ19v9azXWtQZjICdr3Q0TDPIaeBQ3mXLrh54wM+er0+hSp+dWKf+Z8KM58CYzEyIYxYg==}
     engines: {node: '>=6'}
     dependencies:
-      chalk: 2.4.2
+      chalk: registry.npmjs.org/chalk/2.4.2
       cli-cursor: 2.1.0
       cli-spinners: 2.6.1
       log-symbols: 2.2.0
@@ -17775,6 +17657,7 @@ packages:
     resolution: {integrity: sha512-n43JRhlUKUAlibEJhPeir1ncUID16QnEjNpwzNdO3Lm4ywrBpBZ5oLD0I6br9evr1Y9JTqwRtAh7JLoOzAQdVA==}
     dependencies:
       isarray: 0.0.1
+    dev: false
 
   /path-to-regexp/2.2.1:
     resolution: {integrity: sha512-gu9bD6Ta5bwGrrU8muHzVOBFFREpp2iRkVfhBJahwJ6p6Xw20SjT0MxLnwkjOibQmGSYhiUnf2FLe7k+jcFmGQ==}
@@ -19061,7 +18944,6 @@ packages:
   /prelude-ls/1.1.2:
     resolution: {integrity: sha1-IZMqVJ9eUv/ZqCf1cOBL5iqX2lQ=}
     engines: {node: '>= 0.8.0'}
-    dev: true
 
   /prelude-ls/1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -20843,7 +20725,7 @@ packages:
       etag: 1.8.1
       fresh: 0.5.2
       http-errors: 1.8.1
-      mime: registry.npmjs.org/mime/1.6.0
+      mime: 1.6.0
       ms: 2.1.3
       on-finished: 2.3.0
       range-parser: 1.2.1
@@ -21067,7 +20949,7 @@ packages:
     resolution: {integrity: sha512-Qu+VC3EwYLldKa1fCxuuvULvSJOKEgk9pi8dZeCVK7TqBfUNTH4sFkk4joj8afVSfAYgJoSOetjx9QWOJ5mYoQ==}
     engines: {node: '>=6'}
     dependencies:
-      ansi-styles: 3.2.1
+      ansi-styles: registry.npmjs.org/ansi-styles/3.2.1
       astral-regex: 1.0.0
       is-fullwidth-code-point: 2.0.0
     dev: true
@@ -21794,13 +21676,13 @@ packages:
     resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}
     engines: {node: '>=4'}
     dependencies:
-      has-flag: 3.0.0
+      has-flag: registry.npmjs.org/has-flag/3.0.0
 
   /supports-color/6.1.0:
     resolution: {integrity: sha512-qe1jfm1Mg7Nq/NSh6XE24gPXROEVsWHxC1LIx//XNlD9iw7YZQGjZNjYN7xGaEG6iKdA8EtNFW6R0gjnVXp+wQ==}
     engines: {node: '>=6'}
     dependencies:
-      has-flag: 3.0.0
+      has-flag: registry.npmjs.org/has-flag/3.0.0
     dev: true
 
   /supports-color/7.2.0:
@@ -22453,11 +22335,6 @@ packages:
       typescript: 4.5.5
     dev: true
 
-  /tsscmp/1.0.6:
-    resolution: {integrity: sha512-LxhtAkPDTkVCMQjt2h6eBVY28KCjikZqZfMcC15YBeNjkgUpdCfBu5HoiOTDu86v6smE8yOjyEktJ8hlbANHQA==}
-    engines: {node: '>=0.6.x'}
-    dev: true
-
   /tsup/5.7.2_typescript@4.4.3:
     resolution: {integrity: sha512-YxryYjhB54h8YUNlN7Oze9PnqcuN++vwrFW6qtjC1ve9eQPvzCJw0rN0WPOuEQXburwo+gtDid9C4eQZ6x/Yog==}
     hasBin: true
@@ -22523,7 +22400,6 @@ packages:
     engines: {node: '>= 0.8.0'}
     dependencies:
       prelude-ls: 1.1.2
-    dev: true
 
   /type-check/0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -23809,7 +23685,7 @@ packages:
     dependencies:
       ansi-html-community: 0.0.8
       bonjour: 3.5.0
-      chokidar: registry.npmjs.org/chokidar/2.1.8
+      chokidar: 2.1.8
       compression: 1.7.4
       connect-history-api-fallback: 1.6.0
       debug: 4.3.3_supports-color@6.1.0
@@ -24303,7 +24179,6 @@ packages:
   /word-wrap/1.2.3:
     resolution: {integrity: sha512-Hz/mrNwitNRh/HUAtM/VT/5VH+ygD6DV7mYKZAtHOrbs8U7lvPS6xf7EJKMF0uW1KJCl0H701g3ZGus+muE5vQ==}
     engines: {node: '>=0.10.0'}
-    dev: true
 
   /worker-farm/1.7.0:
     resolution: {integrity: sha512-rvw3QTZc8lAxyVrqcSGVm5yP/IJ2UcB3U0graE3LCFoZ0Yn2x4EoVSqJKdB/T5M+FLcRPjz4TDacRf3OCfNUzw==}
@@ -24337,7 +24212,7 @@ packages:
     resolution: {integrity: sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==}
     engines: {node: '>=8'}
     dependencies:
-      ansi-styles: 4.3.0
+      ansi-styles: registry.npmjs.org/ansi-styles/4.3.0
       string-width: 4.2.3
       strip-ansi: 6.0.1
     dev: true
@@ -24615,11 +24490,6 @@ packages:
     resolution: {integrity: sha1-AI4G2AlDIMNy28L47XagymyKxBk=}
     dev: true
 
-  /ylru/1.2.1:
-    resolution: {integrity: sha512-faQrqNMzcPCHGVC2aaOINk13K+aaBDUPjGWl0teOXywElLjyVAB6Oe2jj62jHYtwsU49jXhScYbvPENK+6zAvQ==}
-    engines: {node: '>= 4.0.0'}
-    dev: true
-
   /yn/3.1.1:
     resolution: {integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==}
     engines: {node: '>=6'}
@@ -24715,6 +24585,14 @@ packages:
     dev: true
     optional: true
 
+  registry.npmjs.org/ansi-styles/3.2.1:
+    resolution: {integrity: sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/ansi-styles/-/ansi-styles-3.2.1.tgz}
+    name: ansi-styles
+    version: 3.2.1
+    engines: {node: '>=4'}
+    dependencies:
+      color-convert: registry.npmjs.org/color-convert/1.9.3
+
   registry.npmjs.org/ansi-styles/4.3.0:
     resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/ansi-styles/-/ansi-styles-4.3.0.tgz}
     name: ansi-styles
@@ -24724,11 +24602,37 @@ packages:
       color-convert: registry.npmjs.org/color-convert/2.0.1
     dev: true
 
+  registry.npmjs.org/big.js/3.2.0:
+    resolution: {integrity: sha512-+hN/Zh2D08Mx65pZ/4g5bsmNiZUuChDiQfTUQ7qJr4/kuopCr88xZsAXv6mBoZEsUI4OuGHlX59qE94K2mMW8Q==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/big.js/-/big.js-3.2.0.tgz}
+    name: big.js
+    version: 3.2.0
+    dev: true
+
   registry.npmjs.org/big.js/5.2.2:
     resolution: {integrity: sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/big.js/-/big.js-5.2.2.tgz}
     name: big.js
     version: 5.2.2
     dev: true
+
+  registry.npmjs.org/bindings/1.5.0:
+    resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/bindings/-/bindings-1.5.0.tgz}
+    name: bindings
+    version: 1.5.0
+    requiresBuild: true
+    dependencies:
+      file-uri-to-path: registry.npmjs.org/file-uri-to-path/1.0.0
+    dev: true
+    optional: true
+
+  registry.npmjs.org/chalk/2.4.2:
+    resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/chalk/-/chalk-2.4.2.tgz}
+    name: chalk
+    version: 2.4.2
+    engines: {node: '>=4'}
+    dependencies:
+      ansi-styles: registry.npmjs.org/ansi-styles/3.2.1
+      escape-string-regexp: 1.0.5
+      supports-color: registry.npmjs.org/supports-color/5.5.0
 
   registry.npmjs.org/chalk/4.1.2:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz}
@@ -24760,6 +24664,7 @@ packages:
     optionalDependencies:
       fsevents: registry.npmjs.org/fsevents/1.2.13
     dev: true
+    optional: true
 
   registry.npmjs.org/chokidar/3.5.3:
     resolution: {integrity: sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/chokidar/-/chokidar-3.5.3.tgz}
@@ -24780,6 +24685,13 @@ packages:
     dev: true
     optional: true
 
+  registry.npmjs.org/color-convert/1.9.3:
+    resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/color-convert/-/color-convert-1.9.3.tgz}
+    name: color-convert
+    version: 1.9.3
+    dependencies:
+      color-name: registry.npmjs.org/color-name/1.1.3
+
   registry.npmjs.org/color-convert/2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/color-convert/-/color-convert-2.0.1.tgz}
     name: color-convert
@@ -24788,6 +24700,11 @@ packages:
     dependencies:
       color-name: registry.npmjs.org/color-name/1.1.4
     dev: true
+
+  registry.npmjs.org/color-name/1.1.3:
+    resolution: {integrity: sha1-p9BVi9icQveV3UIyj3QIMcpTvCU=, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/color-name/-/color-name-1.1.3.tgz}
+    name: color-name
+    version: 1.1.3
 
   registry.npmjs.org/color-name/1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/color-name/-/color-name-1.1.4.tgz}
@@ -24809,6 +24726,13 @@ packages:
     name: csstype
     version: 3.0.10
     dev: false
+
+  registry.npmjs.org/emojis-list/2.1.0:
+    resolution: {integrity: sha1-TapNnbAPmBmIDHn6RXrlsJof04k=, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/emojis-list/-/emojis-list-2.1.0.tgz}
+    name: emojis-list
+    version: 2.1.0
+    engines: {node: '>= 0.10'}
+    dev: true
 
   registry.npmjs.org/emojis-list/3.0.0:
     resolution: {integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/emojis-list/-/emojis-list-3.0.0.tgz}
@@ -25456,6 +25380,14 @@ packages:
     dev: true
     optional: true
 
+  registry.npmjs.org/file-uri-to-path/1.0.0:
+    resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz}
+    name: file-uri-to-path
+    version: 1.0.0
+    requiresBuild: true
+    dev: true
+    optional: true
+
   registry.npmjs.org/fsevents/1.2.13:
     resolution: {integrity: sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/fsevents/-/fsevents-1.2.13.tgz}
     name: fsevents
@@ -25465,8 +25397,8 @@ packages:
     deprecated: fsevents 1 will break on node v14+ and could be using insecure binaries. Upgrade to fsevents 2.
     requiresBuild: true
     dependencies:
-      bindings: 1.5.0
-      nan: 2.15.0
+      bindings: registry.npmjs.org/bindings/1.5.0
+      nan: registry.npmjs.org/nan/2.15.0
     dev: true
     optional: true
 
@@ -25483,6 +25415,12 @@ packages:
     resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.9.tgz}
     name: graceful-fs
     version: 4.2.9
+
+  registry.npmjs.org/has-flag/3.0.0:
+    resolution: {integrity: sha1-tdRU3CGZriJWmfNGfloH87lVuv0=, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/has-flag/-/has-flag-3.0.0.tgz}
+    name: has-flag
+    version: 3.0.0
+    engines: {node: '>=4'}
 
   registry.npmjs.org/has-flag/4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/has-flag/-/has-flag-4.0.0.tgz}
@@ -25512,6 +25450,13 @@ packages:
     name: js-tokens
     version: 4.0.0
     dev: false
+
+  registry.npmjs.org/json5/0.5.1:
+    resolution: {integrity: sha1-Hq3nrMASA0rYTiOWdn6tn6VJWCE=, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/json5/-/json5-0.5.1.tgz}
+    name: json5
+    version: 0.5.1
+    hasBin: true
+    dev: true
 
   registry.npmjs.org/json5/2.2.0:
     resolution: {integrity: sha512-f+8cldu7X/y7RAJurMEJmdoKXGB/X550w2Nr3tTbezL6RwEE/iMcm+tZnXeoZtKuOq6ft8+CqzEkrIgx1fPoQA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/json5/-/json5-2.2.0.tgz}
@@ -25569,12 +25514,23 @@ packages:
     version: 1.6.0
     engines: {node: '>=4'}
     hasBin: true
+    requiresBuild: true
+    dev: true
+    optional: true
 
   registry.npmjs.org/minimist/1.2.5:
     resolution: {integrity: sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/minimist/-/minimist-1.2.5.tgz}
     name: minimist
     version: 1.2.5
     dev: true
+
+  registry.npmjs.org/nan/2.15.0:
+    resolution: {integrity: sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/nan/-/nan-2.15.0.tgz}
+    name: nan
+    version: 2.15.0
+    requiresBuild: true
+    dev: true
+    optional: true
 
   registry.npmjs.org/native-request/1.1.0:
     resolution: {integrity: sha512-uZ5rQaeRn15XmpgE0xoPL8YWqcX90VtCFglYwAgkvKM5e8fog+vePLAhHxuuv/gRkrQxIeh5U3q9sMNUrENqWw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/native-request/-/native-request-1.1.0.tgz}
@@ -25605,8 +25561,25 @@ packages:
     os: ['!win32']
     requiresBuild: true
     dependencies:
-      node-addon-api: 3.2.1
-      node-gyp-build: 4.3.0
+      node-addon-api: registry.npmjs.org/node-addon-api/3.2.1
+      node-gyp-build: registry.npmjs.org/node-gyp-build/4.3.0
+    dev: true
+    optional: true
+
+  registry.npmjs.org/node-addon-api/3.2.1:
+    resolution: {integrity: sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/node-addon-api/-/node-addon-api-3.2.1.tgz}
+    name: node-addon-api
+    version: 3.2.1
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  registry.npmjs.org/node-gyp-build/4.3.0:
+    resolution: {integrity: sha512-iWjXZvmboq0ja1pUGULQBexmxq8CV4xBhX7VDOTbL7ZR4FOowwY/VOtRxBN/yKxmdGoIp4j5ysNT4u3S2pDQ3Q==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.3.0.tgz}
+    name: node-gyp-build
+    version: 4.3.0
+    hasBin: true
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -25656,8 +25629,15 @@ packages:
     version: 0.6.1
     engines: {node: '>=0.10.0'}
     requiresBuild: true
-    dev: true
     optional: true
+
+  registry.npmjs.org/supports-color/5.5.0:
+    resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/supports-color/-/supports-color-5.5.0.tgz}
+    name: supports-color
+    version: 5.5.0
+    engines: {node: '>=4'}
+    dependencies:
+      has-flag: registry.npmjs.org/has-flag/3.0.0
 
   registry.npmjs.org/supports-color/7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/supports-color/-/supports-color-7.2.0.tgz}

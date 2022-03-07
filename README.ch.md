@@ -37,7 +37,7 @@ yarn add garfish
 > 目前文档站点 ([Garfish](https://garfish.top/)) 仅提供了中文版本，不久后将提供英文版本文档
 
 - [关于 Garfish](https://garfish.top/guide)
-- [快速开始](https://garfish.top/quick-start)
+- [快速开始](https://garfish.top/quickStart)
 - [API](https://garfish.top/api)
 
 ## 功能

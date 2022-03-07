@@ -64,6 +64,8 @@ export class App {
   public display = false;
   public mounted = false;
   public strictIsolation = false;
+  public esmQueue = new Queue();
+  public esModuleLoader = new ESModuleLoader(this);
   public name: string;
   public isHtmlMode: boolean;
   public global: any = window;
@@ -84,8 +86,6 @@ export class App {
   private active = false;
   private mounting = false;
   private unmounting = false;
-  private esmQueue = new Queue();
-  private esModuleLoader = new ESModuleLoader(this);
   private resources: interfaces.ResourceModules;
   // Environment variables injected by garfish for linkage with child applications
   private globalEnvVariables: Record<string, any>;
@@ -168,7 +168,7 @@ export class App {
     code: string,
     env: Record<string, any>,
     url?: string,
-    options?: ExecScriptOptions,
+    options?: interfaces.ExecScriptOptions,
   ) {
     env = {
       ...this.getExecScriptEnv(options?.noEntry),
@@ -185,7 +185,7 @@ export class App {
     code: string,
     env: Record<string, any>,
     url?: string,
-    options?: ExecScriptOptions,
+    options?: interfaces.ExecScriptOptions,
   ) {
     const args = [this.appInfo, code, env, url, options] as const;
     this.hooks.lifecycle.beforeEval.emit(...args);
@@ -529,7 +529,6 @@ export class App {
         if (jsManager) {
           const { url, scriptCode } = jsManager;
           this.execScript(scriptCode, {}, url || this.appInfo.entry, {
-            node,
             isModule,
             async: false,
             isInline: jsManager.isInlineScript(),

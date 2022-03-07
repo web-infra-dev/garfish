@@ -1,5 +1,6 @@
 import { SyncHook, PluginSystem } from '@garfish/hooks';
-import { FakeWindow, ExecScriptOptions } from './types';
+import type { interfaces } from '@garfish/core';
+import type { FakeWindow } from './types';
 
 export function sandboxLifecycle() {
   return new PluginSystem({
@@ -9,15 +10,25 @@ export function sandboxLifecycle() {
     beforeClearEffect: new SyncHook<[], void>(),
     afterClearEffect: new SyncHook<[], void>(),
     beforeInvoke: new SyncHook<
-      [string, Record<string, any>, ExecScriptOptions],
+      [
+        { code: string },
+        string,
+        Record<string, any>,
+        interfaces.ExecScriptOptions,
+      ],
       void
     >(),
     afterInvoke: new SyncHook<
-      [string, Record<string, any>, ExecScriptOptions],
+      [
+        { code: string },
+        string,
+        Record<string, any>,
+        interfaces.ExecScriptOptions,
+      ],
       void
     >(),
     invokeError: new SyncHook<
-      [Error, string, Record<string, any>, ExecScriptOptions],
+      [Error, string, Record<string, any>, interfaces.ExecScriptOptions],
       void
     >(),
   });

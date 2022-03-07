@@ -148,7 +148,7 @@ export function createDeleteProperty(sandbox: Sandbox) {
 export function createHas(sandbox: Sandbox) {
   return (_target: Window, p: PropertyKey) => {
     if (sandbox.isProtectVariable(p)) return false;
-    if ((sandbox as any).tempVariable === p) return false;
+    if ((sandbox as any).envVariable === p) return false;
     return true;
   };
 }

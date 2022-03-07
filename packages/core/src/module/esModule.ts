@@ -1,6 +1,12 @@
 import type { JavaScriptManager } from '@garfish/loader';
-import { isAbsolute, transformUrl, createSourcemap } from '@garfish/utils';
-import type { App, ExecScriptOptions } from './app';
+import {
+  isAbsolute,
+  transformUrl,
+  haveSourcemap,
+  createSourcemap,
+} from '@garfish/utils';
+import { interfaces } from '../interface';
+import type { App } from './app';
 
 const __GARFISH_ESM_ENV__ = '__GARFISH_ESM_ENV__';
 export const COMMENT_REG = /[^:]\/\/.*|\/\*[\w\W]*?\*\//g;
@@ -43,10 +49,6 @@ export class ESModuleLoader {
     this.moduleCache[saveId] = blobUrl;
   }
 
-  private haveSourcemap(code: string) {
-    return /[@#] sourceMappingURL=/g.test(code);
-  }
-
   private async fetchModuleResource(
     envVarStr: string,
     saveUrl: string,
@@ -63,7 +65,7 @@ export class ESModuleLoader {
       // eslint-disable-next-line prefer-const
       let { url, scriptCode } = resourceManager;
 
-      if (!this.haveSourcemap(scriptCode)) {
+      if (!haveSourcemap(scriptCode)) {
         sourcemap = await createSourcemap(scriptCode, requestUrl);
       }
       scriptCode = await this.analysisModule(
@@ -146,7 +148,7 @@ export class ESModuleLoader {
     code: string,
     env: Record<string, any>,
     url: string,
-    options: ExecScriptOptions,
+    options: interfaces.ExecScriptOptions,
   ) {
     return new Promise<void>(async (resolve) => {
       if (this.moduleCache[url]) {
@@ -179,7 +181,7 @@ export class ESModuleLoader {
       }, '');
 
       let sourcemap = '';
-      if (!this.haveSourcemap(code)) {
+      if (!haveSourcemap(code)) {
         sourcemap = await createSourcemap(
           code,
           options.isInline

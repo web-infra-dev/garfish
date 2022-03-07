@@ -43,8 +43,8 @@ Garfish.router.replace({ path: '/react2' })
 
 ```ts
 interface RouterInfo {
-  fullPath: string;
   path: string;
+  fullPath: string;
   query: Object;
   matched: Array<AppInfo>;
 }

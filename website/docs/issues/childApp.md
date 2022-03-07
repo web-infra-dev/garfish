@@ -70,10 +70,11 @@ export const provider = () => {
         root,
       );
     },
+
     destroy: ({ dom, basename }) =>{
       const root = dom ? dom.querySelector('#root') : document.querySelector('#root');
       ReactDOM.unmountComponentAtNode(root),
-    }
+    },
   };
 };
 ```
@@ -197,7 +198,7 @@ export default () => (
 
 > 解决方案
 
-由于浏览器跨域的限制，非同域下的脚本执行抛错，捕获异常的时候，不能拿到详细的异常信息，只能拿到类似 Script error 0. 这类信息。通常跨域的异常信息会被忽略，不会上报。解决方案： 所有 `<script>` 加载的资源加上`crossorigin="anonymous"
+由于浏览器跨域的限制，非同域下的脚本执行抛错，捕获异常的时候，不能拿到详细的异常信息，只能拿到类似 Script error 0. 这类信息。通常跨域的异常信息会被忽略，不会上报。解决方案： 所有 `<script>` 加载的资源加上 `crossorigin="anonymous"`
 
 ## cdn 第三方包未正确挂在在 window 上
 
@@ -250,8 +251,48 @@ export const provider = () => {
         dom.querySelector('#root'),
       );
     },
-    destroy: ({ dom, basename }) =>
-      ReactDOM.unmountComponentAtNode(dom.querySelector('#root')),
+
+    destroy: ({ dom, basename }) => {
+      ReactDOM.unmountComponentAtNode(dom.querySelector('#root'));
+    },
   };
 };
 ```
+
+## ESModule
+
+Garfish 核心库默认支持 esModule，但是需要关掉 vm 沙箱或者为快照沙箱时，才能够使用。
+
+```js
+Garfish.run({
+  ...
+  apps: [
+    {
+      name: 'vue'，
+      activeWhen: '/vue',
+      entry: 'http://localhost:8080',
+      sandbox: {
+        open: false,
+        // snapshot: true, 或者只开启快照沙箱
+      },
+    },
+  ],
+})
+```
+
+如果需要在 vm 沙箱下开启 esModule 的能力，可以使用 `@garfish/es-module` 插件。
+
+> `@garfish/es-module` 会在运行时分析子应用的源码做一层 esModule polyfill，但他会带来严重的首屏性能问题，如果你的项目不是很需要在 vm 沙箱下使用 esModule 就不应该使用此插件。
+
+> 在短期的规划中，为了能在生产环境中使用，我们会尝试使用 wasm 来优化整个编译性能。在未来如果 [module-fragments](https://github.com/tc39/proposal-module-fragments) 提案成功进入标准并成熟后，我们也会尝试使用此方案，但这需要时间。
+
+```js
+import { GarfishEsModule } from '@garfish/es-module';
+
+Garfish.run({
+  ...
+  plugins: [GarfishEsModule()],
+})
+```
+
+> 提示：当子项目使用 `vite` 开发时，你可以在开发模式下使用 esModule 模式，生产环境可以打包为原始的无 esModule 的模式。

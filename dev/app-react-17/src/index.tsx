@@ -1,5 +1,5 @@
-import ReactDOM from 'react-dom';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { reactBridge } from '@garfish/bridge';
 import RootComponent from './components/root';
 import Error from './components/ErrorBoundary';

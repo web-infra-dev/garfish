@@ -7,5 +7,5 @@
 ```js
 import { isObject } from '@garfish/utils';
 
-// TODO: DEMONSTRATE API
+console.log(isObject({})); // true
 ```

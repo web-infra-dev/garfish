@@ -23,7 +23,7 @@ const nativeWindow = Garfish.getGlobalObject();
 ```js
 import Garfish from 'garfish';
 
-Garfish.setGlobalValue(key: string | symbol, value: any)
+Garfish.setGlobalValue(key: string | symbol, value: any);
 ```
 
 ## clearEscapeEffect

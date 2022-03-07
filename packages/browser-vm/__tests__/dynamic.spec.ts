@@ -1,21 +1,5 @@
+import { mockStaticServer } from '@garfish/utils';
 import { Sandbox } from '../src/sandbox';
-import { sandboxMap } from '../src/utils';
-import fetchMock from 'jest-fetch-mock';
-global.fetch = fetchMock;
-
-// https://www.npmjs.com/package/jest-fetch-mock
-function mockScript(code: string) {
-  const url = `http://garfish-mock.com/${performance.now()}`;
-  fetchMock.mockIf(url, () => {
-    return Promise.resolve({
-      body: code,
-      headers: {
-        'Content-Type': 'application/javascript',
-      },
-    });
-  });
-  return url;
-}
 
 declare global {
   interface window {
@@ -24,8 +8,11 @@ declare global {
 }
 
 describe('Sandbox: dynamic script', () => {
+  mockStaticServer(__dirname);
+
   let sandbox: Sandbox;
-  let secondScriptUrl: string;
+  const secondScriptUrl = './resources/eventTask.js';
+
   const go = (code: string) => {
     return `
       const sandbox = __debug_sandbox__;
@@ -52,16 +39,7 @@ describe('Sandbox: dynamic script', () => {
 
   beforeEach(() => {
     sandbox = create();
-
-    secondScriptUrl = mockScript(`
-      setTimeout(()=>{
-        window.execOrder.push('second macro task');
-      })
-      Promise.resolve().then(()=>{
-        window.execOrder.push('second micro task');
-      });
-      window.execOrder.push('second normal task');
-    `);
+    (global as any).fetch = fetch;
   });
 
   it('onload Micro macro normal task', (done) => {
@@ -74,7 +52,10 @@ describe('Sandbox: dynamic script', () => {
           window.execOrder.push('second onload task');
           setTimeout(()=>{
             expect(window.execOrder).toEqual([
-              'second normal task', 'second micro task','second onload task','second macro task'
+              'second normal task',
+              'second micro task',
+              'second onload task',
+              'second macro task',
             ]);
             jestDone();
           })
