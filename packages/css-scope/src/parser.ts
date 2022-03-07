@@ -1,9 +1,31 @@
 /* eslint-disable quotes */
 // http://www.w3.org/TR/CSS21/grammar.html
 // https://github.com/visionmedia/css-parse/pull/49#issuecomment-30088027
-import { Node, StylesheetNode } from './types';
+import {
+  Node,
+  RuleNode,
+  HostNode,
+  PageNode,
+  DeclNode,
+  MediaNode,
+  ImportNode,
+  CharsetNode,
+  CommentNode,
+  DocumentNode,
+  FontFaceNode,
+  KeyframeNode,
+  NamespaceNode,
+  KeyframesNode,
+  StylesheetNode,
+  CustomMediaNode,
+} from './types';
 
 const commentre = /\/\*[^*]*\*+([^/*][^*]*\*+)*\//g;
+
+interface Point {
+  line: number;
+  column: number;
+}
 
 export interface CssParserOptions {
   source?: string;
@@ -17,37 +39,37 @@ export function parse(css: string, options?: CssParserOptions) {
   let column = 1;
 
   // Update lineno and column based on `str`.
-  function updatePosition(str) {
+  function updatePosition(str: string) {
     const lines = str.match(/\n/g);
     if (lines) line += lines.length;
     const i = str.lastIndexOf('\n');
     column = i > -1 ? str.length - i : column + str.length;
   }
 
-  // Mark position and patch `node.position`.
-  function position() {
-    const start = { line, column };
-    return function (node) {
-      node.position = new Position(start);
-      whitespace();
-      return node;
-    };
-  }
-
   // Store position information for a node
   class Position {
-    start: any;
-    content = css;
-    end = { line, column };
-    source = options.source;
+    public start: Point;
+    public content = css;
+    public end = { line, column };
+    public source = options.source;
 
-    constructor(start) {
+    constructor(start: Point) {
       this.start = start;
     }
   }
 
+  // Mark position and patch `node.position`.
+  function position() {
+    const start: Point = { line, column };
+    return function <T extends Partial<Node>>(node: T) {
+      node.position = new Position(start);
+      whitespace();
+      return node as T;
+    };
+  }
+
   const errorsList = [];
-  function error(msg) {
+  function error(msg: string) {
     const source = options.source ? options.source + ':' : '';
     const err: any = new Error(source + line + ':' + column + ': ' + msg);
 
@@ -74,7 +96,7 @@ export function parse(css: string, options?: CssParserOptions) {
         source: options.source,
         parsingErrors: errorsList,
       },
-    };
+    } as StylesheetNode;
   }
 
   // Opening brace.
@@ -95,7 +117,7 @@ export function parse(css: string, options?: CssParserOptions) {
   // Parse ruleset.
   function rules() {
     let node;
-    const rules = [];
+    const rules: Array<RuleNode> = [];
     whitespace();
     comments(rules);
     while (css.length && css.charAt(0) !== '}' && (node = atrule() || rule())) {
@@ -108,7 +130,7 @@ export function parse(css: string, options?: CssParserOptions) {
   }
 
   // Match `re` and return captures.
-  function match(re) {
+  function match(re: RegExp) {
     const m = re.exec(css);
     if (m) {
       const str = m[0];
@@ -119,9 +141,9 @@ export function parse(css: string, options?: CssParserOptions) {
   }
 
   // Parse comments;
-  function comments(rules?: Array<any>) {
+  function comments<T extends Array<any>>(rules?: T) {
     let c;
-    rules = rules || [];
+    rules = rules || ([] as any);
     while ((c = comment())) {
       if (c !== false) {
         rules.push(c);
@@ -158,7 +180,7 @@ export function parse(css: string, options?: CssParserOptions) {
     return pos({
       type: 'comment',
       comment: str,
-    });
+    }) as CommentNode;
   }
 
   // Parse selector.
@@ -183,7 +205,7 @@ export function parse(css: string, options?: CssParserOptions) {
     // prop
     let prop = match(/^(\*?[-#\/\*\\\w]+(\[[0-9a-z_-]+\])?)\s*/);
     if (!prop) return;
-    prop = trim(prop[0]);
+    (prop as any) = trim(prop[0]);
     // :
     if (!match(/^:\s*/)) return error("property missing ':'");
     // val
@@ -191,7 +213,7 @@ export function parse(css: string, options?: CssParserOptions) {
 
     const ret = pos({
       type: 'declaration',
-      property: prop.replace(commentre, ''),
+      property: (prop as any).replace(commentre, ''),
       value: val ? trim(val[0]).replace(commentre, '') : '',
     });
 
@@ -202,7 +224,7 @@ export function parse(css: string, options?: CssParserOptions) {
 
   // Parse declarations.
   function declarations() {
-    const decls = [];
+    const decls: Array<DeclNode> = [];
     if (!open()) return error("missing '{'");
     comments(decls);
 
@@ -233,8 +255,8 @@ export function parse(css: string, options?: CssParserOptions) {
     return pos({
       type: 'keyframe',
       values: vals,
-      declarations: declarations(),
-    });
+      declarations: declarations() || [],
+    }) as KeyframeNode;
   }
 
   // Parse keyframes.
@@ -263,7 +285,7 @@ export function parse(css: string, options?: CssParserOptions) {
       name: name,
       vendor: vendor,
       keyframes: frames,
-    });
+    }) as KeyframesNode;
   }
 
   // Parse supports.
@@ -298,7 +320,7 @@ export function parse(css: string, options?: CssParserOptions) {
     return pos({
       type: 'host',
       rules: style,
-    });
+    }) as HostNode;
   }
 
   // Parse media.
@@ -317,7 +339,7 @@ export function parse(css: string, options?: CssParserOptions) {
       type: 'media',
       media: media,
       rules: style,
-    });
+    }) as MediaNode;
   }
 
   // Parse custom-media.
@@ -330,7 +352,7 @@ export function parse(css: string, options?: CssParserOptions) {
       type: 'custom-media',
       name: trim(m[1]),
       media: trim(m[2]),
-    });
+    }) as CustomMediaNode;
   }
 
   // Parse paged media.
@@ -356,7 +378,7 @@ export function parse(css: string, options?: CssParserOptions) {
       type: 'page',
       selectors: sel,
       declarations: decls,
-    });
+    }) as PageNode;
   }
 
   // Parse document.
@@ -377,7 +399,7 @@ export function parse(css: string, options?: CssParserOptions) {
       document: doc,
       vendor: vendor,
       rules: style,
-    });
+    }) as DocumentNode;
   }
 
   // Parse font-face.
@@ -399,11 +421,11 @@ export function parse(css: string, options?: CssParserOptions) {
     return pos({
       type: 'font-face',
       declarations: decls,
-    });
+    }) as FontFaceNode;
   }
 
   // Parse non-block at-rules
-  function compileAtrule(name) {
+  function compileAtrule<T>(name: Node['type']) {
     const re = new RegExp('^@' + name + '\\s*([^;]+);');
     return function () {
       const pos = position();
@@ -411,16 +433,16 @@ export function parse(css: string, options?: CssParserOptions) {
       if (!m) return;
       const ret = { type: name };
       ret[name] = m[1].trim();
-      return pos(ret);
+      return pos(ret) as unknown as T;
     };
   }
 
   // Parse import
-  const atimport = compileAtrule('import');
+  const atimport = compileAtrule<ImportNode>('import');
   // Parse charset
-  const atcharset = compileAtrule('charset');
+  const atcharset = compileAtrule<CharsetNode>('charset');
   // Parse namespace
-  const atnamespace = compileAtrule('namespace');
+  const atnamespace = compileAtrule<NamespaceNode>('namespace');
 
   // Parse at rule.
   function atrule() {
@@ -450,14 +472,14 @@ export function parse(css: string, options?: CssParserOptions) {
     return pos({
       type: 'rule',
       selectors: sel,
-      declarations: declarations(),
+      declarations: declarations() || [],
     });
   }
 
   return addParent(stylesheet() as any) as StylesheetNode;
 }
 
-function trim(str) {
+function trim(str: string) {
   return str ? str.trim() : '';
 }
 

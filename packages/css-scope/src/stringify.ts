@@ -23,8 +23,8 @@ const animationRE = /^(-\w+-)?animation$/;
 const animationNameRE = /^(-\w+-)?animation-name$/;
 
 class Compiler {
-  level = 1;
-  prefix: string;
+  public level = 1;
+  public prefix: string;
 
   constructor(prefix: string) {
     this.prefix = prefix || '';
@@ -36,8 +36,7 @@ class Compiler {
   }
 
   visit(node: Node) {
-    // @ts-ignore
-    return this[node.type](node);
+    return this[node.type](node as any);
   }
 
   mapVisit(nodes: Array<Node>, delim: string) {
