@@ -172,6 +172,7 @@ importers:
       '@babel/preset-typescript': ^7.14.5
       '@babel/register': ^7.13.14
       '@babel/runtime': ^7.14.6
+      '@garfish/css-scope': workspace:*
       '@garfish/es-module': workspace:*
       '@pmmmwh/react-refresh-webpack-plugin': ^0.5.4
       '@types/react': ^17
@@ -205,6 +206,7 @@ importers:
       webpack-dev-server: ^4.2.1
     dependencies:
       '@arco-design/web-react': 2.29.1_b8fdba992ce7d797017dc07106486496
+      '@garfish/css-scope': link:../../packages/css-scope
       '@garfish/es-module': link:../../packages/es-module
       '@types/react': 17.0.39
       '@types/react-dom': 17.0.11
@@ -592,6 +594,9 @@ importers:
       '@garfish/loader': link:../loader
       '@garfish/utils': link:../utils
       eventemitter2: 6.4.5
+
+  packages/css-scope:
+    specifiers: {}
 
   packages/es-module:
     specifiers:

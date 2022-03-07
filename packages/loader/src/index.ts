@@ -34,6 +34,7 @@ export interface CacheValue<T extends Manager> {
   url: string;
   code: string;
   size: number;
+  scope: string;
   fileType: FileTypes | '';
   resourceManager: T | null;
 }
@@ -167,8 +168,13 @@ export class Loader {
 
         // Use result.url, resources may be redirected
         const resourceManager: Manager | null = managerCtor
-          ? new managerCtor(code, result.url)
+          ? new managerCtor(code, result.url, scope)
           : null;
+
+        // Set css scope
+        if (fileType === FileTypes.css) {
+          (resourceManager as StyleManager).setScope(scope);
+        }
 
         // The results will be cached this time.
         // So, you can transform the request result.
@@ -176,6 +182,7 @@ export class Loader {
           result,
           value: {
             url,
+            scope,
             resourceManager,
             fileType: fileType || '',
             // For performance reasons, take an approximation

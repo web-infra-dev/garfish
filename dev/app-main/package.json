@@ -4,6 +4,7 @@
   "dependencies": {
     "garfish": "workspace:*",
     "@garfish/es-module": "workspace:*",
+    "@garfish/css-scope": "workspace:*",
     "babel-runtime": "^6.26.0",
     "history": "^5.1.0",
     "mobx": "^6.3.6",

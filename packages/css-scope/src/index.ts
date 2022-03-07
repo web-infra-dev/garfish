@@ -1,33 +1,42 @@
-import { warn } from '@garfish/utils';
-import { interfaces } from '@garfish/core';
+import type { interfaces } from '@garfish/core';
+import type { StyleManager } from '@garfish/loader';
 import { parse } from './parser';
 import { stringify } from './stringify';
 
-export { parse, stringify };
+export interface Options {
+  excludes?: Array<string> | ((name: string) => boolean);
+}
 
-export default function CssScope() {
-  return function (_Garfish: interfaces.Garfish): interfaces.Plugin {
-    let changed = false;
+const pluginName = 'css-scope';
+
+export function GarfishCssScope(options: Options = {}) {
+  return function (Garfish: interfaces.Garfish): interfaces.Plugin {
+    const disable = (appName: string) => {
+      const { excludes } = options;
+      if (Array.isArray(excludes)) return excludes.includes(appName);
+      if (typeof excludes === 'function') return excludes(appName);
+      return true;
+    };
+
     return {
-      name: 'css-scope',
+      name: pluginName,
       version: __VERSION__,
 
       beforeBootstrap() {
-        if (changed) return;
-        changed = true;
-        // const proto = Garfish.loader.StyleManager.prototype;
+        const loader = Garfish.loader;
+        loader.hooks.usePlugin({
+          name: pluginName,
 
-        // proto.parseStyleCode = function() {
-        //   try {
-        //     this.styleCode = parse(this.styleCode);
-        //   } catch(e) {
-        //     warn(e);
-        //   }
-        // }
-
-        // proto.getStyleCode = function() {
-        //   return ''
-        // }
+          loaded(data) {
+            const { scope, fileType } = data.value;
+            console.log(scope, fileType);
+            if (fileType === 'css' && !disable(scope)) {
+              const manager = data.value.resourceManager as StyleManager;
+              console.log(manager);
+            }
+            return data;
+          },
+        });
       },
     };
   };

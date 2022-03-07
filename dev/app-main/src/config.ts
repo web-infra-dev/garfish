@@ -1,5 +1,6 @@
 import GarfishInstance from 'garfish';
 import { GarfishEsModule } from '@garfish/es-module';
+import { GarfishCssScope } from '@garfish/css-scope';
 import { store } from './store';
 import { basename, localApps } from './constant';
 
@@ -57,7 +58,7 @@ let defaultConfig: RunInfo = {
   },
 
   // 插件列表
-  plugins: [GarfishEsModule()],
+  plugins: [GarfishEsModule(), GarfishCssScope()],
 
   // 开始加载子应用前触发该函数，支持异步函数，可以在该函数中执行异步操作，
   // 当返回 false 时表示中断子应用的加载以及后续流程，所有子应用加载都会触发该函数的调用

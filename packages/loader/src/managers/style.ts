@@ -4,12 +4,14 @@ import { Node, isAbsolute, transformUrl } from '@garfish/utils';
 const MATCH_CSS_URL = /url\(['"]?([^\)]+?)['"]?\)/g;
 
 export class StyleManager {
-  public url: string | null;
   public styleCode: string;
+  public url: string | null;
+  public scope: string | null;
 
   private depsStack = new Set();
 
   constructor(styleCode: string, url?: string) {
+    this.scope = null;
     this.url = url || null;
     this.styleCode = styleCode;
   }
@@ -26,12 +28,17 @@ export class StyleManager {
     }
   }
 
-  setScope(_scope: string) {
-    // Process css cope
+  // Provided to plugins to override this method
+  transformCode(code: string) {
+    return code;
   }
 
   setDep(node: Node) {
     this.depsStack.add(node);
+  }
+
+  setScope(scope: string) {
+    this.scope = scope;
   }
 
   isSameOrigin(node: Node) {
@@ -40,13 +47,14 @@ export class StyleManager {
 
   renderAsStyleElement(extraCode = '') {
     const node = document.createElement('style');
-    node.setAttribute('type', 'text/css');
     // prettier-ignore
-    node.textContent = extraCode + (
+    const code = extraCode + (
       this.styleCode
         ? this.styleCode
         : '/**empty style**/'
     );
+    node.setAttribute('type', 'text/css');
+    node.textContent = this.transformCode(code);
     return node;
   }
 

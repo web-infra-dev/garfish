@@ -230,7 +230,7 @@ export class DynamicNodeProcessor {
   append(context: Element, args: IArguments, originProcess: Function) {
     let convertedNode;
     let parentNode = context;
-    const { baseUrl } = this.sandbox.options;
+    const { baseUrl, namespace } = this.sandbox.options;
 
     // Deal with some static resource nodes
     if (sourceListTags.includes(this.tagName)) {
@@ -247,6 +247,7 @@ export class DynamicNodeProcessor {
       parentNode = this.findParentNodeInApp(context, 'head');
       if (baseUrl) {
         const manager = new StyleManager(this.el.textContent);
+        manager.setScope(namespace);
         manager.correctPath(baseUrl);
         this.el.textContent = manager.styleCode;
       }

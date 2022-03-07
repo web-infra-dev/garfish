@@ -552,6 +552,7 @@ export class App {
         const text = node.children[0] as Text;
         if (text) {
           const styleManager = new StyleManager(text.content, baseUrl);
+          styleManager.setScope(this.name);
           return entryManager.ignoreChildNodesCreation(
             styleManager.renderAsStyleElement(),
           );
