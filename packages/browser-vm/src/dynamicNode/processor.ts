@@ -245,12 +245,10 @@ export class DynamicNodeProcessor {
     // The style node needs to be placed in the sandbox root container
     else if (this.is('style')) {
       parentNode = this.findParentNodeInApp(context, 'head');
-      if (baseUrl) {
-        const manager = new StyleManager(this.el.textContent);
-        manager.setScope(namespace);
-        manager.correctPath(baseUrl);
-        this.el.textContent = manager.styleCode;
-      }
+      const manager = new StyleManager(this.el.textContent);
+      manager.setScope(namespace);
+      manager.correctPath(baseUrl);
+      this.el.textContent = manager.transformCode(manager.styleCode);
       convertedNode = this.el;
       this.sandbox.dynamicStyleSheetElementSet.add(this.el);
     }

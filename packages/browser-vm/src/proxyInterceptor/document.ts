@@ -36,17 +36,26 @@ export function createGetter(sandbox: Sandbox) {
       ? Reflect.get(target, p, receiver)
       : Reflect.get(document, p);
 
+    const setSandboxRef = (el) => {
+      if (isObject(el)) {
+        sandboxMap.setElementTag(el, sandbox);
+        if (__DEV__) {
+          el.__SANDBOX__ = true;
+        }
+      }
+      return el;
+    };
+
     if (rootNode) {
       if (p === 'createElement') {
         return function (tagName, options) {
           const el = value.call(document, tagName, options);
-          if (isObject(el)) {
-            sandboxMap.setElementTag(el, sandbox);
-            if (__DEV__) {
-              el.__SANDBOX__ = true;
-            }
-          }
-          return el;
+          return setSandboxRef(el);
+        };
+      } else if (p === 'createTextNode') {
+        return function (data) {
+          const el = value.call(document, data);
+          return setSandboxRef(el);
         };
       } else if (p === 'head') {
         return findTarget(rootNode, ['head', `div[${__MockHead__}]`]) || value;
