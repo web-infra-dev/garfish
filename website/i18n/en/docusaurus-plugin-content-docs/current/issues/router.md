@@ -4,7 +4,7 @@ slug: /issues/router
 order: 4
 ---
 
-The main application routing is currently only supported in `history` mode, the `basename` of the child application routing is based on the main application, please refer to [child application basename configuration](/napi/#basename) for details.
+The main application routing is currently only supported in `history` mode, the `basename` of the child application routing is based on the main application, please refer to [child application basename configuration](/api/#basename) for details.
 
 ## Why does the main application only support history mode?
 

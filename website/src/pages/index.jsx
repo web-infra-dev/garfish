@@ -13,15 +13,6 @@ import 'swiper/swiper-bundle.min.css';
 const notice = '';
 
 const customers = [
-  // 'https://sf1-ttcdn-tos.pstatp.com/obj/iceland/bookmarks/6978',
-  // 'https://sf1-ttcdn-tos.pstatp.com/obj/iceland/bookmarks/5',
-  // 'https://sf1-dycdn-tos.pstatp.com/obj/eden-cn/hbohpqnuvz/platform/titleimg.png',
-  // 'https://sf1-ttcdn-tos.pstatp.com/obj/iceland/bookmarks/6987',
-  // 'https://sf1-ttcdn-tos.pstatp.com/obj/iceland/bookmarks/7198',
-  // 'https://sf1-ttcdn-tos.pstatp.com/obj/iceland/app/1bc417a3-4301-41dd-9d7e-6e56c64c4aae',
-  // 'https://sf1-ttcdn-tos.pstatp.com/obj/iceland/bookmarks/8',
-  // 'https://sf1-ttcdn-tos.pstatp.com/obj/iceland/app/f120da05-e467-4449-896b-2fbccc492079',
-  // 'https://sf1-ttcdn-tos.pstatp.com/obj/iceland/app/1417c8fa-a2df-4e82-995b-05bd28b28536',
   'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/douyin.svg',
   'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/feishu.svg',
   'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/toutiao.svg',
@@ -53,7 +44,7 @@ const features = [
     description: '支持 vue、react、angular 多种框架混合使用',
   },
   {
-    title: 'Api 最大简洁化',
+    title: 'API 最大简洁化',
     imageUrl: 'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/feat-api.png',
     description: '在实际应用中使用方式极大简洁化',
   },
@@ -61,29 +52,29 @@ const features = [
     title: '路由驱动',
     imageUrl: 'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/router-drive.png',
     description: '支持配置路由激活信息可完成自动化挂载和销毁',
-  }
+  },
 ];
 
 
 const introductions = [
-  {
-    title: '简洁至上',
-    imageUrl: 'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/bottom/simple.svg',
-    imagePos: 'left',
-    description: 'Garfish 最大的特殊是将微前端在运行时所需要的能力进行了整合，用户无需过分关心底层的实现通过统一的封装，配置应用相关信息即可快速完成接入'
-  },
   // {
-  //   title: '框架生态',
-  //   imageUrl: '',
-  //   imagePos: 'right',
-  //   description: 'Garfish 目前已经与 xxx 进行了生态扩展和功能整合，并正在和 xx 落地微前端监控上的各项指标'
+  //   title: '简洁至上',
+  //   imageUrl: 'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/bottom/simple.svg',
+  //   imagePos: 'left',
+  //   description: 'Garfish 最大的特殊是将微前端在运行时所需要的能力进行了整合，用户无需过分关心底层的实现通过统一的封装，配置应用相关信息即可快速完成接入',
   // },
-  {
-    title: '面向未来',
-    imageUrl: 'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/bottom/for_feature.svg',
-    imagePos: 'left',
-    description: 'Garfish 目前正在探索对 ES Modules、 Webpack@5 等功能的落地'
-  }
+  // // {
+  // //   title: '框架生态',
+  // //   imageUrl: '',
+  // //   imagePos: 'right',
+  // //   description: 'Garfish 目前已经与 xxx 进行了生态扩展和功能整合，并正在和 xx 落地微前端监控上的各项指标'
+  // // },
+  // {
+  //   title: '面向未来',
+  //   imageUrl: 'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/bottom/for_feature.svg',
+  //   imagePos: 'left',
+  //   description: 'Garfish 目前正在探索对 ES Modules、 Webpack@5 等功能的落地',
+  // },
 ];
 
 SwiperCore.use([Pagination, Autoplay]);
@@ -151,12 +142,14 @@ function Introduction({ imageUrl, imagePos, title, description, index }) {
   function introductionItem(num) {
     return (
       <div className={clsx(styles.introductionContent, imagePos === 'right' ? styles.flexAlignRight : '')}>
-        {num % 2 ? (
+        {num % 2
+? (
           <div className={styles.introductionBody}>
             <h1>{title}</h1>
             <p>{description}</p>
           </div>
-        ) : (<img className={styles.introductionImage} src={imgUrl} />)
+        )
+: (<img className={styles.introductionImage} src={imgUrl} />)
         }
       </div>
     );

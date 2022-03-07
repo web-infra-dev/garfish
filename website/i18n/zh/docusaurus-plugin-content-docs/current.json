@@ -15,8 +15,8 @@
     "message": "进阶功能",
     "description": "The label for category 进阶功能 in sidebar guide"
   },
-  "sidebar.napi.category.Garfish methods": {
+  "sidebar.api.category.Garfish methods": {
     "message": "Garfish methods",
-    "description": "The label for category Garfish methods in sidebar napi"
+    "description": "The label for category Garfish methods in sidebar api"
   }
 }

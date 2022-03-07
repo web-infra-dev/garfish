@@ -10,6 +10,14 @@ es/
 .yarn/
 temp/
 /docs
+# .npmrc
+**/.angular
+
+# test result
+cypress/screenshots
+cypress/videos
+cypress/downloads
+
 
 # Editor directories and files
 .idea
@@ -29,6 +37,8 @@ test.js
 lerna-debug.log
 
 
-# lock files
+# use pnpm ignore lock files
 package-lock.json
+yarn.lock
 **/package-lock.json
+**/yarn.lock

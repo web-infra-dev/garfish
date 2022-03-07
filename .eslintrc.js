@@ -3,11 +3,15 @@ const NodeGlobals = ['module', 'require'];
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
+  ignorePatterns: ['**/dist', 'dev/', 'api-extractor.json', 'packages/*/dist'],
   parserOptions: {
     sourceType: 'module',
   },
+  plugins: ['@typescript-eslint'],
   rules: {
-    'no-unused-vars': [
+    'no-unused-vars': 'off',
+    // Fix "no-unused-vars" check on function parameters within TypeScript Types/Interfaces
+    '@typescript-eslint/no-unused-vars': [
       'error',
       // we are only using this rule to check for unused arguments since TS
       // catches unused variables but not args.
@@ -41,7 +45,13 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['scripts/*', '*.config.js', '.eslintrc.js', '**/__tests__/**'],
+      files: [
+        'scripts/**',
+        '*.config.js',
+        '.eslintrc.js',
+        '**/__tests__/**',
+        'packages/utils/src/test.ts',
+      ],
       rules: {
         'object-curly-newline': 'off',
         'no-restricted-globals': 'off',

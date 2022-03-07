@@ -1,0 +1,37 @@
+{
+  "name": "@garfish/hooks",
+  "version": "1.4.0",
+  "description": "hooks module.",
+  "keywords": [
+    "garfish",
+    "hooks"
+  ],
+  "author": "chentao.arthur <chentao.arthur@bytedance.com>",
+  "homepage": "http://garfish.bytedance.com",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsup src/index.ts",
+    "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  }
+}

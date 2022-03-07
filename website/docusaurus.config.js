@@ -1,5 +1,3 @@
-const path = require('path');
-
 module.exports = {
   title: 'Garfish',
   tagline: '微前端解决方案',
@@ -14,12 +12,12 @@ module.exports = {
   organizationName: 'ByteDance',
   projectName: 'Garfish Docs',
   customFields: {
-    slogan: 'Garfish 微前端解决方案',
+    slogan: 'Garfish 微前端框架',
     summary:
       '包含构建微前端系统时所需要的基本能力，任意前端框架均可使用。接入简单，可轻松将多个前端应用组合成内聚的单个产品',
   },
   themeConfig: {
-    sidebarCollapsible: true,
+    // sidebarCollapsible: true,
     hideableSidebar: true,
     colorMode: {
       // defaultMode: 'dark',
@@ -28,8 +26,7 @@ module.exports = {
     navbar: {
       logo: {
         alt: 'Garfish',
-        src:
-          'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/icons/garfish-icon.png',
+        src: 'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/icons/garfish-icon.png',
         srcDark:
           'https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/icons/garfish-icon.png',
       },
@@ -40,24 +37,15 @@ module.exports = {
           label: '文档',
           position: 'left',
         },
-        {
-          to: 'napi/',
-          label: 'API',
-          position: 'left',
-        },
+        // {
+        //   to: 'api/',
+        //   label: 'API',
+        //   position: 'left',
+        // },
         {
           to: 'issues/',
           label: '常见问题',
           position: 'left',
-        },
-        {
-          to: 'community/discuss',
-          label: '社区',
-          position: 'left',
-        },
-        {
-          type: 'localeDropdown',
-          position: 'right',
         },
         // {
         //   href:
@@ -86,15 +74,7 @@ module.exports = {
         // For Docs using Chinese, The `language` is recommended to set to:
         // ```
         language: ['en', 'zh'],
-        docsRouteBasePath: [
-          '/docs/',
-          '/napi/',
-          '/issues',
-          '/community',
-          // '/blog/',
-          // '/configuration/',
-          // '/plugin/',
-        ],
+        docsRouteBasePath: ['/guide', '/issues', '/quickStart', '/api'],
         docsDir: ['docs'],
         // ```
         // When applying `zh` in language, please install `nodejieba` in your project.
@@ -117,9 +97,15 @@ module.exports = {
         docs: {
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/bytedance/garfish',
+          editUrl: 'https://github.com/bytedance/garfish/tree/master/website',
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
+          remarkPlugins: [
+            [require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }],
+          ],
+        },
+        pages: {
+          remarkPlugins: [require('@docusaurus/remark-plugin-npm2yarn')],
         },
         blog: {
           showReadingTime: true,
@@ -137,16 +123,16 @@ module.exports = {
   ],
   i18n: {
     defaultLocale: 'zh-CN',
-    locales: ['en', 'zh-CN'],
+    locales: ['zh-CN'],
     localeConfigs: {
-      en: {
-        label: 'English (Auto)',
-        direction: 'ltr',
-      },
-      'zh-CN': {
-        label: '简体中文（中国）',
-        direction: 'ltr',
-      },
+      // en: {
+      //   label: 'English (Auto)',
+      //   direction: 'ltr',
+      // },
+      // 'zh-CN': {
+      //   label: '简体中文（中国）',
+      //   direction: 'ltr',
+      // },
     },
   },
 };

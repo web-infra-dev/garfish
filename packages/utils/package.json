@@ -1,0 +1,41 @@
+{
+  "name": "@garfish/utils",
+  "version": "1.4.0",
+  "description": "utils module.",
+  "keywords": [
+    "garfish",
+    "utils"
+  ],
+  "author": "zhouxiao <codingzx@gmail.com>",
+  "homepage": "https://github.com/bytedance/garfish",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsup src/index.ts",
+    "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
+  "devDependencies": {
+    "@garfish/core": "workspace:*"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "gitHead": "e8bf48ea8ca8db408a4a0a1cdab8ce4a50ab279b"
+}

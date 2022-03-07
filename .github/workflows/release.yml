@@ -1,34 +1,44 @@
-# This is a basic workflow that is manually triggered
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release Version(minor,patch,preminor,prepatch)'
+        required: true
+        default: 'patch'
+      branch:
+        description: 'Release Branch(confirm release branch)'
+        required: true
+        default: 'master'
 
-name: release
-
-# Controls when the action will run. Workflow runs when manually triggered using the UI
-# or API.
-on: workflow_dispatch
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "greet"
   release:
-    runs-on: ubuntu-latest
-    env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [16.10.0]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-          cache: 'yarn'
-          registry-url: https://registry.npmjs.org/
-          always-auth: true
-      - name: Configure Git User
-        run: |
-          git config --global user.email "codingzx@gmail.com"
-          git config --global user.name "garfish-ci"
-      - uses: actions/checkout@v2
-      - name: install and build
-        run: |
-          yarn setup
-          yarn build:all
-      - name: release
-        run: yarn release
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.branch }}
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Cache .pnpm-store
+      uses: actions/cache@v2
+      with:
+        path: ~/.pnpm-store
+        key: ${{ runner.os }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+    - name: Install pnpm
+      run: curl -f https://get.pnpm.io/v6.14.js | node - add --global pnpm@6
+    - name: install dependency
+      run: pnpm install --filter=\!garfish-docs
+    - name: release
+      run: node ./scripts/release.js --version=${{ github.event.inputs.version }}
+      env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    - name: changelog
+      run: npx conventional-github-releaser -p angular
+      env:
+        CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{secrets.GITHUB_TOKEN}}

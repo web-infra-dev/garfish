@@ -1,0 +1,5 @@
+src/
+node_modules/
+__tests__/
+.npmignore
+tsup.config.ts

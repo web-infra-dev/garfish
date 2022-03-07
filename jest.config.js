@@ -3,6 +3,8 @@
 
 module.exports = {
   clearMocks: true,
+  testTimeout: 20000,
+  testEnvironment: 'jsdom',
   preset: 'jest-puppeteer',
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: ['__tests__', '/node_modules/'],
@@ -10,7 +12,6 @@ module.exports = {
   globals: {
     __DEV__: true,
     __TEST__: true,
-    __BROWSER__: false,
     __VERSION__: '"unknow"',
   },
   preset: 'ts-jest',
@@ -20,9 +21,9 @@ module.exports = {
   ],
   transform: { '\\.js$': ['babel-jest'], '\\.ts$': 'ts-jest' },
   rootDir: __dirname,
-  testMatch: ['<rootDir>/packages/runtime/**/__tests__/**/*spec.[jt]s?(x)'],
+  testMatch: ['<rootDir>/packages/**/__tests__/**/*spec.[jt]s?(x)'],
   testPathIgnorePatterns: ['/node_modules/', '/dev/'],
   moduleNameMapper: {
-    '@garfish/(.*)': '<rootDir>packages/runtime/$1/src',
+    '@garfish/(.*)': '<rootDir>packages/$1/src',
   },
 };

@@ -21,6 +21,5 @@ features:
   - title: 生产可用
     details: 已在字节内经受过足够大量的线上系统的考验及打磨，健壮性值得信赖
 footer: |
-  <!-- 遵循<a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener"> Apache License, Version 2.0</a><br> -->
   Copyright © 2021 Bytedance.
 ---
