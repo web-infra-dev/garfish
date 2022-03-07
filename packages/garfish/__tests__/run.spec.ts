@@ -43,6 +43,13 @@ async function noRenderApp(container: Element) {
   expect(appContainer).toHaveLength(0);
 }
 
+const mockBeforeLoad = jest.fn();
+const mockAfterLoad = jest.fn();
+const mockBeforeMount = jest.fn();
+const mockAfterMount = jest.fn();
+const mockBeforeUnmount = jest.fn();
+const mockAfterUnmount = jest.fn();
+
 describe('Core: run methods', () => {
   let GarfishInstance: Garfish;
 
@@ -67,6 +74,12 @@ describe('Core: run methods', () => {
           entry: './resources/reactApp.html',
         },
       ],
+      beforeLoad: mockBeforeLoad,
+      afterLoad: mockAfterLoad,
+      beforeMount: mockBeforeMount,
+      afterMount: mockAfterMount,
+      beforeUnmount: mockBeforeUnmount,
+      afterUnmount: mockAfterUnmount,
     });
   });
 
@@ -77,12 +90,25 @@ describe('Core: run methods', () => {
 
     GarfishInstance.router.push({ path: '/vue-app' });
     await vueAppInDocument(container);
+    expect(mockBeforeLoad.mock.calls[0][0].name).toBe('vue-app');
+    expect(mockAfterLoad.mock.calls[0][0].name).toBe('vue-app');
+    expect(mockBeforeMount.mock.calls[0][0].name).toBe('vue-app');
+    expect(mockAfterMount.mock.calls[0][0].name).toBe('vue-app');
 
     GarfishInstance.router.push({ path: '/react-app' });
     await reactAppInDocument(container);
+    expect(mockBeforeMount.mock.calls[0][0].name).toBe('vue-app');
+    expect(mockAfterMount.mock.calls[0][0].name).toBe('vue-app');
+
+    expect(mockBeforeLoad.mock.calls[1][0].name).toBe('react-app');
+    expect(mockAfterLoad.mock.calls[1][0].name).toBe('react-app');
+    expect(mockBeforeMount.mock.calls[1][0].name).toBe('react-app');
+    expect(mockAfterMount.mock.calls[1][0].name).toBe('react-app');
 
     GarfishInstance.router.push({ path: '/' });
     await noRenderApp(container);
+    expect(mockBeforeMount.mock.calls[1][0].name).toBe('react-app');
+    expect(mockAfterMount.mock.calls[1][0].name).toBe('react-app');
 
     document.body.removeChild(container);
   });
