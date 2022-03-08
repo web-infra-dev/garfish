@@ -21,6 +21,7 @@ export const localApps: AppInfo = [
     name: 'react16',
     activeWhen: '/react16',
     entry: getProxyHost(portMap['dev/react16'].port),
+    cache: false,
   },
   {
     name: 'vue3',

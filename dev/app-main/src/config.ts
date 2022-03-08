@@ -31,7 +31,13 @@ let defaultConfig: RunInfo = {
 
     // 覆盖子应用的执行上下文，使用自定义的执行上下文，例如子应用 localStorage 使用当前主应用 localStorage
     // 仅在 snapshot: false 时有效
-    modules: [() => ({ override: { localStorage: window.localStorage } })],
+    modules: [
+      () => ({
+        override: {
+          localStorage: window.localStorage,
+        },
+      }),
+    ],
 
     // 默认值为 false. snapshot 表明是否开启快照沙箱，默认情况下关闭快照沙箱，使用 VM 沙箱（VM 沙箱支持多实例）
     // 当使用 loadApp 手动挂载子应用时，请确保 snapshot 设置为 false

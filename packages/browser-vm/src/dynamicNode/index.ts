@@ -22,25 +22,23 @@ function injector(current: Function, methodName: string) {
     const sandbox = sandboxMap.get(el);
     const originProcess = () => current.apply(this, arguments);
 
-    if (el && this?.tagName?.toLowerCase() === 'style') {
-      const { baseUrl, namespace, styleScopeId } = sandbox?.options || {};
-      const manager = new StyleManager(el.textContent);
-
-      manager.correctPath(baseUrl);
-      manager.setScope({
-        appName: namespace,
-        rootElId: styleScopeId(),
-      });
-      el.textContent = manager.transformCode(manager.styleCode);
-      return originProcess();
-    }
-
     if (sandbox) {
-      const processor = new DynamicNodeProcessor(el, sandbox, methodName);
-      return processor.append(this, arguments, originProcess);
-    } else {
-      return originProcess();
+      if (el && this?.tagName?.toLowerCase() === 'style') {
+        const manager = new StyleManager(el.textContent);
+        const { baseUrl, namespace, styleScopeId } = sandbox.options;
+        manager.correctPath(baseUrl);
+        manager.setScope({
+          appName: namespace,
+          rootElId: styleScopeId(),
+        });
+        el.textContent = manager.transformCode(manager.styleCode);
+        return originProcess();
+      } else {
+        const processor = new DynamicNodeProcessor(el, sandbox, methodName);
+        return processor.append(this, arguments, originProcess);
+      }
     }
+    return originProcess();
   };
 }
 
@@ -53,12 +51,12 @@ function injectorRemoveChild(current: Function, methodName: string) {
       // by removeChild deleted by the tag determine whether have been removed
       return current.apply(this, arguments);
     };
+
     if (sandbox) {
       const processor = new DynamicNodeProcessor(el, sandbox, methodName);
       return processor.removeChild(this, originProcess);
-    } else {
-      return originProcess();
     }
+    return originProcess();
   };
 }
 
