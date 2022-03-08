@@ -121,7 +121,7 @@ importers:
       ts-node: ^8.3.0
       tslib: ^2.3.1
       tslint: ^6.1.3
-      typescript: ^4.4.2
+      typescript: 4.4.3
       webpack: ^5.20.0
       zone.js: ^0.10.3
     dependencies:
@@ -136,11 +136,11 @@ importers:
       tslib: 2.3.1
       zone.js: 0.10.3
     devDependencies:
-      '@angular-builders/custom-webpack': 13.1.0_d160d25e95363a0123cb776e4b994ce1
-      '@angular-devkit/build-angular': 13.2.5_7ad5caafe524180c42a4ae8201648c97
+      '@angular-builders/custom-webpack': 13.1.0_148f7f692da3d54bc1b8dd44c7e8713f
+      '@angular-devkit/build-angular': 13.2.5_0b190c726a062f3058758f846d2d8c52
       '@angular/cli': 13.2.5
       '@angular/compiler': 13.2.4
-      '@angular/compiler-cli': 13.2.4_b9daca660e0eb49abf4ebf5b3ae28bf0
+      '@angular/compiler-cli': 13.2.4_7469c364011dec07705bc61a626cb60f
       '@types/jasmine': 3.5.14
       '@types/jasminewd2': 2.0.10
       '@types/node': 12.20.46
@@ -154,9 +154,9 @@ importers:
       karma-jasmine: 4.0.1_karma@5.0.9
       karma-jasmine-html-reporter: 1.7.0_427afce3fd0028b16e4a7450aedbb51f
       protractor: 7.0.0
-      ts-node: 8.3.0_typescript@4.5.5
-      tslint: 6.1.3_typescript@4.5.5
-      typescript: 4.5.5
+      ts-node: 8.3.0_typescript@4.4.3
+      tslint: 6.1.3_typescript@4.4.3
+      typescript: 4.4.3
       webpack: 5.69.1
 
   dev/app-main:
@@ -560,7 +560,6 @@ importers:
 
   packages/bridge:
     specifiers:
-      '@garfish/bridge': ^1.4.0
       '@garfish/browser-snapshot': workspace:*
       '@garfish/browser-vm': workspace:*
       '@garfish/core': workspace:*
@@ -571,7 +570,6 @@ importers:
       '@types/react16': npm:@types/react@^16
       '@types/react17': npm:@types/react@^17
     dependencies:
-      '@garfish/bridge': 'link:'
       '@garfish/browser-snapshot': link:../browser-snapshot
       '@garfish/browser-vm': link:../browser-vm
       '@garfish/core': link:../core
@@ -823,15 +821,15 @@ packages:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.4
 
-  /@angular-builders/custom-webpack/13.1.0_d160d25e95363a0123cb776e4b994ce1:
+  /@angular-builders/custom-webpack/13.1.0_148f7f692da3d54bc1b8dd44c7e8713f:
     resolution: {integrity: sha512-qhtnAv1i7agk14zeKZZfXjrckYt37OZ+3tsTBLhf3ZFbwREK8L1SNi8xhZ1j1JLGsf2Dp0GEcZrSYeFDweo0WA==}
     engines: {node: '>=12.20.0'}
     dependencies:
       '@angular-devkit/architect': 0.1302.5
-      '@angular-devkit/build-angular': 13.2.5_7ad5caafe524180c42a4ae8201648c97
+      '@angular-devkit/build-angular': 13.2.5_0b190c726a062f3058758f846d2d8c52
       '@angular-devkit/core': 13.2.5
       lodash: 4.17.21
-      ts-node: 10.5.0_148fc976cad35106b85cc579dc773e2a
+      ts-node: 10.5.0_a9b453fa99bba2b4cdd60d730860b57f
       tsconfig-paths: 3.12.0
       webpack-merge: 5.8.0
     transitivePeerDependencies:
@@ -869,7 +867,7 @@ packages:
       - chokidar
     dev: true
 
-  /@angular-devkit/build-angular/13.2.5_7ad5caafe524180c42a4ae8201648c97:
+  /@angular-devkit/build-angular/13.2.5_0b190c726a062f3058758f846d2d8c52:
     resolution: {integrity: sha512-ny80YoLOrS6USJCzCChj1ZOEVTldcx0KWo3e86barmt5iVA2ekrnsQ02Bor5Bl5NlZFpE6Fu0FCXFAQZElFmcg==}
     engines: {node: ^12.20.0 || ^14.15.0 || >=16.10.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
     peerDependencies:
@@ -899,7 +897,7 @@ packages:
       '@angular-devkit/architect': 0.1302.5
       '@angular-devkit/build-webpack': 0.1302.5_4df292f2573ba77e77217391b9684f0a
       '@angular-devkit/core': 13.2.5
-      '@angular/compiler-cli': 13.2.4_b9daca660e0eb49abf4ebf5b3ae28bf0
+      '@angular/compiler-cli': 13.2.4_7469c364011dec07705bc61a626cb60f
       '@babel/core': 7.16.12
       '@babel/generator': 7.16.8
       '@babel/helper-annotate-as-pure': 7.16.7
@@ -910,7 +908,7 @@ packages:
       '@babel/runtime': 7.16.7
       '@babel/template': 7.16.7
       '@discoveryjs/json-ext': 0.5.6
-      '@ngtools/webpack': 13.2.5_db574d8e02a0eedd3c82d59dfced4780
+      '@ngtools/webpack': 13.2.5_ec2ec47b9f13e83970d83f1ad588b2a4
       ansi-colors: 4.1.1
       babel-loader: 8.2.3_e748cba1f5e972defd8ae51292b4033f
       babel-plugin-istanbul: 6.1.1
@@ -957,7 +955,7 @@ packages:
       text-table: 0.2.0
       tree-kill: 1.2.2
       tslib: 2.3.1
-      typescript: 4.5.5
+      typescript: 4.4.3
       webpack: 5.67.0_esbuild@0.14.22
       webpack-dev-middleware: 5.3.0_webpack@5.67.0
       webpack-dev-server: 4.7.3_webpack@5.67.0
@@ -1077,7 +1075,7 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /@angular/compiler-cli/13.2.4_b9daca660e0eb49abf4ebf5b3ae28bf0:
+  /@angular/compiler-cli/13.2.4_7469c364011dec07705bc61a626cb60f:
     resolution: {integrity: sha512-ORqyQyU83lvODPD3BmOzPtZBluCSnr415qRku74H3wCbS9GURpDUA2yh5ckpQPXrhdVgHcWmGJlbGcA2KgTaUw==}
     engines: {node: ^12.20.0 || ^14.15.0 || >=16.10.0}
     hasBin: true
@@ -1095,7 +1093,7 @@ packages:
       semver: 7.3.5
       sourcemap-codec: 1.4.8
       tslib: 2.3.1
-      typescript: 4.5.5
+      typescript: 4.4.3
       yargs: 17.3.1
     transitivePeerDependencies:
       - supports-color
@@ -4973,7 +4971,7 @@ packages:
       glob-to-regexp: 0.3.0
     dev: true
 
-  /@ngtools/webpack/13.2.5_db574d8e02a0eedd3c82d59dfced4780:
+  /@ngtools/webpack/13.2.5_ec2ec47b9f13e83970d83f1ad588b2a4:
     resolution: {integrity: sha512-obiPvwPe+UJUO8cfNbBxukLKG30F+gLF5/erexwklRknJzS4KP8ciH2on6XlTuXUahpDjbO0pffugFE2I/IszQ==}
     engines: {node: ^12.20.0 || ^14.15.0 || >=16.10.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
     peerDependencies:
@@ -4981,8 +4979,8 @@ packages:
       typescript: '>=4.4.3 <4.6'
       webpack: ^5.30.0
     dependencies:
-      '@angular/compiler-cli': 13.2.4_b9daca660e0eb49abf4ebf5b3ae28bf0
-      typescript: 4.5.5
+      '@angular/compiler-cli': 13.2.4_7469c364011dec07705bc61a626cb60f
+      typescript: 4.4.3
       webpack: 5.67.0_esbuild@0.14.22
     dev: true
 
@@ -9135,7 +9133,7 @@ packages:
       source-map: 0.5.7
       sprintf-js: 1.1.2
       tslib: 1.14.1
-      tslint: 6.1.3_typescript@4.5.5
+      tslint: 6.1.3_typescript@4.4.3
       zone.js: 0.10.3
     dev: true
 
@@ -22856,7 +22854,7 @@ packages:
       yargs-parser: 20.2.9
     dev: true
 
-  /ts-node/10.5.0_148fc976cad35106b85cc579dc773e2a:
+  /ts-node/10.5.0_a9b453fa99bba2b4cdd60d730860b57f:
     resolution: {integrity: sha512-6kEJKwVxAJ35W4akuiysfKwKmjkbYxwQMTBaAxo9KKAx/Yd26mPUyhGz3ji+EsJoAgrLqVsYHNuuYwQe22lbtw==}
     hasBin: true
     peerDependencies:
@@ -22882,12 +22880,12 @@ packages:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 4.5.5
+      typescript: 4.4.3
       v8-compile-cache-lib: 3.0.0
       yn: 3.1.1
     dev: true
 
-  /ts-node/8.3.0_typescript@4.5.5:
+  /ts-node/8.3.0_typescript@4.4.3:
     resolution: {integrity: sha512-dyNS/RqyVTDcmNM4NIBAeDMpsAdaQ+ojdf0GOLqE6nwJOgzEkdRNzJywhDfwnuvB10oa6NLVG1rUJQCpRN7qoQ==}
     engines: {node: '>=4.2.0'}
     hasBin: true
@@ -22898,7 +22896,7 @@ packages:
       diff: 4.0.2
       make-error: 1.3.6
       source-map-support: 0.5.21
-      typescript: 4.5.5
+      typescript: 4.4.3
       yn: 3.1.1
     dev: true
 
@@ -22929,7 +22927,7 @@ packages:
   /tslib/2.3.1:
     resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
 
-  /tslint/6.1.3_typescript@4.5.5:
+  /tslint/6.1.3_typescript@4.4.3:
     resolution: {integrity: sha512-IbR4nkT96EQOvKE2PW/djGz8iGNeJ4rF2mBfiYaR/nvUWYKJhLwimoJKgjIFEIDibBtOevj7BqCRL4oHeWWUCg==}
     engines: {node: '>=4.8.0'}
     deprecated: TSLint has been deprecated in favor of ESLint. Please see https://github.com/palantir/tslint/issues/4534 for more information.
@@ -22949,8 +22947,8 @@ packages:
       resolve: 1.22.0
       semver: 5.7.1
       tslib: 1.14.1
-      tsutils: 2.29.0_typescript@4.5.5
-      typescript: 4.5.5
+      tsutils: 2.29.0_typescript@4.4.3
+      typescript: 4.4.3
     dev: true
 
   /tsscmp/1.0.6:
@@ -22986,13 +22984,13 @@ packages:
       - ts-node
     dev: true
 
-  /tsutils/2.29.0_typescript@4.5.5:
+  /tsutils/2.29.0_typescript@4.4.3:
     resolution: {integrity: sha512-g5JVHCIJwzfISaXpXE1qvNalca5Jwob6FjI4AoPlqMusJ6ftFE7IkkFoMhVLRgK+4Kx3gkzb8UZK5t5yTTvEmA==}
     peerDependencies:
       typescript: '>=2.1.0 || >=2.1.0-dev || >=2.2.0-dev || >=2.3.0-dev || >=2.4.0-dev || >=2.5.0-dev || >=2.6.0-dev || >=2.7.0-dev || >=2.8.0-dev || >=2.9.0-dev || >= 3.0.0-dev || >= 3.1.0-dev'
     dependencies:
       tslib: 1.14.1
-      typescript: 4.5.5
+      typescript: 4.4.3
     dev: true
 
   /tsutils/3.21.0_typescript@4.4.3:
@@ -23090,6 +23088,7 @@ packages:
     resolution: {integrity: sha512-TCTIul70LyWe6IJWT8QSYeA54WQe8EjQFU4wY52Fasj5UKx88LNYKCgBEHcOMOrFF1rKGbD8v/xcNWVUq9SymA==}
     engines: {node: '>=4.2.0'}
     hasBin: true
+    dev: false
 
   /typical/4.0.0:
     resolution: {integrity: sha512-VAH4IvQ7BDFYglMd7BPRDfLgxZZX4O4TFcRDA6EN5X7erNJJq+McIEp8np9aVtxrCJ6qx4GTYVfOWNjcqwZgRw==}
