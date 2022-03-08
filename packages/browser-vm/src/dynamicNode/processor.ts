@@ -90,7 +90,7 @@ export class DynamicNodeProcessor {
 
     if (!type || isCss(parseContentType(type))) {
       if (href) {
-        const { baseUrl, namespace = '' } = this.sandbox.options;
+        const { baseUrl, namespace, styleScopeId } = this.sandbox.options;
         const fetchUrl = baseUrl ? transformUrl(baseUrl, href) : href;
 
         this.sandbox.loader
@@ -98,6 +98,10 @@ export class DynamicNodeProcessor {
           .then(({ resourceManager: styleManager }) => {
             this.dispatchEvent('load');
             styleManager.correctPath();
+            styleManager.setScope({
+              appName: namespace,
+              rootElId: styleScopeId(),
+            });
             callback(styleManager.renderAsStyleElement());
           })
           .catch((e) => {
@@ -129,7 +133,7 @@ export class DynamicNodeProcessor {
 
     if (!type || isJs(mimeType) || isModule || isJsonp(mimeType, src)) {
       // The "src" higher priority
-      const { baseUrl, namespace = '' } = this.sandbox.options;
+      const { baseUrl, namespace } = this.sandbox.options;
       if (src) {
         const fetchUrl = baseUrl ? transformUrl(baseUrl, src) : src;
         this.sandbox.loader
@@ -230,7 +234,7 @@ export class DynamicNodeProcessor {
   append(context: Element, args: IArguments, originProcess: Function) {
     let convertedNode;
     let parentNode = context;
-    const { baseUrl, namespace } = this.sandbox.options;
+    const { baseUrl, namespace, styleScopeId } = this.sandbox.options;
 
     // Deal with some static resource nodes
     if (sourceListTags.includes(this.tagName)) {
@@ -247,7 +251,10 @@ export class DynamicNodeProcessor {
       parentNode = this.findParentNodeInApp(context, 'head');
       const manager = new StyleManager(this.el.textContent);
       manager.correctPath(baseUrl);
-      manager.setAppName(namespace);
+      manager.setScope({
+        appName: namespace,
+        rootElId: styleScopeId(),
+      });
       this.el.textContent = manager.transformCode(manager.styleCode);
       convertedNode = this.el;
       this.sandbox.dynamicStyleSheetElementSet.add(this.el);

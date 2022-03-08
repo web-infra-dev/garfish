@@ -596,7 +596,10 @@ importers:
       eventemitter2: 6.4.5
 
   packages/css-scope:
-    specifiers: {}
+    specifiers:
+      '@garfish/utils': workspace:*
+    dependencies:
+      '@garfish/utils': link:../utils
 
   packages/es-module:
     specifiers:

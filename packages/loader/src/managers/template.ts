@@ -9,7 +9,10 @@ import {
 
 type Renderer = Record<string, (node: Node) => Element | Comment>;
 
+let id = 0;
+
 export class TemplateManager {
+  public id = id++;
   public url: string | null;
   public DOMApis = new DOMApis();
   public astTree: Array<Node> = [];
@@ -137,6 +140,7 @@ export class TemplateManager {
   clone() {
     // @ts-ignore
     const cloned = new this.constructor();
+    cloned.id = this.id;
     cloned.url = this.url;
     cloned.astTree = this.astTree;
     cloned.pretreatmentStore = this.pretreatmentStore;

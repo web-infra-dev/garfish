@@ -29,7 +29,6 @@ function asyncNodeAttribute(from: Element, to: Element) {
 export const appContainerId = 'garfish_app_for';
 
 export function createAppContainer(appInfo: interfaces.AppInfo) {
-  const name = appInfo.name;
   // Create a temporary node, which is destroyed by the module itself
   let htmlNode: HTMLDivElement | HTMLHtmlElement =
     document.createElement('div');
@@ -45,7 +44,8 @@ export function createAppContainer(appInfo: interfaces.AppInfo) {
     htmlNode.setAttribute(__MockHtml__, '');
     appContainer.appendChild(htmlNode);
   }
-  appContainer.id = `${appContainerId}_${name}_${createKey()}`;
+
+  appContainer.id = `${appContainerId}_${appInfo.name}_${createKey()}`;
 
   return {
     htmlNode,

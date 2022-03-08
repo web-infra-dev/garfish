@@ -1,4 +1,7 @@
+let id = 0;
+
 export class ModuleManager {
+  public id = id++;
   public moduleCode: string;
   public url: string | null;
   public originUrl?: string;
@@ -19,6 +22,7 @@ export class ModuleManager {
   clone() {
     // @ts-ignore
     const cloned = new this.constructor();
+    cloned.id = this.id;
     cloned.url = this.url;
     cloned.alias = this.alias;
     cloned.moduleCode = this.moduleCode;

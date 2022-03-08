@@ -552,7 +552,10 @@ export class App {
         const text = node.children[0] as Text;
         if (text) {
           const styleManager = new StyleManager(text.content, baseUrl);
-          styleManager.setAppName(this.name);
+          styleManager.setScope({
+            appName: this.name,
+            rootElId: this.appContainer.id,
+          });
           return entryManager.ignoreChildNodesCreation(
             styleManager.renderAsStyleElement(),
           );
@@ -566,6 +569,10 @@ export class App {
             manager.isSameOrigin(node),
           );
           if (styleManager) {
+            styleManager.setScope({
+              appName: this.name,
+              rootElId: this.appContainer.id,
+            });
             return styleManager.renderAsStyleElement(
               __DEV__ ? `\n/*${DOMApis.createLinkCommentNode(node)}*/\n` : '',
             );

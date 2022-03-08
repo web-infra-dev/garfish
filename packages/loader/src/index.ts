@@ -168,13 +168,8 @@ export class Loader {
 
         // Use result.url, resources may be redirected
         const resourceManager: Manager | null = managerCtor
-          ? new managerCtor(code, result.url, scope)
+          ? new managerCtor(code, result.url)
           : null;
-
-        // Set css scope
-        if (fileType === FileTypes.css) {
-          (resourceManager as StyleManager).setAppName(scope);
-        }
 
         // The results will be cached this time.
         // So, you can transform the request result.

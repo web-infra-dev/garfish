@@ -23,10 +23,14 @@ function injector(current: Function, methodName: string) {
     const originProcess = () => current.apply(this, arguments);
 
     if (el && this?.tagName?.toLowerCase() === 'style') {
-      const { baseUrl, namespace } = sandbox?.options || {};
+      const { baseUrl, namespace, styleScopeId } = sandbox?.options || {};
       const manager = new StyleManager(el.textContent);
+
       manager.correctPath(baseUrl);
-      manager.setAppName(namespace);
+      manager.setScope({
+        appName: namespace,
+        rootElId: styleScopeId(),
+      });
       el.textContent = manager.transformCode(manager.styleCode);
       return originProcess();
     }

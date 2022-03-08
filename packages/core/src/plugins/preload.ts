@@ -24,8 +24,7 @@ const isSlowNetwork = () =>
       /(2|3)g/.test((navigator as any).connection.effectiveType)
     : false;
 
-const idleCallback =
-  (window as any).requestIdleCallback || window.requestAnimationFrame;
+const idleCallback = window.requestIdleCallback || window.requestAnimationFrame;
 
 export const requestIdleCallback =
   __TEST__ || typeof idleCallback !== 'function'

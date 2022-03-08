@@ -84,7 +84,7 @@ export class Sandbox {
 
   constructor(options: SandboxOptions) {
     // Default sandbox config
-    const defaultOptions = {
+    const defaultOptions: SandboxOptions = {
       baseUrl: '',
       namespace: '',
       modules: [],
@@ -93,6 +93,7 @@ export class Sandbox {
       disableWith: false,
       strictIsolation: false,
       el: () => null,
+      styleScopeId: () => '',
       protectVariable: () => [],
       insulationVariable: () => [],
     };

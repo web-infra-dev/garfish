@@ -1,6 +1,7 @@
 /* eslint-disable quotes */
 // http://www.w3.org/TR/CSS21/grammar.html
 // https://github.com/visionmedia/css-parse/pull/49#issuecomment-30088027
+import { error as throwError } from '@garfish/utils';
 import {
   Node,
   RuleNode,
@@ -82,7 +83,7 @@ export function parse(css: string, options?: CssParserOptions) {
     if (options.silent) {
       errorsList.push(err);
     } else {
-      throw err;
+      throwError(err);
     }
   }
 

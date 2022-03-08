@@ -120,6 +120,7 @@ function createOptions(Garfish: interfaces.Garfish) {
           strictIsolation: Boolean(appInfo.sandbox?.strictIsolation),
 
           el: () => appInstance.htmlNode,
+          styleScopeId: () => appInstance.appContainer.id,
           protectVariable: () => appInfo.protectVariable || [],
           insulationVariable: () => {
             return [

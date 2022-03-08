@@ -1,17 +1,25 @@
 import { Node, isAbsolute, transformUrl } from '@garfish/utils';
 
+let id = 0;
+
 // Match url in css
 const MATCH_CSS_URL = /url\(['"]?([^\)]+?)['"]?\)/g;
 
+interface ScopeData {
+  appName: string;
+  rootElId: string;
+}
+
 export class StyleManager {
+  public id = id++;
   public styleCode: string;
   public url: string | null;
-  public appName: string | null;
+  public scopeData: ScopeData | null;
 
   private depsStack = new Set();
 
   constructor(styleCode: string, url?: string) {
-    this.appName = null;
+    this.scopeData = null;
     this.url = url || null;
     this.styleCode = styleCode;
   }
@@ -37,8 +45,8 @@ export class StyleManager {
     this.depsStack.add(node);
   }
 
-  setAppName(appName: string) {
-    this.appName = appName;
+  setScope(data: ScopeData) {
+    this.scopeData = data;
   }
 
   isSameOrigin(node: Node) {
@@ -61,8 +69,10 @@ export class StyleManager {
   clone() {
     // @ts-ignore
     const cloned = new this.constructor();
+    cloned.id = this.id;
     cloned.url = this.url;
     cloned.styleCode = this.styleCode;
+    cloned.scopeData = this.scopeData;
     cloned.depsStack = new Set(this.depsStack);
     return cloned;
   }
