@@ -1,7 +1,5 @@
 import { Node, isAbsolute, transformUrl } from '@garfish/utils';
 
-let id = 0;
-
 // Match url in css
 const MATCH_CSS_URL = /url\(['"]?([^\)]+?)['"]?\)/g;
 
@@ -11,7 +9,6 @@ interface ScopeData {
 }
 
 export class StyleManager {
-  public id = id++;
   public styleCode: string;
   public url: string | null;
   public scopeData: ScopeData | null;
@@ -69,7 +66,6 @@ export class StyleManager {
   clone() {
     // @ts-ignore
     const cloned = new this.constructor();
-    cloned.id = this.id;
     cloned.url = this.url;
     cloned.styleCode = this.styleCode;
     cloned.scopeData = this.scopeData;

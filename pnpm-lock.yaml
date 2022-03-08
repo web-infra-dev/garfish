@@ -598,8 +598,10 @@ importers:
   packages/css-scope:
     specifiers:
       '@garfish/utils': workspace:*
+      spark-md5: 3.0.2
     dependencies:
       '@garfish/utils': link:../utils
+      spark-md5: registry.npmjs.org/spark-md5/3.0.2
 
   packages/es-module:
     specifiers:
@@ -9247,6 +9249,7 @@ packages:
   /colors/1.4.0:
     resolution: {integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==}
     engines: {node: '>=0.1.90'}
+    requiresBuild: true
     dev: true
 
   /combine-promises/1.1.0:
@@ -19814,7 +19817,7 @@ packages:
     resolution: {integrity: sha512-1JU/8q+VgFZyxwrJ+SVIOsh+KywWGpds3NTqikiKpDMZWScmAYyKIgqkO+ARvNWJfXeXR1zxz7aHF4u4CyH6vQ==}
     engines: {node: '>=0.10'}
     dependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: registry.npmjs.org/graceful-fs/4.2.9
       micromatch: 3.1.10
       readable-stream: 2.3.7
     dev: true
@@ -25638,6 +25641,12 @@ packages:
     engines: {node: '>=0.10.0'}
     requiresBuild: true
     optional: true
+
+  registry.npmjs.org/spark-md5/3.0.2:
+    resolution: {integrity: sha512-wcFzz9cDfbuqe0FZzfi2or1sgyIrsDwmPwfZC4hiNidPdPINjeUwNfv5kldczoEAcjl9Y1L3SM7Uz2PUEQzxQw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/spark-md5/-/spark-md5-3.0.2.tgz}
+    name: spark-md5
+    version: 3.0.2
+    dev: false
 
   registry.npmjs.org/supports-color/5.5.0:
     resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/supports-color/-/supports-color-5.5.0.tgz}

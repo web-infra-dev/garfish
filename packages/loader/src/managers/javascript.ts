@@ -1,9 +1,6 @@
 import { Node } from '@garfish/utils';
 
-let id = 0;
-
 export class JavaScriptManager {
-  public id = id++;
   public async: boolean;
   public mimeType: string;
   public scriptCode: string;
@@ -46,7 +43,6 @@ export class JavaScriptManager {
   clone() {
     // @ts-ignore
     const cloned = new this.constructor();
-    cloned.id = this.id;
     cloned.url = this.url;
     cloned.async = this.async;
     cloned.mimeType = this.mimeType;

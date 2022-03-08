@@ -1,3 +1,4 @@
+import SparkMD5 from 'spark-md5';
 import { warn } from '@garfish/utils';
 import type { interfaces } from '@garfish/core';
 import type { Loader, StyleManager } from '@garfish/loader';
@@ -9,13 +10,14 @@ export interface Options {
   excludes?: Array<string> | ((name: string) => boolean);
 }
 
+const pluginName = 'css-scope';
+const idleCallback = window.requestIdleCallback || window.requestAnimationFrame;
+
 export function GarfishCssScope(options: Options = {}) {
-  const pluginName = 'css-scope';
+  const spark = new SparkMD5();
   const protoCache = new Set<StyleManager>();
   const codeCache = new Map<string, string>();
-  const astCache = new Map<number, StylesheetNode>();
-  const idleCallback =
-    window.requestIdleCallback || window.requestAnimationFrame;
+  const astCache = new Map<string, StylesheetNode>();
 
   const disable = (appName: string) => {
     const { excludes } = options;
@@ -31,11 +33,11 @@ export function GarfishCssScope(options: Options = {}) {
 
       loaded({ value, result }) {
         if (value.url && value.fileType === 'css' && !disable(value.scope)) {
-          const { id, styleCode } = value.resourceManager as StyleManager;
+          const { styleCode } = value.resourceManager as StyleManager;
           idleCallback(() => {
-            if (!astCache.has(id)) {
+            if (!astCache.has(value.url)) {
               const astNode = parse(styleCode, { source: value.url });
-              astCache.set(id, astNode);
+              astCache.set(value.url, astNode);
             }
           });
         }
@@ -44,6 +46,7 @@ export function GarfishCssScope(options: Options = {}) {
     });
   };
 
+  let id = 0;
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     return {
       name: pluginName,
@@ -66,17 +69,37 @@ export function GarfishCssScope(options: Options = {}) {
             return originTransform.call(this, code);
           }
 
-          let astNode = astCache.get(this.id);
-          if (!astNode) {
-            astNode = parse(code, { source: this.url });
-            astCache.set(this.id, astNode);
+          let newCode;
+          console.time('tt' + ++id);
+          const hash = spark.append(code).end();
+          console.timeEnd('tt' + id);
+          console.log(hash, 1);
+
+          (async () => {
+            const i = id;
+            await (window as any).hashwasm.md5('code');
+            console.time('ttt' + i);
+            const hash = await (window as any).hashwasm.md5(code, 100);
+            console.timeEnd('ttt' + i);
+            console.log(hash, 2);
+          })();
+
+          if (codeCache.has(hash)) {
+            newCode = codeCache.get(hash);
+          } else {
+            let astNode = astCache.get(this.url);
+            if (!astNode) {
+              astNode = parse(code, { source: this.url });
+            }
+            newCode = stringify(astNode, `#${rootElId}`);
+            codeCache.set(hash, newCode);
           }
-          const newCode = stringify(astNode, `#${rootElId}`);
+          console.timeEnd(appName);
           return originTransform.call(this, newCode);
         };
       },
 
-      beforeLoad(appInfo) {
+      async beforeLoad(appInfo) {
         if (__DEV__) {
           const { name, sandbox } = appInfo;
           if (!disable(name)) {
