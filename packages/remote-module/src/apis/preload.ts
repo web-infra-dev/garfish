@@ -6,6 +6,7 @@ import { loader, resourcesStore } from '../common';
 // Preload the static resources of the module, so that the module can be loaded synchronously
 export function preload(urls: string | Array<string>) {
   if (!Array.isArray(urls)) urls = [urls];
+  console.log('msg');
 
   return Promise.all(
     urls.map((url) => {
