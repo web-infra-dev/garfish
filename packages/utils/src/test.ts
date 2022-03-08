@@ -29,7 +29,7 @@ export function mockStaticServer(
       const fullDir = path.resolve(baseDir, `./${pathname}`);
       const { ext } = path.parse(fullDir);
       // prettier-ignore
-      const miniType =
+      const mimeType =
         ext === '.html'
           ? 'text/html'
           : ext === '.js'
@@ -42,7 +42,7 @@ export function mockStaticServer(
         url: req.url,
         body: fs.readFileSync(fullDir, 'utf-8'),
         headers: {
-          'Content-Type': miniType,
+          'Content-Type': mimeType,
         },
       });
     });
