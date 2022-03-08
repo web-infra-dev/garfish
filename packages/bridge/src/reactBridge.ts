@@ -116,8 +116,6 @@ export function reactBridge(this: any, userOpts: OptsTypes) {
     throw new Error('garfish-react-bridge requires a configuration object');
   }
 
-  console.log('reactBridge debugger 1111');
-
   const opts: OptsTypes = {
     ...defaultOpts,
     ...userOpts,
