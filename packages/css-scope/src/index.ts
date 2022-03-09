@@ -1,6 +1,6 @@
-import SparkMD5 from 'spark-md5';
-import { warn } from '@garfish/utils';
+import { md5 } from 'super-fast-md5';
 import type { interfaces } from '@garfish/core';
+import { warn, supportWasm, idleCallback } from '@garfish/utils';
 import type { Loader, StyleManager } from '@garfish/loader';
 import { parse } from './parser';
 import { stringify } from './stringify';
@@ -10,11 +10,8 @@ export interface Options {
   excludes?: Array<string> | ((name: string) => boolean);
 }
 
-const pluginName = 'css-scope';
-const idleCallback = window.requestIdleCallback || window.requestAnimationFrame;
-
 export function GarfishCssScope(options: Options = {}) {
-  const spark = new SparkMD5();
+  const pluginName = 'css-scope';
   const protoCache = new Set<StyleManager>();
   const codeCache = new Map<string, string>();
   const astCache = new Map<string, StylesheetNode>();
@@ -46,13 +43,13 @@ export function GarfishCssScope(options: Options = {}) {
     });
   };
 
-  let id = 0;
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     return {
       name: pluginName,
       version: __VERSION__,
 
       beforeBootstrap() {
+        if (!supportWasm) return;
         // When preloading, parse out ast in advance
         processPreloadManager(Garfish.loader);
 
@@ -70,19 +67,7 @@ export function GarfishCssScope(options: Options = {}) {
           }
 
           let newCode;
-          console.time('tt' + ++id);
-          const hash = spark.append(code).end();
-          console.timeEnd('tt' + id);
-          console.log(hash, 1);
-
-          (async () => {
-            const i = id;
-            await (window as any).hashwasm.md5('code');
-            console.time('ttt' + i);
-            const hash = await (window as any).hashwasm.md5(code, 100);
-            console.timeEnd('ttt' + i);
-            console.log(hash, 2);
-          })();
+          const hash = md5(code);
 
           if (codeCache.has(hash)) {
             newCode = codeCache.get(hash);
@@ -94,13 +79,16 @@ export function GarfishCssScope(options: Options = {}) {
             newCode = stringify(astNode, `#${rootElId}`);
             codeCache.set(hash, newCode);
           }
-          console.timeEnd(appName);
           return originTransform.call(this, newCode);
         };
       },
 
       async beforeLoad(appInfo) {
         if (__DEV__) {
+          if (!supportWasm) {
+            warn('"css-scope" plugin requires webAssembly support');
+            return;
+          }
           const { name, sandbox } = appInfo;
           if (!disable(name)) {
             if (

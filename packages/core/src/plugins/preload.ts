@@ -3,6 +3,7 @@ import {
   Queue,
   isAbsolute,
   transformUrl,
+  idleCallback,
   callTestCallback,
 } from '@garfish/utils';
 import { Loader, Manager, TemplateManager } from '@garfish/loader';
@@ -23,8 +24,6 @@ const isSlowNetwork = () =>
     ? (navigator as any).connection.saveData ||
       /(2|3)g/.test((navigator as any).connection.effectiveType)
     : false;
-
-const idleCallback = window.requestIdleCallback || window.requestAnimationFrame;
 
 export const requestIdleCallback =
   __TEST__ || typeof idleCallback !== 'function'

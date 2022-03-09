@@ -36,6 +36,6 @@
   },
   "dependencies": {
     "@garfish/utils": "workspace:*",
-    "spark-md5": "3.0.2"
+    "super-fast-md5": "0.0.5"
   }
 }

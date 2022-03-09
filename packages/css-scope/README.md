@@ -10,6 +10,8 @@ We temporarily use the second option.
 
 ## Usage
 
+> Need webAssembly support
+
 ```js
 import { parse, stringify } from '@garfish/css-scope';
 
