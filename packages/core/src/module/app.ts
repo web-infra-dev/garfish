@@ -177,7 +177,11 @@ export class App {
 
     this.scriptCount++;
 
+    const args = [this.appInfo, code, env, url, options] as const;
+    this.hooks.lifecycle.beforeEval.emit(...args);
     this.runCode(code, env, url, options);
+
+    this.hooks.lifecycle.afterEval.emit(...args);
   }
 
   // `vm sandbox` can override this method
@@ -188,7 +192,7 @@ export class App {
     options?: interfaces.ExecScriptOptions,
   ) {
     const args = [this.appInfo, code, env, url, options] as const;
-    this.hooks.lifecycle.beforeEval.emit(...args);
+
     try {
       // If the node is an es module, use native esmModule
       if (options.isModule) {
@@ -218,7 +222,6 @@ export class App {
       this.hooks.lifecycle.errorExecCode.emit(e, ...args);
       throw e;
     }
-    this.hooks.lifecycle.afterEval.emit(...args);
   }
 
   async show() {

@@ -118,6 +118,15 @@ let defaultConfig: RunInfo = {
   onNotMatchRouter(path) {
     // console.log('子应用路由未匹配', path);
   },
+  beforeEval(appInfo) {
+    console.log('beforeEval ', appInfo);
+    setTimeout(() => {
+      console.log('tick!');
+    }, 1000);
+  },
+  afterEval(appInfo) {
+    console.log('afterEval ', appInfo);
+  },
 };
 
 // The test environment into
