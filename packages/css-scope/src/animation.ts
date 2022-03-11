@@ -263,14 +263,11 @@ export function processAnimation(input: string, prefix: string) {
     return codeCache.get(etag);
   }
 
-  const tokens = tokenizer(input);
-  // If the syntax is incorrect, just return to the original text
-  if (tokens === false) {
-    return input;
-  }
-
   let tree = treeCache.get(input);
   if (!tree) {
+    const tokens = tokenizer(input);
+    // If the syntax is incorrect, just return to the original text
+    if (tokens === false) return input;
     tree = parse(tokens);
     treeCache.set(input, tree);
   }

@@ -10,9 +10,12 @@ type RunInfo = NonNullable<Parameters<typeof GarfishInstance.run>[0]>;
 (window as any).__GARFISH_PARENT__ = true;
 
 let defaultConfig: RunInfo = {
+  apps: localApps,
+
   // 子应用的基础路径，默认值为 /，整个微前端应用的 basename。
   // 设置后该值为所有子应用的默认值，若子应用 AppInfo 中也提供了该值会替换全局的 basename 值
   basename,
+
   // 子应用的挂载点，提供 string 类型时需要其值是 selector，Garfish 内部会使用 document.querySelector(domGetter) 去选中子应用的挂载点。
   //  当提供函数时，子应用在路由驱动挂载和手动挂载时将会执行该函数并且期望返回一个 dom 元素。设置后该值为所有子应用的默认值，若子应用 AppInfo 中也提供了该值会替换全局的 domGetter
   domGetter: '#submodule',
@@ -20,8 +23,6 @@ let defaultConfig: RunInfo = {
   // 是否禁用子应用的资源预加载，默认值为 false，开启子应用的预加载能力，预加载能力在弱网情况和手机端将不会开启。
   // 预加载加载权重会根据子应用的加载次数，预加载会在用户端计算子应用打开的次数，会优先加载打开次数多的子应用
   disablePreloadApp: false,
-
-  apps: localApps,
 
   // sandbox用于配置子应用沙箱的运行参数，当配置 sandbox 为 false 时表示关闭沙箱
   sandbox: {
