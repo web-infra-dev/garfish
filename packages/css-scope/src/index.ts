@@ -13,7 +13,6 @@ export interface Options {
 export function GarfishCssScope(options: Options = {}) {
   const pluginName = 'css-scope';
   const protoCache = new Set<StyleManager>();
-  const codeCache = new Map<string, string>();
   const astCache = new Map<string, StylesheetNode>();
 
   const disable = (appName: string) => {
@@ -29,12 +28,13 @@ export function GarfishCssScope(options: Options = {}) {
       name: pluginName,
 
       loaded({ value, result }) {
-        if (value.url && value.fileType === 'css' && !disable(value.scope)) {
+        if (value.fileType === 'css' && !disable(value.scope)) {
           const { styleCode } = value.resourceManager as StyleManager;
           idleCallback(() => {
-            if (!astCache.has(value.url)) {
+            const hash = md5(styleCode);
+            if (!astCache.has(hash)) {
               const astNode = parse(styleCode, { source: value.url });
-              astCache.set(value.url, astNode);
+              astCache.set(hash, astNode);
             }
           });
         }
@@ -56,7 +56,6 @@ export function GarfishCssScope(options: Options = {}) {
         // rewrite transform method
         const proto = Garfish.loader.StyleManager.prototype;
         const originTransform = proto.transformCode;
-
         if (protoCache.has(proto)) return;
         protoCache.add(proto);
 
@@ -66,19 +65,14 @@ export function GarfishCssScope(options: Options = {}) {
             return originTransform.call(this, code);
           }
 
-          let newCode;
           const hash = md5(code);
-
-          if (codeCache.has(hash)) {
-            newCode = codeCache.get(hash);
-          } else {
-            let astNode = astCache.get(this.url);
-            if (!astNode) {
-              astNode = parse(code, { source: this.url });
-            }
-            newCode = stringify(astNode, `#${rootElId}`);
-            codeCache.set(hash, newCode);
+          let astNode = astCache.get(hash);
+          if (!astNode) {
+            astNode = parse(code, { source: this.url });
+            astCache.set(hash, astNode);
           }
+          // The `rootElId` is random, it makes no sense to cache the compiled code
+          const newCode = stringify(astNode, `#${rootElId}`);
           return originTransform.call(this, newCode);
         };
       },

@@ -98,7 +98,7 @@ function isName(p: string) {
 
 function tokenizer(input: string) {
   let buf = '';
-  const tokens = [];
+  const tokens: Array<string> = [];
   const push = () => {
     buf && tokens.push(buf);
     buf = '';
@@ -113,7 +113,9 @@ function tokenizer(input: string) {
       push();
       if (tokens[tokens.length - 1] === ' ') {
         if (__DEV__ && !__TEST__) {
-          console.error(`[Garfish warn]: Invalid property value: "${input}"`);
+          console.error(
+            `[Garfish Css scope]: Invalid property value: "${input}"`,
+          );
         }
         return false;
       }
@@ -132,7 +134,7 @@ function tokenizer(input: string) {
   return tokens;
 }
 
-function parse(tokens: Array<string>) {
+function parse(tokens: Array<string>): Array<Props> {
   let mode = 1; // 1 | 2 | 3
   let scope = [];
   let stash = false;
@@ -251,13 +253,29 @@ function stringify(tree: Array<Props>, prefix: string) {
   return output.trim();
 }
 
+const codeCache = new Map<string, string>();
+const treeCache = new Map<string, Array<Props>>();
+
 export function processAnimation(input: string, prefix: string) {
   if (!input || !prefix) return input;
+  const etag = `${prefix}-${input}`;
+  if (codeCache.has(etag)) {
+    return codeCache.get(etag);
+  }
+
   const tokens = tokenizer(input);
   // If the syntax is incorrect, just return to the original text
   if (tokens === false) {
     return input;
   }
-  const tree = parse(tokens);
-  return stringify(tree, prefix);
+
+  let tree = treeCache.get(input);
+  if (!tree) {
+    tree = parse(tokens);
+    treeCache.set(input, tree);
+  }
+
+  const newCode = stringify(tree, prefix);
+  codeCache.set(etag, newCode);
+  return newCode;
 }

@@ -600,10 +600,10 @@ importers:
   packages/css-scope:
     specifiers:
       '@garfish/utils': workspace:*
-      super-fast-md5: 0.0.6
+      super-fast-md5: 0.0.7
     dependencies:
       '@garfish/utils': link:../utils
-      super-fast-md5: registry.npmjs.org/super-fast-md5/0.0.6
+      super-fast-md5: registry.npmjs.org/super-fast-md5/0.0.7
 
   packages/es-module:
     specifiers:
@@ -25649,10 +25649,10 @@ packages:
     requiresBuild: true
     optional: true
 
-  registry.npmjs.org/super-fast-md5/0.0.6:
-    resolution: {integrity: sha512-kFx3E+QRv0RaQUXHXr9a9DeKco0Co3SpkwP8ytu0qxW3jTZfxHTFrq+dkzwrxfFSy/oM744jXtx4Aq/beEDvag==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/super-fast-md5/-/super-fast-md5-0.0.6.tgz}
+  registry.npmjs.org/super-fast-md5/0.0.7:
+    resolution: {integrity: sha512-E0ltOzNvj/coUqXoHhbk39O846512snFK8UF4gv/aVoZ1U6A/XR9Ok/rsG4Vbg4w2P1/QKvWgU4CngA1o/VLZQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/super-fast-md5/-/super-fast-md5-0.0.7.tgz}
     name: super-fast-md5
-    version: 0.0.6
+    version: 0.0.7
     dev: false
 
   registry.npmjs.org/supports-color/5.5.0:
