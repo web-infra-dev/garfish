@@ -6,6 +6,9 @@ import { parse } from './parser';
 import { stringify } from './stringify';
 import type { StylesheetNode } from './types';
 
+export { parse } from './parser';
+export { stringify } from './stringify';
+
 export interface Options {
   excludes?: Array<string> | ((name: string) => boolean);
 }
