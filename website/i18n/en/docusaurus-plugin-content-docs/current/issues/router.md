@@ -14,7 +14,7 @@ The main application routing is currently only supported in `history` mode, the 
 
 ## Why can't the root route be used as an activation condition for a child application?
 
-- Some businesses want to use the root route as the activation condition of the sub-application, for example `garfish.bytedance.net` triggers the rendering of the sub-application. Since the activation condition of the current sub-application **string is the shortest match principle**, if the sub-application `activeWhen: '/'` indicates that `'/xxx'` will be activated.
+- Some businesses want to use the root route as the activation condition of the sub-application, for example `garfish.bytedance.com` triggers the rendering of the sub-application. Since the activation condition of the current sub-application **string is the shortest match principle**, if the sub-application `activeWhen: '/'` indicates that `'/xxx'` will be activated.
 
 - The reason for the shortest match principle is that we need to determine if a child route of a child application is active, and if it is likely to be a child route of a child application, we may activate that application.
 
@@ -26,9 +26,9 @@ Why is it recommended that the sub-application take the `basename` passed throug
 
 For example
 
-1. the main application currently visits `garfish.bytedance.net` to access the site's home page, the current `basename` is `/`, the sub-application vue, the access path is `garfish.bytedance.net/vue`
+1. the main application currently visits `garfish.bytedance.com` to access the site's home page, the current `basename` is `/`, the sub-application vue, the access path is `garfish.bytedance.com/vue`
 
-2. if the main application wants to change `basename` to `/site`, the access path of the main application becomes `garfish.bytedance.net/site` and the access path of the child vue becomes `garfish.bytedance.net/site/vue`. 3.
+2. if the main application wants to change `basename` to `/site`, the access path of the main application becomes `garfish.bytedance.com/site` and the access path of the child vue becomes `garfish.bytedance.com/site/vue`. 3.
 
 3. So it is recommended that the sub-application use the `basename` passed in the `provider` as the base route for its own application, to ensure that the relative path of the sub-application still matches the overall change after the main application changes its route
 
