@@ -1,6 +1,6 @@
 # `@garfish/css-scope`
 
-[![NPM version](https://img.shields.io/npm/v/@garfish/es-module.svg?style=flat-square)](https://www.npmjs.com/package/@garfish/es-module)
+[![NPM version](https://img.shields.io/npm/v/@garfish/css-scope.svg?style=flat-square)](https://www.npmjs.com/package/@garfish/css-scope)
 
 Inspired by [reworkcss/css](https://github.com/reworkcss/css).
 
@@ -15,7 +15,23 @@ We temporarily use the second option.
 ```js
 import { parse, stringify } from '@garfish/css-scope';
 
-const text = `a { color: #fff; }`;
-const ast = parse(text);
-const scopedText = stringify(ast, '#App'); // #App a { color: #fff; }
+const code = 'a { color: #fff; }';
+const ast = parse(code);
+const scopedCode = stringify(ast, '#App'); // #App a { color: #fff; }
+```
+
+## Use in Garfish
+
+```js
+import { GarfishCssScope } from '@garfish/css-scope';
+
+Garfish.run({
+  ...
+  plugins: [
+    ...
+    GarfishCssScope({
+      excludes: ['appName'],
+    }),
+  ],
+})
 ```
