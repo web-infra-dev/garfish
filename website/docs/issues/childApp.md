@@ -110,7 +110,7 @@ export const provider = () => {
 
 ## 根路由作为子应用的激活条件？
 
-- 有部分业务想将根路径作为子应用的激活条件，例如 `garfish.bytedance.net` 就触发子应用的渲染，由于目前子应用 **字符串的激活条件为最短匹配原则**，若子应用 `activeWhen: '/'` 表明 `'/xxx'` 都会激活。
+- 有部分业务想将根路径作为子应用的激活条件，例如 `garfish.bytedance.com` 就触发子应用的渲染，由于目前子应用 **字符串的激活条件为最短匹配原则**，若子应用 `activeWhen: '/'` 表明 `'/xxx'` 都会激活。
 
 - 之所以为最短匹配原则的原因在于，我们需要判断是否某个子应用的子路由被激活，如果可能是某个子应用的子路由，我们则可能激活该应用。
 
@@ -122,9 +122,9 @@ export const provider = () => {
 
 例如：
 
-1. 当前主应用访问到 `garfish.bytedance.net` 即可访问到该站点的主页，当前 `basename` 为 `/`，子应用 vue，访问路径为 `garfish.bytedance.net/vue`
+1. 当前主应用访问到 `garfish.bytedance.com` 即可访问到该站点的主页，当前 `basename` 为 `/`，子应用 vue，访问路径为 `garfish.bytedance.com/vue`
 
-2. 如果主应用想更改 `basename` 为 `/site`，则主应用的访问路径变为`garfish.bytedance.net/site`，子应用 vue 的访问路径变为 `garfish.bytedance.net/site/vue`
+2. 如果主应用想更改 `basename` 为 `/site`，则主应用的访问路径变为`garfish.bytedance.com/site`，子应用 vue 的访问路径变为 `garfish.bytedance.com/site/vue`
 
 3. 所以推荐子应用直接将 `provider` 中传递的 `basename` 作为自身应用的基础路由，以保证主应用在变更路由之后，子应用的相对路径还是符合整体变化
 
