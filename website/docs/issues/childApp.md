@@ -4,12 +4,13 @@ slug: /issues
 order: 1
 ---
 
-## "provider" is "object".
+
+## "provider" is "null".
 
 通过环境变量导出，将会更准确的让 Garfish 框架获取到导出内容
 
 ```js
-if (window.__GARFISH__ && __GARFISH_EXPORTS__) {
+if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
   // eslint-disable-next-line no-undef
   __GARFISH_EXPORTS__.provider = provider;
 }
