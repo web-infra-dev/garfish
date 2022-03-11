@@ -13,7 +13,6 @@
     "test": "node scripts/unit.js --collect-coverage",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "changeset": "npx changeset",
     "reset": "pnpm -r exec -- rm -rf node_modules && rm -rf node_modules",
     "setup": "cross-env DISABLE_GARFISH_CHECK_INTERNAL=true pnpm install",
     "ls-lint": "ls-lint",
@@ -23,7 +22,8 @@
     "format:js": "prettier --write --parser typescript \"(packages|scripts)/**/*.js\"",
     "format:md": "prettier --write \"**/*.md\"",
     "release": "node ./scripts/release.js",
-    "release:canary": "node ./scripts/release.js --canary"
+    "release:canary": "node ./scripts/release.js --canary",
+    "change": "changeset add"
   },
   "lint-staged": {
     "*.js": [
@@ -84,13 +84,11 @@
     "typescript": "4.4.3",
     "wait-on": "6.0.0",
     "workspace-tools": "0.16.2",
-    "zx": "4.2.0"
+    "zx": "4.2.0",
+    "@changesets/cli": "^2.21.1"
   },
   "engines": {
     "node": ">=14.13.0"
   },
-  "version": "1.4.0",
-  "dependencies": {
-    "@changesets/cli": "^2.21.1"
-  }
+  "version": "1.4.0"
 }
