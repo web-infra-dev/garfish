@@ -4,7 +4,7 @@
 
 <div align="center">
 
-[![NPM version](https://img.shields.io/npm/v/garfish.svg?style=flat-square)](https://www.npmjs.com/package/garfish) [![build status](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml)
+[![NPM version](https://img.shields.io/npm/v/garfish.svg?style=flat-square)](https://www.npmjs.com/package/garfish) [![build status](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml)
 
 </div>
 
@@ -65,7 +65,7 @@ yarn add garfish
 
 ## 贡献
 
-- [贡献指南](https://github.com/modern-js-dev/garfish/blob/master/CONTRIBUTING.md)
+- [贡献指南](https://github.com/modern-js-dev/garfish/blob/main/CONTRIBUTING.md)
 
 ## 感谢
 
