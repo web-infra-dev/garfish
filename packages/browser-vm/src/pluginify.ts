@@ -60,17 +60,26 @@ function rewriteAppAndSandbox(
   // Rewrite sandbox attributes
   sandbox.loader = Garfish.loader;
   sandbox.execScript = (code, env, url, options) => {
-    return originExecScript.call(
-      sandbox,
-      code,
-      {
-        // For application of environment variables
-        ...env,
-        ...app.getExecScriptEnv(options?.noEntry),
-      },
-      url,
-      options,
-    );
+    const evalHooksArgs = [app.appInfo, code, env, url, options] as const;
+    app.hooks.lifecycle.beforeEval.emit(...evalHooksArgs);
+    try {
+      const res = originExecScript.call(
+        sandbox,
+        code,
+        {
+          // For application of environment variables
+          ...env,
+          ...app.getExecScriptEnv(options?.noEntry),
+        },
+        url,
+        options,
+      );
+      app.hooks.lifecycle.afterEval.emit(...evalHooksArgs);
+      return res;
+    } catch (err) {
+      app.hooks.lifecycle.errorExecCode.emit(err, ...evalHooksArgs);
+      throw err;
+    }
   };
 
   // Rewrite app attributes
