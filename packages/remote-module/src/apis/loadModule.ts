@@ -27,9 +27,10 @@ export async function loadModule(
   options = data.options;
 
   assert(urlOrAlias, 'Missing url for loading remote module.');
+  assert(typeof urlOrAlias === 'string', 'The type of URL needs to be a string.');
   const [url, segments] = processAlias(urlOrAlias);
   assert(
-    isAbsolute(url),
+    isAbsolute(url) || url.startsWith('//'),
     `The loading of the remote module must be an absolute path. "${url}"`,
   );
 
