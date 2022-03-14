@@ -97,7 +97,7 @@ module.exports = {
         docs: {
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/bytedance/garfish/tree/master/website',
+          editUrl: 'https://github.com/bytedance/garfish/tree/main/website',
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
           remarkPlugins: [
