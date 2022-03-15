@@ -49,6 +49,8 @@ const mockBeforeMount = jest.fn();
 const mockAfterMount = jest.fn();
 const mockBeforeUnmount = jest.fn();
 const mockAfterUnmount = jest.fn();
+const mockBeforeEval = jest.fn();
+const mockAfterEval = jest.fn();
 
 describe('Core: run methods', () => {
   let GarfishInstance: Garfish;
@@ -76,6 +78,11 @@ describe('Core: run methods', () => {
       ],
       beforeLoad: mockBeforeLoad,
       afterLoad: mockAfterLoad,
+      // beforeEval: mockBeforeEval,
+      beforeEval: (appInfo, code, env, url) => {
+        console.log(appInfo.name, code, url);
+      },
+      afterEval: mockAfterEval,
       beforeMount: mockBeforeMount,
       afterMount: mockAfterMount,
       beforeUnmount: mockBeforeUnmount,
@@ -94,6 +101,10 @@ describe('Core: run methods', () => {
     expect(mockAfterLoad.mock.calls[0][0].name).toBe('vue-app');
     expect(mockBeforeMount.mock.calls[0][0].name).toBe('vue-app');
     expect(mockAfterMount.mock.calls[0][0].name).toBe('vue-app');
+    // expect(mockBeforeEval.mock.calls[0][0].name).toBe('vue-app');
+    // console.log(mockBeforeEval.mock.calls[0][0].name,mockBeforeEval.mock.calls[0][3]);
+    // console.log(mockBeforeEval.mock.calls[0][1].name,mockBeforeEval.mock.calls[0][3]);
+    // console.log(mockBeforeEval.mock.calls[0][2].name,mockBeforeEval.mock.calls[0][3]);
 
     GarfishInstance.router.push({ path: '/react-app' });
     await reactAppInDocument(container);

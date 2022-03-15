@@ -118,14 +118,14 @@ let defaultConfig: RunInfo = {
   onNotMatchRouter(path) {
     // console.log('子应用路由未匹配', path);
   },
-  beforeEval(appInfo) {
-    console.log('beforeEval ', appInfo);
+  beforeEval(appInfo, code, env, url) {
+    console.log('beforeEval ', appInfo.name, url);
     setTimeout(() => {
       console.log('tick!');
     }, 1000);
   },
-  afterEval(appInfo) {
-    console.log('afterEval ', appInfo);
+  afterEval(appInfo, code, env, url) {
+    console.log('afterEval ', appInfo.name, url);
   },
 };
 
