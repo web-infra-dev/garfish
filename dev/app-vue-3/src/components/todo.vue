@@ -50,6 +50,7 @@ export default {
       data: useState(),
     };
   },
+  
   methods: {
     add() {
       this.data.add(JSON.parse(JSON.stringify(this.item)));

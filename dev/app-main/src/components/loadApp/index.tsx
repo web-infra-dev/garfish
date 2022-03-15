@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
 import Garfish from 'garfish';
-import { basename, loadApp } from '../../constant';
+import { useState, useEffect } from 'react';
 import { store } from '../../store';
+import { basename, loadApp } from '../../constant';
 import './index.less';
 
 function LoadApp({ id, appName, domID }) {

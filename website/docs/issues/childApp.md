@@ -4,12 +4,13 @@ slug: /issues
 order: 1
 ---
 
-## "provider" is "object".
+
+## "provider" is "null".
 
 通过环境变量导出，将会更准确的让 Garfish 框架获取到导出内容
 
 ```js
-if (window.__GARFISH__ && __GARFISH_EXPORTS__) {
+if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
   // eslint-disable-next-line no-undef
   __GARFISH_EXPORTS__.provider = provider;
 }
@@ -70,10 +71,11 @@ export const provider = () => {
         root,
       );
     },
+
     destroy: ({ dom, basename }) =>{
       const root = dom ? dom.querySelector('#root') : document.querySelector('#root');
       ReactDOM.unmountComponentAtNode(root),
-    }
+    },
   };
 };
 ```
@@ -108,7 +110,7 @@ export const provider = () => {
 
 ## 根路由作为子应用的激活条件？
 
-- 有部分业务想将根路径作为子应用的激活条件，例如 `garfish.bytedance.net` 就触发子应用的渲染，由于目前子应用 **字符串的激活条件为最短匹配原则**，若子应用 `activeWhen: '/'` 表明 `'/xxx'` 都会激活。
+- 有部分业务想将根路径作为子应用的激活条件，例如 `garfish.bytedance.com` 就触发子应用的渲染，由于目前子应用 **字符串的激活条件为最短匹配原则**，若子应用 `activeWhen: '/'` 表明 `'/xxx'` 都会激活。
 
 - 之所以为最短匹配原则的原因在于，我们需要判断是否某个子应用的子路由被激活，如果可能是某个子应用的子路由，我们则可能激活该应用。
 
@@ -120,9 +122,9 @@ export const provider = () => {
 
 例如：
 
-1. 当前主应用访问到 `garfish.bytedance.net` 即可访问到该站点的主页，当前 `basename` 为 `/`，子应用 vue，访问路径为 `garfish.bytedance.net/vue`
+1. 当前主应用访问到 `garfish.bytedance.com` 即可访问到该站点的主页，当前 `basename` 为 `/`，子应用 vue，访问路径为 `garfish.bytedance.com/vue`
 
-2. 如果主应用想更改 `basename` 为 `/site`，则主应用的访问路径变为`garfish.bytedance.net/site`，子应用 vue 的访问路径变为 `garfish.bytedance.net/site/vue`
+2. 如果主应用想更改 `basename` 为 `/site`，则主应用的访问路径变为`garfish.bytedance.com/site`，子应用 vue 的访问路径变为 `garfish.bytedance.com/site/vue`
 
 3. 所以推荐子应用直接将 `provider` 中传递的 `basename` 作为自身应用的基础路由，以保证主应用在变更路由之后，子应用的相对路径还是符合整体变化
 
@@ -197,7 +199,7 @@ export default () => (
 
 > 解决方案
 
-由于浏览器跨域的限制，非同域下的脚本执行抛错，捕获异常的时候，不能拿到详细的异常信息，只能拿到类似 Script error 0. 这类信息。通常跨域的异常信息会被忽略，不会上报。解决方案： 所有 `<script>` 加载的资源加上`crossorigin="anonymous"
+由于浏览器跨域的限制，非同域下的脚本执行抛错，捕获异常的时候，不能拿到详细的异常信息，只能拿到类似 Script error 0. 这类信息。通常跨域的异常信息会被忽略，不会上报。解决方案： 所有 `<script>` 加载的资源加上 `crossorigin="anonymous"`
 
 ## cdn 第三方包未正确挂在在 window 上
 
@@ -250,8 +252,48 @@ export const provider = () => {
         dom.querySelector('#root'),
       );
     },
-    destroy: ({ dom, basename }) =>
-      ReactDOM.unmountComponentAtNode(dom.querySelector('#root')),
+
+    destroy: ({ dom, basename }) => {
+      ReactDOM.unmountComponentAtNode(dom.querySelector('#root'));
+    },
   };
 };
 ```
+
+## ESModule
+
+Garfish 核心库默认支持 esModule，但是需要关掉 vm 沙箱或者为快照沙箱时，才能够使用。
+
+```js
+Garfish.run({
+  ...
+  apps: [
+    {
+      name: 'vue'，
+      activeWhen: '/vue',
+      entry: 'http://localhost:8080',
+      sandbox: {
+        open: false,
+        // snapshot: true, 或者只开启快照沙箱
+      },
+    },
+  ],
+})
+```
+
+如果需要在 vm 沙箱下开启 esModule 的能力，可以使用 `@garfish/es-module` 插件。
+
+> `@garfish/es-module` 会在运行时分析子应用的源码做一层 esModule polyfill，但他会带来严重的首屏性能问题，如果你的项目不是很需要在 vm 沙箱下使用 esModule 就不应该使用此插件。
+
+> 在短期的规划中，为了能在生产环境中使用，我们会尝试使用 wasm 来优化整个编译性能。在未来如果 [module-fragments](https://github.com/tc39/proposal-module-fragments) 提案成功进入标准并成熟后，我们也会尝试使用此方案，但这需要时间。
+
+```js
+import { GarfishEsModule } from '@garfish/es-module';
+
+Garfish.run({
+  ...
+  plugins: [GarfishEsModule()],
+})
+```
+
+> 提示：当子项目使用 `vite` 开发时，你可以在开发模式下使用 esModule 模式，生产环境可以打包为原始的无 esModule 的模式。

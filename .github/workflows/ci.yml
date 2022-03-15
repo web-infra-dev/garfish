@@ -2,18 +2,18 @@ name: 'CI'
 on:
   push:
     branches:
-      - master
+      - main
 
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   test:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [14.17.0]
+        node-version: [16.10.0]
     steps:
     - uses: actions/checkout@v2
     - uses: pnpm/action-setup@v2.0.1
@@ -30,14 +30,16 @@ jobs:
       run: pnpm install --filter=\!garfish-docs --filter=\!@garfish-dev/\*
     - name: Run unit tests
       run: pnpm test
-    - name: codecov
-      run: npx codecov -f coverage/*.json
+    - name: Collect coverage
+      uses: codecov/codecov-action@v2
+      with:
+        directory: ./coverage
 
   e2e-test:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [14.17.0]
+        node-version: [16.10.0]
     steps:
     - uses: actions/checkout@v2
     - uses: pnpm/action-setup@v2.0.1
@@ -59,7 +61,7 @@ jobs:
       with:
         install: false
         start: node scripts/devCypress.js
-        wait-on: 'http://localhost:8090,http://localhost:8091,http://localhost:8092,http://localhost:8093,http://localhost:8094,http://localhost:8095,http://localhost:4200'
+        wait-on: 'http://localhost:8090,http://localhost:8091,http://localhost:8092,http://localhost:8093,http://localhost:8094,http://localhost:8095,http://localhost:8096,http://localhost:8097'
         wait-on-timeout: 120
         parallel: true
         record: true

@@ -27,7 +27,7 @@ function injector(current: Function, methodName: string) {
       if (baseUrl) {
         const manager = new StyleManager(el.textContent);
         manager.correctPath(baseUrl);
-        this.textContent = manager.styleCode;
+        el.textContent = manager.styleCode;
         return originProcess();
       }
     }

@@ -9,14 +9,14 @@ on:
       branch:
         description: 'Release Branch(confirm release branch)'
         required: true
-        default: 'master'
+        default: 'main'
 
 jobs:
   release:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [14.17.0]
+        node-version: [16.10.0]
     steps:
     - uses: actions/checkout@v2
       with:

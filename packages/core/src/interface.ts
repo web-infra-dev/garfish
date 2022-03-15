@@ -76,9 +76,9 @@ export namespace interfaces {
   export interface SandboxConfig {
     open?: boolean;
     snapshot?: boolean;
+    fixBaseUrl?: boolean;
     disableWith?: boolean;
     strictIsolation?: boolean;
-    fixBaseUrl?: boolean;
   }
 
   export interface Config {
@@ -131,4 +131,12 @@ export namespace interfaces {
 
   // You can be extended plugin type dynamic registration
   export interface Plugins {}
+
+  export interface ExecScriptOptions {
+    node?: Node;
+    async?: boolean;
+    noEntry?: boolean;
+    isInline?: boolean;
+    isModule?: boolean;
+  }
 }

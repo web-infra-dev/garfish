@@ -1,30 +1,21 @@
 import Garfish from '@garfish/core';
 import { GarfishRouter } from '@garfish/router';
-import fetchMock from 'jest-fetch-mock';
 import {
-  reactAppHtml,
-  reactAppRootNode,
-  reactAppRootText,
-  vueAppHtml,
-  vueAppRootNode,
-  vueAppRootText,
-} from '@garfish/utils';
-import {
-  appContainerId,
   __MockBody__,
   __MockHead__,
   __MockHtml__,
+  appContainerId,
+  mockStaticServer,
 } from '@garfish/utils';
-global.fetch = fetchMock;
 
-const vuePath = 'http://garfish-mock.com/vue-app';
-const reactPath = 'http://garfish-mock.com/react-app';
+const vueAppRootNode = 'vue-app';
+const vueAppRootText = 'vue app init page';
+const reactAppRootNode = 'react-app';
+const reactAppRootText = 'react app init page';
 
 function waitFor(delay = 50) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(false);
-    }, delay);
+  return new Promise<void>((resolve) => {
+    setTimeout(() => resolve(), delay);
   });
 }
 
@@ -52,52 +43,43 @@ async function noRenderApp(container: Element) {
   expect(appContainer).toHaveLength(0);
 }
 
-let GarfishInstance: Garfish;
-describe('Core: run methods', () => {
-  beforeEach(() => {
-    // https://www.npmjs.com/package/jest-fetch-mock
-    fetchMock.mockIf(/^https?:\/\/garfish-mock.com.*$/, (req) => {
-      if (req.url.endsWith('/vue-app')) {
-        return Promise.resolve({
-          body: vueAppHtml,
-          headers: {
-            'Content-Type': 'text/html',
-          },
-        });
-      } else if (req.url.endsWith('/react-app')) {
-        return Promise.resolve({
-          body: reactAppHtml,
-          headers: {
-            'Content-Type': 'text/html',
-          },
-        });
-      } else {
-        return Promise.resolve({
-          status: 404,
-          body: 'Not Found',
-        });
-      }
-    });
+const mockBeforeLoad = jest.fn();
+const mockAfterLoad = jest.fn();
+const mockBeforeMount = jest.fn();
+const mockAfterMount = jest.fn();
+const mockBeforeUnmount = jest.fn();
+const mockAfterUnmount = jest.fn();
 
-    fetchMock.doMock();
-    GarfishInstance = new Garfish({
-      plugins: [GarfishRouter()],
-    });
+describe('Core: run methods', () => {
+  let GarfishInstance: Garfish;
+
+  mockStaticServer(__dirname);
+
+  beforeEach(() => {
+    GarfishInstance = new Garfish({});
+
     GarfishInstance.run({
-      domGetter: '#container',
       basename: '/',
+      domGetter: '#container',
+      plugins: [GarfishRouter()],
       apps: [
         {
           name: 'vue-app',
           activeWhen: '/vue-app',
-          entry: vuePath,
+          entry: './resources/vueApp.html',
         },
         {
           name: 'react-app',
           activeWhen: '/react-app',
-          entry: reactPath,
+          entry: './resources/reactApp.html',
         },
       ],
+      beforeLoad: mockBeforeLoad,
+      afterLoad: mockAfterLoad,
+      beforeMount: mockBeforeMount,
+      afterMount: mockAfterMount,
+      beforeUnmount: mockBeforeUnmount,
+      afterUnmount: mockAfterUnmount,
     });
   });
 
@@ -108,12 +90,25 @@ describe('Core: run methods', () => {
 
     GarfishInstance.router.push({ path: '/vue-app' });
     await vueAppInDocument(container);
+    expect(mockBeforeLoad.mock.calls[0][0].name).toBe('vue-app');
+    expect(mockAfterLoad.mock.calls[0][0].name).toBe('vue-app');
+    expect(mockBeforeMount.mock.calls[0][0].name).toBe('vue-app');
+    expect(mockAfterMount.mock.calls[0][0].name).toBe('vue-app');
 
     GarfishInstance.router.push({ path: '/react-app' });
     await reactAppInDocument(container);
+    expect(mockBeforeMount.mock.calls[0][0].name).toBe('vue-app');
+    expect(mockAfterMount.mock.calls[0][0].name).toBe('vue-app');
+
+    expect(mockBeforeLoad.mock.calls[1][0].name).toBe('react-app');
+    expect(mockAfterLoad.mock.calls[1][0].name).toBe('react-app');
+    expect(mockBeforeMount.mock.calls[1][0].name).toBe('react-app');
+    expect(mockAfterMount.mock.calls[1][0].name).toBe('react-app');
 
     GarfishInstance.router.push({ path: '/' });
     await noRenderApp(container);
+    expect(mockBeforeMount.mock.calls[1][0].name).toBe('react-app');
+    expect(mockAfterMount.mock.calls[1][0].name).toBe('react-app');
 
     document.body.removeChild(container);
   });

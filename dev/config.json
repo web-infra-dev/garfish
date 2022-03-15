@@ -29,6 +29,6 @@
    },
   "dev/angular": {
     "pkgName": "@garfish-dev/angular",
-    "port": 4200
+    "port": 8097
   }
 }

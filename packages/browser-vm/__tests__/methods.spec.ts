@@ -27,11 +27,13 @@ describe('Init', () => {
       'start',
       'close',
       'reset',
-      'optimizeGlobalMethod',
       'execScript',
-      'getModuleData',
       'clearEffects',
+      'getModuleData',
+      'processExecError',
+      'createExecParams',
       'createProxyWindow',
+      'optimizeGlobalMethod',
     ];
     const sandboxMethods = Object.getOwnPropertyNames(
       Object.getPrototypeOf(sandbox),

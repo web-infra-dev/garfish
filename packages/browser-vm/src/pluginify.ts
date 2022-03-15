@@ -6,14 +6,13 @@ import { recordStyledComponentCSSRules, rebuildCSSRules } from './dynamicNode';
 
 declare module '@garfish/core' {
   export default interface Garfish {
-    getGlobalObject: () => Window & typeof globalThis;
     setGlobalValue(key: string, value?: any): void;
+    getGlobalObject: () => Window & typeof globalThis;
     clearEscapeEffect: (key: string, value?: any) => void;
   }
 
   export namespace interfaces {
     export interface SandboxConfig {
-      allowNetworkModule?: boolean;
       modules?: Array<Module> | Record<string, Module>;
     }
 
@@ -73,6 +72,7 @@ function rewriteAppAndSandbox(
       options,
     );
   };
+
   // Rewrite app attributes
   app.vmSandbox = sandbox;
   app.global = sandbox.global;
@@ -101,10 +101,12 @@ function createOptions(Garfish: interfaces.Garfish) {
         appInfo.sandbox.open === false ||
         appInfo.sandbox.snapshot
       ) {
-        if (appInstance?.vmSandbox)
+        if (appInstance?.vmSandbox) {
           appInstance.global = appInstance.vmSandbox.global;
+        }
         return;
       }
+
       rewriteAppAndSandbox(
         Garfish,
         appInstance,
@@ -113,14 +115,12 @@ function createOptions(Garfish: interfaces.Garfish) {
           sourceList: appInstance.sourceList,
           baseUrl: appInstance.entryManager.url,
           modules: compatibleOldModule(appInfo.sandbox?.modules || []),
+          fixBaseUrl: Boolean(appInfo.sandbox?.fixBaseUrl),
           disableWith: Boolean(appInfo.sandbox?.disableWith),
           strictIsolation: Boolean(appInfo.sandbox?.strictIsolation),
-          fixBaseUrl: Boolean(appInfo.sandbox?.fixBaseUrl),
 
           el: () => appInstance.htmlNode,
-
           protectVariable: () => appInfo.protectVariable || [],
-
           insulationVariable: () => {
             return [
               ...specialExternalVariables,

@@ -1,5 +1,4 @@
 // copy from https://github.com/getsentry/sentry-javascript/blob/6.4.0/packages/browser/src/tracekit.ts
-
 import { makeMap } from './utils';
 
 export interface StackFrame {

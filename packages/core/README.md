@@ -70,9 +70,8 @@ GarfishInstance.loadApp('appName', 'https://xx.html').then(async (app) => {
 You can also pass more complex parameters.
 
 ```js
-GarfishInstance.loadApp({
+GarfishInstance.loadApp('appName', {
   cache: true,
-  name: 'appName',
   entry: 'https://xx.html',
   domGetter: '#appContainer', // When the child application is rendered, it will be mounted here
 }).then(async (app) => {

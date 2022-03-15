@@ -1,9 +1,9 @@
 {
   "name": "@garfish-dev/main",
-  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "garfish": "workspace:*",
+    "@garfish/es-module": "workspace:*",
     "babel-runtime": "^6.26.0",
     "history": "^5.1.0",
     "mobx": "^6.3.6",
@@ -60,7 +60,7 @@
     "react-refresh": "^0.11.0"
   },
   "scripts": {
-    "start": "NODE_ENV=development webpack-dev-server --hot",
-    "build": "NODE_ENV=production webpack --progress"
+    "start": "cross-env NODE_ENV=development webpack-dev-server --hot",
+    "build": "cross-env NODE_ENV=production webpack --progress"
   }
 }

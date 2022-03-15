@@ -59,7 +59,7 @@ export const basicInfoStr_dev = `
   - angular:
     - activeWhen: '/angular',
     - basename: 'examples/angular'
-    - 独立应用访问地址: 'http://localhost:4200'
+    - 独立应用访问地址: 'http://localhost:8097'
 \`\`\`
 `;
 
@@ -72,33 +72,32 @@ export const basicInfoStr_prod = `
   - react: v17
   - react-router-dom: v6
   - basename: 'examples'
-  - 访问地址: 'http://garfish.bytedance.net/examples/main'
 
 - 子应用信息
   - react17
     - activeWhen: '/react17',
     - basename: 'examples/react17'
-    - 独立应用访问地址: 'http://garfish.bytedance.net/examples/subapp/react17'
+
   - react16:
     - activeWhen: '/react16',
     - basename: 'examples/react16'
-    - 独立应用访问地址: 'http://garfish.bytedance.net/examples/subapp/react16'
+
   - vue3:
     - activeWhen: '/vue3',
     - basename: 'examples/vue3'
-    - 独立应用访问地址: 'http://garfish.bytedance.net/examples/subapp/vue3'
+
   - vue2:
     - activeWhen: (path) => path.includes('/vue2'),
     - basename: 'examples/vue2'
-    - 独立应用访问地址: 'http://garfish.bytedance.net/examples/subapp/vue2'
+
   - vite:
     - activeWhen: '/vite',
     - basename: 'examples/vite'
-    - 独立应用访问地址: 'http://garfish.bytedance.net/examples/subapp/vite/'
+
   - angular:
     - activeWhen: '/angular',
     - basename: 'examples/angular'
-    - 独立应用访问地址: 'http://garfish.bytedance.net/examples/angular'
+
 \`\`\`
 `;
 
@@ -115,7 +114,7 @@ export const featuresStr = `
 - 使用 Garfish.loadApp 动态加载子应用
 - 使用 Garfish.registerApp 动态注册子应用
 - activeWhen 为函数使用场景
-- 子应用挂载完成前 laoding 状态
+- 子应用挂载完成前 loading 状态
 - loadApp 异步加载添加 loading 状态
 - 页面路由不匹配时 404 页面兜底
 - css 隔离能力(arco + prefix)

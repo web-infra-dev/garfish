@@ -10,40 +10,40 @@
 </template>
 
 <script>
-import {
-  loadModule,
-  setModuleConfig,
-} from '@garfish/remote-module';
-import portMap from '../../../config.json'
+  import {
+    loadModule,
+    setModuleConfig,
+  } from '@garfish/remote-module';
+  import portMap from '../../../config.json'
 
-const port = portMap['dev/vue2'].port;
-const publicPath = portMap['dev/vue2'].publicPath;
+  const port = portMap['dev/vue2'].port;
+  const publicPath = portMap['dev/vue2'].publicPath;
 
-setModuleConfig({
-  alias: {
-    Component: process.env.NODE_ENV === 'production' && publicPath
-      ? `${window.location.protocol}//${publicPath}remoteModule.js`
-      : `http://localhost:${port}/remoteModule.js`
-  },
-})
+  setModuleConfig({
+    alias: {
+      Component: process.env.NODE_ENV === 'production' && publicPath
+        ? `${window.location.protocol}//${publicPath}remoteModule.js`
+        : `http://localhost:${port}/remoteModule.js`
+    },
+  })
 
-export default {
-  name: 'remoteComponent',
-  props: ['basename'],
+  export default {
+    name: 'remoteComponent',
+    props: ['basename'],
 
-  data: () => ({
-    text: 'old text',
-  }),
+    data: () => ({
+      text: 'old text',
+    }),
 
-  methods: {
-    changeData() {
-      this.text = this.text === 'old text' ? 'new text' : 'old text'
-    }
-  },
+    methods: {
+      changeData() {
+        this.text = this.text === 'old text' ? 'new text' : 'old text'
+      }
+    },
 
-  components: {
-    cmOne: () => loadModule('@Component.cmOne'),
-    cmTwo: () => loadModule('@Component.cmTwo'),
+    components: {
+      cmOne: () => loadModule('@Component.cmOne'),
+      cmTwo: () => loadModule('@Component.cmTwo'),
+    },
   }
-}
 </script>

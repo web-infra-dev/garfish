@@ -4,7 +4,7 @@
 
 <div align="center">
 
-[![NPM version](https://img.shields.io/npm/v/garfish.svg?style=flat-square)](https://www.npmjs.com/package/garfish) [![build status](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml)
+[![NPM version](https://img.shields.io/npm/v/garfish.svg?style=flat-square)](https://www.npmjs.com/package/garfish) [![build status](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml)
 
 </div>
 
@@ -37,7 +37,7 @@ yarn add garfish
 > 目前文档站点 ([Garfish](https://garfish.top/)) 仅提供了中文版本，不久后将提供英文版本文档
 
 - [关于 Garfish](https://garfish.top/guide)
-- [快速开始](https://garfish.top/quick-start)
+- [快速开始](https://garfish.top/quickStart)
 - [API](https://garfish.top/api)
 
 ## 功能
@@ -65,7 +65,7 @@ yarn add garfish
 
 ## 贡献
 
-- [贡献指南](https://github.com/modern-js-dev/garfish/blob/master/CONTRIBUTING.md)
+- [贡献指南](https://github.com/modern-js-dev/garfish/blob/main/CONTRIBUTING.md)
 
 ## 感谢
 

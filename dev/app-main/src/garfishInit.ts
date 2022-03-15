@@ -5,8 +5,8 @@ import * as mobxReact from 'mobx-react';
 import * as ReactRouterDom from 'react-router-dom';
 import { Message } from '@arco-design/web-react';
 import { store } from './store';
-import { localApps } from './constant';
 import { Config } from './config';
+import { localApps } from './constant';
 
 export const GarfishInit = async () => {
   const apps = localApps;

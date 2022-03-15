@@ -1,6 +1,5 @@
 {
   "name": "@garfish-dev/react17",
-  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@garfish/bridge": "workspace:*",
@@ -59,7 +58,7 @@
     "react-refresh": "^0.11.0"
   },
   "scripts": {
-    "start": "NODE_ENV=development webpack-dev-server --hot",
-    "build": "NODE_ENV=production webpack --progress"
+    "start": "cross-env NODE_ENV=development webpack-dev-server --hot",
+    "build": "cross-env NODE_ENV=production webpack --progress"
   }
 }

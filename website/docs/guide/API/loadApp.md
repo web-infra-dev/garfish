@@ -21,16 +21,19 @@ import { BrowserRouter, Route, Link, Switch } from 'react-router-dom';
 
 function VueApp(basename) {
   useEffect(async () => {
-    let app = await Garfish.loadApp('vue-app', {
-      entry: 'http://localhost:8092',
-      domGetter: '#container',
-      basename,
+    const app = await Garfish.loadApp('vue-app', {
       cache: true,
+      basename,
+      domGetter: '#container',
+      entry: 'http://localhost:8092',
     });
     // 若已经渲染触发 show，只有首次渲染触发 mount，后面渲染都可以触发 show 提供性能
-    app.mounted ? app.show() : await app.mount();
+    app.mounted
+      ? app.show()
+      : await app.mount();
     return () => app.hide();
   });
+
   return <div id="container"></div>;
 }
 
@@ -62,18 +65,22 @@ function App() {
 <script>
   import Garfish from 'garfish';
   let appInstance = null;
+
   export default {
     name: 'App',
     async mounted() {
       appInstance = await Garfish.loadApp('react-app', {
-        entry: 'http://localhost:8093',
-        domGetter: '#container',
-        basename: '/react-app',
         cache: true,
+        basename: '/react-app',
+        domGetter: '#container',
+        entry: 'http://localhost:8093',
       });
       // 若已经渲染触发 show，只有首次渲染触发 mount，后面渲染都可以触发 show 提供性能
-      appInstance.mounted ? appInstance.show() : await appInstance.mount();
+      appInstance.mounted
+        ? appInstance.show()
+        : await appInstance.mount();
     },
+
     destroyed() {
       appInstance.hide();
     },
@@ -89,11 +96,13 @@ function App() {
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import ReactApp from './component/ReactApp.vue';
+
 const router = new VueRouter({
   mode: 'history',
   base: '/',
   routers: [{ path: '/react-app', component: ReactApp }],
 });
+
 new Vue({
   router,
   store,

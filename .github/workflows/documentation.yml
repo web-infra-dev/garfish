@@ -2,14 +2,14 @@ name: Deploy Docs
 on:
   push:
     branches:
-      - master
+      - main
       - gh-pages
 jobs:
   build-and-deploy:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [14.17.0]
+        node-version: [16.10.0]
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}

@@ -1,35 +1,21 @@
-import Garfish from '../src/index';
-import fetchMock from 'jest-fetch-mock';
-import { vueAppHtml, vueAppRenderNode } from './resource/vueApp';
 import {
-  appContainerId,
   __MockBody__,
   __MockHead__,
   __MockHtml__,
+  appContainerId,
+  mockStaticServer,
 } from '@garfish/utils';
-global.fetch = fetchMock;
-
-// https://www.npmjs.com/package/jest-fetch-mock
-function mockResource(code: string, contentType = 'application/javascript') {
-  const url = `http://garfish-mock.com/${performance.now()}`;
-  fetchMock.mockIf(url, () => {
-    return Promise.resolve({
-      body: code,
-      headers: {
-        'Content-Type': contentType,
-      },
-    });
-  });
-  return url;
-}
-
-const GarfishInstance = new Garfish({});
+import Garfish from '../src/index';
 
 describe('Core: load process', () => {
-  let vueSubAppEntry: string;
+  let GarfishInstance;
+  const vueAppRenderNode = 'hello-world';
+  const vueSubAppEntry = './vueApp.html';
+
+  mockStaticServer(__dirname);
 
   beforeEach(() => {
-    vueSubAppEntry = mockResource(vueAppHtml, 'text/html');
+    GarfishInstance = new Garfish({});
   });
 
   it('domGetter cssSelector', async () => {
@@ -40,6 +26,7 @@ describe('Core: load process', () => {
       entry: vueSubAppEntry,
       domGetter: '#container',
     });
+
     await app.mount();
 
     const appContainer = container.querySelectorAll(`[id^=${appContainerId}]`);
@@ -74,6 +61,7 @@ describe('Core: load process', () => {
       entry: vueSubAppEntry,
       domGetter: '#container',
     });
+
     await app.mount();
 
     const appContainer = container.querySelectorAll(`[id^=${appContainerId}]`);
@@ -105,6 +93,7 @@ describe('Core: load process', () => {
       entry: vueSubAppEntry,
       domGetter: () => document.querySelector('#container'),
     });
+
     await app.mount();
 
     const appContainer = container.querySelectorAll(`[id^=${appContainerId}]`);

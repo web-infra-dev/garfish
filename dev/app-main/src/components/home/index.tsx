@@ -1,14 +1,13 @@
+import { observer } from 'mobx-react';
 import { useState, useCallback, useEffect } from 'react';
 import { Grid, Tabs, Input, Checkbox } from '@arco-design/web-react';
-import { useNavigate } from 'react-router-dom';
-import { observer } from 'mobx-react';
-import { loadAppFunc } from '../loadApp/loadAppFunc';
 import { Spin } from '@arco-design/web-react';
-import './index.less';
+import { useNavigate } from 'react-router-dom';
 import Garfish from 'garfish';
 import MDEditor from '@uiw/react-md-editor';
 import AppLink from '../Link';
 import CardItem from '../CardItem';
+import { loadAppFunc } from '../loadApp/loadAppFunc';
 import {
   basicInfoStr_dev,
   basicInfoStr_prod,
@@ -18,6 +17,7 @@ import {
   channelStr,
   upgradeStr,
 } from '../mdStr';
+import './index.less';
 
 const Row = Grid.Row;
 const Col = Grid.Col;
@@ -74,7 +74,7 @@ const HomePage = observer(({ store }) => {
       <Col span={8} className="card-columns">
         <CardItem
           title="访问独立子应用"
-          href="https://garfish.top/quick-start"
+          href="https://garfish.top/quickStart"
           content={
             <div className="content-wrapper">
               {store.apps.map((v: any) => (

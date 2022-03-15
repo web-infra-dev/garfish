@@ -15,6 +15,7 @@ Garfish.run({
   basename: '/',
   domGetter: '#subApp',
   disablePreloadApp: false,
+
   apps: [
     {
       name: 'react',
@@ -26,45 +27,65 @@ Garfish.run({
       activeWhen: '/vue-app',
       domGetter: '#sub-container', // 提供不同的挂载点，react 应用使用全局的 domGetter 挂载点
       entry: 'http://localhost:4000',
-    }
+    },
   ],
+
   sandbox: {
-    snapshot: false, // 关闭快照沙箱使用，vm 沙箱
-    modules: [()=>({ override: {localStorage: window.localStorage} })], // 覆盖子应用的执行上下文，使用自定义的执行上下文，例如子应用 localStorage 使用当前主应用 localStorage
+    // 关闭快照沙箱使用，vm 沙箱
+    snapshot: false,
+    // 用来修正子应用的请求的 baseUrl（为了兼容旧版本，默认为 false）
+    fixBaseUrl: false,
+    // 覆盖子应用的执行上下文，使用自定义的执行上下文，例如子应用 localStorage 使用当前主应用 localStorage
+    modules: [
+      () => ({
+        override: {
+          localStorage: window.localStorage,
+        },
+      }),
+    ],
   },
+
   // global hook
   beforeLoad(appInfo) {
-    console.log('子应用开始加载',appInfo.name);
+    console.log('子应用开始加载', appInfo.name);
   },
+
   afterLoad(appInfo) {
-    console.log('子应用加载完成',appInfo.name);
+    console.log('子应用加载完成', appInfo.name);
   },
+
   // 提供了该 hook，错误将不会 throw 到文档流中（不会被全局错误监听到），提供给开发者决定如何处理错误
-  errorLoadApp(error,appInfo) {
-    console.log('子应用加载异常',appInfo.name);
+  errorLoadApp(error, appInfo) {
+    console.log('子应用加载异常', appInfo.name);
     console.error(error);
   },
+
   // app hook
   beforeMount(appInfo) {
-    console.log('子应用开始渲染',appInfo.name);
+    console.log('子应用开始渲染', appInfo.name);
   },
+
   afterMount(appInfo) {
-    console.log('子应用渲染结束',appInfo.name);
+    console.log('子应用渲染结束', appInfo.name);
   },
+
   // 提供了该 hook，错误将不会 throw 到文档流中（不会被全局错误监听到），提供给开发者决定如何处理错误
-  errorMountApp(error,appInfo) {
-    console.log('子应用渲染异常',appInfo.name);
+  errorMountApp(error, appInfo) {
+    console.log('子应用渲染异常', appInfo.name);
     console.error(error);
-  }
+  },
+
   beforeUnmount(appInfo) {
-    console.log('子应用开始销毁',appInfo.name);
+    console.log('子应用开始销毁', appInfo.name);
   },
+
   afterUnmount(appInfo) {
-    console.log('子应用销毁结束',appInfo.name);
+    console.log('子应用销毁结束', appInfo.name);
   },
+
   // 提供了该 hook，错误将不会 throw 到文档流中（不会被全局错误监听到），提供给开发者决定如何处理错误
-  errorUnmountApp(error,appInfo) {
-    console.log('子应用销毁异常',appInfo.name);
+  errorUnmountApp(error, appInfo) {
+    console.log('子应用销毁异常', appInfo.name);
     console.error(error);
   },
 });
@@ -91,6 +112,8 @@ Garfish.run({
     <dl className="args-list">
       <dt><strong>snapshot?: false（默认值为 false）</strong></dt>
       <dd>表明是否开启快照沙箱，默认情况下关闭快照沙箱，使用 VM 沙箱（VM 沙箱支持多实例）</dd>
+      <dt><strong>fixBaseUrl?: false（默认值为 false）</strong></dt>
+      <dd>表明是否修复子应用请求的 baseUrl（请求为相对路径时才生效）</dd>
       <dt><strong>strictIsolation?: false（默认值为 false）</strong></dt>
       <dd>表明是否开启开启严格隔离，开启严格隔离后，子应用的渲染节点将会开启 Shadow DOM close 模式，并且子应用的查询和添加行为仅会在 DOM 作用域内进行</dd>
       <dt><strong>modules?: Module[]（默认值: []）</strong></dt>
