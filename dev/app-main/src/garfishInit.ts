@@ -3,6 +3,7 @@ import Garfish from 'garfish';
 import * as ReactDom from 'react-dom';
 import * as mobxReact from 'mobx-react';
 import * as ReactRouterDom from 'react-router-dom';
+import * as arcoDesign from '@arco-design/web-react';
 import { Message } from '@arco-design/web-react';
 import { store } from './store';
 import { Config } from './config';
@@ -18,6 +19,7 @@ export const GarfishInit = async () => {
     'react-dom': ReactDom,
     'react-router-dom': ReactRouterDom,
     'mobx-react': mobxReact,
+    '@arco-design/web-react': arcoDesign,
   });
 
   Garfish.channel.on('event', (msg: string) => {

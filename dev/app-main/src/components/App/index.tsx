@@ -59,7 +59,7 @@ const App = observer(({ store }: { store: any }) => {
   // 当 store.counter 变化时，才 emit stateChange
   useEffect(() => {
     if (JSON.parse(storeRef.current).counter !== store.counter) {
-      window?.Garfish.channel.emit('stateChange');
+      window?.Garfish?.channel.emit('stateChange');
       storeRef.current = JSON.stringify(store);
     }
   }, [JSON.stringify(store.counter), location]);

@@ -45,6 +45,7 @@ const webpackConfig = {
   //   'react-dom': 'react-dom',
   //   'react-router-dom': 'react-router-dom',
   //   'mobx-react': 'mobx-react',
+  //   '@arco-design/web-react': '@arco-design/web-react'
   // },
   node: false, // 避免 global 逃逸
   resolve: {
