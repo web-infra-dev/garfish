@@ -15,7 +15,7 @@ const Home = () => (
             style={{ marginTop: '30px', marginBottom: '30px' }}
           >
             Thank you for the React applications use garfish.
-            <span style={{ color: 'aqua' }}>This is React17. </span>
+            <span style={{ color: 'aqua' }}>This is React17. 99</span>
           </h3>
 
           <p>

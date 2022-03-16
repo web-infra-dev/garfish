@@ -26,7 +26,6 @@ import homeSvg from '../../static/icons/Home.svg';
 import newSvg from '../../static/icons/New.svg';
 import './index.less';
 
-
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
 const Sider = Layout.Sider;
@@ -215,16 +214,6 @@ const App = observer(({ store }: { store: any }) => {
           >
             新增应用
           </Button> */}
-          <div style={{ marginLeft: '10px' }}>
-            热更新测试：
-            <span className="hmr-text">Hello, Garfish!</span>
-            <Input
-              type="text"
-              size="mini"
-              style={{ width: '330px', display: 'inline-block' }}
-              placeholder="请输入后改变 Hello, Garfish! 文案样式, 输入框状态仍保留"
-            />
-          </div>
         </Header>
         <Layout style={{ padding: '0 24px' }}>
           {

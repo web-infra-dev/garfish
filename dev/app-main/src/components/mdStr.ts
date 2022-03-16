@@ -39,27 +39,27 @@ export const basicInfoStr_dev = `
   - react17
     - activeWhen: '/react17',
     - basename: 'examples/react17'
-    - 独立应用访问地址: 'http://localhost:8091'
+    - 应用访问地址: 'http://localhost:8091'
   - react16:
     - activeWhen: '/react16',
     - basename: 'examples/react16'
-    - 独立应用访问地址:'http://localhost:8092'
+    - 应用访问地址:'http://localhost:8092'
   - vue3:
     - activeWhen: '/vue3',
     - basename: 'examples/vue3'
-    - 独立应用访问地址: 'http://localhost:8093'
+    - 应用访问地址: 'http://localhost:8093'
   - vue2:
     - activeWhen: (path) => path.includes('/vue2'),
     - basename: 'examples/vue2'
-    - 独立应用访问地址: 'http://localhost:8094'
+    - 应用访问地址: 'http://localhost:8094'
   - vite:
     - activeWhen: '/vite',
     - basename: 'examples/vite'
-    - 独立应用访问地址: 'http://localhost:8095'
+    - 应用访问地址: 'http://localhost:8095'
   - angular:
     - activeWhen: '/angular',
     - basename: 'examples/angular'
-    - 独立应用访问地址: 'http://localhost:8097'
+    - 应用访问地址: 'http://localhost:8097'
 \`\`\`
 `;
 
@@ -117,7 +117,7 @@ export const featuresStr = `
 - 子应用挂载完成前 loading 状态
 - loadApp 异步加载添加 loading 状态
 - 页面路由不匹配时 404 页面兜底
-- css 隔离能力(arco + prefix)
+- css 隔离能力(css prefix)
 - 全局状态更新页面重渲染
 - react & vue 应用内部状态管理
 - reactBridge 支持 errorBoundary
@@ -148,14 +148,14 @@ export const channelStr = `
 \`\`\`javascript
 // 子应用注册监听
 useEffect(() => {
-  window?.Garfish.channel.on('sayHello', handleMsg);
+  window?.Garfish?.channel.on('sayHello', handleMsg);
   return () => {
-    window?.Garfish.channel.removeListener('sayHello', handleMsg);
+    window?.Garfish?.channel.removeListener('sayHello', handleMsg);
   };
 }, []);
 
 // 主应用触发监听
-window?.Garfish.channel.emit('sayHello', 'hello, i am main app');
+window?.Garfish?.channel.emit('sayHello', 'hello, i am main app');
 \`\`\`
 `;
 
@@ -173,7 +173,7 @@ npm update @byted/garfish
 yarn upgrade @byted/garfish
 pnpm update @byted/garfish
 
-由于 内部包 @byted/garfish 依赖外部包 garfish, 当 garfish 升级时 @byted/garfish 的依赖可能不会自动升级。
+由于内部包 @byted/garfish 依赖外部包 garfish, 当 garfish 升级时 @byted/garfish 的依赖可能不会自动升级。
 可以尝试如下方式升级隐式依赖，保证使用的是最新版本的包。
 
 - npm 升级隐式依赖

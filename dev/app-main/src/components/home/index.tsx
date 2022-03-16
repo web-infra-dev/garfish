@@ -109,20 +109,11 @@ const HomePage = observer(({ store }) => {
         <CardItem
           title="与子应用通信"
           onClick={() =>
-            window?.Garfish.channel.emit('sayHello', 'hello, i am main app')
+            window?.Garfish?.channel.emit('sayHello', 'hello, i am main app')
           }
           href="https://garfish.top/api/channel"
           markdownStr={channelStr}
         />
-
-        {/* <CardItem
-          title="设置window变量"
-          onClick={() => {
-            window.testName = 'danping';
-          }}
-          href="https://garfish.top/api/channel"
-          markdownStr={channelStr}
-        /> */}
       </Col>
 
       <Col span={16}>
