@@ -1,3 +1,4 @@
+import { Options } from './../../router/src/config';
 import {
   __MockBody__,
   __MockHead__,
@@ -115,5 +116,54 @@ describe('Core: load process', () => {
       0,
     );
     document.body.removeChild(container);
+  });
+
+  it('not throws an error when entry option is provided', async () => {
+    let isError = false;
+    try {
+      await GarfishInstance.loadApp('vue-app', {
+        domGetter: '#container',
+        entry: vueSubAppEntry,
+      });
+    } catch {
+      isError = true;
+    }
+    expect(isError).toBe(false);
+  });
+
+  it('throws an error when entry option is not provided after beforeLoad', async () => {
+    let isError = false;
+    try {
+      await GarfishInstance.loadApp('vue-app', {
+        domGetter: '#container',
+      });
+    } catch {
+      isError = true;
+    }
+    expect(isError).toBe(true);
+  });
+
+  it('not throws an error when entry option is provided after beforeLoad', async () => {
+    let isError = false;
+
+    const mockBeforeLoad = jest.fn(() => {
+      GarfishInstance.appInfos['vue-app'] = {
+        name: 'vue-app',
+        entry: vueSubAppEntry,
+      };
+    });
+
+    GarfishInstance.run({
+      beforeLoad: mockBeforeLoad,
+    });
+
+    try {
+      await GarfishInstance.loadApp('vue-app', {
+        domGetter: '#container',
+      });
+    } catch {
+      isError = true;
+    }
+    expect(isError).toBe(false);
   });
 });
