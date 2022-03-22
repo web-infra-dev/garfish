@@ -1,4 +1,3 @@
-import { Options } from './../../router/src/config';
 import {
   __MockBody__,
   __MockHead__,
