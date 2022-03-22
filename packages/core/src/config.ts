@@ -89,11 +89,6 @@ export const generateAppOptions = (
   appInfo = getAppConfig(garfish.options, appInfo || {});
   appInfo.name = appName;
 
-  assert(
-    appInfo.entry,
-    `Can't load unexpected child app "${appName}", ` +
-      'Please provide the entry parameters or registered in advance of the app.',
-  );
   return appInfo;
 };
 
