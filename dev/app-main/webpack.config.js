@@ -1,7 +1,7 @@
 import path from 'path';
 import { DefinePlugin } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { isDevelopment, isInWebIDE, getPublicPath, getPort} from '../util'
+import { isDevelopment, getPublicPath, getPort} from '../util'
 // const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const appName = 'dev/main';
 
@@ -75,7 +75,7 @@ const webpackConfig = {
     hot: true,
     // open: true,
     historyApiFallback: true,
-    // port: 8090,
+
     port: getPort(appName),
     headers: {
       'Access-Control-Allow-Origin': '*',
@@ -88,8 +88,6 @@ const webpackConfig = {
       favicon: path.resolve(__dirname, './src/static/favicon.ico'),
     }),
     new DefinePlugin({
-      'process.env.inIDE': isInWebIDE(),
-      'process.env.WEBIDE_PODID': JSON.stringify(process.env.WEBIDE_PODID),
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
     // 微前端场景下子应用热更新需要关闭 react-fast-refresh, 否则子应用热更新不会生效
