@@ -1,6 +1,6 @@
 import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import { getPublicPath, getPort } from '../util'
+import { getPort } from '../util'
 const appName = 'dev/vite';
 
 export default ({ mode }) => {
@@ -10,7 +10,7 @@ export default ({ mode }) => {
   };
 
   return defineConfig({
-    base: `http:${getPublicPath(appName)}`,
+    base: `http://localhost:${getPort(appName)}`,
     server: {
       port: getPort(appName),
       cors: true,
