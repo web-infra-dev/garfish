@@ -164,11 +164,13 @@ export class Garfish extends EventEmitter2 {
       // Return not undefined type data directly to end loading
       const stop = await this.hooks.lifecycle.beforeLoad.emit(appInfo);
 
-      assert(
-        this.appInfos[appName].entry,
-        `Can't load unexpected child app "${appName}", ` +
-          'Please provide the entry parameters or registered in advance of the app.',
-      );
+      if (!optionsOrUrl?.entry) {
+        assert(
+          this.appInfos[appName]?.entry,
+          `Can't load unexpected child app "${appName}", ` +
+            'Please provide the entry parameters or registered in advance of the app.',
+        );
+      }
 
       if (stop === false) {
         warn(`Load ${appName} application is terminated by beforeLoad.`);
