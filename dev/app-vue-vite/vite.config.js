@@ -1,9 +1,7 @@
 import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import portMap from '../config.json';
-
+import { getPublicPath, getPort } from '../util'
 const appName = 'dev/vite';
-const port = portMap[appName].port;
 
 export default ({ mode }) => {
   process.env = {
@@ -12,11 +10,13 @@ export default ({ mode }) => {
   };
 
   return defineConfig({
-    base: process.env.VITE_APP_BASE,
+    base: `http:${getPublicPath(appName)}`,
     server: {
-      port,
+      port: getPort(appName),
       cors: true,
-      origin: `http://localhost:${port}`,
+      origin: Boolean(process.env.IDE_PLATFORM)
+            ? `https://${getPort(appName)}-ssh2m4h1iyv4pprod.webide-boe.byted.org`
+            : `http://localhost:${getPort(appName)}`,
     },
     plugins: [
       vue(),

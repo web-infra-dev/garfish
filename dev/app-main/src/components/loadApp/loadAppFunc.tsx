@@ -4,7 +4,7 @@ import { store } from '../../store';
 export const loadAppFunc = async ({ id, appName, basename, domID }) => {
   let app;
   const loadPromise = () => {
-    const _app = store.apps.find((v: any) => v.name === appName);
+    const _app: any = store.apps.find((v: any) => v.name === appName);
 
     // 模拟异步请求
     return new Promise<any>(async (resolve, reject) => {

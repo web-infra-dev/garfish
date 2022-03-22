@@ -1,7 +1,5 @@
-const portMap = require('../config.json');
+const { getPublicPath, getPort } = require('../util');
 const appName = 'dev/vue2';
-const port = portMap[appName].port;
-const publicPath = portMap[appName].publicPath;
 
 module.exports = {
   chainWebpack: (config) => {
@@ -23,16 +21,14 @@ module.exports = {
       },
     };
   },
-  publicPath:
-    process.env.NODE_ENV === 'production'
-      ? publicPath
-      : `http://localhost:${port}/`,
+  publicPath: getPublicPath(appName),
   devServer: {
     inline: true,
     hot: true,
     host: '0.0.0.0',
-    port,
+    port: getPort(appName),
     historyApiFallback: true,
+    disableHostCheck: true,
     headers: {
       'Access-Control-Allow-Origin': '*',
     },

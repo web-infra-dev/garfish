@@ -22,7 +22,9 @@
   setModuleConfig({
     alias: {
       Component: process.env.NODE_ENV === 'production' && publicPath
-        ? `${window.location.protocol}//${publicPath}remoteModule.js`
+        ? `${window.location.protocol}//${publicPath}remoteModule.js` 
+        : process.env.IDE_PLATFORM
+        ? 'https://8094-ssh2m4h1iyv4pprod.webide-boe.byted.org/remoteModule.js'
         : `http://localhost:${port}/remoteModule.js`
     },
   })
