@@ -155,19 +155,23 @@ export class Garfish extends EventEmitter2 {
 
   loadApp(
     appName: string,
-    optionsOrUrl?: Omit<interfaces.AppInfo, 'name'>,
+    options?: Omit<interfaces.AppInfo, 'name'>,
   ): Promise<interfaces.App | null> {
     assert(appName, 'Miss appName.');
-    const appInfo = generateAppOptions(appName, this, optionsOrUrl);
+
+    let appInfo = generateAppOptions(appName, this, options);
 
     const asyncLoadProcess = async () => {
       // Return not undefined type data directly to end loading
       const stop = await this.hooks.lifecycle.beforeLoad.emit(appInfo);
 
-      // if appInfo.entry is null, get app entry again from appInfos after beforeLoad
-      if (!appInfo.entry) {
-        appInfo.entry = this.appInfos[appName]?.entry;
+      if (stop === false) {
+        warn(`Load ${appName} application is terminated by beforeLoad.`);
+        return null;
       }
+
+      // merge configs again after beforeLoad
+      appInfo = generateAppOptions(appName, this, options);
 
       assert(
         appInfo.entry,
@@ -175,13 +179,10 @@ export class Garfish extends EventEmitter2 {
           'Please provide the entry parameters or registered in advance of the app.',
       );
 
-      if (stop === false) {
-        warn(`Load ${appName} application is terminated by beforeLoad.`);
-        return null;
-      }
       // Existing cache caching logic
       let appInstance: interfaces.App = null;
       const cacheApp = this.cacheApps[appName];
+
       if (appInfo.cache && cacheApp) {
         appInstance = cacheApp;
       } else {
@@ -212,6 +213,7 @@ export class Garfish extends EventEmitter2 {
           this.hooks.lifecycle.errorLoadApp.emit(e, appInfo);
         }
       }
+
       await this.hooks.lifecycle.afterLoad.emit(appInfo, appInstance);
       return appInstance;
     };

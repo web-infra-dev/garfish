@@ -60,25 +60,25 @@ export const getAppConfig = <T>(globalConfig, localConfig) => {
 export const generateAppOptions = (
   appName: string,
   garfish: interfaces.Garfish,
-  appOptionsOrUrl: Partial<interfaces.AppInfo> | string = {},
+  appOptionsOrUrl?: Omit<interfaces.AppInfo, 'name'>,
 ): AppInfo => {
   let appInfo = garfish.appInfos[appName];
   // Load the unregistered applications
   // `Garfish.loadApp('appName', 'https://xx.html');`
-  if (typeof appOptionsOrUrl === 'string') {
-    if (appInfo) {
-      appInfo = {
-        ...appInfo,
-        entry: appOptionsOrUrl,
-      };
-    } else {
-      appInfo = {
-        name: appName,
-        basename: '/',
-        entry: appOptionsOrUrl,
-      };
-    }
-  }
+  // if (typeof appOptionsOrUrl === 'string') {
+  //   if (appInfo) {
+  //     appInfo = {
+  //       ...appInfo,
+  //       entry: appOptionsOrUrl,
+  //     };
+  //   } else {
+  //     appInfo = {
+  //       name: appName,
+  //       basename: '/',
+  //       entry: appOptionsOrUrl,
+  //     };
+  //   }
+  // }
 
   // Merge register appInfo config and loadApp config
   if (isObject(appOptionsOrUrl)) {

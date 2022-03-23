@@ -10,7 +10,9 @@ import Garfish from '../src/index';
 describe('Core: load process', () => {
   let GarfishInstance;
   const vueAppRenderNode = 'hello-world';
+  const vue3AppRenderNode = 'hello-world-vue3';
   const vueSubAppEntry = './vueApp.html';
+  const entry = './vue3App.html';
 
   mockStaticServer(__dirname);
 
@@ -117,7 +119,44 @@ describe('Core: load process', () => {
     document.body.removeChild(container);
   });
 
-  it('not throws an error when entry option is provided', async () => {
+  it("throw error when provide an 'name' opts in options", async () => {
+    await expect(
+      GarfishInstance.loadApp('vue-app', {
+        name: 'sub-app',
+      }),
+    ).rejects.toThrow();
+  });
+
+  it('get the options from register info by default', async () => {
+    GarfishInstance.run({
+      domGetter: '#container',
+      apps: [
+        {
+          name: 'vue-app',
+          entry: vueSubAppEntry,
+        },
+      ],
+    });
+
+    await expect(GarfishInstance.loadApp('vue-app')).resolves.toMatchObject({
+      appInfo: {
+        entry: vueSubAppEntry,
+      },
+    });
+  });
+
+  it('config will be deepMerged with global config、register app info and provided by options in loadApp', async () => {
+    GarfishInstance.run({
+      basename: 'demo',
+      domGetter: '#container',
+      apps: [
+        {
+          name: 'vue-app',
+          entry: vueSubAppEntry,
+        },
+      ],
+    });
+
     await expect(
       GarfishInstance.loadApp('vue-app', {
         domGetter: '#container',
@@ -125,22 +164,67 @@ describe('Core: load process', () => {
       }),
     ).resolves.toMatchObject({
       appInfo: {
+        basename: 'demo',
         entry: vueSubAppEntry,
       },
     });
   });
 
-  it('check the error message when entry is not provided after beforeLoad', async () => {
+  it('config provided by options in loadApp will have the highest priority after config merged', async () => {
+    const mockBeforeLoad = jest.fn(() => {
+      GarfishInstance.appInfos['vue-app'] = {
+        name: 'vue-app',
+        entry,
+      };
+    });
+
+    GarfishInstance.run({
+      beforeLoad: mockBeforeLoad,
+      entry: vueSubAppEntry,
+    });
+
     await expect(
       GarfishInstance.loadApp('vue-app', {
         domGetter: '#container',
       }),
-    ).rejects.toThrow(
-      'Please provide the entry parameters or registered in advance of the app.',
+    ).resolves.toMatchObject({
+      appInfo: {
+        entry,
+      },
+    });
+
+    const container = document.createElement('div');
+    container.setAttribute('id', 'container');
+    document.body.appendChild(container);
+    const app = await GarfishInstance.loadApp('vue-app', {
+      entry,
+      domGetter: '#container',
+    });
+
+    await app.mount();
+
+    const appContainer = container.querySelectorAll(`[id^=${appContainerId}]`);
+    expect(appContainer).toHaveLength(1);
+    expect(appContainer[0].querySelectorAll(`[${__MockHtml__}]`)).toHaveLength(
+      1,
     );
+    expect(appContainer[0].querySelectorAll(`[${__MockHead__}]`)).toHaveLength(
+      1,
+    );
+    expect(appContainer[0].querySelectorAll(`[${__MockBody__}]`)).toHaveLength(
+      1,
+    );
+    expect(
+      appContainer[0].querySelectorAll(`[id=${vue3AppRenderNode}]`),
+    ).toHaveLength(1);
+    app.unmount();
+    expect(container.querySelectorAll(`[id^=${appContainerId}]`)).toHaveLength(
+      0,
+    );
+    document.body.removeChild(container);
   });
 
-  it('not throws an error when entry is provided after beforeLoad', async () => {
+  it('provide an entry after beforeLoad if entry is not provided in register', async () => {
     const mockBeforeLoad = jest.fn(() => {
       GarfishInstance.appInfos['vue-app'] = {
         name: 'vue-app',
@@ -161,5 +245,15 @@ describe('Core: load process', () => {
         entry: vueSubAppEntry,
       },
     });
+  });
+
+  it('throw error when entry is not provided after beforeLoad', async () => {
+    await expect(
+      GarfishInstance.loadApp('vue-app', {
+        domGetter: '#container',
+      }),
+    ).rejects.toThrow(
+      'Please provide the entry parameters or registered in advance of the app.',
+    );
   });
 });
