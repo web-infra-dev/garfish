@@ -10,7 +10,8 @@ import Garfish from '../src/index';
 describe('Core: load process', () => {
   let GarfishInstance;
   const vueAppRenderNode = 'hello-world';
-  const vueSubAppEntry = './vueApp.html';
+  const vueSubAppEntry = './resources/vueApp.html';
+  const reactSubAppEntry = './resources/reactApp.html';
 
   mockStaticServer(__dirname);
 
@@ -29,24 +30,9 @@ describe('Core: load process', () => {
 
     await app.mount();
 
-    const appContainer = container.querySelectorAll(`[id^=${appContainerId}]`);
-    expect(appContainer).toHaveLength(1);
-    expect(appContainer[0].querySelectorAll(`[${__MockHtml__}]`)).toHaveLength(
-      1,
-    );
-    expect(appContainer[0].querySelectorAll(`[${__MockHead__}]`)).toHaveLength(
-      1,
-    );
-    expect(appContainer[0].querySelectorAll(`[${__MockBody__}]`)).toHaveLength(
-      1,
-    );
-    expect(
-      appContainer[0].querySelectorAll(`[id=${vueAppRenderNode}]`),
-    ).toHaveLength(1);
-    app.unmount();
-    expect(container.querySelectorAll(`[id^=${appContainerId}]`)).toHaveLength(
-      0,
-    );
+    const appContainer = container.querySelector(`[id^=${appContainerId}]`);
+    expect(appContainer.childNodes[0]).toMatchSnapshot();
+
     document.body.removeChild(container);
   });
 
@@ -64,8 +50,9 @@ describe('Core: load process', () => {
 
     await app.mount();
 
-    const appContainer = container.querySelectorAll(`[id^=${appContainerId}]`);
-    expect(appContainer).toHaveLength(1);
+    const appContainer = container.querySelector(`[id^=${appContainerId}]`);
+    expect(appContainer.childNodes[0]).toMatchSnapshot();
+
     app.unmount();
     document.body.removeChild(container);
   });
@@ -89,6 +76,7 @@ describe('Core: load process', () => {
     const container = document.createElement('div');
     container.setAttribute('id', 'container');
     document.body.appendChild(container);
+
     const app = await GarfishInstance.loadApp('vue-app', {
       entry: vueSubAppEntry,
       domGetter: () => document.querySelector('#container'),
@@ -96,24 +84,23 @@ describe('Core: load process', () => {
 
     await app.mount();
 
-    const appContainer = container.querySelectorAll(`[id^=${appContainerId}]`);
-    expect(appContainer).toHaveLength(1);
-    expect(appContainer[0].querySelectorAll(`[${__MockHtml__}]`)).toHaveLength(
-      1,
-    );
-    expect(appContainer[0].querySelectorAll(`[${__MockHead__}]`)).toHaveLength(
-      1,
-    );
-    expect(appContainer[0].querySelectorAll(`[${__MockBody__}]`)).toHaveLength(
-      1,
-    );
-    expect(
-      appContainer[0].querySelectorAll(`[id=${vueAppRenderNode}]`),
-    ).toHaveLength(1);
-    app.unmount();
-    expect(container.querySelectorAll(`[id^=${appContainerId}]`)).toHaveLength(
-      0,
-    );
+    const appContainer = container.querySelector(`[id^=${appContainerId}]`);
+    expect(appContainer.childNodes[0]).toMatchSnapshot();
+
+    document.body.removeChild(container);
+  });
+
+  it('load error app', async () => {
+    const container = document.createElement('div');
+    container.setAttribute('id', 'container');
+    document.body.appendChild(container);
+    const app = await GarfishInstance.loadApp('vue-app', {
+      entry: reactSubAppEntry,
+      domGetter: () => document.querySelector('#container'),
+    });
+
+    await expect(app.mount()).rejects.toThrowError('test msg');
+
     document.body.removeChild(container);
   });
 });
