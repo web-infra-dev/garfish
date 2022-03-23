@@ -9,11 +9,10 @@ import Garfish from '../src/index';
 
 describe('Core: load process', () => {
   let GarfishInstance;
-  const vueAppRenderNode = 'hello-world';
-  const vue3AppRenderNode = 'hello-world-vue3';
-  const entry = './resources/vue3App.html';
   const vueSubAppEntry = './resources/vueApp.html';
   const reactSubAppEntry = './resources/reactApp.html';
+  const vue3AppRenderNode = 'hello-world-vue3';
+  const vue3SubAppEntry = './resources/vue3App.html';
 
   mockStaticServer(__dirname);
 
@@ -161,13 +160,19 @@ describe('Core: load process', () => {
     const mockBeforeLoad = jest.fn(() => {
       GarfishInstance.appInfos['vue-app'] = {
         name: 'vue-app',
-        entry,
+        entry: vue3SubAppEntry,
       };
     });
 
     GarfishInstance.run({
       beforeLoad: mockBeforeLoad,
-      entry: vueSubAppEntry,
+      apps: [
+        {
+          name: 'vue-app',
+          entry: vueSubAppEntry,
+          basename: '/vue',
+        },
+      ],
     });
 
     await expect(
@@ -176,7 +181,7 @@ describe('Core: load process', () => {
       }),
     ).resolves.toMatchObject({
       appInfo: {
-        entry,
+        entry: vue3SubAppEntry,
       },
     });
 
@@ -184,7 +189,7 @@ describe('Core: load process', () => {
     container.setAttribute('id', 'container');
     document.body.appendChild(container);
     const app = await GarfishInstance.loadApp('vue-app', {
-      entry,
+      entry: vue3SubAppEntry,
       domGetter: '#container',
     });
 
@@ -242,5 +247,70 @@ describe('Core: load process', () => {
     ).rejects.toThrow(
       'Please provide the entry parameters or registered in advance of the app.',
     );
+  });
+
+  it('load the same app while return the cache instance if cache is true', async () => {
+    await GarfishInstance.run({
+      domGetter: '#container',
+      apps: [
+        {
+          name: 'vue-app',
+          entry: vueSubAppEntry,
+          cache: true,
+        },
+      ],
+    });
+
+    const app1 = await GarfishInstance.loadApp('vue-app');
+    await app1.mount();
+    const app2 = await GarfishInstance.loadApp('vue-app');
+
+    expect(app1.mounted).toBe(true);
+    expect(app2.mounted).toEqual(app1.mounted);
+  });
+
+  it('load the same app while return the cache instance if cache is set true', async () => {
+    await GarfishInstance.run({
+      domGetter: '#container',
+      apps: [
+        {
+          name: 'vue-app',
+          entry: vueSubAppEntry,
+          cache: false,
+        },
+      ],
+    });
+
+    const app1 = await GarfishInstance.loadApp('vue-app');
+    await app1.mount();
+    const app2 = await GarfishInstance.loadApp('vue-app');
+
+    expect(app1.mounted).toBe(true);
+    expect(app2.mounted).not.toEqual(app1.mounted);
+  });
+
+  it('load the same app while return the cache instance if cache is set false', async () => {
+    await GarfishInstance.run({
+      domGetter: '#container',
+      apps: [
+        {
+          name: 'vue-app',
+          entry: vueSubAppEntry,
+          cache: true,
+        },
+      ],
+    });
+
+    const app1 = await GarfishInstance.loadApp('vue-app');
+    await app1.mount();
+
+    const app2 = await GarfishInstance.loadApp('vue-app', {
+      entry: vue3SubAppEntry,
+      cache: false,
+    });
+
+    expect(app1.mounted).toBe(true);
+    expect(app2.mounted).toBe(false);
+    expect(app2.appInfo.entry).toEqual(vue3SubAppEntry);
   });
 });
