@@ -1,5 +1,6 @@
 import Garfish from '@garfish/core';
 import { GarfishRouter } from '@garfish/router';
+import { GarfishBrowserVm } from '@garfish/browser-vm';
 import {
   __MockBody__,
   __MockHead__,
@@ -63,7 +64,7 @@ describe('Core: run methods', () => {
     GarfishInstance.run({
       basename: '/',
       domGetter: '#container',
-      plugins: [GarfishRouter()],
+      plugins: [GarfishRouter(), GarfishBrowserVm()],
       apps: [
         {
           name: 'vue-app',
@@ -78,10 +79,7 @@ describe('Core: run methods', () => {
       ],
       beforeLoad: mockBeforeLoad,
       afterLoad: mockAfterLoad,
-      // beforeEval: mockBeforeEval,
-      beforeEval: (appInfo, code, env, url) => {
-        console.log(appInfo.name, code, url);
-      },
+      beforeEval: mockBeforeEval,
       afterEval: mockAfterEval,
       beforeMount: mockBeforeMount,
       afterMount: mockAfterMount,
@@ -97,14 +95,17 @@ describe('Core: run methods', () => {
 
     GarfishInstance.router.push({ path: '/vue-app' });
     await vueAppInDocument(container);
+    await waitFor(1000);
     expect(mockBeforeLoad.mock.calls[0][0].name).toBe('vue-app');
     expect(mockAfterLoad.mock.calls[0][0].name).toBe('vue-app');
     expect(mockBeforeMount.mock.calls[0][0].name).toBe('vue-app');
     expect(mockAfterMount.mock.calls[0][0].name).toBe('vue-app');
-    // expect(mockBeforeEval.mock.calls[0][0].name).toBe('vue-app');
-    // console.log(mockBeforeEval.mock.calls[0][0].name,mockBeforeEval.mock.calls[0][3]);
-    // console.log(mockBeforeEval.mock.calls[0][1].name,mockBeforeEval.mock.calls[0][3]);
-    // console.log(mockBeforeEval.mock.calls[0][2].name,mockBeforeEval.mock.calls[0][3]);
+    expect(mockBeforeEval.mock.calls[0][0].name).toBe('vue-app');
+    expect(
+      mockBeforeEval.mock.calls.map((callArgs) => {
+        return callArgs[3];
+      }),
+    ).toMatchSnapshot();
 
     GarfishInstance.router.push({ path: '/react-app' });
     await reactAppInDocument(container);
