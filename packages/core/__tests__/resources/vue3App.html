@@ -11,12 +11,12 @@
           return {
             render ({ dom , basename }) {
               let newContent = document.createElement('div');
-              newContent.setAttribute('id', 'hello-world');
+              newContent.setAttribute('id', 'hello-world-vue3');
               dom.querySelector('#app').appendChild(newContent);
             },
 
             destroy ({ dom , basename }){
-              dom.querySelector('#app').removeChild(dom.querySelector('#hello-world'));
+              dom.querySelector('#app').removeChild(dom.querySelector('#hello-world-vue3'));
             }
           }
         }

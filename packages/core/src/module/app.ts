@@ -177,7 +177,16 @@ export class App {
 
     this.scriptCount++;
 
-    this.runCode(code, env, url, options);
+    const args = [this.appInfo, code, env, url, options] as const;
+    this.hooks.lifecycle.beforeEval.emit(...args);
+    try {
+      this.runCode(code, env, url, options);
+    } catch (err) {
+      this.hooks.lifecycle.errorExecCode.emit(err, ...args);
+      throw err;
+    }
+
+    this.hooks.lifecycle.afterEval.emit(...args);
   }
 
   // `vm sandbox` can override this method
@@ -187,38 +196,30 @@ export class App {
     url?: string,
     options?: interfaces.ExecScriptOptions,
   ) {
-    const args = [this.appInfo, code, env, url, options] as const;
-    this.hooks.lifecycle.beforeEval.emit(...args);
-    try {
-      // If the node is an es module, use native esmModule
-      if (options.isModule) {
-        this.esmQueue.add(async (next) => {
-          await this.esModuleLoader.load(code, env, url, options);
-          next();
-        });
-      } else {
-        const revertCurrentScript = setDocCurrentScript(
-          this.global.document,
-          code,
-          true,
-          url,
-          options?.async,
-        );
-        code += url ? `\n//# sourceURL=${url}\n` : '';
-        if (!hasOwn(env, 'window')) {
-          env = {
-            ...env,
-            window: this.global,
-          };
-        }
-        evalWithEnv(`;${code}`, env, this.global);
-        revertCurrentScript();
+    // If the node is an es module, use native esmModule
+    if (options.isModule) {
+      this.esmQueue.add(async (next) => {
+        await this.esModuleLoader.load(code, env, url, options);
+        next();
+      });
+    } else {
+      const revertCurrentScript = setDocCurrentScript(
+        this.global.document,
+        code,
+        true,
+        url,
+        options?.async,
+      );
+      code += url ? `\n//# sourceURL=${url}\n` : '';
+      if (!hasOwn(env, 'window')) {
+        env = {
+          ...env,
+          window: this.global,
+        };
       }
-    } catch (e) {
-      this.hooks.lifecycle.errorExecCode.emit(e, ...args);
-      throw e;
+      evalWithEnv(`;${code}`, env, this.global);
+      revertCurrentScript();
     }
-    this.hooks.lifecycle.afterEval.emit(...args);
   }
 
   async show() {
