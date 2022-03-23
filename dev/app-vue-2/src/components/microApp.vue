@@ -40,15 +40,11 @@ export default {
         const apps = this.mainAppProps.store.apps;
         const react16_entry = process.env.NODE_ENV === 'production' ?
             apps.find(v => v.name === 'react16').entry
-            : process.env.IDE_PLATFORM
-            ? 'https://8094-ssh2m4h1iyv4pprod.webide-boe.byted.org/'
             : `http://localhost:${portInfo['dev/react16'].port}`;
 
         const vueSub_entry = process.env.NODE_ENV === 'production' ?
             apps.find(v => v.name === 'vue-sub').entry
-            : process.env.IDE_PLATFORM
-            ? 'https://8094-ssh2m4h1iyv4pprod.webide-boe.byted.org/'
-            : `http://localhost:${portInfo['dev/react16'].port}`;
+            : `http://localhost:${portInfo['dev/vue-sub'].port}`;
 
         GarfishInstance.registerApp([{
                 name: 'vueApp',
