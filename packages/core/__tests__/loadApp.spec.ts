@@ -130,7 +130,19 @@ describe('Core: load process', () => {
     });
   });
 
-  it('throws an error when entry is not provided after beforeLoad', async () => {
+  it('throws an error when entry option is not provided', async () => {
+    let isError = false;
+    try {
+      await GarfishInstance.loadApp('vue-app', {
+        domGetter: '#container',
+      });
+    } catch (error) {
+      isError = true;
+    }
+    expect(isError).toBe(true);
+  });
+
+  it('check the error message when entry is not provided after beforeLoad', async () => {
     await expect(
       GarfishInstance.loadApp('vue-app', {
         domGetter: '#container',
