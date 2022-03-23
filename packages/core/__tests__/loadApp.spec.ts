@@ -118,33 +118,29 @@ describe('Core: load process', () => {
   });
 
   it('not throws an error when entry option is provided', async () => {
-    let isError = false;
-    try {
-      await GarfishInstance.loadApp('vue-app', {
+    await expect(
+      GarfishInstance.loadApp('vue-app', {
         domGetter: '#container',
         entry: vueSubAppEntry,
-      });
-    } catch {
-      isError = true;
-    }
-    expect(isError).toBe(false);
+      }),
+    ).resolves.toMatchObject({
+      appInfo: {
+        entry: vueSubAppEntry,
+      },
+    });
   });
 
-  it('throws an error when entry option is not provided after beforeLoad', async () => {
-    let isError = false;
-    try {
-      await GarfishInstance.loadApp('vue-app', {
+  it('throws an error when entry is not provided after beforeLoad', async () => {
+    await expect(
+      GarfishInstance.loadApp('vue-app', {
         domGetter: '#container',
-      });
-    } catch {
-      isError = true;
-    }
-    expect(isError).toBe(true);
+      }),
+    ).rejects.toThrow(
+      'Please provide the entry parameters or registered in advance of the app.',
+    );
   });
 
-  it('not throws an error when entry option is provided after beforeLoad', async () => {
-    let isError = false;
-
+  it('not throws an error when entry is provided after beforeLoad', async () => {
     const mockBeforeLoad = jest.fn(() => {
       GarfishInstance.appInfos['vue-app'] = {
         name: 'vue-app',
@@ -156,13 +152,14 @@ describe('Core: load process', () => {
       beforeLoad: mockBeforeLoad,
     });
 
-    try {
-      await GarfishInstance.loadApp('vue-app', {
+    await expect(
+      GarfishInstance.loadApp('vue-app', {
         domGetter: '#container',
-      });
-    } catch {
-      isError = true;
-    }
-    expect(isError).toBe(false);
+      }),
+    ).resolves.toMatchObject({
+      appInfo: {
+        entry: vueSubAppEntry,
+      },
+    });
   });
 });
