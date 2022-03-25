@@ -28,24 +28,32 @@ const appConfigList: Array<keyof interfaces.AppInfo | 'activeWhen'> = [
 ];
 
 // `props` may be responsive data
-export const deepMergeConfig = <T>(globalConfig, localConfig) => {
+export const deepMergeConfig = <T extends Partial<AppInfo>>(
+  globalConfig: T,
+  localConfig: T,
+) => {
   const globalProps = globalConfig.props;
   const localProps = localConfig.props;
+
   if (globalProps || localProps) {
     globalConfig = { ...globalConfig };
     localConfig = { ...localConfig };
     delete globalConfig.props;
     delete localConfig.props;
   }
+
   const result = deepMerge(globalConfig, localConfig);
   if (globalProps) result.props = { ...globalProps };
   if (localProps) result.props = { ...(result.props || {}), ...localProps };
-  return result as T;
+  return result;
 };
 
-export const getAppConfig = <T>(globalConfig, localConfig) => {
-  // TODO: Automatically retrieve configuration in the type declaration
+export const getAppConfig = <T extends Partial<AppInfo>>(
+  globalConfig: T,
+  localConfig: T,
+): T => {
   const mergeConfig = deepMergeConfig(globalConfig, localConfig);
+
   Object.keys(mergeConfig).forEach((key) => {
     if (
       !appConfigList.includes(key as any) ||
@@ -54,26 +62,28 @@ export const getAppConfig = <T>(globalConfig, localConfig) => {
       delete mergeConfig[key];
     }
   });
-  return mergeConfig as T;
-};
 
+  return mergeConfig;
+};
 export const generateAppOptions = (
   appName: string,
   garfish: interfaces.Garfish,
-  appOptionsOrUrl?: Omit<interfaces.AppInfo, 'name'>,
+  options?: Omit<AppInfo, 'name'>,
 ): AppInfo => {
-  let appInfo = garfish.appInfos[appName];
+  let appInfo = garfish.appInfos[appName] || {};
 
   // Merge register appInfo config and loadApp config
-  if (isObject(appOptionsOrUrl)) {
-    appInfo = getAppConfig(appInfo || {}, appOptionsOrUrl);
+  if (isObject(options)) {
+    appInfo = getAppConfig(appInfo, {
+      ...options,
+      name: appName,
+    });
   }
 
   // Merge globalConfig with localConfig
-  appInfo = getAppConfig(garfish.options, appInfo || {});
-  appInfo.name = appName;
+  appInfo = getAppConfig(garfish.options, appInfo);
 
-  return appInfo;
+  return appInfo as AppInfo;
 };
 
 // Each main application needs to generate a new configuration
