@@ -11,21 +11,40 @@ import { AppInfo } from './module/app';
 import { interfaces } from './interface';
 import { appLifecycle } from './lifecycle';
 
-// TODO: Infer the contents and check
-const appConfigList: Array<keyof interfaces.AppInfo | 'activeWhen'> = [
-  'name',
-  'entry',
-  'activeWhen',
-  'basename',
-  'domGetter',
-  'props',
-  'sandbox',
-  'cache',
-  'noCheckProvider',
-  'protectVariable',
-  'customLoader',
-  ...appLifecycle().lifecycleKeys,
-];
+const appConfigKeysMap: {
+  [k in keyof interfaces.AppInfo | 'activeWhen']: boolean;
+} = {
+  // subApp info return keys
+  name: true,
+  entry: true,
+  activeWhen: true,
+  basename: true,
+  domGetter: true,
+  props: true,
+  sandbox: true,
+  cache: true,
+  noCheckProvider: true,
+  protectVariable: true,
+  customLoader: true,
+
+  // appLifecycle keys
+  beforeEval: true,
+  afterEval: true,
+  beforeMount: true,
+  afterMount: true,
+  errorMountApp: true,
+  beforeUnmount: true,
+  afterUnmount: true,
+  errorUnmountApp: true,
+  errorExecCode: true,
+
+  // filter keys
+  nested: false,
+  insulationVariable: false,
+  active: false,
+  deactive: false,
+  rootPath: false,
+};
 
 // `props` may be responsive data
 export const deepMergeConfig = <T extends Partial<AppInfo>>(
@@ -55,10 +74,7 @@ export const getAppConfig = <T extends Partial<AppInfo>>(
   const mergeConfig = deepMergeConfig(globalConfig, localConfig);
 
   Object.keys(mergeConfig).forEach((key) => {
-    if (
-      !appConfigList.includes(key as any) ||
-      typeof mergeConfig[key] === 'undefined'
-    ) {
+    if (!appConfigKeysMap[key] || typeof mergeConfig[key] === 'undefined') {
       delete mergeConfig[key];
     }
   });
