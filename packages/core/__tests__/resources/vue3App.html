@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>vue3 sub app</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      if (typeof __GARFISH_EXPORTS__ !== 'undefined') {
+        __GARFISH_EXPORTS__.provider = () => {
+          return {
+            render ({ dom , basename }) {
+              let newContent = document.createElement('div');
+              newContent.setAttribute('id', 'hello-world-vue3');
+              dom.querySelector('#app').appendChild(newContent);
+            },
+
+            destroy ({ dom , basename }){
+              dom.querySelector('#app').removeChild(dom.querySelector('#hello-world-vue3'));
+            }
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

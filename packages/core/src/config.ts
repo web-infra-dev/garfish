@@ -11,90 +11,95 @@ import { AppInfo } from './module/app';
 import { interfaces } from './interface';
 import { appLifecycle } from './lifecycle';
 
-// TODO: Infer the contents and check
-const appConfigList: Array<keyof interfaces.AppInfo | 'activeWhen'> = [
-  'name',
-  'entry',
-  'activeWhen',
-  'basename',
-  'domGetter',
-  'props',
-  'sandbox',
-  'cache',
-  'noCheckProvider',
-  'protectVariable',
-  'customLoader',
-  ...appLifecycle().lifecycleKeys,
-];
+const appConfigKeysMap: {
+  [k in keyof interfaces.AppInfo | 'activeWhen']: boolean;
+} = {
+  // subApp info return keys
+  name: true,
+  entry: true,
+  activeWhen: true,
+  basename: true,
+  domGetter: true,
+  props: true,
+  sandbox: true,
+  cache: true,
+  noCheckProvider: true,
+  protectVariable: true,
+  customLoader: true,
+
+  // appLifecycle keys
+  beforeEval: true,
+  afterEval: true,
+  beforeMount: true,
+  afterMount: true,
+  errorMountApp: true,
+  beforeUnmount: true,
+  afterUnmount: true,
+  errorUnmountApp: true,
+  errorExecCode: true,
+
+  // filter keys
+  nested: false,
+  insulationVariable: false,
+  active: false,
+  deactive: false,
+  rootPath: false,
+};
 
 // `props` may be responsive data
-export const deepMergeConfig = <T>(globalConfig, localConfig) => {
+export const deepMergeConfig = <T extends Partial<AppInfo>>(
+  globalConfig: T,
+  localConfig: T,
+) => {
   const globalProps = globalConfig.props;
   const localProps = localConfig.props;
+
   if (globalProps || localProps) {
     globalConfig = { ...globalConfig };
     localConfig = { ...localConfig };
     delete globalConfig.props;
     delete localConfig.props;
   }
+
   const result = deepMerge(globalConfig, localConfig);
   if (globalProps) result.props = { ...globalProps };
   if (localProps) result.props = { ...(result.props || {}), ...localProps };
-  return result as T;
+  return result;
 };
 
-export const getAppConfig = <T>(globalConfig, localConfig) => {
-  // TODO: Automatically retrieve configuration in the type declaration
+export const getAppConfig = <T extends Partial<AppInfo>>(
+  globalConfig: T,
+  localConfig: T,
+): T => {
   const mergeConfig = deepMergeConfig(globalConfig, localConfig);
+
   Object.keys(mergeConfig).forEach((key) => {
-    if (
-      !appConfigList.includes(key as any) ||
-      typeof mergeConfig[key] === 'undefined'
-    ) {
+    if (!appConfigKeysMap[key] || typeof mergeConfig[key] === 'undefined') {
       delete mergeConfig[key];
     }
   });
-  return mergeConfig as T;
-};
 
+  return mergeConfig;
+};
 export const generateAppOptions = (
   appName: string,
   garfish: interfaces.Garfish,
-  appOptionsOrUrl: Partial<interfaces.AppInfo> | string = {},
+  options?: Omit<AppInfo, 'name'>,
 ): AppInfo => {
-  let appInfo = garfish.appInfos[appName];
-  // Load the unregistered applications
-  // `Garfish.loadApp('appName', 'https://xx.html');`
-  if (typeof appOptionsOrUrl === 'string') {
-    if (appInfo) {
-      appInfo = {
-        ...appInfo,
-        entry: appOptionsOrUrl,
-      };
-    } else {
-      appInfo = {
-        name: appName,
-        basename: '/',
-        entry: appOptionsOrUrl,
-      };
-    }
-  }
+  let appInfo = garfish.appInfos[appName] || {};
 
   // Merge register appInfo config and loadApp config
-  if (isObject(appOptionsOrUrl)) {
-    appInfo = getAppConfig(appInfo || {}, appOptionsOrUrl);
+  if (isObject(options)) {
+    appInfo = getAppConfig(appInfo, {
+      ...options,
+      name: appName,
+    });
   }
 
   // Merge globalConfig with localConfig
-  appInfo = getAppConfig(garfish.options, appInfo || {});
-  appInfo.name = appName;
+  appInfo = getAppConfig(garfish.options, appInfo);
 
-  assert(
-    appInfo.entry,
-    `Can't load unexpected child app "${appName}", ` +
-      'Please provide the entry parameters or registered in advance of the app.',
-  );
-  return appInfo;
+  return appInfo as AppInfo;
 };
 
 // Each main application needs to generate a new configuration
