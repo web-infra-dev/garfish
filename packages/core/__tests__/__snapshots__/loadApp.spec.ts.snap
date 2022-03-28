@@ -1,0 +1,163 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Core: load process domGetter cssSelector 1`] = `
+<div
+  __garfishmockhtml__=""
+>
+  <div
+    __garfishmockhead__=""
+  >
+    
+    
+    <title>
+      vue sub app
+    </title>
+    
+  
+  </div>
+  <div
+    __garfishmockbody__=""
+  >
+    
+    
+    <div
+      id="app"
+    >
+      <div
+        id="hello-world"
+      />
+    </div>
+    
+    
+    <!--&lt;script  execute by garfish&gt;
+      if (typeof __GARFISH_EXPORTS__ !== 'undefined') {
+        __GARFISH_EXPORTS__.provider = () =&gt; {
+          return {
+            render ({ dom , basename }) {
+              let newContent = document.createElement('div');
+              newContent.setAttribute('id', 'hello-world');
+              dom.querySelector('#app').appendChild(newContent);
+            },
+
+            destroy ({ dom , basename }){
+              dom.querySelector('#app').removeChild(dom.querySelector('#hello-world'));
+            }
+          }
+        }
+      }
+    &lt;/script&gt;-->
+    
+  
+
+
+  </div>
+</div>
+`;
+
+exports[`Core: load process domGetter cssSelector delay 2000ms can work normally 1`] = `
+<div
+  __garfishmockhtml__=""
+>
+  <div
+    __garfishmockhead__=""
+  >
+    
+    
+    <title>
+      vue sub app
+    </title>
+    
+  
+  </div>
+  <div
+    __garfishmockbody__=""
+  >
+    
+    
+    <div
+      id="app"
+    >
+      <div
+        id="hello-world"
+      />
+    </div>
+    
+    
+    <!--&lt;script  execute by garfish&gt;
+      if (typeof __GARFISH_EXPORTS__ !== 'undefined') {
+        __GARFISH_EXPORTS__.provider = () =&gt; {
+          return {
+            render ({ dom , basename }) {
+              let newContent = document.createElement('div');
+              newContent.setAttribute('id', 'hello-world');
+              dom.querySelector('#app').appendChild(newContent);
+            },
+
+            destroy ({ dom , basename }){
+              dom.querySelector('#app').removeChild(dom.querySelector('#hello-world'));
+            }
+          }
+        }
+      }
+    &lt;/script&gt;-->
+    
+  
+
+
+  </div>
+</div>
+`;
+
+exports[`Core: load process domGetter is function 1`] = `
+<div
+  __garfishmockhtml__=""
+>
+  <div
+    __garfishmockhead__=""
+  >
+    
+    
+    <title>
+      vue sub app
+    </title>
+    
+  
+  </div>
+  <div
+    __garfishmockbody__=""
+  >
+    
+    
+    <div
+      id="app"
+    >
+      <div
+        id="hello-world"
+      />
+    </div>
+    
+    
+    <!--&lt;script  execute by garfish&gt;
+      if (typeof __GARFISH_EXPORTS__ !== 'undefined') {
+        __GARFISH_EXPORTS__.provider = () =&gt; {
+          return {
+            render ({ dom , basename }) {
+              let newContent = document.createElement('div');
+              newContent.setAttribute('id', 'hello-world');
+              dom.querySelector('#app').appendChild(newContent);
+            },
+
+            destroy ({ dom , basename }){
+              dom.querySelector('#app').removeChild(dom.querySelector('#hello-world'));
+            }
+          }
+        }
+      }
+    &lt;/script&gt;-->
+    
+  
+
+
+  </div>
+</div>
+`;

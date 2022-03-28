@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>vue sub app</title>
-    <script src="vueIndex.js"></script>
+    <title>vue3 sub app</title>
   </head>
   <body>
     <div id="app"></div>
@@ -12,13 +11,12 @@
           return {
             render ({ dom , basename }) {
               let newContent = document.createElement('div');
-              newContent.setAttribute('id','vue-app');
-              newContent.innerHTML = 'vue app init page';
+              newContent.setAttribute('id', 'hello-world-vue3');
               dom.querySelector('#app').appendChild(newContent);
             },
 
             destroy ({ dom , basename }){
-              dom.querySelector('#app').removeChild(dom.querySelector('#vue-app'));
+              dom.querySelector('#app').removeChild(dom.querySelector('#hello-world-vue3'));
             }
           }
         }
