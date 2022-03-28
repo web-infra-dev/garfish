@@ -1,50 +1,45 @@
 import {
-  warn,
   error,
-  assert,
-  hasOwn,
+  makeMap,
   isObject,
   deepMerge,
-  isPlainObject,
 } from '@garfish/utils';
 import { AppInfo } from './module/app';
 import { interfaces } from './interface';
-import { appLifecycle } from './lifecycle';
 
-const appConfigKeysMap: {
-  [k in keyof interfaces.AppInfo | 'activeWhen']: boolean;
-} = {
-  // subApp info return keys
-  name: true,
-  entry: true,
-  activeWhen: true,
-  basename: true,
-  domGetter: true,
-  props: true,
-  sandbox: true,
-  cache: true,
-  noCheckProvider: true,
-  protectVariable: true,
-  customLoader: true,
+const isAppConfigAttrs = makeMap([
+   // subApp info return keys
+   'name',
+   'entry',
+   'activeWhen',
+   'basename',
+   'domGetter',
+   'props',
+   'sandbox',
+   'cache',
+   'noCheckProvider',
+   'protectVariable',
+   'customLoader',
+ 
+   // appLifecycle keys
+   'beforeEval',
+   'afterEval',
+   'beforeMount',
+   'afterMount',
+   'errorMountApp',
+   'beforeUnmount',
+   'afterUnmount',
+   'errorUnmountApp',
+   'errorExecCode',
+] as const);
 
-  // appLifecycle keys
-  beforeEval: true,
-  afterEval: true,
-  beforeMount: true,
-  afterMount: true,
-  errorMountApp: true,
-  beforeUnmount: true,
-  afterUnmount: true,
-  errorUnmountApp: true,
-  errorExecCode: true,
-
-  // filter keys
-  nested: false,
-  insulationVariable: false,
-  active: false,
-  deactive: false,
-  rootPath: false,
-};
+const isAppConfigFilterAttrs = makeMap([
+  'nested',
+  'insulationVariable',
+  'active',
+  'deactive',
+  'rootPath',
+] as const);
 
 // `props` may be responsive data
 export const deepMergeConfig = <T extends Partial<AppInfo>>(
@@ -72,15 +67,14 @@ export const getAppConfig = <T extends Partial<AppInfo>>(
   localConfig: T,
 ): T => {
   const mergeConfig = deepMergeConfig(globalConfig, localConfig);
-
-  Object.keys(mergeConfig).forEach((key) => {
-    if (!appConfigKeysMap[key] || typeof mergeConfig[key] === 'undefined') {
+  Object.keys(mergeConfig).forEach((key: Parameters<typeof isAppConfigAttrs>[0]) => {
+    if (!isAppConfigAttrs(key) || typeof mergeConfig[key] === 'undefined') {
       delete mergeConfig[key];
     }
   });
-
   return mergeConfig;
 };
+
 export const generateAppOptions = (
   appName: string,
   garfish: interfaces.Garfish,
@@ -98,7 +92,6 @@ export const generateAppOptions = (
 
   // Merge globalConfig with localConfig
   appInfo = getAppConfig(garfish.options, appInfo);
-
   return appInfo as AppInfo;
 };
 

@@ -42,12 +42,12 @@ export function def(obj: Object, key: string, value: any) {
 }
 
 // Array to Object `['a'] => { a: true }`
-export function makeMap(list: Array<PropertyKey>) {
+export function makeMap<T extends ReadonlyArray<string>>(list: T) {
   const map = Object.create(null);
   for (let i = 0; i < list.length; i++) {
     map[list[i]] = true;
   }
-  return (val) => !!map[val] as boolean;
+  return (val: typeof list[number]) => !!map[val] as boolean;
 }
 
 export function inBrowser() {
