@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>esm-app</title>
+  <style>
+    #esmAppContent {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <script type="module">
+    import { render, destroy } from './index.js';
+
+    if (!window.__GARFISH__) {
+      render();
+    } else {
+      __GARFISH_EXPORTS__.provider = function() {
+        console.log('Into esm app provider function');
+        return {
+          render,
+          destroy,
+        }
+      }
+    }
+  </script>
+</body>
+</html>
