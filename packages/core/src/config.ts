@@ -1,31 +1,11 @@
-import {
-  warn,
-  error,
-  assert,
-  hasOwn,
-  isObject,
-  deepMerge,
-  isPlainObject,
-} from '@garfish/utils';
+import { error, isObject, deepMerge, makeConstMap } from '@garfish/utils';
 import { AppInfo } from './module/app';
 import { interfaces } from './interface';
 import { appLifecycle, globalLifecycle } from './lifecycle';
 
-function getAppConfigMap<T extends Readonly<Array<string>>>(
-  keys: T,
-): {
-  [k in T[number]]: true;
-} {
-  const res = {};
-  for (const key of keys) {
-    res[key] = true;
-  }
-  return res as { [k in T[number]]: true };
-}
-
 const appConfigKeysMap: {
   [k in keyof Required<interfaces.AppInfo>]: boolean;
-} = getAppConfigMap([
+} = makeConstMap([
   'name',
   'entry',
   'activeWhen',
@@ -80,6 +60,7 @@ export const getAppConfig = <T extends Partial<AppInfo>>(
 
   return mergeConfig;
 };
+
 export const generateAppOptions = (
   appName: string,
   garfish: interfaces.Garfish,

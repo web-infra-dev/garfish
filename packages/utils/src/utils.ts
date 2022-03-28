@@ -50,6 +50,17 @@ export function makeMap(list: Array<PropertyKey>) {
   return (val) => !!map[val];
 }
 
+// Array to Object `['a'] => { a: true }`
+export function makeConstMap<T extends Readonly<Array<string>>>(list: T) {
+  const map = Object.create(null);
+
+  for (let i = 0; i < list.length; i++) {
+    map[list[i]] = true;
+  }
+
+  return map as { [k in T[number]]: true };
+}
+
 export function inBrowser() {
   return typeof window !== 'undefined';
 }
