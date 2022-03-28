@@ -9,42 +9,41 @@ import {
 } from '@garfish/utils';
 import { AppInfo } from './module/app';
 import { interfaces } from './interface';
-import { appLifecycle } from './lifecycle';
+import { appLifecycle, globalLifecycle } from './lifecycle';
+
+function getAppConfigMap<T extends Readonly<Array<string>>>(
+  keys: T,
+): {
+  [k in T[number]]: true;
+} {
+  const res = {};
+  for (const key of keys) {
+    res[key] = true;
+  }
+  return res as { [k in T[number]]: true };
+}
 
 const appConfigKeysMap: {
-  [k in keyof interfaces.AppInfo | 'activeWhen']: boolean;
-} = {
-  // subApp info return keys
-  name: true,
-  entry: true,
-  activeWhen: true,
-  basename: true,
-  domGetter: true,
-  props: true,
-  sandbox: true,
-  cache: true,
-  noCheckProvider: true,
-  protectVariable: true,
-  customLoader: true,
-
-  // appLifecycle keys
-  beforeEval: true,
-  afterEval: true,
-  beforeMount: true,
-  afterMount: true,
-  errorMountApp: true,
-  beforeUnmount: true,
-  afterUnmount: true,
-  errorUnmountApp: true,
-  errorExecCode: true,
-
-  // filter keys
-  nested: false,
-  insulationVariable: false,
-  active: false,
-  deactive: false,
-  rootPath: false,
-};
+  [k in keyof Required<interfaces.AppInfo>]: boolean;
+} = getAppConfigMap([
+  'name',
+  'entry',
+  'activeWhen',
+  'basename',
+  'domGetter',
+  'props',
+  'sandbox',
+  'cache',
+  'noCheckProvider',
+  'protectVariable',
+  'insulationVariable',
+  'customLoader',
+  'nested',
+  'active',
+  'deactive',
+  'rootPath',
+  ...appLifecycle().lifecycleKeys,
+] as const);
 
 // `props` may be responsive data
 export const deepMergeConfig = <T extends Partial<AppInfo>>(
