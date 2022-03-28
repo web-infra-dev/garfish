@@ -1,11 +1,6 @@
 {
   "name": "@garfish-dev/vue-sub",
   "private": true,
-  "scripts": {
-    "start": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
-  },
   "dependencies": {
     "@garfish/bridge": "workspace:*",
     "@garfish/remote-module": "workspace:*",
@@ -52,5 +47,10 @@
     "last 2 versions",
     "not dead",
     "not ie 11"
-  ]
+  ],
+  "scripts": {
+    "start": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  }
 }

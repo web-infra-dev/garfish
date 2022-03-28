@@ -35,7 +35,6 @@ export const render = () =>
 //   };
 // };
 
-// TODO: reactBridge 写法(待补充 reactBridge destory 前的hook 函数)
 export const provider = reactBridge({
   React,
   ReactDOM,

@@ -1,105 +1,4 @@
 import { basename } from '../constant';
-export const mkdStr = `
-\`\`\`javascript
-import React from "react";
-import ReactDOM from "react-dom";
-import MEDitor from '@uiw/react-md-editor';
-
-// 方式一： navigate('/${basename}/react17/home');
-// 方式二： Garfish.router.push({ path: '/react17/home' });
-
-export default function App() {
-  const [value, setValue] = React.useState("**Hello world!!!**");
-  return (
-    <div className="container">
-      <MEDitor
-        value={value}
-        onChange={setValue}
-      />
-      <MDEditor.Markdown source={value} />
-    </div>
-  );
-}
-\`\`\`
-`;
-
-export const basicInfoStr_dev = `
-\`\`\`javascript
-### Garfish example 基本信息
-
-- garfish 版本: v1.2.17
-- 全局 basename: 'examples'
-- 主应用信息
-  - react: v17
-  - react-router-dom: v6
-  - basename: 'examples'
-  - 访问地址: 'http://localhost:8090'
-
-- 子应用信息
-  - react17
-    - activeWhen: '/react17',
-    - basename: 'examples/react17'
-    - 独立应用访问地址: 'http://localhost:8091'
-  - react16:
-    - activeWhen: '/react16',
-    - basename: 'examples/react16'
-    - 独立应用访问地址:'http://localhost:8092'
-  - vue3:
-    - activeWhen: '/vue3',
-    - basename: 'examples/vue3'
-    - 独立应用访问地址: 'http://localhost:8093'
-  - vue2:
-    - activeWhen: (path) => path.includes('/vue2'),
-    - basename: 'examples/vue2'
-    - 独立应用访问地址: 'http://localhost:8094'
-  - vite:
-    - activeWhen: '/vite',
-    - basename: 'examples/vite'
-    - 独立应用访问地址: 'http://localhost:8095'
-  - angular:
-    - activeWhen: '/angular',
-    - basename: 'examples/angular'
-    - 独立应用访问地址: 'http://localhost:8097'
-\`\`\`
-`;
-
-export const basicInfoStr_prod = `
-\`\`\`javascript
-### Garfish example 基本信息
-- 全局 basename: 'examples'
-- garfish 版本: v1.2.17
-- 主应用信息
-  - react: v17
-  - react-router-dom: v6
-  - basename: 'examples'
-
-- 子应用信息
-  - react17
-    - activeWhen: '/react17',
-    - basename: 'examples/react17'
-
-  - react16:
-    - activeWhen: '/react16',
-    - basename: 'examples/react16'
-
-  - vue3:
-    - activeWhen: '/vue3',
-    - basename: 'examples/vue3'
-
-  - vue2:
-    - activeWhen: (path) => path.includes('/vue2'),
-    - basename: 'examples/vue2'
-
-  - vite:
-    - activeWhen: '/vite',
-    - basename: 'examples/vite'
-
-  - angular:
-    - activeWhen: '/angular',
-    - basename: 'examples/angular'
-
-\`\`\`
-`;
 
 export const featuresStr = `
 \`\`\`javascript
@@ -117,7 +16,7 @@ export const featuresStr = `
 - 子应用挂载完成前 loading 状态
 - loadApp 异步加载添加 loading 状态
 - 页面路由不匹配时 404 页面兜底
-- css 隔离能力(arco + prefix)
+- css 隔离能力(css prefix)
 - 全局状态更新页面重渲染
 - react & vue 应用内部状态管理
 - reactBridge 支持 errorBoundary
@@ -127,20 +26,33 @@ export const featuresStr = `
 
 export const toSubAppStr = `
 \`\`\`javascript
+import { useNavigate } from 'react-router-dom';
+// 使用 Garfish.router 跳转:
 Garfish.router.push({ path: '/react17' });
+// 使用框架路由跳转:
 navigate('/examples/react17');
 \`\`\`
 `;
 
 export const loadAppStr = `
 \`\`\`javascript
-Garfish.loadApp(id, {
-  entry:'http://localhost:8095',
-  basename: 'examples/loadApp',
-  domGetter: () => document.getElementById(domID),
-  // 缓存设置，建议开启缓存避免重复的编译代码造成的性能浪费
-  cache: true,
-});
+function VueApp(basename) {
+  useEffect(async () => {
+    const app = await Garfish.loadApp('vue-app', {
+      cache: true,
+      basename:'examples/loadApp',
+      domGetter: '#container',
+      entry: 'http://localhost:8095',
+    });
+    // 若已经渲染触发 show，只有首次渲染触发 mount，后面渲染都可以触发 show 提供性能
+    app.mounted
+      ? app.show()
+      : await app.mount();
+    return () => app.hide();
+  });
+
+  return <div id="container"></div>;
+}
 \`\`\`
 `;
 
@@ -148,14 +60,14 @@ export const channelStr = `
 \`\`\`javascript
 // 子应用注册监听
 useEffect(() => {
-  window?.Garfish.channel.on('sayHello', handleMsg);
+  window?.Garfish?.channel.on('sayHello', handleMsg);
   return () => {
-    window?.Garfish.channel.removeListener('sayHello', handleMsg);
+    window?.Garfish?.channel.removeListener('sayHello', handleMsg);
   };
 }, []);
 
 // 主应用触发监听
-window?.Garfish.channel.emit('sayHello', 'hello, i am main app');
+window?.Garfish?.channel.emit('sayHello', 'hello, i am main app');
 \`\`\`
 `;
 
@@ -163,17 +75,17 @@ export const upgradeStr = `
 \`\`\`javascript
 ### 如何升级
 
-- 外部用户 升级 garfish 包
+- 外部用户 升级 garfish
 npm update garfish
 yarn upgrade garfish
 pnpm update garfish
 
-- 内部用户升级 @byted/garfish 包
+- 内部用户升级 @byted/garfish
 npm update @byted/garfish
 yarn upgrade @byted/garfish
 pnpm update @byted/garfish
 
-由于 内部包 @byted/garfish 依赖外部包 garfish, 当 garfish 升级时 @byted/garfish 的依赖可能不会自动升级。
+由于内部包 @byted/garfish 依赖外部包 garfish, 当 garfish 升级时 @byted/garfish 的依赖可能不会自动升级。
 可以尝试如下方式升级隐式依赖，保证使用的是最新版本的包。
 
 - npm 升级隐式依赖
@@ -184,3 +96,30 @@ npm update garfish --depth 10
 pnpm update garfish --depth 10
 \`\`\`
 `;
+
+export const getAppBasicInfo = (appInfos) => {
+  const appInfoStr = Object.keys(appInfos).map((k) => {
+    const value = window.Garfish.appInfos[k];
+    const tmp = `
+    - ${value.name}
+      - activeWhen: '${value.activeWhen}',
+      - basename: '${value.basename}${value.activeWhen}',
+      - 访问地址: '${value.entry}'`;
+    return tmp;
+  });
+
+  return `
+\`\`\`javascript
+### Garfish example 基本信息
+- garfish 版本: v${window.Garfish.version}
+- 全局 basename: '${basename}'
+- 主应用信息
+  - react: v17
+  - react-router-dom: v6
+  - basename: 'examples'
+  - 访问地址: 'http://localhost:8090'
+
+- 子应用信息 ${appInfoStr}
+\`\`\`
+`;
+};

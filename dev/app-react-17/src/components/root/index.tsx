@@ -17,10 +17,10 @@ const RootComponent = (_props) => {
 
   useEffect(() => {
     // 监听props 的改变，重新触发 render
-    window?.Garfish.channel.on('stateChange', render);
+    window?.Garfish?.channel.on('stateChange', render);
 
     return () => {
-      window?.Garfish.channel.removeListener('stateChange', render);
+      window?.Garfish?.channel.removeListener('stateChange', render);
     };
   }, [location.pathname]);
 
