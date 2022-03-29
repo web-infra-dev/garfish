@@ -42,18 +42,17 @@ export function def(obj: Object, key: string, value: any) {
 }
 
 // Array to Object `['a'] => { a: true }`
-export function makeMap(list: Array<PropertyKey>) {
-  const map = Object.create(null);
+export function makeMap<T extends Array<string>>(list: T) {
+  const map: { [k in T[number]]: true } = Object.create(null);
   for (let i = 0; i < list.length; i++) {
     map[list[i]] = true;
   }
-  return (val) => !!map[val];
+  return (val: T[number]) => !!map[val];
 }
 
 // Array to Object `['a'] => { a: true }`
-export function makeConstMap<T extends Readonly<Array<string>>>(list: T) {
-  const map = Object.create(null);
-
+export function makeMapObject<T extends Array<string>>(list: T) {
+  const map: { [k in T[number]]: true } = Object.create(null);
   for (let i = 0; i < list.length; i++) {
     map[list[i]] = true;
   }

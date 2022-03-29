@@ -1,11 +1,9 @@
-import { error, isObject, deepMerge, makeConstMap } from '@garfish/utils';
+import { error, isObject, deepMerge, makeMapObject } from '@garfish/utils';
 import { AppInfo } from './module/app';
 import { interfaces } from './interface';
 import { appLifecycle, globalLifecycle } from './lifecycle';
 
-const appConfigKeysMap: {
-  [k in keyof Required<interfaces.AppInfo>]: boolean;
-} = makeConstMap([
+const appConfigKeys = [
   'name',
   'entry',
   'activeWhen',
@@ -23,7 +21,17 @@ const appConfigKeysMap: {
   'deactive',
   'rootPath',
   ...appLifecycle().lifecycleKeys,
-] as const);
+] as const;
+
+type Mutable<T> = {
+  -readonly [K in keyof T]: T[K];
+};
+
+const appConfigKeysMap: {
+  [k in keyof Required<interfaces.AppInfo>]: boolean;
+} = makeMapObject<Mutable<typeof appConfigKeys>>(
+  appConfigKeys as Mutable<typeof appConfigKeys>,
+);
 
 // `props` may be responsive data
 export const deepMergeConfig = <T extends Partial<AppInfo>>(
