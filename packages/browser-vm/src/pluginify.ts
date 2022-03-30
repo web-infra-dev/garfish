@@ -1,5 +1,5 @@
 import { interfaces } from '@garfish/core';
-import { warn, isPlainObject } from '@garfish/utils';
+import { warn, isPlainObject, nextTick } from '@garfish/utils';
 import { Module } from './types';
 import { Sandbox } from './sandbox';
 import { recordStyledComponentCSSRules, rebuildCSSRules } from './dynamicNode';
@@ -153,7 +153,9 @@ function createOptions(Garfish: interfaces.Garfish) {
     afterUnmount(appInfo, appInstance, isCacheMode) {
       // The caching pattern to retain the same context
       if (appInstance.vmSandbox && !isCacheMode) {
-        appInstance.vmSandbox.reset();
+        nextTick(() => {
+          appInstance.vmSandbox.reset();
+        });
       }
     },
 
