@@ -26,7 +26,7 @@ describe('Core: preload plugin', () => {
   it('disablePreloadApp is false use setRanking', async () => {
     const GarfishInstance = new Garfish({});
     GarfishInstance.run({
-      disablePreloadApp: true,
+      disablePreloadApp: false,
       apps: [
         {
           name: 'vue-app',
@@ -38,6 +38,7 @@ describe('Core: preload plugin', () => {
         },
       ],
     });
+    await GarfishInstance.loadApp('vue-app');
     await GarfishInstance.loadApp('vue-app');
     await GarfishInstance.loadApp('react-app');
     expect(localStorage.getItem(storageKey)).toMatchSnapshot();
