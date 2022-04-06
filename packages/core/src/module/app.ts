@@ -242,6 +242,7 @@ export class App {
 
   hide() {
     this.active = false;
+    this.mounting = false;
     const { display, mounted, provider } = this;
     if (!display) return false;
     if (!mounted) {
@@ -266,6 +267,7 @@ export class App {
     try {
       // add container and compile js with cjs
       const { asyncScripts } = await this.compileAndRenderContainer();
+      if (!this.stopMountAndClearEffect()) return false;
 
       // Good provider is set at compile time
       const provider = await this.getProvider();
@@ -292,6 +294,7 @@ export class App {
 
   unmount() {
     this.active = false;
+    this.mounting = false;
     if (!this.mounted || !this.appContainer) {
       return false;
     }

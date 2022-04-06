@@ -13,6 +13,7 @@ describe('Core: load process', () => {
   const reactSubAppEntry = './resources/reactApp.html';
   const vue3AppRenderNode = 'hello-world-vue3';
   const vue3SubAppEntry = './resources/vue3App.html';
+  const asyncProviderApp = './resources/asyncProviderApp.html';
 
   mockStaticServer(__dirname);
 
@@ -312,5 +313,42 @@ describe('Core: load process', () => {
     expect(app1.mounted).toBe(true);
     expect(app2.mounted).toBe(false);
     expect(app2.appInfo.entry).toEqual(vue3SubAppEntry);
+  });
+
+  it('destroy the app during rendering and then render again', async () => {
+    const container = document.createElement('div');
+    container.setAttribute('id', 'container');
+    document.body.appendChild(container);
+
+    GarfishInstance.run({
+      domGetter: '#container',
+      apps: [
+        {
+          name: 'async-provider',
+          entry: asyncProviderApp,
+          cache: true,
+        },
+      ],
+    });
+
+    const app = await GarfishInstance.loadApp('async-provider');
+    expect(app.mounted).toBe(false);
+    expect(app.mounting).toBe(false);
+    expect(app.unmounting).toBe(false);
+    expect(app.active).toBe(false);
+
+    app.mount();
+    expect(app.mounting).toBe(true);
+    expect(app.active).toBe(true);
+
+    app.unmount();
+    expect(app.mounting).toBe(false);
+    expect(app.active).toBe(false);
+
+    await app.mount();
+    expect(app.mounted).toBe(true);
+
+    expect(document.body.innerHTML).toMatchSnapshot();
+    document.body.removeChild(container);
   });
 });
