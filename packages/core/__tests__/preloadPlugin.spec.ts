@@ -9,42 +9,22 @@ describe('Core: preload plugin', () => {
   mockStaticServer(__dirname);
 
   it('disablePreloadApp is true close setRanking', async () => {
-    const GarfishInstance = new Garfish({
-      plugins: [GarfishPreloadPlugin()],
-    });
-    GarfishInstance.run({
-      disablePreloadApp: true,
-      apps: [
-        {
-          name: 'vue-app',
-          entry: vueSubAppEntry,
-        },
-      ],
-    });
-    await GarfishInstance.loadApp('vue-app');
+    const lifecycle = GarfishPreloadPlugin()({
+      options: { disablePreloadApp: true },
+    } as Garfish);
+    lifecycle.beforeLoad({ name: 'vue-app' });
+
     expect(localStorage.getItem(storageKey)).toBeNull();
   });
 
   it('disablePreloadApp is false use setRanking', async () => {
-    const GarfishInstance = new Garfish({
-      plugins: [GarfishPreloadPlugin()],
-    });
-    GarfishInstance.run({
-      disablePreloadApp: false,
-      apps: [
-        {
-          name: 'vue-app',
-          entry: vueSubAppEntry,
-        },
-        {
-          name: 'react-app',
-          entry: reactSubAppEntry,
-        },
-      ],
-    });
-    await GarfishInstance.loadApp('vue-app');
-    await GarfishInstance.loadApp('vue-app');
-    await GarfishInstance.loadApp('react-app');
+    const lifecycle = GarfishPreloadPlugin()({
+      options: { disablePreloadApp: true },
+    } as Garfish);
+    lifecycle.beforeLoad({ name: 'vue-app' });
+    lifecycle.beforeLoad({ name: 'vue-app' });
+    lifecycle.beforeLoad({ name: 'react-app' });
+
     expect(localStorage.getItem(storageKey)).toMatchSnapshot();
   });
 });
