@@ -1,6 +1,6 @@
 import { mockStaticServer } from '@garfish/utils';
 import Garfish from '../src/index';
-import { storageKey } from '../src/plugins/preload';
+import { GarfishPreloadPlugin, storageKey } from '../src/plugins/preload';
 
 describe('Core: preload plugin', () => {
   const vueSubAppEntry = './resources/vueApp.html';
@@ -9,7 +9,9 @@ describe('Core: preload plugin', () => {
   mockStaticServer(__dirname);
 
   it('disablePreloadApp is true close setRanking', async () => {
-    const GarfishInstance = new Garfish({});
+    const GarfishInstance = new Garfish({
+      plugins: [GarfishPreloadPlugin()],
+    });
     GarfishInstance.run({
       disablePreloadApp: true,
       apps: [
@@ -24,7 +26,9 @@ describe('Core: preload plugin', () => {
   });
 
   it('disablePreloadApp is false use setRanking', async () => {
-    const GarfishInstance = new Garfish({});
+    const GarfishInstance = new Garfish({
+      plugins: [GarfishPreloadPlugin()],
+    });
     GarfishInstance.run({
       disablePreloadApp: false,
       apps: [
