@@ -1,11 +1,9 @@
 import { Sandbox } from '../sandbox';
 
-const rawMutationObserver = window.MutationObserver;
-
 export function observerModule(_sandbox: Sandbox) {
   const observerSet = new Set<MutationObserver>();
 
-  class MutationObserver extends rawMutationObserver {
+  class ProxyMutationObserver extends MutationObserver {
     constructor(cb: MutationCallback) {
       super(cb);
       observerSet.add(this);
@@ -22,7 +20,7 @@ export function observerModule(_sandbox: Sandbox) {
   return {
     recover,
     override: {
-      MutationObserver: MutationObserver as Function,
+      MutationObserver: ProxyMutationObserver as Function,
     },
   };
 }
