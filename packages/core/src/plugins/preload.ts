@@ -9,7 +9,7 @@ import {
 import { Loader, Manager, TemplateManager } from '@garfish/loader';
 import { interfaces } from '../interface';
 
-const storageKey = '__garfishPreloadApp__';
+export const storageKey = '__garfishPreloadApp__';
 
 const isMobile =
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
