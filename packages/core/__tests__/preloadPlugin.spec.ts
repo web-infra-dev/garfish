@@ -19,7 +19,7 @@ describe('Core: preload plugin', () => {
 
   it('disablePreloadApp is false use setRanking', async () => {
     const lifecycle = GarfishPreloadPlugin()({
-      options: { disablePreloadApp: true },
+      options: { disablePreloadApp: false },
     } as Garfish);
     lifecycle.beforeLoad({ name: 'vue-app' });
     lifecycle.beforeLoad({ name: 'vue-app' });
