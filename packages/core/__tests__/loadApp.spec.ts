@@ -10,6 +10,7 @@ import Garfish from '../src/index';
 describe('Core: load process', () => {
   let GarfishInstance: Garfish;
   let container;
+  
   const vueSubAppEntry = './resources/vueApp.html';
   const reactSubAppEntry = './resources/reactApp.html';
   const vue3AppRenderNode = 'hello-world-vue3';
@@ -101,6 +102,10 @@ describe('Core: load process', () => {
     await expect(app.mount()).rejects.toThrowError('test msg');
 
     document.body.removeChild(container);
+  });
+
+  it("throw error when provide an 'name' opts in options", async () => {
+    await expect(GarfishInstance.loadApp('vue-app')).rejects.toThrow();
   });
 
   it('get the options from register info by default', async () => {
