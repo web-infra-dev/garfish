@@ -10,7 +10,7 @@
     "test:e2e": "zx scripts/e2e.js",
     "test:e2e:prod": "cross-env CI=true zx scripts/e2e.js",
     "test:e2e:open": "cross-env TEST_ENV_OPEN=true zx scripts/e2e.js",
-    "test": "node scripts/unit.js --collect-coverage",
+    "test": "jest --collect-coverage",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "changeset": "npx changeset",
