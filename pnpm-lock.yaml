@@ -662,6 +662,9 @@ importers:
   packages/utils:
     specifiers:
       '@garfish/core': workspace:*
+      debug: ^4.3.4
+    dependencies:
+      debug: 4.3.4
     devDependencies:
       '@garfish/core': link:../core
 
@@ -10293,6 +10296,18 @@ packages:
       ms: 2.1.2
       supports-color: 8.1.1
     dev: true
+
+  /debug/4.3.4:
+    resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.2
+    dev: false
 
   /decamelize/1.2.0:
     resolution: {integrity: sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=}

@@ -21,6 +21,7 @@ import {
   parseContentType,
   createAppContainer,
   setDocCurrentScript,
+  coreLog,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
@@ -84,7 +85,7 @@ export class App {
   public customLoader: CustomerLoader;
 
   private active = false;
-  private mounting = false;
+  public mounting = false;
   private unmounting = false;
   private resources: interfaces.ResourceModules;
   // Environment variables injected by garfish for linkage with child applications
@@ -419,6 +420,10 @@ export class App {
       if (this.appContainer) {
         this.entryManager.DOMApis.removeElement(this.appContainer);
       }
+      coreLog(
+        `${this.appInfo.name} stopMountAndClearEffect`,
+        this.appContainer,
+      );
       return false;
     }
     return true;
