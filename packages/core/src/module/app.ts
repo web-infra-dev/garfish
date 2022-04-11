@@ -421,7 +421,7 @@ export class App {
         this.entryManager.DOMApis.removeElement(this.appContainer);
       }
       coreLog(
-        `${this.appInfo.name} stopMountAndClearEffect`,
+        `${this.appInfo.name} id:${this.appId} stopMountAndClearEffect`,
         this.appContainer,
       );
       return false;
