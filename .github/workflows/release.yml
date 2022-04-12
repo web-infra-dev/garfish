@@ -38,3 +38,7 @@ jobs:
       run: node ./scripts/release.js --version=${{ github.event.inputs.version }}
       env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    - name: changelog
+      run: npx conventional-github-releaser -p angular
+      env:
+        CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{secrets.GITHUB_TOKEN}}
