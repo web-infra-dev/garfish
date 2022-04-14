@@ -17,14 +17,13 @@ interface BrowserConfig {
 
 export function GarfishBrowserSnapshot(op?: BrowserConfig) {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
-    const config: BrowserConfig = op || { open: true };
-
     const options = {
       openBrowser: false,
       version: __VERSION__,
       name: 'browser-snapshot',
 
       afterLoad(appInfo, appInstance) {
+        const config: BrowserConfig = op || { open: true };
         const sandboxConfig = appInfo.sandbox || Garfish?.options?.sandbox;
         if (
           sandboxConfig === false ||
