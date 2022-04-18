@@ -4,7 +4,7 @@ slug: /api/channel
 order: 5
 ---
 
-`Garfish.channel` 用于应用间的通信。它是 [EventEmitter2](https://github.com/EventEmitter2/EventEmitter2) 的实例
+用于应用间的通信。它是 [EventEmitter2](https://github.com/EventEmitter2/EventEmitter2) 的实例
 
 ### 示例
 

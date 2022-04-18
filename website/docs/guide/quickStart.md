@@ -1,94 +1,100 @@
 ---
 title: 快速开始
-slug: /quickStart
+slug: /guide/quickStart
 order: 2
 ---
 
-本节主要从主应用视角出发，通过 [Garfish API](/api) 的加载方式概览性描述主应用如何接入微前端子应用，
-
-通过 Garfish API 接入子应用整体流程概述为：
-
-1. 添加 `garfish` 依赖包（字节内部研发请使用 `@byted/garfish` 代替 `garfish`）
+本节分别从主、子 应用视角出发，介绍如何通过 [Garfish API](/api) 来将应用接入Garfish 框架
+## 主应用
+通过 Garfish API 接入主应用整体流程分为2步：
+1. 添加 `garfish` 依赖包
 2. 通过 `Garfish.run`，提供挂载点、basename、子应用列表
 
-## 主应用
-
-### 安装依赖
+### 1.安装依赖
 
 ```bash npm2yarn
 npm install garfish --save
 ```
 
-### 注册子应用并启动 Garfish
+### 2.注册子应用并启动 Garfish
 
 ```js
 // index.js（主应用入口处）
-import Garfish from 'garfish';
 
-// 当执行 `Garfish.run` 后，此时 `Garfish` 框架将会启动路由劫持能力
-// 当浏览器的地址发生变化时，`Garfish` 框架内部便会立即触发匹配逻辑当应用符合匹配逻辑时将会自动将应用挂载至页面中
-// 并依次触发子应用加载、渲染过程中的生命周期
-// 跳转至: /react 时，自动挂载 react 应用
-// 跳转至: /vue 时，自动挂载 vue 应用
+import Garfish from 'garfish';
 Garfish.run({
   basename: '/',
   domGetter: '#subApp',
   apps: [
     {
-      // 每个应用的 name 需要保持唯一
       name: 'react',
-      // 可为函数，当函数返回值为 true 时，标识满足激活条件，该应用将会自动挂载至页面中，手动挂在时可不填写该参数
       activeWhen: '/react',
-      // 子应用的入口地址，可以为 HTML 地址和 JS 地址
-      // 注意：entry 地址不可以与主应用+子应用激活地址相同，否则刷新时将会直接返回子应用内容
-      entry: 'http://localhost:3000',
+      entry: 'http://localhost:3000', // html入口
     },
     {
       name: 'vue',
       activeWhen: '/vue',
-      entry: 'http://localhost:8080',
+      entry: 'http://localhost:8080/index.js',  // js入口
     },
   ],
 });
 ```
+当引入 Garfish 实例，执行实例方法 `Garfish.run` 后，`Garfish` 将会立刻启动路由劫持能力。
 
-## 子应用
+这时 `Garfish` 将会监听浏览器路由地址变化，当浏览器的地址发生变化时，`Garfish` 框架内部便会执行匹配逻辑，当解析到当前路径符合子应用匹配逻辑时，便会自动将应用挂载至指定的 `dom` 节点上，并在此过程中依次触发子应用加载、渲染过程中的 [生命周期钩子函数](./index.md#生命周期).
 
-### 安装依赖
+:::tip 注意
+请确保 `subApp` 指定的节点存在于页面中，否则可能会导致错误，见 issue[#invalid-domgetter-xxx](../issues/childApp.md##invalid-domgetter-xxx)
+:::
 
-```bash npm2yarn
-npm install @garfish/bridge --save
+如果你的业务需要手动控制应用加载，可以使用 [Garfish.loadApp](/api/loadApp.md) 手动挂载 APP：
+
+```typescript
+// 使用 loadApp 动态挂载应用
+import Garfish from 'garfish';
+const app = Garfish.loadApp("vue-app", {
+	domGetter: "#container",
+	entry: "http://localhost:3000",
+	cache: true,
+});
+
+// 若已经渲染触发 show，只有首次渲染触发 mount，后面渲染都可以触发 show 提供性能
+app.mounted ? app.show() : await app.mount();
 ```
 
-### 调整子应用的构建配置
+## 子应用
+通过 Garfish API 接入子应用整体流程也分为2步：
+1. 调整子应用的构建配置(目前Garfish 仅支持umd格式的产物)
+2. 导出子应用生命周期 [为什么需要子应用导出 provider 函数](../issues#为什么需要子应用提供一个-provider-函数)
 
+### 1.调整子应用的构建配置
 <Tabs>
   <TabItem value="Webpack" label="Webpack" default>
 
 ```js
 module.exports = {
   output: {
-    // 需要配置成 umd 规范
     libraryTarget: 'umd',
-    // 修改不规范的代码格式，避免逃逸沙箱
     globalObject: 'window',
-    // 请求确保每个子应用该值都不相同，否则可能出现 webpack chunk 互相影响的可能
-    // webpack 5 使用 chunkLoadingGlobal 代替，若不填 webpack 5 将会直接使用 package.json name 作为唯一值，请确保应用间的 name 各不相同
-    jsonpFunction: 'vue-app-jsonpFunction',
-    // 保证子应用的资源路径变为绝对路径，避免子应用的相对资源在变为主应用上的相对资源，因为子应用和主应用在同一个文档流，相对路径是相对于主应用而言的
-    publicPath: 'http://localhost:8000',
+    jsonpFunction: 'sub-app-jsonpFunction', // 请确保该值唯一
+    publicPath: 'http://localhost:8000', // 设置为子应用的绝对地址
   },
   devServer: {
-    // 保证在开发模式下应用端口不一样
-    port: '8000',
+    port: '8000', // 保证在开发模式下应用端口不一样
     headers: {
-      // 保证子应用的资源支持跨域，在上线后需要保证子应用的资源在主应用的环境中加载不会存在跨域问题（**也需要限制范围注意安全问题**）
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': '*', // 允许开发环境跨域
     },
   },
 };
 ```
 
+:::caution 【重要】注意：
+1. libraryTarget 需要配置成 umd 规范；
+2. globalObject 需要设置为 'window'，以避免由于不规范的代码格式导致的逃逸沙箱
+3. 如果你的 webpack 为 v4 版本，需要设置 jsonpFunction 并保证该值唯一（否则可能出现 webpack chunk 互相影响的可能）。若为 webpack5 将会直接使用 package.json name 作为唯一值，请确保应用间的 name 各不相同；
+4. publicPath 设置为子应用资源的绝对地址，避免由于子应用的相对资源导致资源变为了主应用上的相对资源。这是因为主、子应用处于同一个文档流中，相对路径是相对于主应用而言的
+5. 'Access-Control-Allow-Origin': '*' 允许开发环境跨域，保证子应用的资源支持跨域。另外也需要保证在上线后子应用的资源在主应用的环境中加载不会存在跨域问题（**也需要限制范围注意安全问题**）；
+:::
   </TabItem>
   <TabItem value="vite" label="Vite" default>
 
@@ -111,153 +117,46 @@ export default defineConfig({
   </TabItem>
 </Tabs>
 
-### 通过导出子应用生命周期
+### 2.导出 provider 函数
+> 针对子应用需要导出生命周期函数，我们提供了桥接函数 `@garfish/bridge`  自动包装应用的生命周期，使用`@garfish/bridge` 可以降低接入成本与用户出错概率，也是 Garfish 推荐的子应用接入方式。
 
-<Tabs groupId="framework">
-  <TabItem value="React" label="React" default>
+```bash npm2yarn
+// 安装 @garfish/bridge：
+npm install @garfish/bridge --save
+```
+
+<Tabs>
+  <TabItem value="Webpack" label="使用 @garfish/bridge 接入" default>
 
 ```jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { reactBridge } from '@garfish/bridge';
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
-
-function App({ basename, dom, appName, props }) {
-  return (
-    <BrowserRouter basename={basename}>
-      <Link to="/">Home</Link>
-      <Switch>
-        <Route exact path="/">
-          <HelloGarfish />
-        </Route>
-      </Switch>
-    </BrowserRouter>
-  );
-}
 
 export const provider = reactBridge({
-  // required
   React,
-  // required
   ReactDOM,
-  // 非必填。若指定el选项，请保证 el节点存在于当前 document 对象中
-  // 注意: el 节点是针对入口模式为 HTML 模式的。在 JS 入口模式下是不存在 el 概念的，在此模式下可以不用传 el
   el: '#root',
-  // 根组件
-  rootComponent: App,
-  // 返回一个 promise, 可在 mounting 前执行异步操作
-  loadRootComponent: ({ basename, dom, appName, props }) => {
-    return Promise.resolve(App);
+  rootComponent: RootComponent,
+  loadRootComponent: ({ basename, dom, props }) => {
+    // do something...
+    return Promise.resolve(() => <RootComponent basename={basename} />);
   },
+
+  errorBoundary: () => <Error />,
 });
 ```
 
   </TabItem>
-  <TabItem value="Vue" label="Vue">
+  <TabItem value="vite" label="自定义导出函数" default>
 
-```jsx
-import Vue from 'vue';
-import App from './App.vue';
-import { vueBridge } from '@garfish/bridge';
-
-function newRouter(basename) {
-  const router = new VueRouter({
-    mode: 'history',
-    base: basename,
-    router,
-    routes: [{ path: '/', component: HelloGarfish }],
-  });
-  return router;
-}
-
-export const provider = vueBridge({
-  // required
-  Vue,
-  // 根组件
-  rootComponent: App,
-
-  // 返回一个 promise, 可在 mounting 前执行异步操作
-  loadRootComponent: ({ basename, dom, appName, props }) => {
-    return Promise.resolve(App);
-  },
-
-  appOptions: ({ basename, dom, appName, props }) => ({
-    // 若指定el选项，请保证 el节点存在于当前 document 对象中
-    el: '#app',
-    router: newRouter(basename),
-  }),
-
-  handleInstance: (vueInstance, { basename }) => {
-    // received vueInstance, do something
-  },
-});
-```
-
-  </TabItem>
-  <TabItem value="Vue3" label="Vue3">
-
-```jsx
-import { h, createApp } from 'vue';
-import { createRouter, createWebHistory } from 'vue-router';
-import App from './App.vue';
-import { vueBridge } from '@garfish/bridge';
-
-export const provider = vueBridge({
-  // required
-  createApp,
-  // 根组件
-  rootComponent: App,
-
-  // 返回一个 promise, 可在 mounting 前执行异步操作
-  loadRootComponent: ({ basename, dom, appName, props }) => {
-    return Promise.resolve(App);
-  },
-
-  appOptions: ({ basename, dom, appName, props }) => ({
-    // 若指定el选项，请保证el节点存在于当前document对象中
-    el: '#app',
-    render: () => h(App),
-  }),
-
-  // received vueInstance, do something
-  handleInstance: (vueInstance, { basename }) => {
-    const routes = [
-      { path: '/index', component: Index },
-      { path: '/home', component: Home },
-    ];
-    const router = createRouter({
-      history: createWebHistory(basename),
-      base: basename,
-      routes,
-    });
-    vueInstance.use(router);
-    vueInstance.provide(stateSymbol, createState());
-  },
-});
-```
-
-  </TabItem>
-  <TabItem value="custom" label="custom" default>
-
-```jsx
+```tsx
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 
-function App({ basename }) {
-  return (
-    <BrowserRouter basename={basename}>
-      <Link to="/">Home</Link>
-      <Switch>
-        <Route exact path="/">
-          <HelloGarfish />
-        </Route>
-      </Switch>
-    </BrowserRouter>
-  );
-}
-
 export const provider = () => ({
+  // render 渲染函数，必须提供
   render: ({ dom, basename }) => {
     // 和子应用独立运行时一样，将子应用渲染至对应的容器节点，根据不同的框架使用不同的渲染方式
     ReactDOM.render(
@@ -270,7 +169,7 @@ export const provider = () => ({
       dom.querySelector('#root'),
     );
   },
-
+  // destroy 应用销毁函数，必须提供
   destroy: ({ dom, basename }) => {
     // 使用框架提供的销毁函数销毁整个应用，已达到销毁框架中可能存在得副作用，并触发应用中的一些组件销毁函数
     // 需要注意的时一定要保证对应框架得销毁函数使用正确，否则可能导致子应用未正常卸载影响其他子应用
@@ -284,6 +183,18 @@ export const provider = () => ({
   </TabItem>
 </Tabs>
 
+我们在 [接入案例](/guide/demo) 章节详细中介绍了各框架的子应用接入 Garfish 的 demo 案例及接入过程注意事项，目前有：
+- react (version 16, 17)
+- vue (version 2, 3)
+- vite (version 2)
+- angular (version 13)
+- umi（todo 提供接入案例）
+
+:::info
+以上框架可以任意组合，换句话说任何一个框架都可以作为主应用嵌入其它类型的子应用，任何一个框架也可以作为子应用被其它框架嵌入，包括上面没有列举出的其它库，如 svelte、nextjs、nuxtjs ...
+
+我们只列举了部分框架，如果有其它框架需求，请在github上提issue告知我们。
+:::
 ## 总结
 
 使用 Garfish API 搭建一套微前端主子应用的主要成本来自两方面

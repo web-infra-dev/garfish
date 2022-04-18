@@ -20,7 +20,7 @@ module.exports = {
     // sidebarCollapsible: true,
     hideableSidebar: true,
     colorMode: {
-      // defaultMode: 'dark',
+      defaultMode: 'dark',
       disableSwitch: true,
     },
     navbar: {
@@ -34,19 +34,35 @@ module.exports = {
         // left
         {
           to: 'guide/',
-          label: '文档',
-          position: 'left',
+          label: '指南',
+          position: 'right',
         },
-        // {
-        //   to: 'api/',
-        //   label: 'API',
-        //   position: 'left',
-        // },
+        {
+          to: 'api/',
+          label: 'API',
+          position: 'right',
+        },
+        {
+          to: 'runtime/',
+          label: '运行时',
+          position: 'right',
+        },
+        {
+          to: 'blog/',
+          label: '博客',
+          position: 'right',
+        },
+        {
+          href: 'https://github.com/modern-js-dev/garfish/tree/main/dev',
+          label: 'examples',
+          position: 'right',
+        },
         {
           to: 'issues/',
           label: '常见问题',
-          position: 'left',
+          position: 'right',
         },
+
         // {
         //   href:
         //     'https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=601jeae5-250c-48b4-a3bd-7e6211cd4471',
@@ -74,7 +90,7 @@ module.exports = {
         // For Docs using Chinese, The `language` is recommended to set to:
         // ```
         language: ['en', 'zh'],
-        docsRouteBasePath: ['/guide', '/issues', '/quickStart', '/api'],
+        docsRouteBasePath: ['/guide', 'demo', '/issues', '/quickStart', '/api'],
         docsDir: ['docs'],
         // ```
         // When applying `zh` in language, please install `nodejieba` in your project.

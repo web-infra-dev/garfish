@@ -90,6 +90,10 @@ const listDocIds = (path, opt = {}) => {
 
 module.exports = {
   guide: listDocIds('guide'),
+  api: listDocIds('api'),
+  runtime: listDocIds('runtime'),
+
+  // blog: listDocIds('blog'),
   // issues: listDocIds('issues'),
   // community: listDocIds('community'),
 };
