@@ -631,7 +631,10 @@ importers:
       '@garfish/utils': link:../utils
 
   packages/hooks:
-    specifiers: {}
+    specifiers:
+      '@garfish/utils': workspace:*
+    dependencies:
+      '@garfish/utils': link:../utils
 
   packages/loader:
     specifiers:
