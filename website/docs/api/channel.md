@@ -4,8 +4,14 @@ slug: /api/channel
 order: 5
 ---
 
-用于应用间的通信。它是 [EventEmitter2](https://github.com/EventEmitter2/EventEmitter2) 的实例
+用于应用间的通信，`Garfish.channel` 为 Garfish 的实例属性，该属性是 [EventEmitter2](https://github.com/EventEmitter2/EventEmitter2) 的实例。
 
+### Type
+```ts
+channel: EventEmitter2;
+```
+### 默认值
+- 无
 ### 示例
 
 ```js

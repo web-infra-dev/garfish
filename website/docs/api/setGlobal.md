@@ -1,39 +1,26 @@
 ---
 title: Garfish.setGlobalObject
 slug: /api/setGlobalObject
-order: 7
+order: 8
 ---
 
-用于获取真实 window 的值。
-在 `Garfish` 默认启动了沙箱的隔离能力，所以在子应用中全局变量默认是隔离的，通过该方法可以读取真实 window 的值。一般情况下并不建议用户直接使用该 API，若子应用要获取真实的 window 上的环境变量，可考虑将其加入 `protectVariable` 列表中
+用于子应用设置真实 window 的值。
 
-### 示例
+> 在微前端应用下，子应用将默认开启沙箱模式。在沙箱模式下，子应用中全局变量为被 proxy 的 'fakeWindow'，而全局变量（真实 window）默认会被隔离。若子应用需求设置真实 window 的值，可以通过此方法获取。
 
-```js
-import Garfish from 'garfish';
+:::tip
+1. 一般情况下我们不建议直接通过此 API 设置真实 window；
+2. 若需要设置真实 window 上的环境变量，可通过 [`protectVariable`](/api/run#protectvariable) 属性，将需要共享的属性放入列表中即可通过子应用的全局变量获取；
+:::
 
-const nativeWindow = Garfish.getGlobalObject();
+## Type
+```ts
+setGlobalValue(key: string, value?: any): void;
 ```
+## 示例
 
-## setGlobalValue
-
-用于设置真实 window 的值。
-在 `Garfish` 中默认启动了沙箱的隔离能力，所以在子应用中全局变量默认是隔离的，通过该方法可以读取真实 window 的值。一般情况下并不建议用户直接使用该 API，若子应用要获取真实的 window 上的环境变量，可考虑将其加入 `protectVariable` 列表中
-
-### 示例
-
-```js
+```ts
 import Garfish from 'garfish';
 
 Garfish.setGlobalValue(key: string | symbol, value: any);
-```
-
-## clearEscapeEffect
-
-若发现有一些特殊的行为会逃逸沙箱系统，可以使用此方法来清除逃逸的变量
-
-### 示例
-
-```js
-Garfish.clearEscapeEffect('webpackJsonp');
 ```
