@@ -4,18 +4,16 @@ slug: /runtime/sandbox.md
 order: 3
 ---
 
-| 版本 | 日期 | 修订人 | ChangeLog |
-| - | - | - | - |
-| v0.1 | 2020-12-19 | zengkunpeng | 初始文章 |
-| v0.2 | 2022-4-29 | zhouxiao | 调整 DOM 副作用章节 |
-
+| 版本 | 日期       | 修订人      | ChangeLog           |
+| ---- | ---------- | ----------- | ------------------- |
+| v0.1 | 2020-12-19 | zengkunpeng | 初始文章            |
+| v0.2 | 2022-4-29  | zhouxiao    | 调整 DOM 副作用章节 |
 
 在微前端的场景，由于多个独立的应用被组织到了一起，在没有类似 `iframe` 的原生隔离下，势必会出现冲突，如全局变量冲突、样式冲突，这些冲突可能会导致应用样式异常，甚至功能不可用。所以想让微前端达到生产可用的程度，让每个子应用之间达到一定程度隔离的沙箱机制是必不可少的。
 
 此外沙箱功能还需要满足多实例的场景，先来了解一下什么是微前端里的多实例。
 
 ![image](https://user-images.githubusercontent.com/27547179/164134100-2c4d311e-4849-4ca4-a965-de1ff1a980d0.png)
-
 
 ### 手动执行代码
 
@@ -259,38 +257,41 @@ fn(fakeWindow);
 
 ```javascript
 const varBox = {};
-const get = (target, key)=> {
-    if (key === 'window') {
-        return fakeWindow;
-    }
-    return varBox[key] || window[key] ;
+const get = (target, key) => {
+  if (key === 'window') {
+    return fakeWindow;
+  }
+  return varBox[key] || window[key];
 };
 
-const set = (target, key, value)=> {
-    varBox[key] = value;
-    return true;
+const set = (target, key, value) => {
+  varBox[key] = value;
+  return true;
 };
 
 const has = (target, key) => {
-    return true;
+  return true;
 };
 
 const context = new Proxy(window, {
-    get,
-    set,
-    has
+  get,
+  set,
+  has,
 });
 
 const fakeWindow = new Proxy(window, {
-    get,
-    set
+  get,
+  set,
 });
 
-const fn = new Function('window', 'context',`
+const fn = new Function(
+  'window',
+  'context',
+  `
     with(context){
         // code;
         'Vue' in window;
-    }`
+    }`,
 );
 fn(fakeWindow, context);
 ```
@@ -306,7 +307,6 @@ if ($CONFIG.a) {
 ```
 
 `webpack` 的 `output.globalObject = window` 会自动隐式指向 `window` 的 `this` 构建会指向 `window`，需要注意的是在 `webpack` 低版本中可能不支持该配置。
-
 
 #### DOM 隔离
 
@@ -346,7 +346,91 @@ observer.observe(proxyDom); // Uncaught TypeError: Failed to execute 'observe' o
 
 - 节点通过 `parentNode` 一直向上查找至 `document` 节点
 
-在 VM 防范的探索
+```javascript
+function getDocuemnt() {
+  let dom = document.querySelector('#wrapper');
+  while (dom.parentNode) {
+    dom = dom.parentNode;
+  }
+  console.log(dom === document);
+}
+```
+
+比较多的组件库中都存在这一类逻辑，从而导致逻辑异常。目前的解决逻辑是，一旦子应用内有通过 `document` 进行了查询或创建的行为则将 `html` 的 parentNode 置为 `proxyDocument`
+
+```javascript
+function microTaskHtmlProxyDocument(proxyDocument) {
+  const html = document.children[0];
+  if (html && html.parentNode !== proxyDocument) {
+    Object.defineProperty(html, 'parentNode', {
+      value: proxyDocument,
+      configurable: true,
+    });
+
+    if (setting) {
+      setting = false;
+      nextTick(() => {
+        setting = true;
+        Object.defineProperty(html, 'parentNode', {
+          value: document,
+          configurable: true,
+        });
+      });
+    }
+  }
+}
+```
+
+##### 样式隔离
+
+在 `DOM` 隔离章节，我们分别探索了快照沙箱和 `VM` 沙箱的实现，通过 `VM` 沙箱的隔离机制我们能够有效的收集应用创建的 `DOM` 副作用，并能够有效的区分副作用的来源。
+
+目前 `VM` 沙箱的能力上我们能够清除应用在运行期间创建的 `DOM` 和样式节点，避免应用卸载后样式和节点影响其他应用运行，但由于样式会直接对在相同文档流上的节点生效，因此在多实例场景下，样式可能会影响其他应用的正常运行，并且子应用的样式可能会影响主应用或受到主应用样式的影响，因此样式的隔离是不得不考虑解决的副作用之一。
+
+> CSS Module & CSS Namespace
+
+通过修改基础组件样式前缀来实现框架和微应用依赖基础组件样式的隔离性（依赖于工程上 `CSS` 的预处理器编译和运行时基础组件库配置），同时避免全局样式的书写（依赖于约定或工程 `lint` 手段）。如果采用 `namespace` 可能需要在编译阶段做处理
+
+- 优点
+  - 不容易产生副作用，可以多实例共存
+  - 对于同一个库不同版本的 `CSS`（如 `antd3` 和 `antd4`）, 可以做到彻底隔离
+  - 子应用独立运行和在主应用运行表现一致
+- 缺点
+  - 子应用的节点会受到主应用的影响
+  - 一定程度上依赖子应用的开发和构建配置
+  - 无法处理 `HTML` 中通过 `link` 插入的样式
+  - 未经过编译的动态创建样式也无法处理
+
+> CSS Scope
+
+类似于 `CSS Module` 或 `CSS Namespace`，通过 `scope` 来隔离子应用的所有样式。由于子应用有名称作为唯一标示，且挂载的容器在子应用切换时可以保证唯一性，可以通过统一加 `scope` 的形式处理所有的子应用样式。分为编译时和运行时两种处理方案：编译时提供 `webpack` 插件，对 `css` 编译时自动给子应用的样式添加 `scope`；运行时则是加载子应用时解析，由 `loader` 负责处理。
+
+```css
+// 宿主 host app
+.next-btn {
+  color: #eee;
+}
+body {
+    color: red;
+}
+
+// 子应用 sub app
+.garfish-module-a-wrapper .next-btn {
+  color: #eee;
+}
+
+//宿主中生成的节点
+<div class="garfish-module-a-wrapper">
+  <!-- 子应用的节点 -->
+</div>
+```
+
+- 优点
+  - 不需要用户手动增加配置
+- 缺点
+  - 子应用的节点会受到主应用的影响
+  - 子应用独立运行表现和在主应用运行表现可能不一致
+  - 需要配合节点的处理一起进行（组件库可能会创建弹窗到 `body` 下，需要将节点劫持添加到容器内）
 
 多实例下的样式隔离
 在多实例场景下，可能会存在多份不同版本的 UI 组件库，从而导致样式冲突，目前的一种解决方案是通过构建工具给所有的样式都加上 namespace，如
@@ -364,6 +448,27 @@ observer.observe(proxyDom); // Uncaught TypeError: Failed to execute 'observe' o
   <!-- 子应用的实际dom -->
 </div>
 ```
+
+> Shadow DOM
+
+基于 `Web Components` 的 `Shadow DOM` 能力，将每个子应用包裹到一个 `Shadow DOM` 中，保证其运行时的样式的绝对隔离 `WebComponents Polyfill`
+
+`Shadow dom` 是实现 `Web Components` 的主要技术之一，另外两项分别为 `custom element`、`HTML templates`，在 `Shadow dom` 用简单概括为：将 `Dom` 文档树中的某个节点变为隔离节点，隔离节点内的子节点样式、行为将与外界隔离（隔离节点内的样式不会受到外部影响，也不会影响外部节点，在隔离节点内的事件最终都只会冒泡到隔离节点中）
+
+- Garfish 基于 ShadowDom 实现样式隔离
+
+  - 将容器节点变为 shadow dom
+  - 子应用节点操作转发到容器内，动态增加的样式和节点都会放置容器内
+  - 查询节点操作转发到容器内
+  - 事件向上传播，避免 `React` 依赖事件委托的库失效
+
+- 优点
+  - 浏览器基本的样式隔离
+  - 支持主子应用样式隔离
+  - 支持多实例
+- 缺点
+  - 需要同时处理 DOM，将 DOM 放置容器内
+  - 可能会导致部分组件库或基础库无法正常运行（不支持放置 ShadowDom 内）
 
 ### 其他副作用
 
@@ -396,5 +501,3 @@ Garfish.getRawLocalStorage().setItem('a', '1');
 ![image](https://user-images.githubusercontent.com/27547179/164144636-2d85409e-d011-43c8-929b-07eb287abf2f.png)
 ![image](https://user-images.githubusercontent.com/27547179/164144650-c2d26150-7779-4bb0-bfbb-3404615335b9.png)
 ![image](https://user-images.githubusercontent.com/27547179/164144658-3997cb63-20f2-4f8c-a4b4-199389d7f5be.png)
-
-
