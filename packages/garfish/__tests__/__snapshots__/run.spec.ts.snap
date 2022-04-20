@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Core: run methods auto render and destroy vue app 1`] = `
+Array [
+  "http://localhost/resources/vueIndex.js",
+  "./resources/vueApp.html",
+  undefined,
+  "http://localhost/resources/dynamic.js",
+]
+`;

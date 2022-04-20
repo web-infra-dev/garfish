@@ -21,6 +21,7 @@ import { GarfishHMRPlugin } from './plugins/fixHMR';
 import { GarfishOptionsLife } from './plugins/lifecycle';
 import { GarfishPreloadPlugin } from './plugins/preload';
 import { GarfishPerformance } from './plugins/performance';
+import { GarfishLogger } from './plugins/logger';
 
 const DEFAULT_PROPS = new WeakMap();
 const HOOKS_API = {
@@ -58,6 +59,7 @@ export class Garfish extends EventEmitter2 {
     this.usePlugin(GarfishHMRPlugin());
     this.usePlugin(GarfishPerformance());
     this.usePlugin(GarfishPreloadPlugin());
+    this.usePlugin(GarfishLogger());
   }
 
   setOptions(options: Partial<interfaces.Options>) {
@@ -155,21 +157,34 @@ export class Garfish extends EventEmitter2 {
 
   loadApp(
     appName: string,
-    optionsOrUrl?: Omit<interfaces.AppInfo, 'name'>,
+    options?: Omit<interfaces.AppInfo, 'name'>,
   ): Promise<interfaces.App | null> {
     assert(appName, 'Miss appName.');
-    const appInfo = generateAppOptions(appName, this, optionsOrUrl);
+
+    let appInfo = generateAppOptions(appName, this, options);
 
     const asyncLoadProcess = async () => {
       // Return not undefined type data directly to end loading
       const stop = await this.hooks.lifecycle.beforeLoad.emit(appInfo);
+
       if (stop === false) {
         warn(`Load ${appName} application is terminated by beforeLoad.`);
         return null;
       }
+
+      //merge configs again after beforeLoad for the reason of app may be re-registered during beforeLoad resulting in an incorrect information
+      appInfo = generateAppOptions(appName, this, options);
+
+      assert(
+        appInfo.entry,
+        `Can't load unexpected child app "${appName}", ` +
+          'Please provide the entry parameters or registered in advance of the app.',
+      );
+
       // Existing cache caching logic
       let appInstance: interfaces.App = null;
       const cacheApp = this.cacheApps[appName];
+
       if (appInfo.cache && cacheApp) {
         appInstance = cacheApp;
       } else {
@@ -200,6 +215,7 @@ export class Garfish extends EventEmitter2 {
           this.hooks.lifecycle.errorLoadApp.emit(e, appInfo);
         }
       }
+
       await this.hooks.lifecycle.afterLoad.emit(appInfo, appInstance);
       return appInstance;
     };

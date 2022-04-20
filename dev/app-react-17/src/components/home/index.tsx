@@ -10,24 +10,20 @@ const Home = () => (
       return (
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h3
-            data-test="title"
-            style={{ marginTop: '30px', marginBottom: '30px' }}
-          >
+          <h3 data-test="title" className="title">
             Thank you for the React applications use garfish.
-            <span style={{ color: 'aqua' }}>This is React17. </span>
+            <span>This is React17. </span>
           </h3>
 
           <p>
             Edit <code>src/App.js</code> and save to reload.
           </p>
 
-          <div style={{ color: 'springgreen' }}>
+          <div className="counter">
             【store.counter】: {store?.counter}
             {window.Garfish && (
               <Button
                 size="mini"
-                style={{ marginLeft: '20px' }}
                 type="primary"
                 onClick={() => store && store.increment()}
               >

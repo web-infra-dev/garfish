@@ -51,6 +51,7 @@ Garfish.registerApp([
   <dd>子应用的挂载点，提供 string 类型时需要其值是 `cssSelector`，Garfish 内部会使用 `document.querySelector(domGetter)` 去选中子应用的挂载点。当提供函数时，子应用在路由驱动挂载和手动挂载时将会执行该函数并且期望返回一个 dom 元素 </dd>
   <dt><strong>props?: Object</strong></dt>
   <dd>传递给子应用的参数，子应用的生命周期将接受到该参数</dd>
+  <dt><strong>sandbox?: SandboxConfig | false（默认值:SandboxConfig ）</strong></dt>
   <dd>
     用于配置子应用沙箱的运行参数，当配置 sandbox 为 false 时表示关闭沙箱，当 sandbox 为对象类型时可以配置以下参数
     <dl className="args-list">

@@ -7,3 +7,4 @@ export * from './garfish';
 export * from './mimeType';
 export * from './container';
 export * from './templateParse';
+export * from './logger';

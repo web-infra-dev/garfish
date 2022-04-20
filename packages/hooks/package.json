@@ -1,6 +1,6 @@
 {
   "name": "@garfish/hooks",
-  "version": "1.4.2",
+  "version": "1.5.2",
   "description": "hooks module.",
   "keywords": [
     "garfish",
@@ -22,6 +22,9 @@
   "scripts": {
     "build": "rimraf dist && tsup src/index.ts",
     "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
+  "dependencies": {
+    "@garfish/utils": "workspace:*"
   },
   "repository": {
     "type": "git",

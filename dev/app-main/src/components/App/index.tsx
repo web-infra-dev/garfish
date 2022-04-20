@@ -26,7 +26,6 @@ import homeSvg from '../../static/icons/Home.svg';
 import newSvg from '../../static/icons/New.svg';
 import './index.less';
 
-
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
 const Sider = Layout.Sider;
@@ -60,7 +59,7 @@ const App = observer(({ store }: { store: any }) => {
   // 当 store.counter 变化时，才 emit stateChange
   useEffect(() => {
     if (JSON.parse(storeRef.current).counter !== store.counter) {
-      window?.Garfish.channel.emit('stateChange');
+      window?.Garfish?.channel.emit('stateChange');
       storeRef.current = JSON.stringify(store);
     }
   }, [JSON.stringify(store.counter), location]);
@@ -189,9 +188,6 @@ const App = observer(({ store }: { store: any }) => {
 
       <Layout>
         <Header>
-          <Button shape="round" onClick={handleCollapsed}>
-            {collapsed ? <IconCaretRight /> : <IconCaretLeft />}
-          </Button>
           <h3 className="counter">全局 Counter : {store.counter}</h3>
 
           <Button
@@ -206,7 +202,7 @@ const App = observer(({ store }: { store: any }) => {
             <IconMinus />
           </Button>
 
-          {/* <Button
+          <Button
             size="mini"
             style={{ margin: '0 10px' }}
             type="primary"
@@ -214,17 +210,7 @@ const App = observer(({ store }: { store: any }) => {
             onClick={() => setVisible(true)}
           >
             新增应用
-          </Button> */}
-          <div style={{ marginLeft: '10px' }}>
-            热更新测试：
-            <span className="hmr-text">Hello, Garfish!</span>
-            <Input
-              type="text"
-              size="mini"
-              style={{ width: '330px', display: 'inline-block' }}
-              placeholder="请输入后改变 Hello, Garfish! 文案样式, 输入框状态仍保留"
-            />
-          </div>
+          </Button>
         </Header>
         <Layout style={{ padding: '0 24px' }}>
           {

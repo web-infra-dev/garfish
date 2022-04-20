@@ -19,14 +19,14 @@
     "pkgName": "@garfish-dev/vue2",
     "port": 8094
    },
-  "dev/vite": {
+   "dev/vite": {
     "pkgName": "@garfish-dev/vite",
     "port": 8095
   },
   "dev/vue-sub": {
     "pkgName": "@garfish-dev/vue-sub",
     "port": 8096
-   },
+  },
   "dev/angular": {
     "pkgName": "@garfish-dev/angular",
     "port": 8097

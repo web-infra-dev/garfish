@@ -1,7 +1,6 @@
 import { observer } from 'mobx-react';
 import { useState, useCallback, useEffect } from 'react';
-import { Grid, Tabs, Input, Checkbox } from '@arco-design/web-react';
-import { Spin } from '@arco-design/web-react';
+import { Grid, Tabs, Spin } from '@arco-design/web-react';
 import { useNavigate } from 'react-router-dom';
 import Garfish from 'garfish';
 import MDEditor from '@uiw/react-md-editor';
@@ -9,13 +8,12 @@ import AppLink from '../Link';
 import CardItem from '../CardItem';
 import { loadAppFunc } from '../loadApp/loadAppFunc';
 import {
-  basicInfoStr_dev,
-  basicInfoStr_prod,
   featuresStr,
   toSubAppStr,
   loadAppStr,
   channelStr,
   upgradeStr,
+  getAppBasicInfo,
 } from '../mdStr';
 import './index.less';
 
@@ -26,8 +24,9 @@ const TabPane = Tabs.TabPane;
 
 const HomePage = observer(({ store }) => {
   const navigate = useNavigate();
+  const [bascInfo, setBascInfo] = useState('');
   const [activeTab, setActiveTab] = useState('basicInfo');
-  const [text, setText] = useState('【主应用】手动挂载应用');
+  const [text, setText] = useState('【主应用】动态加载应用');
   const [app, setApp] = useState<any>(null);
   const [loadAsync, setLoadAsync] = useState(false);
 
@@ -42,9 +41,8 @@ const HomePage = observer(({ store }) => {
       });
 
       const app = await loadAppFunc({
-        id: 'loadApp_react17',
-        domID: 'loadApp_mount',
         appName: 'vue2',
+        domID: 'loadApp_mount',
         basename: '/examples/main/index',
       });
 
@@ -63,6 +61,12 @@ const HomePage = observer(({ store }) => {
     };
   }, [app]);
 
+  useEffect(() => {
+    window.Garfish.appInfos &&
+      Object.keys(window.Garfish.appInfos).length > 0 &&
+      setBascInfo(getAppBasicInfo(window.Garfish.appInfos));
+  }, [window.Garfish.appInfos]);
+
   return (
     <Row
       gutter={[24, 12]}
@@ -73,7 +77,7 @@ const HomePage = observer(({ store }) => {
     >
       <Col span={8} className="card-columns">
         <CardItem
-          title="访问独立子应用"
+          title="访问子应用"
           href="https://garfish.top/quickStart"
           content={
             <div className="content-wrapper">
@@ -87,13 +91,16 @@ const HomePage = observer(({ store }) => {
         />
 
         <CardItem
-          title="跳转子应用 react17 详情页"
+          title="跳转 react 子应用"
           onClick={() => {
             // navigate(`/${basename}/react17`);
             Garfish.router.push({
-              path: '/react17/detail',
-              query: { id: '002' },
+              path: '/react17/home',
             });
+            // Garfish.router.push({
+            //   path: '/react17/detail',
+            //   query: { id: '002' },
+            // });
           }}
           href="https://garfish.top/api/router/#routerpush"
           markdownStr={toSubAppStr}
@@ -109,33 +116,17 @@ const HomePage = observer(({ store }) => {
         <CardItem
           title="与子应用通信"
           onClick={() =>
-            window?.Garfish.channel.emit('sayHello', 'hello, i am main app')
+            window?.Garfish?.channel.emit('sayHello', 'hello, i am main app')
           }
           href="https://garfish.top/api/channel"
           markdownStr={channelStr}
         />
-
-        {/* <CardItem
-          title="设置window变量"
-          onClick={() => {
-            window.testName = 'danping';
-          }}
-          href="https://garfish.top/api/channel"
-          markdownStr={channelStr}
-        /> */}
       </Col>
 
       <Col span={16}>
         <Tabs activeTab={activeTab} onChange={setActiveTab}>
           <TabPane key="basicInfo" title="example信息">
-            <MDEditor.Markdown
-              source={
-                process.env.NODE_ENV === 'development'
-                  ? basicInfoStr_dev
-                  : basicInfoStr_prod
-              }
-              linkTarget="_blank"
-            />
+            <MDEditor.Markdown source={bascInfo} linkTarget="_blank" />
           </TabPane>
           <TabPane key="features" title="已实现feature">
             <MDEditor.Markdown source={featuresStr} linkTarget="_blank" />

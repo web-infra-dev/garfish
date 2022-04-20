@@ -1,53 +1,58 @@
-@import "../node_modules/@arco-design/web-react/dist/css/index.less";
+@import '../node_modules/@arco-design/web-react/dist/css/index.less';
 
-.App {
-	text-align: center;
-	background-color: #282c34;
-	font-size: 18px;
-	overflow: hidden;
-	color: white;
-}
+@prefix: sub-app-react16;
 
-.App-logo {
-	height: 200px;
-	pointer-events: none;
-}
+.@{prefix}-layout-content {
+  .App {
+    text-align: center;
+    background-color: #282c34;
+    font-size: 18px;
+    overflow: hidden;
+    color: white;
+  }
 
-.App ul {
-	display: inline-block;
-	list-style: none;
-}
+  .App-logo {
+    height: 200px;
+    pointer-events: none;
+  }
 
-.App li {
-	display: inline-block;
-	list-style: none;
-}
+  .App ul {
+    display: inline-block;
+    list-style: none;
+  }
 
-.App a:visited {
-	color: #61dafb;
-}
+  .App li {
+    display: inline-block;
+    list-style: none;
+    padding: 10px;
+  }
 
-.App a.tabActive {
-	color: #7fffd4;
-}
+  .App a:visited {
+    color: #61dafb;
+  }
 
-@media (prefers-reduced-motion: no-preference) {
-	.App-logo {
-		animation: App-logo-spin infinite 20s linear;
-	}
-}
+  .App a.tabActive {
+    color: #7fffd4;
+  }
 
-.click-btn {
-	color: coral;
-	cursor: pointer;
-	margin-top: 6px;
-}
+  @media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+      animation: App-logo-spin infinite 20s linear;
+    }
+  }
 
-@keyframes App-logo-spin {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
-	}
+  .click-btn {
+    color: coral;
+    cursor: pointer;
+    margin-top: 6px;
+  }
+
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 }
