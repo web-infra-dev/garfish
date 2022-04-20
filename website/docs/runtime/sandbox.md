@@ -4,15 +4,21 @@ slug: /runtime/sandbox.md
 order: 3
 ---
 
-## 为什么需要沙箱
+| 版本 | 日期 | 修订人 | ChangeLog |
+| v0.1 | 2020-12-19 | zengkunpeng | 初始文章 |
+| v0.2 | 2022-4-29 | zhouxiao | 调整 DOM 副作用章节 |
+
 
 在微前端的场景，由于多个独立的应用被组织到了一起，在没有类似 `iframe` 的原生隔离下，势必会出现冲突，如全局变量冲突、样式冲突，这些冲突可能会导致应用样式异常，甚至功能不可用。所以想让微前端达到生产可用的程度，让每个子应用之间达到一定程度隔离的沙箱机制是必不可少的。
 
 此外沙箱功能还需要满足多实例的场景，先来了解一下什么是微前端里的多实例。
 
+![image](https://user-images.githubusercontent.com/27547179/164134100-2c4d311e-4849-4ca4-a965-de1ff1a980d0.png)
+
+
 ### 手动执行代码
 
-常规的脚本加载，是通过 script 标签去执行的，如
+常规的脚本加载，是通过 `script` 标签去执行的，如
 
 ```html
 // 内连
@@ -29,12 +35,14 @@ order: 3
 #### eval
 
 `The eval() function evaluates JavaScript code represented as a string.`
+
 首先我们想到的是 eval，由于 eval 有安全、性能等问题，同时也不利于调试，所以在以前我们听到的都是不推荐使用 eval 这个 api。
-但是在微前端的沙箱场景，eval 确实是一个比较好的解决方案，比如 qiankun 就采用了 eval 作为代码执行器。
+但是在微前端的沙箱场景，eval 确实是一个比较好的解决方案，比如 `qiankun` 就采用了 `eval` 作为代码执行器。
 
 #### new Function
 
 `The Function constructor creates a new Function object. In JavaScript, every function is actually a Function object.`
+
 `new Function` 通过传入一个 `string` 作为函数的的主体同时返回一个新函数，可以作为 `eval` 的一个替代品
 
 #### 对比
@@ -90,11 +98,12 @@ execScript(code:string);
 ### 快照沙箱
 
 顾名思义，即在某个阶段给当前的运行环境打一个快照，再在需要的时候把快照恢复，从而实现隔离。
-类似玩游戏的 SL 大法，在某个时刻保存起来，操作完毕再重新 Load，回到之前的状态。
+
+类似玩游戏的 `SL` 大法，在某个时刻保存起来，操作完毕再重新 `Load`，回到之前的状态。
 
 #### 实现思路
 
-我们假设有个 Sandbox 的类
+我们假设有个 `Sandbox` 的类
 
 ```js
 class Sandbox {
@@ -110,15 +119,15 @@ execScript(code)；
 sandbox.deactivate();
 ```
 
-关键的方法就是在 activate 和 deactivate 两个方法上
+关键的方法就是在 `activate` 和 `deactivate` 两个方法上
 
-1. 在 activate 的时候遍历 window 上的变量，存为 snapshotOriginal
-2. 在 deactivate 的时候再次遍历 window 上的变量，分别和 snapshotOriginal 对比，将不同的存到 snapshotMutated 里，将 window 恢复回到 snapshotOriginal
-3. 当应用再次切换的时候，就可以把 snapshotMutated 的变量恢复回 window 上，实现一次沙箱的切换。
+1. 在 `activate` 的时候遍历 `window` 上的变量，存为 `snapshotOriginal`
+2. 在 `deactivate` 的时候再次遍历 `window` 上的变量，分别和 `snapshotOriginal` 对比，将不同的存到 `snapshotMutated` 里，将 `window` 恢复回到 `snapshotOriginal`
+3. 当应用再次切换的时候，就可以把 `snapshotMutated` 的变量恢复回 `window` 上，实现一次沙箱的切换。
 
 ### VM 沙箱
 
-VM 沙箱使用类似于 node 的 vm 模块，通过创建一个沙箱，然后传入需要执行的代码。
+`VM` 沙箱使用类似于 `node` 的 `vm` 模块，通过创建一个沙箱，然后传入需要执行的代码。
 
 ```javascript
 class VMSandbox {
@@ -136,7 +145,8 @@ sandbox2.execScript(code2)；
 ### Proxy
 
 在日常的编程里，会经常用到 `window`、`document` 这类全局对象，所以我们可以去改写 `new function` 里的这些对象，同时收集代码对这些对象的操作，把变更放到一个局部变量，就不会影响全局的 `window`。
-结合 `ES6` 的新 `API`：`Proxy`，我们可以比较好的做到这点，我们来实现以下 `execScript`
+
+结合 `ES6` 的新 `API`：`Proxy`，我们可以比较好的做到这点，我们来实现以下 `execScript`：
 
 ```javascript
 const varBox = {};
@@ -154,12 +164,12 @@ fn(fakeWindow);
 ```
 
 这样我们就可以实现一个简单的沙盒功能。
-不过 Proxy 有兼容性问题，Garfish 最初使用的是 Proxy 的 Polyfill，虽然不能 100%Polyfill，但是 get 和 set 能够满足我们的大多数场景。
-然而 ProxyPolyfill 的方案实际让我们踩了很多坑，最终决定放弃 Polyfill 的方案，采用优先使用 Proxy 而不支持 Proxy 进行降级的方案。
+不过 `Proxy` 有兼容性问题，`Garfish` 最初使用的是 `Proxy` 的 `Polyfill`，虽然不能 100% `Polyfill`，但是 get 和 set 能够满足我们的大多数场景。
+然而 `ProxyPolyfill` 的方案实际让我们踩了很多坑，最终决定放弃 `Polyfill` 的方案，采用优先使用 `Proxy` 而不支持 `Proxy` 将降级到快照沙箱。
 
 #### with 语句
 
-虽然上面已经实现了一个简单的沙箱，但是要达到生产环境可用还是远远不够的，在实际的场景里，如下面的一段 JS，在浏览器 script 标签里执行是没问题的，但是在沙箱里就会报错
+虽然上面已经实现了一个简单的沙箱，但是要达到生产环境可用还是远远不够的，在实际的场景里，如下面的一段 `JS`，在浏览器 `script` 标签里执行是没问题的，但是在沙箱里就会报错
 
 ```javascript
 window.$CONFIG = { a: true }; // 能被成功写到沙箱里
@@ -218,7 +228,7 @@ if ($CONFIG.a) {
 }
 ```
 
-通过 `with + proxy` 可以解决这个问题，因为前面说过 `with` 是通过 `in` 来判断是否在当前作用域内的，而 `Proxy` 的 `has` 能重写 `in `的返回，（而 Proxy 的 Polyfill 无法 Polyfill has）我们再改写一下沙箱的代码，这段代码就运行成功了。
+通过 `with + proxy` 可以解决这个问题，因为前面说过 `with` 是通过 `in` 来判断是否在当前作用域内的，而 `Proxy` 的 `has` 能重写 `in `的返回，（而 Proxy 的 Polyfill 无法 Polyfill has 因为无法使用 Proxy 的 ）我们再改写一下沙箱的代码，这段代码就运行成功了。
 
 ```javascript
 const varBox
@@ -247,34 +257,37 @@ fn(fakeWindow);
 不过这也会带来另一个问题，任何的 `'xxx'` in `window` 都会返回 `true`，明显不符合预期，所以我们做了两个独立的 `proxy`， 一个来作为 `with` 来解决 `var` 的问题，一个就是针对 `window` 做 `proxy`。
 
 ```javascript
-const varBox;
-const get = (target, key) {
+const varBox = {};
+const get = (target, key)=> {
     if (key === 'window') {
         return fakeWindow;
     }
     return varBox[key] || window[key] ;
 };
-const set = (target, key, value) {
+
+const set = (target, key, value)=> {
     varBox[key] = value;
     return true;
 };
-const has = has(target, key) {
+
+const has = (target, key) => {
     return true;
-}
+};
 
 const context = new Proxy(window, {
     get,
     set,
     has
-})
+});
 
 const fakeWindow = new Proxy(window, {
     get,
-    set，
-})
+    set
+});
+
 const fn = new Function('window', 'context',`
     with(context){
-        code;
+        // code;
         'Vue' in window;
     }`
 );
@@ -291,9 +304,15 @@ if ($CONFIG.a) {
 }
 ```
 
-主要是 webpack 的编译结果由于版本等问题会有这种写法，暂时没有直接能解决的方案，通过推荐用户配置 webpack 的配置来解决。
+`webpack` 的 `output.globalObject = window` 会自动隐式指向 `window` 的 `this` 构建会指向 `window`，需要注意的是在 `webpack` 低版本中可能不支持该配置。
 
-#### 样式隔离
+
+#### DOM 隔离
+
+DOM 隔离分为两种类型：样式节点、其他 dom 节点。
+
+- 快照沙箱：处理了样式节点未处理 DOM 节点
+- VM 沙箱：会处理样式节点和 DOM 节点，并且提供了严格模式和非严格模式
 
 样式的隔离在微前端里也是非常重要的一个点，在两个版本的快照里，采用不太一样的处理方式
 
@@ -303,7 +322,7 @@ if ($CONFIG.a) {
 
 > VM 沙箱的样式隔离
 
-首先了解一个背景，webpack 在构建的时候，最终是通过 appendChild 去添加 style 标签到 html 里的，所以我们只要通过劫持 appendChild 就可以知道有哪些样式被插入，从而实现插入样式的收集，方便进行移除。
+首先了解一个背景，`webpack` 在构建的时候，最终是通过 `appendChild` 去添加 `style` 标签到 `html` 里的，所以我们只要通过劫持 `appendChild` 就可以知道有哪些样式被插入，从而实现插入样式的收集，方便进行移除。
 
 在探索新的样式隔离方案时，为了能够支持多实例，尝试了比较多的方案。
 
@@ -322,7 +341,9 @@ observer.observe(proxyDom); // Uncaught TypeError: Failed to execute 'observe' o
 
 - 递归的进行 proxy 带来了性能问题
 
-3. 【目前方案】劫持 document.body 和 document.head 的 appendChild
+3. 【目前方案】劫持原型的 `appendChild`，提供 `proxy` 版本的 `document`，在执行 `document.createElement` 方法时会为创建的节点打上一个应用来源的标签，表明是哪个应用创建了这个节点， 在通过 `appendChild` 等原型将节点添加文档流时，对节点进行收集，在应用销毁后将收集的节点也进行销毁
+
+5. 劫持 document.body 和 document.head 的 appendChild
    考虑到实际的使用场景里，基本上只会把样式插入 body 和 head 里，综合性能和多实例的支持，所以我们最终结合实际的场景只对 body 和 head 的 appendChiild 做了劫持。
 
 多实例下的样式隔离
@@ -342,7 +363,8 @@ observer.observe(proxyDom); // Uncaught TypeError: Failed to execute 'observe' o
 </div>
 ```
 
-其他副作用
+### 其他副作用
+
 上面描述的其实只是对于变量的隔离，其实除了变量之外，还会有其他的副作用是需要隔离的，包括但不限于：
 
 - 计时器：`setInterval`、`setTimeout`
@@ -368,3 +390,9 @@ Garfish.getRawLocalStorage().setItem('a', '1');
 ```
 
 ### 两种沙箱的对比
+
+![image](https://user-images.githubusercontent.com/27547179/164144636-2d85409e-d011-43c8-929b-07eb287abf2f.png)
+![image](https://user-images.githubusercontent.com/27547179/164144650-c2d26150-7779-4bb0-bfbb-3404615335b9.png)
+![image](https://user-images.githubusercontent.com/27547179/164144658-3997cb63-20f2-4f8c-a4b4-199389d7f5be.png)
+
+
