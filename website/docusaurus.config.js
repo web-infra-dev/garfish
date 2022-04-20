@@ -21,7 +21,7 @@ module.exports = {
     hideableSidebar: true,
     colorMode: {
       defaultMode: 'dark',
-      disableSwitch: true,
+      disableSwitch: false,
     },
     navbar: {
       logo: {
