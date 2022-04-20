@@ -310,10 +310,10 @@ if ($CONFIG.a) {
 
 #### DOM 隔离
 
-DOM 隔离分为两种类型：样式节点、其他 dom 节点。
+`DOM` 隔离分为两种类型：样式节点、`dom` 节点。
 
-- 快照沙箱：处理了样式节点未处理 DOM 节点
-- VM 沙箱：会处理样式节点和 DOM 节点，并且提供了严格模式和非严格模式
+- 快照沙箱：处理了样式节点未处理 `DOM` 节点
+- VM 沙箱：会处理样式节点和 `DOM` 节点，并且提供了严格模式和非严格模式
 
 样式的隔离在微前端里也是非常重要的一个点，在两个版本的快照里，采用不太一样的处理方式
 
@@ -321,17 +321,17 @@ DOM 隔离分为两种类型：样式节点、其他 dom 节点。
 
 快照沙箱对样式的隔离主要是遍历 `HTML` 里的 `head` 标签，在 `activate` 的时候，把 `head` 里的 `dom` 记录下来，再 `deactivate` 的时候再恢复。
 
-> VM 沙箱的样式隔离
+> VM 沙箱的 DOM 隔离
 
-首先了解一个背景，`webpack` 在构建的时候，最终是通过 `appendChild` 去添加 `style` 标签到 `html` 里的，所以我们只要通过劫持 `appendChild` 就可以知道有哪些样式被插入，从而实现插入样式的收集，方便进行移除。
+首先了解一个背景，`webpack` 在构建的时候，最终是通过 `appendChild` 去添加节点到 `html` 里的，所以我们只要通过劫持 `appendChild` 就可以知道有哪些节点被插入，从而实现插入节点的收集，方便进行移除。
 
-在探索新的样式隔离方案时，为了能够支持多实例，尝试了比较多的方案。
+在探索新的节点收集方案时，为了能够支持多实例，尝试了比较多的方案。
 
 1. 劫持原型的 appendChild
    最初的版本我们通过重写 HTMLElement.prototype.appendChild，把 append 到 body 的样式放到子应用渲染的根节点里。由于劫持的是原型，这个方案无法支持多实例，如果有多个子应用同时运行，没办法区分是由哪个子应用添加的。
 
 2. 劫持实例的 appendChild
-   所以我们想到的是去劫持所有的 dom 节点，通过重写获取 dom 节点的方法，如 document.querySelector、document.getElementByID, 把返回的 dom 节点通过 proxy 进行包装，这样就能劫持 dom 实例的 appendChild，就可以区分是来自于哪个子应用。但是这个方案经过实践，出现的两个比较棘手的问题：
+   所以我们想到的是去劫持所有的 dom 节点，通过重写获取 dom 节点的方法，如 `document.querySelector`、`ocument.getElementByID`, 把返回的 `dom` 节点通过 `proxy` 进行包装，这样就能劫持 dom 实例的 appendChild，就可以区分是来自于哪个子应用。但是这个方案经过实践，出现的两个比较棘手的问题：
 
 - 封装后的 dom 节点在传参的时候会报错，如
 
@@ -342,10 +342,11 @@ observer.observe(proxyDom); // Uncaught TypeError: Failed to execute 'observe' o
 
 - 递归的进行 proxy 带来了性能问题
 
-3. 【目前方案】劫持原型的 `appendChild`，提供 `proxy` 版本的 `document`，在执行 `document.createElement` 方法时会为创建的节点打上一个应用来源的标签，表明是哪个应用创建了这个节点， 在通过 `appendChild` 等原型将节点添加文档流时，对节点进行收集，在应用销毁后将收集的节点也进行销毁
+3. 【目前方案】劫持原型的 `appendChild`，提供 `proxy` 版本的 `document`，在执行 `document.createElement` 方法时会为创建的节点打上来源的标签，表明是哪个应用创建了这个节点， 在通过 `appendChild` 等原型将节点添加文档流时，对节点进行收集，在应用销毁后将收集的节点也进行销毁，由于 `JavaScript` 语法的动态性和灵活性，目前的沙箱方案也存在一些漏洞：
 
-5. 劫持 document.body 和 document.head 的 appendChild
-   考虑到实际的使用场景里，基本上只会把样式插入 body 和 head 里，综合性能和多实例的支持，所以我们最终结合实际的场景只对 body 和 head 的 appendChiild 做了劫持。
+- 节点通过 `parentNode` 一直向上查找至 `document` 节点
+
+在 VM 防范的探索
 
 多实例下的样式隔离
 在多实例场景下，可能会存在多份不同版本的 UI 组件库，从而导致样式冲突，目前的一种解决方案是通过构建工具给所有的样式都加上 namespace，如
