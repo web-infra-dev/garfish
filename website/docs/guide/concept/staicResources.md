@@ -1,5 +1,5 @@
 ---
-title: Garfish 静态资源
+title: 静态资源
 slug: /runtime/staicResources
 order: 7
 ---
