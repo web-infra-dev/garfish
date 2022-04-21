@@ -551,17 +551,23 @@ importers:
 
   packages/bridge:
     specifiers:
+      '@garfish/bridge': ^1.5.2
       '@garfish/browser-snapshot': workspace:*
       '@garfish/browser-vm': workspace:*
       '@garfish/core': workspace:*
       '@garfish/router': workspace:*
       '@garfish/utils': workspace:*
+      vue2: npm:vue@^2
+      vue3: npm:vue@^3
     dependencies:
+      '@garfish/bridge': 'link:'
       '@garfish/browser-snapshot': link:../browser-snapshot
       '@garfish/browser-vm': link:../browser-vm
       '@garfish/core': link:../core
       '@garfish/router': link:../router
       '@garfish/utils': link:../utils
+      vue2: /vue/2.6.13
+      vue3: /vue/3.2.31
 
   packages/browser-snapshot:
     specifiers:
@@ -4434,7 +4440,7 @@ packages:
     engines: {node: ^10.12.0 || >=12.0.0}
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.3
+      debug: 4.3.4
       espree: 7.3.1
       globals: 13.12.1
       ignore: 4.0.6
@@ -4495,7 +4501,7 @@ packages:
     engines: {node: '>=10.10.0'}
     dependencies:
       '@humanwhocodes/object-schema': 1.2.1
-      debug: 4.3.3
+      debug: 4.3.4
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -5917,7 +5923,7 @@ packages:
       '@typescript-eslint/experimental-utils': 5.4.0_eslint@7.32.0+typescript@4.4.3
       '@typescript-eslint/parser': 5.4.0_eslint@7.32.0+typescript@4.4.3
       '@typescript-eslint/scope-manager': 5.4.0
-      debug: 4.3.3
+      debug: 4.3.4
       eslint: 7.32.0
       functional-red-black-tree: 1.0.1
       ignore: 5.2.0
@@ -5985,7 +5991,7 @@ packages:
       '@typescript-eslint/scope-manager': 5.4.0
       '@typescript-eslint/types': 5.4.0
       '@typescript-eslint/typescript-estree': 5.4.0_typescript@4.4.3
-      debug: 4.3.3
+      debug: 4.3.4
       eslint: 7.32.0
       typescript: 4.4.3
     transitivePeerDependencies:
@@ -6024,7 +6030,7 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.4.0
       '@typescript-eslint/visitor-keys': 5.4.0
-      debug: 4.3.3
+      debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.3.5
@@ -10310,7 +10316,19 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
-    dev: false
+
+  /debug/4.3.4_supports-color@8.1.1:
+    resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.2
+      supports-color: 8.1.1
+    dev: true
 
   /decamelize/1.2.0:
     resolution: {integrity: sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=}
@@ -11780,7 +11798,7 @@ packages:
       ajv: 6.12.6
       chalk: 2.4.2
       cross-spawn: 6.0.5
-      debug: 4.3.3
+      debug: 4.3.4
       doctrine: 3.0.0
       eslint-scope: 4.0.3
       eslint-utils: 1.4.3
@@ -12255,7 +12273,7 @@ packages:
     engines: {node: '>= 10.17.0'}
     hasBin: true
     dependencies:
-      debug: 4.3.3_supports-color@8.1.1
+      debug: 4.3.4_supports-color@8.1.1
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
@@ -13820,7 +13838,7 @@ packages:
     dependencies:
       '@tootallnate/once': 1.1.2
       agent-base: 6.0.2
-      debug: 4.3.3
+      debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -14896,7 +14914,7 @@ packages:
     resolution: {integrity: sha512-n3s8EwkdFIJCG3BPKBYvskgXGoy88ARzvegkitk60NxRdwltLOTaH7CUiMRXvwYorl0Q712iEjcWB+fK/MrWVw==}
     engines: {node: '>=10'}
     dependencies:
-      debug: 4.3.3
+      debug: 4.3.4
       istanbul-lib-coverage: 3.2.0
       source-map: 0.6.1
     transitivePeerDependencies:
