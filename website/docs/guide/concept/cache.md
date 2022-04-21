@@ -1,5 +1,5 @@
 ---
-title: Garfish 缓存机制
+title: 缓存机制
 slug: /runtime/cache
 order: 3
 ---

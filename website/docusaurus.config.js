@@ -43,11 +43,6 @@ module.exports = {
           position: 'right',
         },
         {
-          to: 'runtime/',
-          label: '运行时',
-          position: 'right',
-        },
-        {
           to: 'blog/',
           label: '博客',
           position: 'right',
