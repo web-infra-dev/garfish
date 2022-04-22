@@ -1,14 +1,14 @@
 import { vueBridge } from '@garfish/bridge';
-import { createApp } from 'vue';
+import { h, createApp } from 'vue';
 import App from './App.vue';
 
-vueBridge({
+export const provider = vueBridge({
   createApp,
   rootComponent: App,
-  // appOptions: () => ({
-  //   el: '#app',
-  //   render: () => h(App),
-  // }),
+  appOptions: () => ({
+    el: '#app',
+    render: () => h(App),
+  }),
 });
 
 if (!window.__GARFISH__) {

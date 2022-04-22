@@ -228,6 +228,7 @@ const App = observer(({ store }: { store: any }) => {
               )}
             </div>
             <div id="sub-container"></div>
+            <div id="app"></div>
           </Content>
           <Footer> </Footer>
         </Layout>
