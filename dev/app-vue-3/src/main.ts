@@ -14,7 +14,6 @@ const routes = [
 function newRouter(basename) {
   const router = createRouter({
     history: createWebHistory(basename),
-    base: basename,
     routes,
   });
   return router;
@@ -31,23 +30,18 @@ if (!window.__GARFISH__) {
 
 export const provider = vueBridge({
   createApp,
-  
   rootComponent: App,
-
   loadRootComponent: ({ basename, dom, appName, props }) => {
     console.log(basename, dom, appName, props);
     return Promise.resolve(App);
   },
-
   appOptions: ({ basename, dom, appName, props }) => {
     console.log(basename, dom, appName, props);
     return {
       el: '#app',
       render: () => h(App),
-      router: newRouter(basename),
     };
   },
-
   handleInstance: (vueInstance, { basename, dom, appName, props }) => {
     console.log(basename, dom, appName, props);
     vueInstance.use(newRouter(basename));

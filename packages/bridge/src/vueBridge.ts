@@ -22,9 +22,10 @@ type vueCreateOpts =
       createApp: vue3.CreateAppFunction<Element>;
     };
 interface ConfigOpts {
-  el: string;
   canUpdate: boolean; // by default, allow parcels created with garfish-react-bridge to be updated
-  appOptions: (opts: Record<string, any>) => Record<string, any>;
+  appOptions: (
+    opts: Record<string, any>,
+  ) => Record<string, any> | Record<string, any>;
   handleInstance: (
     vueInstance: vueInstanceType,
     opts: Record<string, any>,
@@ -178,6 +179,7 @@ function mount(opts: OptsTypes, mountedInstances, props) {
   instance.domEl = appOptions.el;
 
   if (!appOptions.render && !appOptions.template && opts.rootComponent) {
+    // it works for vue2, in vue3 `h` in imported from `vue'` instead of passing it through the render function
     appOptions.render = (h) => h(opts.rootComponent);
   }
 
@@ -188,7 +190,9 @@ function mount(opts: OptsTypes, mountedInstances, props) {
   appOptions.data = () => ({ ...appOptions.data, ...props });
 
   if (opts.createApp) {
-    instance.vueInstance = opts.createApp(appOptions);
+    instance.vueInstance = opts.appOptions
+      ? opts.createApp(appOptions)
+      : opts.createApp(opts.rootComponent as any);
     if (opts.handleInstance) {
       opts.handleInstance(instance.vueInstance, props);
       instance.root = instance.vueInstance.mount(appOptions.el);
