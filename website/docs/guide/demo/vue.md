@@ -6,7 +6,7 @@ order: 3
 
 ## vue 子应用接入步骤
 
-### 1. [@garfish/bridge](../../runtime/bridge.md) 依赖安装
+### 1. [@garfish/bridge](../../guide/bridge) 依赖安装
 
 :::tip
  1. 请注意，桥接函数 @garfish/bridge 依赖安装不是必须的，你可以自定义导出函数。
@@ -119,7 +119,6 @@ npm install @garfish/bridge --save
     function newRouter(basename) {
       const router = createRouter({
         history: createWebHistory(basename),
-        base: basename,
         routes,
       });
       return router;
@@ -131,15 +130,12 @@ npm install @garfish/bridge --save
       loadRootComponent: ({ basename, dom, appName, props }) => {
         return Promise.resolve(App);
       },
-
       appOptions: ({ basename, dom, appName, props }) => {
         return {
           el: '#app',
-          render: () => h(App),
-          router: newRouter(basename),
+          render: () => h(App)
         };
       },
-
       handleInstance: (vueInstance, { basename, dom, appName, props }) => {
         vueInstance.use(newRouter(basename));
         vueInstance.provide(stateSymbol, createState());

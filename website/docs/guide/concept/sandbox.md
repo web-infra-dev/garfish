@@ -1,6 +1,6 @@
 ---
 title: 沙箱机制
-slug: /runtime/sandbox.md
+slug: /guide/sandbox
 order: 3
 ---
 

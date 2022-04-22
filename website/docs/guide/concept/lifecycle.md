@@ -1,6 +1,6 @@
 ---
 title: 生命周期
-slug: /runtime/lifecycle
+slug: /guide/lifecycle
 order: 3
 ---
 

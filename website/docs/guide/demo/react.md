@@ -11,7 +11,7 @@ order: 2
 :::
 
 
-### 1. [@garfish/bridge](../../runtime/bridge.md) 依赖安装
+### 1. [@garfish/bridge](../../guide/bridge) 依赖安装
 
 :::tip
  1. 请注意，桥接函数 @garfish/bridge 依赖安装不是必须的，你可以自定义导出函数。

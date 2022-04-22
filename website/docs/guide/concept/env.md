@@ -1,6 +1,6 @@
 ---
 title: 环境变量
-slug: /runtime/env.md
+slug: /guide/env
 order: 8
 ---
 

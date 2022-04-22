@@ -1,7 +1,7 @@
 ---
 title: 路由机制
-slug: /runtime/router
-order: 5
+slug: /guide/router
+order: 4
 ---
 
 `Garfish Router` 如何处理路由

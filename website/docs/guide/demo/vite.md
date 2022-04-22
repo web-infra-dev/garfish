@@ -9,7 +9,7 @@ order: 4
 :::info
 使用 vite 应用作为子应用接入时需要注意：
 
-1. 用户可根据自己实际情况选择将[沙箱](../../runtime/sandbox.md)开启或关闭;
+1. 用户可根据自己实际情况选择将[沙箱](../../guide/sandbox.md)开启或关闭;
 2. 沙箱默认开启状态，若当前 vite 应用希望在沙箱开启状态下运行，主应用需要配置插件 [@garfish/es-module](../../garfish-plugins/es-module.md)，这是必须的；
 3. 若当前子应用希望运行在非沙箱模式下，需要设置 sandbox 关闭属性，设置方案下面列出；
 4. 此外需要注意，在关闭沙箱的场景下，子应用的副作用将会发生逃逸，你需要在子应用卸载后将对应全局的副作用清除；
@@ -50,7 +50,7 @@ Garfish.run({
 
 ## vite 子应用接入步骤
 
-### 1. [@garfish/bridge](../../runtime/bridge.md) 依赖安装
+### 1. [@garfish/bridge](../../guide/bridge) 依赖安装
 
 :::tip
  1. 请注意，桥接函数 @garfish/bridge 依赖安装不是必须的，你可以自定义导出函数。

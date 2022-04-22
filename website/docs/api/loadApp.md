@@ -206,7 +206,7 @@ app = await Garfish.loadApp('vue-app', {
   - 触发子应用的 <span style={{color: '#ff5874'}}>渲染</span> 流程。若应用<span style={{color: '#9b67f6'}}> 已挂载 </span>、或<span style={{color: '#9b67f6'}}> 正在挂载中 </span>、或<span style={{color: '#9b67f6'}}> 正在卸载中 </span>将不会触发渲染流程；
   - 在子应用渲染前将会触发 `beforeMount` 钩子函数，渲染完成将触发 `afterMount` 钩子函数并将当前挂载的应用 push 进 `Garfish.activeApps`。若渲染过程中出现异常将触发 `errorMountApp`钩子函数；
   - 在此过程中将执行 `provider` 提供的子应用 `render` 函数，若 `provider` 函数未找到将会抛出错误。[尝试解决](/issues/#provider-is-null)
-  - [mount 过程中都做了哪些事情](/runtime/lifecycle#mount)
+  - [mount 过程中都做了哪些事情](/guide/lifecycle#mount)
 
 :::info 请注意：
 对于 es module 子应用(如 Vite 应用)，路由驱动模式下默认走缓存模式。子应用不可重复使用 `app.mount`，应用二次渲染只能使用 `app.show()`；
@@ -220,7 +220,7 @@ app = await Garfish.loadApp('vue-app', {
   - 在子应用渲染前将会触发 `beforeUnmount` 钩子函数，渲染完成将触发 `afterUnmount` ，若销毁过程中出现异常将触发 `errorUnmountApp` 钩子函数；
   - 应用卸载过程中会执行 `provider` 内部提供的 `destroy` 函数。卸载完成后，子应用的渲染容器将被移除、子应用的执行上下文也将被销毁，渲染过程中产生的副作用也都将会被清除，同时将子应用从
 `Garfish.activeApps` 里移除，`mounted` 和 `display` 状态置为 false；
-  - [unmount 过程中都做了哪些事情](/runtime/lifecycle#unmount)
+  - [unmount 过程中都做了哪些事情](/guide/lifecycle#unmount)
 
 - app.show()
   - Type
@@ -246,7 +246,7 @@ app = await Garfish.loadApp('vue-app', {
 
   - 在子应用显示前将会触发 `beforeMount` 钩子函数，显示完成将触发 `afterMount` 钩子函数并将当前挂载的应用 push 进 `Garfish.activeApps`；
   - 在此过程中将执行 `provider` 提供的子应用 render 函数，若 `provider` 函数未找到将会抛出错误。[尝试解决](/issues/#provider-is-null)
-  - [show 过程中都做了哪些事情](/runtime/lifecycle#show)
+  - [show 过程中都做了哪些事情](/guide/lifecycle#show)
 
 :::info 请注意：
 1. `app.show()` 用于触发子应用的显示流程，此过程并不是 css 中样式的显示或隐藏，show() 方法会触发子应用的 `render` 函数，若 `render` 函数中存在副作用也会再次执行；
@@ -263,4 +263,4 @@ app = await Garfish.loadApp('vue-app', {
 
   - 在子应用隐藏前将会触发 `beforeUnmount` 钩子函数，隐藏完成将触发 `afterUnmount` 钩子函数并将当前隐藏的应用从 `Garfish.activeApps` 中移除；
   - 在此过程中将执行 `provider` 提供的子应用 `destory` 函数。当移除完成，子应用的渲染容器也将被移除。
-  - [hide 过程中都做了哪些事情](/runtime/lifecycle#hide)
+  - [hide 过程中都做了哪些事情](/guide/lifecycle#hide)

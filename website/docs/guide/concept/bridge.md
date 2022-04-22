@@ -1,7 +1,7 @@
 ---
-title: Garfish bridge
-slug: /runtime/bridge.md
-order: 4
+title: bridge
+slug: /guide/bridge
+order: 5
 ---
 
 ## 介绍
@@ -15,7 +15,7 @@ Garfish bridge 是 garfish 提供的帮助用户降低接入成本的工具函�
 :::
 
 ## @garfish/bridge
-@garfish/bridge 是 garfish bridge 功能使用的工具包，封装了 react 应用和 vue 应用 bridge 工具函数 [reactBridge](/runtime/bridge.md#reactbridge) 和 [vueBridge](/runtime/bridge.md#vuebridge)。
+@garfish/bridge 是 garfish bridge 功能使用的工具包，封装了 react 应用和 vue 应用 bridge 工具函数 [reactBridge](/guide/bridge#reactbridge) 和 [vueBridge](/guide/bridge#vuebridge)。
 
 ## 安装
 ```bash npm2yarn

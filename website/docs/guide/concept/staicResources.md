@@ -1,6 +1,6 @@
 ---
 title: 静态资源
-slug: /runtime/staicResources
+slug: /guide/staicResources
 order: 7
 ---
 

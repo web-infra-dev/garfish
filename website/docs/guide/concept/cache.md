@@ -1,6 +1,6 @@
 ---
 title: 缓存机制
-slug: /runtime/cache
+slug: /guide/cache
 order: 3
 ---
 

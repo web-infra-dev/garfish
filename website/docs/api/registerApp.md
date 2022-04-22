@@ -219,7 +219,7 @@ export interface OverridesData {
 - 是否缓存子应用。若已加载过应用，在缓存模式下将返回相同的应用实例，可选，默认值为 `true`；
 - Garfish 默认会对加载过的 app 进行缓存策略，目的是为了节省二次渲染开销，避免重复的编译代码造成的性能浪费，以及避免逃逸代码可能造成的内存泄漏。若关闭此选项，将会严重影响子应用的加载速度，需要仔细权衡；
 - 在缓存模式下，Garfish 将不会执行子应用所有代码，仅执行 render ，可以避免逃逸代码造成的内存问题；
-- 缓存模式也存在一定的弊端，关于 Garfish 的缓存机制，请移步 [Garfish 缓存机制](/runtime/cache)；
+- 缓存模式也存在一定的弊端，关于 Garfish 的缓存机制，请移步 [Garfish 缓存机制](/guide/cache)；
 
 ### noCheckProvider
 
