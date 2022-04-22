@@ -36,3 +36,4 @@ api.getLoginInfo.then((res) => {
   }
 });
 ```
+s

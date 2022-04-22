@@ -8,6 +8,9 @@ order: 1
 
 通过环境变量导出，将会更准确的让 Garfish 框架获取到导出内容
 
+> TODO，提示检查微前端应用配置；
+> TODO，若依然存在问题问题，尝试解决：
+> TODO: 提示__GARFISH_EXPORTS__： 不要写成 window.__GARFISH_EXPORTS__
 ```js
 if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
   // eslint-disable-next-line no-undef
@@ -15,6 +18,10 @@ if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
 }
 ```
 
+## "render" is required in provider.
+> `provider` 缺少 `render` 生命周期函数
+## "destroy" is required in provider.
+> `provider` 缺少 `destroy` 生命周期函数
 ## Invalid domGetter "xxx"
 
 错误原因：在 Garfish 开始渲染时，无法查询到该挂载节点则会提示该错误
@@ -49,6 +56,40 @@ if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
 }
 ```
 
+## 热更新问题
+
+## Jupiyer 子应用热更新问题【属于内网问题】
+## slarder 插件问题【属于内网问题】
+子应用如果使用了 Slardar 可以只上报自己的 JS 错误，不会上报其他子应用和主应用的错误，不过目前我们尚未支持主应用仅上报自己的异常。
+Garfish 框架会自动收集子应用在运行时的所有静态资源和动态资源，发生 JS 错误时会根据错误的堆栈资源来
+区分来自哪个应用。
+按照目前的设计是可以支持的，不过暂时还没实现这块功能
+
+我们目前的业务诉求是基座方不想感知子应用的错误，他只想关注基座的错误，让子应用自己处理自己的错误，这样的话，他在进行错误治理的时候会更有针对性一些。想问下，这块的逻辑实现有什么好的方法推荐吗
+
+如果一定要做的话也不是不可以就是需要在现有的插件能力上增强，让其匹配所有不是来自于子应用的错误即可，需要开发，但是我们这个双月是没有排这一块的工作，如果可以的话，你们如果有精力可以完善一下这块插件的能力
+
+## localStorage
+`sandbox: { modules: [()=>({ override: { localStorage } })] }`
+getGlobalObject
+
+## 子应用 addEventListener 注册的事件监听子应用卸载后并未销毁
+默认启用了缓存模式，在缓存模式下只会隔离环境变量和样式
+这里定时器不会主动清除，因为在缓存模式下，可能有些逻辑依赖于这个。
+一般来说建议用户在组件的销毁函数里面把组件的副作用手动释放一下这样是最合适的，如果有些逻辑确实需要清除，并且需要保证应用可用性可以把 cache 设置成 false。
+因为在缓存模式下我们是会保留应用的上下文的，不会重新执行所有代码，只会执行 render 的 destory 函数，所以在缓存模式下应用的性能会变得很好，但是这个时候我们的副作用不能随意清除，因为我们不会执行所有代码，只会执行 render 函数，但是有些库是在引入的时候就初始化了
+vm 沙箱的时候会自动保存全局环境的上下文
+
+
+## css 隔离问题
+「css 隔离，对于应用到 body 选择器的 css 是怎么处理的」目前我们没有做这一块的隔离能力
+
+## 沙箱隔离问题
+子应用劫持的访问获取到的是一个新的 Window 实例
+比如修改 Array.prototype.includes，不同子应用间也是互不影响的？
+因为之前为了性能考虑，我没有没有把 Window 上携带的原始方法重新创建或者通过其他上下文获取
+## 如何判断子应用是否微前端应用中
+通过环境变量 `window.__GARFISH__` 判断；
 ## 子应用销毁后重定向逻辑影响其他子应用
 
 可能原因，出现该问题的原因是子应用未正常销毁，当子应用未正常销毁时，其路由监听事件也未跟随子应用的销毁而销毁
@@ -211,6 +252,54 @@ export default () => (
 
 - 将对应的 cdn script 增加 no-entry 属性：`<script no-entry="true" src="xxx"></script>`，设置该属性后对应的 script 内容将不会运行在 commonjs 环境，对应的环境变量也会正常的插入到子应用的 window 上
 
+## 为什么需要子应用提供一个 Provider 函数
+
+- 这里的 `provider` 主要指在每个子应用入口处导出的 `provider` 函数 其中包括 `render` 和 `destroy` 函数
+- 为什么 Garfish 不像 `iframe` 并不需要提供额外的内容，子应用独立时如何运行，在微前端环境就如何运行呢
+
+> 原因
+
+- Garfish 的初衷并不是为了取代 `iframe`，而是为了将一个单体应用拆分成多个子应用后也能保证应用一体化的使用体验
+- 通过提供 `provider` 生命周期，我们可以在微前端应用中做到以下优化
+  - 在应用销毁时触发对应框架应用的销毁函数，已达到对框架类型的销毁操作，应用中得一些销毁 hook 也可以正常触发
+  - 在第二次应用加载时可以启动缓存模式
+    - 在应用第一次渲染时的路径为，html 下载=> html 拆分=> 渲染 dom => 渲染 style=> 执行 JS => 执行 provider 中的函数
+    - 在第二次渲染时可以将整个渲染流程简化为，还原子应用的 html 内容=> 执行 provider 中得渲染函数，因为子应用的真实执行环境并未被销毁，而是通过 render 和 destroy 控制对应应用的渲染和销毁
+  - 避免内存泄漏
+    - 由于目前 Garfish 框架的沙箱依赖于浏览器的 API，无法做到物理级别的隔离，由于 JavaScript 语法的灵活性和闭包的特性，第二次重复执行子应用代码可能会导致逃逸内容重复执行
+    - 采用缓存模式时，将不会执行所有代码，仅执行 render ，将会避免逃逸代码造成的内存问题
+
+> 弊端
+
+启动缓存模式后也存在一定弊端，第二遍执行时 render 中的逻辑获取的还是上一次的执行环境并不是一个全新的执行环境.
+
+下面代码中在缓存模式时和非缓存模式不同的表现
+
+- 在缓存模式中，多次渲染子应用会导致 list 数组的值持续增长，并导致影响业务逻辑
+- 在非缓存模式中，多次渲染子应用 list 数组的长度始终为 1
+
+```js
+const list = [];
+
+export const provider = () => {
+  return {
+    render: ({ dom, basename }) => {
+      list.push(1);
+      ReactDOM.render(
+        <React.StrictMode>
+          <App basename={basename} />
+        </React.StrictMode>,
+        dom.querySelector('#root'),
+      );
+    },
+
+    destroy: ({ dom, basename }) => {
+      ReactDOM.unmountComponentAtNode(dom.querySelector('#root'));
+    },
+  };
+};
+```
+
 ## ESModule
 
 Garfish 核心库默认支持 esModule，但是需要关掉 vm 沙箱或者为快照沙箱时，才能够使用。
@@ -248,3 +337,5 @@ Garfish.run({
 ```
 
 > 提示：当子项目使用 `vite` 开发时，你可以在开发模式下使用 esModule 模式，生产环境可以打包为原始的无 esModule 的模式。
+
+## 是否支持 SSR
