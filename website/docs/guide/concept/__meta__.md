@@ -1,5 +1,5 @@
 ---
-title: 核心概念
+title: 核心能力
 collapsed: true
 order: 4
 ---

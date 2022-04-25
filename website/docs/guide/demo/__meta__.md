@@ -1,5 +1,5 @@
 ---
-title: 接入案例
-collapsed: false
+title: 框架指南
+collapsed: true
 order: 3
 ---

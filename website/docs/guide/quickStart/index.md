@@ -1,22 +1,26 @@
 ---
-title: Garfish 介绍
+title: 介绍
 slug: /guide
 order: 1
 ---
 
 ## 什么是微前端？
+
 > 微前端是一种类似于微服务的架构，是一种由独立交付的多个前端应用组成整体的架构风格，将前端应用分解成一些更小、更简单的能够独立开发、测试、部署的应用，而在用户看来仍然是内聚的单个产品。
 
 它主要解决了两个问题：
+
 - 随着项目迭代应用越来越庞大，难以维护。
 - 跨团队或跨部门协作开发项目导致效率低下的问题。
 
 ## Garfish 起源
+
 Garfish 起源于 [头条号](http://mp.toutiao.com) 的实际场景，随着业务发展变成一个 Monolithic-Applications （[巨石应用](https://en.wikipedia.org/wiki/Monolithic_application)）。同时由于维护的团队人员都比较分散，工程大，导致开发调试效率低、上线困难（代码合并相互依赖），成为阻塞业务发展的一个重要因素。
 
 于是在 2018 年衍生了 Garfish 这个微前端框架，经过大量业务方实际场景的验证和打磨，Garfish 逐渐趋于成熟。并且随着更多的业务对微前端的需求，Garfish 也在不断迭代之中，已经积累了丰富的微前端问题解决经验。
 
 ## Garfish 是什么
+
 Garfish 是一套 [微前端](https://micro-frontends.org/) 解决方案，主要用于解决现代 web 应用在前端生态繁荣和 web 应用日益复杂化两大背景下带来的跨团队协作、技术体系多样化、web 应用日益复杂化等问题：从架构层面出发将多个独立交付的前端应用组成整体，这些前端应用能够「**独立开发**」、「**独立测试**」、「**独立部署**」，但是最终在用户看来仍然是**内聚的单个产品**。
 
 ## 框架特性
@@ -41,14 +45,19 @@ Garfish 是一套 [微前端](https://micro-frontends.org/) 解决方案，主�
 - 🎯 **高度可扩展的插件机制**（coming soon...）
 
   - 提供业务插件满足业务方的各种定制需求
+
 ## 设计理念
+
 TODO
+
 ## 整体架构
+
 ![image.png](https://p-vcloud.byteimg.com/tos-cn-i-em5hxbkur4/d456c7d2235c41daa298aba69ade435f~tplv-em5hxbkur4-noop.image?width=1126&height=454)
 
 具体可参考 [字节跳动是如何落地微前端的](https://juejin.cn/post/7016900744695513125#heading-8) 这篇文章中的详细介绍
 
 ## 生命周期
+
 ![image.png](https://tosv.byted.org/obj/eden-internal/ozpmyhn_lm_hymuPild/ljhwZthlaukjlkulzlp/screenshot-20220407-175227.png)
 
 ## 什么时候用

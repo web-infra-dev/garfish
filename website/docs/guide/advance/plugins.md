@@ -165,7 +165,7 @@ export function GarfishRouter(_args?: { autoRefreshApp?: boolean }) {
 
 ## 插件公约
 
-- 插件应该包括清晰的名称并携带 `garfish-plugin-` 前缀
+- 插件应该包括清晰的名称
 - 如果插件单独封装至 `npm` 包，在 `package.json` 中添加 `garfish-plugin` 关键词
 - 插件应该包括完备的测试
 - 插件应该具备完整的使用文档
