@@ -56,10 +56,6 @@ TODO
 
 具体可参考 [字节跳动是如何落地微前端的](https://juejin.cn/post/7016900744695513125#heading-8) 这篇文章中的详细介绍
 
-## 生命周期
-
-![image.png](https://tosv.byted.org/obj/eden-internal/ozpmyhn_lm_hymuPild/ljhwZthlaukjlkulzlp/screenshot-20220407-175227.png)
-
 ## 什么时候用
 
 如果你的团队成员多、项目类型多，并且想将其打造成「内聚的单个产品」：

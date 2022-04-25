@@ -6,7 +6,7 @@ order: 1
 
 ## 介绍
 
-Garfish bridge 是 garfish 提供的帮助用户降低接入成本的工具函数，它能自动提供 `provider` 函数所需的应用生命周期函数 `render` 和 `destory` ，并实现框架不同版本的兼容。封装底层实现，降低接入成本和出错概率。
+Garfish bridge 是 `garfish` 提供的帮助用户降低接入成本的工具函数，它能自动提供 `provider` 函数所需的应用生命周期函数 `render` 和 `destory` ，并实现框架不同版本的兼容。封装底层实现，降低接入成本和出错概率。
 
 :::info
 
