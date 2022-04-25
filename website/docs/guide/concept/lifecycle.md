@@ -4,6 +4,11 @@ slug: /guide/lifecycle
 order: 3
 ---
 
+<img
+  src="https://user-images.githubusercontent.com/27547179/165056974-f40d790e-3db1-4aea-b2db-5d3618a150d5.png"
+  width="400"
+/>
+
 ### mount
 
 app.mount 做了哪些事情
