@@ -48,8 +48,13 @@ Garfish.run({
 这时 `Garfish` 将会监听浏览器路由地址变化，当浏览器的地址发生变化时，`Garfish` 框架内部便会执行匹配逻辑，当解析到当前路径符合子应用匹配逻辑时，便会自动将应用挂载至指定的 `dom` 节点上，并在此过程中依次触发子应用加载、渲染过程中的 [生命周期钩子函数](./index.md#生命周期).
 
 :::tip 注意
-请确保 `subApp` 指定的节点存在于页面中，否则可能会导致错误，见 issue[#invalid-domgetter-xxx](../issues/childApp.md##invalid-domgetter-xxx)
-:::
+请确保 `subApp` 指定的节点存在于页面中，否则可能会导致 `Invalid domGetter` 错误，在 `Garfish` 开始渲染时，无法查询到该挂载节点则会提示该错误
+
+> 解决方案
+
+1. 将挂载点设置为常驻挂载点，不要跟随路由变化使子应用挂载点销毁和出现
+2. 保证 Garfish 在渲染时挂载点存在
+   :::
 
 如果你的业务需要手动控制应用加载，可以使用 [Garfish.loadApp](/api/loadApp.md) 手动挂载 APP：
 

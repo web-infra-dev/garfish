@@ -82,7 +82,7 @@ export type DomGetter =
 ### props?
 
 - Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> Object </span>
-- 初始化时主应用传递给子应用的数据，可选。子应用 [`provider` 导出函数](../guide/quickStart.md#2导出-provider-函数) 生命周期方法中将接收到此数据；
+- 初始化时主应用传递给子应用的数据，可选。子应用 [`provider` 导出函数](../guide/quickStart/quickStart.md#2导出-provider-函数) 生命周期方法中将接收到此数据；
 
 ### disablePreloadApp?
 
