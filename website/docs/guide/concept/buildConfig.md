@@ -1,6 +1,6 @@
 ---
-title: 静态资源
-slug: /guide/staicResources
+title: 构建工具
+slug: /guide/build-config
 order: 7
 ---
 

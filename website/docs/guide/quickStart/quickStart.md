@@ -4,9 +4,12 @@ slug: /guide/quickStart
 order: 2
 ---
 
-本节分别从主、子 应用视角出发，介绍如何通过 [Garfish API](/api) 来将应用接入Garfish 框架
+本节分别从主、子 应用视角出发，介绍如何通过 [Garfish API](/api) 来将应用接入 Garfish 框架
+
 ## 主应用
-通过 Garfish API 接入主应用整体流程分为2步：
+
+通过 Garfish API 接入主应用整体流程分为 2 步：
+
 1. 添加 `garfish` 依赖包
 2. 通过 `Garfish.run`，提供挂载点、basename、子应用列表
 
@@ -34,17 +37,23 @@ Garfish.run({
     {
       name: 'vue',
       activeWhen: '/vue',
-      entry: 'http://localhost:8080/index.js',  // js入口
+      entry: 'http://localhost:8080/index.js', // js入口
     },
   ],
 });
 ```
+
 当引入 Garfish 实例，执行实例方法 `Garfish.run` 后，`Garfish` 将会立刻启动路由劫持能力。
 
 这时 `Garfish` 将会监听浏览器路由地址变化，当浏览器的地址发生变化时，`Garfish` 框架内部便会执行匹配逻辑，当解析到当前路径符合子应用匹配逻辑时，便会自动将应用挂载至指定的 `dom` 节点上，并在此过程中依次触发子应用加载、渲染过程中的 [生命周期钩子函数](./index.md#生命周期).
 
 :::tip 注意
-请确保 `subApp` 指定的节点存在于页面中，否则可能会导致错误，见 issue[#invalid-domgetter-xxx](../issues/childApp.md##invalid-domgetter-xxx)
+请确保 `subApp` 指定的节点存在于页面中，否则可能会导致 `Invalid domGetter` 错误，在 `Garfish` 开始渲染时，无法查询到该挂载节点则会提示该错误
+
+> 解决方案
+
+1. 将挂载点设置为常驻挂载点，不要跟随路由变化使子应用挂载点销毁和出现
+2. 保证 Garfish 在渲染时挂载点存在
 :::
 
 如果你的业务需要手动控制应用加载，可以使用 [Garfish.loadApp](/api/loadApp.md) 手动挂载 APP：
@@ -52,10 +61,10 @@ Garfish.run({
 ```typescript
 // 使用 loadApp 动态挂载应用
 import Garfish from 'garfish';
-const app = Garfish.loadApp("vue-app", {
-	domGetter: "#container",
-	entry: "http://localhost:3000",
-	cache: true,
+const app = Garfish.loadApp('vue-app', {
+  domGetter: '#container',
+  entry: 'http://localhost:3000',
+  cache: true,
 });
 
 // 若已经渲染触发 show，只有首次渲染触发 mount，后面渲染都可以触发 show 提供性能
@@ -63,11 +72,14 @@ app.mounted ? app.show() : await app.mount();
 ```
 
 ## 子应用
-通过 Garfish API 接入子应用整体流程也分为2步：
-1. 调整子应用的构建配置(目前Garfish 仅支持umd格式的产物)
-2. 导出子应用生命周期 [为什么需要子应用导出 provider 函数](../issues#为什么需要子应用提供一个-provider-函数)
+
+通过 Garfish API 接入子应用整体流程也分为 2 步：
+
+1. 调整子应用的构建配置(目前 Garfish 仅支持 umd 格式的产物)
+2. 导出子应用生命周期 [为什么需要子应用导出 provider 函数](../guide/cache)
 
 ### 1.调整子应用的构建配置
+
 <Tabs>
   <TabItem value="Webpack" label="Webpack" default>
 
@@ -89,14 +101,16 @@ module.exports = {
 ```
 
 :::caution 【重要】注意：
+
 1. libraryTarget 需要配置成 umd 规范；
 2. globalObject 需要设置为 'window'，以避免由于不规范的代码格式导致的逃逸沙箱
 3. 如果你的 webpack 为 v4 版本，需要设置 jsonpFunction 并保证该值唯一（否则可能出现 webpack chunk 互相影响的可能）。若为 webpack5 将会直接使用 package.json name 作为唯一值，请确保应用间的 name 各不相同；
 4. publicPath 设置为子应用资源的绝对地址，避免由于子应用的相对资源导致资源变为了主应用上的相对资源。这是因为主、子应用处于同一个文档流中，相对路径是相对于主应用而言的
-5. 'Access-Control-Allow-Origin': '*' 允许开发环境跨域，保证子应用的资源支持跨域。另外也需要保证在上线后子应用的资源在主应用的环境中加载不会存在跨域问题（**也需要限制范围注意安全问题**）；
+5. 'Access-Control-Allow-Origin': '\*' 允许开发环境跨域，保证子应用的资源支持跨域。另外也需要保证在上线后子应用的资源在主应用的环境中加载不会存在跨域问题（**也需要限制范围注意安全问题**）；
 :::
-  </TabItem>
-  <TabItem value="vite" label="Vite" default>
+
+   </TabItem>
+   <TabItem value="vite" label="Vite" default>
 
 ```js
 // 使用 Vite 应用作为子应用时（未使用 @garfish/es-module 插件）需要注意：
@@ -118,7 +132,8 @@ export default defineConfig({
 </Tabs>
 
 ### 2.导出 provider 函数
-> 针对子应用需要导出生命周期函数，我们提供了桥接函数 `@garfish/bridge`  自动包装应用的生命周期，使用`@garfish/bridge` 可以降低接入成本与用户出错概率，也是 Garfish 推荐的子应用接入方式。
+
+> 针对子应用需要导出生命周期函数，我们提供了桥接函数 `@garfish/bridge` 自动包装应用的生命周期，使用`@garfish/bridge` 可以降低接入成本与用户出错概率，也是 Garfish 推荐的子应用接入方式。
 
 ```bash npm2yarn
 // 安装 @garfish/bridge：
@@ -183,7 +198,8 @@ export const provider = () => ({
   </TabItem>
 </Tabs>
 
-我们在 [接入案例](/guide/demo) 章节详细中介绍了各框架的子应用接入 Garfish 的 demo 案例及接入过程注意事项，目前有：
+我们在 [框架指南](/guide/demo) 章节详细中介绍了各框架的子应用接入 Garfish 的 demo 案例及接入过程注意事项，目前有：
+
 - react (version 16, 17)
 - vue (version 2, 3)
 - vite (version 2)
@@ -193,8 +209,9 @@ export const provider = () => ({
 :::info
 以上框架可以任意组合，换句话说任何一个框架都可以作为主应用嵌入其它类型的子应用，任何一个框架也可以作为子应用被其它框架嵌入，包括上面没有列举出的其它库，如 svelte、nextjs、nuxtjs ...
 
-我们只列举了部分框架，如果有其它框架需求，请在github上提issue告知我们。
+我们只列举了部分框架，如果有其它框架需求，请在 github 上提 issue 告知我们。
 :::
+
 ## 总结
 
 使用 Garfish API 搭建一套微前端主子应用的主要成本来自两方面
