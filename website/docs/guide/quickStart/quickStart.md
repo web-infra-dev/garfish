@@ -54,7 +54,7 @@ Garfish.run({
 
 1. 将挂载点设置为常驻挂载点，不要跟随路由变化使子应用挂载点销毁和出现
 2. 保证 Garfish 在渲染时挂载点存在
-:::
+   :::
 
 如果你的业务需要手动控制应用加载，可以使用 [Garfish.loadApp](/api/loadApp.md) 手动挂载 APP：
 
@@ -198,7 +198,7 @@ export const provider = () => ({
   </TabItem>
 </Tabs>
 
-我们在 [接入案例](/guide/demo) 章节详细中介绍了各框架的子应用接入 Garfish 的 demo 案例及接入过程注意事项，目前有：
+我们在 [框架指南](/guide/demo) 章节详细中介绍了各框架的子应用接入 Garfish 的 demo 案例及接入过程注意事项，目前有：
 
 - react (version 16, 17)
 - vue (version 2, 3)
