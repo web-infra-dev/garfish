@@ -138,7 +138,7 @@ Garfish.run({
 });
 ```
 
-- `sandbox.modules` 为 Garfish 开放的自定义沙箱环境范式，属于进阶功能，可前往 [如何定制沙箱环境](/guide/advance/sandbox) 查看详细内容；
+- `sandbox.modules` 为 Garfish 开放的自定义沙箱环境范式，属于进阶功能，可前往 [如何定制沙箱环境](../guide/concept/sandbox.md) 查看详细内容；
 
 :::caution
 请注意：
