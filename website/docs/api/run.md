@@ -4,7 +4,9 @@ slug: /api/run
 order: 2
 ---
 
-用于初始化全局配置、注册子应用信息，并启动子应用自动渲染流程。
+用于初始化全局配置、注册子应用信息，并启动基于路由匹配的子应用自动渲染流程。
+
+> garfish 基于 `activeWhen` 参数自动进行子应用激活匹配，可参考 [activeWhen](/api/registerApp#activewhen) 了解 garfish 路由匹配逻辑；
 
 ## 类型
 
@@ -138,8 +140,6 @@ Garfish.run({
 });
 ```
 
-- `sandbox.modules` 为 Garfish 开放的自定义沙箱环境范式，属于进阶功能，可前往 [如何定制沙箱环境](../guide/concept/sandbox.md) 查看详细内容；
-
 :::caution
 请注意：
 如果你在沙箱内自定义的行为将会产生副作用，请确保在 recover 函数中清除你的副作用，garfish 将在应用卸载过程中执行 recover 函数销毁沙箱副作用，否则可能会造成内存泄漏。
@@ -149,7 +149,7 @@ Garfish.run({
 
 - Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> boolean </span>
 - 主应用在已经打开子应用页面的前提下，跳转子应用的子路由触发子应用的视图更新，默认值为 `true`；
-- 若关闭 `autoRefreshApp`, 则跳转 <span style={{color: '#ff5874'}}> 子应用子路由 </span> 将只能通过 [Garfish.router](./#router.md) 进行跳转，使用框架自身路由 API（如 react-router）跳转将失效；
+- 若关闭 `autoRefreshApp`, 则跳转 <span style={{color: '#ff5874'}}> 子应用子路由 </span> 将只能通过 [Garfish.router](/api/router) 进行跳转，使用框架自身路由 API（如 react-router）跳转将失效；
 - 在某些场景下，通过主应用触发子应用视图更新可能会导致触发子应用的视图刷新而触发子应用的 hook，所以提供关闭触发子应用视图刷新的能力；
 
 ### protectVariable?
@@ -186,7 +186,6 @@ export type AppConfig = Partial<AppGlobalConfig> & {
   // 是否缓存子应用，默认值为 true；
   cache?: boolean;
   // 是否检查 provider, 默认为true；
-  // TODO：什么情况下需要设置为 false ?
   noCheckProvider?: boolean;
 };
 ```
@@ -212,7 +211,7 @@ Garfish.run({
 
 ### beforeLoad?
 
-- Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> async (appInfo: AppInfo, appInstance: interfaces.App) => false | undefined </span>
+- Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> async (appInfo: AppInfo, appInstance: App) => false | undefined </span>
   - 该 `hook` 的参数分别为：应用信息、应用实例；
   - 当返回 `false` 时将中断子应用的加载及后续流程；
 - Kind: `async`, `sequential`
@@ -270,13 +269,12 @@ Garfish.run({
     console.error(error);
   },
 ```
-
 ### beforeMount?
 
 - Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> (appInfo: AppInfo, appInstance: interfaces.App, cacheMode: boolean) => void </span>
   - 该 `hook` 的参数分别为：`appInfo` 信息、`appInstance` 应用实例、是否为 `缓存模式` 渲染和销毁
 - Kind: `sync`, `sequential`
-- Previous Hook: `beforeLoad`、`afterLoad`
+- Previous Hook: `beforeEval`、`afterEval`
 - Trigger:
 
   - 此时子应用资源准备完成，运行时环境初始化完成，准备开始渲染子应用 DOM 树；
@@ -294,6 +292,44 @@ Garfish.run({
   },
 ```
 
+### beforeEval?
+
+- Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> (appInfo: AppInfo, code: string, env: Record<string, any>, url: string, options) => void </span>
+  - 该 `hook` 的参数分别为：`appInfo` 信息、`code` 执行的代码、`env` 要注入的环境变量，`url` 子应用 url 或 entry、`options` 参数选项（例如 `async` 是否异步执行、`noEntry` 是否是 `noEntry` 模式）；
+- Kind: `sync`, `sequential`
+- Previous Hook: `beforeMount`
+- Trigger:
+  - 在子应用挂载过程中触发、】
+  - 此时 DOM 树已添加至文档流中，子应用代码准备执行；
+  - 若代码执行过程中抛出异常，则将触发 [errorMountApp](./run.md#errorMountApp)，否则触发 [beforeEval](./run.md#afterEval)
+
+- 示例
+
+```ts
+Garfish.beforeEval({
+  ...,
+  beforeEval(appInfo) {
+    console.log('子应用代码开始执行', appInfo.name);
+  },
+```
+### afterEval?
+
+- Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> (appInfo: AppInfo, code: string, env: Record<string, any>, url: string, options) => void </span>
+  - 该 `hook` 的参数分别为：`appInfo` 信息、`code` 执行的代码、`env` 要注入的环境变量，`url` todo?、`options` 参数选项例如 `async` 是否异步执行、`noEntry` 是否是 `noEntry` 模式；
+- Kind: `sync`, `sequential`
+- Previous Hook: `beforeLoad`、`afterLoad`
+- Trigger:
+  - 在子应用代码完成后，`afterMount` 触发前触发；
+
+- 示例
+
+```ts
+Garfish.afterEval({
+  ...,
+  afterEval(appInfo) {
+    console.log('子应用代码执行完成', appInfo.name);
+  },
+```
 ### afterMount?
 
 - Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> (appInfo: AppInfo, appInstance: interfaces.App, cacheMode: boolean) => void </span>

@@ -14,7 +14,7 @@ Garfish bridge 是 `garfish` 提供的帮助用户降低接入成本的工具函
 2. 使用 garfish bridge 后不再需要显示提供 `render` 和 `destory` 函数；
 3. 目前 garfish 仅针对 react 和 vue 框架提供 bridge 函数支持，支持的版本分别为 react v16、v17，vue v2、v3， Angular bridge 及 react v18 正在加紧支持中；
 4. garfish bridge 暂未针对构建工具如 webpack、vite 提供相应的构建工具插件，我们后期会针对这块能力进行补全，请持续关注；
-   :::
+:::
 
 ## @garfish/bridge
 
@@ -314,7 +314,7 @@ export const provider = vueBridge({
 
 1. 在 vue3 中，可通过 `handleInstance` 函数拿到创建的 vue 实例对象后进行路由注册；
 2. 在 vue2 中，可显示在 `appOpitons` 中传递路由参数信息；
-   :::
+:::
 
 - <span style={{color: '#ff5874', margin: '2px 6px'}}> handleInstance </span>
 

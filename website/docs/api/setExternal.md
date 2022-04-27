@@ -6,10 +6,15 @@ order: 6
 
 用于实现主、子应用间依赖共享。
 
-:::tip 请注意：
-1. 主、子应用若开启进行依赖共享能力，需要构建成 'umd' 规范且保证 `jsonpFunction` 唯一；
+:::tip
+1. 主、子应用若开启进行依赖共享能力，需要构建成 'umd' 规范且保证 `jsonpFunction` 唯一；[参考](/guide/build-config)；
 2. 若子应用通过依赖共享主应用核心包，则子应用将不能独立运行；
+3. 主应用的若升级版本会可能会对子应用产生影响；
+4. external 的内容会逃逸 vm 沙箱；
 :::
+
+> 请注意，Garfish.setExternal 是 garfish 提供的用于实现应用间的依赖共享的 API，通过该 API 可将依赖进行注册并在注册完成后可实现主子应用的依赖共享。但可能会由于共享带来某些依赖的影响，若出现问题我们建议关闭共享机制。
+
 ## 类型
 ```ts
 setExternal(nameOrExtObj: string | Record<string, any>, value?: any): Garfish;

@@ -4,6 +4,7 @@ slug: /guide/demo/vue
 order: 3
 ---
 
+本节我们将详细介绍 vue 框架的应用作为子应用的接入步骤。
 ## vue 子应用接入步骤
 
 ### 1. [@garfish/bridge](../../guide/bridge) 依赖安装
