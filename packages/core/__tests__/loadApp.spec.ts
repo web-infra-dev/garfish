@@ -10,7 +10,7 @@ import Garfish from '../src/index';
 describe('Core: load process', () => {
   let GarfishInstance: Garfish;
   let container;
-  
+
   const vueSubAppEntry = './resources/vueApp.html';
   const reactSubAppEntry = './resources/reactApp.html';
   const vue3AppRenderNode = 'hello-world-vue3';
