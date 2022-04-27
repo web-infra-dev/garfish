@@ -140,8 +140,6 @@ Garfish.run({
 });
 ```
 
-- `sandbox.modules` 为 Garfish 开放的自定义沙箱环境范式，属于进阶功能，可前往 [如何定制沙箱环境](/guide/advance/sandbox) 查看详细内容；
-
 :::caution
 请注意：
 如果你在沙箱内自定义的行为将会产生副作用，请确保在 recover 函数中清除你的副作用，garfish 将在应用卸载过程中执行 recover 函数销毁沙箱副作用，否则可能会造成内存泄漏。
@@ -151,7 +149,7 @@ Garfish.run({
 
 - Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> boolean </span>
 - 主应用在已经打开子应用页面的前提下，跳转子应用的子路由触发子应用的视图更新，默认值为 `true`；
-- 若关闭 `autoRefreshApp`, 则跳转 <span style={{color: '#ff5874'}}> 子应用子路由 </span> 将只能通过 [Garfish.router](./#router.md) 进行跳转，使用框架自身路由 API（如 react-router）跳转将失效；
+- 若关闭 `autoRefreshApp`, 则跳转 <span style={{color: '#ff5874'}}> 子应用子路由 </span> 将只能通过 [Garfish.router](/api/router) 进行跳转，使用框架自身路由 API（如 react-router）跳转将失效；
 - 在某些场景下，通过主应用触发子应用视图更新可能会导致触发子应用的视图刷新而触发子应用的 hook，所以提供关闭触发子应用视图刷新的能力；
 
 ### protectVariable?

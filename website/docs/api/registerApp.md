@@ -144,7 +144,6 @@ export interface OverridesData {
 
   > Garfish 目前已默认支持沙箱 esModule 能力，若需要在 vm 沙箱支持 esModule 应用，请使用 `@garfish/es-module` garfish 官方插件支持此能力，但这会带来严重的性能问题，[原因](/issues/#esmodule)。如果你的项目不是很需要在 vm 沙箱下运行，此时可以关闭沙箱；
 
-- `sandbox.modules` 为 Garfish 开放的自定义沙箱环境范式，属于进阶功能，可前往 [如何定制沙箱环境](/guide/advance/sandbox) 查看详细内容；
 - [Garfish 沙箱机制](../guide/concept/sandbox.md)
 
 :::info
