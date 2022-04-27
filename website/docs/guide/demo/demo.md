@@ -10,7 +10,6 @@ order: 1
 - vue (version 2, 3)
 - vite (version 2)
 - angular (version 13)
-- umi（todo 提供接入案例）
 
 :::note
 以上框架可以任意组合，换句话说任何一个框架都可以作为主应用嵌入其它类型的子应用，任何一个框架也可以作为子应用被其它框架嵌入，包括上面没有列举出的其它库，如 svelte、nextjs、nuxtjs ...
@@ -20,7 +19,7 @@ order: 1
 
 ## demo 案例
 
-子应用的导出提供通过 `@garfish/bridge`的方式和自定义导出函数两种方式，我们将下列 demo 案例中分别讲述。
+子应用的导出提供通过 `@garfish/bridge` 的方式和自定义导出函数两种方式，我们将下列 demo 案例中分别讲述。
 
 - [react 子应用](/guide/demo/react) （react 应用接入 demo）
 - [vue 子应用](/guide/demo/vue)（vue 应用接入 demo）

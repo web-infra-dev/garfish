@@ -6,44 +6,9 @@ order: 1
 
 ## "provider" is "null".
 
-通过环境变量导出，将会更准确的让 Garfish 框架获取到导出内容
-
-> TODO，提示检查微前端应用配置；
-> TODO，若依然存在问题问题，尝试解决：
-> TODO: 提示**GARFISH_EXPORTS**： 不要写成 window.**GARFISH_EXPORTS**
-
-```js
-if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
-  // eslint-disable-next-line no-undef
-  __GARFISH_EXPORTS__.provider = provider;
-}
-```
-
-## "render" is required in provider.
-
-> `provider` 缺少 `render` 生命周期函数
-
-## "destroy" is required in provider.
-
-> `provider` 缺少 `destroy` 生命周期函数
-
-## Invalid domGetter "xxx"
-
-错误原因：在 Garfish 开始渲染时，无法查询到该挂载节点则会提示该错误
-
-> 解决方案
-
-1. 将挂载点设置为常驻挂载点，不要跟随路由变化使子应用挂载点销毁和出现
-2. 保证 Garfish 在渲染时挂载点存在
-
-## 推荐配置
-
-如果在接入子应用的时候，出现了拿不到子应用导出的问题的时候。可以先按照以下步骤自查：
-
-1. 检查子应用是否正确 `export` 了 `provider`。
-2. 检查子应用是否配置了 `webpack` 的 `output` 配置。
-3. 若为 `js` 入口，需要保证子应用的资源被打包成了但 `bundle`，若有部分依赖未被打包成 `bundle` 会导致无法正常加载
-
+出现这个问题是因为 garfish 无法从子应用在中正确获取到 `provider` 导出函数，可以先按照以下步骤自查：
+1. 检查子应用是否正确 export 了 provider 函数。[参考](/guide/quickStart#2导出-provider-函数)
+2. 检查子应用是否正确配置了 webpack 的 output 配置：
 ```js
 // webpack.config.js
 {
@@ -60,45 +25,46 @@ if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
   },
 }
 ```
+3. 若为 js 入口，需要保证子应用的资源被打包成了单 bundle，若有部分依赖未被打包成 bundle 会导致子应用无法正常加载。
 
-## 热更新问题
+如以上途径都无法解决，请试图通过环境变量导出，这将会让 Garfish 框架更准确的获取到导出内容：
 
-## Jupiyer 子应用热更新问题【属于内网问题】
+```js
+if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
+  // eslint-disable-next-line no-undef
+  __GARFISH_EXPORTS__.provider = provider;
+}
+```
+## Invalid domGetter "xxx"
 
-## slarder 插件问题【属于内网问题】
+错误原因：在 Garfish 开始渲染时，无法查询到该挂载节点则会提示该错误
 
-子应用如果使用了 Slardar 可以只上报自己的 JS 错误，不会上报其他子应用和主应用的错误，不过目前我们尚未支持主应用仅上报自己的异常。
-Garfish 框架会自动收集子应用在运行时的所有静态资源和动态资源，发生 JS 错误时会根据错误的堆栈资源来
-区分来自哪个应用。
-按照目前的设计是可以支持的，不过暂时还没实现这块功能
+> 解决方案
 
-我们目前的业务诉求是基座方不想感知子应用的错误，他只想关注基座的错误，让子应用自己处理自己的错误，这样的话，他在进行错误治理的时候会更有针对性一些。想问下，这块的逻辑实现有什么好的方法推荐吗
+1. 将挂载点设置为常驻挂载点，不要跟随路由变化使子应用挂载点销毁和出现
+2. 保证 Garfish 在渲染时挂载点存在
 
-如果一定要做的话也不是不可以就是需要在现有的插件能力上增强，让其匹配所有不是来自于子应用的错误即可，需要开发，但是我们这个双月是没有排这一块的工作，如果可以的话，你们如果有精力可以完善一下这块插件的能力
 
-## localStorage
+## 如何获取主应用的 localStorage
 
-`sandbox: { modules: [()=>({ override: { localStorage } })] }`
-getGlobalObject
+可按照如下配置获取主应用的 localStorage：
+```ts
+import Garfish from 'garfish';
 
-## 子应用 addEventListener 注册的事件监听子应用卸载后并未销毁
-
-默认启用了缓存模式，在缓存模式下只会隔离环境变量和样式
-这里定时器不会主动清除，因为在缓存模式下，可能有些逻辑依赖于这个。
-一般来说建议用户在组件的销毁函数里面把组件的副作用手动释放一下这样是最合适的，如果有些逻辑确实需要清除，并且需要保证应用可用性可以把 cache 设置成 false。
-因为在缓存模式下我们是会保留应用的上下文的，不会重新执行所有代码，只会执行 render 的 destory 函数，所以在缓存模式下应用的性能会变得很好，但是这个时候我们的副作用不能随意清除，因为我们不会执行所有代码，只会执行 render 函数，但是有些库是在引入的时候就初始化了
-vm 沙箱的时候会自动保存全局环境的上下文
-
-## css 隔离问题
-
-「css 隔离，对于应用到 body 选择器的 css 是怎么处理的」目前我们没有做这一块的隔离能力
-
-## 沙箱隔离问题
-
-子应用劫持的访问获取到的是一个新的 Window 实例
-比如修改 Array.prototype.includes，不同子应用间也是互不影响的？
-因为之前为了性能考虑，我没有没有把 Window 上携带的原始方法重新创建或者通过其他上下文获取
-
+Garfish.run({
+  ...,
+  sandbox: {
+    modules: [
+      () => ({
+        override: {
+          localStorage: window.localStorage,
+        },
+      }),
+    ],
+  }
+});
+```
+类似 localStorage，子应用若需要获取被沙箱隔离机制隔离的全局变量上的变量，均可通过上述方式获取。
 ## 如何判断子应用是否微前端应用中
 
 通过环境变量 `window.__GARFISH__` 判断；
@@ -187,16 +153,12 @@ export const provider = () => {
 - 若子应用的激活条件为函数，在每次发生路由变化时会通过校验子应用的激活函数若函数返回 `true` 表明符合当前激活条件将触发路由激活，
 - Garfish 会将当前的路径传入激活函数分割以得到子应用的最长激活路径，并将 `basename` + `子应用最长激活路径传` 给子应用参数
 - **子应用如果本身具备路由，在微前端的场景下，必须把 basename 作为子应用的基础路径，没有基础路由，子应用的路由可能与主应用和其他应用发生冲突**
-
 ## 子应用使用 style-component 切换子应用后样式丢失
 
 - 开启 Style-component 后在生产模式下 style 将会插入到 sheet 中（[React Styled Components stripped out from production build](https://stackoverflow.com/questions/53486470/react-styled-components-stripped-out-from-production-build)）
 - 应用重渲染后 style 重新插入后依然，但是 sheet 未恢复
 
 解决方案在使用 `style-component` 的子应用添加环境变量：`REACT_APP_SC_DISABLE_SPEEDY=true`
-
-## 主子应用样式冲突
-
 ### arco-design 多版本样式冲突
 
 1. [Arco-design 全局配置 ConfigProvider](https://arco.design/react/components/config-provider)
@@ -242,7 +204,14 @@ export default () => (
   </ConfigProvider>
 );
 ```
+## 子应用 addEventListener 注册的事件监听在子应用卸载后并未销毁
+若子应用默认开启了缓存模式，在子应用卸载时会保留应用的上下文，不会默认清除 addEventListener 注册的事件监听，这是因为再次渲染该子应用时我们只会执行 render 函数，因此子应用的副作用不会随意被清除。
+这种情况建议用户在组件的销毁函数里面手动释放组件的副作用，若有些逻辑确实需要清除，并且需要保证应用可用性可以将 cache 设置成 false。
 
+## garfish 缓存模式
+1. garfish 目前默认启用了缓存模式，在缓存模式下 garfish 会保留应用的上下文，且不会重新执行所有代码，只会执行 render 的 destory 函数，因此应用的性能将得到很大的提升。
+
+2. 在缓存模式下 garfish 只会隔离环境变量和样式，子应用卸载时会保留应用的上下文，不会默认清除子应用的副作用，一般来说建议用户在组件的销毁函数里面手动释放组件的副作用，如果有些逻辑确实需要清除，并且需要保证应用可用性可以把 cache 设置成 false。
 ## JS 错误上报 Script error 0
 
 - 一般错误收集的工具都是通过：
@@ -254,6 +223,8 @@ export default () => (
 
 由于浏览器跨域的限制，非同域下的脚本执行抛错，捕获异常的时候，不能拿到详细的异常信息，只能拿到类似 Script error 0. 这类信息。通常跨域的异常信息会被忽略，不会上报。解决方案： 所有 `<script>` 加载的资源加上 `crossorigin="anonymous"`
 
+## 热更新问题
+garfish 热更新问题请参考 [博客](/blog/hmr)
 ## cdn 第三方包未正确挂在在 window 上
 
 > 问题概述
@@ -302,5 +273,3 @@ Garfish.run({
 ```
 
 > 提示：当子项目使用 `vite` 开发时，你可以在开发模式下使用 esModule 模式，生产环境可以打包为原始的无 esModule 的模式。
-
-## 是否支持 SSR

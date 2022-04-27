@@ -4,6 +4,8 @@ slug: /guide/demo/vite
 order: 4
 ---
 
+本节我们将详细介绍 vite 框架的应用作为子应用的接入步骤。
+
 ## 主应用沙箱状态描述
 
 :::info

@@ -10,7 +10,7 @@ order: 3
 
 1. `Garfish.run()` 中 apps 应用信息注册底层就是依赖 `registerApp` 的注册能力；
 2. `registerApp` 为 Garfish 实例方法，用户可调用该 API 动态注册子应用信息，若出现 `Garfish.run()` 中的同名 app 应用信息，将覆盖`Garfish.run()` 中的 app 应用信息（merge, not override）；
-   :::
+:::
 
 ## 类型
 
@@ -67,7 +67,7 @@ Garfish 处理 app 参数的原则是：
 1. 对于同名字段，子应用中的配置具备更高优先级；
 2. 默认情况下，Garfish 使用全局配置作为每个子应用配置；
 3. 针对单个子应用的信息配置不影响其它子应用；
-   :::
+:::
 
 ## 参数
 
@@ -152,7 +152,7 @@ export interface OverridesData {
 
 1. 快照沙箱无法隔离主、子应用
 2. 快照沙箱无法支持多实例（同时加载多个子应用）
-   :::
+:::
 
 ### activeWhen?
 
@@ -211,7 +211,7 @@ export interface OverridesData {
 
 1. 子应用如果本身具备路由，在微前端的场景下，必须把 basename 作为子应用的基础路径，没有基础路由，子应用的路由可能与主应用和其他应用发生冲突；
 2. 我们强留建议不要使用根路径作为子应用的激活条件，[为什么？](/issues/#根路由作为子应用的激活条件)
-   :::
+:::
 
 ### cache?
 
@@ -224,5 +224,4 @@ export interface OverridesData {
 ### noCheckProvider
 
 - Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> boolean </span>
-- 是够检测 `provider` 函数，可选，默认为 true；
-- TODO: 这个参数的使用场景是什么，是否需要暴露？
+- 是够检查 `provider` 函数，可选，默认为 true；

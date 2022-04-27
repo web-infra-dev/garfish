@@ -4,6 +4,7 @@ slug: /guide/demo/react
 order: 2
 ---
 
+本节我们将详细介绍 react 框架的应用作为子应用的接入步骤。
 ## react 子应用接入步骤
 
 :::note
