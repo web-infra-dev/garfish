@@ -84,6 +84,9 @@ app.mounted ? app.show() : await app.mount();
   <TabItem value="Webpack" label="Webpack" default>
 
 ```js
+// webpack.config.js
+const webpack = require('webpack');
+
 module.exports = {
   output: {
     libraryTarget: 'umd',
@@ -91,6 +94,12 @@ module.exports = {
     jsonpFunction: 'sub-app-jsonpFunction', // 请确保该值唯一
     publicPath: 'http://localhost:8000', // 设置为子应用的绝对地址
   },
+  plugin: [
+    // 保证错误堆栈信息及 sourcemap 行列信息正确
+    new webpack.BannerPlugin({
+      banner: 'Micro front-end',
+    })
+  ],
   devServer: {
     port: '8000', // 保证在开发模式下应用端口不一样
     headers: {

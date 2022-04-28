@@ -4,6 +4,20 @@ slug: /guide/advance/plugins
 order: 6
 ---
 
+import Highlight from '@site/src/components/Highlight';
+import BeforeLoad from '@site/src/components/lifeCycle/_beforeLoad.mdx';
+import AfterLoad from '@site/src/components/lifeCycle/_afterLoad.mdx';
+import ErrorLoadApp from '@site/src/components/lifeCycle/_errorLoadApp.mdx';
+import BeforeEval from '@site/src/components/lifeCycle/_beforeEval.mdx';
+import AfterEval from '@site/src/components/lifeCycle/_afterEval.mdx';
+import BeforeMount from '@site/src/components/lifeCycle/_beforeMount.mdx';
+import AfterMount from '@site/src/components/lifeCycle/_afterMount.mdx';
+import ErrorMountApp from '@site/src/components/lifeCycle/_errorMountApp.mdx';
+import BeforeUnmount from '@site/src/components/lifeCycle/_beforeUnmount.mdx';
+import AfterUnmount from '@site/src/components/lifeCycle/_afterUnmount.mdx';
+import ErrorUnmountApp from '@site/src/components/lifeCycle/_errorUnmountApp.mdx';
+import OnNotMatchRouter from '@site/src/components/lifeCycle/_onNotMatchRouter.mdx';
+
 Garfish 框架引入了插件化机制，目的是为了让开发者能够通过编写插件的方式扩展更多功能，或为自身业务定制个性化功能；同时框架的基础能力也都是通过插件机制来实现，确保框架核心足够精简和稳定。
 
 ## 插件能做什么
@@ -247,36 +261,39 @@ Garfish.usePlugin(plugin: (GarfishInstance: interfaces.Garfish)=> interfaces.Plu
   - 直接通过 [`Garfish.registerApp`](/api/registerApp) 调用时
   - 触发该 `hook` 是子应用信息注册成功
 
-### [`beforeLoad?`](/api/run#beforeload)
 
-### [`afterLoad?`](/api/run#afterLoad)
+### beforeLoad
+<BeforeLoad />
 
-### [`errorLoadApp?`](/api/run#errorLoadApp)
+### afterLoad
+<AfterLoad />
 
-### [`beforeMount?`](/api/run#beforeMount)
+### errorLoadApp
+<ErrorLoadApp />
 
-### [`afterMount?`](/api/run#afterMount)
+### beforeMount
+<BeforeMount />
 
-### [`errorMountApp?`](/api/run#afterMount)
+### afterMount
+<AfterMount />
 
-### [`beforeUnmount?`](/api/run#afterMount)
+### beforeEval
+<BeforeEval />
 
-### [`errorUnmountApp?`](/api/run#afterMount)
+### afterEval
+<AfterEval />
 
-### `beforeEval?`
+### errorMountApp
+<ErrorMountApp />
 
-- Type: `(appInfo: interfaces.AppInfo, code: string, env: Record<string, any>, url: string) => void`
-  - 该 `hook` 的的参数分别为：应用信息、当前执行的代码、执行子应用代码时的环境变量、代码的资源地址
-- Kind: `sync`, `sequential`
-- Trigger:
-  - 子应用 `html` 内的 `script` 和动态创建的脚本执行时都会触发该 `hook`
-  - 实际执行代码前触发该 `hook`
+### beforeUnmount
+<BeforeUnmount />
 
-### `afterEval?`
+### afterUnmount
+<AfterUnmount />
 
-- Type: `(appInfo: interfaces.AppInfo, code: string, env: Record<string, any>, url: string) => void`
-  - 该 `hook` 的的参数分别为：应用信息、当前执行的代码、执行子应用代码时的环境变量、代码的资源地址
-- Kind: `sync`, `sequential`
-- Trigger:
-  - 子应用 `html` 内的 `script` 和动态创建的脚本执行时都会触发该 `hook`
-  - 实际执行代码后触发该 `hook`
+### errorUnmountApp
+<ErrorUnmountApp />
+
+### onNotMatchRouter
+<OnNotMatchRouter />

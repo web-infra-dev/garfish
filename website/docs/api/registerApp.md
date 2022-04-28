@@ -3,6 +3,7 @@ title: Garfish.registerApp
 slug: /api/registerApp
 order: 3
 ---
+import Highlight from '@site/src/components/Highlight';
 
 用于注册子应用信息，为 Garfish 实例方法。
 
@@ -73,25 +74,25 @@ Garfish 处理 app 参数的原则是：
 
 ### name
 
-- Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> string </span>
+- Type: <Highlight> string </Highlight>
 - 子应用名称，必选；
 - 请确保每个子应用名称唯一；
 
 ### basename?
 
-- Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> string </span>
+- Type: <Highlight> string </Highlight>
 - 子应用的基础路径，可选，默认值为全局 [basename](./run.md#basename)；
 - 设置的 basename 将通过 [provider 函数](../guide/quickStart/quickStart.md#2导出-provider-函数) 的参数透传给子应用，子应用需要将 basename 设置为相应子应用的基础路由，这是必须的；
 - [为什么子应用需要设置 basename ?](/issues/#子应用拿到-basename-的作用)
 
 ### entry
 
-- Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> string </span>
+- Type: <Highlight> string </Highlight>
 - 子应用的入口资源地址，支持 HTML 和 JS 入口，必选
 
 ### domGetter?
 
-- Type: <span style={{color: '#ff5874', display: 'inline-block', margin: '4px 6px'}}> interfaces.DomGetter </span>
+- Type: <Highlight> interfaces.DomGetter </Highlight>
 
 ```ts
 export type DomGetter =
@@ -107,12 +108,12 @@ export type DomGetter =
 
 ### props?
 
-- Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> Object </span>
+- Type: <Highlight> Object </Highlight>
 - 初始化时主应用传递给子应用的数据，可选。子应用 [`provider` 导出函数](../guide/quickStart/quickStart.md#2导出-provider-函数) 生命周期方法中将接收到此数据；
 
 ### sandbox?
 
-- Type: <span style={{color: '#ff5874', display: 'inline-block', margin: '4px 6px'}}> SandboxConfig | false </span>可选，默认值为 [全局 sandbox 配置](./run.md#sandbox)，当设置为 false 时关闭沙箱；
+- Type: <Highlight> SandboxConfig | false </Highlight>可选，默认值为 [全局 sandbox 配置](./run.md#sandbox)，当设置为 false 时关闭沙箱；
 
 - SandboxConfig：
 
@@ -155,7 +156,7 @@ export interface OverridesData {
 
 ### activeWhen?
 
-- Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> string | ((path: string) => boolean) </span>
+- Type: <Highlight> string | ((path: string) => boolean) </Highlight>
 - 子应用的激活路径或激活条件，是子应用配置中的重要配置项，接收 string 和 函数类型，可选。
 - `activeWhen` 使用场景为基于路由模式加载子应用时，计算当前应激活的子应用的判断条件，当使用手动加载 [loadApp](/api#loadApp) 时将忽略 `activeWhen` 选项。如果你的应用是基于路由驱动式挂载子应用，你应该始终传递 `activeWhen`；
 - 在每次发生路由变化时，Garfish 都会触发 activeWhen 的校验逻辑去判断当前应该激活的子应用；
@@ -214,7 +215,7 @@ export interface OverridesData {
 
 ### cache?
 
-- Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> boolean </span>
+- Type: <Highlight> boolean </Highlight>
 - 是否缓存子应用。若已加载过应用，在缓存模式下将返回相同的应用实例，可选，默认值为 `true`；
 - Garfish 默认会对加载过的 app 进行缓存策略，目的是为了节省二次渲染开销，避免重复的编译代码造成的性能浪费，以及避免逃逸代码可能造成的内存泄漏。若关闭此选项，将会严重影响子应用的加载速度，需要仔细权衡；
 - 在缓存模式下，Garfish 将不会执行子应用所有代码，仅执行 render ，可以避免逃逸代码造成的内存问题；
@@ -222,5 +223,5 @@ export interface OverridesData {
 
 ### noCheckProvider
 
-- Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> boolean </span>
+- Type: <Highlight> boolean </Highlight>
 - 是够检查 `provider` 函数，可选，默认为 true；

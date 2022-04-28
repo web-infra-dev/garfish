@@ -25,9 +25,11 @@ order: 1
   },
 }
 ```
-3. 若为 js 入口，需要保证子应用的资源被打包成了单 bundle，若有部分依赖未被打包成 bundle 会导致子应用无法正常加载。
+3. 确认子应用 `entry` 地址设置正确：若为 html 的入口类型 `entry` 配置为 html 入口地址，若为 js 类型，子应用 `entry` 配置为 js 入口地址；
 
-如以上途径都无法解决，请试图通过环境变量导出，这将会让 Garfish 框架更准确的获取到导出内容：
+4. 若子应用为 js 入口，需要保证子应用的资源被打包成了单 bundle，若有部分依赖未被打包成 bundle 会导致子应用无法正常加载。例如子应用使用了 webpack splitChunk 进行拆包且为 js 入口时，会导致上述报错；
+
+5. 如以上途径都无法解决，请试图通过环境变量导出，这将会让 Garfish 框架更准确的获取到导出内容：
 
 ```js
 if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
@@ -35,6 +37,15 @@ if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
   __GARFISH_EXPORTS__.provider = provider;
 }
 ```
+
+## Uncaught (in promise) TypeError: [Garfish warning]: Cannot read properties of undefined (reading 'call')
+
+- 错误原因
+  - 这个问题出现在子应用构建为 umd 格式后存在脚本出现了 `type="module"` 的标识，这将导致该 script 逃逸出沙箱执行，而其余脚本在沙箱内执行，找不到 chunk 导致报错。
+
+- 解决方案
+  - 请确保子应用构建为 umd 格式后 script 不会带上 `type="module"` 标识，保证子应用的正常解析和渲染。
+
 ## Invalid domGetter "xxx"
 
 错误原因：在 Garfish 开始渲染时，无法查询到该挂载节点则会提示该错误
@@ -67,7 +78,11 @@ Garfish.run({
 类似 localStorage，子应用若需要获取被沙箱隔离机制隔离的全局变量上的变量，均可通过上述方式获取。
 ## 如何判断子应用是否微前端应用中
 
-通过环境变量 `window.__GARFISH__` 判断；
+可通过环境变量 `window.__GARFISH__` 判断。
+## 如何手动挂载子应用
+
+可通过 [Garfish.loadApp](/api/loadApp) 动态加载子应用。
+
 
 ## 子应用销毁后重定向逻辑影响其他子应用
 
@@ -98,6 +113,14 @@ export const provider = () => {
   };
 };
 ```
+## You are attempting to use a basename on a page whose URL path does not begin with the basename.
+
+> 问题原因
+- 出现这个错误的原因一般是因为子应用没有正确的设置子应用的 basename 所导致的。
+- 子应用的 `basename` = 主应用的 `basename` +  子应用设置的激活路径 `activeWhen`，这个值会在生命周期函数中由 garfish 默认通过通过参数传递过来，直接使用即可。
+
+> 解决方案
+- 将生命周期函数中主应用传递过来的 `basename` 设置为子应用的 `basename`。[参考](/guide/demo/react#3-根组件设置路由的-basename)
 
 ## 刷新直接返回子应用内容
 
@@ -204,14 +227,39 @@ export default () => (
   </ConfigProvider>
 );
 ```
+
+## 如何独立运行子应用
+
+通过 `window.__GARFISH__` 可判断当前子应用是否处于微前端下，通过此变量判断何时独立运行子应用：
+```js
+// src/index.tsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './components/App';
+
+// 这能够让子应用独立运行起来，以保证后续子应用能脱离主应用独立运行，方便调试、开发
+if (!window.__GARFISH__) {
+  ReactDOM.render(<App />, document.querySelector('#root'));
+}
+```
+
+## 子应用动态插入到 body 上的节点逃逸？
+  - 首先 garfish 会对每一个子应用创建一个app container 用于包裹子应用，会创建 `__garfishmockhtml__`、 `__garfishmockbody__` 等 mock 节点。
+  - 对于在子应用运行过程中动态添加到 body 上的节点（如 drawer 组件），garfish 并未
+  将此类节点移动到 mock 的 `__garfishmockbody__` 中，原因是有些组件库会计算在 dom 层级中的位置，所以目前 garfish 会主动让其逃逸到上层。
+  - 在子应用运行过程中动态添加到 body 上的节点在子应用卸载时，garfish 并不会默认回收其 DOM 副作用，需要用户主动在组件的销毁回调里触发 dom 的回收，防止 DOM 副作用未销毁带来的影响。
+
 ## 子应用 addEventListener 注册的事件监听在子应用卸载后并未销毁
-若子应用默认开启了缓存模式，在子应用卸载时会保留应用的上下文，不会默认清除 addEventListener 注册的事件监听，这是因为再次渲染该子应用时我们只会执行 render 函数，因此子应用的副作用不会随意被清除。
-这种情况建议用户在组件的销毁函数里面手动释放组件的副作用，若有些逻辑确实需要清除，并且需要保证应用可用性可以将 cache 设置成 false。
+
+- 若子应用默认开启了缓存模式，在子应用卸载时会保留应用的上下文，不会默认清除 addEventListener 注册的事件监听，这是因为再次渲染该子应用时我们只会执行 render 函数，因此子应用的副作用不会随意被清除。
+
+- 这种情况建议用户在组件的销毁函数里面手动释放组件的副作用，若有些逻辑确实需要清除，并且需要保证应用可用性可以将 cache 设置成 false。
 
 ## garfish 缓存模式
+
 1. garfish 目前默认启用了缓存模式，在缓存模式下 garfish 会保留应用的上下文，且不会重新执行所有代码，只会执行 render 的 destory 函数，因此应用的性能将得到很大的提升。
 
-2. 在缓存模式下 garfish 只会隔离环境变量和样式，子应用卸载时会保留应用的上下文，不会默认清除子应用的副作用，一般来说建议用户在组件的销毁函数里面手动释放组件的副作用，如果有些逻辑确实需要清除，并且需要保证应用可用性可以把 cache 设置成 false。
+2. 在缓存模式下 garfish 只会隔离环境变量和样式，子应用卸载时会保留应用的上下文，不会默认清除子应用的副作用。若业务存在需要销毁的副作用，一般来说建议用户在组件的销毁函数里面手动释放组件的副作用，如果有些逻辑确实需要清除，并且需要保证应用可用性可以把 cache 设置成 false。
 ## JS 错误上报 Script error 0
 
 - 一般错误收集的工具都是通过：
@@ -222,9 +270,8 @@ export default () => (
 > 解决方案
 
 由于浏览器跨域的限制，非同域下的脚本执行抛错，捕获异常的时候，不能拿到详细的异常信息，只能拿到类似 Script error 0. 这类信息。通常跨域的异常信息会被忽略，不会上报。解决方案： 所有 `<script>` 加载的资源加上 `crossorigin="anonymous"`
-
-## 热更新问题
-garfish 热更新问题请参考 [博客](/blog/hmr)
+## 子应用热更新问题
+garfish 子应用热更新问题请参考 [博客](/blog/hmr)
 ## cdn 第三方包未正确挂在在 window 上
 
 > 问题概述
@@ -273,3 +320,28 @@ Garfish.run({
 ```
 
 > 提示：当子项目使用 `vite` 开发时，你可以在开发模式下使用 esModule 模式，生产环境可以打包为原始的无 esModule 的模式。
+
+## garfish 支持多实例吗
+
+支持
+
+## 子应用堆栈信息丢失、sourcemap 行列信息错误
+
+> 问题背景
+
+  微前端场景下，存在沙盒机制，基于eval 和 new Function的形式去实现沙箱机制，在手动执行代码的情况下，会产生堆栈丢失、sourcemap还原错行等问题。
+
+> 解决方案
+
+  可通过增加如下 webpack 配置解决：
+```js
+// webpack.config.js
+const webpack = require('webpack');
+
+config.plugins = [
+  new webpack.BannerPlugin({
+      banner: 'Micro front-end',
+  });
+]
+```
+具体原因可参考 [博客](/blog/sourcemap)

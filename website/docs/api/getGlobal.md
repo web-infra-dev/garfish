@@ -3,6 +3,7 @@ title: Garfish.getGlobalObject
 slug: /api/getGlobalObject
 order: 7
 ---
+import Highlight from '@site/src/components/Highlight';
 
 用于子应用获取真实 window 的值。
 

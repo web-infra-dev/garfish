@@ -120,6 +120,26 @@ export default hot(App);
 
 ## 微前端不同场景下热更新表现
 
+首先，请确认微前端应用的构建配置已按照推荐配置进行了设置：
+```js
+// webpack.config.js
+module.exports = {
+  output: {
+    // 开发环境设置 true 将会导致热更新失效
+    clean:  process.env.NODE_ENV === "production" ? true : false,
+    filename: '[name].[contenthash].js',
+    chunkFilename: '[name].[contenthash].js',
+    // 需要配置成 umd 规范
+    libraryTarget: 'umd',
+    // 修改不规范的代码格式，避免逃逸沙箱
+    globalObject: 'window',
+    jsonpFunction: 'garfish-demo-react17',
+    // 保证子应用的资源路径变为绝对路径
+    publicPath: 'http://localhost:8080'
+  }
+}
+```
+
 ### 主、子 应用都在本地
   - 支持主应用热更新；
   - 支持子应用热更新；

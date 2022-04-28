@@ -3,6 +3,8 @@ title: Garfish.router
 slug: /api/router
 order: 5
 ---
+import Highlight from '@site/src/components/Highlight';
+
 
 用于微前端下的应用间的路由跳转，提供路守卫能力，在路由变化时触发相应hook，帮助用户更加精确的控制路由变化，灵活地支持各类业务场景。
 
@@ -69,13 +71,13 @@ push: ({ path, query, basename}: {
   }) => void;
 ```
 #### 参数
-- <span style={{color: '#ff5874', margin: '2px 6px'}}>path</span>
+- <Highlight>path</Highlight>
 
   要跳转的路由，`string`，必选。
-- <span style={{color: '#ff5874', margin: '2px 6px'}}>basename</span>
+- <Highlight>basename</Highlight>
 
   设置跳转的基础路由，`string`，非必选。
-- <span style={{color: '#ff5874', margin: '2px 6px'}}>query</span>
+- <Highlight>query</Highlight>
 
   路由携带的查询参数，`Record<string, string>`，非必选。
 
@@ -122,13 +124,13 @@ replace: ({ path, query, basename}: {
 ```
 
 #### 参数
-- <span style={{color: '#ff5874', margin: '2px 6px'}}>path</span>
+- <Highlight>path</Highlight>
 
   要跳转的路由，`string`，必选。
-- <span style={{color: '#ff5874', margin: '2px 6px'}}>basename</span>
+- <Highlight>basename</Highlight>
 
   设置跳转的基础路由，`string`，非必选。
-- <span style={{color: '#ff5874', margin: '2px 6px'}}>query</span>
+- <Highlight>query</Highlight>
 
   路由携带的查询参数，`Record<string, string>`，非必选。
 
@@ -166,13 +168,13 @@ export interface CurrentRouterInfo {
 }
 ```
 #### 参数
-- <span style={{color: '#ff5874', margin: '2px 6px'}}>to</span>
+- <Highlight>to</Highlight>
   ：即将要进入的目标路由信息。
 
-- <span style={{color: '#ff5874', margin: '2px 6px'}}>from</span>
+- <Highlight>from</Highlight>
   ：即将离开的路由信息。
 
-- <span style={{color: '#ff5874', margin: '2px 6px'}}>next</span>
+- <Highlight>next</Highlight>
   ：阻塞执行回调。
 
 #### 示例
@@ -207,13 +209,13 @@ export interface CurrentRouterInfo {
 }
 ```
 #### 参数
-- <span style={{color: '#ff5874', margin: '2px 6px'}}>to</span>
+- <Highlight>to</Highlight>
   ：即将要进入的目标路由信息。
 
-- <span style={{color: '#ff5874', margin: '2px 6px'}}>from</span>
+- <Highlight>from</Highlight>
   ：即将离开的路由信息。
 
-- <span style={{color: '#ff5874', margin: '2px 6px'}}>next</span>
+- <Highlight>next</Highlight>
   ：阻塞执行回调。
 
 #### 示例

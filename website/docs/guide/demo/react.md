@@ -141,6 +141,7 @@ const RootComponent = ({ basename }) => {
 
   ```js
    // webpack.config.js
+  const webpack = require('webpack');
   const isDevelopment = process.env.NODE_ENV !== "production";
 
   module.exports = {
@@ -156,7 +157,13 @@ const RootComponent = ({ basename }) => {
       chunkLoadingGlobal: 'garfish-demo-react17',
       // 保证子应用的资源路径变为绝对路径
       publicPath: 'http://localhost:8080'
-    }
+    },
+    plugin: [
+      // 保证错误堆栈信息及 sourcemap 行列信息正确
+      new webpack.BannerPlugin({
+        banner: 'Micro front-end',
+      })
+    ]
   }
   ```
 

@@ -3,6 +3,8 @@ title: Garfish.loadApp
 slug: /api/loadApp
 order: 4
 ---
+import Highlight from '@site/src/components/Highlight';
+
 
 用于手动挂载子应用，可动态控制子应用的渲染和销毁。
 > 通过 `Garfish.run()` API 注册的子应用会自动根据路由进行应激活子应用的匹配逻辑，属于路由驱动式的应用挂载和销毁模式。如果你的场景下希望手动控制应用的加载和销毁，你可以使用 `Garfish.loadApp()` 的方式加载应用，它是一种更加灵活的微前端应用加载模式。
@@ -24,7 +26,7 @@ loadApp(appName: string, options?: Omit<interfaces.AppInfo, 'name'>): Promise<in
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-<Tabs groupId="framework">
+<!-- <Tabs groupId="framework">
   <TabItem value="React" label="React" default>
 
 ```jsx
@@ -68,7 +70,7 @@ export default App = () => {
 
 ```html
 <!-- 提供 ReactApp 的 Vue 组件 -->
-<template>
+<!-- <template>
   <div>
     <div id="container"></div>
   </div>
@@ -97,16 +99,17 @@ export default App = () => {
       appInstance.hide();
     },
   };
-</script>
-<style></style>
 ```
+</script> -->
+<!-- <style></style>
+
   </TabItem>
-</Tabs>
+</Tabs>   -->
 
 
 ## 参数
 ### name
-  - Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> string </span>
+  - Type: <Highlight> string </Highlight>
   - 要加载的子应用名称，必选。
   - 各子应用的名称应保持唯一，这是子应用的唯一标识；
 
@@ -116,7 +119,7 @@ export default App = () => {
 :::
 
 ### options?
-- Type: <span style={{color: '#ff5874', margin: '2px 6px'}}> Omit <interfaces.AppInfo, 'name'> </span>
+- Type: <Highlight> Omit <interfaces.AppInfo, 'name'> </Highlight>
 
 - `options` 参数含义本质上与 [registerApp](/api/registerApp#参数) 中同名参数保持一致，可选。
 - 可移步 [registerApp](/api/registerApp#参数) 查看具体参数说明；这里仅针对注意事项进行说明。
@@ -152,35 +155,35 @@ app = await Garfish.loadApp('vue-app', {
 > loadApp 的返回值为子应用的 App 实例对象，实例对象上存在一些方法和属性，提供给开发者用于手动进行 App 的挂载、销毁及判断 App 当前应用状态等信息；
 
 ### 实例属性
-  - <span style={{color: '#ff5874', display: 'block', margin: '2px 6px'}}> name: string </span>
+  - <Highlight>  name: string </Highlight>
 
   应用名称，string。
 
-  - <span style={{color: '#ff5874', display: 'block', margin: '2px 6px'}}> mounted: boolean </span>
+  - <Highlight>  mounted: boolean </Highlight>
 
   应用是否已挂载，boolean。 `true` 表示已挂载，`false` 表示未挂载。
 
-  - <span style={{color: '#ff5874', display: 'block', margin: '2px 6px'}}> display: boolean </span>
+  - <Highlight>  display: boolean </Highlight>
 
   应用是否被隐藏，boolean。 `true` 表示显示状态，未隐藏，`false` 表示隐藏态。
 
-  - <span style={{color: '#ff5874', display: 'block',  margin: '2px 6px'}}> strictIsolation: boolean </span>
+  - <Highlight>  strictIsolation: boolean </Highlight>
 
   是否开启严格隔离。`true` 表示已开启，`false` 表示未开启。
 
-  - <span style={{color: '#ff5874', display: 'block',  margin: '2px 6px'}}> isHtmlMode: boolean </span>
+  - <Highlight>  isHtmlMode: boolean </Highlight>
 
   是否是 `html` 入口模式。
 
-  - <span style={{color: '#ff5874', display: 'block',  margin: '2px 6px'}}> appContainer: HTMLElement </span>
+  - <Highlight>  appContainer: HTMLElement </Highlight>
 
   应用容器
 
-  - <span style={{color: '#ff5874', display: 'block',  margin: '2px 6px'}}> appInfo: AppInfo </span>
+  - <Highlight>  appInfo: AppInfo </Highlight>
 
   应用配置信息
 
-  - <span style={{color: '#ff5874', display: 'block',  margin: '2px 6px'}}> hooks: interfaces.AppHooks </span>
+  - <Highlight>  hooks: interfaces.AppHooks </Highlight>
   应用生命周期钩子函数
 
 ### 实例方法
@@ -203,7 +206,7 @@ app = await Garfish.loadApp('vue-app', {
   });
   await app.mount();
   ```
-  - 触发子应用的 <span style={{color: '#ff5874'}}>渲染</span> 流程。若应用<span style={{color: '#9b67f6'}}> 已挂载 </span>、或<span style={{color: '#9b67f6'}}> 正在挂载中 </span>、或<span style={{color: '#9b67f6'}}> 正在卸载中 </span>将不会触发渲染流程；
+  - 触发子应用的 <Highlight> 渲染</Highlight> 流程。若应用<span style={{color: '#9b67f6'}}> 已挂载 </span>、或<span style={{color: '#9b67f6'}}> 正在挂载中 </span>、或<span style={{color: '#9b67f6'}}> 正在卸载中 </span>将不会触发渲染流程；
   - 在子应用渲染前将会触发 `beforeMount` 钩子函数，渲染完成将触发 `afterMount` 钩子函数并将当前挂载的应用 push 进 `Garfish.activeApps`。若渲染过程中出现异常将触发 `errorMountApp`钩子函数；
   - 在此过程中将执行 `provider` 提供的子应用 `render` 函数，若 `provider` 函数未找到将会抛出错误。[尝试解决](/issues/#provider-is-null)
   - [mount 过程中都做了哪些事情](/guide/lifecycle#mount)
@@ -216,7 +219,7 @@ app = await Garfish.loadApp('vue-app', {
   ```ts
   unmount(): boolean;
   ```
-  - 触发子应用的 <span style={{color: '#ff5874'}}>销毁</span> 流程。若应用<span style={{color: '#9b67f6'}}> 正在卸载中 </span>，将不会重复卸载；
+  - 触发子应用的 <Highlight> 销毁</Highlight> 流程。若应用<span style={{color: '#9b67f6'}}> 正在卸载中 </span>，将不会重复卸载；
   - 在子应用渲染前将会触发 `beforeUnmount` 钩子函数，渲染完成将触发 `afterUnmount` ，若销毁过程中出现异常将触发 `errorUnmountApp` 钩子函数；
   - 应用卸载过程中会执行 `provider` 内部提供的 `destroy` 函数。卸载完成后，子应用的渲染容器将被移除、子应用的执行上下文也将被销毁，渲染过程中产生的副作用也都将会被清除，同时将子应用从
 `Garfish.activeApps` 里移除，`mounted` 和 `display` 状态置为 false；
@@ -227,7 +230,7 @@ app = await Garfish.loadApp('vue-app', {
   ```ts
   show(): Promise<boolean>
   ```
-  - 触发子应用的 <span style={{color: '#ff5874'}}>显示</span> 流程；
+  - 触发子应用的 <Highlight> 显示</Highlight> 流程；
   - 示例
     ```ts
     import Garfish from "garfish";
@@ -242,7 +245,7 @@ app = await Garfish.loadApp('vue-app', {
     // 若已经渲染触发 show，只有首次渲染触发 mount，后面渲染都可以触发 show 提供性能
     app.mounted ? app.show() : await app.mount();
     ```
-  - 触发子应用的 <span style={{color: '#ff5874'}}>显示</span> 流程。若应用<span style={{color: '#9b67f6'}}> 已显示 </span>、或<span style={{color: '#9b67f6'}}> 未挂载 </span> 将不会触发应用渲染流程；
+  - 触发子应用的 <Highlight> 显示</Highlight> 流程。若应用<span style={{color: '#9b67f6'}}> 已显示 </span>、或<span style={{color: '#9b67f6'}}> 未挂载 </span> 将不会触发应用渲染流程；
 
   - 在子应用显示前将会触发 `beforeMount` 钩子函数，显示完成将触发 `afterMount` 钩子函数并将当前挂载的应用 push 进 `Garfish.activeApps`；
   - 在此过程中将执行 `provider` 提供的子应用 render 函数，若 `provider` 函数未找到将会抛出错误。[尝试解决](/issues/#provider-is-null)
@@ -259,7 +262,7 @@ app = await Garfish.loadApp('vue-app', {
   ```ts
   hide(): boolean;
   ```
-  - 触发子应用的 <span style={{color: '#ff5874'}}>隐藏</span> 流程。若应用<span style={{color: '#9b67f6'}}> 未显示 </span>、或<span style={{color: '#9b67f6'}}> 未挂载 </span> 将不会触发应用隐藏流程；
+  - 触发子应用的 <Highlight> 隐藏</Highlight> 流程。若应用<span style={{color: '#9b67f6'}}> 未显示 </span>、或<span style={{color: '#9b67f6'}}> 未挂载 </span> 将不会触发应用隐藏流程；
 
   - 在子应用隐藏前将会触发 `beforeUnmount` 钩子函数，隐藏完成将触发 `afterUnmount` 钩子函数并将当前隐藏的应用从 `Garfish.activeApps` 中移除；
   - 在此过程中将执行 `provider` 提供的子应用 `destory` 函数。当移除完成，子应用的渲染容器也将被移除。

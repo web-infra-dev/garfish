@@ -212,6 +212,9 @@ export const provider = vueBridge({
   <TabItem value="Webpack" label="Webpack" default>
 
 ```js
+// webpack.config.js
+const webpack = require('webpack');
+
 module.exports = {
   output: {
     // 需要配置成 umd 规范
@@ -223,7 +226,12 @@ module.exports = {
     // 保证子应用的资源路径变为绝对路径，避免子应用的相对资源在变为主应用上的相对资源，因为子应用和主应用在同一个文档流，相对路径是相对于主应用而言的
     publicPath: 'http://localhost:8000',
   },
-
+  plugin: [
+    // 保证错误堆栈信息及 sourcemap 行列信息正确
+    new webpack.BannerPlugin({
+      banner: 'Micro front-end',
+    })
+  ],
   devServer: {
     // 保证在开发模式下应用端口不一样
     port: '8000',

@@ -72,25 +72,25 @@ export const provider = reactBridge({
 
 `OptsTypes`
 
-- <span style={{color: '#ff5874', margin: '2px 6px'}}> React </span>
+- <Highlight> React </Highlight>
 
   - Type: `typeof React`
   - 必传
   - 当前应用使用的 React 对象，可通过 `import React from "react"` 引入，必传。
 
-- <span style={{color: '#ff5874', display: 'block', margin: '2px 6px'}}> ReactDOM </span>
+- <Highlight>  ReactDOM </Highlight>
 
   - Type: `typeof ReactDOM`
   - 必传
   - 当前应用使用的 ReactDOM 对象，可通过 `import ReactDOM from "react-dom"` 引入，必传。
 
-- <span style={{color: '#ff5874', display: 'block', margin: '2px 6px'}}> el </span>
+- <Highlight>  el </Highlight>
 
   - Type: `string`
   - 非必传
   - 子应用挂载点，作用类似于子应用的 [domGetter](/api/registerApp#domgetter) 参数，若不传默认使用全局挂载点。
 
-- <span style={{color: '#ff5874', display: 'block', margin: '2px 6px'}}> rootComponent </span>
+- <Highlight>  rootComponent </Highlight>
 
   - Type：`React.ComponentType`
   - 此参数和 `loadRootComponent` 至少传一个
@@ -101,7 +101,7 @@ export const provider = reactBridge({
     ```
   - 当同时传入了 `loadRootComponent` 参数时，`rootComponent` 参数将失效，且 `rootComponent` 组件不会默认接收到 garfish 传递的 appInfo 应用相关参数；
 
-- <span style={{color: '#ff5874', display: 'block', margin: '2px 6px'}}> loadRootComponent </span>
+- <Highlight>  loadRootComponent </Highlight>
 
   - Type：`loadRootComponentType = (opts: Record<string, any>) => Promise<ComponentType>;`
   - 此参数和 `rootComponent` 至少传一个
@@ -130,7 +130,7 @@ export const provider = reactBridge({
 
   - 当同时传入了 `rootComponent` 参数时，`loadRootComponent` 的优先级更高， `rootComponent` 将失效；
 
-- <span style={{color: '#ff5874', display: 'block', margin: '2px 6px'}}> errorBoundary </span>
+- <Highlight>  errorBoundary </Highlight>
 
   - Type：`errorBoundary: (caughtError: boolean, info: string, props: any) => ReactNode | null;`
   - 非必传
@@ -254,19 +254,19 @@ export const provider = vueBridge({
 
 `OptsTypes`
 
-- <span style={{color: '#ff5874', margin: '2px 6px'}}> Vue </span>
+- <Highlight> Vue </Highlight>
 
   - Type: `Vue.VueConstructor`
   - **当前应用是 vue2 应用时**，必传。
   - 当前应用使用的 Vue 对象，可通过 `import Vue from "vue"` 引入
 
-- <span style={{color: '#ff5874', margin: '2px 6px'}}> createApp </span>
+- <Highlight> createApp </Highlight>
 
   - Type: `Vue.CreateAppFunction<Element>;`
   - **当前应用是 vue3 应用时**，必传。
   - 当前应用使用的 Vue 对象的 `createApp` 属性，可通过 `import { createApp } from "vue"` 引入
 
-- <span style={{color: '#ff5874', display: 'block', margin: '2px 6px'}}> rootComponent </span>
+- <Highlight>  rootComponent </Highlight>
 
 - Type：`vue.Component`
 - 此参数和 `loadRootComponent` 至少传一个
@@ -277,7 +277,7 @@ export const provider = vueBridge({
   ```
 - 当同时传入了 `loadRootComponent` 参数时，`rootComponent` 将失效，且 `rootComponent` 组件不会默认接受到 garfish 传递的 appInfo 应用相关参数；
 
-- <span style={{color: '#ff5874', display: 'block', margin: '2px 6px'}}> loadRootComponent </span>
+- <Highlight>  loadRootComponent </Highlight>
 
   - Type：`loadRootComponentType = (opts: Record<string, any>) => Promise<ComponentType>;`
   - 此参数和 `rootComponent` 至少传一个
@@ -300,7 +300,7 @@ export const provider = vueBridge({
 
   - 当同时传入了 `rootComponent` 参数时，`loadRootComponent` 的优先级更高， `rootComponent` 将失效；
 
-- <span style={{color: '#ff5874', margin: '2px 6px'}}> appOptions </span>
+- <Highlight> appOptions </Highlight>
 
   - Type: `appOptions: (opts: Record<string, any>) => Record<string, any> | Record<string, any>`
   - 非必传
@@ -316,7 +316,7 @@ export const provider = vueBridge({
 2. 在 vue2 中，可显示在 `appOpitons` 中传递路由参数信息；
 :::
 
-- <span style={{color: '#ff5874', margin: '2px 6px'}}> handleInstance </span>
+- <Highlight> handleInstance </Highlight>
 
   - Type: `handleInstance: (vueInstance: vue.App, opts: Record<string, any>) => void;`
   - 非必传

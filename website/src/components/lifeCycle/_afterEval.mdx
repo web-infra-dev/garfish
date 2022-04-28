@@ -1,0 +1,20 @@
+import Highlight from '@site/src/components/Highlight';
+
+- Type: <Highlight> (appInfo: AppInfo, code: string, env: Record<string, any>, url: string, options) => void </Highlight>
+  - 该 `hook` 的参数分别为：`appInfo` 信息、`code` 执行的代码、`env` 要注入的环境变量，`url` todo?、`options` 参数选项例如 `async` 是否异步执行、`noEntry` 是否是 `noEntry` 模式；
+- Kind: `sync`, `sequential`
+- Previous Hook: `beforeLoad`、`afterLoad`
+- Trigger:
+
+  - 在实际执行代码后。`afterMount` 触发前触发；
+  - 子应用 html 内的 script 和动态创建的脚本执行时都会触发该 hook
+
+- 示例
+
+```ts
+Garfish.afterEval({
+  ...,
+  afterEval(appInfo) {
+    console.log('子应用代码执行完成', appInfo.name);
+  },
+```
