@@ -7,7 +7,6 @@ export default function Highlight({children, color}) {
         backgroundColor: color || '#ffffff0d',
         borderRadius:  '1.5rem',
         color: '#25c19f',
-        color: '#25c19f',
         padding: '0.2rem 0.5rem',
       }}>
       {children}

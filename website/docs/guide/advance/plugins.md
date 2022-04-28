@@ -1,6 +1,6 @@
 ---
 title: 插件指南
-slug: /guide/advance/plugins
+slug: /guide/plugins
 order: 6
 ---
 

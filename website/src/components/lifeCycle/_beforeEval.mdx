@@ -9,7 +9,7 @@ import Highlight from '@site/src/components/Highlight';
   - 在子应用挂载过程中、实际执行代码前触发该 hook；
   - 应用 html 内的 script 和动态创建的脚本执行时都会触发该 hook
   - 此时 DOM 树已添加至文档流中，子应用代码准备执行；
-  - 若代码执行过程中抛出异常，则将触发 [errorMountApp](./run.md#errorMountApp)，否则触发 [beforeEval](./run.md#afterEval)
+  - 若代码执行过程中抛出异常，则将触发 [errorMountApp](/api/run#errormountapp)，否则触发 [beforeEval](/api/run#afterEval)
 
 - 示例
 

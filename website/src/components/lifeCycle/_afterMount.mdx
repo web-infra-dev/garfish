@@ -7,8 +7,8 @@ import Highlight from '@site/src/components/Highlight';
 - Trigger:
 
   - 此时子应用 DOM 树已渲染完成，garfish 实例 `activeApps` 中已添加当前子应用 app 实例；
-  - 在挂载过程中，会调用应用生命周期中的 [`render` 函数](../guide/quickStart#2导出-provider-函数)，用户可在挂载前定义相关操作；
-  - 若挂载过程中出现异常，会触发 [errorMountApp](./run.md#errorMountApp)，同时会清除已创建的 app 渲染容器 appContainer
+  - 在挂载过程中，会调用应用生命周期中的 [`render` 函数](/guide/quickStart#2导出-provider-函数)，用户可在挂载前定义相关操作；
+  - 若挂载过程中出现异常，会触发 [errorMountApp](/api/run#errormountapp)，同时会清除已创建的 app 渲染容器 appContainer
 
 - 示例
 
