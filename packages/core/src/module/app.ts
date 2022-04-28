@@ -234,9 +234,9 @@ export class App {
     this.hooks.lifecycle.beforeMount.emit(this.appInfo, this, true);
 
     await this.addContainer();
+    this.context.activeApps.push(this);
     this.callRender(provider, false);
     this.display = true;
-    this.context.activeApps.push(this);
     this.hooks.lifecycle.afterMount.emit(this.appInfo, this, true);
     return true;
   }
@@ -275,10 +275,10 @@ export class App {
       // Existing asynchronous functions need to decide whether the application has been unloaded
       if (!this.stopMountAndClearEffect()) return false;
 
+      this.context.activeApps.push(this);
       this.callRender(provider, true);
       this.display = true;
       this.mounted = true;
-      this.context.activeApps.push(this);
       this.hooks.lifecycle.afterMount.emit(this.appInfo, this, false);
 
       await asyncScripts;
