@@ -274,6 +274,7 @@ export class DynamicNodeProcessor {
       if (parentNode !== this.rootElement) {
         this.sandbox.deferClearEffects.add(() => {
           this.DOMApis.removeElement(this.el);
+          return this.el;
         });
       }
     }
