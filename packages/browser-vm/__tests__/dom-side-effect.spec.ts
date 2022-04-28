@@ -85,7 +85,7 @@ describe('Sandbox:Dom & Bom', () => {
     const testNode = document.getElementById(testId);
     const test2Node = document.getElementById(testId);
 
-    expect(sandbox.deferClearEffects.size).toBe(2);
+    expect(sandbox.deferClearEffects.size).toBe(1);
     expect(testNode.contains(test2Node)).toBeTruthy();
     expect(rootNode.contains(testNode)).toBeTruthy();
     sandbox.close();
