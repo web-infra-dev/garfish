@@ -1,22 +1,22 @@
 ---
 title: 插件指南
-slug: /guide/plugins
-order: 6
+slug: /advance/plugins
+order: 1
 ---
 
 import Highlight from '@site/src/components/Highlight';
-import BeforeLoad from '@site/src/components/lifeCycle/_beforeLoad.mdx';
-import AfterLoad from '@site/src/components/lifeCycle/_afterLoad.mdx';
-import ErrorLoadApp from '@site/src/components/lifeCycle/_errorLoadApp.mdx';
-import BeforeEval from '@site/src/components/lifeCycle/_beforeEval.mdx';
-import AfterEval from '@site/src/components/lifeCycle/_afterEval.mdx';
-import BeforeMount from '@site/src/components/lifeCycle/_beforeMount.mdx';
-import AfterMount from '@site/src/components/lifeCycle/_afterMount.mdx';
-import ErrorMountApp from '@site/src/components/lifeCycle/_errorMountApp.mdx';
-import BeforeUnmount from '@site/src/components/lifeCycle/_beforeUnmount.mdx';
-import AfterUnmount from '@site/src/components/lifeCycle/_afterUnmount.mdx';
-import ErrorUnmountApp from '@site/src/components/lifeCycle/_errorUnmountApp.mdx';
-import OnNotMatchRouter from '@site/src/components/lifeCycle/_onNotMatchRouter.mdx';
+import BeforeLoad from '@site/src/components/lifeCycle/\_beforeLoad.mdx';
+import AfterLoad from '@site/src/components/lifeCycle/\_afterLoad.mdx';
+import ErrorLoadApp from '@site/src/components/lifeCycle/\_errorLoadApp.mdx';
+import BeforeEval from '@site/src/components/lifeCycle/\_beforeEval.mdx';
+import AfterEval from '@site/src/components/lifeCycle/\_afterEval.mdx';
+import BeforeMount from '@site/src/components/lifeCycle/\_beforeMount.mdx';
+import AfterMount from '@site/src/components/lifeCycle/\_afterMount.mdx';
+import ErrorMountApp from '@site/src/components/lifeCycle/\_errorMountApp.mdx';
+import BeforeUnmount from '@site/src/components/lifeCycle/\_beforeUnmount.mdx';
+import AfterUnmount from '@site/src/components/lifeCycle/\_afterUnmount.mdx';
+import ErrorUnmountApp from '@site/src/components/lifeCycle/\_errorUnmountApp.mdx';
+import OnNotMatchRouter from '@site/src/components/lifeCycle/\_onNotMatchRouter.mdx';
 
 Garfish 框架引入了插件化机制，目的是为了让开发者能够通过编写插件的方式扩展更多功能，或为自身业务定制个性化功能；同时框架的基础能力也都是通过插件机制来实现，确保框架核心足够精简和稳定。
 
@@ -261,39 +261,50 @@ Garfish.usePlugin(plugin: (GarfishInstance: interfaces.Garfish)=> interfaces.Plu
   - 直接通过 [`Garfish.registerApp`](/api/registerApp) 调用时
   - 触发该 `hook` 是子应用信息注册成功
 
-
 ### beforeLoad
+
 <BeforeLoad />
 
 ### afterLoad
+
 <AfterLoad />
 
 ### errorLoadApp
+
 <ErrorLoadApp />
 
 ### beforeMount
+
 <BeforeMount />
 
 ### afterMount
+
 <AfterMount />
 
 ### beforeEval
+
 <BeforeEval />
 
 ### afterEval
+
 <AfterEval />
 
 ### errorMountApp
+
 <ErrorMountApp />
 
 ### beforeUnmount
+
 <BeforeUnmount />
 
 ### afterUnmount
+
 <AfterUnmount />
 
 ### errorUnmountApp
+
 <ErrorUnmountApp />
 
 ### onNotMatchRouter
+
 <OnNotMatchRouter />
