@@ -6,6 +6,10 @@ order: 2
 
 本节分别从主、子 应用视角出发，介绍如何通过 [Garfish API](/api) 来将应用接入 Garfish 框架
 
+:::tip 在线预览
+<a href="https://stackblitz.com/edit/github-7tm8gk?file=main/src/App.js"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" width="200"/></a>
+:::
+
 ## 主应用
 
 通过 Garfish API 接入主应用整体流程分为 2 步：
@@ -54,7 +58,7 @@ Garfish.run({
 
 1. 将挂载点设置为常驻挂载点，不要跟随路由变化使子应用挂载点销毁和出现
 2. 保证 Garfish 在渲染时挂载点存在
-:::
+   :::
 
 如果你的业务需要手动控制应用加载，可以使用 [Garfish.loadApp](/api/loadApp.md) 手动挂载 APP：
 
@@ -98,7 +102,7 @@ module.exports = {
     // 保证错误堆栈信息及 sourcemap 行列信息正确
     new webpack.BannerPlugin({
       banner: 'Micro front-end',
-    })
+    }),
   ],
   devServer: {
     port: '8000', // 保证在开发模式下应用端口不一样
