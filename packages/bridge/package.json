@@ -31,11 +31,14 @@
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
   "dependencies": {
+    "@garfish/bridge": "^1.5.2",
     "@garfish/browser-snapshot": "workspace:*",
     "@garfish/browser-vm": "workspace:*",
     "@garfish/core": "workspace:*",
     "@garfish/router": "workspace:*",
-    "@garfish/utils": "workspace:*"
+    "@garfish/utils": "workspace:*",
+    "vue2": "npm:vue@^2",
+    "vue3": "npm:vue@^3"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

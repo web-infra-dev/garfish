@@ -12,7 +12,7 @@ module.exports = {
   },
   configureWebpack: () => {
     return {
-      entry: './src/main.js',
+      entry: './src/main.ts',
       output: {
         filename: '[name].[hash].js',
         chunkFilename: '[name].[hash].js',
