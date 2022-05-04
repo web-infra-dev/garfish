@@ -6,8 +6,8 @@
     "@garfish/bridge": "workspace:*"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^1.10.2",
-    "vite": "^2.7.0"
+    "@vitejs/plugin-vue": "2.3.1",
+    "vite": "2.9.7"
   },
   "scripts": {
     "start": "vite",
