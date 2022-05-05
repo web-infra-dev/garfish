@@ -46,6 +46,7 @@ npm install @angular-builders/custom-webpack:dev-server -D
 
 
 ### 3. 添加 webpack 配置文件
+
 :::caution 【重要】注意：
 1. libraryTarget 需要配置成 umd 规范；
 2. globalObject 需要设置为 'window'，以避免由于不规范的代码格式导致的逃逸沙箱；
@@ -162,6 +163,7 @@ export class AppModule {}
 :::tip
 last but not least, 别忘了添加子应用独立运行逻辑，这能够让你的子应用脱离主应用独立运行，便于后续开发和部署。
 :::
+
 ```js
 // src/main.ts
 import { enableProdMode, NgModuleRef } from '@angular/core';

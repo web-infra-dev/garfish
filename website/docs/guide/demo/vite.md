@@ -4,6 +4,8 @@ slug: /guide/demo/vite
 order: 4
 ---
 
+import ViteConfig from '@site/src/components/config/_viteConfig.mdx';
+
 本节我们将详细介绍 vite 框架的应用作为子应用的接入步骤。
 
 ## 主应用沙箱状态描述
@@ -15,7 +17,7 @@ order: 4
 2. 沙箱默认开启状态，若当前 vite 应用希望在沙箱开启状态下运行，主应用需要配置插件 [@garfish/es-module](../../garfish-plugins/es-module.md)，这是必须的；
 3. 若当前子应用希望运行在非沙箱模式下，需要设置 sandbox 关闭属性，设置方案下面列出；
 4. 此外需要注意，在关闭沙箱的场景下，子应用的副作用将会发生逃逸，你需要在子应用卸载后将对应全局的副作用清除；
-   :::
+:::
 
 ### 开启沙箱场景：
 
@@ -62,10 +64,9 @@ Garfish.run({
 ### 1. [@garfish/bridge](../../guide/bridge) 依赖安装
 
 :::tip
-
 1.  请注意，桥接函数 @garfish/bridge 依赖安装不是必须的，你可以自定义导出函数。
 2.  我们提供桥接函数 @garfish/bridge 是为了进一步降低用户接入成本并降低用户出错概率，我们将一些默认行为内置在桥接函数中进行了进一步封装，避免由于接入不规范导致的错误，所以这也是我们推荐的接入方式。
-    :::
+:::
 
 ```bash npm2yarn
 npm install @garfish/bridge --save
@@ -102,11 +103,10 @@ export const provider = vueBridge({
 ### 3. 根组件设置路由的 basename
 
 :::info
-
 1. 为什么要设置 basename？请参考 [issue](../../issues/childApp.md#子应用拿到-basename-的作用)
 2. 我们强烈建议使用从主应用传递过来的 basename 作为子应用的 basename，而非主、子应用约定式，避免 basename 后期变更未同步带来的问题。
 3. 目前主应用仅支持 history 模式的子应用路由，[why](../../issues/childApp.md#为什么主应用仅支持-history-模式)
-   :::
+:::
 
 ```js
 // src/main.js
@@ -127,23 +127,7 @@ function newRouter(basename) {
 
 ### 4. 更改 vite 配置
 
-:::caution 【重要】注意：
-
-1. base 提供资源绝对路径，避免相对路径带来的资源访问问题；
-2. origin 提供资源绝对路径，避免相对路径带来的资源访问问题；
-   :::
-
-```js
-// vite.config.js
-export default defineConfig({
-  base: 'http://localhost:3000/',
-  server: {
-    port: 3000,
-    cors: true,
-    origin: 'http://localhost:3000',
-  },
-});
-```
+<ViteConfig />
 
 ### 5. 增加子应用独立运行兼容逻辑
 

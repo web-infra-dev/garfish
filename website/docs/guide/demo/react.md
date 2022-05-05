@@ -4,6 +4,8 @@ slug: /guide/demo/react
 order: 2
 ---
 
+import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
+
 本节我们将详细介绍 react 框架的应用作为子应用的接入步骤。
 
 ## react 子应用接入步骤
@@ -15,10 +17,9 @@ order: 2
 ### 1. [@garfish/bridge](../../guide/bridge) 依赖安装
 
 :::tip
-
 1.  请注意，桥接函数 @garfish/bridge 依赖安装不是必须的，你可以自定义导出函数。
 2.  我们提供桥接函数 @garfish/bridge 是为了进一步降低用户接入成本并降低用户出错概率，我们将一些默认行为内置在桥接函数中进行了进一步封装，避免由于接入不规范导致的错误，所以这也是我们推荐的接入方式。
-    :::
+:::
 
 ```bash npm2yarn
 npm install @garfish/bridge --save
@@ -86,11 +87,10 @@ export const provider = reactBridge({
 ### 3. 根组件设置路由的 basename
 
 :::info
-
 1. 为什么要设置 basename？请参考 [issue](../../issues/childApp.md#子应用拿到-basename-的作用)
 2. 我们强烈建议使用从主应用传递过来的 basename 作为子应用的 basename，而非主、子应用约定式，避免 basename 后期变更未同步带来的问题。
 3. 目前主应用仅支持 history 模式的子应用路由，[why](../../issues/childApp.md#为什么主应用仅支持-history-模式)
-   :::
+:::
 
 ```tsx
 // src/component/rootComponent
@@ -112,72 +112,7 @@ const RootComponent = ({ basename }) => {
 
 ### 4. 更改 webpack 配置
 
-:::caution 【重要】注意：
-
-1. libraryTarget 需要配置成 umd 规范；
-2. globalObject 需要设置为 'window'，以避免由于不规范的代码格式导致的逃逸沙箱；
-3. 如果你的 webpack 为 v4 版本，需要设置 jsonpFunction 并保证该值唯一（否则可能出现 webpack chunk 互相影响的可能）。若为 webpack5 将会直接使用 package.json name 作为唯一值，请确保应用间的 name 各不相同；
-4. publicPath 设置为子应用资源的绝对地址，避免由于子应用的相对资源导致资源变为了主应用上的相对资源。这是因为主、子应用处于同一个文档流中，相对路径是相对于主应用而言的
-5. 'Access-Control-Allow-Origin': '\*' 允许开发环境跨域，保证子应用的资源支持跨域。另外也需要保证在上线后子应用的资源在主应用的环境中加载不会存在跨域问题（**也需要限制范围注意安全问题**）；
-   :::
-
-<Tabs>
-  <TabItem value="Webpack" label="webpack4" default>
-
-```js
-// webpack.config.js
-const isDevelopment = process.env.NODE_ENV !== 'production';
-
-module.exports = {
-  output: {
-    // 开发环境设置 true 将会导致热更新失效
-    clean: isDevelopment ? false : true,
-    filename: '[name].[contenthash].js',
-    chunkFilename: '[name].[contenthash].js',
-    // 需要配置成 umd 规范
-    libraryTarget: 'umd',
-    // 修改不规范的代码格式，避免逃逸沙箱
-    globalObject: 'window',
-    jsonpFunction: 'garfish-demo-react17',
-    // 保证子应用的资源路径变为绝对路径
-    publicPath: 'http://localhost:8080',
-  },
-};
-```
-
-  </TabItem>
-  <TabItem value="vite" label="webpack5" default>
-
-```js
-// webpack.config.js
-const webpack = require('webpack');
-const isDevelopment = process.env.NODE_ENV !== 'production';
-
-module.exports = {
-  output: {
-    // 开发环境设置 true 将会导致热更新失效
-    clean: isDevelopment ? false : true,
-    filename: '[name].[contenthash].js',
-    chunkFilename: '[name].[contenthash].js',
-    // 需要配置成 umd 规范
-    libraryTarget: 'umd',
-    // 修改不规范的代码格式，避免逃逸沙箱
-    globalObject: 'window',
-    chunkLoadingGlobal: 'garfish-demo-react17',
-    // 保证子应用的资源路径变为绝对路径
-    publicPath: 'http://localhost:8080',
-  },
-  plugin: [
-    // 保证错误堆栈信息及 sourcemap 行列信息正确
-    new webpack.BannerPlugin({
-      banner: 'Micro front-end',
-    }),
-  ],
-};
-```
-
-  </TabItem>
-</Tabs>
+<WebpackConfig />
 
 ### 5. 增加子应用独立运行兼容逻辑
 

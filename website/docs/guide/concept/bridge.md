@@ -9,12 +9,11 @@ order: 1
 Garfish bridge 是 `garfish` 提供的帮助用户降低接入成本的工具函数，它能自动提供 `provider` 函数所需的应用生命周期函数 `render` 和 `destory` ，并实现框架不同版本的兼容。封装底层实现，降低接入成本和出错概率。
 
 :::info
-
 1. garfish bridge 应用在子应用接入场景；
 2. 使用 garfish bridge 后不再需要显示提供 `render` 和 `destory` 函数；
 3. 目前 garfish 仅针对 react 和 vue 框架提供 bridge 函数支持，支持的版本分别为 react v16、v17，vue v2、v3， Angular bridge 及 react v18 正在加紧支持中；
 4. garfish bridge 暂未针对构建工具如 webpack、vite 提供相应的构建工具插件，我们后期会针对这块能力进行补全，请持续关注；
-   :::
+:::
 
 ## @garfish/bridge
 
