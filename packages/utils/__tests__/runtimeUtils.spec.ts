@@ -126,7 +126,7 @@ describe('Garfish shared runtimeUtils', () => {
     expect(isAbsolute('data:text/html;base64,YQ==')).toBe(true);
     expect(
       isAbsolute(
-        'blob:https://garfish.top/832a2821-8580-4099-85c8-509bf48aee50',
+        'blob:https://garfishjs.org/832a2821-8580-4099-85c8-509bf48aee50',
       ),
     ).toBe(true);
     expect(isAbsolute('a.js')).toBe(false);

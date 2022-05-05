@@ -9,7 +9,6 @@ order: 1
 Garfish bridge 是 `garfish` 提供的帮助用户降低接入成本的工具函数，它能自动提供 `provider` 函数所需的应用生命周期函数 `render` 和 `destory` ，并实现框架不同版本的兼容。封装底层实现，降低接入成本和出错概率。
 
 :::info
-
 1. garfish bridge 应用在子应用接入场景；
 2. 使用 garfish bridge 后不再需要显示提供 `render` 和 `destory` 函数；
 3. 目前 garfish 仅针对 react 和 vue 框架提供 bridge 函数支持，支持的版本分别为 react v16、v17，vue v2、v3， Angular bridge 及 react v18 正在加紧支持中；
@@ -78,19 +77,21 @@ export const provider = reactBridge({
   - 必传
   - 当前应用使用的 React 对象，可通过 `import React from "react"` 引入，必传。
 
-- <Highlight>  ReactDOM </Highlight>
+- <Highlight> ReactDOM </Highlight>
 
   - Type: `typeof ReactDOM`
   - 必传
   - 当前应用使用的 ReactDOM 对象，可通过 `import ReactDOM from "react-dom"` 引入，必传。
 
-- <Highlight>  el </Highlight>
+- <Highlight> el </Highlight>
 
   - Type: `string`
   - 非必传
-  - 子应用挂载点，作用类似于子应用的 [domGetter](/api/registerApp#domgetter) 参数，若不传默认使用全局挂载点。
+  - 子应用挂载点
+    - 若子应用构建为 `JS` 入口时，不需要传挂载点，Bridge 将会以子应用的渲染节点作为挂载点；
+    - 若子应用构建成 `HTML` 入口时，则直接传入选择器，bridge 内部通过 `dom.querySelector` 来基于子应用的 `dom` 来找到挂载点；
 
-- <Highlight>  rootComponent </Highlight>
+- <Highlight> rootComponent </Highlight>
 
   - Type：`React.ComponentType`
   - 此参数和 `loadRootComponent` 至少传一个
@@ -101,7 +102,7 @@ export const provider = reactBridge({
     ```
   - 当同时传入了 `loadRootComponent` 参数时，`rootComponent` 参数将失效，且 `rootComponent` 组件不会默认接收到 garfish 传递的 appInfo 应用相关参数；
 
-- <Highlight>  loadRootComponent </Highlight>
+- <Highlight> loadRootComponent </Highlight>
 
   - Type：`loadRootComponentType = (opts: Record<string, any>) => Promise<ComponentType>;`
   - 此参数和 `rootComponent` 至少传一个
@@ -130,7 +131,7 @@ export const provider = reactBridge({
 
   - 当同时传入了 `rootComponent` 参数时，`loadRootComponent` 的优先级更高， `rootComponent` 将失效；
 
-- <Highlight>  errorBoundary </Highlight>
+- <Highlight> errorBoundary </Highlight>
 
   - Type：`errorBoundary: (caughtError: boolean, info: string, props: any) => ReactNode | null;`
   - 非必传
@@ -266,7 +267,7 @@ export const provider = vueBridge({
   - **当前应用是 vue3 应用时**，必传。
   - 当前应用使用的 Vue 对象的 `createApp` 属性，可通过 `import { createApp } from "vue"` 引入
 
-- <Highlight>  rootComponent </Highlight>
+- <Highlight> rootComponent </Highlight>
 
 - Type：`vue.Component`
 - 此参数和 `loadRootComponent` 至少传一个
@@ -277,7 +278,7 @@ export const provider = vueBridge({
   ```
 - 当同时传入了 `loadRootComponent` 参数时，`rootComponent` 将失效，且 `rootComponent` 组件不会默认接受到 garfish 传递的 appInfo 应用相关参数；
 
-- <Highlight>  loadRootComponent </Highlight>
+- <Highlight> loadRootComponent </Highlight>
 
   - Type：`loadRootComponentType = (opts: Record<string, any>) => Promise<ComponentType>;`
   - 此参数和 `rootComponent` 至少传一个
@@ -314,7 +315,7 @@ export const provider = vueBridge({
 
 1. 在 vue3 中，可通过 `handleInstance` 函数拿到创建的 vue 实例对象后进行路由注册；
 2. 在 vue2 中，可显示在 `appOpitons` 中传递路由参数信息；
-:::
+   :::
 
 - <Highlight> handleInstance </Highlight>
 

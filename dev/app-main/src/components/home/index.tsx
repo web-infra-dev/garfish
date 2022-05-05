@@ -78,7 +78,7 @@ const HomePage = observer(({ store }) => {
       <Col span={8} className="card-columns">
         <CardItem
           title="访问子应用"
-          href="https://garfish.top/quickStart"
+          href="https://garfishjs.org/quickStart"
           content={
             <div className="content-wrapper">
               {store.apps.map((v: any) => (
@@ -102,14 +102,14 @@ const HomePage = observer(({ store }) => {
             //   query: { id: '002' },
             // });
           }}
-          href="https://garfish.top/api/router/#routerpush"
+          href="https://garfishjs.org/api/router/#routerpush"
           markdownStr={toSubAppStr}
         />
 
         <CardItem
           title={text}
           onClick={loadApplication}
-          href="https://garfish.top/api/loadApp"
+          href="https://garfishjs.org/api/loadApp"
           markdownStr={loadAppStr}
         />
 
@@ -118,7 +118,7 @@ const HomePage = observer(({ store }) => {
           onClick={() =>
             window?.Garfish?.channel.emit('sayHello', 'hello, i am main app')
           }
-          href="https://garfish.top/api/channel"
+          href="https://garfishjs.org/api/channel"
           markdownStr={channelStr}
         />
       </Col>

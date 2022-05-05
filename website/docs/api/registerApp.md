@@ -82,7 +82,7 @@ Garfish 处理 app 参数的原则是：
 
 - Type: <Highlight> string </Highlight>
 - 子应用的基础路径，可选，默认值为全局 [basename](./run.md#basename)；
-- 设置的 basename 将通过 [provider 函数](../guide/quickStart/quickStart.md#2导出-provider-函数) 的参数透传给子应用，子应用需要将 basename 设置为相应子应用的基础路由，这是必须的；
+- 设置的 basename 将通过 [provider 函数](../guide/quickStart/start.md#2导出-provider-函数) 的参数透传给子应用，子应用需要将 basename 设置为相应子应用的基础路由，这是必须的；
 - [为什么子应用需要设置 basename ?](/issues/#子应用拿到-basename-的作用)
 
 ### entry
@@ -109,7 +109,7 @@ export type DomGetter =
 ### props?
 
 - Type: <Highlight> Object </Highlight>
-- 初始化时主应用传递给子应用的数据，可选。子应用 [`provider` 导出函数](../guide/quickStart/quickStart.md#2导出-provider-函数) 生命周期方法中将接收到此数据；
+- 初始化时主应用传递给子应用的数据，可选。子应用 [`provider` 导出函数](../guide/quickStart/start.md#2导出-provider-函数) 生命周期方法中将接收到此数据；
 
 ### sandbox?
 

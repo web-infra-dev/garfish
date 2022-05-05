@@ -4,6 +4,8 @@ slug: /guide/lifecycle
 order: 3
 ---
 
+`Garfish` 应用的生命周期可以归结为：加载、渲染、销毁 三个阶段，因此 `Garfish` 应用的生命周期也是围绕着这三个阶段而展开的。应用的加载主要是通过 [Garfish.loadApp](../../api/loadApp.md)，通过 `loadApp` API 会自动创建应用的实例，可以通过应用实例上的 `mount` 和 `show` 方法对应用进行渲染，通过 `unmount` 和 `hide` 方法对应用进行销毁，用户在实际使用的过程中通过 [Garfish.run](../../api/run.md)会发现当路由发生变化时符合加载条件的应用会自动加载渲染，实际上是 [`Garfish Router Plugin`](./router.md) 通过监听路由变化来触发 `loadApp` 和 `mount` 自动完成应用的加载、渲染、销毁。
+
 <img
   src="https://user-images.githubusercontent.com/27547179/165056974-f40d790e-3db1-4aea-b2db-5d3618a150d5.png"
   width="400"

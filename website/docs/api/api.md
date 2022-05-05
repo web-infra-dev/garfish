@@ -12,7 +12,7 @@ import Garfish from "garfish";
 其中，Garfish 是 `garfish` 包默认导出的实例，实例上包含微前端相关API，用户可以通过相应 API 完成对整个微前端应用的管理。
 
 :::tip
-这里需要特殊说明的是，子应用不需要额外引入 Garfish 实例，子应用可通过 `window.Garfish` 获取全局 Garfish 实例信息。
+这里需要特殊说明的是，子应用不需要额外引入 Garfish 实例，子应用可通过 `window.Garfish` 获取全局 Garfish 实例信息，参考 [Garfish 环境变量](../guide/quickStart/env.md)。
 :::
 
 
