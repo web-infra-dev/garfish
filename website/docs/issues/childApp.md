@@ -7,8 +7,10 @@ order: 1
 ## "provider" is "null".
 
 出现这个问题是因为 garfish 无法从子应用在中正确获取到 `provider` 导出函数，可以先按照以下步骤自查：
+
 1. 检查子应用是否正确 export 了 provider 函数。[参考](/guide/quickStart#2导出-provider-函数)
 2. 检查子应用是否正确配置了 webpack 的 output 配置：
+
 ```js
 // webpack.config.js
 {
@@ -25,6 +27,7 @@ order: 1
   },
 }
 ```
+
 3. 确认子应用 `entry` 地址设置正确：若为 html 的入口类型 `entry` 配置为 html 入口地址，若为 js 类型，子应用 `entry` 配置为 js 入口地址；
 
 4. 若子应用为 js 入口，需要保证子应用的资源被打包成了单 bundle，若有部分依赖未被打包成 bundle 会导致子应用无法正常加载。例如子应用使用了 webpack splitChunk 进行拆包且为 js 入口时，会导致上述报错；
@@ -41,6 +44,7 @@ if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
 ## Uncaught (in promise) TypeError: [Garfish warning]: Cannot read properties of undefined (reading 'call')
 
 - 错误原因
+
   - 这个问题出现在子应用构建为 umd 格式后存在脚本出现了 `type="module"` 的标识，这将导致该 script 逃逸出沙箱执行，而其余脚本在沙箱内执行，找不到 chunk 导致报错。
 
 - 解决方案
@@ -55,10 +59,10 @@ if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
 1. 将挂载点设置为常驻挂载点，不要跟随路由变化使子应用挂载点销毁和出现
 2. 保证 Garfish 在渲染时挂载点存在
 
-
 ## 如何获取主应用的 localStorage
 
 可按照如下配置获取主应用的 localStorage：
+
 ```ts
 import Garfish from 'garfish';
 
@@ -75,14 +79,16 @@ Garfish.run({
   }
 });
 ```
+
 类似 localStorage，子应用若需要获取被沙箱隔离机制隔离的全局变量上的变量，均可通过上述方式获取。
+
 ## 如何判断子应用是否微前端应用中
 
 可通过环境变量 `window.__GARFISH__` 判断。
+
 ## 如何手动挂载子应用
 
 可通过 [Garfish.loadApp](/api/loadApp) 动态加载子应用。
-
 
 ## 子应用销毁后重定向逻辑影响其他子应用
 
@@ -113,13 +119,16 @@ export const provider = () => {
   };
 };
 ```
+
 ## You are attempting to use a basename on a page whose URL path does not begin with the basename.
 
 > 问题原因
+
 - 出现这个错误的原因一般是因为子应用没有正确的设置子应用的 basename 所导致的。
-- 子应用的 `basename` = 主应用的 `basename` +  子应用设置的激活路径 `activeWhen`，这个值会在生命周期函数中由 garfish 默认通过通过参数传递过来，直接使用即可。
+- 子应用的 `basename` = 主应用的 `basename` + 子应用设置的激活路径 `activeWhen`，这个值会在生命周期函数中由 garfish 默认通过通过参数传递过来，直接使用即可。
 
 > 解决方案
+
 - 将生命周期函数中主应用传递过来的 `basename` 设置为子应用的 `basename`。[参考](/guide/demo/react#3-根组件设置路由的-basename)
 
 ## 刷新直接返回子应用内容
@@ -176,12 +185,14 @@ export const provider = () => {
 - 若子应用的激活条件为函数，在每次发生路由变化时会通过校验子应用的激活函数若函数返回 `true` 表明符合当前激活条件将触发路由激活，
 - Garfish 会将当前的路径传入激活函数分割以得到子应用的最长激活路径，并将 `basename` + `子应用最长激活路径传` 给子应用参数
 - **子应用如果本身具备路由，在微前端的场景下，必须把 basename 作为子应用的基础路径，没有基础路由，子应用的路由可能与主应用和其他应用发生冲突**
+
 ## 子应用使用 style-component 切换子应用后样式丢失
 
 - 开启 Style-component 后在生产模式下 style 将会插入到 sheet 中（[React Styled Components stripped out from production build](https://stackoverflow.com/questions/53486470/react-styled-components-stripped-out-from-production-build)）
 - 应用重渲染后 style 重新插入后依然，但是 sheet 未恢复
 
 解决方案在使用 `style-component` 的子应用添加环境变量：`REACT_APP_SC_DISABLE_SPEEDY=true`
+
 ### arco-design 多版本样式冲突
 
 1. [Arco-design 全局配置 ConfigProvider](https://arco.design/react/components/config-provider)
@@ -231,6 +242,7 @@ export default () => (
 ## 如何独立运行子应用
 
 通过 `window.__GARFISH__` 可判断当前子应用是否处于微前端下，通过此变量判断何时独立运行子应用：
+
 ```js
 // src/index.tsx
 import React from 'react';
@@ -244,10 +256,11 @@ if (!window.__GARFISH__) {
 ```
 
 ## 子应用动态插入到 body 上的节点逃逸？
-  - 首先 garfish 会对每一个子应用创建一个app container 用于包裹子应用，会创建 `__garfishmockhtml__`、 `__garfishmockbody__` 等 mock 节点。
-  - 对于在子应用运行过程中动态添加到 body 上的节点（如 drawer 组件），garfish 并未
+
+- 首先 garfish 会对每一个子应用创建一个 app container 用于包裹子应用，会创建 `__garfishmockhtml__`、 `__garfishmockbody__` 等 mock 节点。
+- 对于在子应用运行过程中动态添加到 body 上的节点（如 drawer 组件），garfish 并未
   将此类节点移动到 mock 的 `__garfishmockbody__` 中，原因是有些组件库会计算在 dom 层级中的位置，所以目前 garfish 会主动让其逃逸到上层。
-  - 在子应用运行过程中动态添加到 body 上的节点在子应用卸载时，garfish 并不会默认回收其 DOM 副作用，需要用户主动在组件的销毁回调里触发 dom 的回收，防止 DOM 副作用未销毁带来的影响。
+- 在子应用运行过程中动态添加到 body 上的节点在子应用卸载时，garfish 并不会默认回收其 DOM 副作用，需要用户主动在组件的销毁回调里触发 dom 的回收，防止 DOM 副作用未销毁带来的影响。
 
 ## 子应用 addEventListener 注册的事件监听在子应用卸载后并未销毁
 
@@ -260,6 +273,7 @@ if (!window.__GARFISH__) {
 1. garfish 目前默认启用了缓存模式，在缓存模式下 garfish 会保留应用的上下文，且不会重新执行所有代码，只会执行 render 的 destory 函数，因此应用的性能将得到很大的提升。
 
 2. 在缓存模式下 garfish 只会隔离环境变量和样式，子应用卸载时会保留应用的上下文，不会默认清除子应用的副作用。若业务存在需要销毁的副作用，一般来说建议用户在组件的销毁函数里面手动释放组件的副作用，如果有些逻辑确实需要清除，并且需要保证应用可用性可以把 cache 设置成 false。
+
 ## JS 错误上报 Script error 0
 
 - 一般错误收集的工具都是通过：
@@ -270,8 +284,11 @@ if (!window.__GARFISH__) {
 > 解决方案
 
 由于浏览器跨域的限制，非同域下的脚本执行抛错，捕获异常的时候，不能拿到详细的异常信息，只能拿到类似 Script error 0. 这类信息。通常跨域的异常信息会被忽略，不会上报。解决方案： 所有 `<script>` 加载的资源加上 `crossorigin="anonymous"`
+
 ## 子应用热更新问题
+
 garfish 子应用热更新问题请参考 [博客](/blog/hmr)
+
 ## cdn 第三方包未正确挂在在 window 上
 
 > 问题概述
@@ -283,44 +300,6 @@ garfish 子应用热更新问题请参考 [博客](/blog/hmr)
 
 - 将对应的 cdn script 增加 no-entry 属性：`<script no-entry="true" src="xxx"></script>`，设置该属性后对应的 script 内容将不会运行在 commonjs 环境，对应的环境变量也会正常的插入到子应用的 window 上
 
-## ESModule
-
-Garfish 核心库默认支持 esModule，但是需要关掉 vm 沙箱或者为快照沙箱时，才能够使用。
-
-```js
-Garfish.run({
-  ...
-  apps: [
-    {
-      name: 'vue'，
-      activeWhen: '/vue',
-      entry: 'http://localhost:8080',
-      sandbox: {
-        open: false,
-        // snapshot: true, 或者只开启快照沙箱
-      },
-    },
-  ],
-})
-```
-
-如果需要在 vm 沙箱下开启 esModule 的能力，可以使用 `@garfish/es-module` 插件。
-
-> `@garfish/es-module` 会在运行时分析子应用的源码做一层 esModule polyfill，但他会带来严重的首屏性能问题，如果你的项目不是很需要在 vm 沙箱下使用 esModule 就不应该使用此插件。
-
-> 在短期的规划中，为了能在生产环境中使用，我们会尝试使用 wasm 来优化整个编译性能。在未来如果 [module-fragments](https://github.com/tc39/proposal-module-fragments) 提案成功进入标准并成熟后，我们也会尝试使用此方案，但这需要时间。
-
-```js
-import { GarfishEsModule } from '@garfish/es-module';
-
-Garfish.run({
-  ...
-  plugins: [GarfishEsModule()],
-})
-```
-
-> 提示：当子项目使用 `vite` 开发时，你可以在开发模式下使用 esModule 模式，生产环境可以打包为原始的无 esModule 的模式。
-
 ## garfish 支持多实例吗
 
 支持
@@ -329,11 +308,12 @@ Garfish.run({
 
 > 问题背景
 
-  微前端场景下，存在沙盒机制，基于eval 和 new Function的形式去实现沙箱机制，在手动执行代码的情况下，会产生堆栈丢失、sourcemap还原错行等问题。
+微前端场景下，存在沙盒机制，基于 eval 和 new Function 的形式去实现沙箱机制，在手动执行代码的情况下，会产生堆栈丢失、sourcemap 还原错行等问题。
 
 > 解决方案
 
-  可通过增加如下 webpack 配置解决：
+可通过增加如下 webpack 配置解决：
+
 ```js
 // webpack.config.js
 const webpack = require('webpack');
@@ -344,4 +324,5 @@ config.plugins = [
   });
 ]
 ```
+
 具体原因可参考 [博客](/blog/sourcemap)

@@ -1,7 +1,7 @@
 module.exports = {
   title: 'Garfish',
   tagline: '微前端解决方案',
-  url: 'https://garfish.top',
+  url: 'https://garfishjs.org',
   baseUrl: '/',
   organizationName: 'bytedance',
   projectName: 'garfish',

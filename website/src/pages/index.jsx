@@ -207,7 +207,7 @@ function Home() {
                     styles.linkButton,
                     styles.getGuide
                   )}
-                  to={useBaseUrl('guide/')}>
+                  to={useBaseUrl('guide/start/')}>
                   快速开始
                 </Link>
               </div>
