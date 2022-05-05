@@ -4,6 +4,8 @@ slug: /guide/demo/vue
 order: 3
 ---
 
+import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
+
 本节我们将详细介绍 vue 框架的应用作为子应用的接入步骤。
 ## vue 子应用接入步骤
 
@@ -71,33 +73,33 @@ npm install @garfish/bridge --save
 
 <TabItem value="customer_provider_vue2" label="自定义导出" default>
 
-  ```js
-    import Vue from 'vue';
-    import App from './App.vue';
-    import store from './store';
-    import VueRouter from 'vue-router';
-    import HelloWorld from './components/HelloWorld.vue';
+```js
+  import Vue from 'vue';
+  import App from './App.vue';
+  import store from './store';
+  import VueRouter from 'vue-router';
+  import HelloWorld from './components/HelloWorld.vue';
 
-    Vue.use(VueRouter);
-    Vue.config.productionTip = false;
+  Vue.use(VueRouter);
+  Vue.config.productionTip = false;
 
-    const render = ({ dom, basename = '/' }) => {
-      const router = new VueRouter({
-        mode: 'history',
-        base: basename,
-        router,
-        routes: [
-          { path: '/', component: HelloWorld },
-        ],
-      });
+  const render = ({ dom, basename = '/' }) => {
+    const router = new VueRouter({
+      mode: 'history',
+      base: basename,
+      router,
+      routes: [
+        { path: '/', component: HelloWorld },
+      ],
+    });
 
-      const vm = new Vue({
-        store,
-        render: (h) => h(App, { props: { basename } }),
-      }).$mount();
-      (dom || document).querySelector('#app').appendChild(vm.$el);
-    };
-  ```
+    const vm = new Vue({
+      store,
+      render: (h) => h(App, { props: { basename } }),
+    }).$mount();
+    (dom || document).querySelector('#app').appendChild(vm.$el);
+  };
+```
   </TabItem>
 </Tabs>
 
@@ -184,6 +186,7 @@ npm install @garfish/bridge --save
 </Tabs>
 
 ### 3. 根组件设置路由的 basename
+
 :::info
 1. 为什么要设置 basename？请参考 [issue](../../issues/childApp.md#子应用拿到-basename-的作用)
 2. 我们强烈建议使用从主应用传递过来的 basename 作为子应用的 basename，而非主、子应用约定式，避免 basename 后期变更未同步带来的问题。
@@ -244,39 +247,14 @@ npm install @garfish/bridge --save
 
 
 ### 4. 更改 webpack 配置
-:::caution 【重要】注意：
-1. libraryTarget 需要配置成 umd 规范；
-2. globalObject 需要设置为 'window'，以避免由于不规范的代码格式导致的逃逸沙箱；
-3. publicPath 设置为子应用资源的绝对地址，避免由于子应用的相对资源导致资源变为了主应用上的相对资源。这是因为主、子应用处于同一个文档流中，相对路径是相对于主应用而言的
-4. 'Access-Control-Allow-Origin': '*' 允许开发环境跨域，保证子应用的资源支持跨域。另外也需要保证在上线后子应用的资源在主应用的环境中加载不会存在跨域问题（**也需要限制范围注意安全问题**）；
-:::
 
-```js
-// vue.config.js
-module.exports = {
-  configureWebpack: () => {
-    return {
-      entry: './src/main.js',
-      output: {
-        filename: '[name].[hash].js',
-        chunkFilename: '[name].[hash].js',
-        libraryTarget: 'umd',
-        globalObject: 'window',
-      },
-    };
-  },
-  publicPath: 'http://localhost:8080',
-  devServer: {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    },
-  },
-}
-```
+<WebpackConfig />
+
 ### 5. 增加子应用独立运行兼容逻辑
 :::tip
 last but not least, 别忘了添加子应用独立运行逻辑，这能够让你的子应用脱离主应用独立运行，便于后续开发和部署。
 :::
+
 <Tabs>
   <TabItem value="vue2" label="vue2" default>
 
@@ -326,5 +304,4 @@ last but not least, 别忘了添加子应用独立运行逻辑，这能够让你
   ```
   </TabItem>
 </Tabs>
-```
 

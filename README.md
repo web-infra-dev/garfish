@@ -34,11 +34,11 @@ yarn add garfish
 
 ## Documentation
 
-> The doc site ([Garfish](https://garfish.top/)) is only available in Chinese for now, we are planning to add English versions soon.
+> The doc site ([Garfish](https://garfishjs.org/)) is only available in Chinese for now, we are planning to add English versions soon.
 
-- [About Garfish](https://garfish.top/guide)
-- [Quick Start](https://garfish.top/quickStart)
-- [API References](https://garfish.top/api)
+- [About Garfish](https://garfishjs.org/guide)
+- [Quick Start](https://garfishjs.org/quickStart)
+- [API References](https://garfishjs.org/api)
 
 ## Functionality
 

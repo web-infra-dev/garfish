@@ -1,8 +1,11 @@
 ---
 title: 快速开始
-slug: /guide/quickStart
+slug: /guide/start
 order: 2
 ---
+
+import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
+import ViteConfig from '@site/src/components/config/_viteConfig.mdx';
 
 本节分别从主、子 应用视角出发，介绍如何通过 [Garfish API](/api) 来将应用接入 Garfish 框架
 
@@ -49,10 +52,10 @@ Garfish.run({
 
 当引入 Garfish 实例，执行实例方法 `Garfish.run` 后，`Garfish` 将会立刻启动路由劫持能力。
 
-这时 `Garfish` 将会监听浏览器路由地址变化，当浏览器的地址发生变化时，`Garfish` 框架内部便会执行匹配逻辑，当解析到当前路径符合子应用匹配逻辑时，便会自动将应用挂载至指定的 `dom` 节点上，并在此过程中依次触发子应用加载、渲染过程中的 [生命周期钩子函数](./index.md#生命周期).
+这时 `Garfish` 将会监听浏览器路由地址变化，当浏览器的地址发生变化时，`Garfish` 框架内部便会执行匹配逻辑，当解析到当前路径符合子应用匹配逻辑时，便会自动将应用挂载至指定的 `dom` 节点上，并在此过程中依次触发子应用加载、渲染过程中的 [生命周期钩子函数](/guide/lifecycle).
 
 :::tip 注意
-请确保 `subApp` 指定的节点存在于页面中，否则可能会导致 `Invalid domGetter` 错误，在 `Garfish` 开始渲染时，无法查询到该挂载节点则会提示该错误
+请确保指定的节点存在于页面中，否则可能会导致 `Invalid domGetter` 错误，在 `Garfish` 开始渲染时，无法查询到该挂载节点则会提示该错误
 
 > 解决方案
 
@@ -65,7 +68,7 @@ Garfish.run({
 ```typescript
 // 使用 loadApp 动态挂载应用
 import Garfish from 'garfish';
-const app = Garfish.loadApp('vue-app', {
+const app = await Garfish.loadApp('vue-app', {
   domGetter: '#container',
   entry: 'http://localhost:3000',
   cache: true,
@@ -87,59 +90,12 @@ app.mounted ? app.show() : await app.mount();
 <Tabs>
   <TabItem value="Webpack" label="Webpack" default>
 
-```js
-// webpack.config.js
-const webpack = require('webpack');
-
-module.exports = {
-  output: {
-    libraryTarget: 'umd',
-    globalObject: 'window',
-    jsonpFunction: 'sub-app-jsonpFunction', // 请确保该值唯一
-    publicPath: 'http://localhost:8000', // 设置为子应用的绝对地址
-  },
-  plugin: [
-    // 保证错误堆栈信息及 sourcemap 行列信息正确
-    new webpack.BannerPlugin({
-      banner: 'Micro front-end',
-    }),
-  ],
-  devServer: {
-    port: '8000', // 保证在开发模式下应用端口不一样
-    headers: {
-      'Access-Control-Allow-Origin': '*', // 允许开发环境跨域
-    },
-  },
-};
-```
-
-:::caution 【重要】注意：
-
-1. libraryTarget 需要配置成 umd 规范；
-2. globalObject 需要设置为 'window'，以避免由于不规范的代码格式导致的逃逸沙箱
-3. 如果你的 webpack 为 v4 版本，需要设置 jsonpFunction 并保证该值唯一（否则可能出现 webpack chunk 互相影响的可能）。若为 webpack5 将会直接使用 package.json name 作为唯一值，请确保应用间的 name 各不相同；
-4. publicPath 设置为子应用资源的绝对地址，避免由于子应用的相对资源导致资源变为了主应用上的相对资源。这是因为主、子应用处于同一个文档流中，相对路径是相对于主应用而言的
-5. 'Access-Control-Allow-Origin': '\*' 允许开发环境跨域，保证子应用的资源支持跨域。另外也需要保证在上线后子应用的资源在主应用的环境中加载不会存在跨域问题（**也需要限制范围注意安全问题**）；
-:::
+<WebpackConfig />
 
    </TabItem>
    <TabItem value="vite" label="Vite" default>
 
-```js
-// 使用 Vite 应用作为子应用时（未使用 @garfish/es-module 插件）需要注意：
-// 1. 需要将子应用沙箱关闭 Garfish.run({ apps: [{ ..., sandbox: false }] })
-// 2. 子应用的副作用将会发生逃逸，在子应用卸载后需要将对应全局的副作用清除
-export default defineConfig({
-  // 提供资源绝对路径，端口可自定义
-  base: 'http://localhost:3000/',
-  server: {
-    port: 3000,
-    cors: true,
-    // 提供资源绝对路径，端口可自定义
-    origin: 'http://localhost:3000',
-  },
-});
-```
+<ViteConfig />
 
   </TabItem>
 </Tabs>
