@@ -8,7 +8,7 @@ order: 1
 
 出现这个问题是因为 garfish 无法从子应用在中正确获取到 `provider` 导出函数，可以先按照以下步骤自查：
 
-1. 检查子应用是否正确 export 了 provider 函数。[参考](/guide/quickStart#2导出-provider-函数)
+1. 检查子应用是否正确 export 了 provider 函数。[参考](/guide/start#2导出-provider-函数)
 2. 检查子应用是否正确配置了 webpack 的 output 配置：
 
 ```js

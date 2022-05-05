@@ -14,29 +14,11 @@ order: 3
 
 > 解决堆栈错行
 
-- step1：升级主应用至 @byted/garfish@^6.0.0
+- step1：升级主应用至 garfish 至最新版本
 
-2. 新增 Garfish webpack 插件，解决生产环境问题及 Slardar 还原堆栈问题
+2. 新增 webpack 插件，解决生产环境问题堆栈还原问题
 
-> 子应用与 Garfish 相关微前端配置可以自动生成
->
-> 解决代码压缩后在 Garfish 沙箱内执行堆栈异常
-
-- step2：子应用安装并使用 @byted/garfish-webpack-plugin@^6.0.0
-
-```js
-// webpack配置
-const GarfishPlugin = require('@byted/garfish-webpack-plugin');
-const webpack = require('webpack');
-
-config.plugins = [
-  new GarfishPlugin({
-    appId: 'vue13', // 子应用的唯一id，保证子应用之间不冲突即可
-  }),
-];
-```
-
-或者
+> 子应用与 Garfish 相关微前端配置可以自动生成，解决代码压缩后在 Garfish 沙箱内执行堆栈异常
 
 ```js
 // webpack配置
