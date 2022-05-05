@@ -83,6 +83,74 @@ Garfish.run({
 
 可通过 [Garfish.loadApp](/api/loadApp) 动态加载子应用。
 
+## HTML entry 和 JS entry 差异
+
+* HTML entry
+  * 指的是子应用配置的资源地址是 HTML 的地址
+  * 指定子应用的 entry 地址为 HTML 地址，支持像 iframe 一样的能力，将对应的子应用渲染至当前应用中
+  * HTML entry 模式的作用设计的初衷，解决子应用：**独立开发**、**独立测试** 的能力
+
+* JS entry
+  * 指的是子应用配置的资源地址就是一个 JS 地址
+
+* 二者在使用层面上的差异
+  * 在作为 `html entry` 时，子应用的挂载点需要基于传入的 `dom` 节点进行选中挂载点
+  * 因为在 `html entry` 时，其实类似于 `iframe` 的模式，子应用在独立运行时的所有 `dom` 结构都会被挂到主应用的文档流上（整个文档流会挂载在当前 html 上）
+  * 所以子应用在渲染时需要根据子应用的 `dom` 结构去找他的挂载点。
+
+- HTML entry 正确渲染销毁写法
+
+```js {6}
+export const provider = () => {
+  return {
+    render({ dom }) {
+      ReactDOM.render(
+        React.createElement(HotApp),
+        dom.querySelector('#root'), // 基于 dom 去选中文档流中的 #root，就和在独立运行时使用 document.querySelector('#root') 一样
+      );
+    },
+    destroy({ dom }) { // 此外，destroy 应该正确的执行
+      const root = dom && dom.querySelector('#root');
+      if (root) {
+        ReactDOM.unmountComponentAtNode(root);
+      }
+    },
+  }
+}
+```
+
+- JS entry 正确渲染销毁写法
+
+```js
+export const provider = ({ dom , basename}) => ({
+  render(){
+  	ReactDOM.render(<App basename={basename} />, dom); // 作为 js entry 时，没有自己的文档流，只有提供的渲染节点
+  },
+
+  destroy({ dom }}) {
+    ReactDOM.unmountComponentAtNode(dom); // 没有自己的文档流，直接销毁
+  },
+});
+```
+## garfish 支持多实例吗
+
+支持。
+
+目前 garfish 支持多实例场景，业务使用场景可分为 「非嵌套场景」 和 「嵌套场景」：
+
+- 非嵌套场景下
++ 非嵌套场景下，子应用请勿在安装引入 Garfish 包，并导入使用。
++ 子应用如果想要在微前端场景下使用 Garfish 包的相关能力，可判断在微前端环境内时，通过 `window.Garfish` 使用相关接口。
+
+```js
+if (window.__GARFISH__) {
+  window.Garfish.xx
+}
+```
+
+- 嵌套场景
++ Garfish 目前内部的设计都支持嵌套场景，如果业务对这一块有诉求可以使用，协助我们一起推进在嵌套场景下的能力。
+
 
 ## 子应用销毁后重定向逻辑影响其他子应用
 
@@ -116,10 +184,12 @@ export const provider = () => {
 ## You are attempting to use a basename on a page whose URL path does not begin with the basename.
 
 > 问题原因
+
 - 出现这个错误的原因一般是因为子应用没有正确的设置子应用的 basename 所导致的。
 - 子应用的 `basename` = 主应用的 `basename` +  子应用设置的激活路径 `activeWhen`，这个值会在生命周期函数中由 garfish 默认通过通过参数传递过来，直接使用即可。
 
 > 解决方案
+
 - 将生命周期函数中主应用传递过来的 `basename` 设置为子应用的 `basename`。[参考](/guide/demo/react#3-根组件设置路由的-basename)
 
 ## 刷新直接返回子应用内容
@@ -227,6 +297,8 @@ export default () => (
   </ConfigProvider>
 );
 ```
+## 子应用热更新问题
+garfish 子应用热更新问题请参考 [博客](/blog/hmr)
 
 ## 如何独立运行子应用
 
@@ -242,7 +314,61 @@ if (!window.__GARFISH__) {
   ReactDOM.render(<App />, document.querySelector('#root'));
 }
 ```
+## 已有 `SPA` 应用如何改造为 garfish 子应用
+### 场景描述
++ 很多需要改造成微前端的 `SPA` 应用，都是已经存在的旧应用。
++ 可能需要逐步拆解应用内的部分路由，变为子应用。
++ 主应用现有路由如何与微前端路由驱动共存，是迁移过程中常遇到的。
 
+### 如何逐步改造（以 `react` 为例）
+1. 增加 `id` 为 `micro-app` 的挂载点，预留给子应用挂载，`Router` 部分的内容为主应用其他路由。
+2. 主应用增加匹配到子应用路由前缀时，`Router` 内容为空。
+3. 配置子应用列表时以 `Router` 内容为空时的前缀作为子应用激活条件前缀。
+
+
+主应用的根组件：
+```jsx
+<BrowserRouter getUserConfirmation={ getConfirmation }>
+  <RootContext.Provider value={ provider }>
+    <Header />
+    <div className="container">
+      <Router routes={ routes } />
+      <div id="micro-app" />
+    </div>
+  </RootContext.Provider>
+</BrowserRouter>
+```
+
+routes：
+```js
+export default [
+  {
+    path: '/platform/search',
+    component: Search,
+  },
+  {
+    // 以 /platform/micro-app 开头的应用Router都不展示内容
+    path: '/platform/micro-app',
+    component: function () {
+      return null;
+    },
+  },
+  {
+    component: Home,
+  },
+];
+```
+
+主入口处：
+```js
+Garfish.run({
+  domGetter: '#micro-app',
+  basename: '/platform/micro-app',
+  apps: [
+    ...
+  ],
+});
+```
 ## 子应用动态插入到 body 上的节点逃逸？
   - 首先 garfish 会对每一个子应用创建一个app container 用于包裹子应用，会创建 `__garfishmockhtml__`、 `__garfishmockbody__` 等 mock 节点。
   - 对于在子应用运行过程中动态添加到 body 上的节点（如 drawer 组件），garfish 并未
@@ -251,7 +377,7 @@ if (!window.__GARFISH__) {
 
 ## 子应用 addEventListener 注册的事件监听在子应用卸载后并未销毁
 
-- 若子应用默认开启了缓存模式，在子应用卸载时会保留应用的上下文，不会默认清除 addEventListener 注册的事件监听，这是因为再次渲染该子应用时我们只会执行 render 函数，因此子应用的副作用不会随意被清除。
+- 若子应用默认开启了缓存模式，在子应用卸载时会保留应用的上下文，不会默认清除 addEventListener 注册的事件监听，这是因为再次渲染该子应用时 garfish 只会执行 render 函数，因此子应用的副作用不会随意被清除。
 
 - 这种情况建议用户在组件的销毁函数里面手动释放组件的副作用，若有些逻辑确实需要清除，并且需要保证应用可用性可以将 cache 设置成 false。
 
@@ -270,8 +396,6 @@ if (!window.__GARFISH__) {
 > 解决方案
 
 由于浏览器跨域的限制，非同域下的脚本执行抛错，捕获异常的时候，不能拿到详细的异常信息，只能拿到类似 Script error 0. 这类信息。通常跨域的异常信息会被忽略，不会上报。解决方案： 所有 `<script>` 加载的资源加上 `crossorigin="anonymous"`
-## 子应用热更新问题
-garfish 子应用热更新问题请参考 [博客](/blog/hmr)
 ## cdn 第三方包未正确挂在在 window 上
 
 > 问题概述
@@ -282,7 +406,6 @@ garfish 子应用热更新问题请参考 [博客](/blog/hmr)
 > 解决方案
 
 - 将对应的 cdn script 增加 no-entry 属性：`<script no-entry="true" src="xxx"></script>`，设置该属性后对应的 script 内容将不会运行在 commonjs 环境，对应的环境变量也会正常的插入到子应用的 window 上
-
 ## ESModule
 
 Garfish 核心库默认支持 esModule，但是需要关掉 vm 沙箱或者为快照沙箱时，才能够使用。
@@ -320,10 +443,6 @@ Garfish.run({
 ```
 
 > 提示：当子项目使用 `vite` 开发时，你可以在开发模式下使用 esModule 模式，生产环境可以打包为原始的无 esModule 的模式。
-
-## garfish 支持多实例吗
-
-支持
 
 ## 子应用堆栈信息丢失、sourcemap 行列信息错误
 
