@@ -15,7 +15,7 @@ const opts = {
 
 function runAllExample() {
   // Usage with promises
-  if (!process.env.CI) {
+  if (process.env.CI) {
     return Promise.all(ports.map((port) => killPort(port)))
       .then(() => {
         step('\n building dev project...');
