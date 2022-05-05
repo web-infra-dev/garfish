@@ -32,9 +32,6 @@
     "*.ts?(x)": [
       "eslint --fix",
       "prettier --parser=typescript --write"
-    ],
-    "*.md": [
-      "prettier --write"
     ]
   },
   "publishConfig": {

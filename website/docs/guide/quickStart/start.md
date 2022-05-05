@@ -58,14 +58,14 @@ Garfish.run({
 
 1. 将挂载点设置为常驻挂载点，不要跟随路由变化使子应用挂载点销毁和出现
 2. 保证 Garfish 在渲染时挂载点存在
-   :::
+:::
 
 如果你的业务需要手动控制应用加载，可以使用 [Garfish.loadApp](/api/loadApp.md) 手动挂载 APP：
 
 ```typescript
 // 使用 loadApp 动态挂载应用
 import Garfish from 'garfish';
-const app = Garfish.loadApp('vue-app', {
+const app = await Garfish.loadApp('vue-app', {
   domGetter: '#container',
   entry: 'http://localhost:3000',
   cache: true,
