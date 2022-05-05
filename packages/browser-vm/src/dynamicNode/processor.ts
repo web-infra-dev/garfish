@@ -267,10 +267,14 @@ export class DynamicNodeProcessor {
     }
 
     // Collect nodes that escape the container node
-    if (!this.rootElement.contains(parentNode)) {
+    if (
+      !this.rootElement.contains(parentNode) &&
+      document.contains(parentNode)
+    ) {
       if (parentNode !== this.rootElement) {
         this.sandbox.deferClearEffects.add(() => {
           this.DOMApis.removeElement(this.el);
+          return this.el;
         });
       }
     }

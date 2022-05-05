@@ -1,5 +1,5 @@
 import { vueBridge } from '@garfish/bridge';
-import { h, createApp } from 'vue';
+import { createApp } from 'vue';
 import App from './App.vue';
 
 vueBridge({
