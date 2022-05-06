@@ -10,7 +10,7 @@ import ViteConfig from '@site/src/components/config/_viteConfig.mdx';
 本节分别从主、子 应用视角出发，介绍如何通过 [Garfish API](/api) 来将应用接入 Garfish 框架
 
 :::tip 在线预览
-<a href="https://stackblitz.com/edit/github-7tm8gk?file=main/src/App.js"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" width="200"/></a>
+<a href="https://stackblitz.com/edit/github-7tm8gk?file=main/src/App.js"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" width="150"/></a>
 :::
 
 ## 主应用
@@ -52,10 +52,10 @@ Garfish.run({
 
 当引入 Garfish 实例，执行实例方法 `Garfish.run` 后，`Garfish` 将会立刻启动路由劫持能力。
 
-这时 `Garfish` 将会监听浏览器路由地址变化，当浏览器的地址发生变化时，`Garfish` 框架内部便会执行匹配逻辑，当解析到当前路径符合子应用匹配逻辑时，便会自动将应用挂载至指定的 `dom` 节点上，并在此过程中依次触发子应用加载、渲染过程中的 [生命周期钩子函数](/guide/lifecycle).
+这时 `Garfish` 将会监听浏览器路由地址变化，当浏览器的地址发生变化时，`Garfish` 框架内部便会执行匹配逻辑，当解析到当前路径符合子应用匹配逻辑时，便会自动将应用挂载至指定的 `dom` 节点上，并在此过程中会依次触发子应用加载、渲染过程中的 [生命周期钩子函数](/guide/lifecycle).
 
 :::tip 注意
-请确保指定的节点存在于页面中，否则可能会导致 `Invalid domGetter` 错误，在 `Garfish` 开始渲染时，无法查询到该挂载节点则会提示该错误
+请确保指定的节点存在于页面中，否则可能会导致出现 `Invalid domGetter "xxx"​` 错误。在 `Garfish` 开始渲染时，无法查询到该挂载节点则会提示该错误
 
 > 解决方案
 
@@ -63,7 +63,7 @@ Garfish.run({
 2. 保证 Garfish 在渲染时挂载点存在
 :::
 
-如果你的业务需要手动控制应用加载，可以使用 [Garfish.loadApp](/api/loadApp.md) 手动挂载 APP：
+如果你的业务需要手动控制应用加载，可以使用 [Garfish.loadApp](/api/loadApp.md) 手动加载 APP：
 
 ```typescript
 // 使用 loadApp 动态挂载应用
@@ -80,10 +80,11 @@ app.mounted ? app.show() : await app.mount();
 
 ## 子应用
 
-通过 Garfish API 接入子应用整体流程也分为 2 步：
+通过 Garfish API 接入子应用整体流程分为 3 步：
 
 1. 调整子应用的构建配置(目前 Garfish 仅支持 umd 格式的产物)
-2. 导出子应用生命周期 [为什么需要子应用导出 provider 函数](../guide/cache)
+2. 导出子应用生命周期
+3. 设置应用路由 `basename`
 
 ### 1.调整子应用的构建配置
 
@@ -102,7 +103,7 @@ app.mounted ? app.show() : await app.mount();
 
 ### 2.导出 provider 函数
 
-> 针对子应用需要导出生命周期函数，我们提供了桥接函数 `@garfish/bridge` 自动包装应用的生命周期，使用`@garfish/bridge` 可以降低接入成本与用户出错概率，也是 Garfish 推荐的子应用接入方式。
+> 针对子应用需要导出生命周期函数，我们提供了桥接函数 [`@garfish/bridge`](/guide/bridge) 自动包装应用的生命周期，使用`@garfish/bridge` 可以降低接入成本与用户出错概率，也是 garfish 推荐的子应用接入方式。
 
 ```bash npm2yarn
 // 安装 @garfish/bridge：
@@ -167,19 +168,34 @@ export const provider = () => ({
   </TabItem>
 </Tabs>
 
-我们在 [框架指南](/guide/demo) 章节详细中介绍了各框架的子应用接入 Garfish 的 demo 案例及接入过程注意事项，目前有：
+### 3. 设置应用路由 `basename`
 
-- react (version 16, 17)
+```ts
+// src/component/rootComponent
+import React from "react";
+import { BrowserRouter } from "react-router-dom";
+
+const RootComponent = ({ basename }) => {
+  return (
+    <BrowserRouter basename={basename}>
+      <Routes>
+        <Route path="/" element={<App />}>
+          <Route path="/home" element={<Home />}></Route>
+          <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </BrowserRouter>
+  )
+}
+```
+
+我们在 [接入指南](/guide/demo) 章节详细中介绍了各框架的子应用接入 Garfish 的 demo 案例及接入过程注意事项，目前提供了：
+
+- react (version 16, 17, 18)
 - vue (version 2, 3)
 - vite (version 2)
 - angular (version 13)
-- umi（todo 提供接入案例）
 
-:::info
-以上框架可以任意组合，换句话说任何一个框架都可以作为主应用嵌入其它类型的子应用，任何一个框架也可以作为子应用被其它框架嵌入，包括上面没有列举出的其它库，如 svelte、nextjs、nuxtjs ...
-
-我们只列举了部分框架，如果有其它框架需求，请在 github 上提 issue 告知我们。
-:::
+可移步 [接入指南](/guide/demo) 查看详细接入步骤。
 
 ## 总结
 

@@ -123,8 +123,6 @@ interface SandboxConfig {
   snapshot?: boolean;
   // 是否修复子应用请求的 baseUrl（请求为相对路径时才生效）,默认值为 false
   fixBaseUrl?: boolean;
-  // TODO: 是否要暴露？
-  disableWith?: boolean;
   // 是否开启开启严格隔离，默认值为 false。开启严格隔离后，子应用的渲染节点将会开启 Shadow DOM close 模式，并且子应用的查询和添加行为仅会在 DOM 作用域内进行
   strictIsolation?: boolean;
   // modules 仅在 vm 沙箱时有效，用于覆盖子应用执行上下文的环境变量，使用自定义的执行上下文，默认值为[]

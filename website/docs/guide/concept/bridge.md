@@ -315,7 +315,7 @@ export const provider = vueBridge({
 
 1. 在 vue3 中，可通过 `handleInstance` 函数拿到创建的 vue 实例对象后进行路由注册；
 2. 在 vue2 中，可显示在 `appOpitons` 中传递路由参数信息；
-   :::
+:::
 
 - <Highlight> handleInstance </Highlight>
 

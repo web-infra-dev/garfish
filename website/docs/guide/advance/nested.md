@@ -1,6 +1,6 @@
 ---
 title: 嵌套场景
-slug: /advance/nested
+slug: /guide/advance/nested
 order: 2
 ---
 

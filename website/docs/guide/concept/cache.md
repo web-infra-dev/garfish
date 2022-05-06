@@ -55,7 +55,7 @@ export const provider = () => {
 
 ## 缓存 App 实例
 
-手动加载提供的了 `cache` 功能，以便复用 `app`，避免重复的编译代码造成的性能浪费，在 `Garfish.loadApp` 时，传入 `cache` 参数就可以。
+手动加载提供了 `cache` 功能，以便复用 `app`，避免重复的编译代码造成的性能浪费，在 `Garfish.loadApp` 时，传入 `cache` 参数就可以。
 
  例如下面的代码：
 
