@@ -10,7 +10,7 @@ import ViteConfig from '@site/src/components/config/_viteConfig.mdx';
 本节分别从主、子 应用视角出发，介绍如何通过 [Garfish API](/api) 来将应用接入 Garfish 框架
 
 :::tip 在线预览
-<a href="https://stackblitz.com/edit/github-7tm8gk?file=main/src/App.js"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" width="200"/></a>
+<a href="https://stackblitz.com/edit/garfish-demo?file=react-sub%2Fsrc%2FApp.js"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" width="200"/></a>
 :::
 
 ## 主应用
