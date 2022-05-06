@@ -4,6 +4,9 @@ slug: /api/registerApp
 order: 3
 ---
 import Highlight from '@site/src/components/Highlight';
+import SandboxConfig from '@site/src/components/config/_sandbox.mdx';
+import DomGetter from '@site/src/components/config/_domGetter.mdx';
+import BaseNameConfig from '@site/src/components/config/_basename.mdx';
 
 用于注册子应用信息，为 Garfish 实例方法。
 
@@ -80,10 +83,7 @@ Garfish 处理 app 参数的原则是：
 
 ### basename?
 
-- Type: <Highlight> string </Highlight>
-- 子应用的基础路径，可选，默认值为全局 [basename](./run.md#basename)；
-- 设置的 basename 将通过 [provider 函数](../guide/quickStart/start.md#2导出-provider-函数) 的参数透传给子应用，子应用需要将 basename 设置为相应子应用的基础路由，这是必须的；
-- [为什么子应用需要设置 basename ?](/issues/#子应用拿到-basename-的作用)
+<BaseNameConfig />
 
 ### entry
 
@@ -92,19 +92,7 @@ Garfish 处理 app 参数的原则是：
 
 ### domGetter?
 
-- Type: <Highlight> interfaces.DomGetter </Highlight>
-
-```ts
-export type DomGetter =
-  | string
-  | (() => Element | null)
-  | (() => Promise<Element>);
-```
-
-- 子应用的默认挂载点，可选，默认值为全局 [domGetter](./run.md#domGetter)；
-- 当提供 `string` 类型时需要其值是 `selector`，Garfish 内部会使用 `document.querySelector(domGetter)` 去选中子应用的挂载点；
-- 当提供函数时，将在子应用挂载过程中执行此函数，并期望返回一个 dom 元素；
-- 请确保在应用渲染时，指定的 `domGetter` 存在于当前页面上，否则会抛出 [错误](/issues/#invalid-domgetter-xxx)；
+<DomGetter />
 
 ### props?
 
@@ -151,6 +139,7 @@ export interface OverridesData {
 1. 快照沙箱无法隔离主、子应用
 2. 快照沙箱无法支持多实例（同时加载多个子应用）
 :::
+<SandboxConfig />
 
 ### activeWhen?
 
