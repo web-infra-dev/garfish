@@ -1,15 +1,64 @@
 // The logic of reactBridge is referenced from single-spa typography
 // Because the Garfish lifecycle does not agree with that of single-spa  part logical coupling in the framework
 // https://github.com/single-spa/single-spa-vue/blob/main/src/single-spa-vue.js
+
+import * as vue2 from 'vue2';
+import * as vue3 from 'vue3';
+
+type vueInstanceType = vue3.App;
+type vueComponentType = vue2.Component | vue3.Component;
+
+type vueCreateOpts =
+  | {
+      Vue: vue2.VueConstructor;
+      createApp?: vue3.CreateAppFunction<Element>;
+    }
+  | {
+      Vue?: vue2.VueConstructor;
+      createApp: vue3.CreateAppFunction<Element>;
+    }
+  | {
+      Vue: vue2.VueConstructor;
+      createApp: vue3.CreateAppFunction<Element>;
+    };
+interface ConfigOpts {
+  canUpdate: boolean; // by default, allow parcels created with garfish-react-bridge to be updated
+  appOptions: (
+    opts: Record<string, any>,
+  ) => Record<string, any> | Record<string, any>;
+  handleInstance: (
+    vueInstance: vueInstanceType,
+    opts: Record<string, any>,
+  ) => void;
+}
+
+type loadRootComponentType = (
+  opts: Record<string, any>,
+) => Promise<vueComponentType>;
+
+type componentOpts =
+  | {
+      rootComponent: vueComponentType;
+      loadRootComponent?: loadRootComponentType;
+    }
+  | {
+      rootComponent?: vueComponentType;
+      loadRootComponent: loadRootComponentType;
+    }
+  | {
+      rootComponent: vueComponentType;
+      loadRootComponent: loadRootComponentType;
+    };
+
+type OptsTypes = vueCreateOpts & Partial<ConfigOpts> & componentOpts;
+
 const defaultOpts = {
   Vue: null, // vue2
   createApp: null, // vue3
   VueRouter: null,
-
   // required - one or the other
   rootComponent: null,
   loadRootComponent: null,
-
   appOptions: null,
   handleInstance: null,
   el: null,
@@ -26,7 +75,7 @@ declare global {
   }
 }
 
-export function vueBridge(this: any, userOpts) {
+export function vueBridge(this: any, userOpts: OptsTypes) {
   if (typeof userOpts !== 'object') {
     throw new Error('garfish-vue-bridge: requires a configuration object');
   }
@@ -43,6 +92,7 @@ export function vueBridge(this: any, userOpts) {
   }
 
   if (
+    opts.appOptions &&
     opts.appOptions.el &&
     typeof opts.appOptions.el !== 'string' &&
     !(opts.appOptions.el instanceof HTMLElement)
@@ -80,7 +130,7 @@ export function vueBridge(this: any, userOpts) {
   return provider;
 }
 
-function bootstrap(opts, appInfo, props) {
+function bootstrap(opts: OptsTypes, appInfo, props) {
   if (opts.loadRootComponent) {
     return opts
       .loadRootComponent({
@@ -100,7 +150,7 @@ function resolveAppOptions(opts, props) {
   return { ...opts.appOptions };
 }
 
-function mount(opts, mountedInstances, props) {
+function mount(opts: OptsTypes, mountedInstances, props) {
   const instance = {
     domEl: null,
     vueInstance: null,
@@ -129,6 +179,7 @@ function mount(opts, mountedInstances, props) {
   instance.domEl = appOptions.el;
 
   if (!appOptions.render && !appOptions.template && opts.rootComponent) {
+    // it works for vue2, in vue3 `h` in imported from `vue'` instead of passing it through the render function
     appOptions.render = (h) => h(opts.rootComponent);
   }
 
@@ -139,7 +190,9 @@ function mount(opts, mountedInstances, props) {
   appOptions.data = () => ({ ...appOptions.data, ...props });
 
   if (opts.createApp) {
-    instance.vueInstance = opts.createApp(appOptions);
+    instance.vueInstance = opts.appOptions
+      ? opts.createApp(appOptions)
+      : opts.createApp(opts.rootComponent as any);
     if (opts.handleInstance) {
       opts.handleInstance(instance.vueInstance, props);
       instance.root = instance.vueInstance.mount(appOptions.el);
@@ -169,10 +222,12 @@ function mount(opts, mountedInstances, props) {
   return instance.vueInstance;
 }
 
-function update(opts, mountedInstances, props) {
+function update(opts: OptsTypes, mountedInstances, props) {
   const instance = mountedInstances[props.appName];
+
+  const appOptions = resolveAppOptions(opts, props);
   const data = {
-    ...(opts.appOptions.data || {}),
+    ...(appOptions.data || {}),
     ...props,
   };
   const root = instance.root || instance.vueInstance;
@@ -181,7 +236,7 @@ function update(opts, mountedInstances, props) {
   }
 }
 
-function unmount(opts, mountedInstances, props) {
+function unmount(opts: OptsTypes, mountedInstances, props) {
   const instance = mountedInstances[props.appName];
   if (opts.createApp) {
     instance.vueInstance.unmount(instance.domEl);
