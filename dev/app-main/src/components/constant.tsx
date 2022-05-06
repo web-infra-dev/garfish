@@ -27,6 +27,16 @@ export const subAppMenus = [
     ],
   },
   {
+    key: 'react18',
+    path: '/react18',
+    icon: <img src={reactSvg} className="sidebar-item-icon" />,
+    title: '【子应用】react18',
+    routes: [
+      { path: 'react18/home', title: '首页' },
+      { path: 'react18/about', title: '关于' },
+    ],
+  },
+  {
     key: 'vue3',
     path: '/vue3',
     icon: <img src={vueSvg} className="sidebar-item-icon" />,

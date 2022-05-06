@@ -2,14 +2,13 @@ import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Menu } from '@arco-design/web-react';
 import './index.less';
-import { Layout, Grid, Modal, Message, Input } from '@arco-design/web-react';
+import { Layout, Grid, Modal, Message } from '@arco-design/web-react';
 import { SubAppContext } from '../root';
 import CardItem from '../CardItem';
 import {
   backToMainStr,
   channelWithMainStr,
   increaseStr,
-  hmrStr,
   toVue3Str,
 } from '../../constant';
 
