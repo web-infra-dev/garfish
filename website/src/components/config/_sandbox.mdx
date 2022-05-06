@@ -1,6 +1,6 @@
 import Highlight from '@site/src/components/Highlight';
 
-- Type: <Highlight> SandboxConfig | false </Highlight>可选，默认值为 [全局 sandbox 配置](./run.md#sandbox)，当设置为 false 时关闭沙箱；
+- Type: <Highlight> SandboxConfig | false </Highlight>可选，默认值为 [全局 sandbox 配置](/api/run#sandbox)，当设置为 false 时关闭沙箱；
 
 - SandboxConfig：
 
@@ -58,7 +58,7 @@ Garfish.run({
 
   > Garfish 目前已默认支持沙箱 esModule 能力，若需要在 vm 沙箱支持 esModule 应用，请使用 `@garfish/es-module` garfish 官方插件支持此能力，但这会带来严重的性能问题，[原因](/issues/#esmodule)。如果你的项目不是很需要在 vm 沙箱下运行，此时可以关闭沙箱；
 
-- [Garfish 沙箱机制](../guide/concept/sandbox.md)
+- [Garfish 沙箱机制](/guide/sandbox)
 
 :::info
 若开启快照沙箱，请注意：
