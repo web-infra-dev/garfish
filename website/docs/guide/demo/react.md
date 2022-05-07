@@ -9,11 +9,6 @@ import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
 本节我们将详细介绍 react 框架的应用作为子应用的接入步骤。
 
 ## react 子应用接入步骤
-
-:::note
-以下接入 demo react 16、17 版本均适用，18 版本的 demo 正在加紧施工中...
-:::
-
 ### 1. [@garfish/bridge](../../guide/bridge) 依赖安装
 
 :::tip
@@ -26,9 +21,10 @@ npm install @garfish/bridge --save
 ```
 
 ### 2. 入口文件处导出 provider 函数
+### react v16、v17 导出
 
 <Tabs>
-  <TabItem value="bridge_provider" label="使用 @garfish/bridge 导出" default>
+  <TabItem value="bridge_provider" label="使用 @garfish/bridge" default>
 
 ```tsx
 // src/index.tsx
@@ -56,6 +52,7 @@ export const provider = reactBridge({
 ```
 
   </TabItem>
+
   <TabItem value="customer_provider" label="自定义导出函数" default>
 
 ```tsx
@@ -84,6 +81,29 @@ export const provider = reactBridge({
   </TabItem>
 </Tabs>
 
+### react v18 导出
+> react v18 bridge 导出方式暂未支持，目前可通过自定义导出函数导出。
+
+```tsx
+// src/index.tsx
+import { createRoot } from 'react-dom/client';
+import RootComponent from './root';
+
+// 在首次加载和执行时会触发该函数
+export const provider = () => {
+  let root = null;
+  return {
+    render({ basename, dom, store, props }) {
+      const container = dom.querySelector('#root');
+      root = createRoot(container!);
+      (root as any).render(<RootComponent basename={basename} />);
+    },
+    destroy({ dom }) {
+      (root as any).unmount();
+    },
+  };
+};
+```
 ### 3. 根组件设置路由的 basename
 
 :::info
@@ -102,8 +122,10 @@ const RootComponent = ({ basename }) => {
     <BrowserRouter basename={basename}>
       <Routes>
         <Route path="/" element={<App />}>
-          <Route path="/home" element={<Home />}></Route>
+          <Route path="/home" element={<Home />} />
           <Route path="*" element={<PageNotFound />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   )
@@ -122,17 +144,16 @@ last but not least, 别忘了添加子应用独立运行逻辑，这能够让你
 
 ```tsx
 // src/index.tsx
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { reactBridge } from '@garfish/bridge';
-import RootComponent from './components/root';
-import Error from './components/ErrorBoundary';
 
-// 这能够让子应用独立运行起来，以保证后续子应用能脱离主应用独立运行，方便调试、开发
 if (!window.__GARFISH__) {
-  ReactDOM.render(
-    <RootComponent basename="/" />,
-    document.querySelector('#root'),
+  const container = document.getElementById('root');
+  const root = createRoot(container!);
+  root.render(
+    <RootComponent
+      basename={
+        process.env.NODE_ENV === 'production' ? '/examples/subapp/react18' : '/'
+      }
+    />,
   );
 }
 ```
