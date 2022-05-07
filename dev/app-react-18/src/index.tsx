@@ -1,5 +1,5 @@
-import RootComponent from './root';
 import { createRoot } from 'react-dom/client';
+import RootComponent from './root';
 
 // 在首次加载和执行时会触发该函数
 export const provider = () => {

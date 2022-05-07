@@ -17,8 +17,8 @@ const RootComponent = (props) => {
   const routes = (
     <Routes>
       <Route path="/" element={<App />}>
-        <Route path="/home" element={Index}></Route>
-        <Route path="/about" element={About}></Route>
+        <Route path="/home" element={Index} />
+        <Route path="/about" element={About} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>
