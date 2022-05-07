@@ -22,15 +22,47 @@ import * as ReactDOM16 from 'react-dom16';
 //   // ignore
 // }
 
-type reactType = typeof React17 | typeof React16;
-type ReactDomType = typeof ReactDOM17 | typeof ReactDOM16;
-type ReactNode = React17.ReactNode | React16.ReactNode;
-type ComponentType = React17.ComponentType | React16.ComponentType;
+type loadRootComponentType<T> = (opts: {
+  appName: string;
+  dom: Element | ShadowRoot | Document;
+  basename: string;
+  appRenderInfo: Record<string, any>;
+  props: Record<string, any>;
+}) => Promise<T>;
 
-interface RequiredOpts {
-  React: reactType;
-  ReactDOM: ReactDomType;
-}
+type TypeComponent<T> =
+  | {
+      rootComponent: T;
+      loadRootComponent?: loadRootComponentType<T>;
+    }
+  | {
+      rootComponent?: T;
+      loadRootComponent: loadRootComponentType<T>;
+    }
+  | {
+      rootComponent: T;
+      loadRootComponent: loadRootComponentType<T>;
+    };
+
+type TypeErrorBoundary<T> = (
+  caughtError: boolean,
+  info: string,
+  props: any,
+) => T | null;
+
+type TypeReact17 = {
+  React: typeof React17;
+  ReactDOM: typeof ReactDOM17;
+  errorBoundary?: TypeErrorBoundary<React17.ReactNode>;
+  renderResults?: Record<string, typeof ReactDOM17>;
+} & TypeComponent<React17.ComponentType>;
+
+type TypeReact16 = {
+  React: typeof React16;
+  ReactDOM: typeof ReactDOM16;
+  errorBoundary?: TypeErrorBoundary<React16.ReactNode>;
+  renderResults?: Record<string, typeof ReactDOM16>;
+} & TypeComponent<React16.ComponentType>;
 
 type renderTypes =
   | 'createRoot'
@@ -40,14 +72,8 @@ type renderTypes =
   | 'render'
   | 'hydrate';
 
-interface OptionalOpts {
+type OptionalOpts = {
   renderType: renderTypes | (() => renderTypes);
-  errorBoundary: (
-    caughtError: boolean,
-    info: string,
-    props: any,
-  ) => ReactNode | null;
-
   errorBoundaryClass:
     | HTMLElement
     | { (this: any, props: any): void; prototype: any };
@@ -55,30 +81,10 @@ interface OptionalOpts {
   canUpdate: boolean; // by default, allow parcels created with garfish-react-bridge to be updated
   suppressComponentDidCatchWarning: boolean;
   domElements: Record<string, HTMLElement>;
-  renderResults: Record<string, ReactDomType>;
   updateResolves: Record<string, Array<any>>;
-}
+};
 
-type loadRootComponentType = (
-  opts: Record<string, any>,
-) => Promise<ComponentType>;
-
-interface CommonConfig extends RequiredOpts, Partial<OptionalOpts> {}
-type OptionalConfig =
-  | {
-      rootComponent: ComponentType;
-      loadRootComponent?: loadRootComponentType;
-    }
-  | {
-      rootComponent?: ComponentType;
-      loadRootComponent: loadRootComponentType;
-    }
-  | {
-      rootComponent: ComponentType;
-      loadRootComponent: loadRootComponentType;
-    };
-
-type OptsTypes = CommonConfig & OptionalConfig;
+type OptsTypes = (TypeReact17 | TypeReact16) & Partial<OptionalOpts>;
 
 const defaultOpts = {
   // required opts
@@ -247,12 +253,12 @@ function update(opts, appInfo, props) {
       const domElement = chooseDomElementGetter(opts, appInfo);
 
       // This is the old way to update a react application - just call render() again
-      opts.ReactDOM.render(elementToRender as any, domElement);
+      opts.ReactDOM.render(elementToRender, domElement);
     }
   });
 }
 
-function atLeastReact16(React: reactType) {
+function atLeastReact16(React: typeof React17 | typeof React16) {
   if (
     React &&
     typeof React.version === 'string' &&

@@ -63,7 +63,6 @@ describe('react-bridge', () => {
   });
 
   it('throws an error when required parameters are not provided', () => {
-    expect(() => reactBridge({} as any)).toThrow();
     expect(() => reactBridge({ React } as any)).toThrow();
     expect(() => reactBridge({ React, ReactDOM } as any)).toThrow();
     expect(() => reactBridge({ React, ReactDOM, el: $el } as any)).toThrow();
