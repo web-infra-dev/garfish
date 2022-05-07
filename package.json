@@ -30,7 +30,7 @@
       "prettier --write"
     ],
     "*.ts?(x)": [
-      "eslint --fix",
+      "eslint --fix --config .eslintrc.js",
       "prettier --parser=typescript --write"
     ],
     "*.md": [

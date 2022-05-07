@@ -232,9 +232,9 @@ export class App {
       return false;
     }
     this.hooks.lifecycle.beforeMount.emit(this.appInfo, this, true);
+    this.context.activeApps.push(this);
 
     await this.addContainer();
-    this.context.activeApps.push(this);
     this.callRender(provider, false);
     this.display = true;
     this.hooks.lifecycle.afterMount.emit(this.appInfo, this, true);
@@ -266,6 +266,7 @@ export class App {
     this.active = true;
     this.mounting = true;
     try {
+      this.context.activeApps.push(this);
       // add container and compile js with cjs
       const { asyncScripts } = await this.compileAndRenderContainer();
       if (!this.stopMountAndClearEffect()) return false;
@@ -275,7 +276,6 @@ export class App {
       // Existing asynchronous functions need to decide whether the application has been unloaded
       if (!this.stopMountAndClearEffect()) return false;
 
-      this.context.activeApps.push(this);
       this.callRender(provider, true);
       this.display = true;
       this.mounted = true;
