@@ -638,6 +638,10 @@ importers:
       '@garfish/core': workspace:*
       '@garfish/router': workspace:*
       '@garfish/utils': workspace:*
+      '@types/react-dom16': npm:@types/react-dom@^16
+      '@types/react-dom17': npm:@types/react-dom@^17
+      '@types/react16': npm:@types/react@^16
+      '@types/react17': npm:@types/react@^17
       vue2: npm:vue@^2
       vue3: npm:vue@^3
     dependencies:
@@ -647,6 +651,10 @@ importers:
       '@garfish/core': link:../core
       '@garfish/router': link:../router
       '@garfish/utils': link:../utils
+      '@types/react-dom16': /@types/react-dom/16.9.14
+      '@types/react-dom17': /@types/react-dom/17.0.11
+      '@types/react16': /@types/react/16.14.23
+      '@types/react17': /@types/react/17.0.39
       vue2: /vue/2.6.13
       vue3: /vue/3.2.31
 
@@ -5943,6 +5951,12 @@ packages:
   /@types/range-parser/1.2.4:
     resolution: {integrity: sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==}
 
+  /@types/react-dom/16.9.14:
+    resolution: {integrity: sha512-FIX2AVmPTGP30OUJ+0vadeIFJJ07Mh1m+U0rxfgyW34p3rTlXI+nlenvAxNn4BP36YyI9IJ/+UJ7Wu22N1pI7A==}
+    dependencies:
+      '@types/react': 16.14.23
+    dev: false
+
   /@types/react-dom/17.0.11:
     resolution: {integrity: sha512-f96K3k+24RaLGVu/Y2Ng3e1EbZ8/cVJvypZWd7cy0ofCBaf2lcM46xNhycMZ2xGwbBjRql7hOlZ+e2WlJ5MH3Q==}
     dependencies:
@@ -5962,6 +5976,14 @@ packages:
     dependencies:
       '@types/history': 4.7.11
       '@types/react': 17.0.39
+    dev: false
+
+  /@types/react/16.14.23:
+    resolution: {integrity: sha512-WngBZLuSkP4IAgPi0HOsGCHo6dn3CcuLQnCfC17VbA7YBgipZiZoTOhObwl/93DsFW0Y2a/ZXeonpW4DxirEJg==}
+    dependencies:
+      '@types/prop-types': 15.7.4
+      '@types/scheduler': 0.16.2
+      csstype: 3.0.10
     dev: false
 
   /@types/react/17.0.39:

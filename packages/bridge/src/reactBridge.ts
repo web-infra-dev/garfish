@@ -4,6 +4,10 @@
 
 // React context that gives any react component the single-spa props
 export let GarfishContext = null;
+import * as React17 from 'react17';
+import * as ReactDOM17 from 'react-dom17';
+import * as React16 from 'react16';
+import * as ReactDOM16 from 'react-dom16';
 
 // try {
 //   // garfish-react-bridge is usable as a global script, as a systemjs module, and other
@@ -18,12 +22,76 @@ export let GarfishContext = null;
 //   // ignore
 // }
 
+type loadRootComponentType<T> = (opts: {
+  appName: string;
+  dom: Element | ShadowRoot | Document;
+  basename: string;
+  appRenderInfo: Record<string, any>;
+  props: Record<string, any>;
+}) => Promise<T>;
+
+type TypeComponent<T> =
+  | {
+      rootComponent: T;
+      loadRootComponent?: loadRootComponentType<T>;
+    }
+  | {
+      rootComponent?: T;
+      loadRootComponent: loadRootComponentType<T>;
+    }
+  | {
+      rootComponent: T;
+      loadRootComponent: loadRootComponentType<T>;
+    };
+
+type TypeErrorBoundary<T> = (
+  caughtError: boolean,
+  info: string,
+  props: any,
+) => T | null;
+
+type TypeReact17 = {
+  React: typeof React17;
+  ReactDOM: typeof ReactDOM17;
+  errorBoundary?: TypeErrorBoundary<React17.ReactNode>;
+  renderResults?: Record<string, typeof ReactDOM17>;
+} & TypeComponent<React17.ComponentType>;
+
+type TypeReact16 = {
+  React: typeof React16;
+  ReactDOM: typeof ReactDOM16;
+  errorBoundary?: TypeErrorBoundary<React16.ReactNode>;
+  renderResults?: Record<string, typeof ReactDOM16>;
+} & TypeComponent<React16.ComponentType>;
+
+type renderTypes =
+  | 'createRoot'
+  | 'unstable_createRoot'
+  | 'createBlockingRoot'
+  | 'unstable_createBlockingRoot'
+  | 'render'
+  | 'hydrate';
+
+type OptionalOpts = {
+  renderType: renderTypes | (() => renderTypes);
+  errorBoundaryClass:
+    | HTMLElement
+    | { (this: any, props: any): void; prototype: any };
+  el: string;
+  canUpdate: boolean; // by default, allow parcels created with garfish-react-bridge to be updated
+  suppressComponentDidCatchWarning: boolean;
+  domElements: Record<string, HTMLElement>;
+  updateResolves: Record<string, Array<any>>;
+};
+
+type OptsTypes = (TypeReact17 | TypeReact16) & Partial<OptionalOpts>;
+
 const defaultOpts = {
   // required opts
   React: null,
   ReactDOM: null,
 
-  // required - one or the other
+  // required - one or the other or both
   rootComponent: null,
   loadRootComponent: null,
 
@@ -49,12 +117,12 @@ declare global {
   }
 }
 
-export function reactBridge(this: any, userOpts) {
+export function reactBridge(this: any, userOpts: OptsTypes) {
   if (typeof userOpts !== 'object') {
     throw new Error('garfish-react-bridge requires a configuration object');
   }
 
-  const opts = {
+  const opts: OptsTypes = {
     ...defaultOpts,
     ...userOpts,
   };
@@ -80,7 +148,7 @@ export function reactBridge(this: any, userOpts) {
   }
 
   if (!GarfishContext && opts.React.createContext) {
-    GarfishContext = opts.React.createContext();
+    GarfishContext = opts.React.createContext({});
   }
 
   const providerLifeCycle = {
@@ -104,7 +172,7 @@ export function reactBridge(this: any, userOpts) {
   return provider;
 }
 
-function bootstrap(opts, appInfo, props) {
+function bootstrap(opts: OptsTypes, appInfo, props) {
   if (opts.loadRootComponent) {
     // They passed a promise that resolves with the react component. Wait for it to resolve before mounting
     return opts
@@ -121,7 +189,7 @@ function bootstrap(opts, appInfo, props) {
   }
 }
 
-function mount(opts, appInfo, props) {
+function mount(opts: OptsTypes, appInfo, props) {
   if (
     !opts.suppressComponentDidCatchWarning &&
     atLeastReact16(opts.React) &&
@@ -190,7 +258,7 @@ function update(opts, appInfo, props) {
   });
 }
 
-function atLeastReact16(React) {
+function atLeastReact16(React: typeof React17 | typeof React16) {
   if (
     React &&
     typeof React.version === 'string' &&
@@ -239,9 +307,9 @@ function reactDomRender({ opts, elementToRender, domElement }) {
   return null;
 }
 
-function getElementToRender(opts, appInfo, props = null) {
+function getElementToRender(opts: OptsTypes, appInfo, props = null) {
   const rootComponentElement = opts.React.createElement(
-    opts.rootComponent,
+    opts.rootComponent as any,
     appInfo,
     props,
   );
@@ -260,7 +328,7 @@ function getElementToRender(opts, appInfo, props = null) {
       opts.errorBoundaryClass ||
       createErrorBoundary(opts, props);
     elementToRender = opts.React.createElement(
-      opts.errorBoundaryClass,
+      opts.errorBoundaryClass as any,
       appInfo,
       props,
       elementToRender,
@@ -269,7 +337,7 @@ function getElementToRender(opts, appInfo, props = null) {
   return elementToRender;
 }
 
-function createErrorBoundary(opts, props) {
+function createErrorBoundary(opts: OptsTypes, props) {
   // Avoiding babel output for class syntax and super()
   // to avoid bloat
   function GarfishSubAppReactErrorBoundary(this: any, props) {
@@ -317,7 +385,7 @@ function createErrorBoundary(opts, props) {
   return GarfishSubAppReactErrorBoundary;
 }
 
-function chooseDomElementGetter(opts, appInfo) {
+function chooseDomElementGetter(opts: OptsTypes, appInfo) {
   const { dom: container } = appInfo;
   let el;
   if (typeof opts.el === 'string') {
