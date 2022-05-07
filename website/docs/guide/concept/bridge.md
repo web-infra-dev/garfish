@@ -88,7 +88,7 @@ export const provider = reactBridge({
 - <Highlight> el </Highlight>
 
   - Type: `string`
-  - 非必传
+  - 非必传f
   - 子应用挂载点
     - 若子应用构建为 `JS` 入口时，不需要传挂载点，Bridge 将会以子应用的渲染节点作为挂载点；
     - 若子应用构建成 `HTML` 入口时，则直接传入选择器，bridge 内部通过 `dom.querySelector` 来基于子应用的 `dom` 来找到挂载点；
@@ -286,7 +286,7 @@ export const provider = vueBridge({
   - 此参数和 `rootComponent` 至少传一个
   - 当前应用的顶层 Vue 组件，该组件中实例的 data 对象中将接收到 garfish 传递的 appInfo 应用相关参数
 
-- `loadRootComponent` 是一个函数，返回一个 Promise 对象，resolve 后需要返回当前 Vue 应用的顶层组件，该顶层组件含义与 `rootComponent` 含义相同。当需要在 render 前进行异步操作时，可使用 `loadRootComponent` 加入副作用逻辑。
+  - `loadRootComponent` 是一个函数，返回一个 Promise 对象，resolve 后需要返回当前 Vue 应用的顶层组件，该顶层组件含义与 `rootComponent` 含义相同。当需要在 render 前进行异步操作时，可使用 `loadRootComponent` 加入副作用逻辑。
 
   - `loadRootComponent` 将默认接收到 garfish 传递的 appInfo 应用相关参数：
 
@@ -303,13 +303,14 @@ export const provider = vueBridge({
 
   - 当同时传入了 `rootComponent` 参数时，`loadRootComponent` 的优先级更高， `rootComponent` 将失效；
 
+
 - <Highlight> appOptions </Highlight>
 
   - Type: `appOptions: (opts: Record<string, any>) => Record<string, any> | Record<string, any>`
   - 非必传
   - 作为函数时，接收 garfish 传递的 appInfo 应用相关参数并返回用来实例化 Vue 应用的对象参数，也可作为对象类型直接返回用来实例化 Vue 应用的对象参数。实例化完成后，garfish appInfo 应用相关参数将会自动注入到组件实例的 `data` 对象中。
-  - 在 Vue3 中，`appOptions` 参数将直接透传给 `createApp` 函数调用： `createApp(appOptions)`。若未传递 `appOptions` 参数，则将直接调用 `createApp(rootComponent)` 创建根组件。
-  - 在 Vue2 中，`appOptions` 参数将直接透传为 Vue 构造函数实例化时的初始化参数 new Vue(appOptions)。若未传递 `appOptions` 参数，则将自动提供 vue2 应用 `render` 函数用于渲染：`render: (h) => h(opts.rootComponent)`。
+  - 在 Vue3 中，`appOptions` 参数将直接透传给 `createApp` 函数调用： `createApp(appOptions)`，此时参数类型与 [createApp](https://vuejs.org/api/application.html#createapp) 保持一致。若未传递 `appOptions` 参数，则将直接调用 `createApp(rootComponent)` 创建根组件。
+  - 在 Vue2 中，`appOptions` 参数将直接透传为 Vue 构造函数实例化时的初始化参数 new Vue(appOptions)，此时参数类型与 [vue](https://vuejs.bootcss.com/api/#%E9%80%89%E9%A1%B9-%E6%95%B0%E6%8D%AE) 保持一致。若未传递 `appOptions` 参数，则将自动提供 vue2 应用 `render` 函数用于渲染：`render: (h) => h(opts.rootComponent)`。
   - 若需要指定子应用挂载点，可在此参数中指定：`appOptions: { el: '#app', ...}`，若未指定 `el` 参数，将默认使用全局挂载点。
 
 :::tip
