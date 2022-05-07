@@ -60,7 +60,7 @@ const App = () => {
                     // window.history.replaceState(null, '', '/examples/main/index')
                     window.Garfish.router.push({ path: '/main/index' })
                   }
-                  href="https://garfish.top/api/router"
+                  href="https://garfishjs.org/api/router"
                   markdownStr={backToMainStr}
                 />
 
@@ -74,14 +74,14 @@ const App = () => {
                     // );
                     window.Garfish.router.push({ path: '/vue3/home' });
                   }}
-                  href="https://garfish.top/api/router"
+                  href="https://garfishjs.org/api/router"
                   markdownStr={toVue3Str}
                 />
 
                 <CardItem
                   title="Modal 弹窗"
                   onClick={() => setVisible(true)}
-                  href="https://garfish.top/api/channel"
+                  href="https://garfishjs.org/api/channel"
                 />
                 <CardItem
                   title="和主应用通信"
@@ -91,7 +91,7 @@ const App = () => {
                       'hello, 我是 react17 子应用',
                     );
                   }}
-                  href="https://garfish.top/api/channel"
+                  href="https://garfishjs.org/api/channel"
                   markdownStr={channelWithMainStr}
                 />
 
@@ -106,7 +106,7 @@ const App = () => {
                   onClick={() => {
                     console.log(' window.testName');
                   }}
-                  href="https://garfish.top/api/channel"
+                  href="https://garfishjs.org/api/channel"
                   markdownStr={hmrStr}
                 /> */}
               </Col>
