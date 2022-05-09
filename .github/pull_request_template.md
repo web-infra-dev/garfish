@@ -1,9 +1,6 @@
-# PR Details
-
-<!--- Provide a general summary of your changes in the Title above -->
-
 ## Description
 
+<!--- Provide a general summary of your changes in the Title above -->
 <!--- Describe your changes in detail -->
 
 ## Related Issue
