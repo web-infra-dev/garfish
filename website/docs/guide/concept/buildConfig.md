@@ -55,11 +55,13 @@ new Function('require', 'exports', code)(fakeRequire, fakerExports);
 
 > webpackjsonp 是什么？
 
-`webpack` 使用 `webpackjsonp` 来解决分 chunk 之后的加载问题。
+`webpack` 使用 `webpackjsonp` 来解决分 chunk 之后的加载问题，在 webpack 5 中采用 chunkLoadingGlobal 代替。
 
 `webpackjsonp` 是一个全局变量，用于存储 chunk 的信息。
 
 如下图：
+
+![image](https://user-images.githubusercontent.com/27547179/167364472-8e3ce4b9-94b3-490f-a4bf-b904579ea3a1.png)
 
 > `jsonpFunction` 配置的作用
 
