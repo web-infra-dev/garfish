@@ -77,6 +77,7 @@ module.exports = {
     },
   },
   plugins: [
+    './plugin/slardar',
     [
       require.resolve('@easyops-cn/docusaurus-search-local'),
       {
