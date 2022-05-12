@@ -2,25 +2,27 @@
 // Because the Garfish lifecycle does not agree with that of single-spa  part logical coupling in the framework
 // https://github.com/single-spa/single-spa-vue/blob/main/src/single-spa-vue.js
 
-import * as vue2 from 'vue2';
+import * as vue from 'vue';
+// import * as vue2 from 'vue2';
 import * as vue3 from 'vue3';
 
 type vueInstanceType = vue3.App;
-type vueComponentType = vue2.Component | vue3.Component;
+type vueComponentType = vue.Component;
 
 type vueCreateOpts =
   | {
-      Vue: vue2.VueConstructor;
+      Vue: vue.VueConstructor;
       createApp?: vue3.CreateAppFunction<Element>;
     }
   | {
-      Vue?: vue2.VueConstructor;
+      Vue?: vue.VueConstructor;
       createApp: vue3.CreateAppFunction<Element>;
     }
   | {
-      Vue: vue2.VueConstructor;
+      Vue: vue.VueConstructor;
       createApp: vue3.CreateAppFunction<Element>;
     };
+
 interface ConfigOpts {
   canUpdate: boolean; // by default, allow parcels created with garfish-react-bridge to be updated
   appOptions: (

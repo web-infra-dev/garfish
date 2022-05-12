@@ -30,6 +30,9 @@
     "build": "rimraf dist && tsup src/index.ts",
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
+  "devDependencies": {
+    "vue": "2.6.13"
+  },
   "dependencies": {
     "@garfish/bridge": "^1.5.2",
     "@garfish/browser-snapshot": "workspace:*",
@@ -46,7 +49,8 @@
   },
   "peerDependencies": {
     "react": ">=16",
-    "react-dom": ">=16"
+    "react-dom": ">=16",
+    "vue": ">=2"
   },
   "peerDependenciesMeta": {
     "react": {
