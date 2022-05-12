@@ -3,7 +3,6 @@
 // https://github.com/single-spa/single-spa-vue/blob/main/src/single-spa-vue.js
 
 import * as vue from 'vue';
-// import * as vue2 from 'vue2';
 import * as vue3 from 'vue3';
 
 type vueInstanceType = vue3.App;
@@ -16,10 +15,6 @@ type vueCreateOpts =
     }
   | {
       Vue?: vue.VueConstructor;
-      createApp: vue3.CreateAppFunction<Element>;
-    }
-  | {
-      Vue: vue.VueConstructor;
       createApp: vue3.CreateAppFunction<Element>;
     };
 
@@ -45,10 +40,6 @@ type componentOpts =
     }
   | {
       rootComponent?: vueComponentType;
-      loadRootComponent: loadRootComponentType;
-    }
-  | {
-      rootComponent: vueComponentType;
       loadRootComponent: loadRootComponentType;
     };
 

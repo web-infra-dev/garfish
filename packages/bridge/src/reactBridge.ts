@@ -38,10 +38,6 @@ type TypeComponent<T> =
   | {
       rootComponent?: T;
       loadRootComponent: loadRootComponentType<T>;
-    }
-  | {
-      rootComponent: T;
-      loadRootComponent: loadRootComponentType<T>;
     };
 
 type TypeErrorBoundary<T> = (
