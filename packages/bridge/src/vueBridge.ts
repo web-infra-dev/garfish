@@ -5,8 +5,15 @@
 import * as vue from 'vue';
 import * as vue3 from 'vue3';
 
-type vueInstanceType = vue3.App;
-type vueComponentType = vue.Component;
+const vue3Key = ['createApp'] as const;
+type PickKey<T, R> = {
+  [K in keyof T as K extends R ? K : never]: T[K];
+};
+type vueInstanceType = PickKey<typeof vue, typeof vue3Key[number]> extends {
+  createApp: vue3.CreateAppFunction<Element>;
+}
+  ? vue3.App
+  : InstanceType<vue.VueConstructor>;
 
 type vueCreateOpts =
   | {
@@ -29,17 +36,21 @@ interface ConfigOpts {
   ) => void;
 }
 
-type loadRootComponentType = (
-  opts: Record<string, any>,
-) => Promise<vueComponentType>;
+type loadRootComponentType = (opts: {
+  appName: string;
+  dom: Element | ShadowRoot | Document;
+  basename: string;
+  appRenderInfo: Record<string, any>;
+  props: Record<string, any>;
+}) => Promise<vue.Component>;
 
 type componentOpts =
   | {
-      rootComponent: vueComponentType;
+      rootComponent: vue.Component;
       loadRootComponent?: loadRootComponentType;
     }
   | {
-      rootComponent?: vueComponentType;
+      rootComponent?: vue.Component;
       loadRootComponent: loadRootComponentType;
     };
 
@@ -182,7 +193,7 @@ function mount(opts: OptsTypes, mountedInstances, props) {
 
   appOptions.data = () => ({ ...appOptions.data, ...props });
 
-  if (opts.createApp) {
+  if ('createApp' in opts) {
     instance.vueInstance = opts.appOptions
       ? opts.createApp(appOptions)
       : opts.createApp(opts.rootComponent as any);
@@ -231,7 +242,7 @@ function update(opts: OptsTypes, mountedInstances, props) {
 
 function unmount(opts: OptsTypes, mountedInstances, props) {
   const instance = mountedInstances[props.appName];
-  if (opts.createApp) {
+  if ('createApp' in opts) {
     instance.vueInstance.unmount(instance.domEl);
   } else {
     instance.vueInstance.$destroy();
