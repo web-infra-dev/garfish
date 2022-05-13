@@ -193,7 +193,7 @@ function mount(opts: OptsTypes, mountedInstances, props) {
 
   appOptions.data = () => ({ ...appOptions.data, ...props });
 
-  if ('createApp' in opts) {
+  if (opts.createApp) {
     instance.vueInstance = opts.appOptions
       ? opts.createApp(appOptions)
       : opts.createApp(opts.rootComponent as any);
@@ -242,7 +242,7 @@ function update(opts: OptsTypes, mountedInstances, props) {
 
 function unmount(opts: OptsTypes, mountedInstances, props) {
   const instance = mountedInstances[props.appName];
-  if ('createApp' in opts) {
+  if (opts.createApp) {
     instance.vueInstance.unmount(instance.domEl);
   } else {
     instance.vueInstance.$destroy();
