@@ -10,7 +10,7 @@ type PickKey<T, R> = {
   [K in keyof T as K extends R ? K : never]: T[K];
 };
 type vueInstanceType = PickKey<typeof vue, typeof vue3Key[number]> extends {
-  createApp: vue3.CreateAppFunction<Element>;
+  createApp: any;
 }
   ? vue3.App
   : InstanceType<vue.VueConstructor>;
@@ -18,11 +18,11 @@ type vueInstanceType = PickKey<typeof vue, typeof vue3Key[number]> extends {
 type vueCreateOpts =
   | {
       Vue: vue.VueConstructor;
-      createApp?: vue3.CreateAppFunction<Element>;
+      createApp?: any;
     }
   | {
       Vue?: vue.VueConstructor;
-      createApp: vue3.CreateAppFunction<Element>;
+      createApp: any;
     };
 
 interface ConfigOpts {

@@ -44,7 +44,6 @@
     "@types/react17": "npm:@types/react@^17",
     "@types/react-dom16": "npm:@types/react-dom@^16",
     "@types/react-dom17": "npm:@types/react-dom@^17",
-    "vue2": "npm:vue@^2",
     "vue3": "npm:vue@^3"
   },
   "peerDependencies": {
