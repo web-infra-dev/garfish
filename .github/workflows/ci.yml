@@ -16,6 +16,8 @@ jobs:
         node-version: [16.10.0]
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
     - uses: pnpm/action-setup@v2.0.1
       with:
         version: 6.32.1
