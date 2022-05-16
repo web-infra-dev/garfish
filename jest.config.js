@@ -19,7 +19,9 @@ module.exports = {
     // Change MODULE_NAME_HERE to your module that isn't being compiled
     '/node_modules/(?!(@garfish)).+\\.js$',
   ],
-  transform: { '\\.js$': ['babel-jest'], '\\.ts$': 'ts-jest' },
+  transform: {
+    '^.+\\.(t|j)sx?$': ['@swc/jest'],
+  },
   rootDir: __dirname,
   testMatch: ['<rootDir>/packages/**/__tests__/**/*spec.[jt]s?(x)'],
   // testMatch: ['<rootDir>/packages/bridge/__tests__/**/*spec.[jt]s?(x)'],
