@@ -37,10 +37,10 @@ const appConfigKeysMap: {
   afterUnmount: true,
   errorUnmountApp: true,
   errorExecCode: true,
+  insulationVariable: true,
 
   // filter keys
   nested: false,
-  insulationVariable: false,
   active: false,
   deactive: false,
   rootPath: false,
