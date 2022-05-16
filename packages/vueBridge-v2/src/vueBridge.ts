@@ -34,7 +34,8 @@ type componentOpts =
       loadRootComponent: loadRootComponentType;
     };
 
-type OptsTypes = { Vue?: any } & componentOpts & Partial<ConfigOpts>;
+type OptsTypes = { Vue?: vue.VueConstructor } & componentOpts &
+  Partial<ConfigOpts>;
 
 const defaultOpts = {
   VueRouter: null,

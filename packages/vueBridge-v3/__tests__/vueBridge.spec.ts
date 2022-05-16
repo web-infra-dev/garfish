@@ -1,4 +1,3 @@
-import { createApp } from 'vue';
 // The logic of vue-bridge-test is referenced from single-spa typography
 // Because the Garfish lifecycle does not agree with that of single-spa  part logical coupling in the framework
 // https://github.com/single-spa/single-spa-vue/blob/main/src/single-spa-vue.test.js
@@ -170,21 +169,16 @@ describe('vue-bridge', () => {
     };
 
     opts.loadRootComponent.mockReturnValue(Promise.resolve({}));
-
     const provider = vueBridge(opts as any);
-
     const lifeCycles = await provider(appInfo, props);
 
     lifeCycles.render({ ...appInfo, props });
     expect(opts.loadRootComponent).toHaveBeenCalled();
-    // expect(vue.createApp.mock.calls[0][0].render).toBeDefined();
 
     lifeCycles.destroy({ ...appInfo, props });
   });
 
   it('adds the garfish-vue-bridge props as data to the root component', async () => {
-    props.someCustomThing = 'hi';
-
     const provider = vueBridge({
       createApp: vue.createApp,
       appOptions: {} as any,
