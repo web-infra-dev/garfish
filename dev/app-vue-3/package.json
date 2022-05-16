@@ -3,6 +3,7 @@
   "private": true,
   "dependencies": {
     "@garfish/bridge": "workspace:*",
+    "@garfish/bridge-vue-v3": "workspace:*",
     "core-js": "^3.6.5",
     "mobx-vue": "^2.1.0",
     "vue": "^3.2.21",

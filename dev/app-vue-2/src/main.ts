@@ -8,7 +8,7 @@ import TodoListComponent from './components/todo.vue';
 import HelloGarfish from './components/HelloGarfish.vue';
 import RemoteComponent from './components/remoteComponent.vue';
 import 'element-ui/lib/theme-chalk/index.css';
-import { vueBridge } from '@garfish/bridge';
+import { vueBridge } from '@garfish/bridge-vue-v2';
 
 const MicroApp = import('./components/microApp.vue');
 
@@ -32,7 +32,6 @@ function newRouter(basename) {
 }
 
 export const provider = vueBridge({
-  Vue,
   rootComponent: App,
   loadRootComponent: ({ basename, dom, appName, props }) => {
     console.log({ basename, dom, appName, props });
@@ -59,8 +58,8 @@ export const provider = vueBridge({
 if (!window.__GARFISH__) {
   const router = newRouter('/');
   new Vue({
-    store,
     router,
     render: (h) => h(App),
+    store,
   }).$mount('#app');
 }

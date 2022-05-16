@@ -543,7 +543,7 @@ importers:
 
   dev/app-vue-2:
     specifiers:
-      '@garfish/bridge': workspace:*
+      '@garfish/bridge-vue-v2': workspace:*
       '@garfish/remote-module': workspace:*
       '@vue/cli-plugin-babel': ~4.5.0
       '@vue/cli-plugin-eslint': ~4.5.0
@@ -563,7 +563,7 @@ importers:
       vue-template-compiler: 2.6.13
       vuex: ^3.6.2
     dependencies:
-      '@garfish/bridge': link:../../packages/bridge
+      '@garfish/bridge-vue-v2': link:../../packages/vueBridge-v2
       '@garfish/remote-module': link:../../packages/remote-module
       core-js: 3.21.1
       garfish: link:../../packages/garfish
@@ -587,6 +587,7 @@ importers:
   dev/app-vue-3:
     specifiers:
       '@garfish/bridge': workspace:*
+      '@garfish/bridge-vue-v3': workspace:*
       '@garfish/remote-module': workspace:*
       '@vue/cli-plugin-babel': ~4.5.0
       '@vue/cli-plugin-eslint': ~4.5.0
@@ -604,6 +605,7 @@ importers:
       vuex: ^3.6.2
     dependencies:
       '@garfish/bridge': link:../../packages/bridge
+      '@garfish/bridge-vue-v3': link:../../packages/vueBridge-v3
       '@garfish/remote-module': link:../../packages/remote-module
       core-js: 3.21.1
       mobx-vue: 2.2.0_vue@3.2.31
@@ -769,6 +771,44 @@ importers:
       debug: 4.3.4
     devDependencies:
       '@garfish/core': link:../core
+
+  packages/vueBridge-v2:
+    specifiers:
+      '@garfish/bridge': ^1.5.2
+      '@garfish/browser-snapshot': workspace:*
+      '@garfish/browser-vm': workspace:*
+      '@garfish/core': workspace:*
+      '@garfish/router': workspace:*
+      '@garfish/utils': workspace:*
+      vue: 2.6.13
+    dependencies:
+      '@garfish/bridge': 1.5.3
+      '@garfish/browser-snapshot': link:../browser-snapshot
+      '@garfish/browser-vm': link:../browser-vm
+      '@garfish/core': link:../core
+      '@garfish/router': link:../router
+      '@garfish/utils': link:../utils
+    devDependencies:
+      vue: 2.6.13
+
+  packages/vueBridge-v3:
+    specifiers:
+      '@garfish/bridge': ^1.5.2
+      '@garfish/browser-snapshot': workspace:*
+      '@garfish/browser-vm': workspace:*
+      '@garfish/core': workspace:*
+      '@garfish/router': workspace:*
+      '@garfish/utils': workspace:*
+      vue: 3.2.31
+    dependencies:
+      '@garfish/bridge': 1.5.3
+      '@garfish/browser-snapshot': link:../browser-snapshot
+      '@garfish/browser-vm': link:../browser-vm
+      '@garfish/core': link:../core
+      '@garfish/router': link:../router
+      '@garfish/utils': link:../utils
+    devDependencies:
+      vue: 3.2.31
 
   website:
     specifiers:
@@ -6817,7 +6857,7 @@ packages:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
       eslint: '>= 1.6.0 < 7.0.0'
     dependencies:
-      '@vue/cli-service': 4.5.15_87acb3d4d60fdf1f7e8e373e3c7628cc
+      '@vue/cli-service': 4.5.15_82f042aa91db6d7c19e59be8354a59b6
       '@vue/cli-shared-utils': 4.5.15
       eslint: 6.8.0
       eslint-loader: 2.2.1_eslint@6.8.0+webpack@4.46.0
@@ -6844,7 +6884,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.15_87acb3d4d60fdf1f7e8e373e3c7628cc
+      '@vue/cli-service': 4.5.15_82f042aa91db6d7c19e59be8354a59b6
       '@vue/cli-shared-utils': 4.5.15
     dev: true
 
@@ -6861,7 +6901,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.15_87acb3d4d60fdf1f7e8e373e3c7628cc
+      '@vue/cli-service': 4.5.15_82f042aa91db6d7c19e59be8354a59b6
     dev: true
 
   /@vue/cli-service/4.5.0_82f042aa91db6d7c19e59be8354a59b6:
@@ -7239,14 +7279,12 @@ packages:
     resolution: {integrity: sha512-HVr0l211gbhpEKYr2hYe7hRsV91uIVGFYNHj73njbARVGHQvIojkImKMaZNDdoDZOIkMsBc9a1sMqR+WZwfSCw==}
     dependencies:
       '@vue/shared': 3.2.31
-    dev: false
 
   /@vue/runtime-core/3.2.31:
     resolution: {integrity: sha512-Kcog5XmSY7VHFEMuk4+Gap8gUssYMZ2+w+cmGI6OpZWYOEIcbE0TPzzPHi+8XTzAgx1w/ZxDFcXhZeXN5eKWsA==}
     dependencies:
       '@vue/reactivity': 3.2.31
       '@vue/shared': 3.2.31
-    dev: false
 
   /@vue/runtime-dom/3.2.31:
     resolution: {integrity: sha512-N+o0sICVLScUjfLG7u9u5XCjvmsexAiPt17GNnaWHJUfsKed5e85/A3SWgKxzlxx2SW/Hw7RQxzxbXez9PtY3g==}
@@ -7254,7 +7292,6 @@ packages:
       '@vue/runtime-core': 3.2.31
       '@vue/shared': 3.2.31
       csstype: 2.6.19
-    dev: false
 
   /@vue/server-renderer/3.2.31_vue@3.2.31:
     resolution: {integrity: sha512-8CN3Zj2HyR2LQQBHZ61HexF5NReqngLT3oahyiVRfSSvak+oAvVmu8iNLSu6XR77Ili2AOpnAt1y8ywjjqtmkg==}
@@ -7264,7 +7301,6 @@ packages:
       '@vue/compiler-ssr': 3.2.31
       '@vue/shared': 3.2.31
       vue: 3.2.31
-    dev: false
 
   /@vue/shared/3.2.31:
     resolution: {integrity: sha512-ymN2pj6zEjiKJZbrf98UM2pfDd6F2H7ksKw7NDt/ZZ1fh5Ei39X5tABugtT03ZRlWd9imccoK0hE8hpjpU7irQ==}
@@ -10553,7 +10589,6 @@ packages:
 
   /csstype/2.6.19:
     resolution: {integrity: sha512-ZVxXaNy28/k3kJg0Fou5MiYpp88j7H9hLZp8PDC3jV0WFjfH5E9xHb56L0W59cPbKbcHXeP4qyT8PrHp8t6LcQ==}
-    dev: false
 
   /csstype/3.0.10:
     resolution: {integrity: sha512-2u44ZG2OcNUO9HDp/Jl8C07x6pU/eTR3ncV91SiK3dhG9TWvRVsCoJw14Ckx5DgWkzGA3waZWO3d7pgqpUI/XA==}
@@ -24626,7 +24661,6 @@ packages:
 
   /vue/2.6.13:
     resolution: {integrity: sha512-O+pAdJkce1ooYS1XyoQtpBQr9An+Oys3w39rkqxukVO3ZD1ilYJkWBGoRuadiQEm2LLJnCL2utV4TMSf52ubjw==}
-    dev: false
 
   /vue/3.2.31:
     resolution: {integrity: sha512-odT3W2tcffTiQCy57nOT93INw1auq5lYLLYtWpPYQQYQOOdHiqFct9Xhna6GJ+pJQaF67yZABraH47oywkJgFw==}
@@ -24636,7 +24670,6 @@ packages:
       '@vue/runtime-dom': 3.2.31
       '@vue/server-renderer': 3.2.31_vue@3.2.31
       '@vue/shared': 3.2.31
-    dev: false
 
   /vuex/3.6.2_vue@2.6.13:
     resolution: {integrity: sha512-ETW44IqCgBpVomy520DT5jf8n0zoCac+sxWnn+hMe/CzaSejb/eVw2YToiXYX+Ex/AuHHia28vWTq4goAexFbw==}

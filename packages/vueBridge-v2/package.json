@@ -1,0 +1,53 @@
+{
+  "name": "@garfish/bridge-vue-v2",
+  "version": "1.5.2",
+  "description": "garfish vue bridge for v2.",
+  "keywords": [
+    "garfish",
+    "micro frontend",
+    "vueBridge"
+  ],
+  "author": "zhoushaw <codingzx@gmail.com>",
+  "homepage": "https://github.com/bytedance/garfish",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsup src/index.ts",
+    "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
+  "devDependencies": {
+    "vue": "2.6.13"
+  },
+  "dependencies": {
+    "@garfish/bridge": "^1.5.2",
+    "@garfish/browser-snapshot": "workspace:*",
+    "@garfish/browser-vm": "workspace:*",
+    "@garfish/core": "workspace:*",
+    "@garfish/router": "workspace:*",
+    "@garfish/utils": "workspace:*"
+  },
+  "peerDependencies": {
+    "vue": "=2"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "gitHead": "da33dd16bb9e99588f34079f8b961d0cf9f059fc"
+}
