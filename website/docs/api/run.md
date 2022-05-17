@@ -19,6 +19,8 @@ import OnNotMatchRouter from '@site/src/components/lifeCycle/_onNotMatchRouter.m
 import SandboxConfig from '@site/src/components/config/_sandbox.mdx';
 import DomGetter from '@site/src/components/config/_domGetter.mdx';
 import BaseNameConfig from '@site/src/components/config/_basename.mdx';
+import ProtectVariable from '@site/src/components/config/_protectVariable.mdx';
+import InsulationVariable from '@site/src/components/config/_insulationVariable.mdx';
 
 
 用于初始化全局配置、注册子应用信息，并启动基于路由匹配的子应用自动渲染流程。
@@ -158,10 +160,11 @@ Garfish.run({
 
 ### protectVariable?
 
-- Type: <Highlight> string[] </Highlight>
-- 在开启沙箱的情况下，提供使得 window 上的某些变量处于受保护状态的能力：这些值的读写不会受到沙箱隔离机制的影响，所有应用均可读取到，可选；
-- 若希望在应用间共享 window 上的某些值，可将该值放置在数组中；
-- 该属性与 [setGlobalValue](../api/setGlobal.md) 功能相同，推荐使用 `protectVariable` 属性，通过 `protectVariable` 可以明确的感知哪些值可能在应用间相互影响；
+<ProtectVariable />
+
+### insulationVariable?
+
+<InsulationVariable />
 
 ### apps?
 
