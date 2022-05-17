@@ -21,6 +21,7 @@ import {
   parseContentType,
   createAppContainer,
   setDocCurrentScript,
+  coreLog,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
@@ -84,7 +85,7 @@ export class App {
   public customLoader: CustomerLoader;
 
   private active = false;
-  private mounting = false;
+  public mounting = false;
   private unmounting = false;
   private resources: interfaces.ResourceModules;
   // Environment variables injected by garfish for linkage with child applications
@@ -231,17 +232,18 @@ export class App {
       return false;
     }
     this.hooks.lifecycle.beforeMount.emit(this.appInfo, this, true);
+    this.context.activeApps.push(this);
 
     await this.addContainer();
     this.callRender(provider, false);
     this.display = true;
-    this.context.activeApps.push(this);
     this.hooks.lifecycle.afterMount.emit(this.appInfo, this, true);
     return true;
   }
 
   hide() {
     this.active = false;
+    this.mounting = false;
     const { display, mounted, provider } = this;
     if (!display) return false;
     if (!mounted) {
@@ -264,8 +266,10 @@ export class App {
     this.active = true;
     this.mounting = true;
     try {
+      this.context.activeApps.push(this);
       // add container and compile js with cjs
       const { asyncScripts } = await this.compileAndRenderContainer();
+      if (!this.stopMountAndClearEffect()) return false;
 
       // Good provider is set at compile time
       const provider = await this.getProvider();
@@ -275,7 +279,6 @@ export class App {
       this.callRender(provider, true);
       this.display = true;
       this.mounted = true;
-      this.context.activeApps.push(this);
       this.hooks.lifecycle.afterMount.emit(this.appInfo, this, false);
 
       await asyncScripts;
@@ -292,6 +295,7 @@ export class App {
 
   unmount() {
     this.active = false;
+    this.mounting = false;
     if (!this.mounted || !this.appContainer) {
       return false;
     }
@@ -416,6 +420,10 @@ export class App {
       if (this.appContainer) {
         this.entryManager.DOMApis.removeElement(this.appContainer);
       }
+      coreLog(
+        `${this.appInfo.name} id:${this.appId} stopMountAndClearEffect`,
+        this.appContainer,
+      );
       return false;
     }
     return true;

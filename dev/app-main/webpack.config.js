@@ -1,24 +1,12 @@
 import path from 'path';
 import { DefinePlugin } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import portMap from '../config.json';
-
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+import { isDevelopment, getPublicPath, getPort } from '../util';
+// const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const appName = 'dev/main';
-const port = portMap[appName].port;
-const publicPath = portMap[appName].publicPath;
-
-const isInWebIDE = () => {
-  return Boolean(process.env.IDE_PLATFORM);
-};
-const getProxyHost = (port) => {
-  return `${port}-${process.env.WEBIDE_PODID || ''}.webide-boe.byted.org`;
-};
-const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const webpackConfig = {
-  mode: isDevelopment ? 'development' : 'production',
-  devtool: process.env.NODE_ENV === 'development' ? 'source-map' : false,
+  devtool: isDevelopment ? 'source-map' : false,
   entry: {
     main: './src/index.tsx',
   },
@@ -28,12 +16,7 @@ const webpackConfig = {
     filename: '[name].[contenthash].js',
     chunkFilename: '[name].[contenthash].js',
     path: path.join(__dirname, 'dist'),
-    // prettier-ignore
-    publicPath: !isDevelopment
-      ? publicPath
-      : isInWebIDE()
-        ? `//${getProxyHost(port)}/`
-        : `http://localhost:${port}/`,
+    publicPath: getPublicPath(appName),
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
@@ -92,7 +75,8 @@ const webpackConfig = {
     hot: true,
     // open: true,
     historyApiFallback: true,
-    port: 8090,
+
+    port: getPort(appName),
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
@@ -104,8 +88,6 @@ const webpackConfig = {
       favicon: path.resolve(__dirname, './src/static/favicon.ico'),
     }),
     new DefinePlugin({
-      'process.env.inIDE': isInWebIDE(),
-      'process.env.WEBIDE_PODID': JSON.stringify(process.env.WEBIDE_PODID),
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
     // 微前端场景下子应用热更新需要关闭 react-fast-refresh, 否则子应用热更新不会生效

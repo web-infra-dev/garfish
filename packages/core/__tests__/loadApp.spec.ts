@@ -8,22 +8,29 @@ import {
 import Garfish from '../src/index';
 
 describe('Core: load process', () => {
-  let GarfishInstance;
+  let GarfishInstance: Garfish;
+  let container;
+
   const vueSubAppEntry = './resources/vueApp.html';
   const reactSubAppEntry = './resources/reactApp.html';
   const vue3AppRenderNode = 'hello-world-vue3';
   const vue3SubAppEntry = './resources/vue3App.html';
+  const asyncProviderApp = './resources/asyncProviderApp.html';
 
   mockStaticServer(__dirname);
 
   beforeEach(() => {
+    container = document.createElement('div');
+    container.setAttribute('id', 'container');
+    document.body.appendChild(container);
     GarfishInstance = new Garfish({});
   });
 
+  afterEach(() => {
+    document.body.removeChild(container);
+  });
+
   it('domGetter cssSelector', async () => {
-    const container = document.createElement('div');
-    container.setAttribute('id', 'container');
-    document.body.appendChild(container);
     const app = await GarfishInstance.loadApp('vue-app', {
       entry: vueSubAppEntry,
       domGetter: '#container',
@@ -33,20 +40,18 @@ describe('Core: load process', () => {
 
     const appContainer = container.querySelector(`[id^=${appContainerId}]`);
     expect(appContainer.childNodes[0]).toMatchSnapshot();
-
-    document.body.removeChild(container);
   });
 
   it('domGetter cssSelector delay 2000ms can work normally', async () => {
     const container = document.createElement('div');
     setTimeout(() => {
-      container.setAttribute('id', 'container');
+      container.setAttribute('id', 'async-container');
       document.body.appendChild(container);
     }, 1000);
 
     const app = await GarfishInstance.loadApp('vue-app', {
       entry: vueSubAppEntry,
-      domGetter: '#container',
+      domGetter: '#async-container',
     });
 
     await app.mount();
@@ -61,23 +66,19 @@ describe('Core: load process', () => {
   it('domGetter cssSelector delay 3500ms throw error', async () => {
     const container = document.createElement('div');
     setTimeout(() => {
-      container.setAttribute('id', 'container');
+      container.setAttribute('id', 'delay-async-container');
       document.body.appendChild(container);
     }, 3500);
 
     const app = await GarfishInstance.loadApp('vue-app', {
       entry: vueSubAppEntry,
-      domGetter: '#container',
+      domGetter: '#delay-async-container',
     });
 
     await expect(app.mount.bind(app)).rejects.toThrowError(/Invalid domGetter/);
   });
 
   it('domGetter is function', async () => {
-    const container = document.createElement('div');
-    container.setAttribute('id', 'container');
-    document.body.appendChild(container);
-
     const app = await GarfishInstance.loadApp('vue-app', {
       entry: vueSubAppEntry,
       domGetter: () => document.querySelector('#container'),
@@ -87,8 +88,6 @@ describe('Core: load process', () => {
 
     const appContainer = container.querySelector(`[id^=${appContainerId}]`);
     expect(appContainer.childNodes[0]).toMatchSnapshot();
-
-    document.body.removeChild(container);
   });
 
   it('load error app', async () => {
@@ -106,11 +105,7 @@ describe('Core: load process', () => {
   });
 
   it("throw error when provide an 'name' opts in options", async () => {
-    await expect(
-      GarfishInstance.loadApp('vue-app', {
-        name: 'sub-app',
-      }),
-    ).rejects.toThrow();
+    await expect(GarfishInstance.loadApp('vue-app')).rejects.toThrow();
   });
 
   it('get the options from register info by default', async () => {
@@ -185,9 +180,6 @@ describe('Core: load process', () => {
       },
     });
 
-    const container = document.createElement('div');
-    container.setAttribute('id', 'container');
-    document.body.appendChild(container);
     const app = await GarfishInstance.loadApp('vue-app', {
       entry: vue3SubAppEntry,
       domGetter: '#container',
@@ -213,7 +205,6 @@ describe('Core: load process', () => {
     expect(container.querySelectorAll(`[id^=${appContainerId}]`)).toHaveLength(
       0,
     );
-    document.body.removeChild(container);
   });
 
   it('provide an entry after beforeLoad if entry is not provided in register', async () => {
@@ -290,7 +281,7 @@ describe('Core: load process', () => {
   });
 
   it('load the same app while return the cache instance if cache is set false', async () => {
-    await GarfishInstance.run({
+    GarfishInstance.run({
       domGetter: '#container',
       apps: [
         {
@@ -312,5 +303,29 @@ describe('Core: load process', () => {
     expect(app1.mounted).toBe(true);
     expect(app2.mounted).toBe(false);
     expect(app2.appInfo.entry).toEqual(vue3SubAppEntry);
+  });
+
+  it('destroy the app during rendering and then render again', async () => {
+    GarfishInstance.run({
+      domGetter: '#container',
+      apps: [
+        {
+          name: 'async-provider',
+          entry: asyncProviderApp,
+          cache: true,
+        },
+      ],
+    });
+
+    const app = await GarfishInstance.loadApp('async-provider');
+    expect(app.mounted).toBe(false);
+
+    app.mount();
+    app.unmount();
+
+    await app.mount();
+    expect(app.mounted).toBe(true);
+
+    expect(document.body.contains(container)).toBe(true);
   });
 });

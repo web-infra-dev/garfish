@@ -10,7 +10,7 @@
     "test:e2e": "zx scripts/e2e.js",
     "test:e2e:prod": "cross-env CI=true zx scripts/e2e.js",
     "test:e2e:open": "cross-env TEST_ENV_OPEN=true zx scripts/e2e.js",
-    "test": "node scripts/unit.js --collect-coverage",
+    "test": "jest --collect-coverage",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "changeset": "npx changeset",
@@ -30,11 +30,8 @@
       "prettier --write"
     ],
     "*.ts?(x)": [
-      "eslint --fix",
+      "eslint --fix --config .eslintrc.js",
       "prettier --parser=typescript --write"
-    ],
-    "*.md": [
-      "prettier --write"
     ]
   },
   "publishConfig": {
@@ -82,10 +79,9 @@
     "typescript": "4.4.3",
     "wait-on": "6.0.0",
     "workspace-tools": "0.16.2",
-    "zx": "4.2.0"
+    "zx": "4.2.0",
+    "@swc/core": "^1.2.183",
+    "@swc/jest": "^0.2.21"
   },
-  "engines": {
-    "node": ">=16.10.0"
-  },
-  "version": "1.4.4"
+  "version": "1.5.5"
 }

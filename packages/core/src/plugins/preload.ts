@@ -4,11 +4,12 @@ import {
   isAbsolute,
   transformUrl,
   callTestCallback,
+  safeWrapper,
 } from '@garfish/utils';
 import { Loader, Manager, TemplateManager } from '@garfish/loader';
 import { interfaces } from '../interface';
 
-const storageKey = '__garfishPreloadApp__';
+export const storageKey = '__garfishPreloadApp__';
 
 const isMobile =
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -130,12 +131,14 @@ export function setRanking(appName: string) {
   const newCurrent = { appName, count: 1 };
 
   if (!str) {
-    localStorage.setItem(storageKey, JSON.stringify([newCurrent]));
+    safeWrapper(() =>
+      localStorage.setItem(storageKey, JSON.stringify([newCurrent])),
+    );
   } else {
     const data = JSON.parse(str);
     const current = data.find((app) => app.appName === appName);
     current ? current.count++ : data.push(newCurrent);
-    localStorage.setItem(storageKey, JSON.stringify(data));
+    safeWrapper(() => localStorage.setItem(storageKey, JSON.stringify(data)));
   }
 }
 
@@ -148,6 +151,9 @@ export function GarfishPreloadPlugin() {
       version: __VERSION__,
 
       beforeLoad(appInfo) {
+        if (Garfish.options.disablePreloadApp) {
+          return;
+        }
         setRanking(appInfo.name);
       },
 

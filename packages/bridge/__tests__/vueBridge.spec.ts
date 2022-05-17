@@ -66,13 +66,13 @@ describe('vue-bridge', () => {
   });
 
   it('throws an error when required parameters are not provided', () => {
-    expect(() => vueBridge({})).toThrow();
-    expect(() => vueBridge({ Vue })).toThrow();
-    expect(() => vueBridge({ Vue, rootComponent })).toThrow();
-    expect(() => vueBridge({ Vue, loadRootComponent })).toThrow();
+    expect(() => vueBridge({} as any)).toThrow();
+    expect(() => vueBridge({ Vue } as any)).not.toThrow();
+    expect(() => vueBridge({ Vue, rootComponent })).not.toThrow();
+    expect(() => vueBridge({ Vue, loadRootComponent })).not.toThrow();
     expect(() =>
       vueBridge({ Vue, rootComponent, loadRootComponent }),
-    ).toThrow();
+    ).not.toThrow();
     expect(() => vueBridge({ Vue, rootComponent, appOptions })).not.toThrow();
     expect(() =>
       vueBridge({ Vue, loadRootComponent, appOptions }),
@@ -89,7 +89,7 @@ describe('vue-bridge', () => {
         loadRootComponent,
         appOptions: {
           el: {},
-        },
+        } as any,
       }),
     ).toThrow();
   });
@@ -99,7 +99,7 @@ describe('vue-bridge', () => {
       Vue,
       appOptions: {
         el: '#invalid_app',
-      },
+      } as any,
       rootComponent,
     });
 
@@ -111,7 +111,7 @@ describe('vue-bridge', () => {
     const handleInstance = jest.fn();
     const provider = vueBridge({
       Vue,
-      appOptions: {},
+      appOptions: {} as any,
       handleInstance,
       rootComponent,
     });
@@ -152,7 +152,7 @@ describe('vue-bridge', () => {
     const handleInstance = jest.fn((instance, props) => props);
     const provider = vueBridge({
       Vue,
-      appOptions: {},
+      appOptions: {} as any,
       handleInstance,
       rootComponent: {},
     });
@@ -177,7 +177,7 @@ describe('vue-bridge', () => {
 
     opts.loadRootComponent.mockReturnValue(Promise.resolve({}));
 
-    const provider = vueBridge(opts);
+    const provider = vueBridge(opts as any);
 
     const lifeCycles = await provider(appInfo, props);
 
@@ -193,7 +193,7 @@ describe('vue-bridge', () => {
 
     const provider = vueBridge({
       Vue,
-      appOptions: {},
+      appOptions: {} as any,
       rootComponent: {},
     });
 
@@ -212,7 +212,7 @@ describe('vue-bridge', () => {
   it("mounts into the garfish-vue-bridge div if you don't provide an 'el' in appOptions", async () => {
     const provider = vueBridge({
       Vue,
-      appOptions: {},
+      appOptions: {} as any,
       rootComponent: {},
     });
 
@@ -242,7 +242,7 @@ describe('vue-bridge', () => {
 
     const provider = vueBridge({
       Vue,
-      appOptions: {},
+      appOptions: {} as any,
       handleInstance,
       rootComponent: {},
     });
@@ -275,7 +275,7 @@ describe('vue-bridge', () => {
 
     const provider = vueBridge({
       createApp,
-      appOptions: {},
+      appOptions: {} as any,
       handleInstance,
       rootComponent: {},
     });

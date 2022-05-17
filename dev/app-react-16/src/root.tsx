@@ -1,4 +1,5 @@
 import React, { createContext } from 'react';
+import { ConfigProvider } from '@arco-design/web-react';
 import {
   BrowserRouter,
   Switch,
@@ -10,6 +11,7 @@ import App from './App';
 import PageNotFound from './PageNotFound';
 import './App.less';
 
+export const prefixCls = 'sub-app-react16';
 export const SubAppContext = createContext({});
 
 const RootComponent = (props) => {
@@ -25,13 +27,15 @@ const RootComponent = (props) => {
     </Switch>
   );
   return (
-    <SubAppContext.Provider value={{ basename, store }}>
-      {location.pathname.includes('loadApp') ? (
-        <MemoryRouter> {routes} </MemoryRouter>
-      ) : (
-        <BrowserRouter basename={basename}>{routes}</BrowserRouter>
-      )}
-    </SubAppContext.Provider>
+    <ConfigProvider prefixCls={prefixCls}>
+      <SubAppContext.Provider value={{ basename, store }}>
+        {location.pathname.includes('loadApp') ? (
+          <MemoryRouter> {routes} </MemoryRouter>
+        ) : (
+          <BrowserRouter basename={basename}>{routes}</BrowserRouter>
+        )}
+      </SubAppContext.Provider>
+    </ConfigProvider>
   );
 };
 

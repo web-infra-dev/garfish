@@ -17,7 +17,6 @@ export const createState = () => {
   };
 
   const add = (item) => {
-    console.log('--add item', item);
     state.id += 1;
     item.id = state.id;
     // item.id =  state.todos.length + 1;

@@ -63,7 +63,7 @@ let defaultConfig: RunInfo = {
   // 当返回 false 时表示中断子应用的加载以及后续流程，所有子应用加载都会触发该函数的调用
   beforeLoad(appInfo) {
     store.setIsMounted(false);
-    console.log('子应用开始加载', appInfo.name);
+    console.log('子应用开始加载', appInfo);
     // return false;
   },
 

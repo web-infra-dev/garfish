@@ -35,7 +35,6 @@ export const render = () =>
 //   };
 // };
 
-// TODO: reactBridge 写法(待补充 reactBridge destory 前的hook 函数)
 export const provider = reactBridge({
   React,
   ReactDOM,
@@ -43,12 +42,11 @@ export const provider = reactBridge({
   rootComponent: RootComponent, // a class or stateless function component
   // loadRootComponent: a promise that resolves with the react component. Wait for it to resolve before mounting
   loadRootComponent: (props) => {
-    const root = getRootDom(props);
-    _root = root;
+    _root = getRootDom(props);
     _props = props;
     return Promise.resolve(() => <RootComponent {...props} />);
   },
-  errorBoundary: () => <Error />,
+  errorBoundary: (e: any) => <Error />,
 });
 
 // 这能够让子应用独立运行起来，以保证后续子应用能脱离主应用独立运行，方便调试、开发

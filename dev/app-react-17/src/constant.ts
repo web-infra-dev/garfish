@@ -9,7 +9,7 @@ window.Garfish.router.push({ path: '/main' })
 
 export const channelWithMainStr = `
 \`\`\`javascript
-window?.Garfish.channel.emit('event', 'hello, 我是 react17 子应用');
+window?.Garfish?.channel.emit('event', 'hello, 我是 react17 子应用');
 \`\`\`
 `;
 

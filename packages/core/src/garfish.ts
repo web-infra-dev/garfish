@@ -21,6 +21,7 @@ import { GarfishHMRPlugin } from './plugins/fixHMR';
 import { GarfishOptionsLife } from './plugins/lifecycle';
 import { GarfishPreloadPlugin } from './plugins/preload';
 import { GarfishPerformance } from './plugins/performance';
+import { GarfishLogger } from './plugins/logger';
 
 const DEFAULT_PROPS = new WeakMap();
 const HOOKS_API = {
@@ -58,6 +59,7 @@ export class Garfish extends EventEmitter2 {
     this.usePlugin(GarfishHMRPlugin());
     this.usePlugin(GarfishPerformance());
     this.usePlugin(GarfishPreloadPlugin());
+    this.usePlugin(GarfishLogger());
   }
 
   setOptions(options: Partial<interfaces.Options>) {

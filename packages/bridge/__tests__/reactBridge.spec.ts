@@ -63,10 +63,9 @@ describe('react-bridge', () => {
   });
 
   it('throws an error when required parameters are not provided', () => {
-    expect(() => reactBridge({})).toThrow();
-    expect(() => reactBridge({ React })).toThrow();
-    expect(() => reactBridge({ React, ReactDOM })).toThrow();
-    expect(() => reactBridge({ React, ReactDOM, $el })).toThrow();
+    expect(() => reactBridge({ React } as any)).toThrow();
+    expect(() => reactBridge({ React, ReactDOM } as any)).toThrow();
+    expect(() => reactBridge({ React, ReactDOM, el: $el } as any)).toThrow();
     expect(() =>
       reactBridge({ React, ReactDOM, loadRootComponent }),
     ).not.toThrow();
@@ -77,7 +76,13 @@ describe('react-bridge', () => {
     ).not.toThrow();
 
     expect(() =>
-      reactBridge({ React, ReactDOM, $el, rootComponent, loadRootComponent }),
+      reactBridge({
+        React,
+        ReactDOM,
+        el: $el,
+        rootComponent,
+        loadRootComponent,
+      }),
     ).not.toThrow();
   });
 
@@ -99,7 +104,7 @@ describe('react-bridge', () => {
         React,
         ReactDOM,
         loadRootComponent,
-        errorBoundary: {},
+        errorBoundary: {} as any,
       }),
     ).toThrow();
   });

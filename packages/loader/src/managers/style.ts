@@ -1,7 +1,9 @@
 import { Node, isAbsolute, transformUrl } from '@garfish/utils';
 
 // Match url in css
-const MATCH_CSS_URL = /url\(['"]?([^\)]+?)['"]?\)/g;
+const MATCH_CSS_URL = /url\(\s*(['"])?(.*?)\1\s*\)/g;
+const MATCH_CHARSET_URL = /@charset\s+(['"])(.*?)\1\s*;?/g;
+const MATCH_IMPORT_URL = /@import\s+(['"])(.*?)\1/g;
 
 export class StyleManager {
   public url: string | null;
@@ -19,10 +21,15 @@ export class StyleManager {
     if (!baseUrl) baseUrl = url;
     if (baseUrl && typeof styleCode === 'string') {
       // The relative path is converted to an absolute path according to the path of the css file
-      this.styleCode = styleCode.replace(MATCH_CSS_URL, (k1, k2) => {
-        if (isAbsolute(k2)) return k1;
-        return `url("${transformUrl(baseUrl, k2)}")`;
-      });
+      this.styleCode = styleCode
+        .replace(MATCH_CHARSET_URL, '')
+        .replace(MATCH_IMPORT_URL, function (k0, k1, k2) {
+          return k2 ? `@import url(${k1}${k2}${k1})` : k0;
+        })
+        .replace(MATCH_CSS_URL, (k0, k1, k2) => {
+          if (isAbsolute(k2)) return k0;
+          return `url("${transformUrl(baseUrl, k2)}")`;
+        });
     }
   }
 
