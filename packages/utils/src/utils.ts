@@ -42,7 +42,7 @@ export function def(obj: Object, key: string, value: any) {
 }
 
 // Array to Object `['a'] => { a: true }`
-export function makeMap<T extends Array<string>>(list: T) {
+export function makeMap<T extends Array<PropertyKey>>(list: T) {
   const map: { [k in T[number]]: true } = Object.create(null);
   for (let i = 0; i < list.length; i++) {
     map[list[i]] = true;
