@@ -142,9 +142,28 @@ const RootComponent = ({ basename }) => {
 last but not least, 别忘了添加子应用独立运行逻辑，这能够让你的子应用脱离主应用独立运行，便于后续开发和部署。
 :::
 
+
+<Tabs>
+  <TabItem value="react_16/17" label="react v16/v17" default>
+
 ```tsx
 // src/index.tsx
+if (!window.__GARFISH__) {
+  ReactDOM.render(
+    <RootComponent
+      basename={
+        process.env.NODE_ENV === 'production' ? '/examples/subapp/react18' : '/'
+      }
+    />, document.getElementById("root"));
+}
+```
 
+  </TabItem>
+
+  <TabItem value="react_18" label="react v18" default>
+
+```tsx
+// src/index.tsx
 if (!window.__GARFISH__) {
   const container = document.getElementById('root');
   const root = createRoot(container!);
@@ -153,7 +172,14 @@ if (!window.__GARFISH__) {
       basename={
         process.env.NODE_ENV === 'production' ? '/examples/subapp/react18' : '/'
       }
-    />,
+    />
   );
 }
 ```
+
+  </TabItem>
+</Tabs>
+
+
+
+
