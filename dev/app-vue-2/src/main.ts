@@ -39,7 +39,6 @@ export const provider = vueBridge({
     store.dispatch('setProps', props);
     return Promise.resolve(App);
   },
-
   handleInstance: (vueInstance, { basename, dom, appName, props }) => {
     console.log(vueInstance, basename, dom, appName, props);
   },
