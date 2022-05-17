@@ -6,14 +6,14 @@ order: 2
 
 import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
 
-本节我们将详细介绍 react 框架的应用作为子应用的接入步骤。
+本节我们将详细介绍 react 框架的应用作为子应用的接入步骤。bridge 函数的详细介绍可访问：[bridge 介绍](/guide/bridge)
 
 ## react 子应用接入步骤
-### 1. [@garfish/bridge](../../guide/bridge) 依赖安装
+### 1. bridge 依赖安装
 
 :::tip
-1.  请注意，桥接函数 @garfish/bridge 依赖安装不是必须的，你可以自定义导出函数。
-2.  我们提供桥接函数 @garfish/bridge 是为了进一步降低用户接入成本并降低用户出错概率，我们将一些默认行为内置在桥接函数中进行了进一步封装，避免由于接入不规范导致的错误，所以这也是我们推荐的接入方式。
+1. 请注意，桥接函数的安装不是必须的，你可以自定义导出函数。
+2. 我们提供桥接函数是为了进一步降低用户接入成本并降低用户出错概率，桥接函数中将会内置一些默认行为，可以避免由于接入不规范导致的错误，所以这也是我们推荐的接入方式。
 :::
 
 ```bash npm2yarn

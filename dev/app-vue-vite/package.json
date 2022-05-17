@@ -3,7 +3,7 @@
   "private": true,
   "dependencies": {
     "vue": "^3.2.23",
-    "@garfish/bridge": "workspace:*"
+    "@garfish/bridge-vue-v3": "workspace:*"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "2.3.1",

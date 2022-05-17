@@ -1,9 +1,8 @@
-import { vueBridge } from '@garfish/bridge';
+import { vueBridge } from '@garfish/bridge-vue-v3';
 import { createApp } from 'vue';
 import App from './App.vue';
 
 vueBridge({
-  createApp,
   rootComponent: App,
   // appOptions: () => ({
   //   el: '#app',

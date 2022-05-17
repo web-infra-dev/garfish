@@ -2,7 +2,7 @@
 
 [![NPM version](https://img.shields.io/npm/v/@garfish/bridge.svg?style=flat-square)](https://www.npmjs.com/package/@garfish/bridge)
 
-for more details, [check here](https://www.garfishjs.org/guide/bridge)
+Vue bridge for vue v2 subapp. For more details, [check here](https://www.garfishjs.org/guide/bridge)
 ## Usage
 
 ```jsx
@@ -25,7 +25,6 @@ export const provider = vueBridge({
     // you can do something in handleInstance after get the vueInstance
   },
   appOptions: ({ basename, dom, appName, props }) => {
-    console.log({ basename, dom, appName, props });
     // pass the options to Vue Constructor. check https://vuejs.bootcss.com/api/#%E9%80%89%E9%A1%B9-%E6%95%B0%E6%8D%AE
     return {
       el: '#app',

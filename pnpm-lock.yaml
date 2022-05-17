@@ -499,7 +499,7 @@ importers:
 
   dev/app-vue:
     specifiers:
-      '@garfish/bridge': workspace:*
+      '@garfish/bridge-vue-v2': workspace:*
       '@garfish/remote-module': workspace:*
       '@vue/cli-plugin-babel': 4.5.0
       '@vue/cli-plugin-eslint': 4.5.0
@@ -518,7 +518,7 @@ importers:
       vue-template-compiler: 2.6.13
       vuex: ^3.6.2
     dependencies:
-      '@garfish/bridge': link:../../packages/bridge
+      '@garfish/bridge-vue-v2': link:../../packages/vueBridge-v2
       '@garfish/remote-module': link:../../packages/remote-module
       core-js: 3.21.1
       garfish: link:../../packages/garfish
@@ -625,12 +625,12 @@ importers:
 
   dev/app-vue-vite:
     specifiers:
-      '@garfish/bridge': workspace:*
+      '@garfish/bridge-vue-v3': workspace:*
       '@vitejs/plugin-vue': 2.3.1
       vite: 2.9.7
       vue: ^3.2.23
     dependencies:
-      '@garfish/bridge': link:../../packages/bridge
+      '@garfish/bridge-vue-v3': link:../../packages/vueBridge-v3
       vue: 3.2.31
     devDependencies:
       '@vitejs/plugin-vue': 2.3.1_vite@2.9.7+vue@3.2.31

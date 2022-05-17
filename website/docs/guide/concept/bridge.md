@@ -17,15 +17,45 @@ Garfish bridge 是 `garfish` 提供的帮助用户降低接入成本的工具函
 4. garfish bridge 暂未针对构建工具如 webpack、vite 提供相应的构建工具插件，我们后期会针对这块能力进行补全，请持续关注；
 :::
 
-## @garfish/bridge
+## 工具包
 
-@garfish/bridge 是 garfish bridge 功能使用的工具包，封装了 react 应用和 vue 应用 bridge 工具函数 [reactBridge](/guide/bridge#reactbridge) 和 [vueBridge](/guide/bridge#vuebridge)。
+### @garfish/bridge
 
+[@garfish/bridge](https://www.npmjs.com/package/@garfish/bridge) 工具包是 garfish 为 react 应用提供的 bridge 工具函数包，其导出的 [reactBridge](/guide/bridge#reactbridge) 可用于 react 子应用的接入，目前支持 react v16、v17，针对 v18 支持我们正在加紧开发中。`@garfish/bridge` 的使用见 [demo](/guide/demo/react#react-v16v17-%E5%AF%BC%E5%87%BA)。
+
+### @garfish/bridge-vue-v2
+
+[@garfish/bridge-vue-v2](https://www.npmjs.com/package/@garfish/bridge-vue-v2) 工具包是 garfish 为 vue v2 应用 提供的 bridge 工具函数包，其导出的 [vueBridge](/guide/bridge#vuebridge) 可用于 vue v2 子应用的接入，`@garfish/bridge-vue-v2` 的使用见 [demo](/guide/demo/vue#vue2-导出)。
+
+### @garfish/bridge-vue-v3
+
+[@garfish/bridge-vue-v3](https://www.npmjs.com/package/@garfish/bridge-vue-v3) 工具包是 garfish 为 vue v3 应用 提供的 bridge 工具函数包，其导出的 [vueBridge](/guide/bridge#vuebridge) 可用于 vue v3 子应用的接入，`@garfish/bridge-vue-v3` 的使用见 [demo](/guide/demo/vue#vue3-导出)。
 ## 安装
 
-```bash npm2yarn
-npm install @garfish/bridge --save
-```
+<Tabs>
+  <TabItem value="install_react" label="react 应用" default>
+
+  ```bash npm2yarn
+  npm install @garfish/bridge --save
+  ```
+  </TabItem>
+
+ <TabItem value="install_vue2" label="vue2 应用" default>
+
+  ```bash npm2yarn
+  npm install @garfish/bridge-vue-v2 --save
+  ```
+  </TabItem>
+
+  <TabItem value="install_vue3" label="vue3 应用" default>
+
+  ```bash npm2yarn
+  npm install @garfish/bridge-vue-v3 --save
+  ```
+  </TabItem>
+</Tabs>
+
+
 
 ## reactBridge
 
@@ -177,7 +207,7 @@ import VueRouter from 'vue-router';
 import store from './store';
 import App from './App.vue';
 import Home from './components/Home.vue';
-import { vueBridge } from '@garfish/bridge';
+import { vueBridge } from '@garfish/bridge-vue-v2';
 
 Vue.use(VueRouter);
 Vue.config.productionTip = false;
@@ -192,13 +222,13 @@ function newRouter(basename) {
 }
 
 export const provider = vueBridge({
-  Vue,
   rootComponent: App,
   loadRootComponent: ({ basename, dom, appName, props }) => {
-    // do domething...
+    // do domething async
     return Promise.resolve(App);
   },
   appOptions: ({ basename, dom, appName, props }) => {
+    // pass the options to Vue Constructor. check https://vuejs.bootcss.com/api/#%E9%80%89%E9%A1%B9-%E6%95%B0%E6%8D%AE
     return {
       el: '#app',
       router: newRouter(basename),
@@ -206,7 +236,7 @@ export const provider = vueBridge({
     };
   },
   handleInstance: (vueInstance, { basename, dom, appName, props }) => {
-    console.log(vueInstance, basename, dom, appName, props);
+    // you can do something in handleInstance after get the vueInstance
   },
 });
 ```
@@ -220,7 +250,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { stateSymbol, createState } from './store.js';
 import App from './App.vue';
 import Home from './components/Home.vue';
-import { vueBridge } from '@garfish/bridge';
+import { vueBridge } from '@garfish/bridge-vue-v3';
 
 function newRouter(basename) {
   const router = createRouter({
@@ -231,19 +261,20 @@ function newRouter(basename) {
 }
 
 export const provider = vueBridge({
-  createApp,
   rootComponent: App,
   loadRootComponent: ({ basename, dom, appName, props }) => {
-    // do domething...
+    // do something async
     return Promise.resolve(App);
   },
   appOptions: ({ basename, dom, appName, props }) => {
+    // pass the options to Vue Constructor. check https://vuejs.bootcss.com/api/#%E9%80%89%E9%A1%B9-%E6%95%B0%E6%8D%AE
     return {
       el: '#app',
       render: () => h(App),
     };
   },
   handleInstance: (vueInstance, { basename, dom, appName, props }) => {
+    // you can do something in handleInstance after get the vueInstance
     vueInstance.use(newRouter(basename));
     vueInstance.provide(stateSymbol, createState());
   },
@@ -291,7 +322,7 @@ export const provider = vueBridge({
   - `loadRootComponent` 将默认接收到 garfish 传递的 appInfo 应用相关参数：
 
   ```ts
-   import { vueBridge } from "@garfish/bridge";
+   import { vueBridge } from "@garfish/bridge-vue-v2";
    export const provider = vueBridge({
      ...,
      loadRootComponent: ({ basename, dom, props }) => {

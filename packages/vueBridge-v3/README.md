@@ -2,7 +2,7 @@
 
 [![NPM version](https://img.shields.io/npm/v/@garfish/bridge.svg?style=flat-square)](https://www.npmjs.com/package/@garfish/bridge)
 
-for more details, [check here](https://www.garfishjs.org/guide/bridge)
+Vue bridge for vue v3 subapp. For more details, [check here](https://www.garfishjs.org/guide/bridge)
 ## Usage
 
 ```jsx
