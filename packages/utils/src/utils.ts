@@ -236,6 +236,15 @@ export function isPrimitive(val: any) {
   );
 }
 
+export function filterUndefinedVal<T extends Object>(ob: T) {
+  return Object.keys(ob).reduce((res: T, key: any) => {
+    if (res[key] === undefined) {
+      delete res[key];
+    }
+    return res;
+  }, ob);
+}
+
 // Deeply merge two objects, can handle circular references, the latter overwrite the previous
 export function deepMerge<K, T>(
   o: K,
