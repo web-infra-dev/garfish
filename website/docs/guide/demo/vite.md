@@ -6,7 +6,7 @@ order: 4
 
 import ViteConfig from '@site/src/components/config/_viteConfig.mdx';
 
-本节我们将详细介绍 vite 框架的应用作为子应用的接入步骤。bridge 函数的详细介绍可访问：[bridge 介绍](/guide/bridge)
+本节我们将详细介绍 vite 框架的应用作为子应用的接入步骤。
 
 ## 主应用沙箱状态描述
 
@@ -71,12 +71,13 @@ Garfish.run({
 ```bash npm2yarn
 npm install @garfish/bridge-vue-v3 --save
 ```
-
 ### 2. 入口文件处导出 provider 函数
+
+更多 bridge 函数参数介绍请参考 [这里](/guide/bridge)
 
 ```js
 // src/main.js
-import { h, createApp } from 'vue';
+import { h } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { vueBridge } from '@garfish/bridge-vue-v3';
 import App from './App.vue';
@@ -92,6 +93,7 @@ function newRouter(basename) {
 
 export const provider = vueBridge({
   rootComponent: App,
+  // 可选，注册 vue-router或状态管理对象
   appOptions: ({ basename, dom, appName, props }) => ({
     el: '#app',
     render: () => h(App),
@@ -110,7 +112,7 @@ export const provider = vueBridge({
 
 ```js
 // src/main.js
-import { h, createApp } from 'vue';
+import { h } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { vueBridge } from '@garfish/bridge-vue-v3';
 import App from './App.vue';

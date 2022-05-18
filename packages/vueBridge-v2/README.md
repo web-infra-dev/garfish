@@ -5,10 +5,8 @@
 Vue bridge for vue v2 subapp. For more details, [check here](https://www.garfishjs.org/guide/bridge)
 ## Usage
 
-```jsx
+```js
 // child app
-import React from 'react';
-import ReactDOM from 'react-dom';
 import { vueBridge } from '@garfish/bridge-vue-v2';
 
 function App() {

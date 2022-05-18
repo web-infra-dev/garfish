@@ -9,6 +9,7 @@ type optionsType = {
   dom: Element | ShadowRoot | Document;
   basename: string;
   props: Record<string, any>;
+  appInfo: Record<string, any>;
 };
 
 interface ConfigOpts {

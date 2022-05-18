@@ -6,7 +6,7 @@ order: 3
 
 import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
 
-本节我们将详细介绍 vue 框架的应用作为子应用的接入步骤。bridge 函数的详细介绍可访问：[bridge 介绍](/guide/bridge)
+本节我们将详细介绍 vue 框架的应用作为子应用的接入步骤。
 ## vue 子应用接入步骤
 
 ### 1. bridge 依赖安装
@@ -36,6 +36,7 @@ import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
 
 ### 2. 入口文件处导出 provider 函数
 
+更多 bridge 函数参数介绍请参考 [这里](/guide/bridge)
 ### vue2 导出
 <Tabs>
   <TabItem value="bridge_provider_vue2" label="使用 @garfish/bridge-vue-v2 导出" default>
@@ -46,7 +47,7 @@ import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
   import store from './store';
   import App from './App.vue';
   import Home from './components/Home.vue';
-  import { vueBridge } from ' @garfish/bridge-vue-v2';
+  import { vueBridge } from '@garfish/bridge-vue-v2';
 
   Vue.use(VueRouter);
   Vue.config.productionTip = false;
@@ -65,16 +66,8 @@ import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
   export const provider = vueBridge({
     // 根组件
     rootComponent: App,
-    // 返回一个 promise, 可在 mounting 前执行异步操作
-    loadRootComponent: ({ basename, dom, appName, props }) => {
-    // do something async
-      return Promise.resolve(App);
-    },
-    // received vueInstance, do something
-    handleInstance: (vueInstance, { basename, dom, appName, props }) => {
-      // you can do something in handleInstance after get the vueInstance
-    },
-    appOptions: ({ basename, dom, appName, props }) => {
+    // 可选，注册 vue-router或状态管理对象
+    appOptions: ({ basename, dom, appName, props, appInfo }) => {
     // pass the options to Vue Constructor. check https://vuejs.bootcss.com/api/#%E9%80%89%E9%A1%B9-%E6%95%B0%E6%8D%AE
       return {
         el: '#app',
@@ -144,19 +137,8 @@ import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
 
     export const provider = vueBridge({
       rootComponent: App,
-      loadRootComponent: ({ basename, dom, appName, props }) => {
-        // do something async
-        return Promise.resolve(App);
-      },
-      appOptions: ({ basename, dom, appName, props }) => {
-        // pass the options to createApp. check hhttps://vuejs.org/api/application.html#createApp
-        return {
-          el: '#app',
-          render: () => h(App)
-        };
-      },
-      handleInstance: (vueInstance, { basename, dom, appName, props }) => {
-        // you can do something in handleInstance after get the vueInstance
+      // 可选，注册 vue-router或状态管理对象
+      handleInstance: (vueInstance, { basename, dom, appName, props, appInfo}) => {
         vueInstance.use(newRouter(basename));
         vueInstance.provide(stateSymbol, createState());
       },

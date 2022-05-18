@@ -7,9 +7,7 @@ Vue bridge for vue v3 subapp. For more details, [check here](https://www.garfish
 
 ```jsx
 // child app
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { reactBridge } from '@garfish/bridge';
+import { vueBridge } from '@garfish/bridge-vue-v3';
 
 function App() {
   return <div>content</div>;
@@ -35,6 +33,4 @@ export const provider = vueBridge({
   },
 });
 
-
 ```
-

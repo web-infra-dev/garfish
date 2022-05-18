@@ -6,8 +6,7 @@ order: 2
 
 import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
 
-本节我们将详细介绍 react 框架的应用作为子应用的接入步骤。bridge 函数的详细介绍可访问：[bridge 介绍](/guide/bridge)
-
+本节我们将详细介绍 react 框架的应用作为子应用的接入步骤。
 ## react 子应用接入步骤
 ### 1. bridge 依赖安装
 
@@ -21,6 +20,8 @@ npm install @garfish/bridge --save
 ```
 
 ### 2. 入口文件处导出 provider 函数
+
+更多 bridge 函数参数介绍请参考 [这里](/guide/bridge)
 ### react v16、v17 导出
 
 <Tabs>

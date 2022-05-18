@@ -59,7 +59,7 @@ Garfish bridge 是 `garfish` 提供的帮助用户降低接入成本的工具函
 
 ## reactBridge
 
-reactBridge 为 react 应用的 bridge 工具函数。
+reactBridge 是 `@garfish/bridge` 工具包为 react 子应用提供的 bridge 工具函数。
 
 ### Type
 
@@ -177,9 +177,13 @@ export const provider = reactBridge({
    });
   ```
 
-## vueBridge
+## vueBridge(for vue v2)
 
-vueBridge 为 vue 应用的 bridge 工具函数。
+:::info
+针对 vue v2 子应用，请使用 `@garfish/bridge-vue-v2` 工具包。
+:::
+
+vueBridge 是 `@garfish/bridge-vue-v2` 工具包为 vue v2 子应用提供的 bridge 工具函数。
 
 ### 类型
 
@@ -196,18 +200,13 @@ function vueBridge(userOpts: OptsTypes): (
 
 ### 示例
 
-> 可访问 [vue2 子应用](https://github.com/modern-js-dev/garfish/tree/main/dev/app-vue-2) 、[vue3 子应用](https://github.com/modern-js-dev/garfish/tree/main/dev/app-vue-3) 查看完整 demo
-
-<Tabs>
-  <TabItem value="vue2" label="vue2" default>
+> 可访问 [vue2 子应用](https://github.com/modern-js-dev/garfish/tree/main/dev/app-vue-2) 查看完整 demo
 
 ```ts
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+import { vueBridge } from '@garfish/bridge-vue-v2';
 import store from './store';
 import App from './App.vue';
 import Home from './components/Home.vue';
-import { vueBridge } from '@garfish/bridge-vue-v2';
 
 Vue.use(VueRouter);
 Vue.config.productionTip = false;
@@ -223,10 +222,7 @@ function newRouter(basename) {
 
 export const provider = vueBridge({
   rootComponent: App,
-  loadRootComponent: ({ basename, dom, appName, props }) => {
-    // do domething async
-    return Promise.resolve(App);
-  },
+  // 可选，注册 vue-router或状态管理对象
   appOptions: ({ basename, dom, appName, props }) => {
     // pass the options to Vue Constructor. check https://vuejs.bootcss.com/api/#%E9%80%89%E9%A1%B9-%E6%95%B0%E6%8D%AE
     return {
@@ -234,18 +230,106 @@ export const provider = vueBridge({
       router: newRouter(basename),
       store,
     };
-  },
-  handleInstance: (vueInstance, { basename, dom, appName, props }) => {
-    // you can do something in handleInstance after get the vueInstance
-  },
+  }
+});
+```
+### 参数
+
+`OptsTypes`
+
+- <Highlight> rootComponent </Highlight>
+
+- Type：`vue.Component`
+- 非必传。此参数和 `loadRootComponent` 至少传一个
+- 当前应用的顶层 Vue 组件，该组件中将接受到 garfish 传递的子应用相关参数：
+  ```ts
+  // components/root.tsx
+  const RootComponent = ({ appName, basename, dom, props, appInfo}) => { ... }
+  ```
+- 当同时传入了 `loadRootComponent` 参数时，`rootComponent` 将失效，且 `rootComponent` 组件不会默认接受到 garfish 传递的子应用相关参数；
+
+- <Highlight> loadRootComponent </Highlight>
+
+  - Type：`loadRootComponentType = (opts: Record<string, any>) => Promise<ComponentType>;`
+  - 非必传。此参数和 `rootComponent` 至少传一个
+  - 当前应用的顶层 Vue 组件，该组件中实例的 data 对象中将接收到 garfish 传递的子应用相关参数
+
+  - `loadRootComponent` 是一个函数，返回一个 Promise 对象，resolve 后需要返回当前 Vue 应用的顶层组件，该顶层组件含义与 `rootComponent` 含义相同。当需要在 render 前进行异步操作时，可使用 `loadRootComponent` 加入副作用逻辑。
+
+  - `loadRootComponent` 将默认接收到 garfish 传递的子应用相关参数：
+
+  ```ts
+   import { vueBridge } from "@garfish/bridge-vue-v2";
+   export const provider = vueBridge({
+     ...,
+     loadRootComponent: ({ appName, basename, dom, props, appInfo }) => {
+       // do something async
+       return Promise.resolve(App);
+     }
+   });
+  ```
+
+  - 当同时传入了 `rootComponent` 参数时，`loadRootComponent` 的优先级更高， `rootComponent` 将失效；
+
+
+- <Highlight> appOptions </Highlight>
+
+  - Type: `appOptions: (opts: Record<string, any>) => Record<string, any> | Record<string, any>`
+  - 非必传
+  - 作为函数时，接收 garfish 传递的子应用相关参数并返回用来实例化 Vue 应用的对象参数，也可作为对象类型直接返回用来实例化 Vue 应用的对象参数。实例化完成后，garfish 子应用相关参数将会自动注入到组件实例的 `data` 对象中。
+  - `appOptions` 参数将直接透传为 Vue 构造函数实例化时的初始化参数 new Vue(appOptions)，此时参数类型与 [vue](https://vuejs.bootcss.com/api/#%E9%80%89%E9%A1%B9-%E6%95%B0%E6%8D%AE) 保持一致。若未传递 `appOptions` 参数，则将自动提供 vue2 应用 `render` 函数用于渲染：`render: (h) => h(opts.rootComponent)`。
+  - 若需要指定子应用挂载点，可在此参数中指定：`appOptions: { el: '#app', ...}`，若未指定 `el` 参数，将默认使用全局挂载点。
+
+:::tip
+需要注意的是，`appOpitons` 中并不会默认包含路由或状态逻辑的处理，可显示在 `appOpitons` 中传递路由参数信息。
+:::
+
+```js
+import { vueBridge } from '@garfish/bridge-vue-v2';
+export const provider = vueBridge({
+  rootComponent: App,
+  appOptions: ({ basename, dom, appName, props, appInfo }) => {
+    // pass the options to Vue Constructor. check https://vuejs.bootcss.com/api/#%E9%80%89%E9%A1%B9-%E6%95%B0%E6%8D%AE
+    return {
+      el: '#app',
+      router: newRouter(basename),
+      store,
+    };
+  }
 });
 ```
 
-  </TabItem>
-  <TabItem value="vue3" label="vue3" default>
+- <Highlight> handleInstance </Highlight>
+
+  - Type: ` handleInstance: (vueInstance: InstanceType<vue.VueConstructor>, opts: optionsType) => void;`
+  - 非必传
+  - 处理 app 实例对象的函数，接受创建的 app 实例对象及 garfish 子应用相关参数，可自定义处理逻辑如路由注册或状态管理等相关能力。
+## vueBridge(for vue v3)
+
+:::info
+针对 vue v3 子应用，请使用 `@garfish/bridge-vue-v3` 工具包。
+:::
+
+vueBridge 是 `@garfish/bridge-vue-v3` 工具包为 vue v3 子应用提供的 bridge 工具函数。
+
+### 类型
 
 ```ts
-import { h, createApp } from 'vue';
+function vueBridge(userOpts: OptsTypes): (
+  appInfo: any,
+  props: any,
+) => Promise<{
+  render: (props: any) => any;
+  destroy: (props: any) => any;
+  update: (props: any) => any;
+}>;
+```
+
+### 示例
+
+> 可访问 [vue v3 子应用](https://github.com/modern-js-dev/garfish/tree/main/dev/app-vue-3) 查看完整 demo
+
+```ts
 import { createRouter, createWebHistory } from 'vue-router';
 import { stateSymbol, createState } from './store.js';
 import App from './App.vue';
@@ -262,71 +346,45 @@ function newRouter(basename) {
 
 export const provider = vueBridge({
   rootComponent: App,
-  loadRootComponent: ({ basename, dom, appName, props }) => {
-    // do something async
-    return Promise.resolve(App);
-  },
-  appOptions: ({ basename, dom, appName, props }) => {
-    // pass the options to Vue Constructor. check https://vuejs.bootcss.com/api/#%E9%80%89%E9%A1%B9-%E6%95%B0%E6%8D%AE
-    return {
-      el: '#app',
-      render: () => h(App),
-    };
-  },
-  handleInstance: (vueInstance, { basename, dom, appName, props }) => {
-    // you can do something in handleInstance after get the vueInstance
+  // 可选，注册 vue-router或状态管理对象
+  handleInstance: (vueInstance, { basename, dom, appName, props, appIndfo }) => {
     vueInstance.use(newRouter(basename));
     vueInstance.provide(stateSymbol, createState());
   },
 });
 ```
 
-  </TabItem>
-</Tabs>
-
 ### 参数
 
 `OptsTypes`
 
-- <Highlight> Vue </Highlight>
-
-  - Type: `Vue.VueConstructor`
-  - **当前应用是 vue2 应用时**，必传。
-  - 当前应用使用的 Vue 对象，可通过 `import Vue from "vue"` 引入
-
-- <Highlight> createApp </Highlight>
-
-  - Type: `Vue.CreateAppFunction<Element>;`
-  - **当前应用是 vue3 应用时**，必传。
-  - 当前应用使用的 Vue 对象的 `createApp` 属性，可通过 `import { createApp } from "vue"` 引入
-
 - <Highlight> rootComponent </Highlight>
 
 - Type：`vue.Component`
-- 此参数和 `loadRootComponent` 至少传一个
-- 当前应用的顶层 Vue 组件，该组件中将接受到 garfish 传递的 appInfo 应用相关参数：
+- 非必传。此参数和 `loadRootComponent` 至少传一个
+- 当前应用的顶层 Vue 组件，该组件中将接受到 garfish 传递的子应用相关参数：
   ```ts
   // components/root.tsx
-  const RootComponent = ({ appName, basename, dom, props }) => { ... }
+  const RootComponent = ({ appName, basename, dom, props, appInfo}) => { ... }
   ```
-- 当同时传入了 `loadRootComponent` 参数时，`rootComponent` 将失效，且 `rootComponent` 组件不会默认接受到 garfish 传递的 appInfo 应用相关参数；
+- 当同时传入了 `loadRootComponent` 参数时，`rootComponent` 将失效，且 `rootComponent` 组件不会默认接受到 garfish 传递的子应用相关参数；
 
 - <Highlight> loadRootComponent </Highlight>
 
   - Type：`loadRootComponentType = (opts: Record<string, any>) => Promise<ComponentType>;`
-  - 此参数和 `rootComponent` 至少传一个
-  - 当前应用的顶层 Vue 组件，该组件中实例的 data 对象中将接收到 garfish 传递的 appInfo 应用相关参数
+  - 非必传。此参数和 `rootComponent` 至少传一个
+  - 当前应用的顶层 Vue 组件，该组件中实例的 data 对象中将接收到 garfish 传递的子应用相关参数
 
   - `loadRootComponent` 是一个函数，返回一个 Promise 对象，resolve 后需要返回当前 Vue 应用的顶层组件，该顶层组件含义与 `rootComponent` 含义相同。当需要在 render 前进行异步操作时，可使用 `loadRootComponent` 加入副作用逻辑。
 
-  - `loadRootComponent` 将默认接收到 garfish 传递的 appInfo 应用相关参数：
+  - `loadRootComponent` 将默认接收到 garfish 传递的子应用相关参数：
 
   ```ts
-   import { vueBridge } from "@garfish/bridge-vue-v2";
+   import { vueBridge } from "@garfish/bridge-vue-v3";
    export const provider = vueBridge({
      ...,
-     loadRootComponent: ({ basename, dom, props }) => {
-       // do something...
+     loadRootComponent: ({ appName, basename, dom, props, appInfo }) => {
+       // do something async
        return Promise.resolve(App);
      }
    });
@@ -339,20 +397,28 @@ export const provider = vueBridge({
 
   - Type: `appOptions: (opts: Record<string, any>) => Record<string, any> | Record<string, any>`
   - 非必传
-  - 作为函数时，接收 garfish 传递的 appInfo 应用相关参数并返回用来实例化 Vue 应用的对象参数，也可作为对象类型直接返回用来实例化 Vue 应用的对象参数。实例化完成后，garfish appInfo 应用相关参数将会自动注入到组件实例的 `data` 对象中。
+  - 作为函数时，接收 garfish 传递的子应用相关参数并返回用来实例化 Vue 应用的对象参数，也可作为对象类型直接返回用来实例化 Vue 应用的对象参数。实例化完成后，garfish 子应用相关参数将会自动注入到组件实例的 `data` 对象中。
   - 在 Vue3 中，`appOptions` 参数将直接透传给 `createApp` 函数调用： `createApp(appOptions)`，此时参数类型与 [createApp](https://vuejs.org/api/application.html#createapp) 保持一致。若未传递 `appOptions` 参数，则将直接调用 `createApp(rootComponent)` 创建根组件。
-  - 在 Vue2 中，`appOptions` 参数将直接透传为 Vue 构造函数实例化时的初始化参数 new Vue(appOptions)，此时参数类型与 [vue](https://vuejs.bootcss.com/api/#%E9%80%89%E9%A1%B9-%E6%95%B0%E6%8D%AE) 保持一致。若未传递 `appOptions` 参数，则将自动提供 vue2 应用 `render` 函数用于渲染：`render: (h) => h(opts.rootComponent)`。
   - 若需要指定子应用挂载点，可在此参数中指定：`appOptions: { el: '#app', ...}`，若未指定 `el` 参数，将默认使用全局挂载点。
 
 :::tip
-需要注意的是，`appOpitons` 中并不会默认包含路由逻辑的处理：
-
-1. 在 vue3 中，可通过 `handleInstance` 函数拿到创建的 vue 实例对象后进行路由注册；
-2. 在 vue2 中，可显示在 `appOpitons` 中传递路由参数信息；
+需要注意的是，`appOpitons` 中并不会默认包含路由或状态逻辑的处理，可通过 `handleInstance` 函数拿到创建的 vue 实例对象后进行路由注册。
 :::
 
 - <Highlight> handleInstance </Highlight>
 
-  - Type: `handleInstance: (vueInstance: vue.App, opts: Record<string, any>) => void;`
+  - Type: `handleInstance: (vueInstance: vue.App, opts: optionsType) => void;`
   - 非必传
-  - 处理 app 实例对象的函数，接受创建的 app 实例对象及 garfish appInfo 应用相关参数，可自定义处理逻辑如路由注册等相关能力。
+  - 处理 app 实例对象的函数，接受创建的 app 实例对象及 garfish 子应用相关参数，可自定义处理逻辑如路由注册或状态管理等相关能力。
+
+```js
+import { vueBridge } from '@garfish/bridge-vue-v3';
+export const provider = vueBridge({
+  rootComponent: App,
+  // 获取 vue 实例并进行路由注册和状态注册
+  handleInstance: (vueInstance, { basename, dom, appName, props, appInfo }) => {
+    vueInstance.use(newRouter(basename));
+    vueInstance.provide(stateSymbol, createState());
+  },
+});
+```

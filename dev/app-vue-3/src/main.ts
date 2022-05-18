@@ -32,8 +32,8 @@ export const provider = vueBridge({
       render: () => h(App),
     };
   },
-  handleInstance: (vueInstance, { basename, dom, appName, props }) => {
-    console.log(basename, dom, appName, props);
+  handleInstance: (vueInstance, { basename, dom, appName, props, appInfo }) => {
+    console.log(basename, dom, appName, props, appInfo);
     vueInstance.use(newRouter(basename));
     vueInstance.provide(stateSymbol, createState());
   },
