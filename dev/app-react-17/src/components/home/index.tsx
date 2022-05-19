@@ -1,12 +1,12 @@
 import { SubAppContext } from '../root';
-import { IProps } from '../App';
 import logo from './logo.svg';
 import './index.less';
 import { Button } from '@arco-design/web-react';
+import { AppInfo } from '@garfish/bridge-react';
 
 const Home = () => (
   <SubAppContext.Consumer>
-    {({ basename, store }: IProps) => {
+    {(appInfo: AppInfo) => {
       return (
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
@@ -20,12 +20,12 @@ const Home = () => (
           </p>
 
           <div className="counter">
-            【store.counter】: {store?.counter}
+            【store.counter】: {appInfo?.props?.store?.counter}
             {window.Garfish && (
               <Button
                 size="mini"
                 type="primary"
-                onClick={() => store && store.increment()}
+                onClick={() => appInfo?.props?.store?.increment()}
               >
                 increase counter
               </Button>

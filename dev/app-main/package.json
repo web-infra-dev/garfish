@@ -4,8 +4,6 @@
   "dependencies": {
     "@arco-design/web-react": "^2.28.1",
     "@garfish/es-module": "workspace:*",
-    "@types/react": "^17",
-    "@types/react-dom": "^17",
     "@uiw/react-md-editor": "^3.9.3",
     "babel-runtime": "^6.26.0",
     "garfish": "workspace:*",

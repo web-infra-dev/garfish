@@ -1,5 +1,6 @@
 import React, { createContext } from 'react';
 import { ConfigProvider } from '@arco-design/web-react';
+import { AppInfo } from '@garfish/bridge-react';
 import {
   BrowserRouter,
   Switch,
@@ -12,11 +13,9 @@ import PageNotFound from './PageNotFound';
 import './App.less';
 
 export const prefixCls = 'sub-app-react16';
-export const SubAppContext = createContext({});
+export const SubAppContext = createContext({} as AppInfo);
 
-const RootComponent = (props) => {
-  const { basename, store } = props;
-
+const RootComponent = (appInfo: AppInfo) => {
   const routes = (
     <Switch>
       <Route exact path="/" component={() => <Redirect to="/home" />} />
@@ -28,11 +27,11 @@ const RootComponent = (props) => {
   );
   return (
     <ConfigProvider prefixCls={prefixCls}>
-      <SubAppContext.Provider value={{ basename, store }}>
+      <SubAppContext.Provider value={{ ...appInfo }}>
         {location.pathname.includes('loadApp') ? (
           <MemoryRouter> {routes} </MemoryRouter>
         ) : (
-          <BrowserRouter basename={basename}>{routes}</BrowserRouter>
+          <BrowserRouter basename={appInfo.basename}>{routes}</BrowserRouter>
         )}
       </SubAppContext.Provider>
     </ConfigProvider>

@@ -1,9 +1,10 @@
+import path from 'path';
 import { DefinePlugin } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { getPublicPath, isDevelopment,  getPort} from '../util'
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const appName = 'dev/react17';
- 
+
 const webpackConfig = {
   devtool: isDevelopment ? 'source-map' : false,
   entry: {
@@ -33,7 +34,7 @@ const webpackConfig = {
   // },
   node: false, // 避免 global 逃逸
   resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.json'],
+    extensions: ['.tsx', '.ts', '.js', '.json']
   },
   module: {
     rules: [

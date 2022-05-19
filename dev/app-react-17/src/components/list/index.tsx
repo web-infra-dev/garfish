@@ -1,6 +1,4 @@
 import { Table, Button } from '@arco-design/web-react';
-import { SubAppContext } from '../root';
-import { IProps } from '../App';
 import { useNavigate } from 'react-router-dom';
 import { data } from '../constant';
 
@@ -47,18 +45,7 @@ const List = () => {
     },
   ];
   return (
-    <SubAppContext.Consumer>
-      {({ basename, store }: IProps) => {
-        return (
-          <Table
-            size="small"
-            columns={columns}
-            data={data}
-            pagination={false}
-          />
-        );
-      }}
-    </SubAppContext.Consumer>
+    <Table size="small" columns={columns} data={data} pagination={false} />
   );
 };
 

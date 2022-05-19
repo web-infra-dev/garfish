@@ -16,6 +16,8 @@ class Store {
 
   @action.bound
   increment() {
+    console.log('-----increment');
+
     this.counter++;
   }
 

@@ -1,4 +1,4 @@
-import React, { createContext, Suspense, useEffect } from 'react';
+import React, { Suspense, createContext, useEffect } from 'react';
 import { ConfigProvider } from '@arco-design/web-react';
 import App from '../App';
 import Home from '../home';
@@ -6,15 +6,15 @@ import Detail from '../detail';
 import List from '../list';
 import PageNotFound from '../PageNotFound';
 import { BrowserRouter } from 'react-router-dom';
+import { AppInfo } from '@garfish/bridge-react';
 import { prefixCls } from '../../constant';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { render } from '../../index';
-export const SubAppContext = createContext({});
+export const SubAppContext = createContext({} as AppInfo);
+
 const LazyComponent = React.lazy(() => import('../lazyComponent'));
 
-const RootComponent = (_props) => {
-  const { basename, store } = _props;
-
+const RootComponent = (appInfo: AppInfo) => {
   useEffect(() => {
     // 监听props 的改变，重新触发 render
     window?.Garfish?.channel.on('stateChange', render);
@@ -26,8 +26,8 @@ const RootComponent = (_props) => {
 
   return (
     <ConfigProvider prefixCls={prefixCls}>
-      <SubAppContext.Provider value={{ basename, store }}>
-        <BrowserRouter basename={basename}>
+      <SubAppContext.Provider value={{ ...appInfo }}>
+        <BrowserRouter basename={appInfo.basename}>
           <Routes>
             <Route path="/" element={<App />}>
               <Route path="/home" element={<Home />}></Route>

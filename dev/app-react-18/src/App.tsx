@@ -3,23 +3,18 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Layout } from '@arco-design/web-react';
 import logo from './logo.svg';
 import './App.less';
-
+// import { AppInfo } from '@garfish/bridge-react-v18';
+export const SubAppContext = createContext({});
 const Content = Layout.Content;
 
 export const prefixCls = 'sub-app-react18';
-export const SubAppContext = createContext({});
 
 type AppTypes = {
   basename?: string;
   store?: Record<string, any>;
 };
 
-export interface IProps {
-  basename?: string;
-  store?: Record<string, any>;
-}
-
-const App = ({ basename = '', store = {} }: AppTypes) => {
+const App = () => {
   const location = useLocation();
   const [isActive, setIsActive] = useState('home');
 
@@ -29,7 +24,7 @@ const App = ({ basename = '', store = {} }: AppTypes) => {
 
   return (
     <SubAppContext.Consumer>
-      {({ basename, store }: IProps) => {
+      {(appInfo: AppTypes) => {
         return (
           <Content>
             <div className="App">

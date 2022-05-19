@@ -2,7 +2,7 @@
   "name": "@garfish-dev/react16",
   "private": true,
   "dependencies": {
-    "@garfish/bridge": "workspace:*",
+    "@garfish/bridge-react": "workspace:*",
     "babel-runtime": "^6.26.0",
     "history": "^5.1.0",
     "react": "^16.13.1",

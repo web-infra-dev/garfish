@@ -10,7 +10,7 @@
   "files": [
     "dist"
   ],
-  "author": "zhoushaw <codingzx@gmail.com>",
+  "author": "danpeen <dapeen.feng@gmail.com",
   "homepage": "https://github.com/bytedance/garfish",
   "license": "MIT",
   "repository": {
@@ -38,7 +38,6 @@
     "vue": "2.6.13"
   },
   "dependencies": {
-    "@garfish/bridge": "^1.5.2",
     "@garfish/browser-snapshot": "workspace:*",
     "@garfish/browser-vm": "workspace:*",
     "@garfish/core": "workspace:*",

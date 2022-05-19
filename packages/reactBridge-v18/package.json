@@ -1,11 +1,10 @@
 {
-  "name": "@garfish/bridge-vue-v3",
+  "name": "@garfish/bridge-react-v18",
   "version": "1.5.2",
-  "description": "garfish vue bridge for v3.",
+  "description": "garfish module.",
   "keywords": [
     "garfish",
-    "micro frontend",
-    "vueBridge"
+    "micro frontend"
   ],
   "files": [
     "dist"
@@ -35,7 +34,10 @@
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
   "devDependencies": {
-    "vue": "3.2.31"
+    "react": "18.1.0",
+    "react-dom": "18.1.0",
+    "@types/react": "^18",
+    "@types/react-dom": "^18"
   },
   "dependencies": {
     "@garfish/browser-snapshot": "workspace:*",
@@ -45,7 +47,8 @@
     "@garfish/utils": "workspace:*"
   },
   "peerDependencies": {
-    "vue": "=3"
+    "react": "=18",
+    "react-dom": "=18"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
