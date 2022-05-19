@@ -115,6 +115,7 @@ export namespace interfaces {
     name: string;
     entry?: string;
     cache?: boolean;
+    activeWhen?: string | ((path: string) => boolean);
     nested?: any;
     noCheckProvider?: boolean;
   };

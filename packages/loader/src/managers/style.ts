@@ -21,14 +21,15 @@ export class StyleManager {
     if (!baseUrl) baseUrl = url;
     if (baseUrl && typeof styleCode === 'string') {
       // The relative path is converted to an absolute path according to the path of the css file
-      this.styleCode = styleCode.replace(MATCH_CHARSET_URL, '')
+      this.styleCode = styleCode
+        .replace(MATCH_CHARSET_URL, '')
         .replace(MATCH_IMPORT_URL, function (k0, k1, k2) {
           return k2 ? `@import url(${k1}${k2}${k1})` : k0;
         })
-      .replace(MATCH_CSS_URL, (k0, k1, k2) => {
-        if (isAbsolute(k2)) return k0;
-        return `url("${transformUrl(baseUrl, k2)}")`;
-      });
+        .replace(MATCH_CSS_URL, (k0, k1, k2) => {
+          if (isAbsolute(k2)) return k0;
+          return `url("${transformUrl(baseUrl, k2)}")`;
+        });
     }
   }
 

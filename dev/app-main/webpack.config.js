@@ -1,7 +1,7 @@
 import path from 'path';
 import { DefinePlugin } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { isDevelopment, getPublicPath, getPort} from '../util'
+import { isDevelopment, getPublicPath, getPort } from '../util';
 // const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const appName = 'dev/main';
 
@@ -16,7 +16,7 @@ const webpackConfig = {
     filename: '[name].[contenthash].js',
     chunkFilename: '[name].[contenthash].js',
     path: path.join(__dirname, 'dist'),
-    publicPath: getPublicPath(appName)
+    publicPath: getPublicPath(appName),
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],

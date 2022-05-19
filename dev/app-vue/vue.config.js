@@ -22,7 +22,7 @@ module.exports = {
     };
   },
   publicPath: getPublicPath(appName),
-     
+
   devServer: {
     inline: true,
     hot: true,
