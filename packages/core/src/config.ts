@@ -16,22 +16,16 @@ export const deepMergeConfig = <T extends Partial<AppInfo>>(
   globalConfig: T,
   localConfig: T,
 ) => {
-  const globalProps = globalConfig.props;
-  const localProps = localConfig.props;
-
-  if (globalProps || localProps) {
-    globalConfig = { ...globalConfig };
-    localConfig = { ...localConfig };
-    delete globalConfig.props;
-    delete localConfig.props;
-  }
+  const props = {
+    ...(globalConfig.props || {}),
+    ...(localConfig.props || {}),
+  };
 
   const result = deepMerge(
     filterUndefinedVal(globalConfig),
     filterUndefinedVal(localConfig),
   );
-  if (globalProps) result.props = { ...globalProps };
-  if (localProps) result.props = { ...(result.props || {}), ...localProps };
+  result.props = props;
   return result;
 };
 
