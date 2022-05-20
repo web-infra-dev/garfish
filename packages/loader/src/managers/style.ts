@@ -6,13 +6,13 @@ const MATCH_CHARSET_URL = /@charset\s+(['"])(.*?)\1\s*;?/g;
 const MATCH_IMPORT_URL = /@import\s+(['"])(.*?)\1/g;
 
 export class StyleManager {
-  public url: string | null;
+  public url?: string;
   public styleCode: string;
 
   private depsStack = new Set();
 
   constructor(styleCode: string, url?: string) {
-    this.url = url || null;
+    this.url = url;
     this.styleCode = styleCode;
   }
 
@@ -28,7 +28,7 @@ export class StyleManager {
         })
         .replace(MATCH_CSS_URL, (k0, k1, k2) => {
           if (isAbsolute(k2)) return k0;
-          return `url("${transformUrl(baseUrl, k2)}")`;
+          return `url("${baseUrl ? transformUrl(baseUrl, k2) : k2}")`;
         });
     }
   }

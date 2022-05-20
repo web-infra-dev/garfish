@@ -7,7 +7,7 @@ import {
   templateParse,
 } from '@garfish/utils';
 
-type Renderer = Record<string, (node: Node) => Element | Comment>;
+type Renderer = Record<string, (node: Node) => null | Element | Comment>;
 
 export class TemplateManager {
   public url: string | null;
@@ -100,7 +100,7 @@ export class TemplateManager {
     return elements;
   }
 
-  toResolveUrl(node: Node, type: string, baseUrl: string) {
+  toResolveUrl(node: Node, type: string, baseUrl?: string) {
     const src = node.attributes?.find(({ key }) => key === type);
     if (src) {
       src.value = transformUrl(baseUrl, src.value);

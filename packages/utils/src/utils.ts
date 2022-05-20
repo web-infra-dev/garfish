@@ -276,7 +276,7 @@ export function deepMerge<K, T>(
       return rightRecord.get(v);
     } else if (isArray(v)) {
       if (dp) v = unique(v);
-      const arr = [];
+      const arr: Array<any> = [];
       valueRecord.set(v, arr);
       for (let i = 0, len = v.length; i < len; i++) {
         arr[i] = clone(v[i]);
@@ -321,7 +321,7 @@ export function deepMerge<K, T>(
 
       if (hasOwn(r, key)) {
         if (isArray(lv) && isArray(rv)) {
-          const item = clone([].concat(lv, rv));
+          const item = clone([...lv, ...rv]);
           res[key] = dp ? unique(item) : item;
         } else if (isPlainObject(lv) && isPlainObject(rv)) {
           res[key] = isAllRefs(lv, rv)

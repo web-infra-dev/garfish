@@ -29,11 +29,10 @@ import { appLifecycle } from '../lifecycle';
 import { ESModuleLoader } from './esModule';
 import { SubAppObserver } from '../plugins/performance/subAppObserver';
 
-/** @deprecated */
 export type CustomerLoader = (
   provider: interfaces.Provider,
   appInfo: interfaces.AppInfo,
-  path: string,
+  path?: string,
 ) => Promise<interfaces.LoaderResult | void> | interfaces.LoaderResult | void;
 
 export type AppInfo = interfaces.AppInfo & {
@@ -74,15 +73,14 @@ export class App {
   public cjsModules: Record<string, any>;
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
-  public sourceList: Array<{ tagName: string; url: string }> = [];
+  public sourceList: Array<{ tagName: string; url?: string }> = [];
   public appInfo: AppInfo;
   public context: Garfish;
   public hooks: interfaces.AppHooks;
-  public provider: interfaces.Provider;
+  public provider?: interfaces.Provider;
   public entryManager: TemplateManager;
   public appPerformance: SubAppObserver;
-  /** @deprecated */
-  public customLoader: CustomerLoader;
+  public customLoader?: CustomerLoader;
 
   private active = false;
   public mounting = false;
@@ -97,7 +95,7 @@ export class App {
     entryManager: TemplateManager,
     resources: interfaces.ResourceModules,
     isHtmlMode: boolean,
-    customLoader: CustomerLoader,
+    customLoader?: CustomerLoader,
   ) {
     this.context = context;
     this.appInfo = appInfo;
@@ -147,7 +145,7 @@ export class App {
         if (url) {
           this.sourceList.push({
             tagName: node.tagName,
-            url: transformUrl(entryManager.url, url),
+            url: entryManager.url ? transformUrl(entryManager.url, url) : url,
           });
         }
       });
@@ -198,7 +196,7 @@ export class App {
     options?: interfaces.ExecScriptOptions,
   ) {
     // If the node is an es module, use native esmModule
-    if (options.isModule) {
+    if (options && options.isModule) {
       this.esmQueue.add(async (next) => {
         await this.esModuleLoader.load(code, env, url, options);
         next();
@@ -311,7 +309,7 @@ export class App {
       this.callDestroy(this.provider, true);
       this.display = false;
       this.mounted = false;
-      this.provider = null;
+      this.provider = undefined;
       this.customExports = {};
       this.cjsModules.exports = {};
       this.esModuleLoader.destroy();
@@ -328,7 +326,7 @@ export class App {
     return true;
   }
 
-  getExecScriptEnv(noEntry: boolean) {
+  getExecScriptEnv(noEntry?: boolean) {
     // The legacy of commonJS function support
     const envs = {
       [__GARFISH_EXPORTS__]: this.customExports,
@@ -430,7 +428,7 @@ export class App {
   }
 
   // Calls to render do compatible with two different sandbox
-  private callRender(provider: interfaces.Provider, isMount: boolean) {
+  private callRender(provider?: interfaces.Provider, isMount?: boolean) {
     if (provider && provider.render) {
       provider.render({
         appName: this.appInfo.name,
@@ -443,7 +441,7 @@ export class App {
   }
 
   // Call to destroy do compatible with two different sandbox
-  private callDestroy(provider: interfaces.Provider, isUnmount: boolean) {
+  private callDestroy(provider?: interfaces.Provider, isUnmount?: boolean) {
     const { rootElement, appContainer } = this;
     if (provider && provider.destroy) {
       provider.destroy({
@@ -482,17 +480,17 @@ export class App {
       meta: () => null,
 
       img: (node) => {
-        entryManager.toResolveUrl(node, 'src', baseUrl);
+        baseUrl && entryManager.toResolveUrl(node, 'src', baseUrl);
         return DOMApis.createElement(node);
       },
 
       video: (node) => {
-        entryManager.toResolveUrl(node, 'src', baseUrl);
+        baseUrl && entryManager.toResolveUrl(node, 'src', baseUrl);
         return DOMApis.createElement(node);
       },
 
       audio: (node) => {
-        entryManager.toResolveUrl(node, 'src', baseUrl);
+        baseUrl && entryManager.toResolveUrl(node, 'src', baseUrl);
         return DOMApis.createElement(node);
       },
 
@@ -561,7 +559,7 @@ export class App {
         const text = node.children[0] as Text;
         if (text) {
           const styleManager = new StyleManager(text.content);
-          styleManager.correctPath(baseUrl);
+          baseUrl && styleManager.correctPath(baseUrl);
           return entryManager.ignoreChildNodesCreation(
             styleManager.renderAsStyleElement(),
           );
@@ -598,7 +596,8 @@ export class App {
     const { name, props, basename } = appInfo;
     let provider:
       | ((...args: any[]) => interfaces.Provider)
-      | interfaces.Provider = null;
+      | interfaces.Provider
+      | undefined = undefined;
 
     // esModule export
     await this.esmQueue.awaitCompletion();
@@ -643,8 +642,6 @@ export class App {
     if (hookRes) {
       const { mount, unmount } = hookRes || ({} as any);
       if (typeof mount === 'function' && typeof unmount === 'function') {
-        mount._custom = true;
-        unmount._custom = true;
         (provider as interfaces.Provider).render = mount;
         (provider as interfaces.Provider).destroy = unmount;
       }
@@ -653,8 +650,10 @@ export class App {
     if (!appInfo.noCheckProvider) {
       assert(provider, `"provider" is "${provider}".`);
       // No need to use "hasOwn", because "render" may be on the prototype chain
-      assert('render' in provider, '"render" is required in provider.');
-      assert('destroy' in provider, '"destroy" is required in provider.');
+      provider &&
+        assert('render' in provider, '"render" is required in provider.');
+      provider &&
+        assert('destroy' in provider, '"destroy" is required in provider.');
     }
 
     this.provider = provider as interfaces.Provider;
