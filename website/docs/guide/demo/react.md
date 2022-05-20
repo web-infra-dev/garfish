@@ -36,17 +36,10 @@ import RootComponent from './components/root';
 import Error from './components/ErrorBoundary';
 
 export const provider = reactBridge({
-  React,
-  ReactDOM,
   // 子应用挂载点，若子应用构建成 js ，则不需要传递该值
   el: '#root',
   // 根组件, bridge 会默认传递 basename、dom、props 等信息到根组件
   rootComponent: RootComponent,
-  // 如果需要在返回根组件前做一些操作，你可以在 loadRootComponent 中进行，loadRootComponent 返回一个promise 对象，期待resolve 后得到一个应用的根组件
-  loadRootComponent: ({ basename, dom, props }) => {
-    // do something...
-    return Promise.resolve(() => <RootComponent basename={basename} />);
-  },
   // 设置应用的 errorBoundary
   errorBoundary: () => <Error />,
 });
@@ -85,6 +78,27 @@ export const provider = reactBridge({
 ### react v18 导出
 > react v18 bridge 导出方式暂未支持，目前可通过自定义导出函数导出。
 
+<Tabs>
+  <TabItem value="bridge_provider" label="使用 @garfish/bridge" default>
+
+```tsx
+// src/index.tsx
+import { reactBridge } from '@garfish/bridge-react-v18';
+import RootComponent from './root';
+import ErrorBoundary from './ErrorBoundary';
+
+export const provider = reactBridge({
+  el: '#root',
+  rootComponent: RootComponent,
+  errorBoundary: (e: any) => <ErrorBoundary />,
+});
+
+```
+
+  </TabItem>
+
+  <TabItem value="customer_provider" label="自定义导出函数" default>
+
 ```tsx
 // src/index.tsx
 import { createRoot } from 'react-dom/client';
@@ -105,6 +119,10 @@ export const provider = () => {
   };
 };
 ```
+
+  </TabItem>
+</Tabs>
+
 ### 3. 根组件设置路由的 basename
 
 :::info

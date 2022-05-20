@@ -13,15 +13,18 @@ Garfish bridge 是 `garfish` 提供的帮助用户降低接入成本的工具函
 :::info
 1. garfish bridge 应用在子应用接入场景；
 2. 使用 garfish bridge 后不再需要显示提供 `render` 和 `destory` 函数；
-3. 目前 garfish 仅针对 react 和 vue 框架提供 bridge 函数支持，支持的版本分别为 react v16、v17，vue v2、v3， Angular bridge 及 react v18 正在加紧支持中；
+3. 目前 garfish 仅针对 react 和 vue 框架提供 bridge 函数支持，支持的版本分别为 react v16、v17、v18，vue v2、v3；
 4. garfish bridge 暂未针对构建工具如 webpack、vite 提供相应的构建工具插件，我们后期会针对这块能力进行补全，请持续关注；
 :::
 
 ## 工具包
+### @garfish/bridge-react
 
-### @garfish/bridge
+[@garfish/bridge-react](https://www.npmjs.com/package/@garfish/bridge-react) 工具包是 garfish 为 react v16/v17 应用 提供的 bridge 工具函数包，其导出的 [reactBridge](/guide/bridge#reactbridgefor-react-v16v17) 可用于 react v16/v17 子应用的接入，`@garfish/bridge-react` 的使用见 [demo](/guide/demo/react#react-v16v17-导出)。
 
-[@garfish/bridge](https://www.npmjs.com/package/@garfish/bridge) 工具包是 garfish 为 react 应用提供的 bridge 工具函数包，其导出的 [reactBridge](/guide/bridge#reactbridge) 可用于 react 子应用的接入，目前支持 react v16、v17，针对 v18 支持我们正在加紧开发中。`@garfish/bridge` 的使用见 [demo](/guide/demo/react#react-v16v17-%E5%AF%BC%E5%87%BA)。
+### @garfish/bridge-react-v18
+
+[@garfish/bridge-react-v18](https://www.npmjs.com/package/@garfish/bridge-react) 工具包是 garfish 为 react v18 应用 提供的 bridge 工具函数包，其导出的 [reactBridge](/guide/bridge#reactBridge) 可用于 react v18 子应用的接入，`@garfish/bridge-react-v18` 的使用见 [demo](/guide/demo/react#react-v18-导出)。
 
 ### @garfish/bridge-vue-v2
 
@@ -55,16 +58,20 @@ Garfish bridge 是 `garfish` 提供的帮助用户降低接入成本的工具函
   </TabItem>
 </Tabs>
 
-
-
-## reactBridge
+## reactBridge(for react v16/v17/v18)
 
 reactBridge 是 `@garfish/bridge` 工具包为 react 子应用提供的 bridge 工具函数。
 
+:::info
+- 针对 react v16/v17 子应用，请使用 `@garfish/bridge-react` 工具包
+- 针对 react v18 子应用，请使用 `@garfish/bridge-react-v18` 工具包
+:::
+
+reactBridge 是 `@garfish/bridge-react` 或  `@garfish/bridge-react-v18` 工具包为 react 子应用提供的 bridge 工具函数。
 ### Type
 
 ```ts
-function reactBridge(userOpts: OptsTypes): (
+function reactBridge(userOpts: Options): (
   appInfo: any,
   props: any,
 ) => Promise<{
@@ -73,52 +80,51 @@ function reactBridge(userOpts: OptsTypes): (
   update: (props: any) => any;
 }>;
 ```
-
 ### 示例
 
-> 可访问 [react17 子应用](https://github.com/modern-js-dev/garfish/tree/main/dev/app-react-17) 查看完整 demo
+> 可访问 [react16 子应用](https://github.com/modern-js-dev/garfish/tree/main/dev/app-react-16)、 [react17 子应用](https://github.com/modern-js-dev/garfish/tree/main/dev/app-react-17)、[react18 子应用](https://github.com/modern-js-dev/garfish/tree/main/dev/app-react-18) 查看完整 demo
+
+<Tabs>
+  <TabItem value="demo-react16/17" label="react v16/v17 应用" default>
 
 ```ts
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { reactBridge } from '@garfish/bridge';
+import { reactBridge } from '@garfish/bridge-react';
 import RootComponent from './components/root';
 import ErrorComponent from './components/ErrorBoundary';
 
-// 适用于 react v16、v17
 export const provider = reactBridge({
-  React,
-  ReactDOM,
   el: '#root',
   rootComponent: RootComponent,
-  loadRootComponent: ({ basename, dom, props }) => {
-    // do something...
-    return Promise.resolve(() => <RootComponent basename={basename} />);
-  },
   errorBoundary: () => <ErrorComponent />,
 });
 ```
+  </TabItem>
+
+ <TabItem value="demo-react-v18" label="react v18 应用" default>
+
+```ts
+import { reactBridge } from '@garfish/bridge-react-v18';
+import RootComponent from './components/root';
+import ErrorComponent from './components/ErrorBoundary';
+
+export const provider = reactBridge({
+  el: '#root',
+  rootComponent: RootComponent,
+  errorBoundary: () => <ErrorComponent />,
+});
+```
+  </TabItem>
+</Tabs>
+
 
 ### 参数
 
-`OptsTypes`
-
-- <Highlight> React </Highlight>
-
-  - Type: `typeof React`
-  - 必传
-  - 当前应用使用的 React 对象，可通过 `import React from "react"` 引入，必传。
-
-- <Highlight> ReactDOM </Highlight>
-
-  - Type: `typeof ReactDOM`
-  - 必传
-  - 当前应用使用的 ReactDOM 对象，可通过 `import ReactDOM from "react-dom"` 引入，必传。
+`Options`
 
 - <Highlight> el </Highlight>
 
   - Type: `string`
-  - 非必传f
+  - 非必传
   - 子应用挂载点
     - 若子应用构建为 `JS` 入口时，不需要传挂载点，Bridge 将会以子应用的渲染节点作为挂载点；
     - 若子应用构建成 `HTML` 入口时，则直接传入选择器，bridge 内部通过 `dom.querySelector` 来基于子应用的 `dom` 来找到挂载点；
@@ -132,13 +138,13 @@ export const provider = reactBridge({
     // components/root.tsx
     const RootComponent = ({ appName, basename, dom, props }) => { ... }
     ```
-  - 当同时传入了 `loadRootComponent` 参数时，`rootComponent` 参数将失效，且 `rootComponent` 组件不会默认接收到 garfish 传递的 appInfo 应用相关参数；
+  - 当同时传入了 `loadRootComponent` 参数时，`rootComponent` 参数将失效，且 `rootComponent` 组件不会默认接收到 garfish 传递的子应用相关参数；
 
 - <Highlight> loadRootComponent </Highlight>
 
   - Type：`loadRootComponentType = (opts: Record<string, any>) => Promise<ComponentType>;`
   - 此参数和 `rootComponent` 至少传一个
-  - 当前应用的顶层 React 组件，该组件中将接收到 garfish 传递的 appInfo 应用相关参数：
+  - 当前应用的顶层 React 组件，该组件中将接收到 garfish 传递的子应用相关参数：
 
   ```ts
   // components/root.tsx
@@ -146,14 +152,14 @@ export const provider = reactBridge({
   ```
 
   - `loadRootComponent` 是一个函数，返回一个 Promise 对象，resolve 后需要返回当前 React 应用的顶层组件，该顶层组件含义与 `rootComponent` 含义相同。当需要在 render 前进行异步操作时，可使用 `loadRootComponent` 加入副作用逻辑。
-  - `loadRootComponent` 将默认接收到 garfish 传递的 appInfo 应用相关参数：
+  - `loadRootComponent` 将默认接收到 garfish 传递的子应用相关参数：
 
   ```ts
    import { reactBridge } from "@garfish/bridge";
    export const provider = reactBridge({
      ...,
-     loadRootComponent: ({ basename, dom, props }) => {
-         // do something...
+     loadRootComponent: ({ basename, dom, appName, props }) => {
+        // do something async
        return Promise.resolve(() => <RootComponent basename={ basename } />);
      }
    });
@@ -177,6 +183,7 @@ export const provider = reactBridge({
    });
   ```
 
+
 ## vueBridge(for vue v2)
 
 :::info
@@ -188,7 +195,7 @@ vueBridge 是 `@garfish/bridge-vue-v2` 工具包为 vue v2 子应用提供的 br
 ### 类型
 
 ```ts
-function vueBridge(userOpts: OptsTypes): (
+function vueBridge(userOpts: Options): (
   appInfo: any,
   props: any,
 ) => Promise<{
@@ -235,7 +242,7 @@ export const provider = vueBridge({
 ```
 ### 参数
 
-`OptsTypes`
+`Options`
 
 - <Highlight> rootComponent </Highlight>
 
@@ -315,7 +322,7 @@ vueBridge 是 `@garfish/bridge-vue-v3` 工具包为 vue v3 子应用提供的 br
 ### 类型
 
 ```ts
-function vueBridge(userOpts: OptsTypes): (
+function vueBridge(userOpts: Options): (
   appInfo: any,
   props: any,
 ) => Promise<{
@@ -356,7 +363,7 @@ export const provider = vueBridge({
 
 ### 参数
 
-`OptsTypes`
+`Options`
 
 - <Highlight> rootComponent </Highlight>
 

@@ -3,7 +3,8 @@
 // https://github.com/single-spa/single-spa-vue/blob/main/src/single-spa-vue.test.js
 
 import { reactBridge } from '../src/reactBridge';
-import '../../../node_modules/@testing-library/jest-dom/extend-expect';
+// import '../../../node_modules/@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const domElId = '#sub-app-container';
 const cssSelector = '#app';

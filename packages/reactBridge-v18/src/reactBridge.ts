@@ -128,7 +128,7 @@ function mount(opts: Options, appInfo: AppInfo) {
 
   const elementToRender = getElementToRender(opts, appInfo);
   const domElement = chooseDomElementGetter(opts, appInfo);
-  const renderResult = reactDomRender({
+  const renderResult = callCreateRoot({
     elementToRender,
     domElement,
     opts,
@@ -178,7 +178,7 @@ function atLeastReact16(React: typeReact) {
   }
 }
 
-function reactDomRender({ opts, elementToRender, domElement }) {
+function callCreateRoot({ opts, elementToRender, domElement }) {
   const renderType =
     typeof opts.renderType === 'function' ? opts.renderType() : opts.renderType;
 

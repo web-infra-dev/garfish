@@ -3,7 +3,7 @@
 // https://github.com/single-spa/single-spa-vue/blob/main/src/single-spa-vue.test.js
 
 import { reactBridge } from '../src/reactBridge';
-import '../../../node_modules/@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const domElId = '#sub-app-container';
 const cssSelector = '#app';
@@ -36,7 +36,7 @@ describe('react-bridge', () => {
     document.body.appendChild(container);
 
     appContainer = document.createElement('div');
-    container.setAttribute('id', cssSelector.replace('#', ''));
+    appContainer.setAttribute('id', cssSelector.replace('#', ''));
     container.appendChild(appContainer);
 
     $el = '#app2';
@@ -63,16 +63,11 @@ describe('react-bridge', () => {
   });
 
   it('throws an error when required parameters are not provided', () => {
-    expect(() => reactBridge({ React } as any)).toThrow();
-    expect(() => reactBridge({ React, ReactDOM } as any)).toThrow();
-    expect(() => reactBridge({ React, ReactDOM, el: $el } as any)).toThrow();
-    expect(() =>
-      reactBridge({ React, ReactDOM, loadRootComponent }),
-    ).not.toThrow();
-    expect(() => reactBridge({ React, ReactDOM, rootComponent })).not.toThrow();
+    expect(() => reactBridge({ loadRootComponent })).not.toThrow();
+    expect(() => reactBridge({ rootComponent })).not.toThrow();
 
     expect(() =>
-      reactBridge({ React, ReactDOM, rootComponent, loadRootComponent }),
+      reactBridge({ rootComponent, loadRootComponent }),
     ).not.toThrow();
 
     expect(() =>
@@ -124,7 +119,7 @@ describe('react-bridge', () => {
     expect(React.createElement).toHaveBeenCalled();
     expect(ReactDOM.unmountComponentAtNode).not.toHaveBeenCalled();
 
-    lifeCycles.destroy(props);
+    lifeCycles.destroy({ ...appInfo, props });
     expect(ReactDOM.unmountComponentAtNode).toHaveBeenCalled();
   });
 
@@ -179,7 +174,7 @@ describe('react-bridge', () => {
     expect(loadRootComponent.mock.calls[0][0].appName).toBe('test-app');
     expect(loadRootComponent.mock.calls[0][0].props.store.counter).toBe(100);
 
-    lifeCycles.destroy(props);
+    lifeCycles.destroy({ ...appInfo, props });
   });
 
   describe('opts.el', () => {

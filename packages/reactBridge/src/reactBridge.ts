@@ -260,7 +260,7 @@ function createErrorBoundary(opts: Options) {
   return GarfishSubAppReactErrorBoundary;
 }
 
-function chooseDomElementGetter(opts: Options, appInfo) {
+function chooseDomElementGetter(opts: Options, appInfo: AppInfo) {
   const { dom: container } = appInfo;
   let el;
   if (typeof opts.el === 'string') {
@@ -272,7 +272,7 @@ function chooseDomElementGetter(opts: Options, appInfo) {
   if (!(el instanceof HTMLElement)) {
     throw Error(
       `react bridge's dom-element-getter-helpers: el is an invalid dom element for application'${
-        appInfo.name
+        appInfo.appName
       }'. Expected HTMLElement, received ${typeof el}`,
     );
   }

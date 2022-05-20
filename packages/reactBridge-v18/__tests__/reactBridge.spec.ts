@@ -1,16 +1,19 @@
+import { render } from './../../../dev/app-react-17/src/index';
 // The logic of vue-bridge-test is referenced from single-spa typography
 // Because the Garfish lifecycle does not agree with that of single-spa  part logical coupling in the framework
 // https://github.com/single-spa/single-spa-vue/blob/main/src/single-spa-vue.test.js
 
 import { reactBridge } from '../src/reactBridge';
-import '../../../node_modules/@testing-library/jest-dom/extend-expect';
+// import '../../../node_modules/@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const domElId = '#sub-app-container';
 const cssSelector = '#app';
 
 describe('react-bridge', () => {
   let React,
-    ReactDOM,
+    createRoot,
+    hydrateRoot,
     props,
     appInfo,
     appContainer,
@@ -18,18 +21,28 @@ describe('react-bridge', () => {
     rootComponent,
     loadRootComponent,
     $el,
+    rootInstanceMock,
+    hydrateRootInstanceMock,
     $createElement,
-    $render;
+    $render,
+    $unmount;
 
   beforeEach(() => {
     React = {
       createElement: $createElement,
     };
-    ReactDOM = {
-      render: $render,
-      unmountComponentAtNode: jest.fn(),
-      hydrate: jest.fn(),
-    };
+
+    createRoot = jest.fn();
+    rootInstanceMock = jest.fn();
+    rootInstanceMock.render = $render;
+    rootInstanceMock.unmount = $unmount;
+    createRoot.mockReturnValue(rootInstanceMock);
+
+    hydrateRoot = jest.fn();
+    hydrateRootInstanceMock = jest.fn();
+    hydrateRootInstanceMock.render = $render;
+    hydrateRootInstanceMock.unmount = $unmount;
+    hydrateRoot.mockReturnValue(hydrateRootInstanceMock);
 
     container = document.createElement('div');
     container.setAttribute('id', domElId.replace('#', ''));
@@ -52,6 +65,7 @@ describe('react-bridge', () => {
 
     $createElement = jest.fn();
     $render = jest.fn();
+    $unmount = jest.fn();
     rootComponent = {};
     loadRootComponent = jest.fn();
   });
@@ -63,22 +77,21 @@ describe('react-bridge', () => {
   });
 
   it('throws an error when required parameters are not provided', () => {
-    expect(() => reactBridge({ React } as any)).toThrow();
-    expect(() => reactBridge({ React, ReactDOM } as any)).toThrow();
-    expect(() => reactBridge({ React, ReactDOM, el: $el } as any)).toThrow();
-    expect(() =>
-      reactBridge({ React, ReactDOM, loadRootComponent }),
-    ).not.toThrow();
-    expect(() => reactBridge({ React, ReactDOM, rootComponent })).not.toThrow();
+    expect(() => reactBridge({ loadRootComponent })).not.toThrow();
+    expect(() => reactBridge({ rootComponent })).not.toThrow();
 
     expect(() =>
-      reactBridge({ React, ReactDOM, rootComponent, loadRootComponent }),
+      reactBridge({ createRoot, rootComponent, loadRootComponent }),
+    ).not.toThrow();
+
+    expect(() =>
+      reactBridge({ hydrateRoot, rootComponent, loadRootComponent }),
     ).not.toThrow();
 
     expect(() =>
       reactBridge({
-        React,
-        ReactDOM,
+        createRoot,
+        hydrateRoot,
         el: $el,
         rootComponent,
         loadRootComponent,
@@ -89,7 +102,7 @@ describe('react-bridge', () => {
   it('throws an error when opts.el is provided and opts.el.dom does not exist in the dom during mount', async () => {
     const provider = reactBridge({
       React,
-      ReactDOM,
+      createRoot,
       el: '#invalid_app',
       rootComponent,
     });
@@ -102,7 +115,7 @@ describe('react-bridge', () => {
     expect(() =>
       reactBridge({
         React,
-        ReactDOM,
+        createRoot,
         loadRootComponent,
         errorBoundary: {} as any,
       }),
@@ -112,40 +125,48 @@ describe('react-bridge', () => {
   it('function called when mounts and unmounts a React component', async () => {
     const provider = reactBridge({
       React,
-      ReactDOM,
+      createRoot,
       rootComponent,
     });
 
     const lifeCycles = await provider(appInfo, props);
-    expect(React.createElement).not.toHaveBeenCalled();
-    expect(ReactDOM.render).not.toHaveBeenCalled();
+    expect(createRoot).not.toHaveBeenCalled();
 
     lifeCycles.render({ ...appInfo, props });
-    expect(React.createElement).toHaveBeenCalled();
-    expect(ReactDOM.unmountComponentAtNode).not.toHaveBeenCalled();
+    expect(createRoot).toHaveBeenCalled();
+    expect(rootInstanceMock.render).toHaveBeenCalled();
+    expect(rootInstanceMock.unmount).not.toHaveBeenCalled();
 
-    lifeCycles.destroy(props);
-    expect(ReactDOM.unmountComponentAtNode).toHaveBeenCalled();
+    lifeCycles.destroy({ ...appInfo, props });
+    expect(rootInstanceMock.unmount).toHaveBeenCalled();
   });
 
   it("mounts and unmounts a React component with a 'renderType' of 'hydrate'", async () => {
     const provider = reactBridge({
       React,
-      ReactDOM,
+      createRoot,
+      hydrateRoot,
       rootComponent,
       renderType: 'hydrate',
     });
 
     const lifeCycles = await provider(appInfo, props);
-    expect(ReactDOM.hydrate).not.toHaveBeenCalled();
+    expect(hydrateRoot).not.toHaveBeenCalled();
+
     lifeCycles.render({ ...appInfo, props });
-    expect(ReactDOM.hydrate).toHaveBeenCalled();
+    expect(hydrateRoot).toHaveBeenCalled();
+
+    expect(hydrateRootInstanceMock.render).toHaveBeenCalled();
+    expect(hydrateRootInstanceMock.unmount).not.toHaveBeenCalled();
+
+    lifeCycles.destroy({ ...appInfo, props });
+    expect(hydrateRootInstanceMock.unmount).toHaveBeenCalled();
   });
 
   it('implements a render function for you if you provide loadRootComponent', async () => {
     const opts = {
       React,
-      ReactDOM,
+      createRoot,
       rootComponent,
       loadRootComponent,
     };
@@ -161,7 +182,7 @@ describe('react-bridge', () => {
   it('loadRootComponent function will recieve the props provided at mount', async () => {
     const opts = {
       React,
-      ReactDOM,
+      createRoot,
       rootComponent,
       loadRootComponent,
     };
@@ -169,7 +190,7 @@ describe('react-bridge', () => {
 
     const provider = reactBridge({
       React,
-      ReactDOM,
+      createRoot,
       loadRootComponent,
     });
 
@@ -179,14 +200,14 @@ describe('react-bridge', () => {
     expect(loadRootComponent.mock.calls[0][0].appName).toBe('test-app');
     expect(loadRootComponent.mock.calls[0][0].props.store.counter).toBe(100);
 
-    lifeCycles.destroy(props);
+    lifeCycles.destroy({ ...appInfo, props });
   });
 
   describe('opts.el', () => {
     it("mounts into the div you provided in the opts.el if you provide an 'el' in opts", async () => {
       const opts = {
         React,
-        ReactDOM,
+        createRoot,
         rootComponent,
         el: '#test_el',
       };
@@ -208,7 +229,7 @@ describe('react-bridge', () => {
     it("mounts into the garfish-react-bridge div if you don't provide an 'el' in opts", async () => {
       const opts = {
         React,
-        ReactDOM,
+        createRoot,
         rootComponent,
       };
 

@@ -265,6 +265,7 @@ importers:
       '@babel/runtime': ^7.14.6
       '@garfish/bridge-react': workspace:*
       '@pmmmwh/react-refresh-webpack-plugin': ^0.5.4
+      '@types/react-dom': ^16
       '@types/react-router-dom': ^5.3.2
       babel-loader: ^8.1.0
       babel-register: ^6.26.0
@@ -293,6 +294,7 @@ importers:
     dependencies:
       '@arco-design/web-react': 2.29.1_react-dom@16.14.0+react@16.14.0
       '@garfish/bridge-react': link:../../packages/reactBridge
+      '@types/react-dom': 16.9.16
       '@types/react-router-dom': 5.3.3
       babel-runtime: 6.26.0
       history: 5.3.0
@@ -346,6 +348,7 @@ importers:
       '@babel/runtime': ^7.14.6
       '@garfish/bridge-react': workspace:*
       '@pmmmwh/react-refresh-webpack-plugin': ^0.5.4
+      '@types/react-dom': ^17
       '@uiw/react-md-editor': ^3.9.3
       babel-loader: ^8.1.0
       babel-register: ^6.26.0
@@ -374,6 +377,7 @@ importers:
     dependencies:
       '@arco-design/web-react': 2.29.1_react-dom@17.0.2+react@17.0.2
       '@garfish/bridge-react': link:../../packages/reactBridge
+      '@types/react-dom': 17.0.17
       babel-runtime: 6.26.0
       history: 5.3.0
       mobx: 6.4.1
@@ -427,6 +431,7 @@ importers:
       '@babel/runtime': ^7.14.6
       '@garfish/bridge-react-v18': workspace:*
       '@pmmmwh/react-refresh-webpack-plugin': ^0.5.4
+      '@types/react-dom': ^18
       '@uiw/react-md-editor': ^3.9.3
       babel-loader: ^8.1.0
       babel-register: ^6.26.0
@@ -455,6 +460,7 @@ importers:
     dependencies:
       '@arco-design/web-react': 2.29.1_react-dom@18.1.0+react@18.1.0
       '@garfish/bridge-react-v18': link:../../packages/reactBridge-v18
+      '@types/react-dom': 18.0.4
       babel-runtime: 6.26.0
       history: 5.3.0
       mobx: 6.4.1
@@ -6186,7 +6192,6 @@ packages:
     resolution: {integrity: sha512-FgTtbqPOCI3dzZPZoC2T/sx3L34qxy99ITWn4eoSA95qPyXDMH0ALoAqUp49ITniiJFsXUVBtalh/KffMpg21Q==}
     dependencies:
       '@types/react': 18.0.9
-    dev: true
 
   /@types/react-router-dom/5.3.3:
     resolution: {integrity: sha512-kpqnYK4wcdm5UaWI3fLcELopqLrHgLqNsdpHauzlQktfkHL3npOSwtj1Uz9oKBAzs7lFtVkV8j83voAz2D8fhw==}
@@ -6200,7 +6205,7 @@ packages:
     resolution: {integrity: sha512-YYknwy0D0iOwKQgz9v8nOzt2J6l4gouBmDnWqUUznltOTaon+r8US8ky8HvN0tXvc38U9m6z/t2RsVsnd1zM0g==}
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 17.0.39
+      '@types/react': 18.0.9
     dev: false
 
   /@types/react/16.14.26:
