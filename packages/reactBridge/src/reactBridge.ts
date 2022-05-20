@@ -51,6 +51,9 @@ export function reactBridge(this: any, userOptions: Options) {
     ...userOptions,
   };
 
+  opts.React = opts.React || React;
+  opts.ReactDOM = opts.ReactDOM || ReactDOM;
+
   if (!opts.rootComponent && !opts.loadRootComponent) {
     throw new Error(
       'garfish-react-bridge must be passed opts.rootComponent or opts.loadRootComponent',
@@ -62,14 +65,16 @@ export function reactBridge(this: any, userOptions: Options) {
       'The errorBoundary opt for garfish-react-bridge must either be omitted or be a function that returns React elements',
     );
   }
-
-  opts.React = opts.React || React;
-  opts.ReactDOM = opts.ReactDOM || ReactDOM;
+  if (!checkReactVersion(opts.React)) {
+    throw Error(
+      'Please make sure than the react version is higher than or equal to v16 and lower than v18.',
+    );
+  }
 
   const providerLifeCycle = {
     render: (appInfo) => mount.call(this, opts, appInfo),
     destroy: (appInfo) => unmount.call(this, opts, appInfo),
-    update: (appInfo) => opts.canUpdate && update.call(this, opts, appInfo),
+    // update: (appInfo) => opts.canUpdate && update.call(this, opts, appInfo),
   };
 
   const provider = async function (this: any, appInfo, props) {
@@ -107,7 +112,7 @@ function bootstrap(opts: Options, appInfo: AppInfo, props) {
 function mount(opts: Options, appInfo: AppInfo) {
   if (
     !opts.suppressComponentDidCatchWarning &&
-    atLeastReact16(opts.React) &&
+    checkReactVersion(opts.React) &&
     !opts.errorBoundary
   ) {
     if (!opts.rootComponent.prototype) {
@@ -138,23 +143,23 @@ function unmount(opts: Options, appInfo: AppInfo) {
   delete opts.renderResults[appInfo.appName];
 }
 
-function update(opts, appInfo: AppInfo) {
-  return new Promise((resolve) => {
-    if (!opts.updateResolves[appInfo.appName]) {
-      opts.updateResolves[appInfo.appName] = [];
-    }
+// function update(opts, appInfo: AppInfo) {
+//   return new Promise((resolve) => {
+//     if (!opts.updateResolves[appInfo.appName]) {
+//       opts.updateResolves[appInfo.appName] = [];
+//     }
 
-    opts.updateResolves[appInfo.appName].push(resolve);
+//     opts.updateResolves[appInfo.appName].push(resolve);
 
-    const elementToRender = getElementToRender(opts, appInfo);
-    const domElement = chooseDomElementGetter(opts, appInfo);
+//     const elementToRender = getElementToRender(opts, appInfo);
+//     const domElement = chooseDomElementGetter(opts, appInfo);
 
-    // This is the old way to update a react application - just call render() again
-    opts.ReactDOM.render(elementToRender, domElement);
-  });
-}
+//     // This is the old way to update a react application - just call render() again
+//     opts.ReactDOM.render(elementToRender, domElement);
+//   });
+// }
 
-function atLeastReact16(React: typeReact) {
+function checkReactVersion(React: typeReact) {
   if (
     React &&
     typeof React.version === 'string' &&
@@ -164,8 +169,11 @@ function atLeastReact16(React: typeReact) {
       0,
       React.version.indexOf('.'),
     );
+
     try {
-      return Number(majorVersionString) >= 16;
+      return (
+        Number(majorVersionString) >= 16 && Number(majorVersionString) < 18
+      );
     } catch (err) {
       return false;
     }

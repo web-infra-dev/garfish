@@ -24,8 +24,6 @@ module.exports = {
   },
   rootDir: __dirname,
   testMatch: ['<rootDir>/packages/**/__tests__/**/*spec.[jt]s?(x)'],
-  // testMatch: ['<rootDir>/packages/reactBridge/__tests__/**/*spec.[jt]s?(x)'],
-  // testMatch: ['<rootDir>/packages/reactBridge-v18/__tests__/**/*spec.[jt]s?(x)'],
   testPathIgnorePatterns: ['/node_modules/', '/dev/'],
   moduleNameMapper: {
     '@garfish/(.*)': '<rootDir>packages/$1/src',

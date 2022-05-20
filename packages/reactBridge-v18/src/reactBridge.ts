@@ -54,6 +54,10 @@ export function reactBridge(this: any, userOpts: Options) {
     ...userOpts,
   };
 
+  opts.React = opts.React || React;
+  opts.createRoot = opts.createRoot || createRoot;
+  opts.hydrateRoot = opts.hydrateRoot || hydrateRoot;
+
   if (!opts.rootComponent && !opts.loadRootComponent) {
     throw new Error(
       'garfish-react-bridge must be passed opts.rootComponent or opts.loadRootComponent',
@@ -65,16 +69,17 @@ export function reactBridge(this: any, userOpts: Options) {
       'The errorBoundary opt for garfish-react-bridge must either be omitted or be a function that returns React elements',
     );
   }
-
-  opts.React = opts.React || React;
-  opts.createRoot = opts.createRoot || createRoot;
-  opts.hydrateRoot = opts.hydrateRoot || hydrateRoot;
+  if (!atLeastReact18(opts.React)) {
+    throw Error(
+      'Please make sure than the react version is higher than or equal to v18.',
+    );
+  }
 
   const providerLifeCycle = {
     render: (appInfo: AppInfo) => mount.call(this, opts, appInfo),
     destroy: (appInfo: AppInfo) => unmount.call(this, opts, appInfo),
-    update: (appInfo: AppInfo) =>
-      opts.canUpdate && update.call(this, opts, appInfo),
+    // update: (appInfo: AppInfo) =>
+    //   opts.canUpdate && update.call(this, opts, appInfo),
   };
 
   const provider = async function (this: any, appInfo, props) {
@@ -112,7 +117,7 @@ function bootstrap(opts: Options, appInfo, props) {
 function mount(opts: Options, appInfo: AppInfo) {
   if (
     !opts.suppressComponentDidCatchWarning &&
-    atLeastReact16(opts.React) &&
+    atLeastReact18(opts.React) &&
     !opts.errorBoundary
   ) {
     if (!opts.rootComponent.prototype) {
@@ -145,20 +150,20 @@ function unmount(opts: Options, appInfo: AppInfo) {
   delete opts.renderResults[appInfo.appName];
 }
 
-function update(opts: Options, appInfo: AppInfo) {
-  return new Promise((resolve) => {
-    if (!opts.updateResolves[appInfo.appName]) {
-      opts.updateResolves[appInfo.appName] = [];
-    }
+// function update(opts: Options, appInfo: AppInfo) {
+//   return new Promise((resolve) => {
+//     if (!opts.updateResolves[appInfo.appName]) {
+//       opts.updateResolves[appInfo.appName] = [];
+//     }
 
-    opts.updateResolves[appInfo.appName].push(resolve);
-    const elementToRender = getElementToRender(opts, appInfo);
-    const renderRoot = opts.renderResults[appInfo.appName];
-    renderRoot.render(elementToRender);
-  });
-}
+//     opts.updateResolves[appInfo.appName].push(resolve);
+//     const elementToRender = getElementToRender(opts, appInfo);
+//     const renderRoot = opts.renderResults[appInfo.appName];
+//     renderRoot.render(elementToRender);
+//   });
+// }
 
-function atLeastReact16(React: typeReact) {
+function atLeastReact18(React: typeReact) {
   if (
     React &&
     typeof React.version === 'string' &&
@@ -169,7 +174,7 @@ function atLeastReact16(React: typeReact) {
       React.version.indexOf('.'),
     );
     try {
-      return Number(majorVersionString) >= 16;
+      return Number(majorVersionString) >= 18;
     } catch (err) {
       return false;
     }
@@ -203,7 +208,6 @@ function getElementToRender(opts: Options, appInfo: AppInfo) {
 
   let elementToRender = rootComponentElement;
 
-  // let elementToRender = rootComponentElement;
   if (opts.errorBoundary || opts.errorBoundaryClass) {
     opts.errorBoundaryClass =
       opts.errorBoundaryClass ||

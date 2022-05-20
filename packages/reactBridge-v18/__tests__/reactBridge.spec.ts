@@ -1,10 +1,8 @@
-import { render } from './../../../dev/app-react-17/src/index';
 // The logic of vue-bridge-test is referenced from single-spa typography
 // Because the Garfish lifecycle does not agree with that of single-spa  part logical coupling in the framework
 // https://github.com/single-spa/single-spa-vue/blob/main/src/single-spa-vue.test.js
 
 import { reactBridge } from '../src/reactBridge';
-// import '../../../node_modules/@testing-library/jest-dom/extend-expect';
 import '@testing-library/jest-dom';
 
 const domElId = '#sub-app-container';
@@ -25,11 +23,13 @@ describe('react-bridge', () => {
     hydrateRootInstanceMock,
     $createElement,
     $render,
-    $unmount;
+    $unmount,
+    errorBoundary;
 
   beforeEach(() => {
     React = {
       createElement: $createElement,
+      version: '18.1.0',
     };
 
     createRoot = jest.fn();
@@ -68,6 +68,7 @@ describe('react-bridge', () => {
     $unmount = jest.fn();
     rootComponent = {};
     loadRootComponent = jest.fn();
+    errorBoundary = jest.fn();
   });
 
   afterEach(() => {
@@ -77,8 +78,15 @@ describe('react-bridge', () => {
   });
 
   it('throws an error when required parameters are not provided', () => {
+    expect(() => reactBridge(null as any)).toThrow();
+    expect(() => reactBridge({} as any)).toThrow();
+    expect(() => reactBridge({ el: $el } as any)).toThrow();
+    expect(() => reactBridge({ createRoot } as any)).toThrow();
     expect(() => reactBridge({ loadRootComponent })).not.toThrow();
     expect(() => reactBridge({ rootComponent })).not.toThrow();
+    expect(() =>
+      reactBridge({ el: $el, rootComponent, loadRootComponent }),
+    ).not.toThrow();
 
     expect(() =>
       reactBridge({ createRoot, rootComponent, loadRootComponent }),
@@ -97,6 +105,30 @@ describe('react-bridge', () => {
         loadRootComponent,
       }),
     ).not.toThrow();
+
+    expect(() =>
+      reactBridge({
+        createRoot,
+        hydrateRoot,
+        el: $el,
+        rootComponent,
+        loadRootComponent,
+        errorBoundary,
+      }),
+    ).not.toThrow();
+  });
+
+  it('throws an error when react version is lower then react v18', async () => {
+    expect(() =>
+      reactBridge({
+        React: {
+          ...React,
+          version: '15.2.0',
+        },
+        createRoot,
+        rootComponent,
+      }),
+    ).toThrow();
   });
 
   it('throws an error when opts.el is provided and opts.el.dom does not exist in the dom during mount', async () => {

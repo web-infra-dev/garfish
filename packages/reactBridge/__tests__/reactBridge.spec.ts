@@ -24,6 +24,7 @@ describe('react-bridge', () => {
   beforeEach(() => {
     React = {
       createElement: $createElement,
+      version: '16.13.1',
     };
     ReactDOM = {
       render: $render,
@@ -63,11 +64,19 @@ describe('react-bridge', () => {
   });
 
   it('throws an error when required parameters are not provided', () => {
+    expect(() => reactBridge(null as any)).toThrow();
+    expect(() => reactBridge({} as any)).toThrow();
     expect(() => reactBridge({ loadRootComponent })).not.toThrow();
     expect(() => reactBridge({ rootComponent })).not.toThrow();
+    expect(() => reactBridge({ el: $el, rootComponent })).not.toThrow();
+    expect(() => reactBridge({ el: $el, loadRootComponent })).not.toThrow();
 
     expect(() =>
       reactBridge({ rootComponent, loadRootComponent }),
+    ).not.toThrow();
+
+    expect(() =>
+      reactBridge({ el: rootComponent, loadRootComponent }),
     ).not.toThrow();
 
     expect(() =>
@@ -77,6 +86,56 @@ describe('react-bridge', () => {
         el: $el,
         rootComponent,
         loadRootComponent,
+      }),
+    ).not.toThrow();
+  });
+
+  it('throws an error when react version is lower then react v16', async () => {
+    expect(() =>
+      reactBridge({
+        React: {
+          ...React,
+          version: '15.2.0',
+        },
+        ReactDOM,
+        rootComponent,
+      }),
+    ).toThrow();
+  });
+
+  it('throws an error when react version is higher or equal than react v18', async () => {
+    expect(() =>
+      reactBridge({
+        React: {
+          ...React,
+          version: '18.2.0',
+        },
+        ReactDOM,
+        rootComponent,
+      }),
+    ).toThrow();
+  });
+
+  it('do not throws an error when react version is v16 or v17', async () => {
+    expect(() =>
+      reactBridge({
+        React: {
+          ...React,
+          version: '17.2.1',
+        },
+        ReactDOM,
+        rootComponent,
+      }),
+    ).not.toThrow();
+
+    expect(() =>
+      reactBridge({
+        React: {
+          ...React,
+          version: '16.3.31',
+        },
+        ReactDOM,
+        rootComponent,
       }),
     ).not.toThrow();
   });
