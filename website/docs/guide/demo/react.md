@@ -29,9 +29,7 @@ npm install @garfish/bridge --save
 
 ```tsx
 // src/index.tsx
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { reactBridge } from '@garfish/bridge';
+import { reactBridge } from '@garfish/bridge-react';
 import RootComponent from './components/root';
 import Error from './components/ErrorBoundary';
 
@@ -142,7 +140,6 @@ const RootComponent = ({ basename }) => {
       <Routes>
         <Route path="/" element={<App />}>
           <Route path="/home" element={<Home />} />
-          <Route path="*" element={<PageNotFound />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>

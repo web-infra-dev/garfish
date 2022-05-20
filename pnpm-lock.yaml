@@ -293,7 +293,7 @@ importers:
       webpack-dev-server: ^4.2.1
     dependencies:
       '@arco-design/web-react': 2.29.1_react-dom@16.14.0+react@16.14.0
-      '@garfish/bridge-react': link:../../packages/reactBridge
+      '@garfish/bridge-react': file:packages/bridge-react_react-dom@16.14.0+react@16.14.0
       '@types/react-dom': 16.9.16
       '@types/react-router-dom': 5.3.3
       babel-runtime: 6.26.0
@@ -332,6 +332,9 @@ importers:
       webpack: 5.69.1_fc21abfff025156ba6ecba3dc7a071f7
       webpack-cli: 4.9.2_56d34dfb5427e6df45a27ae34f9e2cba
       webpack-dev-server: 4.7.4_webpack-cli@4.9.2+webpack@5.69.1
+    dependenciesMeta:
+      '@garfish/bridge-react':
+        injected: true
 
   dev/app-react-17:
     specifiers:
@@ -376,7 +379,7 @@ importers:
       webpack-dev-server: ^4.2.1
     dependencies:
       '@arco-design/web-react': 2.29.1_react-dom@17.0.2+react@17.0.2
-      '@garfish/bridge-react': link:../../packages/reactBridge
+      '@garfish/bridge-react': file:packages/bridge-react_react-dom@17.0.2+react@17.0.2
       '@types/react-dom': 17.0.17
       babel-runtime: 6.26.0
       history: 5.3.0
@@ -415,6 +418,9 @@ importers:
       webpack: 5.69.1_fc21abfff025156ba6ecba3dc7a071f7
       webpack-cli: 4.9.2_56d34dfb5427e6df45a27ae34f9e2cba
       webpack-dev-server: 4.7.4_webpack-cli@4.9.2+webpack@5.69.1
+    dependenciesMeta:
+      '@garfish/bridge-react':
+        injected: true
 
   dev/app-react-18:
     specifiers:
@@ -459,7 +465,7 @@ importers:
       webpack-dev-server: ^4.2.1
     dependencies:
       '@arco-design/web-react': 2.29.1_react-dom@18.1.0+react@18.1.0
-      '@garfish/bridge-react-v18': link:../../packages/reactBridge-v18
+      '@garfish/bridge-react-v18': link:../../packages/bridge-react-v18
       '@types/react-dom': 18.0.4
       babel-runtime: 6.26.0
       history: 5.3.0
@@ -520,7 +526,7 @@ importers:
       vue-template-compiler: 2.6.13
       vuex: ^3.6.2
     dependencies:
-      '@garfish/bridge-vue-v2': link:../../packages/vueBridge-v2
+      '@garfish/bridge-vue-v2': link:../../packages/bridge-vue-v2
       '@garfish/remote-module': link:../../packages/remote-module
       core-js: 3.21.1
       garfish: link:../../packages/garfish
@@ -565,7 +571,7 @@ importers:
       vue-template-compiler: 2.6.13
       vuex: ^3.6.2
     dependencies:
-      '@garfish/bridge-vue-v2': link:../../packages/vueBridge-v2
+      '@garfish/bridge-vue-v2': link:../../packages/bridge-vue-v2
       '@garfish/remote-module': link:../../packages/remote-module
       core-js: 3.21.1
       garfish: link:../../packages/garfish
@@ -605,7 +611,7 @@ importers:
       vue-router: ^4.0.12
       vuex: ^3.6.2
     dependencies:
-      '@garfish/bridge-vue-v3': link:../../packages/vueBridge-v3
+      '@garfish/bridge-vue-v3': link:../../packages/bridge-vue-v3
       '@garfish/remote-module': link:../../packages/remote-module
       core-js: 3.21.1
       mobx-vue: 2.2.0_vue@3.2.31
@@ -630,39 +636,91 @@ importers:
       vite: 2.9.7
       vue: ^3.2.23
     dependencies:
-      '@garfish/bridge-vue-v3': link:../../packages/vueBridge-v3
+      '@garfish/bridge-vue-v3': link:../../packages/bridge-vue-v3
       vue: 3.2.31
     devDependencies:
       '@vitejs/plugin-vue': 2.3.1_vite@2.9.7+vue@3.2.31
       vite: 2.9.7
 
-  packages/bridge:
+  packages/bridge-react:
     specifiers:
-      '@garfish/bridge': ^1.5.2
       '@garfish/browser-snapshot': workspace:*
       '@garfish/browser-vm': workspace:*
       '@garfish/core': workspace:*
       '@garfish/router': workspace:*
       '@garfish/utils': workspace:*
-      '@types/react-dom16': npm:@types/react-dom@^16
-      '@types/react-dom17': npm:@types/react-dom@^17
-      '@types/react16': npm:@types/react@^16
-      '@types/react17': npm:@types/react@^17
-      vue2: npm:vue@^2
-      vue3: npm:vue@^3
+      '@types/react': ^16
+      '@types/react-dom': ^16
+      react: 16.13.1
+      react-dom: 16.13.1
     dependencies:
-      '@garfish/bridge': 1.5.5
       '@garfish/browser-snapshot': link:../browser-snapshot
       '@garfish/browser-vm': link:../browser-vm
       '@garfish/core': link:../core
       '@garfish/router': link:../router
       '@garfish/utils': link:../utils
-      '@types/react-dom16': /@types/react-dom/16.9.16
-      '@types/react-dom17': /@types/react-dom/17.0.17
-      '@types/react16': /@types/react/16.14.26
-      '@types/react17': /@types/react/17.0.39
-      vue2: /vue/2.6.13
-      vue3: /vue/3.2.31
+    devDependencies:
+      '@types/react': 16.14.26
+      '@types/react-dom': 16.9.16
+      react: 16.13.1
+      react-dom: 16.13.1_react@16.13.1
+
+  packages/bridge-react-v18:
+    specifiers:
+      '@garfish/browser-snapshot': workspace:*
+      '@garfish/browser-vm': workspace:*
+      '@garfish/core': workspace:*
+      '@garfish/router': workspace:*
+      '@garfish/utils': workspace:*
+      '@types/react': ^18
+      '@types/react-dom': ^18
+      react: 18.1.0
+      react-dom: 18.1.0
+    dependencies:
+      '@garfish/browser-snapshot': link:../browser-snapshot
+      '@garfish/browser-vm': link:../browser-vm
+      '@garfish/core': link:../core
+      '@garfish/router': link:../router
+      '@garfish/utils': link:../utils
+    devDependencies:
+      '@types/react': 18.0.9
+      '@types/react-dom': 18.0.4
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
+
+  packages/bridge-vue-v2:
+    specifiers:
+      '@garfish/browser-snapshot': workspace:*
+      '@garfish/browser-vm': workspace:*
+      '@garfish/core': workspace:*
+      '@garfish/router': workspace:*
+      '@garfish/utils': workspace:*
+      vue: 2.6.13
+    dependencies:
+      '@garfish/browser-snapshot': link:../browser-snapshot
+      '@garfish/browser-vm': link:../browser-vm
+      '@garfish/core': link:../core
+      '@garfish/router': link:../router
+      '@garfish/utils': link:../utils
+    devDependencies:
+      vue: 2.6.13
+
+  packages/bridge-vue-v3:
+    specifiers:
+      '@garfish/browser-snapshot': workspace:*
+      '@garfish/browser-vm': workspace:*
+      '@garfish/core': workspace:*
+      '@garfish/router': workspace:*
+      '@garfish/utils': workspace:*
+      vue: 3.2.31
+    dependencies:
+      '@garfish/browser-snapshot': link:../browser-snapshot
+      '@garfish/browser-vm': link:../browser-vm
+      '@garfish/core': link:../core
+      '@garfish/router': link:../router
+      '@garfish/utils': link:../utils
+    devDependencies:
+      vue: 3.2.31
 
   packages/browser-snapshot:
     specifiers:
@@ -745,52 +803,6 @@ importers:
       '@garfish/hooks': link:../hooks
       '@garfish/utils': link:../utils
 
-  packages/reactBridge:
-    specifiers:
-      '@garfish/browser-snapshot': workspace:*
-      '@garfish/browser-vm': workspace:*
-      '@garfish/core': workspace:*
-      '@garfish/router': workspace:*
-      '@garfish/utils': workspace:*
-      '@types/react': ^16
-      '@types/react-dom': ^16
-      react: 16.13.1
-      react-dom: 16.13.1
-    dependencies:
-      '@garfish/browser-snapshot': link:../browser-snapshot
-      '@garfish/browser-vm': link:../browser-vm
-      '@garfish/core': link:../core
-      '@garfish/router': link:../router
-      '@garfish/utils': link:../utils
-    devDependencies:
-      '@types/react': 16.14.26
-      '@types/react-dom': 16.9.16
-      react: 16.13.1
-      react-dom: 16.13.1_react@16.13.1
-
-  packages/reactBridge-v18:
-    specifiers:
-      '@garfish/browser-snapshot': workspace:*
-      '@garfish/browser-vm': workspace:*
-      '@garfish/core': workspace:*
-      '@garfish/router': workspace:*
-      '@garfish/utils': workspace:*
-      '@types/react': ^18
-      '@types/react-dom': ^18
-      react: 18.1.0
-      react-dom: 18.1.0
-    dependencies:
-      '@garfish/browser-snapshot': link:../browser-snapshot
-      '@garfish/browser-vm': link:../browser-vm
-      '@garfish/core': link:../core
-      '@garfish/router': link:../router
-      '@garfish/utils': link:../utils
-    devDependencies:
-      '@types/react': 18.0.9
-      '@types/react-dom': 18.0.4
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
-
   packages/remote-module:
     specifiers:
       '@garfish/hooks': workspace:*
@@ -817,40 +829,6 @@ importers:
       debug: 4.3.4
     devDependencies:
       '@garfish/core': link:../core
-
-  packages/vueBridge-v2:
-    specifiers:
-      '@garfish/browser-snapshot': workspace:*
-      '@garfish/browser-vm': workspace:*
-      '@garfish/core': workspace:*
-      '@garfish/router': workspace:*
-      '@garfish/utils': workspace:*
-      vue: 2.6.13
-    dependencies:
-      '@garfish/browser-snapshot': link:../browser-snapshot
-      '@garfish/browser-vm': link:../browser-vm
-      '@garfish/core': link:../core
-      '@garfish/router': link:../router
-      '@garfish/utils': link:../utils
-    devDependencies:
-      vue: 2.6.13
-
-  packages/vueBridge-v3:
-    specifiers:
-      '@garfish/browser-snapshot': workspace:*
-      '@garfish/browser-vm': workspace:*
-      '@garfish/core': workspace:*
-      '@garfish/router': workspace:*
-      '@garfish/utils': workspace:*
-      vue: 3.2.31
-    dependencies:
-      '@garfish/browser-snapshot': link:../browser-snapshot
-      '@garfish/browser-vm': link:../browser-vm
-      '@garfish/core': link:../core
-      '@garfish/router': link:../router
-      '@garfish/utils': link:../utils
-    devDependencies:
-      vue: 3.2.31
 
   website:
     specifiers:
@@ -4631,97 +4609,6 @@ packages:
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
     dev: true
 
-  /@garfish/bridge/1.5.5:
-    resolution: {integrity: sha512-h5nYTsk4NfGq2rcmZHnmLn/POfv5eVRx1fVYtipTtRAyqsQnTJBwdivlAoUc1YOaqpJbV5IABUmCrY/Fz61BLg==}
-    peerDependencies:
-      react: '>=16'
-      react-dom: '>=16'
-    peerDependenciesMeta:
-      react:
-        optional: true
-      react-dom:
-        optional: true
-    dependencies:
-      '@garfish/browser-snapshot': 1.5.5
-      '@garfish/browser-vm': 1.5.5
-      '@garfish/core': 1.5.5
-      '@garfish/router': 1.5.5
-      '@garfish/utils': 1.5.5
-      '@types/react-dom16': /@types/react-dom/16.9.16
-      '@types/react-dom17': /@types/react-dom/17.0.17
-      '@types/react16': /@types/react/16.14.26
-      '@types/react17': /@types/react/17.0.39
-      vue2: /vue/2.6.13
-      vue3: /vue/3.2.31
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@garfish/browser-snapshot/1.5.5:
-    resolution: {integrity: sha512-PltqTmJ8+jIkYB2DqLg0KnGTBZWV+aalRIEuMjH0s8kSnt4GyCsDaYvyEjgxsnTjSHNz9w1Ld20dxwKrCQ+q8g==}
-    dependencies:
-      '@garfish/core': 1.5.5
-      '@garfish/utils': 1.5.5
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@garfish/browser-vm/1.5.5:
-    resolution: {integrity: sha512-P3Z1EDlbaM2ljRh/E/lOhhcOOFhCB6RxxUh7fsbU5pcHTIIDuUP7VnnZXn9MvDMzYZrZCRxEr7OfH6Kq/lNmfQ==}
-    dependencies:
-      '@garfish/core': 1.5.5
-      '@garfish/hooks': 1.5.5
-      '@garfish/loader': 1.5.5
-      '@garfish/utils': 1.5.5
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@garfish/core/1.5.5:
-    resolution: {integrity: sha512-5iANP7tiv0fERD1pFZcRXaTL4ooaIQPKcmLrn8cukPenBgxa70geDt1S7cqmtEkba604j3Q5uQQprnTdQcmTag==}
-    dependencies:
-      '@garfish/hooks': 1.5.5
-      '@garfish/loader': 1.5.5
-      '@garfish/utils': 1.5.5
-      eventemitter2: 6.4.5
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@garfish/hooks/1.5.5:
-    resolution: {integrity: sha512-axegfIywQq7m+d8KgBeeoZg4p7rtmqKO/FVbdIDpRcHimoah2dfcmvIqy1bAW7iYgzX9U1N1AENsetyb6qQQzw==}
-    dependencies:
-      '@garfish/utils': 1.5.5
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@garfish/loader/1.5.5:
-    resolution: {integrity: sha512-rGjBsZjMEfS0gv42tJ46QPQBSEiUCFus33XAU+924MdT0FVHg5Eu6YufpbRwfhxFJl/fdavwAVW98T8QeyJ9RA==}
-    dependencies:
-      '@garfish/hooks': 1.5.5
-      '@garfish/utils': 1.5.5
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@garfish/router/1.5.5:
-    resolution: {integrity: sha512-vs+rZN/Q79vdhDUZw+gez6oQ9Wtphfa/UYigUsow6qTSN+iqkIU54a8Rp4ThNnr22VI1PXd+Idm9eHcOUvdu1Q==}
-    dependencies:
-      '@garfish/core': 1.5.5
-      '@garfish/utils': 1.5.5
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@garfish/utils/1.5.5:
-    resolution: {integrity: sha512-ygdmW050rkVzVRjA6KFzNUyOPnlsdTgdkGJhE6wm/qi0IS6sU8fqjpQebkwfgCgZuv+ahoGl0+A/J6DmswExoQ==}
-    dependencies:
-      debug: 4.3.4
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
   /@hapi/address/2.1.4:
     resolution: {integrity: sha512-QD1PhQk+s31P1ixsX0H0Suoupp3VMXzIVMSwobR3F3MSUO2YCV0B7xqLcUw/Bh8yuvd3LhpyqLQWTNcRmp6IdQ==}
     deprecated: Moved to 'npm install @sideway/address'
@@ -7221,7 +7108,7 @@ packages:
       '@vue/shared': 3.2.31
       estree-walker: 2.0.2
       magic-string: 0.25.7
-      postcss: 8.4.6
+      postcss: 8.4.13
       source-map: 0.6.1
 
   /@vue/compiler-ssr/3.2.31:
@@ -17758,7 +17645,6 @@ packages:
     resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
-    dev: true
 
   /nanomatch/1.2.13:
     resolution: {integrity: sha512-fpoe2T0RbHwBTBUOftAfBPaDEi06ufaUai0mE6Yn1kacc3SnTErfb/h+X94VXzI64rKFHYImXSvdwGGCmwOqCA==}
@@ -20006,7 +19892,6 @@ packages:
       nanoid: 3.3.4
       picocolors: 1.0.0
       source-map-js: 1.0.2
-    dev: true
 
   /postcss/8.4.5:
     resolution: {integrity: sha512-jBDboWM8qpaqwkMwItqTQTiFikhs/67OYVvblFFTM7MrZjt6yMKd6r2kgXizEbTTljacm4NldIlZnhbjr84QYg==}
@@ -25764,3 +25649,39 @@ packages:
     transitivePeerDependencies:
       - encoding
     dev: true
+
+  file:packages/bridge-react_react-dom@16.14.0+react@16.14.0:
+    resolution: {directory: packages/bridge-react, type: directory}
+    id: file:packages/bridge-react
+    name: '@garfish/bridge-react'
+    version: 1.5.2
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      '@garfish/browser-snapshot': link:packages/browser-snapshot
+      '@garfish/browser-vm': link:packages/browser-vm
+      '@garfish/core': link:packages/core
+      '@garfish/router': link:packages/router
+      '@garfish/utils': link:packages/utils
+      react: 16.14.0
+      react-dom: 16.14.0_react@16.14.0
+    dev: false
+
+  file:packages/bridge-react_react-dom@17.0.2+react@17.0.2:
+    resolution: {directory: packages/bridge-react, type: directory}
+    id: file:packages/bridge-react
+    name: '@garfish/bridge-react'
+    version: 1.5.2
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      '@garfish/browser-snapshot': link:packages/browser-snapshot
+      '@garfish/browser-vm': link:packages/browser-vm
+      '@garfish/core': link:packages/core
+      '@garfish/router': link:packages/router
+      '@garfish/utils': link:packages/utils
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false

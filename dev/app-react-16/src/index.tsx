@@ -23,8 +23,6 @@ import ErrorBoundary from './ErrorBoundary';
 // };
 
 export const provider = reactBridge({
-  // 在 monorepo 中 link 同仓库 @garfish/bridge-react, 为了防止 react 多实例问题，此处显示传入 ReactDOM，通过 npm 包安装的 @garfish/bridge-react 不需要传入 ReactDom
-  ReactDOM,
   el: '#root',
   rootComponent: RootComponent,
   loadRootComponent: (props) => {

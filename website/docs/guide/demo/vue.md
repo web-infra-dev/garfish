@@ -201,7 +201,7 @@ import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
   import store from './store';
   import App from './App.vue';
   import Home from './components/Home.vue';
-  import { vueBridge } from '@garfish/bridge';
+  import { vueBridge } from '@garfish/bridge-vue-v2';
 
   Vue.use(VueRouter);
   Vue.config.productionTip = false;
@@ -226,7 +226,7 @@ import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
   import { stateSymbol, createState } from './store.js';
   import App from './App.vue';
   import Home from './components/Home.vue';
-  import { vueBridge } from '@garfish/bridge';
+  import { vueBridge } from '@garfish/bridge-vue-v3';
 
   const routes = [
     { path: '/home', component: Home },

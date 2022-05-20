@@ -6,17 +6,12 @@
 
 ```jsx
 // child app
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { reactBridge } from '@garfish/bridge';
-
+import { reactBridge } from '@garfish/bridge-react';
 function App() {
   return <div>content</div>;
 }
 
 reactBridge({
-  React,
-  ReactDOM,
   el: '#root',
   rootComponent: App,
 });
