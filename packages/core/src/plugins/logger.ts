@@ -10,10 +10,12 @@ export function GarfishLogger() {
         coreLog(`${appInfo.name} beforeLoad`, [appInfo, ...args]);
       },
       afterLoad(appInfo, appInstance, ...args) {
-        coreLog(`${appInfo.name} id: ${appInstance.appId} afterLoad`, [
-          appInfo,
-          ...args,
-        ]);
+        if (appInstance) {
+          coreLog(`${appInfo.name} id: ${appInstance.appId} afterLoad`, [
+            appInfo,
+            ...args,
+          ]);
+        }
       },
       beforeMount(appInfo, appInstance, ...args) {
         coreLog(`${appInfo.name} id: ${appInstance.appId} beforeMount`, [
