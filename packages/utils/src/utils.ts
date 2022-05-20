@@ -42,12 +42,22 @@ export function def(obj: Object, key: string, value: any) {
 }
 
 // Array to Object `['a'] => { a: true }`
-export function makeMap(list: Array<PropertyKey>) {
-  const map = Object.create(null);
+export function makeMap<T extends Array<PropertyKey>>(list: T) {
+  const map: { [k in T[number]]: true } = Object.create(null);
   for (let i = 0; i < list.length; i++) {
     map[list[i]] = true;
   }
-  return (val) => !!map[val] as boolean;
+  return (val: T[number]) => !!map[val];
+}
+
+// Array to Object `['a'] => { a: true }`
+export function makeMapObject<T extends Array<string>>(list: T) {
+  const map: { [k in T[number]]: true } = Object.create(null);
+  for (let i = 0; i < list.length; i++) {
+    map[list[i]] = true;
+  }
+
+  return map as { [k in T[number]]: true };
 }
 
 export function inBrowser() {
@@ -224,6 +234,15 @@ export function isPrimitive(val: any) {
     typeof val === 'boolean' ||
     typeof val === 'undefined'
   );
+}
+
+export function filterUndefinedVal<T extends Object>(ob: T) {
+  return Object.keys(ob).reduce((res: T, key: any) => {
+    if (res[key] === undefined) {
+      delete res[key];
+    }
+    return res;
+  }, ob);
 }
 
 // Deeply merge two objects, can handle circular references, the latter overwrite the previous

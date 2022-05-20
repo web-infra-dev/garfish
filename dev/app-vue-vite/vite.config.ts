@@ -18,8 +18,6 @@ export default ({ mode }) => {
       cors: true,
       origin: `http://localhost:${port}`,
     },
-    plugins: [
-      vue(),
-    ],
+    plugins: [vue()],
   });
 };
