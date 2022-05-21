@@ -10,14 +10,14 @@ import {
 type Renderer = Record<string, (node: Node) => null | Element | Comment>;
 
 export class TemplateManager {
-  public url: string | null;
+  public url: string | undefined;
   public DOMApis = new DOMApis();
   public astTree: Array<Node> = [];
   private pretreatmentStore: Record<string, Node[]> = {};
 
   constructor(template: string, url?: string) {
     // The url is only base url, it may also be a js resource address.
-    this.url = url || null;
+    this.url = url;
     if (template) {
       const [astTree, collectionEls] = templateParse(template, [
         'meta',
@@ -63,11 +63,11 @@ export class TemplateManager {
   createElements(renderer: Renderer, parent: Element) {
     const elements: Array<Element> = [];
     const traverse = (node: Node | Text, parentEl?: Element) => {
-      let el = null;
+      let el: any;
       if (this.DOMApis.isCommentNode(node)) {
         // Filter comment node
       } else if (this.DOMApis.isText(node)) {
-        el = this.DOMApis.createTextNode(node as Text);
+        el = this.DOMApis.createTextNode(node);
         parentEl && parentEl.appendChild(el);
       } else if (this.DOMApis.isNode(node)) {
         const { tagName, children } = node as Node;
@@ -102,7 +102,7 @@ export class TemplateManager {
 
   toResolveUrl(node: Node, type: string, baseUrl?: string) {
     const src = node.attributes?.find(({ key }) => key === type);
-    if (src) {
+    if (src && src.value && baseUrl) {
       src.value = transformUrl(baseUrl, src.value);
     }
   }

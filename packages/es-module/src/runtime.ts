@@ -17,7 +17,7 @@ export type ModuleResource = Output & {
 };
 
 export interface RuntimeOptions {
-  scope?: string;
+  scope: string;
   loaderOptions?: LoaderOptions;
   execCode?: (
     output: ModuleResource,
@@ -135,9 +135,9 @@ export class Runtime {
     const { imports, exports, generateCode } = compiler.transform();
 
     await Promise.all(
-      imports.map(({ moduleId }) => {
-        const curStoreId = transformUrl(storeId, moduleId);
-        const requestUrl = transformUrl(baseRealUrl, moduleId);
+      imports.map(({ moduleId = '' }) => {
+        const curStoreId = transformUrl(storeId, moduleId || '');
+        const requestUrl = transformUrl(baseRealUrl, moduleId || '');
         return this.resources[curStoreId]
           ? null
           : this.compileAndFetchCode(curStoreId, requestUrl);
@@ -162,13 +162,13 @@ export class Runtime {
     const p = this.loader
       .load<JavaScriptManager>(this.options.scope, url)
       .then(async ({ resourceManager }) => {
-        const { url, scriptCode } = resourceManager;
+        const { url, scriptCode } = resourceManager || {};
 
-        if (scriptCode) {
+        if (scriptCode && url) {
           const output = await this.analysisModule(scriptCode, storeId, url);
           this.resources[storeId] = output;
         } else {
-          this.resources[storeId] = null;
+          delete this.resources[storeId];
         }
       });
     this.resources[storeId] = p;

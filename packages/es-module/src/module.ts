@@ -20,7 +20,7 @@ export function createModule(memoryModule: MemoryModule) {
   });
 
   Object.keys(memoryModule).forEach((key) => {
-    const getter = Object.getOwnPropertyDescriptor(memoryModule, key).get;
+    const getter = Object.getOwnPropertyDescriptor(memoryModule, key)?.get;
     Object.defineProperty(module, key, {
       enumerable: true,
       configurable: false,

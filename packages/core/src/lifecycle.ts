@@ -20,7 +20,7 @@ export function appLifecycle() {
     beforeEval: new SyncHook<[
         interfaces.AppInfo,
         string,
-        Record<string, any>,
+        Record<string, any> | undefined,
         string | undefined,
         { async?: boolean; noEntry?: boolean } | undefined,
       ],
@@ -30,7 +30,7 @@ export function appLifecycle() {
       [
         interfaces.AppInfo,
         string,
-        Record<string, any>,
+        Record<string, any> | undefined,
         string | undefined,
         { async?: boolean; noEntry?: boolean } | undefined,
       ],
@@ -47,7 +47,7 @@ export function appLifecycle() {
         Error,
         interfaces.AppInfo,
         string,
-        Record<string, any>,
+        Record<string, any> | undefined,
         string | undefined,
         { async?: boolean; noEntry?: boolean } | undefined,
       ],

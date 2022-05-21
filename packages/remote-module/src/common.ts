@@ -8,9 +8,9 @@ import {
 } from '@garfish/utils';
 import { loadModule } from './apis/loadModule';
 
-export type ModuleConfig = Required<
-  Omit<ModuleInfo, 'version'> & { alias: Record<string, string> }
->;
+export type ModuleConfig = Omit<ModuleInfo, 'version'> & {
+  alias: Record<string, string>;
+};
 
 export interface ModuleInfo {
   cache?: boolean;
@@ -20,15 +20,13 @@ export interface ModuleInfo {
   adapter?: (cjsModule: Record<string, any>) => Record<string, any>;
 }
 
-export let currentApp = null;
+export let currentApp: any;
 export let resourcesStore: Array<ModuleManager> = [];
 export const cacheModules = Object.create(null);
 export const fetchLoading = Object.create(null);
 export const moduleConfig: ModuleConfig = {
   alias: {},
   cache: true, // Default use cache
-  error: null,
-  adapter: null,
   externals: {
     loadModule, // Only `loadModule` is provided for use by remote modules
   },
@@ -84,7 +82,7 @@ export const purifyOptions = (urlOrAlias: string, options?: ModuleInfo) => {
   const globalExternals = moduleConfig.externals;
   delete moduleConfig.externals;
 
-  if (isPlainObject(options)) {
+  if (isPlainObject(options) && options) {
     const curExternals = options.externals;
     delete options.externals;
     config = deepMerge(moduleConfig, { ...options, url: urlOrAlias });

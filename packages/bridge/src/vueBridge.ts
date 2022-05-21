@@ -23,9 +23,7 @@ type vueCreateOpts =
     };
 interface ConfigOpts {
   canUpdate: boolean; // by default, allow parcels created with garfish-react-bridge to be updated
-  appOptions: (
-    opts: Record<string, any>,
-  ) => Record<string, any> | Record<string, any>;
+  appOptions: (opts: Record<string, any>) => Record<string, any>;
   handleInstance: (
     vueInstance: vueInstanceType,
     opts: Record<string, any>,
@@ -91,19 +89,19 @@ export function vueBridge(this: any, userOpts: OptsTypes) {
     );
   }
 
-  if (
-    opts.appOptions &&
-    opts.appOptions.el &&
-    typeof opts.appOptions.el !== 'string' &&
-    !(opts.appOptions.el instanceof HTMLElement)
-  ) {
-    throw Error(
-      `garfish-vue-bridge: appOptions.el must be a string CSS selector, an HTMLElement, or not provided at all. Was given ${typeof opts
-        .appOptions.el}`,
-    );
-  }
+  // if (
+  //   opts.appOptions &&
+  //   opts.appOptions.el &&
+  //   typeof opts.appOptions.el !== 'string' &&
+  //   !(opts.appOptions.el instanceof HTMLElement)
+  // ) {
+  //   throw Error(
+  //     `garfish-vue-bridge: appOptions.el must be a string CSS selector, an HTMLElement, or not provided at all. Was given ${typeof opts
+  //       .appOptions.el}`,
+  //   );
+  // }
 
-  opts.createApp = opts.createApp || (opts.Vue && opts.Vue.createApp);
+  opts.createApp = opts.createApp || (opts.Vue && (opts.Vue as any).createApp);
   // Just a shared object to store the mounted object state
   // key - name of single-spa app, since it is unique
   const mountedInstances = {};
@@ -151,7 +149,7 @@ function resolveAppOptions(opts, props) {
 }
 
 function mount(opts: OptsTypes, mountedInstances, props) {
-  const instance = {
+  const instance: any = {
     domEl: null,
     vueInstance: null,
     root: null,
@@ -205,7 +203,7 @@ function mount(opts: OptsTypes, mountedInstances, props) {
   } else {
     // vue2 el options will auto replace render dom，garfish cache mode can't replace render dom https://cn.vuejs.org/v2/api/#el
     delete appOptions.el;
-    instance.vueInstance = new opts.Vue(appOptions);
+    instance.vueInstance = opts.Vue && new opts.Vue(appOptions);
     instance.vueInstance.$mount();
     instance.domEl.appendChild(instance.vueInstance.$el);
     if (instance.vueInstance.bind) {

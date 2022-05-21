@@ -73,7 +73,7 @@ export class App {
   public cjsModules: Record<string, any>;
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
-  public sourceList: Array<{ tagName: string; url?: string }> = [];
+  public sourceList: Array<{ tagName: string; url: string }> = [];
   public appInfo: AppInfo;
   public context: Garfish;
   public hooks: interfaces.AppHooks;
@@ -150,7 +150,8 @@ export class App {
         }
       });
     }
-    this.sourceList.push({ tagName: 'html', url: this.appInfo.entry });
+    this.appInfo.entry &&
+      this.sourceList.push({ tagName: 'html', url: this.appInfo.entry });
   }
 
   get rootElement() {

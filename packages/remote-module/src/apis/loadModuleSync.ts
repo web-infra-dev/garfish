@@ -40,14 +40,17 @@ export function loadModuleSync(
   options = data.options;
 
   assert(urlOrAlias, 'Missing url for loading remote module.');
-  assert(typeof urlOrAlias === 'string', 'The type of URL needs to be a string.');
+  assert(
+    typeof urlOrAlias === 'string',
+    'The type of URL needs to be a string.',
+  );
   const [url, segments] = processAlias(urlOrAlias);
   assert(
     isAbsolute(url) || url.startsWith('//'),
     `The loading of the remote module must be an absolute path. "${url}"`,
   );
 
-  let result = null;
+  let result: Record<string, any> = {};
   const info = purifyOptions(url, options);
   const { cache, version, externals, error, adapter } = info;
   const urlWithVersion = `${version || 'latest'}@${url}`;
@@ -59,10 +62,13 @@ export function loadModuleSync(
     result = getValueInObject(module, segments);
   } else {
     const manager = getModuleManager(url);
-    assert(
-      manager,
-      `Synchronously load module must load resources in advance. "${url}"`,
-    );
+    if (!manager) {
+      assert(
+        manager,
+        `Synchronously load module must load resources in advance. "${url}"`,
+      );
+      return result;
+    }
 
     try {
       const actuator = new Actuator(manager, externals);

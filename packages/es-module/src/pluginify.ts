@@ -19,7 +19,10 @@ export function GarfishEsModule(options: Options = {}) {
       if (appModules[appId]) return true;
       if (Array.isArray(excludes)) return excludes.includes(appName);
       if (typeof excludes === 'function') return excludes(appName);
-      if (appInfo.sandbox === false || appInfo.sandbox.open === false) {
+      if (
+        appInfo.sandbox === false ||
+        (appInfo.sandbox && appInfo.sandbox.open === false)
+      ) {
         return true;
       }
       return false;
@@ -29,65 +32,71 @@ export function GarfishEsModule(options: Options = {}) {
       name: 'es-module',
 
       afterLoad(appInfo, appInstance) {
-        const { appId, name } = appInstance;
-        if (!disable(appId, name, appInfo)) {
-          // @ts-ignore
-          const sandbox = appInstance.vmSandbox;
-          const runtime = new Runtime({ scope: name });
+        if (appInstance) {
+          const { appId, name } = appInstance;
+          if (!disable(appId, name, appInfo)) {
+            // @ts-ignore
+            const sandbox = appInstance.vmSandbox;
+            const runtime = new Runtime({ scope: name });
 
-          appModules[appId] = runtime;
-          runtime.loader = Garfish.loader;
+            appModules[appId] = runtime;
+            runtime.loader = Garfish.loader;
 
-          appInstance.runCode = function (
-            code: string,
-            env: Record<string, any>,
-            url?: string,
-            options?: interfaces.ExecScriptOptions,
-          ) {
-            const appEnv = appInstance.getExecScriptEnv(options?.noEntry);
-            Object.assign(env, appEnv);
+            appInstance.runCode = function (
+              code: string,
+              env: Record<string, any>,
+              url: string = '',
+              options?: interfaces.ExecScriptOptions,
+            ) {
+              const appEnv = appInstance.getExecScriptEnv(options?.noEntry);
+              Object.assign(env, appEnv);
 
-            if (options.isModule) {
-              const codeRef = { code };
+              if (options && options.isModule) {
+                const codeRef = { code };
 
-              runtime.options.execCode = function (output, provider) {
-                const sourcemap = `\n//@ sourceMappingURL=${output.map}`;
-                Object.assign(env, provider);
-                codeRef.code = `(() => {'use strict';${output.code}})()`;
+                runtime.options.execCode = function (output, provider) {
+                  const sourcemap = `\n//@ sourceMappingURL=${output.map}`;
+                  Object.assign(env, provider);
+                  codeRef.code = `(() => {'use strict';${output.code}})()`;
 
-                sandbox.hooks.lifecycle.beforeInvoke.emit(
-                  codeRef,
-                  url,
-                  env,
-                  options,
-                );
+                  sandbox &&
+                    sandbox.hooks.lifecycle.beforeInvoke.emit(
+                      codeRef,
+                      url,
+                      env,
+                      options,
+                    );
 
-                try {
-                  const params = sandbox.createExecParams(codeRef, env);
-                  const code = `${codeRef.code}\n//${output.storeId}${sourcemap}`;
-                  evalWithEnv(code, params, undefined, false);
-                } catch (e) {
-                  sandbox.processExecError(e, url, env, options);
-                }
+                  try {
+                    const params = sandbox
+                      ? sandbox.createExecParams(codeRef, env)
+                      : {};
+                    const code = `${codeRef.code}\n//${output.storeId}${sourcemap}`;
+                    evalWithEnv(code, params, undefined, false);
+                  } catch (e) {
+                    sandbox && sandbox.processExecError(e, url, env, options);
+                  }
 
-                sandbox.hooks.lifecycle.afterInvoke.emit(
-                  codeRef,
-                  url,
-                  env,
-                  options,
-                );
-              };
+                  sandbox &&
+                    sandbox.hooks.lifecycle.afterInvoke.emit(
+                      codeRef,
+                      url,
+                      env,
+                      options,
+                    );
+                };
 
-              appInstance.esmQueue.add(async (next) => {
-                options.isInline
-                  ? await runtime.importByCode(codeRef.code, url)
-                  : await runtime.importByUrl(url, url);
-                next();
-              });
-            } else {
-              sandbox.execScript(code, env, url, options);
-            }
-          };
+                appInstance.esmQueue.add(async (next) => {
+                  options.isInline
+                    ? await runtime.importByCode(codeRef.code, url)
+                    : await runtime.importByUrl(url, url);
+                  next();
+                });
+              } else {
+                sandbox && sandbox.execScript(code, env, url, options);
+              }
+            };
+          }
         }
       },
 

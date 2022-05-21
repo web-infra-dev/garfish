@@ -39,16 +39,18 @@ const specialExternalVariables = [
   __DEV__ ? 'webpackHotUpdate' : '',
 ];
 
-function compatibleOldModule(modules) {
-  if (isPlainObject(modules)) {
+function compatibleOldModule(
+  modules: Array<Module> | Record<string, Module>,
+): Array<Module> {
+  if (!Array.isArray(modules)) {
     __DEV__ && warn('"vm sandbox" modules should be an array');
-    const list = [];
+    const list: Array<Module> = [];
     for (const key in modules) {
       list.push(modules[key]);
     }
     modules = list;
   }
-  return modules as Array<Module>;
+  return modules;
 }
 
 function rewriteAppAndSandbox(
@@ -85,11 +87,11 @@ function rewriteAppAndSandbox(
   // Rewrite app attributes
   app.vmSandbox = sandbox;
   app.global = sandbox.global;
-  app.strictIsolation = sandbox.options.strictIsolation;
+  app.strictIsolation = sandbox.options.strictIsolation ?? false;
   app.runCode = function () {
     return originExecScript.apply(sandbox, arguments);
   };
-  if (app.entryManager.DOMApis) {
+  if (app.entryManager.DOMApis && sandbox.global) {
     app.entryManager.DOMApis.document = sandbox.global.document;
   }
 }
@@ -107,8 +109,8 @@ function createOptions(Garfish: interfaces.Garfish) {
         !appInstance ||
         appInstance?.vmSandbox ||
         appInfo.sandbox === false || // Ensure that old versions compatible
-        appInfo.sandbox.open === false ||
-        appInfo.sandbox.snapshot
+        (appInfo.sandbox && appInfo.sandbox.open === false) ||
+        (appInfo.sandbox && appInfo.sandbox.snapshot)
       ) {
         if (appInstance?.vmSandbox) {
           appInstance.global = appInstance.vmSandbox.global;

@@ -199,7 +199,7 @@ export class Compiler {
     return {
       imports,
       isExport: true,
-      moduleId: node.source.value as string,
+      moduleId: node.source && (node.source.value as string),
     };
   }
 
@@ -293,7 +293,9 @@ export class Compiler {
       });
     while (scope) {
       if (u()) return true;
-      scope = scope.parent;
+      if (scope.parent) {
+        scope = scope.parent;
+      }
     }
     return false;
   }
@@ -316,7 +318,8 @@ export class Compiler {
       }
 
       (data as ImportInfoData).moduleName = moduleName;
-      this.importInfos.push({ data: data as ImportInfoData, transformNode });
+      transformNode &&
+        this.importInfos.push({ data: data as ImportInfoData, transformNode });
       this.deferQueue.importChecks.add(() =>
         this.checkImportNames(data.imports, moduleId),
       );
@@ -327,15 +330,16 @@ export class Compiler {
           data as ImportInfoData,
         );
         const refNode = this.generateIdentifierTransformNode(useInfo);
-        this.exportInfos.push({ refNode, name: n.exported.name });
+        refNode && this.exportInfos.push({ refNode, name: n.exported.name });
       });
     } else {
       const scope = state.getScopeByAncestors(ancestors);
       node.specifiers.forEach((n) => {
-        const refNode = this.isReferencedModuleVariable(scope, n.local)
-          ? this.generateIdentifierTransformNode(n.local.name)
-          : identifier(n.local.name);
-        this.exportInfos.push({ refNode, name: n.exported.name });
+        const refNode =
+          scope && this.isReferencedModuleVariable(scope, n.local)
+            ? this.generateIdentifierTransformNode(n.local.name)
+            : identifier(n.local.name);
+        refNode && this.exportInfos.push({ refNode, name: n.exported.name });
       });
     }
     this.deferQueue.removes.add(() => state.remove(ancestors));
@@ -349,9 +353,10 @@ export class Compiler {
     ancestors: Array<Node>,
   ) {
     const isDefault = isExportDefaultDeclaration(node);
-    const nodes = isVariableDeclaration(node.declaration)
-      ? node.declaration.declarations
-      : [node.declaration];
+    const nodes =
+      node.declaration && isVariableDeclaration(node.declaration)
+        ? node.declaration.declarations
+        : [node.declaration];
 
     nodes.forEach((node) => {
       if (isDefault) {
@@ -376,11 +381,11 @@ export class Compiler {
         );
         state.replaceWith(variableDeclaration('const', [varNode]), ancestors);
       });
-    } else if (isIdentifier(node.declaration)) {
+    } else if (node.declaration && isIdentifier(node.declaration)) {
       this.deferQueue.removes.add(() => state.remove(ancestors));
     } else {
       this.deferQueue.replaces.add(() => {
-        state.replaceWith(node.declaration, ancestors);
+        node.declaration && state.replaceWith(node.declaration, ancestors);
       });
     }
   }
@@ -395,7 +400,7 @@ export class Compiler {
     const namespace = node.exported?.name;
     const moduleId = node.source.value as string;
     const data = this.getImportInformationBySource(node);
-    let [moduleName, transformNode] = this.findImportInfo(moduleId);
+    let [moduleName = '', transformNode] = this.findImportInfo(moduleId);
 
     if (!moduleName) {
       moduleName = `__m${this.moduleCount++}__`;
@@ -403,7 +408,8 @@ export class Compiler {
     }
 
     (data as ImportInfoData).moduleName = moduleName;
-    this.importInfos.push({ data: data as ImportInfoData, transformNode });
+    transformNode &&
+      this.importInfos.push({ data: data as ImportInfoData, transformNode });
 
     this.deferQueue.removes.add(() => state.remove(ancestors));
     this.deferQueue.exportNamespaces.add({
@@ -454,7 +460,7 @@ export class Compiler {
     if (isExportSpecifier(parent)) return;
     const scope = state.getScopeByAncestors(ancestors);
 
-    if (this.isReferencedModuleVariable(scope, node)) {
+    if (scope && this.isReferencedModuleVariable(scope, node)) {
       ancestors = [...ancestors];
       this.deferQueue.identifierRefs.add(() => {
         const replacement = this.generateIdentifierTransformNode(node.name);
@@ -482,7 +488,8 @@ export class Compiler {
     }
 
     (data as ImportInfoData).moduleName = moduleName;
-    this.importInfos.push({ data: data as ImportInfoData, transformNode });
+    transformNode &&
+      this.importInfos.push({ data: data as ImportInfoData, transformNode });
 
     this.deferQueue.removes.add(() => state.remove(ancestors));
     this.deferQueue.importChecks.add(() =>
@@ -586,7 +593,7 @@ export class Compiler {
         ExportNamedDeclaration: c(this.exportDeclarationVisitor),
         ExportDefaultDeclaration: c(this.exportDeclarationVisitor),
       },
-      null,
+      undefined,
       this.state,
     );
 

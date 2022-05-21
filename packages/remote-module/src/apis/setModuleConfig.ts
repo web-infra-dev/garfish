@@ -26,13 +26,14 @@ const setAlias = (obj: ModuleConfig['alias']) => {
 export function setModuleConfig(obj: Partial<ModuleConfig>) {
   assert(isPlainObject(obj), 'Module configuration must be an object.');
   for (const key in obj) {
+    const res = obj[key];
     if (hasOwn(moduleConfig, key)) {
       if (key === 'env') {
-        Object.assign(moduleConfig[key], obj[key]);
-      } else if (key === 'alias') {
-        setAlias(obj[key]);
+        Object.assign(moduleConfig[key], res);
+      } else if (key === 'alias' && res) {
+        setAlias(res);
       } else {
-        moduleConfig[key] = obj[key];
+        moduleConfig[key] = res;
       }
     } else if (__DEV__) {
       warn(`Invalid configuration "${key}".`);
@@ -40,7 +41,7 @@ export function setModuleConfig(obj: Partial<ModuleConfig>) {
   }
 }
 
-export function processAlias(url: string): [string, Array<string> | null] {
+export function processAlias(url: string): [string, Array<string> | undefined] {
   // If url is an alias
   if (url && url.startsWith(MARKER)) {
     const segments = url.slice(MARKER.length).split('.');
@@ -49,7 +50,7 @@ export function processAlias(url: string): [string, Array<string> | null] {
     assert(realUrl, `Alias "${name}" is not defined.`);
     return [realUrl, segments];
   }
-  return [url, null];
+  return [url, undefined];
 }
 
 export function getValueInObject(

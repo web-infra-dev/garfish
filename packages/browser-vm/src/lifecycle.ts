@@ -5,30 +5,35 @@ import type { FakeWindow } from './types';
 export function sandboxLifecycle() {
   return new PluginSystem({
     closed: new SyncHook<[], void>(),
-    stared: new SyncHook<[FakeWindow], void>(),
+    stared: new SyncHook<[FakeWindow | undefined], void>(),
     appendNode: new SyncHook<[Element, Element, Element, string], void>(),
     beforeClearEffect: new SyncHook<[], void>(),
     afterClearEffect: new SyncHook<[], void>(),
     beforeInvoke: new SyncHook<
       [
         { code: string },
-        string,
+        string | undefined,
         Record<string, any>,
-        interfaces.ExecScriptOptions,
+        interfaces.ExecScriptOptions | undefined,
       ],
       void
     >(),
     afterInvoke: new SyncHook<
       [
         { code: string },
-        string,
+        string | undefined,
         Record<string, any>,
-        interfaces.ExecScriptOptions,
+        interfaces.ExecScriptOptions | undefined,
       ],
       void
     >(),
     invokeError: new SyncHook<
-      [Error, string, Record<string, any>, interfaces.ExecScriptOptions],
+      [
+        Error,
+        string | undefined,
+        Record<string, any> | undefined,
+        interfaces.ExecScriptOptions | undefined,
+      ],
       void
     >(),
   });

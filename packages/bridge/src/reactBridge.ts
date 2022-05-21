@@ -3,7 +3,7 @@
 // https://github.com/single-spa/single-spa-react/blob/main/src/single-spa-react.js
 
 // React context that gives any react component the single-spa props
-export let GarfishContext = null;
+export let GarfishContext: any;
 import * as React17 from 'react17';
 import * as ReactDOM17 from 'react-dom17';
 import * as React16 from 'react16';
@@ -88,18 +88,18 @@ type OptsTypes = (TypeReact17 | TypeReact16) & Partial<OptionalOpts>;
 
 const defaultOpts = {
   // required opts
-  React: null,
-  ReactDOM: null,
+  React: undefined,
+  ReactDOM: undefined,
 
   // required - one or the other or both
-  rootComponent: null,
-  loadRootComponent: null,
+  rootComponent: undefined,
+  loadRootComponent: undefined,
 
   // optional opts
-  renderType: null,
-  errorBoundary: null,
-  errorBoundaryClass: null,
-  el: null,
+  renderType: undefined,
+  errorBoundary: undefined,
+  errorBoundaryClass: undefined,
+  el: undefined,
   canUpdate: true, // by default, allow parcels created with garfish-react-bridge to be updated
   suppressComponentDidCatchWarning: false,
   domElements: {},
@@ -195,13 +195,16 @@ function mount(opts: OptsTypes, appInfo, props) {
     atLeastReact16(opts.React) &&
     !opts.errorBoundary
   ) {
-    if (!opts.rootComponent.prototype) {
+    if (opts.rootComponent && !opts.rootComponent.prototype) {
       console.warn(
         `garfish-react-bridge: ${
           appInfo.name || appInfo.appName || appInfo.childAppName
         }'s rootComponent does not implement an error boundary.  If using a functional component, consider providing an opts.errorBoundary to reactBridge(opts).`,
       );
-    } else if (!opts.rootComponent.prototype.componentDidCatch) {
+    } else if (
+      opts.rootComponent &&
+      !opts.rootComponent.prototype.componentDidCatch
+    ) {
       console.warn(
         `garfish-react-bridge: ${
           appInfo.name || appInfo.appName || appInfo.childAppName
@@ -217,8 +220,12 @@ function mount(opts: OptsTypes, appInfo, props) {
     domElement,
     opts,
   });
-  opts.domElements[appInfo.name] = domElement;
-  opts.renderResults[appInfo.name] = renderResult;
+  if (opts.domElements) {
+    opts.domElements[appInfo.name] = domElement;
+  }
+  if (opts.renderResults) {
+    opts.renderResults[appInfo.name] = renderResult;
+  }
 }
 
 function unmount(opts, appInfo) {
@@ -307,7 +314,7 @@ function reactDomRender({ opts, elementToRender, domElement }) {
   return null;
 }
 
-function getElementToRender(opts: OptsTypes, appInfo, props = null) {
+function getElementToRender(opts: OptsTypes, appInfo, props) {
   const rootComponentElement = opts.React.createElement(
     opts.rootComponent as any,
     appInfo,
