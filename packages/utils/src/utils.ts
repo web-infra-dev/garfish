@@ -10,7 +10,7 @@ export function isObject(val: any) {
   return val && typeof val === 'object';
 }
 
-export function isPlainObject(val: any) {
+export function isPlainObject(val: any): val is Object {
   return objectToString.call(val) === '[object Object]';
 }
 

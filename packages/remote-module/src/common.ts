@@ -8,9 +8,9 @@ import {
 } from '@garfish/utils';
 import { loadModule } from './apis/loadModule';
 
-export type ModuleConfig = Omit<ModuleInfo, 'version'> & {
-  alias: Record<string, string>;
-};
+export type ModuleConfig = Required<
+  Omit<ModuleInfo, 'version'> & { alias: Record<string, string> }
+>;
 
 export interface ModuleInfo {
   cache?: boolean;
@@ -27,6 +27,8 @@ export const fetchLoading = Object.create(null);
 export const moduleConfig: ModuleConfig = {
   alias: {},
   cache: true, // Default use cache
+  error: (error) => console.error(error),
+  adapter: () => ({}),
   externals: {
     loadModule, // Only `loadModule` is provided for use by remote modules
   },
@@ -77,27 +79,29 @@ export const getModuleManager = (url: string) => {
   }
 };
 
-export const purifyOptions = (urlOrAlias: string, options?: ModuleInfo) => {
-  let config;
+export const purifyOptions = (
+  urlOrAlias: string,
+  options?: ModuleInfo,
+): ModuleInfo => {
+  let config: ModuleInfo;
   const globalExternals = moduleConfig.externals;
-  delete moduleConfig.externals;
+  const newModuleConfig: Partial<ModuleConfig> = {
+    ...moduleConfig,
+  };
+  delete newModuleConfig.externals;
 
-  if (isPlainObject(options) && options) {
+  if (isPlainObject(options)) {
     const curExternals = options.externals;
     delete options.externals;
-    config = deepMerge(moduleConfig, { ...options, url: urlOrAlias });
+    config = deepMerge(newModuleConfig, { ...options, url: urlOrAlias });
     options.externals = curExternals;
     config.externals = { ...globalExternals, ...curExternals };
   } else {
-    config = deepMerge(moduleConfig, { url: urlOrAlias });
+    config = deepMerge(newModuleConfig, { url: urlOrAlias });
     config.externals = globalExternals;
   }
 
-  moduleConfig.externals = globalExternals;
-
-  return config as ModuleInfo & {
-    url: string;
-  };
+  return config;
 };
 
 export const prettifyError = (

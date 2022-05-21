@@ -12,28 +12,23 @@ export function sandboxLifecycle() {
     beforeInvoke: new SyncHook<
       [
         { code: string },
-        string | undefined,
+        string?,
         Record<string, any>,
-        interfaces.ExecScriptOptions | undefined,
+        interfaces.ExecScriptOptions?,
       ],
       void
     >(),
     afterInvoke: new SyncHook<
       [
         { code: string },
-        string | undefined,
+        string?,
         Record<string, any>,
-        interfaces.ExecScriptOptions | undefined,
+        interfaces.ExecScriptOptions?,
       ],
       void
     >(),
     invokeError: new SyncHook<
-      [
-        Error,
-        string | undefined,
-        Record<string, any> | undefined,
-        interfaces.ExecScriptOptions | undefined,
-      ],
+      [Error, string?, Record<string, any>?, interfaces.ExecScriptOptions?],
       void
     >(),
   });
