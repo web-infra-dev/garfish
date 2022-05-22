@@ -23,7 +23,9 @@ type vueCreateOpts =
     };
 interface ConfigOpts {
   canUpdate: boolean; // by default, allow parcels created with garfish-react-bridge to be updated
-  appOptions: (opts: Record<string, any>) => Record<string, any>;
+  appOptions:
+    | Record<string, any>
+    | ((opts: Record<string, any>) => Record<string, any>);
   handleInstance: (
     vueInstance: vueInstanceType,
     opts: Record<string, any>,
@@ -89,18 +91,6 @@ export function vueBridge(this: any, userOpts: OptsTypes) {
     );
   }
 
-  // if (
-  //   opts.appOptions &&
-  //   opts.appOptions.el &&
-  //   typeof opts.appOptions.el !== 'string' &&
-  //   !(opts.appOptions.el instanceof HTMLElement)
-  // ) {
-  //   throw Error(
-  //     `garfish-vue-bridge: appOptions.el must be a string CSS selector, an HTMLElement, or not provided at all. Was given ${typeof opts
-  //       .appOptions.el}`,
-  //   );
-  // }
-
   opts.createApp = opts.createApp || (opts.Vue && (opts.Vue as any).createApp);
   // Just a shared object to store the mounted object state
   // key - name of single-spa app, since it is unique
@@ -141,7 +131,7 @@ function bootstrap(opts: OptsTypes, appInfo, props) {
   }
 }
 
-function resolveAppOptions(opts, props) {
+function resolveAppOptions(opts: OptsTypes, props): Record<string, any> {
   if (typeof opts.appOptions === 'function') {
     return opts.appOptions(props);
   }
