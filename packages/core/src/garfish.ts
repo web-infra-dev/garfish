@@ -169,7 +169,7 @@ export class Garfish extends EventEmitter2 {
 
       if (stop === false) {
         warn(`Load ${appName} application is terminated by beforeLoad.`);
-        return null;
+        return;
       }
 
       //merge configs again after beforeLoad for the reason of app may be re-registered during beforeLoad resulting in an incorrect information
