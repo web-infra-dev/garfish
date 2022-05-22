@@ -317,9 +317,7 @@ export class Sandbox {
       const source = url || this.options.baseUrl;
       const message = e instanceof Error ? e.message : String(e);
       safeWrapper(() => {
-        this.global &&
-          this.global.onerror &&
-          this.global.onerror.call(this.global, message, source, null, null, e);
+        this.global?.onerror?.call(this.global, message, source, null, null, e);
       });
     }
     throw e;
