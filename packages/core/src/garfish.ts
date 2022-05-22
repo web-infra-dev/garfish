@@ -169,7 +169,7 @@ export class Garfish extends EventEmitter2 {
 
       if (stop === false) {
         warn(`Load ${appName} application is terminated by beforeLoad.`);
-        return;
+        return null;
       }
 
       //merge configs again after beforeLoad for the reason of app may be re-registered during beforeLoad resulting in an incorrect information
@@ -182,7 +182,7 @@ export class Garfish extends EventEmitter2 {
       );
 
       // Existing cache caching logic
-      let appInstance: interfaces.App | undefined;
+      let appInstance: interfaces.App | null = null;
       const cacheApp = this.cacheApps[appName];
 
       if (appInfo.cache && cacheApp) {
