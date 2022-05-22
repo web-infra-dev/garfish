@@ -335,7 +335,7 @@ export class Sandbox {
     this.hooks.lifecycle.beforeInvoke.emit(codeRef, url, env, options);
 
     const revertCurrentScript = setDocCurrentScript(
-      this.global && this.global.document,
+      this.global?.document,
       codeRef.code,
       false,
       url,
