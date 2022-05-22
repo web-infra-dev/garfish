@@ -62,37 +62,36 @@ export function loadModuleSync(
     result = getValueInObject(module, segments);
   } else {
     const manager = getModuleManager(url);
-    if (!manager) {
-      assert(
-        manager,
-        `Synchronously load module must load resources in advance. "${url}"`,
-      );
-      return result;
-    }
+    assert(
+      manager,
+      `Synchronously load module must load resources in advance. "${url}"`,
+    );
 
-    try {
-      const actuator = new Actuator(manager, externals);
-      cacheModules[urlWithVersion] = actuator.env.exports;
-      let exports = actuator.execScript().exports;
+    if (manager) {
+      try {
+        const actuator = new Actuator(manager, externals);
+        cacheModules[urlWithVersion] = actuator.env.exports;
+        let exports = actuator.execScript().exports;
 
-      if (typeof adapter === 'function') {
-        exports = adapter(exports);
-      }
-      exports = hooks.lifecycle.afterLoadModule.emit({
-        url,
-        exports,
-        code: manager.moduleCode,
-      }).exports;
+        if (typeof adapter === 'function') {
+          exports = adapter(exports);
+        }
+        exports = hooks.lifecycle.afterLoadModule.emit({
+          url,
+          exports,
+          code: manager.moduleCode,
+        }).exports;
 
-      isPromise(exports) && throwWarn(alias, url);
-      cacheModules[urlWithVersion] = exports;
-      result = getValueInObject(exports, segments);
-    } catch (e) {
-      delete cacheModules[urlWithVersion];
-      if (typeof error === 'function') {
-        result = error(e, info, alias);
-      } else {
-        throw prettifyError(e, alias, url);
+        isPromise(exports) && throwWarn(alias, url);
+        cacheModules[urlWithVersion] = exports;
+        result = getValueInObject(exports, segments);
+      } catch (e) {
+        delete cacheModules[urlWithVersion];
+        if (typeof error === 'function') {
+          result = error(e, info, alias);
+        } else {
+          throw prettifyError(e, alias, url);
+        }
       }
     }
   }
