@@ -41,7 +41,7 @@ export function setModuleConfig(obj: Partial<ModuleConfig>) {
   }
 }
 
-export function processAlias(url: string): [string, Array<string> | undefined] {
+export function processAlias(url: string): [string, Array<string>?] {
   // If url is an alias
   if (url && url.startsWith(MARKER)) {
     const segments = url.slice(MARKER.length).split('.');
