@@ -182,7 +182,7 @@ export class Garfish extends EventEmitter2 {
       );
 
       // Existing cache caching logic
-      let appInstance: interfaces.App | null = null;
+      let appInstance: interfaces.App | undefined;
       const cacheApp = this.cacheApps[appName];
 
       if (appInfo.cache && cacheApp) {
