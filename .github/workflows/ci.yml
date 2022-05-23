@@ -94,7 +94,7 @@ jobs:
         install: false
         start: node scripts/devCypress.js
         wait-on: 'http://localhost:8090,http://localhost:8091,http://localhost:8092,http://localhost:8093,http://localhost:8094,http://localhost:8095,http://localhost:8096,http://localhost:8097'
-        wait-on-timeout: 120
+        wait-on-timeout: 600
         parallel: true
         record: true
         spec: cypress/integration/**
