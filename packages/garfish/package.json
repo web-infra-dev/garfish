@@ -37,7 +37,7 @@
   "wireit": {
     "build": {
       "command": "rimraf dist && tsup src/index.ts",
-      "files": ["src/**/*", "tsconfig.json","../../tsconfig.json","../../tsup.config.ts"],
+      "files": ["src/**/*", "tsconfig.json","../../tsconfig.json","../../tsup.config.ts","tsup.config.ts"],
       "output": ["dist/**"]
     }
   },
