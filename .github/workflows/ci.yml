@@ -39,7 +39,8 @@ jobs:
         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: |
           ${{ runner.os }}-pnpm-store-
-
+    # Set up GitHub Actions caching for Wireit.
+    - uses: google/wireit@setup-github-actions-caching/v1
     - name: install dependency
       run: pnpm install --filter=\!garfish-docs --filter=\!@garfish-dev/\*
     - name: Run unit tests
@@ -66,6 +67,8 @@ jobs:
       with:
         version: 7
         run_install: false
+    # Set up GitHub Actions caching for Wireit.
+    - uses: google/wireit@setup-github-actions-caching/v1
     - name: install dependency
       run: pnpm install --filter=\!garfish-docs
     - name: Run cypress test
