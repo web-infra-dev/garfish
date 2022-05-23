@@ -19,7 +19,7 @@ function runAllExample() {
     return Promise.all(ports.map((port) => killPort(port)))
       .then(() => {
         step('\n building dev project...');
-        return $`pnpm run build --parallel --filter=!@garfish-dev/react16 --filter "@garfish-dev/*"`;
+        return $`pnpm run build --parallel --filter "@garfish-dev/*"`;
       })
       .then(() => {
         step('\n http-server dev dist...');

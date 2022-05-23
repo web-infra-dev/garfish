@@ -43,8 +43,11 @@
     "@jsdevtools/version-bump-prompt": "6.1.0",
     "@koa/cors": "3.1.0",
     "@ls-lint/ls-lint": "1.10.0",
+    "@swc/core": "^1.2.183",
+    "@swc/jest": "^0.2.21",
     "@testing-library/jest-dom": "^5.16.2",
     "@types/jest": "27.0.2",
+    "@types/node": "^12.20.36",
     "@typescript-eslint/eslint-plugin": "5.4.0",
     "@typescript-eslint/parser": "5.4.0",
     "axios": "0.24.0",
@@ -79,9 +82,7 @@
     "typescript": "4.4.3",
     "wait-on": "6.0.0",
     "workspace-tools": "0.16.2",
-    "zx": "4.2.0",
-    "@swc/core": "^1.2.183",
-    "@swc/jest": "^0.2.21"
+    "zx": "4.2.0"
   },
   "version": "1.5.5"
 }
