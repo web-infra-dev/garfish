@@ -20,7 +20,6 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'pnpm'
     - uses: pnpm/action-setup@v2.0.1
       name: Install pnpm
       id: pnpm-install
@@ -61,7 +60,6 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'pnpm'
     - uses: pnpm/action-setup@v2.0.1
       name: Install pnpm
       id: pnpm-install
