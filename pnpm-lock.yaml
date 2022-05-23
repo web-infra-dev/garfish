@@ -644,21 +644,10 @@ importers:
 
   packages/bridge-react:
     specifiers:
-      '@garfish/browser-snapshot': workspace:*
-      '@garfish/browser-vm': workspace:*
-      '@garfish/core': workspace:*
-      '@garfish/router': workspace:*
-      '@garfish/utils': workspace:*
       '@types/react': ^16
       '@types/react-dom': ^16
       react: 16.13.1
       react-dom: 16.13.1
-    dependencies:
-      '@garfish/browser-snapshot': link:../browser-snapshot
-      '@garfish/browser-vm': link:../browser-vm
-      '@garfish/core': link:../core
-      '@garfish/router': link:../router
-      '@garfish/utils': link:../utils
     devDependencies:
       '@types/react': 16.14.26
       '@types/react-dom': 16.9.16
@@ -667,21 +656,10 @@ importers:
 
   packages/bridge-react-v18:
     specifiers:
-      '@garfish/browser-snapshot': workspace:*
-      '@garfish/browser-vm': workspace:*
-      '@garfish/core': workspace:*
-      '@garfish/router': workspace:*
-      '@garfish/utils': workspace:*
       '@types/react': ^18
       '@types/react-dom': ^18
       react: 18.1.0
       react-dom: 18.1.0
-    dependencies:
-      '@garfish/browser-snapshot': link:../browser-snapshot
-      '@garfish/browser-vm': link:../browser-vm
-      '@garfish/core': link:../core
-      '@garfish/router': link:../router
-      '@garfish/utils': link:../utils
     devDependencies:
       '@types/react': 18.0.9
       '@types/react-dom': 18.0.4
@@ -690,35 +668,13 @@ importers:
 
   packages/bridge-vue-v2:
     specifiers:
-      '@garfish/browser-snapshot': workspace:*
-      '@garfish/browser-vm': workspace:*
-      '@garfish/core': workspace:*
-      '@garfish/router': workspace:*
-      '@garfish/utils': workspace:*
       vue: 2.6.13
-    dependencies:
-      '@garfish/browser-snapshot': link:../browser-snapshot
-      '@garfish/browser-vm': link:../browser-vm
-      '@garfish/core': link:../core
-      '@garfish/router': link:../router
-      '@garfish/utils': link:../utils
     devDependencies:
       vue: 2.6.13
 
   packages/bridge-vue-v3:
     specifiers:
-      '@garfish/browser-snapshot': workspace:*
-      '@garfish/browser-vm': workspace:*
-      '@garfish/core': workspace:*
-      '@garfish/router': workspace:*
-      '@garfish/utils': workspace:*
       vue: 3.2.31
-    dependencies:
-      '@garfish/browser-snapshot': link:../browser-snapshot
-      '@garfish/browser-vm': link:../browser-vm
-      '@garfish/core': link:../core
-      '@garfish/router': link:../router
-      '@garfish/utils': link:../utils
     devDependencies:
       vue: 3.2.31
 
@@ -6738,7 +6694,7 @@ packages:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
       eslint: '>= 1.6.0 < 7.0.0'
     dependencies:
-      '@vue/cli-service': 4.5.15_82f042aa91db6d7c19e59be8354a59b6
+      '@vue/cli-service': 4.5.15_87acb3d4d60fdf1f7e8e373e3c7628cc
       '@vue/cli-shared-utils': 4.5.15
       eslint: 6.8.0
       eslint-loader: 2.2.1_eslint@6.8.0+webpack@4.46.0
@@ -6765,7 +6721,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.15_82f042aa91db6d7c19e59be8354a59b6
+      '@vue/cli-service': 4.5.15_87acb3d4d60fdf1f7e8e373e3c7628cc
       '@vue/cli-shared-utils': 4.5.15
     dev: true
 
@@ -6782,7 +6738,7 @@ packages:
     peerDependencies:
       '@vue/cli-service': ^3.0.0 || ^4.0.0-0
     dependencies:
-      '@vue/cli-service': 4.5.15_82f042aa91db6d7c19e59be8354a59b6
+      '@vue/cli-service': 4.5.15_87acb3d4d60fdf1f7e8e373e3c7628cc
     dev: true
 
   /@vue/cli-service/4.5.0_82f042aa91db6d7c19e59be8354a59b6:
