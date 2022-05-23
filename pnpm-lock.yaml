@@ -25654,7 +25654,7 @@ packages:
     resolution: {directory: packages/bridge-react, type: directory}
     id: file:packages/bridge-react
     name: '@garfish/bridge-react'
-    version: 1.5.2
+    version: 1.5.5
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
@@ -25672,7 +25672,7 @@ packages:
     resolution: {directory: packages/bridge-react, type: directory}
     id: file:packages/bridge-react
     name: '@garfish/bridge-react'
-    version: 1.5.2
+    version: 1.5.5
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
