@@ -84,7 +84,7 @@ function waitElement(selector, timeout = 3000) {
   return Promise.race([delay(timeout), waitPromise]);
 }
 
-export async function getRenderNode(domGetter: interfaces.DomGetter) {
+export async function getRenderNode(domGetter?: interfaces.DomGetter) {
   assert(domGetter, `Invalid domGetter:\n ${domGetter}.`);
   let appWrapperNode;
 

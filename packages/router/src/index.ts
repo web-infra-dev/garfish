@@ -46,7 +46,7 @@ export function GarfishRouter(_args?: Options) {
       version: __VERSION__,
 
       bootstrap(options: interfaces.Options) {
-        let activeApp = null;
+        let activeApp: null | string = null;
         const unmounts: Record<string, Function> = {};
         const { basename } = options;
         const { autoRefreshApp = true, onNotMatchRouter = () => null } =

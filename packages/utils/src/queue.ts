@@ -4,7 +4,7 @@ interface Defer {
 }
 
 export class Queue {
-  private fx = [];
+  private fx: Array<Function> = [];
   private init = true;
   private lock = false;
   private finishDefers = new Set<Defer>();

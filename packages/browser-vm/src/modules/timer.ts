@@ -6,11 +6,7 @@ const rawClearInterval = window.clearInterval;
 export const timeoutModule = () => {
   const timeout = new Set<number>();
 
-  const setTimeout = (
-    handler: TimerHandler,
-    ms?: number | undefined,
-    ...args: any[]
-  ) => {
+  const setTimeout = (handler: TimerHandler, ms?: number, ...args: any[]) => {
     const timeoutId = rawSetTimeout(handler, ms, ...args);
     timeout.add(timeoutId);
     return timeoutId;
