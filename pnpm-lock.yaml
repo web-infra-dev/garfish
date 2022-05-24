@@ -281,8 +281,8 @@ importers:
       less: ^3.13.1
       less-loader: ^5.0.0
       mini-css-extract-plugin: ^2.4.2
-      react: ^16.13.1
-      react-dom: ^16.13.1
+      react: 16.14.0
+      react-dom: 16.14.0
       react-refresh: ^0.11.0
       react-router-dom: ^5.2.0
       redux: ^4.1.2
@@ -642,11 +642,11 @@ importers:
 
   packages/bridge-react:
     specifiers:
-      react: 16.13.1
-      react-dom: 16.13.1
+      react: 16.14.0
+      react-dom: 16.14.0
     devDependencies:
-      react: 16.13.1
-      react-dom: 16.13.1_react@16.13.1
+      react: 16.14.0
+      react-dom: 16.14.0_react@16.14.0
 
   packages/bridge-react-v18:
     specifiers:
@@ -20378,18 +20378,6 @@ packages:
       - webpack
     dev: false
 
-  /react-dom/16.13.1_react@16.13.1:
-    resolution: {integrity: sha512-81PIMmVLnCNLO/fFOQxdQkvEq/+Hfpv24XNJfpyZhTRfO0QcmQIF/PgCa1zCOj2w1hrn12MFLyaJ/G0+Mxtfag==}
-    peerDependencies:
-      react: ^16.13.1
-    dependencies:
-      loose-envify: 1.4.0
-      object-assign: 4.1.1
-      prop-types: 15.8.1
-      react: 16.13.1
-      scheduler: 0.19.1
-    dev: true
-
   /react-dom/16.14.0_react@16.14.0:
     resolution: {integrity: sha512-1gCeQXDLoIqMgqD3IO2Ah9bnf0w9kzhwN5q4FGnHZ67hBm9yePzB5JJAIQCc8x3pFnNlwFq4RidZggNAAkzWWw==}
     peerDependencies:
@@ -20400,7 +20388,6 @@ packages:
       prop-types: 15.8.1
       react: 16.14.0
       scheduler: 0.19.1
-    dev: false
 
   /react-dom/17.0.2_react@17.0.2:
     resolution: {integrity: sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==}
@@ -20782,15 +20769,6 @@ packages:
       react-is: 17.0.2
     dev: false
 
-  /react/16.13.1:
-    resolution: {integrity: sha512-YMZQQq32xHLX0bz5Mnibv1/LHb3Sqzngu7xstSM+vrkE5Kzr9xE0yMByK5kMoTK30YVJE61WfbxIFFvfeDKT1w==}
-    engines: {node: '>=0.10.0'}
-    dependencies:
-      loose-envify: 1.4.0
-      object-assign: 4.1.1
-      prop-types: 15.8.1
-    dev: true
-
   /react/16.14.0:
     resolution: {integrity: sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g==}
     engines: {node: '>=0.10.0'}
@@ -20798,7 +20776,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       prop-types: 15.8.1
-    dev: false
 
   /react/17.0.2:
     resolution: {integrity: sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==}

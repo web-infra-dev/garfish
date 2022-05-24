@@ -71,13 +71,14 @@ export function vueBridge(this: any, userOpts: OptsTypes) {
 
   if (
     opts.appOptions &&
-    opts.appOptions.el &&
-    typeof opts.appOptions.el !== 'string' &&
-    !(opts.appOptions.el instanceof HTMLElement)
+    typeof opts.appOptions !== 'function' &&
+    typeof (opts.appOptions as any).el !== 'string' &&
+    !((opts.appOptions as any).el instanceof HTMLElement)
   ) {
     throw Error(
-      `garfish-vue-bridge: appOptions.el must be a string CSS selector, an HTMLElement, or not provided at all. Was given ${typeof opts
-        .appOptions.el}`,
+      `garfish-vue-bridge: appOptions.el must be a string CSS selector, an HTMLElement, or not provided at all. Was given ${typeof (
+        opts.appOptions as any
+      ).el}`,
     );
   }
 
@@ -129,7 +130,7 @@ function resolveAppOptions(opts, props) {
 }
 
 function mount(opts: OptsTypes, mountedInstances, props) {
-  const instance = {
+  const instance: any = {
     domEl: null,
     vueInstance: null,
     root: null,
@@ -196,12 +197,7 @@ function update(opts: OptsTypes, mountedInstances, props) {
 
 function unmount(opts: OptsTypes, mountedInstances, props) {
   const instance = mountedInstances[props.appName];
-  if (vue.createApp) {
-    instance.vueInstance.unmount(instance.domEl);
-  } else {
-    instance.vueInstance.$destroy();
-    instance.vueInstance.$el.innerHTML = '';
-  }
+  instance.vueInstance.unmount(instance.domEl);
   delete instance.vueInstance;
 
   if (instance.domEl) {

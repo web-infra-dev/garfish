@@ -10,12 +10,12 @@ export type LoadRootComponent<T> = (opts: AppInfo) => Promise<T>;
 
 export type TypeComponent<T> =
   | {
-      rootComponent: T;
-      loadRootComponent?: LoadRootComponent<T>;
+      rootComponent: T | null;
+      loadRootComponent?: LoadRootComponent<T> | null;
     }
   | {
-      rootComponent?: T;
-      loadRootComponent: LoadRootComponent<T>;
+      rootComponent?: T | null;
+      loadRootComponent: LoadRootComponent<T> | null;
     };
 
 export type ErrorBoundary<T> = (

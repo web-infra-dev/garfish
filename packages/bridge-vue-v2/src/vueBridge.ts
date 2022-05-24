@@ -71,16 +71,16 @@ export function vueBridge(this: any, userOpts: OptsTypes) {
 
   if (
     opts.appOptions &&
-    opts.appOptions.el &&
-    typeof opts.appOptions.el !== 'string' &&
-    !(opts.appOptions.el instanceof HTMLElement)
+    typeof opts.appOptions !== 'function' &&
+    typeof (opts.appOptions as any).el !== 'string' &&
+    !((opts.appOptions as any).el instanceof HTMLElement)
   ) {
     throw Error(
-      `garfish-vue-bridge: appOptions.el must be a string CSS selector, an HTMLElement, or not provided at all. Was given ${typeof opts
-        .appOptions.el}`,
+      `garfish-vue-bridge: appOptions.el must be a string CSS selector, an HTMLElement, or not provided at all. Was given ${typeof (
+        opts.appOptions as any
+      ).el}`,
     );
   }
-
   opts.Vue = opts.Vue || vue.default;
 
   // Just a shared object to store the mounted object state
@@ -130,7 +130,7 @@ function resolveAppOptions(opts, props) {
 }
 
 function mount(opts: OptsTypes, mountedInstances, props) {
-  const instance = {
+  const instance: any = {
     domEl: null,
     vueInstance: null,
     root: null,
@@ -170,17 +170,18 @@ function mount(opts: OptsTypes, mountedInstances, props) {
 
   // vue2 el options will auto replace render dom，garfish cache mode can't replace render dom https://cn.vuejs.org/v2/api/#el
   delete appOptions.el;
-
-  instance.vueInstance = new opts.Vue(appOptions);
-  instance.vueInstance.$mount();
-  instance.domEl.appendChild(instance.vueInstance.$el);
-  if (instance.vueInstance.bind) {
-    instance.vueInstance = instance.vueInstance.bind(instance.vueInstance);
-  }
-  if (opts.handleInstance) {
-    opts.handleInstance(instance.vueInstance, props);
-    mountedInstances[props.appName] = instance;
-    return instance.vueInstance;
+  if (opts && opts.Vue) {
+    instance.vueInstance = new opts.Vue(appOptions);
+    instance.vueInstance.$mount();
+    instance.domEl.appendChild(instance.vueInstance.$el);
+    if (instance.vueInstance.bind) {
+      instance.vueInstance = instance.vueInstance.bind(instance.vueInstance);
+    }
+    if (opts.handleInstance) {
+      opts.handleInstance(instance.vueInstance, props);
+      mountedInstances[props.appName] = instance;
+      return instance.vueInstance;
+    }
   }
 
   mountedInstances[props.appName] = instance;

@@ -34,8 +34,8 @@
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
   "devDependencies": {
-    "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "react": "16.14.0",
+    "react-dom": "16.14.0"
   },
   "peerDependencies": {
     "react": ">=16",
