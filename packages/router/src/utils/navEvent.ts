@@ -50,7 +50,7 @@ export const push = ({
 }) => {
   if (!basename) basename = RouterConfig.basename || '/';
 
-  let url = null;
+  let url: string | null = null;
   if (validURL(path)) {
     url = /(^https?:)|(^\/\/)/.test(path) ? path : `//${path}`;
   } else {
@@ -75,7 +75,7 @@ export const replace = ({
 }) => {
   if (!basename) basename = RouterConfig.basename || '/';
 
-  let url = null;
+  let url: string | null = null;
   if (validURL(path)) {
     url = /^(https?:)(\/\/)/.test(path) ? path : `//${path}`;
   } else {

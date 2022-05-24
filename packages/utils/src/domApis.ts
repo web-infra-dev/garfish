@@ -50,7 +50,7 @@ export class DOMApis {
     this.document = cusDocument || document;
   }
 
-  isText(node: Node | Text) {
+  isText(node: Node | Text): node is Text {
     return node && node.type === 'text';
   }
 
@@ -176,17 +176,19 @@ export class DOMApis {
   applyAttributes(el: Element, attributes: Attributes) {
     if (!attributes || attributes.length === 0) return;
     for (const { key, value } of attributes) {
-      if (value === null) {
-        el.setAttribute(key, '');
-      } else if (typeof value === 'string') {
-        if (key.charCodeAt(0) !== xChar) {
-          el.setAttribute(key, value);
-        } else if (key.charCodeAt(3) === colonChar) {
-          el.setAttributeNS(xmlNS, key, value);
-        } else if (key.charCodeAt(5) === colonChar) {
-          el.setAttributeNS(xlinkNS, key, value);
-        } else {
-          el.setAttribute(key, value);
+      if (key) {
+        if (value === null) {
+          el.setAttribute(key, '');
+        } else if (typeof value === 'string') {
+          if (key.charCodeAt(0) !== xChar) {
+            el.setAttribute(key, value);
+          } else if (key.charCodeAt(3) === colonChar) {
+            el.setAttributeNS(xmlNS, key, value);
+          } else if (key.charCodeAt(5) === colonChar) {
+            el.setAttributeNS(xlinkNS, key, value);
+          } else {
+            el.setAttribute(key, value);
+          }
         }
       }
     }
