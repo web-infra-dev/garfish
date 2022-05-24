@@ -24,7 +24,7 @@ jobs:
       name: Install pnpm
       id: pnpm-install
       with:
-        version: 7
+        version: 6.32.17
         run_install: false
 
     - name: Get pnpm store directory
@@ -65,7 +65,7 @@ jobs:
       name: Install pnpm
       id: pnpm-install
       with:
-        version: 7
+        version: 6.32.17
         run_install: false
     # Set up GitHub Actions caching for Wireit.
     - uses: google/wireit@setup-github-actions-caching/v1
