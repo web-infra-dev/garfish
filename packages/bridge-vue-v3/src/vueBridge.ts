@@ -72,8 +72,8 @@ export function vueBridge(this: any, userOpts: OptsTypes) {
   if (
     opts.appOptions &&
     typeof opts.appOptions !== 'function' &&
-    typeof 'el' in opts.appOptions &&
-    typeof (opts.appOptions as any).el !== 'string' &&
+    opts.appOptions['el'] !== undefined &&
+    typeof opts.appOptions['el'] !== 'string' &&
     !((opts.appOptions as any).el instanceof HTMLElement)
   ) {
     throw Error(
