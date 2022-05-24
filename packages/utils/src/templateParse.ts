@@ -13,7 +13,7 @@ function Attributes(this: any, { name, value }) {
 }
 
 const generateAttributes = (el: Element) => {
-  const list = [];
+  const list: Array<any> = [];
   const attrs = el.attributes;
   const len = attrs.length;
 
@@ -60,7 +60,7 @@ const createElement = (el: Element, filter: (el: VNode) => VNode) => {
 };
 
 // 1M text takes about time 60ms
-export function templateParse(code?: string, tags?: Array<string>) {
+export function templateParse(code: string, tags: Array<string>) {
   let astTree: Array<VNode> = [];
   const htmlNode = document.createElement('html');
   const collectionEls: Record<string, Array<VNode>> = {};

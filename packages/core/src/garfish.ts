@@ -45,7 +45,7 @@ export class Garfish extends EventEmitter2 {
   public cacheApps: Record<string, interfaces.App> = {};
   public appInfos: Record<string, interfaces.AppInfo> = {};
 
-  private loading: Record<string, Promise<any> | null> = {};
+  private loading: Record<string, Promise<any>> = {};
 
   get props(): Record<string, any> {
     return (this.options && this.options.props) || DEFAULT_PROPS.get(this);
@@ -182,7 +182,7 @@ export class Garfish extends EventEmitter2 {
       );
 
       // Existing cache caching logic
-      let appInstance: interfaces.App = null;
+      let appInstance: interfaces.App | null = null;
       const cacheApp = this.cacheApps[appName];
 
       if (appInfo.cache && cacheApp) {
@@ -222,7 +222,7 @@ export class Garfish extends EventEmitter2 {
 
     if (!this.loading[appName]) {
       this.loading[appName] = asyncLoadProcess().finally(() => {
-        this.loading[appName] = null;
+        delete this.loading[appName];
       });
     }
     return this.loading[appName];
