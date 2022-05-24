@@ -41,7 +41,7 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public",
-    "types": "./dist/types/index.d.ts"
+    "types": "./dist/index.d.ts"
   },
   "devDependencies": {
     "@types/escodegen": "^0.0.7",

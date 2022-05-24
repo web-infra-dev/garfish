@@ -37,7 +37,7 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public",
-    "types": "./dist/types/index.d.ts"
+    "types": "./dist/index.d.ts"
   },
   "gitHead": "da33dd16bb9e99588f34079f8b961d0cf9f059fc"
 }

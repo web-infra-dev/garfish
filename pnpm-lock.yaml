@@ -195,6 +195,7 @@ importers:
       babel-loader: ^8.1.0
       babel-register: ^6.26.0
       babel-runtime: ^6.26.0
+      core-js: '3'
       cross-env: ^7.0.3
       css-loader: ^5.2.7
       file-loader: ^6.2.0
@@ -249,6 +250,7 @@ importers:
       '@pmmmwh/react-refresh-webpack-plugin': 0.5.7_10e9430ea3cdfe32a913fa23525aceac
       babel-loader: 8.2.5_8400c5f16911ce7dfc777f00e248d10e
       babel-register: 6.26.0
+      core-js: 3.22.6
       cross-env: 7.0.3
       css-loader: 5.2.7_webpack@5.72.1
       file-loader: 6.2.0_webpack@5.72.1
@@ -770,14 +772,26 @@ importers:
       '@garfish/core': link:../core
       '@garfish/utils': link:../utils
 
+  packages/test-util:
+    specifiers:
+      '@garfish/utils': workspace:*
+      debug: ^4.3.4
+      isomorphic-fetch: ^3.0.0
+      jest-fetch-mock: ^3.0.3
+    dependencies:
+      '@garfish/utils': link:../utils
+      debug: 4.3.4
+    devDependencies:
+      isomorphic-fetch: 3.0.0
+      jest-fetch-mock: 3.0.3
+
   packages/utils:
     specifiers:
       '@garfish/core': workspace:*
       debug: ^4.3.4
     dependencies:
-      debug: 4.3.4
-    devDependencies:
       '@garfish/core': link:../core
+      debug: 4.3.4
 
   website:
     specifiers:
@@ -12106,6 +12120,7 @@ packages:
   /errno/0.1.8:
     resolution: {integrity: sha512-dJ6oBr5SQ1VSd9qkk7ByRgb/1SH4JZjCHSW/mr63/QcXO9zLVxvJ6Oy13nio03rxpSnVDDjFor75SjVeZWPW/A==}
     hasBin: true
+    requiresBuild: true
     dependencies:
       prr: 1.0.1
     dev: true
