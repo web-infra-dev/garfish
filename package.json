@@ -57,8 +57,7 @@
     "cross-env": "7.0.3",
     "cypress": "^9.5.0",
     "dayjs": "^1.10.8",
-    "esbuild": "^0.14.39",
-    "esbuild-plugin-replace": "1.2.0",
+    "esbuild-plugin-replace": "1.0.7",
     "eslint": "7.32.0",
     "execa": "4.1.0",
     "fs-extra": "10.0.0",
@@ -85,11 +84,6 @@
     "wireit": "^0.4.3",
     "workspace-tools": "0.16.2",
     "zx": "4.2.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "esbuild": "^0.14.39"
-    }
   },
   "version": "1.5.5"
 }
