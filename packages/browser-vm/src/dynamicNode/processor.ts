@@ -136,15 +136,19 @@ export class DynamicNodeProcessor {
           .load<JavaScriptManager>(namespace, fetchUrl, false, crossOrigin)
           .then(
             (manager) => {
-              const {
-                resourceManager: { url, scriptCode },
-              } = manager;
-              // It is necessary to ensure that the code execution error cannot trigger the `el.onerror` event
-              this.sandbox.execScript(scriptCode, {}, url, {
-                isModule,
-                noEntry: true,
-              });
-              this.dispatchEvent('load');
+              if (manager.resourceManager) {
+                const {
+                  resourceManager: { url, scriptCode },
+                } = manager;
+                // It is necessary to ensure that the code execution error cannot trigger the `el.onerror` event
+                this.sandbox.execScript(scriptCode, {}, url, {
+                  isModule,
+                  noEntry: true,
+                });
+                this.dispatchEvent('load');
+              } else {
+                warn(`Invalid resource type "${type}", "${src}"`);
+              }
             },
             (e) => {
               __DEV__ && warn(e);
