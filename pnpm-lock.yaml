@@ -25633,11 +25633,6 @@ packages:
       react: '>=16'
       react-dom: '>=16'
     dependencies:
-      '@garfish/browser-snapshot': link:packages/browser-snapshot
-      '@garfish/browser-vm': link:packages/browser-vm
-      '@garfish/core': link:packages/core
-      '@garfish/router': link:packages/router
-      '@garfish/utils': link:packages/utils
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     dev: false
