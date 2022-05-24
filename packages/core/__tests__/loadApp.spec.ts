@@ -3,8 +3,9 @@ import {
   __MockHead__,
   __MockHtml__,
   appContainerId,
-  mockStaticServer,
 } from '@garfish/utils';
+import { mockStaticServer } from '@garfish/test-suite';
+
 import Garfish from '../src/index';
 
 describe('Core: load process', () => {
