@@ -31,8 +31,15 @@
   "module": "dist/esm/index.js",
   "types": "./index.d.ts",
   "scripts": {
-    "build": "rimraf dist && tsup src/index.ts",
+    "build": "wireit",
     "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
+  "wireit": {
+    "build": {
+      "command": "rimraf dist && tsup src/index.ts",
+      "files": ["src/**/*", "tsconfig.json","../../tsconfig.json","../../tsup.config.ts","tsup.config.ts"],
+      "output": ["dist/**"]
+    }
   },
   "dependencies": {
     "@garfish/browser-snapshot": "workspace:*",
