@@ -82,13 +82,13 @@ export function isJs(mt: mimeType) {
 }
 
 export function isJsonp(mt: mimeType, src: string) {
-  const callbackRegExp = /callback/;
+  const callbackRegExp = /callback|jsonp/;
   try {
     const search = new URL(src).search;
     const { type, subtype } = mt || {};
     if (
       type === 'application' &&
-      subtype === 'json' &&
+      (subtype === 'json' || subtype === 'octet-stream') &&
       callbackRegExp.test(search)
     ) {
       return true;
