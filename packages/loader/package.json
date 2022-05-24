@@ -25,7 +25,7 @@
   },
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
-  "types": "dist/index.d.ts",
+  "types": "./src/index.ts",
   "scripts": {
     "build": "rimraf dist && tsup src/index.ts",
     "dev": "cross-env WATCH=true tsup src/index.ts"
@@ -36,7 +36,8 @@
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
-    "access": "public"
+    "access": "public",
+    "types": "./dist/types/index.d.ts"
   },
   "gitHead": "e8bf48ea8ca8db408a4a0a1cdab8ce4a50ab279b"
 }

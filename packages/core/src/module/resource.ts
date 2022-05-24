@@ -4,6 +4,7 @@ import {
   StyleManager,
   TemplateManager,
   JavaScriptManager,
+  ModuleManager,
 } from '@garfish/loader';
 import { AppInfo } from './app';
 
@@ -29,18 +30,28 @@ function fetchStaticResources(
 
         // There should be no embedded script in the script element tag with the src attribute specified
         if (src) {
-          const fetchUrl = transformUrl(entryManager.url, src);
+          const fetchUrl = entryManager.url
+            ? transformUrl(entryManager.url, src)
+            : src;
           const async = entryManager.findAttributeValue(node, 'async');
 
           // Scripts with "async" attribute will make the rendering process very complicated,
           // we have a preload mechanism, so we don’t need to deal with it.
           return loader
-            .load<JavaScriptManager>(appName, fetchUrl, false, crossOrigin)
+            .load<JavaScriptManager>({
+              scope: appName,
+              url: fetchUrl,
+              crossOrigin,
+            })
             .then(({ resourceManager: jsManager }) => {
-              jsManager.setDep(node);
-              jsManager.setMimeType(type);
-              jsManager.setAsyncAttribute(isAsync(async));
-              return jsManager;
+              if (jsManager) {
+                jsManager.setDep(node);
+                type && jsManager.setMimeType(type);
+                jsManager.setAsyncAttribute(isAsync(async));
+                return jsManager;
+              } else {
+                warn(`[${appName}] Failed to load script: ${fetchUrl}`);
+              }
             })
             .catch(() => null);
         } else if (node.children.length > 0) {
@@ -48,7 +59,7 @@ function fetchStaticResources(
           if (code) {
             const jsManager = new JavaScriptManager(code, '');
             jsManager.setDep(node);
-            jsManager.setMimeType(type);
+            type && jsManager.setMimeType(type);
             return jsManager;
           }
         }
@@ -64,13 +75,19 @@ function fetchStaticResources(
         if (!entryManager.DOMApis.isCssLinkNode(node)) return;
         const href = entryManager.findAttributeValue(node, 'href');
         if (href) {
-          const fetchUrl = transformUrl(entryManager.url, href);
+          const fetchUrl = entryManager.url
+            ? transformUrl(entryManager.url, href)
+            : href;
           return loader
-            .load<StyleManager>(appName, fetchUrl)
+            .load<StyleManager>({ scope: appName, url: fetchUrl })
             .then(({ resourceManager: styleManager }) => {
-              styleManager.setDep(node);
-              styleManager.correctPath();
-              return styleManager;
+              if (styleManager) {
+                styleManager.setDep(node);
+                styleManager.correctPath();
+                return styleManager;
+              } else {
+                warn(`${appName} Failed to load link: ${fetchUrl}`);
+              }
             })
             .catch(() => null);
         }
@@ -88,13 +105,17 @@ function fetchStaticResources(
         const alias = entryManager.findAttributeValue(node, 'alias');
         if (!isAsync(async)) {
           const src = entryManager.findAttributeValue(node, 'src');
-          return loader
-            .loadModule(src)
-            .then(({ resourceManager: moduleManager }) => {
-              moduleManager.setAlias(alias);
-              return moduleManager;
-            })
-            .catch(() => null);
+          if (src) {
+            return loader
+              .loadModule(src)
+              .then(({ resourceManager: moduleManager }) => {
+                if (moduleManager && alias) {
+                  moduleManager && moduleManager.setAlias(alias);
+                }
+                return moduleManager;
+              })
+              .catch(() => null);
+          }
         } else if (alias) {
           warn(`Asynchronous loading module, the alias "${alias}" is invalid.`);
         }
@@ -103,17 +124,18 @@ function fetchStaticResources(
   );
 
   return Promise.all([jsNodes, linkNodes, metaNodes]).then((ls) =>
-    ls.map((ns) => ns.filter(Boolean)),
+    ls.map((ns: any) => ns.filter(Boolean)),
   );
 }
 
 export async function processAppResources(loader: Loader, appInfo: AppInfo) {
-  let isHtmlMode: Boolean, fakeEntryManager;
-  const resources = { js: [], link: [], modules: [] }; // Default resources
-  const { resourceManager: entryManager } = await loader.load(
-    appInfo.name,
-    transformUrl(location.href, appInfo.entry),
-  );
+  let isHtmlMode: Boolean = false,
+    fakeEntryManager;
+  const resources: any = { js: [], link: [], modules: [] }; // Default resources
+  const { resourceManager: entryManager } = await loader.load({
+    scope: appInfo.name,
+    url: transformUrl(location.href, appInfo.entry),
+  });
 
   // Html entry
   if (entryManager instanceof TemplateManager) {

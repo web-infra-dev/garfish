@@ -37,6 +37,18 @@ export function isHtml(mt: mimeType) {
   return mt ? mt.type === 'text' && mt.subtype === 'html' : false;
 }
 
+export function hasJs(mts: Array<mimeType>) {
+  return mts.some((mt) => isJs(mt));
+}
+
+export function hasHtml(mts: Array<mimeType>) {
+  return mts.some((mt) => isHtml(mt));
+}
+
+export function hasCss(mts: Array<mimeType>) {
+  return mts.some((mt) => isCss(mt));
+}
+
 // https://mimesniff.spec.whatwg.org/#javascript-mime-type
 export function isJs(mt: mimeType) {
   const { type, subtype } = mt || {};
@@ -82,13 +94,13 @@ export function isJs(mt: mimeType) {
 }
 
 export function isJsonp(mt: mimeType, src: string) {
-  const callbackRegExp = /callback|jsonp/;
+  const callbackRegExp = /callback/;
   try {
     const search = new URL(src).search;
     const { type, subtype } = mt || {};
     if (
       type === 'application' &&
-      (subtype === 'json' || subtype === 'octet-stream') &&
+      subtype === 'json' &&
       callbackRegExp.test(search)
     ) {
       return true;

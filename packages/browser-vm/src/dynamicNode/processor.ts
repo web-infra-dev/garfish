@@ -55,7 +55,7 @@ export class DynamicNodeProcessor {
       const url = this.el.src || this.el.href;
 
       if (url) {
-        this.sandbox.options?.sourceList.push({
+        this.sandbox.options.sourceList?.push({
           tagName: this.el.tagName,
           url,
         });
@@ -69,7 +69,7 @@ export class DynamicNodeProcessor {
       const isError = type === 'error';
       let event: Event & { __byGarfish__?: boolean };
 
-      if (isError) {
+      if (isError && errInfo) {
         event = new ErrorEvent(type, {
           ...errInfo,
           message: errInfo.error.message,
@@ -94,11 +94,15 @@ export class DynamicNodeProcessor {
         const fetchUrl = baseUrl ? transformUrl(baseUrl, href) : href;
 
         this.sandbox.loader
-          .load<StyleManager>(namespace, fetchUrl)
+          .load<StyleManager>({ scope: namespace, url: fetchUrl })
           .then(({ resourceManager: styleManager }) => {
-            this.dispatchEvent('load');
-            styleManager.correctPath();
-            callback(styleManager.renderAsStyleElement());
+            if (styleManager) {
+              this.dispatchEvent('load');
+              styleManager.correctPath();
+              callback(styleManager.renderAsStyleElement());
+            } else {
+              warn(`Invalid resource type "${type}", "${href}"`);
+            }
           })
           .catch((e) => {
             __DEV__ && warn(e);
@@ -133,7 +137,11 @@ export class DynamicNodeProcessor {
       if (src) {
         const fetchUrl = baseUrl ? transformUrl(baseUrl, src) : src;
         this.sandbox.loader
-          .load<JavaScriptManager>(namespace, fetchUrl, false, crossOrigin)
+          .load<JavaScriptManager>({
+            scope: namespace,
+            url: fetchUrl,
+            crossOrigin,
+          })
           .then(
             (manager) => {
               if (manager.resourceManager) {

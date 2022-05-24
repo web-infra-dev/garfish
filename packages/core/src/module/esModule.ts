@@ -55,10 +55,10 @@ export class ESModuleLoader {
     requestUrl: string,
   ) {
     const { resourceManager } =
-      await this.app.context.loader.load<JavaScriptManager>(
-        this.app.name,
-        requestUrl,
-      );
+      await this.app.context.loader.load<JavaScriptManager>({
+        scope: this.app.name,
+        url: requestUrl,
+      });
     // Maybe other resource
     if (resourceManager) {
       let sourcemap = '';

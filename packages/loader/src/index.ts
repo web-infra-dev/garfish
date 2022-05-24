@@ -95,16 +95,25 @@ export class Loader {
   }
 
   loadModule(url: string) {
-    return this.load<ModuleManager>('modules', url, true);
+    return this.load<ModuleManager>({
+      scope: 'modules',
+      url,
+      isRemoteModule: true,
+    });
   }
 
   // Unable to know the final data type, so through "generics"
-  load<T extends Manager>(
-    scope: string,
-    url: string,
+  load<T extends Manager>({
+    scope,
+    url,
     isRemoteModule = false,
-    crossOrigin: NonNullable<HTMLScriptElement['crossOrigin']> = 'anonymous',
-  ): Promise<LoadedHookArgs<T>['value']> {
+    crossOrigin = 'anonymous',
+  }: {
+    scope: string;
+    url: string;
+    isRemoteModule?: boolean;
+    crossOrigin?: NonNullable<HTMLScriptElement['crossOrigin']>;
+  }): Promise<LoadedHookArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
 
     const res = loadingList[url];
