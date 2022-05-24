@@ -38,7 +38,7 @@ export function GarfishBrowserSnapshot(op?: BrowserConfig) {
             ...(appInfo.protectVariable || []),
           ];
         }
-        options.openBrowser = config.open;
+        options.openBrowser = !!config.open;
         if (!config.open) return;
         if (appInstance) {
           // existing

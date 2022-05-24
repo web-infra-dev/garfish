@@ -14,6 +14,7 @@
     "noImplicitThis": true,
     "esModuleInterop": true,
     "emitDecoratorMetadata": true,
+    "strictNullChecks": true,
     "experimentalDecorators": true,
     "paths": {
       "@garfish/*": ["packages/*/src"]

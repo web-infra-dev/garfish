@@ -29,7 +29,7 @@ describe('Apis', () => {
     expect(sandbox.close.length).toBe(0);
     expect(sandbox.close()).toBe(undefined);
     expect(sandbox.closed).toBe(true);
-    expect(sandbox.global).toBe(null);
+    expect(sandbox.global).toBe(undefined);
     // close 应该调用 clearEffects
     expect(spy).toHaveBeenCalled();
   });

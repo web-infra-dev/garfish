@@ -71,7 +71,7 @@ export class Loader {
   });
 
   private options: LoaderOptions; // The unit is "b"
-  private loadingList: Record<string, Promise<any>>;
+  private loadingList: Record<string, null | Promise<CacheValue<any>>>;
   private cacheStore: { [name: string]: AppCacheContainer };
 
   constructor(options?: LoaderOptions) {
@@ -103,12 +103,13 @@ export class Loader {
     scope: string,
     url: string,
     isRemoteModule = false,
-    crossOrigin: HTMLScriptElement['crossOrigin'] = 'anonymous',
+    crossOrigin: NonNullable<HTMLScriptElement['crossOrigin']> = 'anonymous',
   ): Promise<LoadedHookArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
 
-    if (loadingList[url]) {
-      return loadingList[url] as any;
+    const res = loadingList[url];
+    if (res) {
+      return res;
     }
 
     let appCacheContainer = cacheStore[scope];
@@ -143,9 +144,10 @@ export class Loader {
       requestConfig,
     });
 
-    loadingList[url] = request(resOpts.url, resOpts.requestConfig)
+    const loadRes = request(resOpts.url, resOpts.requestConfig)
       .then(({ code, size, mimeType, result }) => {
-        let managerCtor, fileType: FileTypes;
+        let managerCtor,
+          fileType: FileTypes | '' = '';
 
         if (isRemoteModule) {
           fileType = FileTypes.module;
@@ -184,7 +186,7 @@ export class Loader {
           },
         });
 
-        appCacheContainer.set(url, data.value, fileType);
+        fileType && appCacheContainer.set(url, data.value, fileType);
         return copyResult(data.value as any);
       })
       .catch((e) => {
@@ -195,6 +197,8 @@ export class Loader {
       .finally(() => {
         loadingList[url] = null;
       });
-    return loadingList[url] as any;
+
+    loadingList[url] = loadRes;
+    return loadRes;
   }
 }

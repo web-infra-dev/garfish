@@ -79,7 +79,7 @@
     "ts-jest": "27.0.7",
     "tslib": "2.3.1",
     "tsup": "5.7.2",
-    "typescript": "4.4.3",
+    "typescript": "4.6.4",
     "wait-on": "6.0.0",
     "wireit": "^0.4.3",
     "workspace-tools": "0.16.2",
