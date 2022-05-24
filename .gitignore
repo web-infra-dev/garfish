@@ -12,6 +12,7 @@ temp/
 /docs
 # .npmrc
 **/.angular
+.wireit
 
 # test result
 cypress/screenshots
