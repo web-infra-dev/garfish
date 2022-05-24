@@ -1,4 +1,4 @@
-import { interfaces } from '@garfish/core';
+import type { interfaces } from '@garfish/core';
 import { dispatchEvents } from './dispatchEvents';
 import { __MockHtml__ } from './garfish';
 import { assert, createKey } from './utils';
