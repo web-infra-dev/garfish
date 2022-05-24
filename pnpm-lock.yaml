@@ -767,9 +767,8 @@ importers:
       '@garfish/core': workspace:*
       '@garfish/utils': workspace:*
     dependencies:
-      '@garfish/utils': link:../utils
-    devDependencies:
       '@garfish/core': link:../core
+      '@garfish/utils': link:../utils
 
   packages/utils:
     specifiers:
