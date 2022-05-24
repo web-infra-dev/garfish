@@ -71,6 +71,8 @@ jobs:
     - uses: google/wireit@setup-github-actions-caching/v1
     - name: install dependency
       run: pnpm install --filter=\!garfish-docs
+    - name: build
+      run:  pnpm build
     - name: Run cypress test
       uses: cypress-io/github-action@v2
       with:
