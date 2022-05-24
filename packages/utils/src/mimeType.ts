@@ -37,15 +37,15 @@ export function isHtml(mt: mimeType) {
   return mt ? mt.type === 'text' && mt.subtype === 'html' : false;
 }
 
-export function hasJs(mts: Array<mimeType>) {
+export function includeJsType(mts: Array<mimeType>) {
   return mts.some((mt) => isJs(mt));
 }
 
-export function hasHtml(mts: Array<mimeType>) {
+export function includeHtmlType(mts: Array<mimeType>) {
   return mts.some((mt) => isHtml(mt));
 }
 
-export function hasCss(mts: Array<mimeType>) {
+export function includeCssType(mts: Array<mimeType>) {
   return mts.some((mt) => isCss(mt));
 }
 

@@ -6,6 +6,10 @@ import {
   isHtml,
   isJsonp,
   __LOADER_FLAG__,
+  mimeType,
+  includeHtmlType,
+  includeJsType,
+  includeCssType,
 } from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
@@ -108,11 +112,13 @@ export class Loader {
     url,
     isRemoteModule = false,
     crossOrigin = 'anonymous',
+    defaultMimeType = null,
   }: {
     scope: string;
     url: string;
     isRemoteModule?: boolean;
     crossOrigin?: NonNullable<HTMLScriptElement['crossOrigin']>;
+    defaultMimeType?: mimeType;
   }): Promise<LoadedHookArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
 
@@ -161,17 +167,23 @@ export class Loader {
         if (isRemoteModule) {
           fileType = FileTypes.module;
           managerCtor = ModuleManager;
-        } else if (isHtml(mimeType) || /\.html$/.test(result.url)) {
+        } else if (
+          includeHtmlType([mimeType, defaultMimeType]) ||
+          /\.html$/.test(result.url)
+        ) {
           fileType = FileTypes.template;
           managerCtor = TemplateManager;
         } else if (
-          isJs(mimeType) ||
+          includeJsType([mimeType, defaultMimeType]) ||
           /\.js$/.test(result.url) ||
           isJsonp(mimeType, result.url)
         ) {
           fileType = FileTypes.js;
           managerCtor = JavaScriptManager;
-        } else if (isCss(mimeType) || /\.css$/.test(result.url)) {
+        } else if (
+          includeCssType([mimeType, defaultMimeType]) ||
+          /\.css$/.test(result.url)
+        ) {
           fileType = FileTypes.css;
           managerCtor = StyleManager;
         }
