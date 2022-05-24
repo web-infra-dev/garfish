@@ -12,7 +12,8 @@ export const baseTsup = (pkg): Options => {
     sourcemap,
     clean: true,
     watch: watch ? 'src/' : false,
-    format: ['esm', 'cjs', 'iife'],
+    // Cannot output iife format using wireit cache
+    format: ['esm', 'cjs'],
     legacyOutput: true,
     globalName: pkg.name
       .replace(/@/g, '')

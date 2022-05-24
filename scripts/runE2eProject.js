@@ -19,7 +19,7 @@ function runAllExample() {
     return Promise.all(ports.map((port) => killPort(port)))
       .then(() => {
         step('\n building dev project...');
-        return $`pnpm run build --parallel --filter "@garfish-dev/*"`;
+        return $`pnpm --parallel --filter "@garfish-dev/*" build`;
       })
       .then(() => {
         step('\n http-server dev dist...');
@@ -40,6 +40,10 @@ function runAllExample() {
   } else {
     return (
       Promise.all(ports.map((port) => killPort(port)))
+        .then(() => {
+          step('\n building package...');
+          $`pnpm run build`;
+        })
         // build all demo or dev all example
         .then(() => {
           step('\n run dev project...');

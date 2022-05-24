@@ -40,10 +40,17 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 8097",
-    "build": "ng build",
+    "build": "wireit",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "builder": "@angular-builders/custom-webpack:dev-server"
+  },
+  "wireit": {
+    "build": {
+      "command": "ng build",
+      "files": ["src", "tsconfig.json","angular.json","custom-webpack.config.js"],
+      "output": ["dist/**"]
+    }
   }
 }
