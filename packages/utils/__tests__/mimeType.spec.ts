@@ -78,30 +78,4 @@ describe('Garfish shared mimeType', () => {
     expect(isJs({ type: 'text', subtype: 'a' })).toBe(false);
     expect(isJs({ type: 'application', subtype: 'a' })).toBe(false);
   });
-
-  it('isJsonp', () => {
-    expect(isJsonp({ type: '', subtype: '' }, '')).toBe(false);
-    expect(isJsonp({ type: '', subtype: 'jsonp' }, '')).toBe(false);
-    expect(isJsonp({ type: 'text', subtype: '' }, '')).toBe(false);
-    expect(isJsonp({ type: 'text', subtype: '_' }, '')).toBe(false);
-    expect(isJsonp({ type: '_', subtype: 'jsonp' }, '')).toBe(false);
-    expect(
-      isJsonp({ type: 'application', subtype: 'json' }, '_callback1("hello")'),
-    ).toBe(true);
-    expect(
-      isJsonp(
-        { type: 'application', subtype: 'octet-stream' },
-        'callback1("hello")',
-      ),
-    ).toBe(true);
-    expect(
-      isJsonp({ type: 'application', subtype: 'json' }, 'jsonp("hello")'),
-    ).toBe(true);
-    expect(
-      isJsonp(
-        { type: 'application', subtype: 'octet-stream' },
-        '_jsonp("hello")',
-      ),
-    ).toBe(true);
-  });
 });
