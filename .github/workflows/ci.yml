@@ -47,7 +47,6 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'pnpm'
     - name: install dependency
       run: pnpm install --filter=\!garfish-docs
     - name: build
@@ -57,7 +56,7 @@ jobs:
     - name: Run cypress test
       uses: cypress-io/github-action@v2
       with:
-        install: true
+        install: false
         start: node scripts/devCypress.js
         wait-on: 'http://localhost:8090,http://localhost:8091,http://localhost:8092,http://localhost:8093,http://localhost:8094,http://localhost:8095,http://localhost:8096,http://localhost:8097'
         wait-on-timeout: 600
