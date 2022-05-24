@@ -1,4 +1,4 @@
-import { mockStaticServer } from '@garfish/utils';
+import { mockStaticServer } from '@garfish/test-suite';
 import { Sandbox } from '../src/sandbox';
 
 declare global {

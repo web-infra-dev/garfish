@@ -1,4 +1,4 @@
-import { mockStaticServer } from '@garfish/utils';
+import { mockStaticServer } from '@garfish/test-suite';
 import Garfish from '../src/index';
 import { GarfishPreloadPlugin, storageKey } from '../src/plugins/preload';
 

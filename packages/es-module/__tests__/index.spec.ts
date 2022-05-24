@@ -1,4 +1,4 @@
-import { mockStaticServer } from '@garfish/utils';
+import { mockStaticServer } from '@garfish/test-suite';
 import { Runtime } from '../src/runtime';
 
 describe('es module', () => {

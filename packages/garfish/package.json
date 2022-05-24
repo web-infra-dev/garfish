@@ -41,6 +41,9 @@
     "@garfish/router": "workspace:*",
     "@garfish/utils": "workspace:*"
   },
+  "devDependencies": {
+    "@garfish/test-suite": "workspace:*"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public",

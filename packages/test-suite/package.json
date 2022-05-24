@@ -1,12 +1,13 @@
 {
-  "name": "@garfish/browser-vm",
+  "name": "@garfish/test-suite",
+  "private": true,
   "version": "1.5.5",
-  "description": "vm-sandbox module.",
+  "description": "utils module.",
   "keywords": [
     "garfish",
-    "vm-sandbox"
+    "utils"
   ],
-  "author": "zhouxiao.shaw <codingzx@gmail.com>",
+  "author": "zhouxiao <codingzx@gmail.com>",
   "homepage": "https://github.com/bytedance/garfish",
   "license": "MIT",
   "repository": {
@@ -30,19 +31,13 @@
     "build": "rimraf dist && tsup src/index.ts",
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
-  "dependencies": {
-    "@garfish/loader": "workspace:*",
-    "@garfish/core": "workspace:*",
-    "@garfish/hooks": "workspace:*",
-    "@garfish/utils": "workspace:*"
-  },
   "devDependencies": {
-    "@garfish/test-suite": "workspace:*"
+    "@garfish/utils": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public",
-    "types": "./dist/index.d.ts"
+    "types": "./dist/types/index.d.ts"
   },
-  "gitHead": "da33dd16bb9e99588f34079f8b961d0cf9f059fc"
+  "gitHead": "e8bf48ea8ca8db408a4a0a1cdab8ce4a50ab279b"
 }

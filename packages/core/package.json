@@ -37,6 +37,9 @@
     "@garfish/utils": "workspace:*",
     "eventemitter2": "^6.4.5"
   },
+  "devDependencies": {
+    "@garfish/test-suite": "workspace:*"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public",
