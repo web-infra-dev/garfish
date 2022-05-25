@@ -19,6 +19,7 @@ function runAllExample() {
     return Promise.all(ports.map((port) => killPort(port)))
       .then(() => {
         step('\n building dev project...');
+        console.time('dev project');
         return $`pnpm --parallel --filter "@garfish-dev/*" build`;
       })
       .then(() => {
@@ -34,6 +35,7 @@ function runAllExample() {
       })
       .then(() => waitOn(opts))
       .catch((err) => {
+        console.timeEnd('dev project');
         console.error(err);
         ports.forEach((port) => killPort(port));
       });
