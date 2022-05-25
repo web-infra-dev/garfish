@@ -777,8 +777,10 @@ importers:
   packages/test-suite:
     specifiers:
       '@garfish/utils': workspace:*
-    devDependencies:
+      jest-fetch-mock: ^3.0.3
+    dependencies:
       '@garfish/utils': link:../utils
+      jest-fetch-mock: 3.0.3
 
   packages/utils:
     specifiers:
@@ -16486,7 +16488,6 @@ packages:
       promise-polyfill: 8.2.3
     transitivePeerDependencies:
       - encoding
-    dev: true
 
   /jest-get-type/27.5.1:
     resolution: {integrity: sha512-2KY95ksYSaK7DMBWQn6dQz3kqAf3BB64y2udeG+hv4KfSOb9qwcYQstTJc1KCbsix+wLZWZYN8t7nwX3GOBLRw==}
@@ -21229,7 +21230,6 @@ packages:
 
   /promise-polyfill/8.2.3:
     resolution: {integrity: sha512-Og0+jCRQetV84U8wVjMNccfGCnMQ9mGs9Hv78QFe+pSDD3gWTpz0y+1QCuxy5d/vBFuZ3iwP2eycAkvqIMPmWg==}
-    dev: true
 
   /promise-retry/2.0.1:
     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}
