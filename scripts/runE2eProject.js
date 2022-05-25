@@ -24,38 +24,39 @@ async function runAllExample() {
   console.time('runAllExample');
 
   try {
-    // if (process.env.CI) {
-    //   await Promise.all(ports.map((port) => killPort(port)));
+    if (process.env.CI) {
+      step('\n clear ports...');
+      await Promise.all(ports.map((port) => killPort(port)));
 
-    //   step('\n building dev project...');
-    //   await $`pnpm --parallel --filter "@garfish-dev/*" build`;
+      step('\n building dev project...');
+      await $`pnpm --parallel --filter "@garfish-dev/*" build`;
 
-    //   step('\n http-server dev dist...');
-    //   Object.keys(portMap).forEach((pkgPath) => {
-    //     // history api fallback
-    //     if (pkgPath === 'dev/main') {
-    //       $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} --proxy http://localhost:${portMap[pkgPath].port}?`;
-    //     } else {
-    //       $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port}`;
-    //     }
-    //   });
+      step('\n http-server dev dist...');
+      Object.keys(portMap).forEach((pkgPath) => {
+        // history api fallback
+        if (pkgPath === 'dev/main') {
+          $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} --proxy http://localhost:${portMap[pkgPath].port}?`;
+        } else {
+          $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port}`;
+        }
+      });
 
-    //   await waitOn(opts);
-    // } else {
-    step('\n clear ports...');
-    await Promise.all(ports.map((port) => killPort(port)));
+      await waitOn(opts);
+    } else {
+      step('\n clear ports...');
+      await Promise.all(ports.map((port) => killPort(port)));
 
-    step('\n building package...');
-    await $`pnpm run build`;
+      step('\n building package...');
+      await $`pnpm run build`;
 
-    step('\n run dev project...');
-    $`pnpm  run dev`;
+      step('\n run dev project...');
+      $`pnpm  run dev`;
 
-    step('\n wait project start...');
-    await waitOn(opts);
+      step('\n wait project start...');
+      await waitOn(opts);
 
-    step('\n start e2e test...');
-    // }
+      step('\n start e2e test...');
+    }
   } catch (err) {
     ports.forEach((port) => killPort(port));
     throw err;
