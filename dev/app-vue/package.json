@@ -56,7 +56,7 @@
   "wireit": {
     "build": {
       "command": "vue-cli-service build",
-      "files": ["src/**/*", "tsconfig.json","../../tsconfig.json","../../tsup.config.ts","../../packages/bridge-vue-v2/src/**/*","../../packages/bridge/src/**/*"],
+      "files": ["src/**/*", "tsconfig.json", "package.json","../../tsconfig.json","../../tsup.config.ts","../../packages/bridge-vue-v2/src/**/*","../../packages/bridge/src/**/*"],
       "output": ["dist/**"]
     }
   }
