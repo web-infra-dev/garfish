@@ -44,7 +44,7 @@ importers:
       tslib: 2.3.1
       tsup: 5.7.2
       typescript: 4.6.4
-      wait-on: 6.0.0
+      wait-on: 6.0.1
       wireit: ^0.4.3
       workspace-tools: 0.16.2
       zx: 4.2.0
@@ -89,7 +89,7 @@ importers:
       tslib: 2.3.1
       tsup: 5.7.2_typescript@4.6.4
       typescript: 4.6.4
-      wait-on: 6.0.0
+      wait-on: 6.0.1
       wireit: 0.4.3
       workspace-tools: 0.16.2
       zx: 4.2.0
@@ -8524,14 +8524,6 @@ packages:
     resolution: {integrity: sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==}
     dev: true
 
-  /axios/0.21.4:
-    resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
-    dependencies:
-      follow-redirects: 1.15.0
-    transitivePeerDependencies:
-      - debug
-    dev: true
-
   /axios/0.24.0:
     resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
     dependencies:
@@ -8546,7 +8538,6 @@ packages:
       follow-redirects: 1.15.0
     transitivePeerDependencies:
       - debug
-    dev: false
 
   /axobject-query/2.0.2:
     resolution: {integrity: sha512-MCeek8ZH7hKyO1rWUbKNQBbl4l2eY0ntk7OGi+q0RlafrCnfPxC06WZA+uebCfmYp4mNU9jRBP1AhGyf8+W3ww==}
@@ -22730,7 +22721,7 @@ packages:
   /rxjs/7.5.5:
     resolution: {integrity: sha512-sy+H0pQofO95VDmFLzyaw9xNJU4KTRSwQIGM6+iG3SypAtCiLDzpeG8sJrNCWn2Up9km+KhkvTdbkrdy+yzZdw==}
     dependencies:
-      tslib: 2.3.1
+      tslib: 2.4.0
 
   /sade/1.8.1:
     resolution: {integrity: sha512-xal3CZX1Xlo/k4ApwCFrHVACi9fBqJ7V+mwhBsuf/1IOKbBy098Fex+Wa/5QMubw09pSZ/u8EY8PWgevJsXp1A==}
@@ -24699,6 +24690,7 @@ packages:
 
   /tslib/2.3.1:
     resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
+    dev: true
 
   /tslib/2.4.0:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
@@ -26091,20 +26083,6 @@ packages:
       xml-name-validator: 3.0.0
     dev: true
 
-  /wait-on/6.0.0:
-    resolution: {integrity: sha512-tnUJr9p5r+bEYXPUdRseolmz5XqJTTj98JgOsfBn7Oz2dxfE2g3zw1jE+Mo8lopM3j3et/Mq1yW7kKX6qw7RVw==}
-    engines: {node: '>=10.0.0'}
-    hasBin: true
-    dependencies:
-      axios: 0.21.4
-      joi: 17.6.0
-      lodash: 4.17.21
-      minimist: 1.2.5
-      rxjs: 7.5.5
-    transitivePeerDependencies:
-      - debug
-    dev: true
-
   /wait-on/6.0.1:
     resolution: {integrity: sha512-zht+KASY3usTY5u2LgaNqn/Cd8MukxLGjdcZxT2ns5QzDmTFc4XoWBgC+C/na+sMRZTuVygQoMYwdcVjHnYIVw==}
     engines: {node: '>=10.0.0'}
@@ -26117,7 +26095,6 @@ packages:
       rxjs: 7.5.5
     transitivePeerDependencies:
       - debug
-    dev: false
 
   /walker/1.0.8:
     resolution: {integrity: sha512-ts/8E8l5b7kY0vlWLewOkDXMmPdLcVV4GmOQLyxuSswIJsweeFZtAsMF7k1Nszz+TYBQrlYRmzOnr398y1JemQ==}

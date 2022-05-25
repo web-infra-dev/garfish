@@ -1,6 +1,5 @@
 {
   "name": "@garfish/test-suite",
-  "private": true,
   "version": "1.5.5",
   "description": "garfish test suite.",
   "keywords": [
