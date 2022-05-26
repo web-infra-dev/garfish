@@ -1,0 +1,7 @@
+
+const testInfo = {
+  key: 'jsonpVariable',
+  value: true
+};
+
+window[testInfo.key] = testInfo.value;

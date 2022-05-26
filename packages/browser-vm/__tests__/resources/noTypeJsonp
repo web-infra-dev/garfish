@@ -1,0 +1,7 @@
+
+const testInfo = {
+  key: 'noTypeJsonp',
+  value: true
+};
+
+window[testInfo.key] = testInfo.value;

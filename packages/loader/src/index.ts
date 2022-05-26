@@ -1,15 +1,10 @@
 import { SyncHook, SyncWaterfallHook, PluginSystem } from '@garfish/hooks';
 import {
   error,
-  isJs,
-  isCss,
-  isHtml,
-  isJsonp,
   __LOADER_FLAG__,
-  mimeType,
-  includeHtmlType,
-  includeJsType,
-  includeCssType,
+  isJsType,
+  isCssType,
+  isHtmlType,
 } from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
@@ -112,13 +107,13 @@ export class Loader {
     url,
     isRemoteModule = false,
     crossOrigin = 'anonymous',
-    defaultMimeType = null,
+    defaultContentType = '',
   }: {
     scope: string;
     url: string;
     isRemoteModule?: boolean;
     crossOrigin?: NonNullable<HTMLScriptElement['crossOrigin']>;
-    defaultMimeType?: mimeType;
+    defaultContentType?: string;
   }): Promise<LoadedHookArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
 
@@ -160,7 +155,7 @@ export class Loader {
     });
 
     const loadRes = request(resOpts.url, resOpts.requestConfig)
-      .then(({ code, size, mimeType, result }) => {
+      .then(({ code, size, result, type }) => {
         let managerCtor,
           fileType: FileTypes | '' = '';
 
@@ -168,21 +163,24 @@ export class Loader {
           fileType = FileTypes.module;
           managerCtor = ModuleManager;
         } else if (
-          includeHtmlType([mimeType, defaultMimeType]) ||
-          /\.html$/.test(result.url)
+          isHtmlType({ type, src: result.url }) ||
+          isHtmlType({
+            type: defaultContentType,
+          })
         ) {
           fileType = FileTypes.template;
           managerCtor = TemplateManager;
         } else if (
-          includeJsType([mimeType, defaultMimeType]) ||
-          /\.js$/.test(result.url) ||
-          isJsonp(mimeType, result.url)
+          isJsType({ type: defaultContentType }) ||
+          isJsType({ type, src: result.url })
         ) {
           fileType = FileTypes.js;
           managerCtor = JavaScriptManager;
         } else if (
-          includeCssType([mimeType, defaultMimeType]) ||
-          /\.css$/.test(result.url)
+          isCssType({ src: result.url, type }) ||
+          isCssType({
+            type: defaultContentType,
+          })
         ) {
           fileType = FileTypes.css;
           managerCtor = StyleManager;

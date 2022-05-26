@@ -777,9 +777,11 @@ importers:
   packages/test-suite:
     specifiers:
       '@garfish/utils': workspace:*
+      isomorphic-fetch: ^3.0.0
       jest-fetch-mock: ^3.0.3
     dependencies:
       '@garfish/utils': link:../utils
+      isomorphic-fetch: 3.0.0
       jest-fetch-mock: 3.0.3
 
   packages/utils:
@@ -4645,6 +4647,7 @@ packages:
       vue3: /vue/3.2.36
     transitivePeerDependencies:
       - supports-color
+      - vue
     dev: false
 
   /@garfish/browser-snapshot/1.6.0:
@@ -16206,7 +16209,6 @@ packages:
       whatwg-fetch: 3.6.2
     transitivePeerDependencies:
       - encoding
-    dev: true
 
   /isstream/0.1.2:
     resolution: {integrity: sha1-R+Y/evVa+m+S4VAOaQ64uFKcCZo=}
@@ -26759,7 +26761,6 @@ packages:
 
   /whatwg-fetch/3.6.2:
     resolution: {integrity: sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==}
-    dev: true
 
   /whatwg-mimetype/2.3.0:
     resolution: {integrity: sha512-M4yMwr6mAnQz76TbJm914+gPpB/nCwvZbJU28cUD6dR004SAxDLOOSUaB1JDRqLtaOV/vi0IC5lEAGFgrjGv/g==}

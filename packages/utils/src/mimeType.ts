@@ -37,18 +37,6 @@ export function isHtml(mt: mimeType) {
   return mt ? mt.type === 'text' && mt.subtype === 'html' : false;
 }
 
-export function includeJsType(mts: Array<mimeType>) {
-  return mts.some((mt) => isJs(mt));
-}
-
-export function includeHtmlType(mts: Array<mimeType>) {
-  return mts.some((mt) => isHtml(mt));
-}
-
-export function includeCssType(mts: Array<mimeType>) {
-  return mts.some((mt) => isCss(mt));
-}
-
 // https://mimesniff.spec.whatwg.org/#javascript-mime-type
 export function isJs(mt: mimeType) {
   const { type, subtype } = mt || {};
@@ -108,5 +96,46 @@ export function isJsonp(mt: mimeType, src: string) {
   } catch (e) {
     return false;
   }
+  return false;
+}
+
+export function isJsType({ src = '', type }: { src?: string; type?: string }) {
+  if (/\.js$/.test(src)) return true;
+
+  if (type) {
+    if (type === 'module') return true;
+    const mimeTypeInfo = parseContentType(type);
+    if (isJsonp(mimeTypeInfo, src)) return true;
+    if (isJs(mimeTypeInfo)) return true;
+  }
+
+  return false;
+}
+
+export function isCssType({ src = '', type }: { src?: string; type?: string }) {
+  if (/\.css$/.test(src)) return true;
+
+  if (type) {
+    const mimeTypeInfo = parseContentType(type);
+    if (isCss(mimeTypeInfo)) return true;
+  }
+
+  return false;
+}
+
+export function isHtmlType({
+  src = '',
+  type,
+}: {
+  src?: string;
+  type?: string;
+}) {
+  if (/\.html$/.test(src)) return true;
+
+  if (type) {
+    const mimeTypeInfo = parseContentType(type);
+    if (isHtml(mimeTypeInfo)) return true;
+  }
+
   return false;
 }

@@ -56,7 +56,9 @@ const mockAfterEval = jest.fn();
 describe('Core: run methods', () => {
   let GarfishInstance: Garfish;
 
-  mockStaticServer(__dirname);
+  mockStaticServer({
+    baseDir: __dirname,
+  });
 
   beforeEach(() => {
     GarfishInstance = new Garfish({});

@@ -8,7 +8,10 @@ describe('es module', () => {
     return runtime.importByUrl(entry);
   };
 
-  mockStaticServer(__dirname, ['lodash']);
+  mockStaticServer({
+    baseDir: __dirname,
+    filterKeywords: ['lodash'],
+  });
 
   beforeEach(() => {
     globalThis.orderIndex = 0;

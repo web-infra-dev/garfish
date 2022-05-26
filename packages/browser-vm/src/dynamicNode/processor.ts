@@ -14,6 +14,8 @@ import {
   sourceListTags,
   parseContentType,
   __REMOVE_NODE__,
+  isJsType,
+  isCssType,
 } from '@garfish/utils';
 import { rootElm } from '../utils';
 import { Sandbox } from '../sandbox';
@@ -88,7 +90,7 @@ export class DynamicNodeProcessor {
   private addDynamicLinkNode(callback: (styleNode: HTMLStyleElement) => void) {
     const { href, type } = this.el;
 
-    if (!type || isCss(parseContentType(type))) {
+    if (!type || isCssType(type)) {
       if (href) {
         const { baseUrl, namespace = '' } = this.sandbox.options;
         const fetchUrl = baseUrl ? transformUrl(baseUrl, href) : href;
@@ -131,7 +133,7 @@ export class DynamicNodeProcessor {
     const mimeType = parseContentType(type);
     const code = this.el.textContent || this.el.text || '';
 
-    if (!type || isJs(mimeType) || isModule || isJsonp(mimeType, src)) {
+    if (!type || isJsType({ src, type })) {
       // The "src" higher priority
       const { baseUrl, namespace = '' } = this.sandbox.options;
       if (src) {
@@ -141,6 +143,7 @@ export class DynamicNodeProcessor {
             scope: namespace,
             url: fetchUrl,
             crossOrigin,
+            defaultContentType: type,
           })
           .then(
             (manager) => {

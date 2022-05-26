@@ -171,7 +171,10 @@ export function nextTick(cb: () => void): void {
   Promise.resolve().then(cb);
 }
 
-export function assert(condition: any, msg?: string | Error) {
+export function assert(
+  condition: any,
+  msg?: string | Error,
+): asserts condition {
   if (!condition) {
     error(msg || 'unknow reason');
   }

@@ -42,6 +42,7 @@ function fetchStaticResources(
               scope: appName,
               url: fetchUrl,
               crossOrigin,
+              defaultContentType: type,
             })
             .then(({ resourceManager: jsManager }) => {
               if (jsManager) {

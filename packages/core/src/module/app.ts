@@ -22,6 +22,7 @@ import {
   createAppContainer,
   setDocCurrentScript,
   coreLog,
+  isJsType,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
@@ -526,7 +527,7 @@ export class App {
 
         if (mimeType) {
           // Other script template
-          if (!isModule && !isJs(parseContentType(mimeType))) {
+          if (!isModule && !isJsType({ type: mimeType })) {
             return DOMApis.createElement(node);
           }
         }
@@ -651,10 +652,8 @@ export class App {
     if (!appInfo.noCheckProvider) {
       assert(provider, `"provider" is "${provider}".`);
       // No need to use "hasOwn", because "render" may be on the prototype chain
-      provider &&
-        assert('render' in provider, '"render" is required in provider.');
-      provider &&
-        assert('destroy' in provider, '"destroy" is required in provider.');
+      assert('render' in provider, '"render" is required in provider.');
+      assert('destroy' in provider, '"destroy" is required in provider.');
     }
 
     this.provider = provider as interfaces.Provider;

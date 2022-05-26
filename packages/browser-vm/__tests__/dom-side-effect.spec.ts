@@ -1,4 +1,5 @@
 import { Sandbox } from '../src/sandbox';
+import assert from 'assert';
 import { sandboxMap } from '../src/utils';
 import {
   recordStyledComponentCSSRules,
@@ -58,6 +59,8 @@ describe('Sandbox:Dom & Bom', () => {
 
     const rootNode = document.getElementById(rootId);
     const testNode = document.getElementById(testId);
+
+    assert(rootNode, 'root node should exist');
     expect(rootNode.contains(testNode)).toBeTruthy();
     sandbox.close();
 
@@ -86,6 +89,10 @@ describe('Sandbox:Dom & Bom', () => {
     const test2Node = document.getElementById(testId);
 
     expect(sandbox.deferClearEffects.size).toBe(1);
+
+    assert(testNode, 'root node should exist');
+    assert(rootNode, 'rootNode node should exist');
+
     expect(testNode.contains(test2Node)).toBeTruthy();
     expect(rootNode.contains(testNode)).toBeTruthy();
     sandbox.close();

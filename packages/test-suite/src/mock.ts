@@ -2,13 +2,16 @@ import { isAbsolute } from '@garfish/utils';
 import fs from 'fs';
 import path from 'path';
 import fetchMock from 'jest-fetch-mock';
-import 'isomorphic-fetch';
-
 // Unit test server
-export function mockStaticServer(
-  baseDir: string,
-  filterKeywords?: Array<string>,
-) {
+export function mockStaticServer({
+  baseDir,
+  filterKeywords,
+  customerHeaders = {},
+}: {
+  baseDir: string;
+  filterKeywords?: Array<string>;
+  customerHeaders?: Record<string, Record<string, any>>;
+}) {
   const match = (input: Request) => {
     return Array.isArray(filterKeywords)
       ? !filterKeywords.some((words) => input.url.includes(words))
@@ -23,7 +26,6 @@ export function mockStaticServer(
     if (isAbsolute(req.url)) {
       pathname = new URL(req.url).pathname;
     }
-
     const fullDir = path.resolve(baseDir, `./${pathname}`);
     const { ext } = path.parse(fullDir);
     const miniType =
@@ -40,6 +42,7 @@ export function mockStaticServer(
       body: fs.readFileSync(fullDir, 'utf-8'),
       headers: {
         'Content-Type': miniType,
+        ...(customerHeaders[pathname] || {}),
       },
     });
   });

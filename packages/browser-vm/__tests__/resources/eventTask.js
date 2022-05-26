@@ -1,9 +1,9 @@
 setTimeout(() => {
-  window.execOrder.push('second macro task');
+  window.execOrder.push('macro task');
 });
 
 Promise.resolve().then(() => {
-  window.execOrder.push('second micro task');
+  window.execOrder.push('micro task');
 });
 
-window.execOrder.push('second normal task');
+window.execOrder.push('normal task');

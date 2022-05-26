@@ -6,6 +6,7 @@ import {
 } from '@garfish/utils';
 import { mockStaticServer } from '@garfish/test-suite';
 import Garfish from '../src/index';
+import assert from 'assert';
 
 describe('Core: appInstance', () => {
   let GarfishInstance: Garfish;
@@ -17,7 +18,9 @@ describe('Core: appInstance', () => {
   const vue3SubAppEntry = './resources/vue3App.html';
   const asyncProviderApp = './resources/asyncProviderApp.html';
 
-  mockStaticServer(__dirname);
+  mockStaticServer({
+    baseDir: __dirname,
+  });
 
   beforeEach(() => {
     container = document.createElement('div');
@@ -36,6 +39,7 @@ describe('Core: appInstance', () => {
       domGetter: '#container',
     });
 
+    assert(app, 'app should be defined');
     await app.mount();
     expect(GarfishInstance.activeApps[0]).toBe(app);
 
