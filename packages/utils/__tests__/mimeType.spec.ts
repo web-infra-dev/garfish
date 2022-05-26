@@ -87,7 +87,10 @@ describe('Garfish shared mimeType', () => {
     expect(isJsType({ type: 'application/a' })).toBe(false);
 
     expect(
-      isJsType({ type: 'application/json', src: '/hello?_callback=1' }),
+      isJsType({
+        type: 'application/json',
+        src: 'localhost:2000/hello?_callback=1',
+      }),
     ).toBe(true);
     expect(isJsType({ src: '/hello?_callback=1' })).toBe(false);
 
