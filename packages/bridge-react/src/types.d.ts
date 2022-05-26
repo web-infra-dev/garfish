@@ -37,9 +37,6 @@ export type OptionalType<T, U, E> = {
   errorBoundary: ErrorBoundary<E>;
   renderResults: Record<string, U>;
   renderType: RenderTypes | (() => RenderTypes);
-  errorBoundaryClass:
-    | HTMLElement
-    | { (this: any, props: any): void; prototype: any };
   el: string;
   canUpdate: boolean; // by default, allow parcels created with garfish-react-bridge to be updated
   suppressComponentDidCatchWarning: boolean;

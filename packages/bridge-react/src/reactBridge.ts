@@ -17,7 +17,6 @@ const defaultOpts = {
   // optional opts
   renderType: undefined,
   errorBoundary: undefined,
-  errorBoundaryClass: undefined,
   el: undefined,
   canUpdate: true, // by default, allow parcels created with garfish-react-bridge to be updated
   suppressComponentDidCatchWarning: false,
@@ -218,14 +217,9 @@ function getElementToRender(opts: Options, appInfo: AppInfo) {
     );
     let elementToRender = rootComponentElement;
 
-    if (opts.errorBoundary || opts.errorBoundaryClass) {
-      opts.errorBoundaryClass =
-        opts.errorBoundaryClass ||
-        opts.errorBoundaryClass ||
-        createErrorBoundary(opts);
-
+    if (opts.errorBoundary) {
       elementToRender = opts.React.createElement(
-        opts.errorBoundaryClass as any,
+        createErrorBoundary(opts) as any,
         appInfo,
         elementToRender,
       );

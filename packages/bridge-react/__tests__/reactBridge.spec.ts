@@ -53,7 +53,7 @@ describe('react-bridge', () => {
 
     $createElement = jest.fn();
     $render = jest.fn();
-    rootComponent = {};
+    rootComponent = jest.fn();
     loadRootComponent = jest.fn();
   });
 
@@ -207,7 +207,6 @@ describe('react-bridge', () => {
     const opts = {
       React,
       ReactDOM,
-      rootComponent,
       loadRootComponent,
     };
     opts.loadRootComponent.mockReturnValue(Promise.resolve({}));
@@ -248,7 +247,7 @@ describe('react-bridge', () => {
     expect(React.createElement.mock.calls[0][0]).not.toBe(rootComponent);
   });
 
-  it(' when the `rootComponent` and `loadRootComponent` are both provided, and `loadRootComponent` throw exception ', async () => {
+  it('when the `rootComponent` and `loadRootComponent` are both provided, and `loadRootComponent` throw error, the react-dom render will be stopped.', async () => {
     loadRootComponent.mockReturnValue(Promise.reject('Error!'));
     const opts = {
       React,

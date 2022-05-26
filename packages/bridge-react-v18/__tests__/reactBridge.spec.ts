@@ -66,7 +66,7 @@ describe('react-bridge', () => {
     $createElement = jest.fn();
     $render = jest.fn();
     $unmount = jest.fn();
-    rootComponent = {};
+    rootComponent = jest.fn();
     loadRootComponent = jest.fn();
     errorBoundary = jest.fn();
   });
@@ -84,17 +84,9 @@ describe('react-bridge', () => {
     expect(() => reactBridge({ createRoot } as any)).toThrow();
     expect(() => reactBridge({ loadRootComponent })).not.toThrow();
     expect(() => reactBridge({ rootComponent })).not.toThrow();
-    expect(() =>
-      reactBridge({ el: $el, rootComponent, loadRootComponent }),
-    ).not.toThrow();
-
-    expect(() =>
-      reactBridge({ createRoot, rootComponent, loadRootComponent }),
-    ).not.toThrow();
-
-    expect(() =>
-      reactBridge({ hydrateRoot, rootComponent, loadRootComponent }),
-    ).not.toThrow();
+    expect(() => reactBridge({ el: $el, rootComponent })).not.toThrow();
+    expect(() => reactBridge({ createRoot, rootComponent })).not.toThrow();
+    expect(() => reactBridge({ hydrateRoot, rootComponent })).not.toThrow();
 
     expect(() =>
       reactBridge({
@@ -102,7 +94,6 @@ describe('react-bridge', () => {
         hydrateRoot,
         el: $el,
         rootComponent,
-        loadRootComponent,
       }),
     ).not.toThrow();
 
@@ -111,7 +102,6 @@ describe('react-bridge', () => {
         createRoot,
         hydrateRoot,
         el: $el,
-        rootComponent,
         loadRootComponent,
         errorBoundary,
       }),
@@ -199,7 +189,6 @@ describe('react-bridge', () => {
     const opts = {
       React,
       createRoot,
-      rootComponent,
       loadRootComponent,
     };
 
@@ -215,7 +204,6 @@ describe('react-bridge', () => {
     const opts = {
       React,
       createRoot,
-      rootComponent,
       loadRootComponent,
     };
     opts.loadRootComponent.mockReturnValue(Promise.resolve({}));
