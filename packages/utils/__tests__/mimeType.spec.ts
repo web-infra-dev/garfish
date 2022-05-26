@@ -41,9 +41,9 @@ describe('Garfish shared mimeType', () => {
     expect(isCssType({ type: '_/css' })).toBe(false);
     expect(isCssType({ type: 'text/css' })).toBe(true);
 
-    expect(isHtmlType({ type: '_/css', src: '/index.css' })).toBe(true);
-    expect(isHtmlType({ src: '/index.css' })).toBe(true);
-    expect(isHtmlType({ src: '/index.js' })).toBe(false);
+    expect(isCssType({ type: '_/css', src: '/index.css' })).toBe(true);
+    expect(isCssType({ src: '/index.css' })).toBe(true);
+    expect(isCssType({ src: '/index.js' })).toBe(false);
   });
 
   it('isHtmlType', () => {
