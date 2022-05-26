@@ -10,7 +10,7 @@ import { AppInfo } from '@garfish/bridge-react';
 import { prefixCls } from '../../constant';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { render } from '../../index';
-export const SubAppContext = createContext({} as AppInfo);
+export const SubAppContext = createContext<AppInfo>({} as AppInfo);
 
 const LazyComponent = React.lazy(() => import('../lazyComponent'));
 

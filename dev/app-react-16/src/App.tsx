@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Switch, Route, NavLink, useLocation } from 'react-router-dom';
 import { Layout } from '@arco-design/web-react';
-import { AppInfo } from '@garfish/bridge-react';
 import logo from './logo.svg';
 import './App.less';
 import Sandbox from './sandbox';
@@ -27,7 +26,7 @@ const App = () => {
 
   return (
     <SubAppContext.Consumer>
-      {(appInfo: AppInfo) => {
+      {(appInfo) => {
         return (
           <Content>
             <div className="App">

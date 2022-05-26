@@ -13,9 +13,9 @@ import PageNotFound from './PageNotFound';
 import './App.less';
 
 export const prefixCls = 'sub-app-react16';
-export const SubAppContext = createContext({} as AppInfo);
+export const SubAppContext = createContext<AppInfo>({} as AppInfo);
 
-const RootComponent = (appInfo: AppInfo) => {
+const RootComponent = (appInfo) => {
   const routes = (
     <Switch>
       <Route exact path="/" component={() => <Redirect to="/home" />} />

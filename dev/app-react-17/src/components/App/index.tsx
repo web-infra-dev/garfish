@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { AppInfo } from '@garfish/bridge-react';
 import { Layout, Grid, Modal, Menu } from '@arco-design/web-react';
 import CardItem from '../CardItem';
 import { SubAppContext } from '../root';
@@ -35,7 +34,7 @@ const App = () => {
 
   return (
     <SubAppContext.Consumer>
-      {(appInfo: AppInfo) => {
+      {(appInfo) => {
         return (
           <Content>
             <Row
