@@ -10,8 +10,7 @@ import { reactBridge } from '@garfish/bridge-react';
 function App() {
   return <div>content</div>;
 }
-
-reactBridge({
+export const provider = reactBridge({
   el: '#root',
   rootComponent: App,
 });

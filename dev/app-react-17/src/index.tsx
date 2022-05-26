@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import { reactBridge } from '@garfish/bridge-react';
+import { reactBridge, AppInfo } from '@garfish/bridge-react';
 import RootComponent from './components/root';
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -23,7 +23,6 @@ export const render = () =>
 //       ReactDOM.render(<RootComponent {...props} />, root);
 //     },
 //     destroy({ dom }) {
-//       console.log('-------destroy');
 //       window?.Garfish.channel.removeListener('stateChange', render);
 //       ReactDOM.unmountComponentAtNode(
 //         dom ? dom.querySelector('#root') : document.querySelector('#root'),
@@ -34,9 +33,8 @@ export const render = () =>
 
 export const provider = reactBridge({
   el: '#root', //mount node
-  rootComponent: RootComponent, // a class or stateless function component
   // a promise that resolves with the react component. Wait for it to resolve before mounting
-  loadRootComponent: (appInfo) => {
+  loadRootComponent: (appInfo: AppInfo) => {
     _root = getRootDom(appInfo.dom);
     _props = appInfo;
     return Promise.resolve(() => <RootComponent {...appInfo} />);

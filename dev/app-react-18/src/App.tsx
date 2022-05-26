@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Layout } from '@arco-design/web-react';
 import logo from './logo.svg';
 import './App.less';
+import { AppInfo } from '@garfish/bridge-react-v18';
 // import { AppInfo } from '@garfish/bridge-react-v18';
 export const SubAppContext = createContext({});
 const Content = Layout.Content;

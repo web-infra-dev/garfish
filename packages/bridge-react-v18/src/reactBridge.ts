@@ -13,7 +13,7 @@ type Options = UserOptions<
   typeof createRoot,
   typeof hydrateRoot,
   Root,
-  React.ComponentType,
+  any,
   React.ReactNode
 >;
 
@@ -213,6 +213,7 @@ function getElementToRender(opts: Options, appInfo: AppInfo) {
       opts.errorBoundaryClass ||
       opts.errorBoundaryClass ||
       createErrorBoundary(opts);
+
     elementToRender = opts.React.createElement(
       opts.errorBoundaryClass as any,
       appInfo,

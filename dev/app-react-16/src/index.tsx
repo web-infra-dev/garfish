@@ -25,9 +25,6 @@ import ErrorBoundary from './ErrorBoundary';
 export const provider = reactBridge({
   el: '#root',
   rootComponent: RootComponent,
-  loadRootComponent: (props) => {
-    return Promise.resolve(() => <RootComponent {...props} />);
-  },
   errorBoundary: () => <ErrorBoundary />,
 });
 

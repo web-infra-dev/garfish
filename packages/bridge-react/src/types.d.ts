@@ -7,15 +7,14 @@ export type AppInfo = {
 };
 
 export type LoadRootComponent<T> = (opts: AppInfo) => Promise<T>;
-
 export type TypeComponent<T> =
   | {
-      rootComponent: T | null;
-      loadRootComponent?: LoadRootComponent<T> | null;
+      rootComponent: T;
+      loadRootComponent?: LoadRootComponent<T>;
     }
   | {
-      rootComponent?: T | null;
-      loadRootComponent: LoadRootComponent<T> | null;
+      rootComponent?: T;
+      loadRootComponent: LoadRootComponent<T>;
     };
 
 export type ErrorBoundary<T> = (

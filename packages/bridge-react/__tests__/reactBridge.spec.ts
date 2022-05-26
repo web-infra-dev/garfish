@@ -72,20 +72,11 @@ describe('react-bridge', () => {
     expect(() => reactBridge({ el: $el, loadRootComponent })).not.toThrow();
 
     expect(() =>
-      reactBridge({ rootComponent, loadRootComponent }),
-    ).not.toThrow();
-
-    expect(() =>
-      reactBridge({ el: rootComponent, loadRootComponent }),
-    ).not.toThrow();
-
-    expect(() =>
       reactBridge({
         React,
         ReactDOM,
         el: $el,
         rootComponent,
-        loadRootComponent,
       }),
     ).not.toThrow();
   });
@@ -212,7 +203,7 @@ describe('react-bridge', () => {
     expect(opts.loadRootComponent).toHaveBeenCalled();
   });
 
-  it('loadRootComponent function will recieve the props provided at mount', async () => {
+  it('loadRootComponent function will receive the props provided at mount', async () => {
     const opts = {
       React,
       ReactDOM,
@@ -236,6 +227,41 @@ describe('react-bridge', () => {
     lifeCycles.destroy({ ...appInfo, props });
   });
 
+  it(' when the `rootComponent` and `loadRootComponent` are both provided, return the component after `loadRootComponent` resolved.', async () => {
+    const mainApp = jest.fn(() => {});
+    loadRootComponent.mockReturnValue(Promise.resolve(mainApp));
+    const opts = {
+      React,
+      ReactDOM,
+      rootComponent,
+      loadRootComponent,
+    };
+
+    const provider = reactBridge(opts);
+    const lifeCycles = await provider(appInfo, props);
+
+    lifeCycles.render({ ...appInfo, props });
+    expect(loadRootComponent).toHaveBeenCalled();
+    expect(loadRootComponent.mock.calls[0][0]).toEqual({ ...appInfo, props });
+    expect(React.createElement).toHaveBeenCalled();
+    expect(React.createElement.mock.calls[0][0]).toBe(mainApp);
+    expect(React.createElement.mock.calls[0][0]).not.toBe(rootComponent);
+  });
+
+  it(' when the `rootComponent` and `loadRootComponent` are both provided, and `loadRootComponent` throw exception ', async () => {
+    loadRootComponent.mockReturnValue(Promise.reject('Error!'));
+    const opts = {
+      React,
+      ReactDOM,
+      rootComponent,
+      loadRootComponent,
+    };
+
+    const provider = reactBridge(opts);
+    provider(appInfo, props).catch((e) => expect(e).toMatch('Error!'));
+    expect(React.createElement).not.toHaveBeenCalled();
+  });
+
   describe('opts.el', () => {
     it("mounts into the div you provided in the opts.el if you provide an 'el' in opts", async () => {
       const opts = {
@@ -255,7 +281,7 @@ describe('react-bridge', () => {
       expect(React.createElement).toHaveBeenCalled();
       expect(document.getElementById('test_el')).toBeInTheDocument();
       expect(document.getElementById('test_el')).not.toBeNull;
-      expect(document.getElementById('test_el').children).not.toBeNull;
+      expect(document.getElementById('test_el')?.children).not.toBeNull;
       expect(document.getElementById('app')).toBeNull;
     });
 
@@ -272,7 +298,7 @@ describe('react-bridge', () => {
       lifeCycles.render({ ...appInfo, props });
       expect(React.createElement).toHaveBeenCalled();
       expect(document.getElementById('app')).not.toBeNull;
-      expect(document.getElementById('app').children).not.toBeNull;
+      expect(document.getElementById('app')?.children).not.toBeNull;
     });
   });
 });

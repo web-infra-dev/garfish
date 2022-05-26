@@ -7,17 +7,12 @@ import * as ReactDOM from 'react-dom';
 import type { UserOptions, AppInfo } from './types';
 
 type typeReact = typeof React | undefined;
-type Options = UserOptions<
-  typeof React,
-  typeof ReactDOM,
-  React.ComponentType,
-  React.ReactNode
->;
+type Options = UserOptions<typeof React, typeof ReactDOM, any, React.ReactNode>;
 
 const defaultOpts = {
   // required - one or the other or both
-  rootComponent: null,
-  loadRootComponent: null,
+  rootComponent: undefined,
+  loadRootComponent: undefined,
 
   // optional opts
   renderType: undefined,
@@ -60,6 +55,12 @@ export function reactBridge(this: any, userOptions: Options) {
     );
   }
 
+  if (opts.rootComponent && opts.loadRootComponent) {
+    console.warn(
+      'garfish-react-bridge: `RootComponent` will be ignored for the reason you have passed both `rootComponent` and `loadRootComponent`.',
+    );
+  }
+
   if (opts.errorBoundary && typeof opts.errorBoundary !== 'function') {
     throw Error(
       'The errorBoundary opt for garfish-react-bridge must either be omitted or be a function that returns React elements',
@@ -95,14 +96,19 @@ export function reactBridge(this: any, userOptions: Options) {
 function bootstrap(opts: Options, appInfo: AppInfo, props) {
   if (opts.loadRootComponent) {
     // They passed a promise that resolves with the react component. Wait for it to resolve before mounting
-    return opts
-      .loadRootComponent({
-        ...appInfo,
-        props,
-      })
-      .then((resolvedComponent) => {
-        opts.rootComponent = resolvedComponent;
-      });
+    try {
+      return opts
+        .loadRootComponent({
+          ...appInfo,
+          props,
+        })
+        .then((resolvedComponent) => {
+          opts.rootComponent = resolvedComponent;
+        });
+    } catch (error) {
+      console.error('error log by garfish: loadRootComponent error:', error);
+      throw new Error(error);
+    }
   } else {
     // This is a class or stateless function component
     return Promise.resolve();
@@ -207,7 +213,7 @@ function reactDomRender({ opts, elementToRender, domElement }) {
 function getElementToRender(opts: Options, appInfo: AppInfo) {
   if (opts.React) {
     const rootComponentElement = opts.React.createElement(
-      opts.rootComponent as any,
+      opts.rootComponent,
       appInfo,
     );
     let elementToRender = rootComponentElement;
@@ -217,15 +223,15 @@ function getElementToRender(opts: Options, appInfo: AppInfo) {
         opts.errorBoundaryClass ||
         opts.errorBoundaryClass ||
         createErrorBoundary(opts);
+
       elementToRender = opts.React.createElement(
         opts.errorBoundaryClass as any,
         appInfo,
         elementToRender,
       );
     }
-    return elementToRender;
+    return rootComponentElement;
   }
-  // return null;
 }
 
 function createErrorBoundary(opts: Options) {

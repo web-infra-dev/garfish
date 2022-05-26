@@ -32,7 +32,6 @@ function newRouter(basename) {
 }
 
 export const provider = vueBridge({
-  rootComponent: App,
   loadRootComponent: ({ basename, dom, appName, props }) => {
     console.log({ basename, dom, appName, props });
     store.dispatch('setBasename', basename);
