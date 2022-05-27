@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import type { UserOptions, AppInfo } from './types';
+import type { UserOptions, PropsInfo } from './types';
 
 type typeReact = typeof React | undefined;
 type Options = UserOptions<typeof React, typeof ReactDOM, any, React.ReactNode>;
@@ -92,7 +92,7 @@ export function reactBridge(this: any, userOptions: Options) {
   return provider;
 }
 
-function bootstrap(opts: Options, appInfo: AppInfo, props) {
+function bootstrap(opts: Options, appInfo: PropsInfo, props) {
   if (opts.loadRootComponent) {
     // They passed a promise that resolves with the react component. Wait for it to resolve before mounting
     try {
@@ -114,7 +114,7 @@ function bootstrap(opts: Options, appInfo: AppInfo, props) {
   }
 }
 
-function mount(opts: Options, appInfo: AppInfo) {
+function mount(opts: Options, appInfo: PropsInfo) {
   if (
     !opts.suppressComponentDidCatchWarning &&
     checkReactVersion(opts.React) &&
@@ -145,7 +145,7 @@ function mount(opts: Options, appInfo: AppInfo) {
   // opts.renderResults[appInfo.appName] = renderResult;
 }
 
-function unmount(opts: Options, appInfo: AppInfo) {
+function unmount(opts: Options, appInfo: PropsInfo) {
   if (opts.domElements) {
     opts.ReactDOM &&
       opts.ReactDOM.unmountComponentAtNode(opts.domElements[appInfo.appName]);
@@ -154,7 +154,7 @@ function unmount(opts: Options, appInfo: AppInfo) {
   }
 }
 
-// function update(opts, appInfo: AppInfo) {
+// function update(opts, appInfo: PropsInfo) {
 //   return new Promise((resolve) => {
 //     if (!opts.updateResolves[appInfo.appName]) {
 //       opts.updateResolves[appInfo.appName] = [];
@@ -205,7 +205,7 @@ function reactDomRender({ opts, elementToRender, domElement }) {
   return null;
 }
 
-function getElementToRender(opts: Options, appInfo: AppInfo) {
+function getElementToRender(opts: Options, appInfo: PropsInfo) {
   if (opts.React) {
     const rootComponentElement = opts.React.createElement(
       opts.rootComponent,
@@ -266,7 +266,7 @@ function createErrorBoundary(opts: Options) {
   return GarfishSubAppReactErrorBoundary;
 }
 
-function chooseDomElementGetter(opts: Options, appInfo: AppInfo) {
+function chooseDomElementGetter(opts: Options, appInfo: PropsInfo) {
   const { dom: container } = appInfo;
   let el;
   if (typeof opts.el === 'string') {

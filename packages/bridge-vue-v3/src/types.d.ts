@@ -1,4 +1,4 @@
-export type AppInfo = {
+export type PropsInfo = {
   appName: string;
   dom: Element | ShadowRoot | Document;
   basename: string;
@@ -6,7 +6,7 @@ export type AppInfo = {
   props: Record<string, any>;
 };
 
-export type LoadRootComponent<T> = (opts: AppInfo) => Promise<T>;
+export type LoadRootComponent<T> = (opts: PropsInfo) => Promise<T>;
 
 export type TypeComponent<T> =
   | {
@@ -24,7 +24,7 @@ export type OptionalType<T, K> = {
   appOptions: (
     opts: Record<string, any>,
   ) => Record<string, any> | Record<string, any>;
-  handleInstance: (vueInstance: K, opts: AppInfo) => void;
+  handleInstance: (vueInstance: K, opts: PropsInfo) => void;
 };
 
 export type UserOptions<T, U, K> = TypeComponent<U> &

@@ -2,11 +2,11 @@ import { SubAppContext } from '../root';
 import logo from './logo.svg';
 import './index.less';
 import { Button } from '@arco-design/web-react';
-import { AppInfo } from '@garfish/bridge-react';
+import { PropsInfo } from '@garfish/bridge-react';
 
 const Home = () => (
   <SubAppContext.Consumer>
-    {(appInfo: AppInfo) => {
+    {(appInfo: PropsInfo) => {
       return (
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />

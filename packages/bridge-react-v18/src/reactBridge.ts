@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { createRoot, hydrateRoot, Root } from 'react-dom/client';
-import type { UserOptions, AppInfo } from './types';
+import type { UserOptions, PropsInfo } from './types';
 
 type typeReact = typeof React;
 
@@ -75,9 +75,9 @@ export function reactBridge(this: any, userOpts: Options) {
   }
 
   const providerLifeCycle = {
-    render: (appInfo: AppInfo) => mount.call(this, opts, appInfo),
-    destroy: (appInfo: AppInfo) => unmount.call(this, opts, appInfo),
-    // update: (appInfo: AppInfo) =>
+    render: (appInfo: PropsInfo) => mount.call(this, opts, appInfo),
+    destroy: (appInfo: PropsInfo) => unmount.call(this, opts, appInfo),
+    // update: (appInfo: PropsInfo) =>
     //   opts.canUpdate && update.call(this, opts, appInfo),
   };
 
@@ -113,7 +113,7 @@ function bootstrap(opts: Options, appInfo, props) {
   }
 }
 
-function mount(opts: Options, appInfo: AppInfo) {
+function mount(opts: Options, appInfo: PropsInfo) {
   if (
     !opts.suppressComponentDidCatchWarning &&
     atLeastReact18(opts.React) &&
@@ -142,14 +142,14 @@ function mount(opts: Options, appInfo: AppInfo) {
   opts.renderResults[appInfo.appName] = renderResult;
 }
 
-function unmount(opts: Options, appInfo: AppInfo) {
+function unmount(opts: Options, appInfo: PropsInfo) {
   const root = opts.renderResults[appInfo.appName];
   root.unmount();
   delete opts.domElements[appInfo.appName];
   delete opts.renderResults[appInfo.appName];
 }
 
-// function update(opts: Options, appInfo: AppInfo) {
+// function update(opts: Options, appInfo: PropsInfo) {
 //   return new Promise((resolve) => {
 //     if (!opts.updateResolves[appInfo.appName]) {
 //       opts.updateResolves[appInfo.appName] = [];
@@ -196,7 +196,7 @@ function callCreateRoot({ opts, elementToRender, domElement }) {
   return root;
 }
 
-function getElementToRender(opts: Options, appInfo: AppInfo) {
+function getElementToRender(opts: Options, appInfo: PropsInfo) {
   const rootComponentElement = opts.React.createElement(
     opts.rootComponent as any,
     appInfo,
@@ -217,7 +217,7 @@ function getElementToRender(opts: Options, appInfo: AppInfo) {
 function createErrorBoundary(opts: Options) {
   // Avoiding babel output for class syntax and super()
   // to avoid bloat
-  function GarfishSubAppReactErrorBoundary(this: any, appInfo: AppInfo) {
+  function GarfishSubAppReactErrorBoundary(this: any, appInfo: PropsInfo) {
     // super
     opts.React.Component.apply(this, arguments);
 
@@ -258,7 +258,7 @@ function createErrorBoundary(opts: Options) {
   return GarfishSubAppReactErrorBoundary;
 }
 
-function chooseDomElementGetter(opts: Options, appInfo: AppInfo) {
+function chooseDomElementGetter(opts: Options, appInfo: PropsInfo) {
   const { dom: container } = appInfo;
   let el;
   if (typeof opts.el === 'string') {

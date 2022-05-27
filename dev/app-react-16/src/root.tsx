@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
 import { ConfigProvider } from '@arco-design/web-react';
-import { AppInfo } from '@garfish/bridge-react';
+import { PropsInfo } from '@garfish/bridge-react';
 import {
   BrowserRouter,
   Switch,
@@ -13,7 +13,7 @@ import PageNotFound from './PageNotFound';
 import './App.less';
 
 export const prefixCls = 'sub-app-react16';
-export const SubAppContext = createContext<AppInfo>({} as AppInfo);
+export const SubAppContext = createContext<PropsInfo>({} as PropsInfo);
 
 const RootComponent = (appInfo) => {
   const routes = (

@@ -6,11 +6,11 @@ import Detail from '../detail';
 import List from '../list';
 import PageNotFound from '../PageNotFound';
 import { BrowserRouter } from 'react-router-dom';
-import { AppInfo } from '@garfish/bridge-react';
+import { PropsInfo } from '@garfish/bridge-react';
 import { prefixCls } from '../../constant';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { render } from '../../index';
-export const SubAppContext = createContext<AppInfo>({} as AppInfo);
+export const SubAppContext = createContext<PropsInfo>({} as PropsInfo);
 
 const LazyComponent = React.lazy(() => import('../lazyComponent'));
 
