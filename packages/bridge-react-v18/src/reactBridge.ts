@@ -168,10 +168,7 @@ function atLeastReact18(React: typeReact) {
     typeof React.version === 'string' &&
     React.version.indexOf('.') >= 0
   ) {
-    const majorVersionString = React.version.slice(
-      0,
-      React.version.indexOf('.'),
-    );
+    const majorVersionString = React.version.split('.')[0];
     try {
       return Number(majorVersionString) >= 18;
     } catch (err) {
@@ -242,11 +239,7 @@ function createErrorBoundary(opts: Options) {
     if (this.state.caughtError) {
       const errorBoundary = opts.errorBoundary;
 
-      return errorBoundary(
-        this.state.caughtError,
-        this.state.caughtErrorInfo,
-        this.props,
-      );
+      return errorBoundary(this.state.caughtError, this.props);
     } else {
       return this.props.children;
     }

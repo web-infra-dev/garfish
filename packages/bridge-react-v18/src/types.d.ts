@@ -19,8 +19,7 @@ export type TypeComponent<T> =
     };
 
 export type ErrorBoundary<T> = (
-  caughtError: string,
-  caughtErrorInfo: any,
+  caughtError: Error | any,
   props: any,
 ) => T | null;
 

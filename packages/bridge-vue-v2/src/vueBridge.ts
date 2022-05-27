@@ -3,40 +3,9 @@
 // https://github.com/single-spa/single-spa-vue/blob/main/src/single-spa-vue.js
 
 import * as vue from 'vue';
+import { UserOptions } from './types';
 
-type optionsType = {
-  appName: string;
-  dom: Element | ShadowRoot | Document;
-  basename: string;
-  props: Record<string, any>;
-  appInfo: Record<string, any>;
-};
-
-interface ConfigOpts {
-  canUpdate: boolean; // by default, allow parcels created with garfish-react-bridge to be updated
-  appOptions: (
-    opts: Record<string, any>,
-  ) => Record<string, any> | Record<string, any>;
-  handleInstance: (
-    vueInstance: InstanceType<vue.VueConstructor>,
-    opts: optionsType,
-  ) => void;
-}
-
-type loadRootComponentType = (opts: optionsType) => Promise<vue.Component>;
-
-type componentOpts =
-  | {
-      rootComponent: vue.Component;
-      loadRootComponent?: loadRootComponentType;
-    }
-  | {
-      rootComponent?: vue.Component;
-      loadRootComponent: loadRootComponentType;
-    };
-
-type OptsTypes = { Vue?: vue.VueConstructor } & componentOpts &
-  Partial<ConfigOpts>;
+type Options = UserOptions<vue.VueConstructor, vue.Component>;
 
 const defaultOpts = {
   VueRouter: null,
@@ -59,7 +28,7 @@ declare global {
   }
 }
 
-export function vueBridge(this: any, userOpts: OptsTypes) {
+export function vueBridge(this: any, userOpts: Options) {
   if (typeof userOpts !== 'object') {
     throw new Error('garfish-vue-bridge: requires a configuration object');
   }
@@ -110,7 +79,7 @@ export function vueBridge(this: any, userOpts: OptsTypes) {
   return provider;
 }
 
-function bootstrap(opts: OptsTypes, appInfo, props) {
+function bootstrap(opts: Options, appInfo, props) {
   if (opts.loadRootComponent) {
     return opts
       .loadRootComponent({
@@ -130,7 +99,7 @@ function resolveAppOptions(opts, props) {
   return { ...opts.appOptions };
 }
 
-function mount(opts: OptsTypes, mountedInstances, props) {
+function mount(opts: Options, mountedInstances, props) {
   const instance: any = {
     domEl: null,
     vueInstance: null,
@@ -189,7 +158,7 @@ function mount(opts: OptsTypes, mountedInstances, props) {
   return instance.vueInstance;
 }
 
-function update(opts: OptsTypes, mountedInstances, props) {
+function update(opts: Options, mountedInstances, props) {
   const instance = mountedInstances[props.appName];
 
   const appOptions = resolveAppOptions(opts, props);
@@ -203,7 +172,7 @@ function update(opts: OptsTypes, mountedInstances, props) {
   }
 }
 
-function unmount(opts: OptsTypes, mountedInstances, props) {
+function unmount(opts: Options, mountedInstances, props) {
   const instance = mountedInstances[props.appName];
 
   instance.vueInstance.$destroy();

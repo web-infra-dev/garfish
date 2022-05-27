@@ -14,6 +14,7 @@ function App() {
 }
 
 export const provider = vueBridge({
+  // rootComponent、loadRootComponent 传递一个即可。二者同时存在时，取 loadRootComponent 的返回值值作为 root component.
   rootComponent: App,
   loadRootComponent: ({ basename, dom, appName, props }) => {
     // do something async

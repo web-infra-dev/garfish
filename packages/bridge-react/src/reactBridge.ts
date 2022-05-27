@@ -176,11 +176,7 @@ function checkReactVersion(React: typeReact) {
     typeof React.version === 'string' &&
     React.version.indexOf('.') >= 0
   ) {
-    const majorVersionString = React.version.slice(
-      0,
-      React.version.indexOf('.'),
-    );
-
+    const majorVersionString = React.version.split('.')[0];
     try {
       return (
         Number(majorVersionString) >= 16 && Number(majorVersionString) < 18
@@ -251,15 +247,7 @@ function createErrorBoundary(opts: Options) {
   GarfishSubAppReactErrorBoundary.prototype.render = function () {
     if (this.state.caughtError) {
       const errorBoundary = opts.errorBoundary;
-
-      return (
-        errorBoundary &&
-        errorBoundary(
-          this.state.caughtError,
-          this.state.caughtErrorInfo,
-          this.props,
-        )
-      );
+      return errorBoundary && errorBoundary(this.state.caughtError, this.props);
     } else {
       return this.props.children;
     }

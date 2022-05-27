@@ -18,8 +18,7 @@ export type TypeComponent<T> =
     };
 
 export type ErrorBoundary<T> = (
-  caughtError: boolean,
-  info: string,
+  caughtError: Error | any,
   props: any,
 ) => T | null;
 

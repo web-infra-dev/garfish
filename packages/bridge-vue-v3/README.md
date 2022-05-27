@@ -15,10 +15,6 @@ function App() {
 
 export const provider = vueBridge({
   rootComponent: App,
-  loadRootComponent: ({ basename, dom, appName, props }) => {
-    // do something async
-    return Promise.resolve(App);
-  },
   appOptions: ({ basename, dom, appName, props }) => {
     // pass the options to createApp. check hhttps://vuejs.org/api/application.html#createApp
     return {
