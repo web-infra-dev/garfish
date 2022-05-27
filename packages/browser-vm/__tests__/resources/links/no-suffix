@@ -1,0 +1,5 @@
+/* no-suffix test case */
+#root{
+  color: red;
+  background: yellow;
+}

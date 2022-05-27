@@ -16,6 +16,7 @@ import {
   __REMOVE_NODE__,
   isJsType,
   isCssType,
+  error,
 } from '@garfish/utils';
 import { rootElm } from '../utils';
 import { Sandbox } from '../sandbox';
@@ -96,15 +97,21 @@ export class DynamicNodeProcessor {
         const fetchUrl = baseUrl ? transformUrl(baseUrl, href) : href;
 
         this.sandbox.loader
-          .load<StyleManager>({ scope: namespace, url: fetchUrl })
+          .load<StyleManager>({
+            scope: namespace,
+            url: fetchUrl,
+            defaultContentType: type,
+          })
           .then(({ resourceManager: styleManager }) => {
             if (styleManager) {
-              this.dispatchEvent('load');
               styleManager.correctPath();
               callback(styleManager.renderAsStyleElement());
             } else {
-              warn(`Invalid resource type "${type}", "${href}"`);
+              warn(
+                `Invalid resource type "${type}", "${href}" can't generate styleManager`,
+              );
             }
+            this.dispatchEvent('load');
           })
           .catch((e) => {
             __DEV__ && warn(e);
@@ -156,10 +163,12 @@ export class DynamicNodeProcessor {
                   isModule,
                   noEntry: true,
                 });
-                this.dispatchEvent('load');
               } else {
-                warn(`Invalid resource type "${type}", "${src}"`);
+                warn(
+                  `Invalid resource type "${type}", "${src}" can't generate scriptManager`,
+                );
               }
+              this.dispatchEvent('load');
             },
             (e) => {
               __DEV__ && warn(e);

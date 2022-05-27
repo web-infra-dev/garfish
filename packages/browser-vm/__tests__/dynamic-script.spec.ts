@@ -8,10 +8,10 @@ declare global {
 }
 
 describe('Sandbox: dynamic script', () => {
-  const eventTaskScriptUrl = '/resources/eventTask.js';
-  const dynamicInjectJsonp = '/resources/jsonp';
-  const dynamicContentTypeJsonp = '/resources/contentTypeJsonp';
-  const dynamicInjectNoTypeJsonp = '/resources/noTypeJsonp?callback_';
+  const eventTaskScriptUrl = '/resources/scripts/event-task.js';
+  const dynamicInjectJsonp = '/resources/scripts/jsonp';
+  const dynamicContentTypeJsonp = '/resources/scripts/content-type-jsonp';
+  const dynamicInjectNoTypeJsonp = '/resources/scripts/no-type-jsonp?callback_';
 
   mockStaticServer({
     baseDir: __dirname,
@@ -22,7 +22,7 @@ describe('Sandbox: dynamic script', () => {
       [dynamicContentTypeJsonp]: {
         'Content-Type': 'text/javascript',
       },
-      '/resources/noTypeJsonp': {
+      [dynamicInjectNoTypeJsonp.split('?')[0]]: {
         'Content-Type': 'application/json',
       },
     },
