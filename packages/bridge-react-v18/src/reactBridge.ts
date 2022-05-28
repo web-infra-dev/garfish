@@ -5,6 +5,7 @@
 import * as React from 'react';
 import { createRoot, hydrateRoot, Root } from 'react-dom/client';
 import type { UserOptions, PropsInfo } from './types';
+import { warn } from '@garfish/utils';
 
 type typeReact = typeof React;
 
@@ -120,11 +121,11 @@ function mount(opts: Options, appInfo: PropsInfo) {
     !opts.errorBoundary
   ) {
     if (!opts.rootComponent.prototype) {
-      console.warn(
+      warn(
         `garfish-react-bridge: ${appInfo.appName}'s rootComponent does not implement an error boundary.  If using a functional component, consider providing an opts.errorBoundary to reactBridge(opts).`,
       );
     } else if (!opts.rootComponent.prototype.componentDidCatch) {
-      console.warn(
+      warn(
         `garfish-react-bridge: ${appInfo.appName}'s rootComponent should implement componentDidCatch to avoid accidentally unmounting the entire garfish application.`,
       );
     }

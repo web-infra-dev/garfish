@@ -5,6 +5,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import type { UserOptions, PropsInfo } from './types';
+import { warn } from '@garfish/utils';
 
 type typeReact = typeof React | undefined;
 type Options = UserOptions<typeof React, typeof ReactDOM, any, React.ReactNode>;
@@ -55,7 +56,7 @@ export function reactBridge(this: any, userOptions: Options) {
   }
 
   if (opts.rootComponent && opts.loadRootComponent) {
-    console.warn(
+    warn(
       'garfish-react-bridge: `RootComponent` will be ignored for the reason you have passed both `rootComponent` and `loadRootComponent`.',
     );
   }
@@ -121,14 +122,14 @@ function mount(opts: Options, appInfo: PropsInfo) {
     !opts.errorBoundary
   ) {
     if (opts.rootComponent && !opts.rootComponent.prototype) {
-      console.warn(
+      warn(
         `garfish-react-bridge: ${appInfo.appName}'s rootComponent does not implement an error boundary.  If using a functional component, consider providing an opts.errorBoundary to reactBridge(opts).`,
       );
     } else if (
       opts.rootComponent &&
       !opts.rootComponent.prototype.componentDidCatch
     ) {
-      console.warn(
+      warn(
         `garfish-react-bridge: ${appInfo.appName}'s rootComponent should implement componentDidCatch to avoid accidentally unmounting the entire garfish application.`,
       );
     }
