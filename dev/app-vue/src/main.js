@@ -5,7 +5,7 @@ import VueRouter from 'vue-router';
 import HelloWorld from './components/HelloWorld.vue';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import { vueBridge } from '@garfish/bridge';
+import { vueBridge } from '@garfish/bridge-vue-v2';
 
 Vue.use(ElementUI);
 Vue.use(VueRouter);
@@ -21,7 +21,6 @@ function newRouter(basename) {
 }
 
 export const provider = vueBridge({
-  Vue,
   rootComponent: App,
   appOptions: ({ basename }) => ({
     el: '#app',
@@ -31,7 +30,6 @@ export const provider = vueBridge({
 });
 
 if (!window.__GARFISH__) {
-  console.log('hello world');
   const router = newRouter('/');
   new Vue({
     store,

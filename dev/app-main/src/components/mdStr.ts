@@ -56,21 +56,6 @@ function VueApp(basename) {
 \`\`\`
 `;
 
-export const channelStr = `
-\`\`\`javascript
-// 子应用注册监听
-useEffect(() => {
-  window?.Garfish?.channel.on('sayHello', handleMsg);
-  return () => {
-    window?.Garfish?.channel.removeListener('sayHello', handleMsg);
-  };
-}, []);
-
-// 主应用触发监听
-window?.Garfish?.channel.emit('sayHello', 'hello, i am main app');
-\`\`\`
-`;
-
 export const upgradeStr = `
 \`\`\`javascript
 ### 如何升级

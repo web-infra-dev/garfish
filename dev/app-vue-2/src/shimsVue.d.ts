@@ -1,8 +1,6 @@
 /* eslint-disable */
 declare module '*.vue' {
-  /* eslint-disable */
-  // eslint-disable-next-line
-  import type Vue from 'vue';
-  // eslint-disable-next-line
-  export default Vue;
+  import type { DefineComponent } from 'vue';
+  const component: DefineComponent<{}, {}, any>;
+  export default component;
 }

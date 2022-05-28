@@ -144,10 +144,8 @@ npm install @garfish/bridge --save
   <TabItem value="React" label="React" default>
 
 ```jsx
-import React from 'react';
-import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
-import { reactBridge } from '@garfish/bridge';
+import { reactBridge } from '@garfish/bridge-react';
 
 function App({ basename }) {
   return (
@@ -164,8 +162,6 @@ function App({ basename }) {
 }
 
 export const provider = reactBridge({
-  React,
-  ReactDOM,
   rootComponent: App,
   domElementGetter: '#root', // 应用的挂载点，如果子应用打包为 JS 入口，可不填写
 });
@@ -174,10 +170,9 @@ export const provider = reactBridge({
   </TabItem>
   <TabItem value="Vue" label="Vue">
 
-```jsx
-import Vue from 'vue';
+```js
 import App from './App.vue';
-import { vueBridge } from '@garfish/bridge';
+import { vueBridge } from '@garfish/bridge-vue-v2';
 
 function newRouter(basename) {
   const router = new VueRouter({
@@ -190,7 +185,6 @@ function newRouter(basename) {
 }
 
 export const provider = vueBridge({
-  Vue,
   rootComponent: App,
   appOptions: ({ basename }) => {
     const router = newRouter(basename);

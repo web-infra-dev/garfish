@@ -1,2 +1,2 @@
 export { reactBridge } from './reactBridge';
-export { vueBridge } from './vueBridge';
+export type { PropsInfo } from './types';

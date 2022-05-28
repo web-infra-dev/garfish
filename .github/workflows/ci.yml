@@ -73,6 +73,8 @@ jobs:
       run: pnpm install --filter=\!garfish-docs
     - name: build
       run:  pnpm build
+    - name: update hard link
+      run: pnpm install --filter=\!garfish-docs
     - name: Run cypress test
       uses: cypress-io/github-action@v2
       with:

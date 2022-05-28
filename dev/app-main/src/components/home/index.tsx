@@ -112,15 +112,6 @@ const HomePage = observer(({ store }) => {
           href="https://garfishjs.org/api/loadApp"
           markdownStr={loadAppStr}
         />
-
-        <CardItem
-          title="与子应用通信"
-          onClick={() =>
-            window?.Garfish?.channel.emit('sayHello', 'hello, i am main app')
-          }
-          href="https://garfishjs.org/api/channel"
-          markdownStr={channelStr}
-        />
       </Col>
 
       <Col span={16}>
