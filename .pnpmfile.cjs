@@ -1,5 +1,4 @@
 function readPackage(pkg, context) {
-  // console.log('----pkg.name', pkg);
   // vue-template-compiler use vue as devDependency and use file protocol
   if (pkg.name === 'vue-template-compiler' && pkg.version.startsWith('2.')) {
     pkg.devDependencies = {
