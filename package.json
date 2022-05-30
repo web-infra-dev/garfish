@@ -85,5 +85,8 @@
     "workspace-tools": "0.16.2",
     "zx": "4.2.0"
   },
-  "version": "1.7.0"
+  "version": "1.7.0",
+  "engines": {
+    "node": ">=16.14.0"
+  }
 }
