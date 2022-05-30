@@ -62,7 +62,7 @@
   "wireit": {
     "build": {
       "command": "cross-env NODE_ENV=production webpack --progress",
-      "files": ["src/**/*", "tsconfig.json", "package.json","../../packages/bridge/dist/**/*","webpack.config.js"],
+      "files": ["src/**/*", "tsconfig.json", "package.json","../../packages/bridge-react-v18/dist/**/*","webpack.config.js"],
       "output": ["dist/**"]
     }
   }
