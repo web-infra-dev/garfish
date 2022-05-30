@@ -796,7 +796,7 @@ importers:
       nodejieba: 2.5.2
       react: ^17.0.2
       react-dom: ^17.0.2
-      swiper: 8.1.6
+      swiper: 7.3.1
     dependencies:
       '@docusaurus/core': 2.0.0-beta.21_3af7098649c82e5120f5a2530829a9c4
       '@docusaurus/plugin-ideal-image': 2.0.0-beta.21_3af7098649c82e5120f5a2530829a9c4
@@ -812,7 +812,7 @@ importers:
       nodejieba: 2.5.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      swiper: 8.1.6
+      swiper: 7.3.1
 
 packages:
 
@@ -24586,8 +24586,8 @@ packages:
       stable: 0.1.8
     dev: false
 
-  /swiper/8.1.6:
-    resolution: {integrity: sha512-KqnqIBbIQaIiG/sK2ckcQZbqK38486WlvJe99s2KOCu8jOOQGra6cdShdI9LDyh8DALV/5nwycczFmmNWhxs2A==}
+  /swiper/7.3.1:
+    resolution: {integrity: sha512-YHa8uI22UwF9Q6F9tCDSai7/BJo8uVHKampKYAIShlFrWoHfM+sCCn24Yeq3oqIKZv2bfSULzXKsXmh0VpCNeQ==}
     engines: {node: '>= 4.7.0'}
     requiresBuild: true
     dependencies:
