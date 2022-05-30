@@ -14,7 +14,7 @@ order: 1
 
 子应用的导出提供通过 `@garfish/bridge` 的方式和自定义导出函数两种方式，我们将在下列 demo 案例中分别讲述。
 
-- [react 子应用](/guide/demo/react) （react 应用接入 demo）
-- [vue 子应用](/guide/demo/vue)（vue 应用接入 demo）
-- [vite 子应用](/guide/demo/vite)（vite 应用接入 demo）
-- [angular 子应用](/guide/demo/angular)（angular 应用接入 demo）
+- [react 子应用](/guide/demo/react)
+- [vue 子应用](/guide/demo/vue)
+- [vite 子应用](/guide/demo/vite)
+- [angular 子应用](/guide/demo/angular)

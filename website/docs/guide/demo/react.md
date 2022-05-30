@@ -6,7 +6,8 @@ order: 2
 
 import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
 
-本节我们将详细介绍 react 框架的应用作为子应用的接入步骤。
+本节我们将详细介绍 react 框架的应用作为子应用的接入步骤。[v16/17 demo](https://github.com/modern-js-dev/garfish/tree/main/dev/app-react-17)、[v18 demo](https://github.com/modern-js-dev/garfish/blob/main/dev/app-react-18)
+
 ## react 子应用接入步骤
 ### 1. bridge 依赖安装
 
@@ -195,7 +196,3 @@ if (!window.__GARFISH__) {
 
   </TabItem>
 </Tabs>
-
-
-
-
