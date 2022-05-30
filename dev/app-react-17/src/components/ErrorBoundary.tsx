@@ -1,4 +1,3 @@
-import React from 'react';
 import { Result } from '@arco-design/web-react';
 
 const Error = () => {

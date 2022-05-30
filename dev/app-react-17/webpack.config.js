@@ -1,3 +1,4 @@
+import path from 'path';
 import { DefinePlugin } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { getPublicPath, isDevelopment, getPort } from '../util';

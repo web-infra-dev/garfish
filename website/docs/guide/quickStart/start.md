@@ -30,7 +30,6 @@ npm install garfish --save
 
 ```js
 // index.js（主应用入口处）
-
 import Garfish from 'garfish';
 Garfish.run({
   basename: '/',
@@ -114,20 +113,11 @@ npm install @garfish/bridge --save
   <TabItem value="Webpack" label="使用 @garfish/bridge 接入" default>
 
 ```jsx
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { reactBridge } from '@garfish/bridge';
+import { reactBridge } from '@garfish/bridge-react';
 
 export const provider = reactBridge({
-  React,
-  ReactDOM,
   el: '#root',
   rootComponent: RootComponent,
-  loadRootComponent: ({ basename, dom, props }) => {
-    // do something...
-    return Promise.resolve(() => <RootComponent basename={basename} />);
-  },
-
   errorBoundary: () => <Error />,
 });
 ```
@@ -180,8 +170,9 @@ const RootComponent = ({ basename }) => {
     <BrowserRouter basename={basename}>
       <Routes>
         <Route path="/" element={<App />}>
-          <Route path="/home" element={<Home />}></Route>
+          <Route path="/home" element={<Home />} />
           <Route path="*" element={<PageNotFound />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   )

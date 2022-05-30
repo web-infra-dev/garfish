@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Switch, Route, NavLink, useLocation } from 'react-router-dom';
-import { Layout, Input } from '@arco-design/web-react';
-
+import { Layout } from '@arco-design/web-react';
 import logo from './logo.svg';
 import './App.less';
+import Sandbox from './sandbox';
 import { SubAppContext } from './root';
 
-import Sandbox from './sandbox';
-
 const Content = Layout.Content;
-
-type AppTypes = {
-  basename?: string;
-  store?: Record<string, any>;
-};
 
 const Index = () => {
   return <div style={{ marginBottom: '30px' }}>This is Home Page.</div>;
@@ -23,12 +16,7 @@ const About = () => {
   return <div style={{ marginBottom: '30px' }}>This is About Page. </div>;
 };
 
-export interface IProps {
-  basename?: string;
-  store?: Record<string, any>;
-}
-
-const App = ({ basename = '', store = {} }: AppTypes) => {
+const App = () => {
   const location = useLocation();
   const [isActive, setIsActive] = useState('home');
 
@@ -38,7 +26,7 @@ const App = ({ basename = '', store = {} }: AppTypes) => {
 
   return (
     <SubAppContext.Consumer>
-      {({ basename, store }: IProps) => {
+      {(appInfo) => {
         return (
           <Content>
             <div className="App">

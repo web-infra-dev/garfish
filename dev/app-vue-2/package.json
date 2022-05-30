@@ -2,7 +2,7 @@
   "name": "@garfish-dev/vue2",
   "private": true,
   "dependencies": {
-    "@garfish/bridge": "workspace:*",
+    "@garfish/bridge-vue-v2": "workspace:*",
     "@garfish/remote-module": "workspace:*",
     "garfish": "workspace:*",
     "mobx-vue": "^2.1.0",

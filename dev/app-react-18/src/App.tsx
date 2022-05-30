@@ -1,25 +1,16 @@
 import { useEffect, useState, createContext } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { AppInfo } from '@garfish/bridge-react-v18';
 import { Layout } from '@arco-design/web-react';
 import logo from './logo.svg';
 import './App.less';
 
+export const SubAppContext = createContext<AppInfo>({} as AppInfo);
 const Content = Layout.Content;
 
 export const prefixCls = 'sub-app-react18';
-export const SubAppContext = createContext({});
 
-type AppTypes = {
-  basename?: string;
-  store?: Record<string, any>;
-};
-
-export interface IProps {
-  basename?: string;
-  store?: Record<string, any>;
-}
-
-const App = ({ basename = '', store = {} }: AppTypes) => {
+const App = () => {
   const location = useLocation();
   const [isActive, setIsActive] = useState('home');
 
@@ -29,7 +20,7 @@ const App = ({ basename = '', store = {} }: AppTypes) => {
 
   return (
     <SubAppContext.Consumer>
-      {({ basename, store }: IProps) => {
+      {(appInfo) => {
         return (
           <Content>
             <div className="App">

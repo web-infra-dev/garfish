@@ -4,7 +4,7 @@ import { stateSymbol, createState } from './store.js';
 import App from './App.vue';
 import ToDoList from './components/todo.vue';
 import HelloGarfish from './components/HelloGarfish.vue';
-import { vueBridge } from '@garfish/bridge';
+import { vueBridge } from '@garfish/bridge-vue-v3';
 
 const routes = [
   { path: '/home', component: HelloGarfish },
@@ -19,22 +19,8 @@ function newRouter(basename) {
   return router;
 }
 
-// There is no running show that the main application execution run, you can perform in micro front-end environment rendering
-if (!window.__GARFISH__) {
-  const router = newRouter('/');
-  const app = createApp(App);
-  app.provide(stateSymbol, createState());
-  app.use(router);
-  app.mount('#app');
-}
-
 export const provider = vueBridge({
-  createApp,
   rootComponent: App,
-  loadRootComponent: ({ basename, dom, appName, props }) => {
-    console.log(basename, dom, appName, props);
-    return Promise.resolve(App);
-  },
   appOptions: ({ basename, dom, appName, props }) => {
     console.log(basename, dom, appName, props);
     return {
@@ -42,8 +28,8 @@ export const provider = vueBridge({
       render: () => h(App),
     };
   },
-  handleInstance: (vueInstance, { basename, dom, appName, props }) => {
-    console.log(basename, dom, appName, props);
+  handleInstance: (vueInstance, { basename, dom, appName, props, appInfo }) => {
+    console.log(basename, dom, appName, props, appInfo);
     vueInstance.use(newRouter(basename));
     vueInstance.provide(stateSymbol, createState());
   },
@@ -73,3 +59,12 @@ export const provider = vueBridge({
 //     },
 //   };
 // }
+
+// There is no running show that the main application execution run, you can perform in micro front-end environment rendering
+if (!window.__GARFISH__) {
+  const router = newRouter('/');
+  const app = createApp(App);
+  app.provide(stateSymbol, createState());
+  app.use(router);
+  app.mount('#app');
+}

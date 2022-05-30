@@ -2,7 +2,7 @@
   "name": "@garfish-dev/react18",
   "private": true,
   "dependencies": {
-    "@garfish/bridge": "workspace:*",
+    "@garfish/bridge-react-v18": "workspace:*",
     "babel-runtime": "^6.26.0",
     "history": "^5.1.0",
     "react": "18.1.0",

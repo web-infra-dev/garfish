@@ -16,7 +16,7 @@
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "changeset": "npx changeset",
-    "reset": "pnpm -r exec -- rm -rf node_modules && rm -rf node_modules",
+    "reset": "pnpm -r exec -- rm -rf node_modules && pnpm -r exec -- rm -rf dist && rm -rf node_modules",
     "setup": "cross-env DISABLE_GARFISH_CHECK_INTERNAL=true pnpm install",
     "ls-lint": "ls-lint",
     "lint": "eslint --ext .ts packages/*/*/src/**",
@@ -87,5 +87,5 @@
     "workspace-tools": "0.16.2",
     "zx": "4.2.0"
   },
-  "version": "1.5.5"
+  "version": "1.7.0"
 }

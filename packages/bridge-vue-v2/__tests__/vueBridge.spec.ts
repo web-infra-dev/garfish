@@ -12,8 +12,8 @@ interface Vue {
   $mount: (...args: Array<any>) => void;
 }
 
-describe('vue-bridge', () => {
-  let Vue,
+describe('vue-v2-bridge', () => {
+  let vue,
     props,
     appInfo,
     $destroy,
@@ -26,9 +26,9 @@ describe('vue-bridge', () => {
     loadRootComponent;
 
   beforeEach(() => {
-    Vue = jest.fn();
+    vue = jest.fn();
 
-    Vue.mockImplementation(function (this: Vue) {
+    vue.mockImplementation(function (this: Vue) {
       this.$destroy = $destroy;
       this.$mount = $mount;
       this.$el = $el;
@@ -66,26 +66,19 @@ describe('vue-bridge', () => {
   });
 
   it('throws an error when required parameters are not provided', () => {
-    expect(() => vueBridge({} as any)).toThrow();
-    expect(() => vueBridge({ Vue } as any)).not.toThrow();
-    expect(() => vueBridge({ Vue, rootComponent })).not.toThrow();
-    expect(() => vueBridge({ Vue, loadRootComponent })).not.toThrow();
+    expect(() => vueBridge({ rootComponent })).not.toThrow();
+    expect(() => vueBridge({ loadRootComponent })).not.toThrow();
+    expect(() => vueBridge({ rootComponent, loadRootComponent })).not.toThrow();
+    expect(() => vueBridge({ rootComponent, appOptions })).not.toThrow();
+    expect(() => vueBridge({ loadRootComponent, appOptions })).not.toThrow();
     expect(() =>
-      vueBridge({ Vue, rootComponent, loadRootComponent }),
-    ).not.toThrow();
-    expect(() => vueBridge({ Vue, rootComponent, appOptions })).not.toThrow();
-    expect(() =>
-      vueBridge({ Vue, loadRootComponent, appOptions }),
-    ).not.toThrow();
-    expect(() =>
-      vueBridge({ Vue, rootComponent, loadRootComponent, appOptions }),
+      vueBridge({ rootComponent, loadRootComponent, appOptions }),
     ).not.toThrow();
   });
 
   it('throws an error when appOptions.el is provided and the type is not string', async () => {
     expect(() =>
       vueBridge({
-        Vue,
         loadRootComponent,
         appOptions: {
           el: {},
@@ -96,7 +89,6 @@ describe('vue-bridge', () => {
 
   it('throws an error when appOptions.el is provided and appOptions.el.dom does not exist in the dom during mount', async () => {
     const provider = vueBridge({
-      Vue,
       appOptions: {
         el: '#invalid_app',
       } as any,
@@ -107,10 +99,10 @@ describe('vue-bridge', () => {
     expect(() => lifeCycles.render({ ...appInfo, props })).toThrow();
   });
 
-  it('calls new Vue() during mount and mountedInstances.instance.$destroy() on unmount', async () => {
+  it('calls new vue() during mount and mountedInstances.instance.$destroy() on unmount', async () => {
     const handleInstance = jest.fn();
     const provider = vueBridge({
-      Vue,
+      Vue: vue,
       appOptions: {} as any,
       handleInstance,
       rootComponent,
@@ -118,12 +110,13 @@ describe('vue-bridge', () => {
 
     const lifeCycles = await provider(appInfo, props);
 
-    expect(Vue).not.toHaveBeenCalled();
+    expect(vue).not.toHaveBeenCalled();
     expect(handleInstance).not.toHaveBeenCalled();
     expect($destroy).not.toHaveBeenCalled();
 
     lifeCycles.render({ ...appInfo, props });
-    expect(Vue).toHaveBeenCalled();
+
+    expect(vue).toHaveBeenCalled();
     expect(handleInstance).toHaveBeenCalled();
     expect($destroy).not.toHaveBeenCalled();
 
@@ -135,7 +128,7 @@ describe('vue-bridge', () => {
     const appOptions = jest.fn((props) => props);
 
     const provider = vueBridge({
-      Vue,
+      Vue: vue,
       appOptions,
       rootComponent: {},
     });
@@ -151,7 +144,7 @@ describe('vue-bridge', () => {
   it('handleInstance function will recieve the props provided at mount', async () => {
     const handleInstance = jest.fn((instance, props) => props);
     const provider = vueBridge({
-      Vue,
+      Vue: vue,
       appOptions: {} as any,
       handleInstance,
       rootComponent: {},
@@ -169,7 +162,7 @@ describe('vue-bridge', () => {
 
   it('implements a render function for you if you provide loadRootComponent', async () => {
     const opts = {
-      Vue,
+      Vue: vue,
       appOptions: {},
       loadRootComponent,
       rootComponent: {},
@@ -183,7 +176,7 @@ describe('vue-bridge', () => {
 
     lifeCycles.render({ ...appInfo, props });
     expect(opts.loadRootComponent).toHaveBeenCalled();
-    expect(Vue.mock.calls[0][0].render).toBeDefined();
+    expect(vue.mock.calls[0][0].render).toBeDefined();
 
     lifeCycles.destroy({ ...appInfo, props });
   });
@@ -192,7 +185,7 @@ describe('vue-bridge', () => {
     props.someCustomThing = 'hi';
 
     const provider = vueBridge({
-      Vue,
+      Vue: vue,
       appOptions: {} as any,
       rootComponent: {},
     });
@@ -200,10 +193,10 @@ describe('vue-bridge', () => {
     const lifeCycles = await provider(appInfo, props);
 
     lifeCycles.render({ ...appInfo, props });
-    expect(Vue).toHaveBeenCalled();
-    expect(Vue.mock.calls[0][0].data()).toBeTruthy();
-    expect(Vue.mock.calls[0][0].data().appName).toBe('test-app');
-    expect(Vue.mock.calls[0][0].data().props.store.counter).toBe(100);
+    expect(vue).toHaveBeenCalled();
+    expect(vue.mock.calls[0][0].data()).toBeTruthy();
+    expect(vue.mock.calls[0][0].data().appName).toBe('test-app');
+    expect(vue.mock.calls[0][0].data().props.store.counter).toBe(100);
 
     lifeCycles.destroy({ ...appInfo, props });
   });
@@ -211,7 +204,7 @@ describe('vue-bridge', () => {
   // eslint-disable-next-line quotes
   it("mounts into the garfish-vue-bridge div if you don't provide an 'el' in appOptions", async () => {
     const provider = vueBridge({
-      Vue,
+      Vue: vue,
       appOptions: {} as any,
       rootComponent: {},
     });
@@ -219,77 +212,8 @@ describe('vue-bridge', () => {
     const lifeCycles = await provider(appInfo, props);
 
     lifeCycles.render({ ...appInfo, props });
-    expect(Vue).toHaveBeenCalled();
-    // expect(Vue.mock.calls[0][0].el).toBe(container);
+    expect(vue).toHaveBeenCalled();
     expect(container.contains($el)).toEqual(true);
     lifeCycles.destroy({ ...appInfo, props });
-  });
-
-  it('works with Vue 3 when you provide the full Vue module as an opt', async () => {
-    Vue = {
-      createApp: jest.fn(),
-    };
-
-    const appMock: any = jest.fn();
-    appMock.mount = jest.fn();
-    appMock.unmount = jest.fn();
-
-    Vue.createApp.mockReturnValue(appMock);
-
-    const props = { name: 'vue3-app', dom: container, basename: '/' };
-
-    const handleInstance = jest.fn();
-
-    const provider = vueBridge({
-      Vue,
-      appOptions: {} as any,
-      handleInstance,
-      rootComponent: {},
-    });
-    const lifeCycles = await provider(appInfo, props);
-
-    lifeCycles.render({ ...appInfo, props });
-
-    expect(Vue.createApp).toHaveBeenCalled();
-    // Vue 3 requires the data to be a function
-    expect(typeof Vue.createApp.mock.calls[0][0].data).toBe('function');
-    expect(handleInstance).toHaveBeenCalledWith(appMock, { ...appInfo, props });
-    expect(appMock.mount).toHaveBeenCalled();
-
-    lifeCycles.destroy({ ...appInfo, props });
-    expect(appMock.unmount).toHaveBeenCalled();
-  });
-
-  it('works with Vue 3 when you provide the createApp function opt', async () => {
-    const createApp = jest.fn();
-
-    const appMock: any = jest.fn();
-    appMock.mount = jest.fn();
-    appMock.unmount = jest.fn();
-
-    createApp.mockReturnValue(appMock);
-
-    const appInfo = { name: 'vue3-app', dom: container, basename: '/' };
-
-    const handleInstance = jest.fn();
-
-    const provider = vueBridge({
-      createApp,
-      appOptions: {} as any,
-      handleInstance,
-      rootComponent: {},
-    });
-    const lifeCycles = await provider(appInfo, props);
-
-    lifeCycles.render({ ...appInfo, props });
-
-    expect(createApp).toHaveBeenCalled();
-    // Vue 3 requires the data to be a function
-    expect(typeof createApp.mock.calls[0][0].data).toBe('function');
-    expect(handleInstance).toHaveBeenCalledWith(appMock, { ...appInfo, props });
-    expect(appMock.mount).toHaveBeenCalled();
-
-    lifeCycles.destroy({ ...appInfo, props });
-    expect(appMock.unmount).toHaveBeenCalled();
   });
 });

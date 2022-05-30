@@ -2,7 +2,7 @@
   "name": "@garfish-dev/react17",
   "private": true,
   "dependencies": {
-    "@garfish/bridge": "workspace:*",
+    "@garfish/bridge-react": "workspace:*",
     "babel-runtime": "^6.26.0",
     "history": "^5.1.0",
     "react": "^17.0.2",
@@ -54,6 +54,11 @@
     "@uiw/react-md-editor": "3.9.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
     "react-refresh": "^0.11.0"
+  },
+  "dependenciesMeta": {
+    "@garfish/bridge-react": {
+      "injected": true
+    }
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --hot",

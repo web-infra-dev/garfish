@@ -1,12 +1,15 @@
 {
-  "name": "@garfish/bridge",
-  "version": "1.5.5",
+  "name": "@garfish/bridge-react",
+  "version": "1.7.0",
   "description": "garfish module.",
   "keywords": [
     "garfish",
     "micro frontend"
   ],
-  "author": "zhoushaw <codingzx@gmail.com>",
+  "files": [
+    "dist"
+  ],
+  "author": "danpeen <dapeen.feng@gmail.com",
   "homepage": "https://github.com/bytedance/garfish",
   "license": "MIT",
   "repository": {
@@ -31,30 +34,15 @@
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
   "dependencies": {
-    "@garfish/bridge": "^1.5.2",
-    "@garfish/browser-snapshot": "workspace:*",
-    "@garfish/browser-vm": "workspace:*",
-    "@garfish/core": "workspace:*",
-    "@garfish/router": "workspace:*",
-    "@garfish/utils": "workspace:*",
-    "@types/react16": "npm:@types/react@^16",
-    "@types/react17": "npm:@types/react@^17",
-    "@types/react-dom16": "npm:@types/react-dom@^16",
-    "@types/react-dom17": "npm:@types/react-dom@^17",
-    "vue2": "npm:vue@^2",
-    "vue3": "npm:vue@^3"
+    "@garfish/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "peerDependencies": {
     "react": ">=16",
     "react-dom": ">=16"
-  },
-  "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    },
-    "react-dom": {
-      "optional": true
-    }
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

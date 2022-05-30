@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Menu } from '@arco-design/web-react';
-import './index.less';
-import { Layout, Grid, Modal, Message } from '@arco-design/web-react';
-import { SubAppContext } from '../root';
+import { Layout, Grid, Modal, Menu } from '@arco-design/web-react';
 import CardItem from '../CardItem';
+import { SubAppContext } from '../root';
 import {
   backToMainStr,
   channelWithMainStr,
   increaseStr,
   toVue3Str,
 } from '../../constant';
+import './index.less';
 
 const Row = Grid.Row;
 const Col = Grid.Col;
@@ -22,20 +21,12 @@ export interface IProps {
 }
 
 const MenuItem = Menu.Item;
+
 const App = () => {
   const [visible, setVisible] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState<Array<string>>(['1']);
-  const handleMsg = (msg) => Message.info(msg);
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    window?.Garfish?.channel.on('sayHello', handleMsg);
-
-    return () => {
-      window?.Garfish.channel.removeListener('sayHello', handleMsg);
-    };
-  }, []);
 
   useEffect(() => {
     setSelectedKeys([location.pathname.replace('/', '')]);
@@ -43,7 +34,7 @@ const App = () => {
 
   return (
     <SubAppContext.Consumer>
-      {({ basename, store }: any) => {
+      {(appInfo) => {
         return (
           <Content>
             <Row
@@ -97,7 +88,9 @@ const App = () => {
 
                 <CardItem
                   title="increase global counter"
-                  onClick={() => store && store.increment()}
+                  onClick={() =>
+                    appInfo.props.store && appInfo.props.store.increment()
+                  }
                   markdownStr={increaseStr}
                 />
 

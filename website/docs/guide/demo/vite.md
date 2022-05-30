@@ -61,24 +61,25 @@ Garfish.run({
 
 ## vite 子应用接入步骤
 
-### 1. [@garfish/bridge](../../guide/bridge) 依赖安装
+### 1. bridge 依赖安装
 
 :::tip
-1.  请注意，桥接函数 @garfish/bridge 依赖安装不是必须的，你可以自定义导出函数。
-2.  我们提供桥接函数 @garfish/bridge 是为了进一步降低用户接入成本并降低用户出错概率，我们将一些默认行为内置在桥接函数中进行了进一步封装，避免由于接入不规范导致的错误，所以这也是我们推荐的接入方式。
+1. 请注意，桥接函数的安装不是必须的，你可以自定义导出函数。
+2. 我们提供桥接函数是为了进一步降低用户接入成本并降低用户出错概率，桥接函数中将会内置一些默认行为，可以可以避免由于接入不规范导致的错误，所以这也是我们推荐的接入方式。
 :::
 
 ```bash npm2yarn
-npm install @garfish/bridge --save
+npm install @garfish/bridge-vue-v3 --save
 ```
-
 ### 2. 入口文件处导出 provider 函数
+
+更多 bridge 函数参数介绍请参考 [这里](/guide/bridge)
 
 ```js
 // src/main.js
-import { h, createApp } from 'vue';
+import { h } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import { vueBridge } from '@garfish/bridge';
+import { vueBridge } from '@garfish/bridge-vue-v3';
 import App from './App.vue';
 
 function newRouter(basename) {
@@ -91,7 +92,8 @@ function newRouter(basename) {
 }
 
 export const provider = vueBridge({
-  createApp,
+  rootComponent: App,
+  // 可选，注册 vue-router或状态管理对象
   appOptions: ({ basename, dom, appName, props }) => ({
     el: '#app',
     render: () => h(App),
@@ -110,9 +112,9 @@ export const provider = vueBridge({
 
 ```js
 // src/main.js
-import { h, createApp } from 'vue';
+import { h } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import { vueBridge } from '@garfish/bridge';
+import { vueBridge } from '@garfish/bridge-vue-v3';
 import App from './App.vue';
 
 function newRouter(basename) {

@@ -9,22 +9,37 @@ import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
 本节我们将详细介绍 vue 框架的应用作为子应用的接入步骤。
 ## vue 子应用接入步骤
 
-### 1. [@garfish/bridge](../../guide/bridge) 依赖安装
+### 1. bridge 依赖安装
 
 :::tip
- 1. 请注意，桥接函数 @garfish/bridge 依赖安装不是必须的，你可以自定义导出函数。
- 2. 我们提供桥接函数 @garfish/bridge 是为了进一步降低用户接入成本并降低用户出错概率，我们将一些默认行为内置在桥接函数中进行了进一步封装，避免由于接入不规范导致的错误，所以这也是我们推荐的接入方式。
+ 1. 请注意，桥接函数的安装不是必须的，你可以自定义导出函数。
+ 2. 我们提供桥接函数是为了进一步降低用户接入成本并降低用户出错概率，桥接函数中将会内置一些默认行为，可以避免由于接入不规范导致的错误，所以这也是我们推荐的接入方式。
+ 3. 我们分别为 vue 2、3 应用提供不同的 bridge 包，目的是为了更好的类型提示及精简参数。
 :::
 
-```bash npm2yarn
-npm install @garfish/bridge --save
-```
+<Tabs>
+  <TabItem value="bridge_vue2" label="vue2 应用" default>
+
+  ```bash npm2yarn
+  npm install @garfish/bridge-vue-v2 --save
+  ```
+
+  </TabItem>
+
+  <TabItem value="bridge_vue3" label="vue3 应用" default>
+
+  ```bash npm2yarn
+  npm install @garfish/bridge-vue-v3 --save
+  ```
+  </TabItem>
+</Tabs>
 
 ### 2. 入口文件处导出 provider 函数
 
+更多 bridge 函数参数介绍请参考 [这里](/guide/bridge)
 ### vue2 导出
 <Tabs>
-  <TabItem value="bridge_provider_vue2" label="使用 @garfish/bridge 导出" default>
+  <TabItem value="bridge_provider_vue2" label="使用 @garfish/bridge-vue-v2 导出" default>
 
   ```js
   import Vue from 'vue';
@@ -32,7 +47,7 @@ npm install @garfish/bridge --save
   import store from './store';
   import App from './App.vue';
   import Home from './components/Home.vue';
-  import { vueBridge } from '@garfish/bridge';
+  import { vueBridge } from '@garfish/bridge-vue-v2';
 
   Vue.use(VueRouter);
   Vue.config.productionTip = false;
@@ -49,18 +64,11 @@ npm install @garfish/bridge --save
   }
 
   export const provider = vueBridge({
-    Vue,
     // 根组件
     rootComponent: App,
-    // 返回一个 promise, 可在 mounting 前执行异步操作
-    loadRootComponent: ({ basename, dom, appName, props }) => {
-      return Promise.resolve(App);
-    },
-    // received vueInstance, do something
-    handleInstance: (vueInstance, { basename, dom, appName, props }) => {
-      console.log(vueInstance, basename, dom, appName, props);
-    },
-    appOptions: ({ basename, dom, appName, props }) => {
+    // 可选，注册 vue-router或状态管理对象
+    appOptions: ({ basename, dom, appName, props, appInfo }) => {
+    // pass the options to Vue Constructor. check https://vuejs.bootcss.com/api/#%E9%80%89%E9%A1%B9-%E6%95%B0%E6%8D%AE
       return {
         el: '#app',
         router: newRouter(basename),
@@ -105,7 +113,7 @@ npm install @garfish/bridge --save
 
 ### vue3 导出
 <Tabs>
-  <TabItem value="bridge_provider_vue3" label="使用 @garfish/bridge 导出" default>
+  <TabItem value="bridge_provider_vue3" label="使用 @garfish/bridge-vue-v3 导出" default>
 
   ```js
     import { h, createApp } from 'vue';
@@ -113,7 +121,7 @@ npm install @garfish/bridge --save
     import { stateSymbol, createState } from './store.js';
     import App from './App.vue';
     import Home from './components/Home.vue';
-    import { vueBridge } from '@garfish/bridge';
+    import { vueBridge } from '@garfish/bridge-vue-v3';
 
     const routes = [
       { path: '/home', component: Home },
@@ -128,18 +136,9 @@ npm install @garfish/bridge --save
     }
 
     export const provider = vueBridge({
-      createApp,
       rootComponent: App,
-      loadRootComponent: ({ basename, dom, appName, props }) => {
-        return Promise.resolve(App);
-      },
-      appOptions: ({ basename, dom, appName, props }) => {
-        return {
-          el: '#app',
-          render: () => h(App)
-        };
-      },
-      handleInstance: (vueInstance, { basename, dom, appName, props }) => {
+      // 可选，注册 vue-router或状态管理对象
+      handleInstance: (vueInstance, { basename, dom, appName, props, appInfo}) => {
         vueInstance.use(newRouter(basename));
         vueInstance.provide(stateSymbol, createState());
       },
@@ -202,7 +201,7 @@ npm install @garfish/bridge --save
   import store from './store';
   import App from './App.vue';
   import Home from './components/Home.vue';
-  import { vueBridge } from '@garfish/bridge';
+  import { vueBridge } from '@garfish/bridge-vue-v2';
 
   Vue.use(VueRouter);
   Vue.config.productionTip = false;
@@ -227,7 +226,7 @@ npm install @garfish/bridge --save
   import { stateSymbol, createState } from './store.js';
   import App from './App.vue';
   import Home from './components/Home.vue';
-  import { vueBridge } from '@garfish/bridge';
+  import { vueBridge } from '@garfish/bridge-vue-v3';
 
   const routes = [
     { path: '/home', component: Home },

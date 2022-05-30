@@ -7,13 +7,12 @@ order: 2
 import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
 
 本节我们将详细介绍 react 框架的应用作为子应用的接入步骤。
-
 ## react 子应用接入步骤
-### 1. [@garfish/bridge](../../guide/bridge) 依赖安装
+### 1. bridge 依赖安装
 
 :::tip
-1.  请注意，桥接函数 @garfish/bridge 依赖安装不是必须的，你可以自定义导出函数。
-2.  我们提供桥接函数 @garfish/bridge 是为了进一步降低用户接入成本并降低用户出错概率，我们将一些默认行为内置在桥接函数中进行了进一步封装，避免由于接入不规范导致的错误，所以这也是我们推荐的接入方式。
+1. 请注意，桥接函数的安装不是必须的，你可以自定义导出函数。
+2. 我们提供桥接函数是为了进一步降低用户接入成本并降低用户出错概率，桥接函数中将会内置一些默认行为，可以避免由于接入不规范导致的错误，所以这也是我们推荐的接入方式。
 :::
 
 ```bash npm2yarn
@@ -21,6 +20,8 @@ npm install @garfish/bridge --save
 ```
 
 ### 2. 入口文件处导出 provider 函数
+
+更多 bridge 函数参数介绍请参考 [这里](/guide/bridge)
 ### react v16、v17 导出
 
 <Tabs>
@@ -28,24 +29,15 @@ npm install @garfish/bridge --save
 
 ```tsx
 // src/index.tsx
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { reactBridge } from '@garfish/bridge';
+import { reactBridge } from '@garfish/bridge-react';
 import RootComponent from './components/root';
 import Error from './components/ErrorBoundary';
 
 export const provider = reactBridge({
-  React,
-  ReactDOM,
   // 子应用挂载点，若子应用构建成 js ，则不需要传递该值
   el: '#root',
   // 根组件, bridge 会默认传递 basename、dom、props 等信息到根组件
   rootComponent: RootComponent,
-  // 如果需要在返回根组件前做一些操作，你可以在 loadRootComponent 中进行，loadRootComponent 返回一个promise 对象，期待resolve 后得到一个应用的根组件
-  loadRootComponent: ({ basename, dom, props }) => {
-    // do something...
-    return Promise.resolve(() => <RootComponent basename={basename} />);
-  },
   // 设置应用的 errorBoundary
   errorBoundary: () => <Error />,
 });
@@ -84,6 +76,27 @@ export const provider = reactBridge({
 ### react v18 导出
 > react v18 bridge 导出方式暂未支持，目前可通过自定义导出函数导出。
 
+<Tabs>
+  <TabItem value="bridge_provider" label="使用 @garfish/bridge" default>
+
+```tsx
+// src/index.tsx
+import { reactBridge } from '@garfish/bridge-react-v18';
+import RootComponent from './root';
+import ErrorBoundary from './ErrorBoundary';
+
+export const provider = reactBridge({
+  el: '#root',
+  rootComponent: RootComponent,
+  errorBoundary: (e: any) => <ErrorBoundary />,
+});
+
+```
+
+  </TabItem>
+
+  <TabItem value="customer_provider" label="自定义导出函数" default>
+
 ```tsx
 // src/index.tsx
 import { createRoot } from 'react-dom/client';
@@ -104,6 +117,10 @@ export const provider = () => {
   };
 };
 ```
+
+  </TabItem>
+</Tabs>
+
 ### 3. 根组件设置路由的 basename
 
 :::info
@@ -124,7 +141,6 @@ const RootComponent = ({ basename }) => {
         <Route path="/" element={<App />}>
           <Route path="/home" element={<Home />} />
           <Route path="*" element={<PageNotFound />} />
-          <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>
@@ -142,9 +158,28 @@ const RootComponent = ({ basename }) => {
 last but not least, 别忘了添加子应用独立运行逻辑，这能够让你的子应用脱离主应用独立运行，便于后续开发和部署。
 :::
 
+
+<Tabs>
+  <TabItem value="react_16/17" label="react v16/v17" default>
+
 ```tsx
 // src/index.tsx
+if (!window.__GARFISH__) {
+  ReactDOM.render(
+    <RootComponent
+      basename={
+        process.env.NODE_ENV === 'production' ? '/examples/subapp/react18' : '/'
+      }
+    />, document.getElementById("root"));
+}
+```
 
+  </TabItem>
+
+  <TabItem value="react_18" label="react v18" default>
+
+```tsx
+// src/index.tsx
 if (!window.__GARFISH__) {
   const container = document.getElementById('root');
   const root = createRoot(container!);
@@ -153,7 +188,14 @@ if (!window.__GARFISH__) {
       basename={
         process.env.NODE_ENV === 'production' ? '/examples/subapp/react18' : '/'
       }
-    />,
+    />
   );
 }
 ```
+
+  </TabItem>
+</Tabs>
+
+
+
+
