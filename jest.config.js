@@ -23,8 +23,7 @@ module.exports = {
     '^.+\\.(t|j)sx?$': ['@swc/jest'],
   },
   rootDir: __dirname,
-  // testMatch: ['<rootDir>/packages/**/__tests__/**/*spec.[jt]s?(x)'],
-  testMatch: ['<rootDir>/packages/browser-vm/__tests__/**/*spec.[jt]s?(x)'],
+  testMatch: ['<rootDir>/packages/**/__tests__/**/*spec.[jt]s?(x)'],
   testPathIgnorePatterns: ['/node_modules/', '/dev/'],
   moduleNameMapper: {
     '@garfish/(.*)': '<rootDir>packages/$1/src',

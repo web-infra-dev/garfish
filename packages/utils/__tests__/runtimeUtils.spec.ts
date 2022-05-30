@@ -47,6 +47,33 @@ describe('Garfish shared runtimeUtils', () => {
     expect(() => assert(false, 'test assert')).toThrowError(
       /\[Garfish warning\]: test assert/,
     );
+
+    // throw error
+    expect(() => {
+      assert(false, 'false error');
+    }).toThrowError(/false error/);
+
+    expect(() => {
+      assert(null, 'null error');
+    }).toThrowError(/null error/);
+
+    expect(() => {
+      assert(undefined, 'undefined error');
+    }).toThrowError(/undefined error/);
+
+    expect(() => {
+      assert('', 'string error');
+    }).toThrowError(/string error/);
+
+    expect(() => {
+      assert(0, 'number error');
+    }).toThrowError(/number error/);
+
+    assert(true, 'true error');
+    assert({}, 'object error');
+    assert(1, 'number error');
+    assert([], 'array error');
+    assert('string', 'string error');
   });
 
   it('toBoolean', () => {
@@ -58,7 +85,7 @@ describe('Garfish shared runtimeUtils', () => {
   });
 
   it('createKey', () => {
-    const record = [];
+    const record: Array<string> = [];
     for (let i = 0; i < 100; i++) {
       const v = createKey();
       expect(record.includes(v)).toBe(false);
@@ -222,7 +249,7 @@ describe('Garfish shared runtimeUtils', () => {
   });
 
   it('deepMerge circular reference', () => {
-    const a = {
+    const a: any = {
       a1: {},
       b1: {
         aa: null,
@@ -230,7 +257,7 @@ describe('Garfish shared runtimeUtils', () => {
       c1: [],
       d1: {},
     };
-    const b = {
+    const b: any = {
       c1: [],
       d1: {},
       e1: {
