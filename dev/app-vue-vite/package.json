@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "vite build",
+    "build": "rimraf dist && vite build",
     "preview": "vite preview"
   }
 }
