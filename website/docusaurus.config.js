@@ -18,7 +18,11 @@ module.exports = {
   },
   themeConfig: {
     // sidebarCollapsible: true,
-    hideableSidebar: true,
+    docs: {
+      sidebar: {
+        hideable: true,
+      },
+    },
     colorMode: {
       defaultMode: 'dark',
       disableSwitch: false,

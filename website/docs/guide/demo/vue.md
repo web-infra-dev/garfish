@@ -6,7 +6,8 @@ order: 3
 
 import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
 
-本节我们将详细介绍 vue 框架的应用作为子应用的接入步骤。
+本节我们将详细介绍 vue 框架的应用作为子应用的接入步骤。[v2 demo](https://github.com/modern-js-dev/garfish/tree/main/dev/app-vue-2)、[v3 demo](https://github.com/modern-js-dev/garfish/tree/main/dev/app-vue-3)
+
 ## vue 子应用接入步骤
 
 ### 1. bridge 依赖安装
