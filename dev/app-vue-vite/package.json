@@ -11,14 +11,7 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "wireit",
+    "build": "vite build",
     "preview": "vite preview"
-  },
-  "wireit": {
-    "build": {
-      "command": "vite build",
-      "files": ["src/**/*","../../tsconfig.json","../../tsup.config.ts","../../packages/bridge-vue-v3/src/**/*"],
-      "output": ["dist/**"]
-    }
   }
 }
