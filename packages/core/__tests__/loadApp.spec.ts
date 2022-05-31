@@ -345,4 +345,51 @@ describe('Core: load process', () => {
 
     expect(document.body.contains(container)).toBe(true);
   });
+
+  it('loadApp before registered, the `beforeLoad` hook will not receive the undefined app.', async () => {
+    const mockBeforeLoad = jest.fn();
+
+    GarfishInstance.run({
+      domGetter: '#container',
+      apps: [
+        {
+          name: 'react',
+          entry: reactSubAppEntry,
+        },
+      ],
+      beforeLoad: mockBeforeLoad,
+    });
+
+    const testName = 'react-unexisted';
+    expect(GarfishInstance.appInfos[testName]).toBeUndefined;
+
+    await GarfishInstance.loadApp(testName, {
+      entry: reactSubAppEntry,
+    });
+
+    expect(mockBeforeLoad).toBeCalled();
+    expect(mockBeforeLoad.mock.calls[0][0]).not.toBeUndefined;
+    expect(mockBeforeLoad.mock.calls[0][0].name).toBe(testName);
+    expect(mockBeforeLoad.mock.calls[0][0].entry).toBe(reactSubAppEntry);
+  });
+
+  it("loadApp before registered and `entry` don't be provided will toorw Error", async () => {
+    GarfishInstance.run({
+      domGetter: '#container',
+      apps: [
+        {
+          name: 'react',
+          entry: reactSubAppEntry,
+        },
+      ],
+    });
+    const testName = 'react-unexisted';
+    expect(GarfishInstance.appInfos[testName]).toBeUndefined;
+
+    GarfishInstance.loadApp(testName).catch((e) =>
+      expect(e.message).toMatch(
+        'Please provide the entry parameters or registered in advance of the app.',
+      ),
+    );
+  });
 });

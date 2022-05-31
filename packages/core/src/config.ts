@@ -49,7 +49,7 @@ export const generateAppOptions = (
   garfish: interfaces.Garfish,
   options?: Omit<AppInfo, 'name'>,
 ): AppInfo => {
-  let appInfo = garfish.appInfos[appName] || {};
+  let appInfo = garfish.appInfos[appName] || { name: appName };
 
   // Merge register appInfo config and loadApp config
   if (isObject(options)) {

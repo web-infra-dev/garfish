@@ -3,7 +3,7 @@ title: angular 子应用
 slug: /guide/demo/angular
 order: 6
 ---
-本节我们将详细介绍 angular 框架的应用作为子应用的接入步骤。
+本节我们将详细介绍 angular 框架的应用作为子应用的接入步骤。[demo](https://github.com/modern-js-dev/garfish/tree/main/dev/app-angular)
 
 ## angular 子应用接入步骤
 
