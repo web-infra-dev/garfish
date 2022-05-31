@@ -35,7 +35,7 @@ async function runAllExample() {
       Object.keys(portMap).forEach((pkgPath) => {
         // history api fallback
         if (pkgPath === 'dev/main') {
-          $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port} --proxy http://localhost:${portMap[pkgPath].port}?`;
+          $`pnpm --filter "@garfish-dev/main" run start`;
         } else {
           $`pnpm --filter ${portMap[pkgPath].pkgName} exec -- http-server ./dist --cors -p ${portMap[pkgPath].port}`;
         }
