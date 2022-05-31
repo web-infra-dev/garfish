@@ -2,7 +2,7 @@
   "name": "@garfish-dev/vite",
   "private": true,
   "dependencies": {
-    "vue": "^3.2.23",
+    "vue": "3.2.31",
     "@garfish/bridge-vue-v3": "workspace:*"
   },
   "devDependencies": {
