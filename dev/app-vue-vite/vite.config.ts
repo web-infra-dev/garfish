@@ -12,7 +12,7 @@ export default ({ mode }) => {
   };
 
   return defineConfig({
-    base: process.env.VITE_APP_BASE,
+    base: `http://localhost:${port}`,
     server: {
       port,
       cors: true,
