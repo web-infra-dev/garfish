@@ -34,7 +34,7 @@ const webpackConfig = {
   // },
   node: false, // 避免 global 逃逸
   resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.json']
+    extensions: ['.tsx', '.ts', '.js', '.json'],
   },
   module: {
     rules: [

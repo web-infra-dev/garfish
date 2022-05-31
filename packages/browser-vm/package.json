@@ -25,7 +25,7 @@
   },
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
-  "types": "dist/index.d.ts",
+  "types": "./src/index.ts",
   "scripts": {
     "build": "rimraf dist && tsup src/index.ts",
     "dev": "cross-env WATCH=true tsup src/index.ts"
@@ -36,9 +36,13 @@
     "@garfish/hooks": "workspace:*",
     "@garfish/utils": "workspace:*"
   },
+  "devDependencies": {
+    "@garfish/test-suite": "workspace:*"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
-    "access": "public"
+    "access": "public",
+    "types": "./dist/index.d.ts"
   },
   "gitHead": "da33dd16bb9e99588f34079f8b961d0cf9f059fc"
 }

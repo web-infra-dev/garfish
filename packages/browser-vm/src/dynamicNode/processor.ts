@@ -14,6 +14,9 @@ import {
   sourceListTags,
   parseContentType,
   __REMOVE_NODE__,
+  isJsType,
+  isCssType,
+  error,
 } from '@garfish/utils';
 import { rootElm } from '../utils';
 import { Sandbox } from '../sandbox';
@@ -55,7 +58,7 @@ export class DynamicNodeProcessor {
       const url = this.el.src || this.el.href;
 
       if (url) {
-        this.sandbox.options?.sourceList.push({
+        this.sandbox.options.sourceList?.push({
           tagName: this.el.tagName,
           url,
         });
@@ -69,7 +72,7 @@ export class DynamicNodeProcessor {
       const isError = type === 'error';
       let event: Event & { __byGarfish__?: boolean };
 
-      if (isError) {
+      if (isError && errInfo) {
         event = new ErrorEvent(type, {
           ...errInfo,
           message: errInfo.error.message,
@@ -88,17 +91,27 @@ export class DynamicNodeProcessor {
   private addDynamicLinkNode(callback: (styleNode: HTMLStyleElement) => void) {
     const { href, type } = this.el;
 
-    if (!type || isCss(parseContentType(type))) {
+    if (!type || isCssType(type)) {
       if (href) {
         const { baseUrl, namespace = '' } = this.sandbox.options;
         const fetchUrl = baseUrl ? transformUrl(baseUrl, href) : href;
 
         this.sandbox.loader
-          .load<StyleManager>(namespace, fetchUrl)
+          .load<StyleManager>({
+            scope: namespace,
+            url: fetchUrl,
+            defaultContentType: type,
+          })
           .then(({ resourceManager: styleManager }) => {
+            if (styleManager) {
+              styleManager.correctPath();
+              callback(styleManager.renderAsStyleElement());
+            } else {
+              warn(
+                `Invalid resource type "${type}", "${href}" can't generate styleManager`,
+              );
+            }
             this.dispatchEvent('load');
-            styleManager.correctPath();
-            callback(styleManager.renderAsStyleElement());
           })
           .catch((e) => {
             __DEV__ && warn(e);
@@ -127,20 +140,34 @@ export class DynamicNodeProcessor {
     const mimeType = parseContentType(type);
     const code = this.el.textContent || this.el.text || '';
 
-    if (!type || isJs(mimeType) || isModule || isJsonp(mimeType, src)) {
+    if (!type || isJsType({ src, type })) {
       // The "src" higher priority
       const { baseUrl, namespace = '' } = this.sandbox.options;
       if (src) {
         const fetchUrl = baseUrl ? transformUrl(baseUrl, src) : src;
         this.sandbox.loader
-          .load<JavaScriptManager>(namespace, fetchUrl, false, crossOrigin)
+          .load<JavaScriptManager>({
+            scope: namespace,
+            url: fetchUrl,
+            crossOrigin,
+            defaultContentType: type,
+          })
           .then(
-            ({ resourceManager: { url, scriptCode } }) => {
-              // It is necessary to ensure that the code execution error cannot trigger the `el.onerror` event
-              this.sandbox.execScript(scriptCode, {}, url, {
-                isModule,
-                noEntry: true,
-              });
+            (manager) => {
+              if (manager.resourceManager) {
+                const {
+                  resourceManager: { url, scriptCode },
+                } = manager;
+                // It is necessary to ensure that the code execution error cannot trigger the `el.onerror` event
+                this.sandbox.execScript(scriptCode, {}, url, {
+                  isModule,
+                  noEntry: true,
+                });
+              } else {
+                warn(
+                  `Invalid resource type "${type}", "${src}" can't generate scriptManager`,
+                );
+              }
               this.dispatchEvent('load');
             },
             (e) => {

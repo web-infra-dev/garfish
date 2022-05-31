@@ -61,7 +61,7 @@ function safeLoad(
         if (isModule) {
           loader.loadModule(url).then(success, throwWarn);
         } else {
-          loader.load(appName, url).then(success, throwWarn);
+          loader.load({ scope: appName, url }).then(success, throwWarn);
         }
       } catch (e) {
         throwWarn(e);

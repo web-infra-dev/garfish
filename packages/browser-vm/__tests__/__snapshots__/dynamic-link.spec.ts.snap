@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Sandbox: dynamic link with content-type 1`] = `
+<body>
+  <div
+    id="root"
+  >
+    123
+    <div
+      __garfishmockhead__=""
+    >
+      <!--&lt;link src="http://localhost/resources/links/no-suffix" execute by garfish(dynamic)&gt;&lt;/link&gt;-->
+      <style
+        type="text/css"
+      >
+        /* no-suffix test case */
+#root{
+  color: red;
+  background: yellow;
+}
+
+      </style>
+    </div>
+  </div>
+</body>
+`;
+
+exports[`Sandbox: dynamic link with suffix 1`] = `
+<body>
+  <div
+    id="root"
+  >
+    123
+    <div
+      __garfishmockhead__=""
+    >
+      <!--&lt;link src="http://localhost/resources/links/suffix.css" execute by garfish(dynamic)&gt;&lt;/link&gt;-->
+      <style
+        type="text/css"
+      >
+        /* suffix test case */
+#root{
+  color: red;
+  background: blue;
+}
+
+      </style>
+    </div>
+  </div>
+</body>
+`;
+
+exports[`Sandbox: dynamic link without ref 1`] = `
+<body>
+  <div
+    id="root"
+  >
+    123
+    <div
+      __garfishmockhead__=""
+    >
+      <link
+        href="/resources/links/suffix.css"
+      />
+    </div>
+  </div>
+</body>
+`;
+
+exports[`Sandbox: dynamic link without suffix and content-type 1`] = `
+<body>
+  <div
+    id="root"
+  >
+    123
+    <div
+      __garfishmockhead__=""
+    >
+      <!--&lt;link src="http://localhost/resources/links/no-content-type-suffix" execute by garfish(dynamic)&gt;&lt;/link&gt;-->
+    </div>
+  </div>
+</body>
+`;

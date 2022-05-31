@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [16.10.0]
+        node-version: [16.14.0]
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -44,7 +44,7 @@ jobs:
     - name: install dependency
       run: pnpm install --filter=\!garfish-docs --filter=\!@garfish-dev/\*
     - name: Run unit tests
-      run: pnpm run test
+      run: pnpm run test:coverage
     - name: Collect coverage
       uses: codecov/codecov-action@v2
       with:
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [16.10.0]
+        node-version: [16.14.0]
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}

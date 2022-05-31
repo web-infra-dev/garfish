@@ -98,3 +98,44 @@ export function isJsonp(mt: mimeType, src: string) {
   }
   return false;
 }
+
+export function isJsType({ src = '', type }: { src?: string; type?: string }) {
+  if (/\.js$/.test(src)) return true;
+
+  if (type) {
+    if (type === 'module') return true;
+    const mimeTypeInfo = parseContentType(type);
+    if (isJsonp(mimeTypeInfo, src)) return true;
+    if (isJs(mimeTypeInfo)) return true;
+  }
+
+  return false;
+}
+
+export function isCssType({ src = '', type }: { src?: string; type?: string }) {
+  if (/\.css$/.test(src)) return true;
+
+  if (type) {
+    const mimeTypeInfo = parseContentType(type);
+    if (isCss(mimeTypeInfo)) return true;
+  }
+
+  return false;
+}
+
+export function isHtmlType({
+  src = '',
+  type,
+}: {
+  src?: string;
+  type?: string;
+}) {
+  if (/\.html$/.test(src)) return true;
+
+  if (type) {
+    const mimeTypeInfo = parseContentType(type);
+    if (isHtml(mimeTypeInfo)) return true;
+  }
+
+  return false;
+}

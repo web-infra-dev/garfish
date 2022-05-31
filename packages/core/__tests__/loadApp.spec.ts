@@ -3,9 +3,10 @@ import {
   __MockHead__,
   __MockHtml__,
   appContainerId,
-  mockStaticServer,
 } from '@garfish/utils';
+import { mockStaticServer } from '@garfish/test-suite';
 import Garfish from '../src/index';
+import assert from 'assert';
 
 describe('Core: load process', () => {
   let GarfishInstance: Garfish;
@@ -17,7 +18,9 @@ describe('Core: load process', () => {
   const vue3SubAppEntry = './resources/vue3App.html';
   const asyncProviderApp = './resources/asyncProviderApp.html';
 
-  mockStaticServer(__dirname);
+  mockStaticServer({
+    baseDir: __dirname,
+  });
 
   beforeEach(() => {
     container = document.createElement('div');
@@ -36,6 +39,7 @@ describe('Core: load process', () => {
       domGetter: '#container',
     });
 
+    assert(app, 'app should be loaded');
     await app.mount();
 
     const appContainer = container.querySelector(`[id^=${appContainerId}]`);
@@ -54,9 +58,11 @@ describe('Core: load process', () => {
       domGetter: '#async-container',
     });
 
+    assert(app, 'app should be loaded');
     await app.mount();
 
     const appContainer = container.querySelector(`[id^=${appContainerId}]`);
+    assert(appContainer, 'app container should be loaded');
     expect(appContainer.childNodes[0]).toMatchSnapshot();
 
     app.unmount();
@@ -75,6 +81,7 @@ describe('Core: load process', () => {
       domGetter: '#delay-async-container',
     });
 
+    assert(app, 'app should be loaded');
     await expect(app.mount.bind(app)).rejects.toThrowError(/Invalid domGetter/);
   });
 
@@ -84,6 +91,7 @@ describe('Core: load process', () => {
       domGetter: () => document.querySelector('#container'),
     });
 
+    assert(app, 'app should be loaded');
     await app.mount();
 
     const appContainer = container.querySelector(`[id^=${appContainerId}]`);
@@ -99,6 +107,7 @@ describe('Core: load process', () => {
       domGetter: () => document.querySelector('#container'),
     });
 
+    assert(app, 'app should be loaded');
     await expect(app.mount()).rejects.toThrowError('test msg');
 
     document.body.removeChild(container);
@@ -185,6 +194,7 @@ describe('Core: load process', () => {
       domGetter: '#container',
     });
 
+    assert(app, 'app should be loaded');
     await app.mount();
 
     const appContainer = container.querySelectorAll(`[id^=${appContainerId}]`);
@@ -253,8 +263,10 @@ describe('Core: load process', () => {
     });
 
     const app1 = await GarfishInstance.loadApp('vue-app');
+    assert(app1, 'app1 should be loaded');
     await app1.mount();
     const app2 = await GarfishInstance.loadApp('vue-app');
+    assert(app2, 'app2 should be loaded');
 
     expect(app1.mounted).toBe(true);
     expect(app2.mounted).toEqual(app1.mounted);
@@ -273,8 +285,10 @@ describe('Core: load process', () => {
     });
 
     const app1 = await GarfishInstance.loadApp('vue-app');
+    assert(app1, 'app2 should be loaded');
     await app1.mount();
     const app2 = await GarfishInstance.loadApp('vue-app');
+    assert(app2, 'app2 should be loaded');
 
     expect(app1.mounted).toBe(true);
     expect(app2.mounted).not.toEqual(app1.mounted);
@@ -293,12 +307,14 @@ describe('Core: load process', () => {
     });
 
     const app1 = await GarfishInstance.loadApp('vue-app');
+    assert(app1, 'app2 should be loaded');
     await app1.mount();
 
     const app2 = await GarfishInstance.loadApp('vue-app', {
       entry: vue3SubAppEntry,
       cache: false,
     });
+    assert(app2, 'app2 should be loaded');
 
     expect(app1.mounted).toBe(true);
     expect(app2.mounted).toBe(false);
@@ -318,6 +334,7 @@ describe('Core: load process', () => {
     });
 
     const app = await GarfishInstance.loadApp('async-provider');
+    assert(app, 'app2 should be loaded');
     expect(app.mounted).toBe(false);
 
     app.mount();

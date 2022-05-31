@@ -160,7 +160,7 @@ export class Runtime {
     if (!url) url = storeId;
 
     const p = this.loader
-      .load<JavaScriptManager>(this.options.scope, url)
+      .load<JavaScriptManager>({ scope: this.options.scope, url })
       .then(async ({ resourceManager }) => {
         const { url, scriptCode } = resourceManager;
 

@@ -1,4 +1,4 @@
-import { interfaces } from '@garfish/core';
+import type { interfaces } from '@garfish/core';
 import { createKey, routerLog } from '@garfish/utils';
 import { RouterConfig } from './config';
 import router, {
@@ -29,7 +29,7 @@ declare module '@garfish/core' {
   }
 }
 
-export { RouterInterface } from './context';
+export type { RouterInterface } from './context';
 
 interface Options {
   autoRefreshApp?: boolean;

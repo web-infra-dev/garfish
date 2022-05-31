@@ -40,7 +40,7 @@ loader.hooks.usePlugin({
   },
 });
 
-loader.load('appName', 'https://xxx').then((result) => {
+loader.load({scope: 'appName', url: 'https://xxx'}).then((result) => {
   console.log(result); // 2
 });
 ```

@@ -1,11 +1,10 @@
 import { SyncHook, SyncWaterfallHook, PluginSystem } from '@garfish/hooks';
 import {
   error,
-  isJs,
-  isCss,
-  isHtml,
-  isJsonp,
   __LOADER_FLAG__,
+  isJsType,
+  isCssType,
+  isHtmlType,
 } from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
@@ -95,16 +94,27 @@ export class Loader {
   }
 
   loadModule(url: string) {
-    return this.load<ModuleManager>('modules', url, true);
+    return this.load<ModuleManager>({
+      scope: 'modules',
+      url,
+      isRemoteModule: true,
+    });
   }
 
   // Unable to know the final data type, so through "generics"
-  load<T extends Manager>(
-    scope: string,
-    url: string,
+  load<T extends Manager>({
+    scope,
+    url,
     isRemoteModule = false,
-    crossOrigin: NonNullable<HTMLScriptElement['crossOrigin']> = 'anonymous',
-  ): Promise<LoadedHookArgs<T>['value']> {
+    crossOrigin = 'anonymous',
+    defaultContentType = '',
+  }: {
+    scope: string;
+    url: string;
+    isRemoteModule?: boolean;
+    crossOrigin?: NonNullable<HTMLScriptElement['crossOrigin']>;
+    defaultContentType?: string;
+  }): Promise<LoadedHookArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
 
     const res = loadingList[url];
@@ -145,24 +155,33 @@ export class Loader {
     });
 
     const loadRes = request(resOpts.url, resOpts.requestConfig)
-      .then(({ code, size, mimeType, result }) => {
+      .then(({ code, size, result, type }) => {
         let managerCtor,
           fileType: FileTypes | '' = '';
 
         if (isRemoteModule) {
           fileType = FileTypes.module;
           managerCtor = ModuleManager;
-        } else if (isHtml(mimeType) || /\.html$/.test(result.url)) {
+        } else if (
+          isHtmlType({ type, src: result.url }) ||
+          isHtmlType({
+            type: defaultContentType,
+          })
+        ) {
           fileType = FileTypes.template;
           managerCtor = TemplateManager;
         } else if (
-          isJs(mimeType) ||
-          /\.js$/.test(result.url) ||
-          isJsonp(mimeType, result.url)
+          isJsType({ type: defaultContentType }) ||
+          isJsType({ type, src: result.url })
         ) {
           fileType = FileTypes.js;
           managerCtor = JavaScriptManager;
-        } else if (isCss(mimeType) || /\.css$/.test(result.url)) {
+        } else if (
+          isCssType({ src: result.url, type }) ||
+          isCssType({
+            type: defaultContentType,
+          })
+        ) {
           fileType = FileTypes.css;
           managerCtor = StyleManager;
         }

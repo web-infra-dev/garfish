@@ -34,5 +34,9 @@
   "dev/angular": {
     "pkgName": "@garfish-dev/angular",
     "port": 8097
+  },
+  "dev/esm": {
+    "pkgName": "@garfish-dev/esm",
+    "port": 8099
   }
 }

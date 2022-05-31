@@ -1,0 +1,6 @@
+/* no-content-type-suffix test case */
+#root{
+  color: red;
+  background: gray;
+}
+

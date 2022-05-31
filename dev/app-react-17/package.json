@@ -51,7 +51,7 @@
     "webpack": "^5.35.0",
     "webpack-cli": "^4.6.0",
     "webpack-dev-server": "^4.2.1",
-    "@uiw/react-md-editor": "^3.9.3",
+    "@uiw/react-md-editor": "3.9.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
     "react-refresh": "^0.11.0"
   },
@@ -62,13 +62,6 @@
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --hot",
-    "build": "wireit"
-  },
-  "wireit": {
-    "build": {
-      "command": "cross-env NODE_ENV=production webpack --progress",
-      "files": ["src/**/*", "tsconfig.json","../../packages/bridge/dist/**/*","webpack.config.js"],
-      "output": ["dist/**"]
-    }
+    "build": "cross-env NODE_ENV=production webpack --progress"
   }
 }

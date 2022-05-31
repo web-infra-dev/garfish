@@ -2,7 +2,7 @@
   "name": "@garfish-dev/vite",
   "private": true,
   "dependencies": {
-    "vue": "^3.2.23",
+    "vue": "3.2.31",
     "@garfish/bridge-vue-v3": "workspace:*"
   },
   "devDependencies": {
@@ -11,14 +11,7 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "wireit",
+    "build": "rimraf dist && vite build",
     "preview": "vite preview"
-  },
-  "wireit": {
-    "build": {
-      "command": "vite build",
-      "files": ["src/**/*","../../tsconfig.json","../../tsup.config.ts","../../packages/bridge-vue-v2/src/**/*","../../packages/bridge/src/**/*"],
-      "output": ["dist/**"]
-    }
   }
 }

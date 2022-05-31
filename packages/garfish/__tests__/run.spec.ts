@@ -1,12 +1,12 @@
 import Garfish from '@garfish/core';
 import { GarfishRouter } from '@garfish/router';
 import { GarfishBrowserVm } from '@garfish/browser-vm';
+import { mockStaticServer } from '@garfish/test-suite';
 import {
   __MockBody__,
   __MockHead__,
   __MockHtml__,
   appContainerId,
-  mockStaticServer,
 } from '@garfish/utils';
 
 const vueAppRootNode = 'vue-app';
@@ -56,7 +56,9 @@ const mockAfterEval = jest.fn();
 describe('Core: run methods', () => {
   let GarfishInstance: Garfish;
 
-  mockStaticServer(__dirname);
+  mockStaticServer({
+    baseDir: __dirname,
+  });
 
   beforeEach(() => {
     GarfishInstance = new Garfish({});

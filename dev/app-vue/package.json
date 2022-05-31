@@ -50,14 +50,7 @@
   ],
   "scripts": {
     "start": "vue-cli-service serve",
-    "build": "wireit",
+    "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
-  },
-  "wireit": {
-    "build": {
-      "command": "vue-cli-service build",
-      "files": ["src/**/*", "tsconfig.json","../../tsconfig.json","../../tsup.config.ts","../../packages/bridge-vue-v2/src/**/*","../../packages/bridge/src/**/*"],
-      "output": ["dist/**"]
-    }
   }
 }

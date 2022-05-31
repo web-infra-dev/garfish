@@ -103,7 +103,7 @@ export const createDefaultOptions = () => {
     // Error hooks
     errorMountApp: (e) => error(e),
     errorUnmountApp: (e) => error(e),
-    customLoader: null, // deprecated
+    customLoader: undefined, // deprecated
   };
 
   return config;
