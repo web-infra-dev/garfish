@@ -62,13 +62,6 @@
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --hot",
-    "build": "wireit"
-  },
-  "wireit": {
-    "build": {
-      "command": "cross-env NODE_ENV=production webpack --progress",
-      "files": ["src/**/*", "tsconfig.json", "package.json","../../packages/bridge/src/**/*","webpack.config.js"],
-      "output": ["dist/**"]
-    }
+    "build": "cross-env NODE_ENV=production webpack --progress"
   }
 }
