@@ -108,5 +108,7 @@ jobs:
       with:
         version: 6.32.17
         run_install: false
+    - name: install dependency
+      run: pnpm install --filter=\!garfish-docs
     - name: check type
       run:  pnpm type:check

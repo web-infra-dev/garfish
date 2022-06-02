@@ -20,7 +20,7 @@
     "paths": {
       "@garfish/*": ["packages/*/src"]
     },
-    "types": ["node", "jest"]
+    "types": ["jasmine", "jest"]
   },
   "include": [
     "packages/*/src",
