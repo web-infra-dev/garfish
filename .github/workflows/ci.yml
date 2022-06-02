@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  test:
+  unit-test:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
