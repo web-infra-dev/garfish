@@ -49,7 +49,6 @@ jobs:
       uses: codecov/codecov-action@v2
       with:
         directory: ./coverage
-
   e2e-test:
     runs-on: ubuntu-20.04
     strategy:
@@ -90,7 +89,6 @@ jobs:
         # Recommended: pass the GitHub token lets this action correctly
         # determine the unique run id necessary to re-run the checks
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   type-check:
     runs-on: ubuntu-20.04
     strategy:
