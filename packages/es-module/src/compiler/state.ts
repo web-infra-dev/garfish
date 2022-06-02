@@ -62,7 +62,7 @@ function getParentScope(
     if (condition(scope.node)) {
       return scope;
     }
-  } while ((scope = scope.parent));
+  } while (scope.parent && (scope = scope.parent));
   return null;
 }
 
@@ -72,7 +72,7 @@ function execDeferQueue(state: State) {
     const { ids, scope } = fn();
     for (const node of ids) {
       if (!scope.getBinding(node.name)) {
-        programParent.addGlobal(node);
+        programParent?.addGlobal(node);
       }
       scope.registerConstantViolation(node.name, node);
     }
@@ -84,7 +84,7 @@ function execDeferQueue(state: State) {
       if (binding) {
         binding.references.add(node);
       } else if (type === 'identifier') {
-        programParent.addGlobal(node);
+        programParent?.addGlobal(node);
       }
     }
   });
@@ -105,7 +105,7 @@ function walk(
   >,
   state: State,
 ) {
-  const ancestors = [];
+  const ancestors: Array<Node> = [];
   const call = (node: Node, st: State, override?: string) => {
     const type = override || node.type;
     const found = visitors[type];
@@ -120,7 +120,7 @@ function walk(
       if (isProgram(node) || isScope(node, parentNode)) {
         scope = new Scope(node, scope);
       }
-      state.scopes.set(node, scope);
+      scope && state.scopes.set(node, scope);
     }
 
     // 递归调用
@@ -170,7 +170,8 @@ export function createState(ast: Node) {
     },
 
     get programParent() {
-      return this.getProgramParent(state.scopes.get(ast));
+      const scope = state.scopes.get(ast);
+      return scope && this.getProgramParent(scope);
     },
 
     getBindingIdentifiers,
@@ -188,15 +189,15 @@ export function createState(ast: Node) {
     },
 
     getProgramParent(scope: Scope) {
-      scope = getParentScope(scope, isProgram);
-      if (scope) return scope;
+      const scopeRes = getParentScope(scope, isProgram);
+      if (scopeRes) return scopeRes;
       // prettier-ignore
       throw new Error('Couldn\'t find a Program');
     },
 
     getBlockParent(scope: Scope) {
-      scope = getParentScope(scope, isBlockParent);
-      if (scope) return scope;
+      const scopeRes = getParentScope(scope, isBlockParent);
+      if (scopeRes) return scopeRes;
       throw new Error(
         // prettier-ignore
         'We couldn\'t find a BlockStatement, For, Switch, Function, Loop or Program...',
@@ -212,7 +213,7 @@ export function createState(ast: Node) {
       this.replaceWith(null, ancestors);
     },
 
-    replaceWith(replacement: Node, ancestors: Array<Node>) {
+    replaceWith(replacement: Node | null, ancestors: Array<Node>) {
       const l = ancestors.length;
       const node = ancestors[l - 1];
       if (node === replacement) return;
@@ -229,7 +230,8 @@ export function createState(ast: Node) {
         } else {
           obj[key] = replacement;
           this.ancestors.set(replacement, ancestors);
-          this.scopes.set(replacement, this.scopes.get(node));
+          const scopeRes = this.scopes.get(node);
+          scopeRes && this.scopes.set(replacement, scopeRes);
           if (isProp) {
             if (isIdentifier(obj.key) && isIdentifier(obj.value)) {
               if (obj.key.name !== obj.value.name) {

@@ -27,7 +27,7 @@
   "module": "dist/esm/index.js",
   "types": "./src/index.ts",
   "scripts": {
-    "build": "rimraf dist && tsup src/index.ts",
+    "build": "rimraf dist && tsup src/index.ts --dts",
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
   "dependencies": {

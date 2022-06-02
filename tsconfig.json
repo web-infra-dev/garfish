@@ -16,6 +16,7 @@
     "emitDecoratorMetadata": true,
     "strictNullChecks": true,
     "experimentalDecorators": true,
+    "skipLibCheck": true,
     "paths": {
       "@garfish/*": ["packages/*/src"]
     },

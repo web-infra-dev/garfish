@@ -1,4 +1,4 @@
-import { warn, error, Text, transformUrl } from '@garfish/utils';
+import { warn, error, Text, transformUrl, assert } from '@garfish/utils';
 import {
   Loader,
   StyleManager,
@@ -133,6 +133,7 @@ export async function processAppResources(loader: Loader, appInfo: AppInfo) {
   let isHtmlMode: Boolean = false,
     fakeEntryManager;
   const resources: any = { js: [], link: [], modules: [] }; // Default resources
+  assert(appInfo.entry, `[${appInfo.name}] Entry is not specified.`);
   const { resourceManager: entryManager } = await loader.load({
     scope: appInfo.name,
     url: transformUrl(location.href, appInfo.entry),

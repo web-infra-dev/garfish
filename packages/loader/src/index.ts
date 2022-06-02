@@ -6,6 +6,7 @@ import {
   isCssType,
   isHtmlType,
 } from '@garfish/utils';
+import 'isomorphic-fetch';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
 import { TemplateManager } from './managers/template';

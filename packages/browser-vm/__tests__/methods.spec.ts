@@ -1,4 +1,5 @@
 import { Sandbox } from '../src/sandbox';
+import assert from 'assert';
 
 describe('Init', () => {
   let sandbox: Sandbox;
@@ -51,6 +52,8 @@ describe('Init', () => {
     const subGlobal = sandbox.global;
     const baseGlobal = Sandbox.getNativeWindow();
     expect(typeof subGlobal).toBe('object');
+    assert(baseGlobal);
+    assert(subGlobal);
     expect(baseGlobal).toBe(
       subGlobal[Symbol.for('garfish.globalObject') as any],
     );
