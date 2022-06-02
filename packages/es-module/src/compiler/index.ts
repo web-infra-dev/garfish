@@ -295,6 +295,8 @@ export class Compiler {
       if (u()) return true;
       if (scope.parent) {
         scope = scope.parent;
+      } else {
+        break;
       }
     }
     return false;
