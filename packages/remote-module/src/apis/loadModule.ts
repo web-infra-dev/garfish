@@ -6,6 +6,7 @@ import {
   fetchLoading,
   purifyOptions,
   prettifyError,
+  ModuleConfig,
 } from '../common';
 import { hooks } from '../hooks';
 import { Actuator } from '../actuator';
@@ -13,7 +14,7 @@ import { processAlias, getValueInObject } from './setModuleConfig';
 
 export async function loadModule(
   urlOrAlias: string,
-  options?: ModuleInfo,
+  options?: ModuleConfig,
 ): Promise<Record<string, any> | null> {
   const data = await hooks.lifecycle.asyncBeforeLoadModule.emit({
     options,
@@ -27,7 +28,10 @@ export async function loadModule(
   options = data.options;
 
   assert(urlOrAlias, 'Missing url for loading remote module.');
-  assert(typeof urlOrAlias === 'string', 'The type of URL needs to be a string.');
+  assert(
+    typeof urlOrAlias === 'string',
+    'The type of URL needs to be a string.',
+  );
   const [url, segments] = processAlias(urlOrAlias);
   assert(
     isAbsolute(url) || url.startsWith('//'),
@@ -39,7 +43,7 @@ export async function loadModule(
   const urlWithVersion = `${version || 'latest'}@${url}`; // `latest@https://xx.js`
 
   const asyncLoadProcess = async () => {
-    let result = null;
+    let result: Record<string, any> | null = null;
     let module = cacheModules[urlWithVersion];
 
     if (cache && module) {
@@ -50,29 +54,30 @@ export async function loadModule(
     } else {
       try {
         const data = await loader.loadModule(url);
+        if (data.resourceManager) {
+          const actuator = new Actuator(data.resourceManager, externals);
+          cacheModules[urlWithVersion] = actuator.env.exports;
+          let exports = actuator.execScript().exports;
 
-        const actuator = new Actuator(data.resourceManager, externals);
-        cacheModules[urlWithVersion] = actuator.env.exports;
-        let exports = actuator.execScript().exports;
+          if (typeof adapter === 'function') {
+            exports = adapter(exports);
+          }
+          const hookResult = await hooks.lifecycle.asyncAfterLoadModule.emit({
+            url,
+            exports,
+            code: data.resourceManager.moduleCode,
+          });
+          if (hookResult === false) {
+            return null;
+          }
+          exports = hookResult.exports;
 
-        if (typeof adapter === 'function') {
-          exports = adapter(exports);
+          cacheModules[urlWithVersion] = exports;
+          if (isPromise(exports)) {
+            exports = await exports;
+          }
+          result = getValueInObject(exports, segments);
         }
-        const hookResult = await hooks.lifecycle.asyncAfterLoadModule.emit({
-          url,
-          exports,
-          code: data.resourceManager.moduleCode,
-        });
-        if (hookResult === false) {
-          return null;
-        }
-        exports = hookResult.exports;
-
-        cacheModules[urlWithVersion] = exports;
-        if (isPromise(exports)) {
-          exports = await exports;
-        }
-        result = getValueInObject(exports, segments);
       } catch (e) {
         delete cacheModules[urlWithVersion];
         const alias = segments ? segments[0] : '';

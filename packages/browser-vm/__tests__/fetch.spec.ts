@@ -1,3 +1,4 @@
+import assert from 'assert';
 import 'isomorphic-fetch';
 import { Sandbox } from '../src/sandbox';
 
@@ -22,6 +23,7 @@ describe('Init', () => {
       `,
       { next },
     );
+    assert(sandbox.options.sourceList);
     expect(sandbox.options.sourceList[0]).toMatchObject({
       tagName: 'fetch',
       url: 'http://localhost:9999/sub/config.json',
@@ -43,6 +45,7 @@ describe('Init', () => {
       xhr.open('GET', '/sub/config.json', true);
       xhr.send();
     `);
+    assert(sandbox.options.sourceList);
     expect(sandbox.options.sourceList[0]).toMatchObject({
       tagName: 'xmlhttprequest',
       url: '/sub/config.json',

@@ -6,7 +6,11 @@ describe('test sandbox ', () => {
       <style>body{color: 'yellow';}</style>
     `;
 
-    const obj = {
+    const obj: {
+      name: string;
+      age: string;
+      some?: string;
+    } = {
       name: 'zhoushaw',
       age: '24',
       some: 'test delete',

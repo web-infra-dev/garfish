@@ -20,13 +20,13 @@ type Options = UserOptions<
 
 const defaultOpts = {
   // required - one or the other or both
-  rootComponent: null,
-  loadRootComponent: null,
+  rootComponent: undefined,
+  loadRootComponent: undefined,
 
   // optional opts
-  renderType: null,
-  errorBoundary: null,
-  el: null,
+  renderType: undefined,
+  errorBoundary: undefined,
+  el: undefined,
   canUpdate: true, // by default, allow parcels created with garfish-react-bridge to be updated
   suppressComponentDidCatchWarning: false,
   domElements: {},
@@ -139,15 +139,21 @@ function mount(opts: Options, appInfo: PropsInfo) {
     opts,
   });
 
-  opts.domElements[appInfo.appName] = domElement;
-  opts.renderResults[appInfo.appName] = renderResult;
+  if (opts.domElements) {
+    opts.domElements[appInfo.appName] = domElement;
+  }
+  if (opts.renderResults) {
+    opts.renderResults[appInfo.appName] = renderResult;
+  }
 }
 
 function unmount(opts: Options, appInfo: PropsInfo) {
-  const root = opts.renderResults[appInfo.appName];
-  root.unmount();
-  delete opts.domElements[appInfo.appName];
-  delete opts.renderResults[appInfo.appName];
+  if (opts.renderResults) {
+    const root = opts.renderResults[appInfo.appName];
+    root.unmount();
+    opts.domElements && delete opts.domElements[appInfo.appName];
+    delete opts.renderResults[appInfo.appName];
+  }
 }
 
 // function update(opts: Options, appInfo: PropsInfo) {
@@ -163,7 +169,7 @@ function unmount(opts: Options, appInfo: PropsInfo) {
 //   });
 // }
 
-function atLeastReact18(React: typeReact) {
+function atLeastReact18(React?: typeReact) {
   if (
     React &&
     typeof React.version === 'string' &&
@@ -198,7 +204,7 @@ function callCreateRoot({ opts, elementToRender, domElement }) {
 }
 
 function getElementToRender(opts: Options, appInfo: PropsInfo) {
-  const rootComponentElement = opts.React.createElement(
+  const rootComponentElement = opts.React?.createElement(
     opts.rootComponent as any,
     appInfo,
   );
@@ -206,7 +212,7 @@ function getElementToRender(opts: Options, appInfo: PropsInfo) {
   let elementToRender = rootComponentElement;
 
   if (opts.errorBoundary) {
-    elementToRender = opts.React.createElement(
+    elementToRender = opts.React?.createElement(
       createErrorBoundary(opts) as any,
       appInfo,
       elementToRender,
@@ -220,7 +226,7 @@ function createErrorBoundary(opts: Options) {
   // to avoid bloat
   function GarfishSubAppReactErrorBoundary(this: any, appInfo: PropsInfo) {
     // super
-    opts.React.Component.apply(this, arguments);
+    opts.React?.Component.apply(this, arguments);
 
     this.state = {
       caughtError: null,
@@ -232,15 +238,14 @@ function createErrorBoundary(opts: Options) {
     ).displayName = `ReactBridgeReactErrorBoundary(${appInfo.appName})`;
   }
 
-  GarfishSubAppReactErrorBoundary.prototype = Object.create(
-    opts.React.Component.prototype,
-  );
+  GarfishSubAppReactErrorBoundary.prototype =
+    opts.React && Object.create(opts.React.Component.prototype);
 
   GarfishSubAppReactErrorBoundary.prototype.render = function () {
     if (this.state.caughtError) {
       const errorBoundary = opts.errorBoundary;
 
-      return errorBoundary(this.state.caughtError, this.props);
+      return errorBoundary && errorBoundary(this.state.caughtError, this.props);
     } else {
       return this.props.children;
     }

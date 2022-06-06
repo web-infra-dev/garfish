@@ -5,6 +5,8 @@ import {
   isPlainObject,
   evalWithEnv,
   transformUrl,
+  warn,
+  assert,
 } from '@garfish/utils';
 import { Loader, LoaderOptions, JavaScriptManager } from '@garfish/loader';
 import { Output, Compiler } from './compiler';
@@ -17,7 +19,7 @@ export type ModuleResource = Output & {
 };
 
 export interface RuntimeOptions {
-  scope?: string;
+  scope: string;
   loaderOptions?: LoaderOptions;
   execCode?: (
     output: ModuleResource,
@@ -162,13 +164,18 @@ export class Runtime {
     const p = this.loader
       .load<JavaScriptManager>({ scope: this.options.scope, url })
       .then(async ({ resourceManager }) => {
-        const { url, scriptCode } = resourceManager;
+        if (resourceManager) {
+          const { url, scriptCode } = resourceManager;
 
-        if (scriptCode) {
-          const output = await this.analysisModule(scriptCode, storeId, url);
-          this.resources[storeId] = output;
+          if (scriptCode) {
+            assert(url, 'url is required');
+            const output = await this.analysisModule(scriptCode, storeId, url);
+            this.resources[storeId] = output;
+          } else {
+            delete this.resources[storeId];
+          }
         } else {
-          this.resources[storeId] = null;
+          warn(`Module '${storeId}' not found`);
         }
       });
     this.resources[storeId] = p;

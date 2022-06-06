@@ -4,6 +4,7 @@
 
 import { reactBridge } from '../src/reactBridge';
 import '@testing-library/jest-dom';
+import assert from 'assert';
 
 const domElId = '#sub-app-container';
 const cssSelector = '#app';
@@ -242,7 +243,10 @@ describe('react-bridge', () => {
       expect(React.createElement).toHaveBeenCalled();
       expect(document.getElementById('test_el')).toBeInTheDocument();
       expect(document.getElementById('test_el')).not.toBeNull;
-      expect(document.getElementById('test_el').children).not.toBeNull;
+
+      assert(document.getElementById('test_el'));
+      expect(document.getElementById('test_el')).not.toBeNull;
+      expect(document.getElementById('test_el')?.children).not.toBeNull;
       expect(document.getElementById('app')).toBeNull;
     });
 
@@ -258,8 +262,10 @@ describe('react-bridge', () => {
 
       lifeCycles.render({ ...appInfo, props });
       expect(React.createElement).toHaveBeenCalled();
+
+      assert(document.getElementById('app'));
       expect(document.getElementById('app')).not.toBeNull;
-      expect(document.getElementById('app').children).not.toBeNull;
+      expect(document.getElementById('app')?.children).not.toBeNull;
     });
   });
 });

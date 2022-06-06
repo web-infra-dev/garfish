@@ -1,4 +1,5 @@
 import { PatchStyle } from '../src/patchers/style';
+import assert from 'assert';
 
 const createStyleComponentElementWithRecord = () => {
   const styleComponentElement = document.createElement('style');
@@ -45,6 +46,7 @@ describe('test sandbox ', () => {
     sty.activate();
     const styleComponentElement = createStyleComponentElementWithRecord();
 
+    assert(styleComponentElement.sheet);
     expectIncludeCssRules(styleComponentElement.sheet.cssRules);
 
     sty.deactivate();

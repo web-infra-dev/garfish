@@ -86,7 +86,12 @@ export function loadAppResource(loader: Loader, info: interfaces.AppInfo) {
           jsNodes.forEach((node) => {
             const src = manager.findAttributeValue(node, 'src');
             src &&
-              safeLoad(loader, info.name, transformUrl(baseUrl, src), false);
+              safeLoad(
+                loader,
+                info.name,
+                baseUrl ? transformUrl(baseUrl, src) : src,
+                false,
+              );
           });
         }
         if (linkNodes) {
@@ -94,7 +99,12 @@ export function loadAppResource(loader: Loader, info: interfaces.AppInfo) {
             if (manager.DOMApis.isCssLinkNode(node)) {
               const href = manager.findAttributeValue(node, 'href');
               href &&
-                safeLoad(loader, info.name, transformUrl(baseUrl, href), false);
+                safeLoad(
+                  loader,
+                  info.name,
+                  baseUrl ? transformUrl(baseUrl, href) : href,
+                  false,
+                );
             }
           });
         }
@@ -102,7 +112,7 @@ export function loadAppResource(loader: Loader, info: interfaces.AppInfo) {
           metaNodes.forEach((node) => {
             if (manager.DOMApis.isRemoteModule(node)) {
               const src = manager.findAttributeValue(node, 'src');
-              if (isAbsolute(src)) {
+              if (src && isAbsolute(src)) {
                 safeLoad(loader, info.name, src, true);
               } else {
                 warn(

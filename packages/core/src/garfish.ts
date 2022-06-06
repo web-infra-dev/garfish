@@ -157,7 +157,7 @@ export class Garfish extends EventEmitter2 {
 
   loadApp(
     appName: string,
-    options?: Omit<interfaces.AppInfo, 'name'>,
+    options?: Partial<Omit<interfaces.AppInfo, 'name'>>,
   ): Promise<interfaces.App | null> {
     assert(appName, 'Miss appName.');
 

@@ -27,4 +27,7 @@ export type OptionalType<T extends new (...args: any) => any> = {
   handleInstance: (vueInstance: InstanceType<T>, opts: PropsInfo) => void;
 };
 
-export type UserOptions<T, U> = TypeComponent<U> & Partial<OptionalType<T>>;
+export type UserOptions<
+  T extends new (...args: any) => any,
+  U,
+> = TypeComponent<U> & Partial<OptionalType<T>>;

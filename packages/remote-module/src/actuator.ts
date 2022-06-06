@@ -14,7 +14,7 @@ export class Actuator {
       module: null,
       require: (key) =>
         (externals || {})[key] ||
-        moduleConfig.externals[key] ||
+        (moduleConfig.externals && moduleConfig.externals[key]) ||
         currentApp?.context?.externals[key],
     };
     this.env.module = this.env;

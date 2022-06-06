@@ -53,13 +53,13 @@ describe('Router: test active and refreshApp', () => {
   });
 
   it('Router nested: native navigation', async () => {
-    window.history.pushState(null, null, '/a');
+    window.history.pushState(null, '', '/a');
     await waitSwitchReady();
     expect(activeInfos.map((app) => app.name)).toEqual(['appA']);
   });
 
   it('Router nested: native navigation to appSubAppA', async () => {
-    window.history.replaceState(null, null, '/a/subApp');
+    window.history.replaceState(null, '', '/a/subApp');
     await waitSwitchReady();
     expect(activeInfos.map((app) => app.name)).toEqual(['appA', 'appSubAppA']);
   });

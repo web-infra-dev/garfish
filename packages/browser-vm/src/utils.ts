@@ -44,7 +44,7 @@ if (!(window as FakeWindow)[__sandboxMap__]) {
 export const sandboxMap = {
   sandboxMap: sandboxList,
 
-  get(element: Element): Sandbox {
+  get(element: Element): Sandbox | undefined {
     if (!element) return;
     const sandboxId = element[__elementSandboxTag__];
     if (typeof sandboxId !== 'number') return;

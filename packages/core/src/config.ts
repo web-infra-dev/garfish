@@ -1,20 +1,41 @@
-import { error, isObject, deepMerge, filterUndefinedVal } from '@garfish/utils';
+import {
+  error,
+  isObject,
+  deepMerge,
+  filterUndefinedVal,
+  assert,
+} from '@garfish/utils';
 import { AppInfo } from './module/app';
 import { interfaces } from './interface';
 
 // filter unless global config
-const appConfigKeys: Array<keyof interfaces.Config> = [
-  'appID',
-  'apps',
-  'disableStatistics',
-  'disablePreloadApp',
-  'plugins',
-];
+const filterAppConfigKeys: Record<
+  Exclude<keyof interfaces.Options, keyof AppInfo>,
+  true
+> = {
+  beforeBootstrap: true,
+  bootstrap: true,
+  beforeRegisterApp: true,
+  registerApp: true,
+  beforeLoad: true,
+  afterLoad: true,
+  errorLoadApp: true,
+  appID: true,
+  apps: true,
+  disableStatistics: true,
+  disablePreloadApp: true,
+  plugins: true,
+  autoRefreshApp: true,
+  onNotMatchRouter: true,
+};
 
 // `props` may be responsive data
-export const deepMergeConfig = <T extends Partial<AppInfo>>(
+export const deepMergeConfig = <
+  T extends { props?: Record<string, any> },
+  U extends { props?: Record<string, any> },
+>(
   globalConfig: T,
-  localConfig: T,
+  localConfig: U,
 ) => {
   const props = {
     ...(globalConfig.props || {}),
@@ -29,40 +50,39 @@ export const deepMergeConfig = <T extends Partial<AppInfo>>(
   return result;
 };
 
-export const getAppConfig = <T extends Partial<AppInfo>>(
-  globalConfig: T,
-  localConfig: T,
-): T => {
-  const mergeConfig = deepMergeConfig(globalConfig, localConfig);
+export const getAppConfig = (
+  globalConfig: interfaces.Options,
+  localConfig: AppInfo,
+): AppInfo => {
+  const mergeResult = deepMergeConfig(globalConfig, localConfig);
 
-  Object.keys(mergeConfig).forEach((key: keyof interfaces.Config) => {
-    if (appConfigKeys.includes(key)) {
-      delete mergeConfig[key];
+  Object.keys(mergeResult).forEach((key: keyof interfaces.Config) => {
+    if (filterAppConfigKeys[key]) {
+      delete mergeResult[key];
     }
   });
 
-  return mergeConfig;
+  return mergeResult;
 };
 
 export const generateAppOptions = (
   appName: string,
   garfish: interfaces.Garfish,
-  options?: Omit<AppInfo, 'name'>,
+  options?: Partial<Omit<AppInfo, 'name'>>,
 ): AppInfo => {
-  let appInfo = garfish.appInfos[appName] || { name: appName };
+  let appInfo: AppInfo = garfish.appInfos[appName] || { name: appName };
 
   // Merge register appInfo config and loadApp config
-  if (isObject(options)) {
-    appInfo = getAppConfig(appInfo, {
-      ...options,
-      name: appName,
-    });
-  }
+  appInfo = getAppConfig(garfish.options, {
+    ...appInfo,
+    ...options,
+    props: {
+      ...(appInfo.props || {}),
+      ...(options?.props || {}),
+    },
+  });
 
-  // Merge globalConfig with localConfig
-  appInfo = getAppConfig(garfish.options, appInfo);
-
-  return appInfo as AppInfo;
+  return appInfo;
 };
 
 // Each main application needs to generate a new configuration

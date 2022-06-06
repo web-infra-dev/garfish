@@ -111,7 +111,7 @@ export function memberExpression(
   object: MemberExpression['object'],
   property: MemberExpression['property'],
   computed = false,
-  optional = null,
+  optional = false,
 ): MemberExpression {
   return {
     object,
