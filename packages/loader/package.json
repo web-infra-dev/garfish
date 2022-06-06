@@ -32,8 +32,7 @@
   },
   "dependencies": {
     "@garfish/hooks": "workspace:*",
-    "@garfish/utils": "workspace:*",
-    "isomorphic-fetch": "^3.0.0"
+    "@garfish/utils": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
