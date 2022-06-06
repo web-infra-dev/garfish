@@ -758,11 +758,9 @@ importers:
     specifiers:
       '@garfish/hooks': workspace:*
       '@garfish/utils': workspace:*
-      isomorphic-fetch: ^3.0.0
     dependencies:
       '@garfish/hooks': link:../hooks
       '@garfish/utils': link:../utils
-      isomorphic-fetch: 3.0.0
 
   packages/remote-module:
     specifiers:
@@ -28675,7 +28673,7 @@ packages:
     resolution: {directory: packages/bridge-react, type: directory}
     id: file:packages/bridge-react
     name: '@garfish/bridge-react'
-    version: 1.7.2
+    version: 1.8.0
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
@@ -28689,7 +28687,7 @@ packages:
     resolution: {directory: packages/bridge-react, type: directory}
     id: file:packages/bridge-react
     name: '@garfish/bridge-react'
-    version: 1.7.2
+    version: 1.8.0
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
