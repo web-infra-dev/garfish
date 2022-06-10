@@ -17,6 +17,7 @@ import {
   isJsType,
   isCssType,
   error,
+  safeWrapper,
 } from '@garfish/utils';
 import { rootElm } from '../utils';
 import { Sandbox } from '../sandbox';
@@ -311,7 +312,7 @@ export class DynamicNodeProcessor {
       const { el, sandbox } = this;
       const originOnload = el.onload;
       el.onload = function () {
-        def(el.contentWindow, 'parent', sandbox.global);
+        safeWrapper(() => def(el.contentWindow, 'parent', sandbox.global));
         return originOnload.apply(this, arguments);
       };
     }
