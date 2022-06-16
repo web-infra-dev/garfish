@@ -49,13 +49,13 @@ describe('Router: test active and refreshApp', () => {
   });
 
   it('Router: native navigation', async () => {
-    window.history.pushState(null, null, '/a');
+    window.history.pushState(null, '', '/a');
     await waitSwitchReady();
     expect(activeInfo.name).toBe('appA');
   });
 
   it('Router: native navigation to appB', async () => {
-    window.history.replaceState(null, null, '/b');
+    window.history.replaceState(null, '', '/b');
     await waitSwitchReady();
     expect(activeInfo.name).toBe('appB');
   });

@@ -10,7 +10,7 @@ export function GarfishPerformance() {
       name: 'performance',
 
       beforeLoad(appInfo) {
-        if (!subAppMap[appInfo.name]) {
+        if (!subAppMap[appInfo.name] && appInfo.domGetter) {
           subAppMap[appInfo.name] = new SubAppObserver({
             subAppRootSelector: appInfo.domGetter,
           });

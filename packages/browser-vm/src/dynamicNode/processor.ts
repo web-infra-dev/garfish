@@ -17,6 +17,7 @@ import {
   isJsType,
   isCssType,
   error,
+  safeWrapper,
 } from '@garfish/utils';
 import { rootElm } from '../utils';
 import { Sandbox } from '../sandbox';
@@ -91,7 +92,7 @@ export class DynamicNodeProcessor {
   private addDynamicLinkNode(callback: (styleNode: HTMLStyleElement) => void) {
     const { href, type } = this.el;
 
-    if (!type || isCssType(type)) {
+    if (!type || isCssType({ src: href, type })) {
       if (href) {
         const { baseUrl, namespace = '' } = this.sandbox.options;
         const fetchUrl = baseUrl ? transformUrl(baseUrl, href) : href;
@@ -311,7 +312,7 @@ export class DynamicNodeProcessor {
       const { el, sandbox } = this;
       const originOnload = el.onload;
       el.onload = function () {
-        def(el.contentWindow, 'parent', sandbox.global);
+        safeWrapper(() => def(el.contentWindow, 'parent', sandbox.global));
         return originOnload.apply(this, arguments);
       };
     }

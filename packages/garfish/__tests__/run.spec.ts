@@ -8,6 +8,7 @@ import {
   __MockHtml__,
   appContainerId,
 } from '@garfish/utils';
+import assert from 'assert';
 
 const vueAppRootNode = 'vue-app';
 const vueAppRootText = 'vue app init page';
@@ -24,7 +25,9 @@ async function vueAppInDocument(container: Element) {
   await waitFor();
   const appContainer = container.querySelectorAll(`[id^=${appContainerId}]`);
   expect(appContainer).toHaveLength(1);
-  expect(appContainer[0].querySelector(`#${vueAppRootNode}`).innerHTML).toBe(
+  assert(appContainer[0]);
+  assert(appContainer[0].querySelector(`#${vueAppRootNode}`));
+  expect(appContainer[0].querySelector(`#${vueAppRootNode}`)?.innerHTML).toBe(
     vueAppRootText,
   );
 }
@@ -33,7 +36,8 @@ async function reactAppInDocument(container: Element) {
   await waitFor();
   const appContainer = container.querySelectorAll(`[id^=${appContainerId}]`);
   expect(appContainer).toHaveLength(1);
-  expect(appContainer[0].querySelector(`#${reactAppRootNode}`).innerHTML).toBe(
+  assert(appContainer[0].querySelector(`#${reactAppRootNode}`));
+  expect(appContainer[0].querySelector(`#${reactAppRootNode}`)?.innerHTML).toBe(
     reactAppRootText,
   );
 }

@@ -4,12 +4,12 @@ describe('test sandbox ', () => {
   it('dom sandbox', () => {
     const event = new Event('flag-event');
     const evn = new PatchEvent();
-    let flag1 = null;
+    let flag1: string | null = null;
     window.addEventListener('flag-event', () => (flag1 = 'flag1'));
 
     evn.activate();
 
-    let flag2 = null;
+    let flag2: string | null = null;
     window.addEventListener('flag-event', () => (flag2 = 'flag2'));
 
     evn.deactivate();

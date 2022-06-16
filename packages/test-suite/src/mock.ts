@@ -1,7 +1,9 @@
 import { isAbsolute } from '@garfish/utils';
 import fs from 'fs';
 import path from 'path';
+import 'isomorphic-fetch';
 import fetchMock from 'jest-fetch-mock';
+
 // Unit test server
 export function mockStaticServer({
   baseDir,

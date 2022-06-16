@@ -1,6 +1,6 @@
 {
   "name": "@garfish/hooks",
-  "version": "1.7.0",
+  "version": "1.8.1",
   "description": "hooks module.",
   "keywords": [
     "garfish",
@@ -35,6 +35,7 @@
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
-    "access": "public"
+    "access": "public",
+    "types": "./dist/index.d.ts"
   }
 }

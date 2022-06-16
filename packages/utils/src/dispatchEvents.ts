@@ -72,7 +72,7 @@ const mimickedReactEvents = {
 };
 
 export function dispatchEvents(shadowRoot) {
-  const removeEventListeners = [];
+  const removeEventListeners: Array<() => void> = [];
 
   reactEvents.forEach(function (reactEventName) {
     const nativeEventName = getNativeEventName(reactEventName);
@@ -168,7 +168,7 @@ function getNativeEventName(reactEventName) {
 }
 
 function composedPath(el) {
-  const path = [];
+  const path: Array<any> = [];
   while (el) {
     path.push(el);
     if (el.tagName === 'HTML') {

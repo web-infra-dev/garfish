@@ -30,7 +30,8 @@ export function setModuleConfig(obj: Partial<ModuleConfig>) {
       if (key === 'env') {
         Object.assign(moduleConfig[key], obj[key]);
       } else if (key === 'alias') {
-        setAlias(obj[key]);
+        const val = obj[key];
+        val && setAlias(val);
       } else {
         moduleConfig[key] = obj[key];
       }
@@ -40,7 +41,7 @@ export function setModuleConfig(obj: Partial<ModuleConfig>) {
   }
 }
 
-export function processAlias(url: string): [string, Array<string> | null] {
+export function processAlias(url: string): [string, Array<string> | undefined] {
   // If url is an alias
   if (url && url.startsWith(MARKER)) {
     const segments = url.slice(MARKER.length).split('.');
@@ -49,7 +50,7 @@ export function processAlias(url: string): [string, Array<string> | null] {
     assert(realUrl, `Alias "${name}" is not defined.`);
     return [realUrl, segments];
   }
-  return [url, null];
+  return [url, undefined];
 }
 
 export function getValueInObject(

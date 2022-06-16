@@ -19,7 +19,7 @@ export function GarfishEsModule(options: Options = {}) {
       if (appModules[appId]) return true;
       if (Array.isArray(excludes)) return excludes.includes(appName);
       if (typeof excludes === 'function') return excludes(appName);
-      if (appInfo.sandbox === false || appInfo.sandbox.open === false) {
+      if (appInfo.sandbox === false || appInfo?.sandbox?.open === false) {
         return true;
       }
       return false;
@@ -29,6 +29,7 @@ export function GarfishEsModule(options: Options = {}) {
       name: 'es-module',
 
       afterLoad(appInfo, appInstance) {
+        if (!appInstance) return;
         const { appId, name } = appInstance;
         if (!disable(appId, name, appInfo)) {
           // @ts-ignore
@@ -47,7 +48,7 @@ export function GarfishEsModule(options: Options = {}) {
             const appEnv = appInstance.getExecScriptEnv(options?.noEntry);
             Object.assign(env, appEnv);
 
-            if (options.isModule) {
+            if (options?.isModule) {
               const codeRef = { code };
 
               runtime.options.execCode = function (output, provider) {
@@ -55,7 +56,7 @@ export function GarfishEsModule(options: Options = {}) {
                 Object.assign(env, provider);
                 codeRef.code = `(() => {'use strict';${output.code}})()`;
 
-                sandbox.hooks.lifecycle.beforeInvoke.emit(
+                sandbox?.hooks.lifecycle.beforeInvoke.emit(
                   codeRef,
                   url,
                   env,
@@ -63,14 +64,14 @@ export function GarfishEsModule(options: Options = {}) {
                 );
 
                 try {
-                  const params = sandbox.createExecParams(codeRef, env);
+                  const params = sandbox?.createExecParams(codeRef, env);
                   const code = `${codeRef.code}\n//${output.storeId}${sourcemap}`;
-                  evalWithEnv(code, params, undefined, false);
+                  evalWithEnv(code, params || {}, undefined, false);
                 } catch (e) {
-                  sandbox.processExecError(e, url, env, options);
+                  sandbox?.processExecError(e, url, env, options);
                 }
 
-                sandbox.hooks.lifecycle.afterInvoke.emit(
+                sandbox?.hooks.lifecycle.afterInvoke.emit(
                   codeRef,
                   url,
                   env,
@@ -78,14 +79,16 @@ export function GarfishEsModule(options: Options = {}) {
                 );
               };
 
-              appInstance.esmQueue.add(async (next) => {
-                options.isInline
-                  ? await runtime.importByCode(codeRef.code, url)
-                  : await runtime.importByUrl(url, url);
-                next();
-              });
+              if (url) {
+                appInstance.esmQueue.add(async (next) => {
+                  options.isInline
+                    ? await runtime.importByCode(codeRef.code, url)
+                    : await runtime.importByUrl(url, url);
+                  next();
+                });
+              }
             } else {
-              sandbox.execScript(code, env, url, options);
+              sandbox?.execScript(code, env, url, options);
             }
           };
         }

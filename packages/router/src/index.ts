@@ -52,7 +52,10 @@ export function GarfishRouter(_args?: Options) {
         const { autoRefreshApp = true, onNotMatchRouter = () => null } =
           Garfish.options;
 
-        async function active(appInfo: interfaces.AppInfo, rootPath: string) {
+        async function active(
+          appInfo: interfaces.AppInfo,
+          rootPath: string = '/',
+        ) {
           routerLog(`${appInfo.name} active`, {
             appInfo,
             rootPath,

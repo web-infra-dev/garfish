@@ -35,7 +35,7 @@ export function generateCustomerElement(
       loaded: null,
       pastDelay: false,
     });
-    _delay: NodeJS.Timeout;
+    _delay: ReturnType<typeof setTimeout>;
 
     constructor() {
       super();

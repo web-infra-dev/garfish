@@ -47,7 +47,7 @@ export function makeMap<T extends Array<PropertyKey>>(list: T) {
   for (let i = 0; i < list.length; i++) {
     map[list[i]] = true;
   }
-  return (val: T[number]) => !!map[val];
+  return (val: PropertyKey) => !!map[val];
 }
 
 // Array to Object `['a'] => { a: true }`

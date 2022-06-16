@@ -5,6 +5,7 @@ import {
   purifyOptions,
   prettifyError,
   getModuleManager,
+  ModuleConfig,
 } from '../common';
 import { hooks } from '../hooks';
 import { Actuator } from '../actuator';
@@ -30,8 +31,8 @@ const throwWarn = (alias: string, url: string) => {
 
 export function loadModuleSync(
   urlOrAlias: string,
-  options?: ModuleInfo,
-): Record<string, any> {
+  options?: ModuleConfig,
+): Record<string, any> | null {
   const data = hooks.lifecycle.beforeLoadModule.emit({
     options,
     url: urlOrAlias,
@@ -40,14 +41,17 @@ export function loadModuleSync(
   options = data.options;
 
   assert(urlOrAlias, 'Missing url for loading remote module.');
-  assert(typeof urlOrAlias === 'string', 'The type of URL needs to be a string.');
+  assert(
+    typeof urlOrAlias === 'string',
+    'The type of URL needs to be a string.',
+  );
   const [url, segments] = processAlias(urlOrAlias);
   assert(
     isAbsolute(url) || url.startsWith('//'),
     `The loading of the remote module must be an absolute path. "${url}"`,
   );
 
-  let result = null;
+  let result: Record<string, any> | null = null;
   const info = purifyOptions(url, options);
   const { cache, version, externals, error, adapter } = info;
   const urlWithVersion = `${version || 'latest'}@${url}`;

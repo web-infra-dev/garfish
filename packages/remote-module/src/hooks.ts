@@ -6,11 +6,11 @@ import {
   AsyncWaterfallHook,
 } from '@garfish/hooks';
 import type { Actuator } from './actuator';
-import type { ModuleInfo } from './common';
+import type { ModuleConfig, ModuleInfo } from './common';
 
 export interface BeforeLoadArgs {
   url: string;
-  options?: ModuleInfo;
+  options?: ModuleConfig;
 }
 
 export interface afterLoadArgs {

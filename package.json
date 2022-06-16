@@ -15,6 +15,7 @@
     "test:coverage": "jest --collect-coverage",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
+    "type:check": "tsc -noEmit",
     "changeset": "npx changeset",
     "reset": "pnpm -r exec -- rm -rf node_modules && pnpm -r exec -- rm -rf dist && rm -rf node_modules",
     "setup": "cross-env DISABLE_GARFISH_CHECK_INTERNAL=true pnpm install",
@@ -87,7 +88,7 @@
     "workspace-tools": "0.16.2",
     "zx": "4.2.0"
   },
-  "version": "1.7.0",
+  "version": "1.8.1",
   "engines": {
     "node": ">=16.14.0"
   }
