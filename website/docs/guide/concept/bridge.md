@@ -39,7 +39,7 @@ Garfish bridge 是 `garfish` 提供的帮助用户降低接入成本的工具函
   <TabItem value="install_react" label="react 应用" default>
 
   ```bash npm2yarn
-  npm install @garfish/bridge --save
+  npm install @garfish/bridge-react --save
   ```
   </TabItem>
 
@@ -60,7 +60,7 @@ Garfish bridge 是 `garfish` 提供的帮助用户降低接入成本的工具函
 
 ## reactBridge(for react v16/v17/v18)
 
-reactBridge 是 `@garfish/bridge` 工具包为 react 子应用提供的 bridge 工具函数。
+reactBridge 是 `@garfish/bridge-react` 工具包为 react 子应用提供的 bridge 工具函数。
 
 :::info
 - 针对 react v16/v17 子应用，请使用 `@garfish/bridge-react` 工具包
@@ -155,7 +155,7 @@ export const provider = reactBridge({
   - `loadRootComponent` 将默认接收到 garfish 传递的子应用相关参数：
 
   ```ts
-   import { reactBridge } from "@garfish/bridge";
+   import { reactBridge } from "@garfish/bridge-react";
    export const provider = reactBridge({
      ...,
      loadRootComponent: ({ basename, dom, appName, props }) => {
@@ -176,7 +176,7 @@ export const provider = reactBridge({
   - 设置应用的 errorBoundary 组件，`errorBoundary` 是一个函数，并在子应用发生错误时触发，该函数将传递 error 报错信息及报错相关应用堆栈信息：
 
   ```ts
-   import { reactBridge } from "@garfish/bridge";
+   import { reactBridge } from "@garfish/bridge-react";
    export const provider = reactBridge({
      ...,
      errorBoundary: ( error, info ) => <ErrorComponent />,

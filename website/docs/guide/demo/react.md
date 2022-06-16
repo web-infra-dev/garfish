@@ -17,7 +17,7 @@ import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
 :::
 
 ```bash npm2yarn
-npm install @garfish/bridge --save
+npm install @garfish/bridge-react --save
 ```
 
 ### 2. 入口文件处导出 provider 函数
@@ -26,7 +26,7 @@ npm install @garfish/bridge --save
 ### react v16、v17 导出
 
 <Tabs>
-  <TabItem value="bridge_provider" label="使用 @garfish/bridge" default>
+  <TabItem value="bridge_provider" label="使用 @garfish/bridge-react" default>
 
 ```tsx
 // src/index.tsx
@@ -75,10 +75,9 @@ export const provider = reactBridge({
 </Tabs>
 
 ### react v18 导出
-> react v18 bridge 导出方式暂未支持，目前可通过自定义导出函数导出。
 
 <Tabs>
-  <TabItem value="bridge_provider" label="使用 @garfish/bridge" default>
+  <TabItem value="bridge_provider" label="使用 @garfish/bridge-react-v18" default>
 
 ```tsx
 // src/index.tsx

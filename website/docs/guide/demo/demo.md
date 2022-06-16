@@ -12,7 +12,7 @@ order: 1
 - angular (version 13)
 ## demo 案例
 
-子应用的导出提供通过 `@garfish/bridge` 的方式和自定义导出函数两种方式，我们将在下列 demo 案例中分别讲述。
+子应用的导出提供通过 `@garfish/bridge-*` 的方式和自定义导出函数两种方式，我们将在下列 demo 案例中分别讲述。
 
 - [react 子应用](/guide/demo/react)
 - [vue 子应用](/guide/demo/vue)

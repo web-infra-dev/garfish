@@ -102,15 +102,15 @@ app.mounted ? app.show() : await app.mount();
 
 ### 2.导出 provider 函数
 
-> 针对子应用需要导出生命周期函数，我们提供了桥接函数 [`@garfish/bridge`](/guide/bridge) 自动包装应用的生命周期，使用`@garfish/bridge` 可以降低接入成本与用户出错概率，也是 garfish 推荐的子应用接入方式。
+> 针对子应用需要导出生命周期函数，我们提供了桥接函数 [`@garfish/bridge-react`](/guide/bridge) 自动包装应用的生命周期，使用`@garfish/bridge-react` 可以降低接入成本与用户出错概率，也是 garfish 推荐的子应用接入方式。
 
 ```bash npm2yarn
-// 安装 @garfish/bridge：
-npm install @garfish/bridge --save
+// 安装 @garfish/bridge-react：
+npm install @garfish/bridge-react --save
 ```
 
 <Tabs>
-  <TabItem value="Webpack" label="使用 @garfish/bridge 接入" default>
+  <TabItem value="Webpack" label="使用 @garfish/bridge-react 接入" default>
 
 ```jsx
 import { reactBridge } from '@garfish/bridge-react';
@@ -197,7 +197,7 @@ const RootComponent = ({ basename }) => {
   - 使用 Garfish 在主应用上调度管理子应用
 - 子应用的改造
   - 增加对应的构建配置
-  - 使用 `@garfish/bridge` 包提供的函数包装子应用后返回 `provider` 函数并导出
+  - 使用 `@garfish/bridge-react` 包提供的函数包装子应用后返回 `provider` 函数并导出
   - 子应用针对不同的框架类型，添加不同 `basename` 的设置方式
     - React 在根组件中获取 `basename` 将其传递至 `BrowserRouter` 的 `basename` 属性中
     - Vue 将 `basename` 传递至 `VueRouter` 的 `basename` 属性中
