@@ -135,7 +135,7 @@ new Vue({
 ### 安装依赖
 
 ```bash npm2yarn
-npm install @garfish/bridge --save
+npm install @garfish/bridge-react --save
 ```
 
 ### 通过 Bridge 函数包装子应用

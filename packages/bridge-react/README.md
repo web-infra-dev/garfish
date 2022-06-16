@@ -1,6 +1,6 @@
-# `@garfish/bridge`
+# `@garfish/bridge-react`
 
-[![NPM version](https://img.shields.io/npm/v/@garfish/bridge.svg?style=flat-square)](https://www.npmjs.com/package/@garfish/bridge)
+[![NPM version](https://img.shields.io/npm/v/@garfish/bridge-react.svg?style=flat-square)](https://www.npmjs.com/package/@garfish/bridge-react)
 
 ## Usage
 
