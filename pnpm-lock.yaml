@@ -703,11 +703,13 @@ importers:
       '@garfish/loader': workspace:*
       '@garfish/test-suite': workspace:*
       '@garfish/utils': workspace:*
+      es-module-lexer: ^0.10.5
       eventemitter2: ^6.4.5
     dependencies:
       '@garfish/hooks': link:../hooks
       '@garfish/loader': link:../loader
       '@garfish/utils': link:../utils
+      es-module-lexer: 0.10.5
       eventemitter2: 6.4.5
     devDependencies:
       '@garfish/test-suite': link:../test-suite
@@ -1241,6 +1243,7 @@ packages:
     engines: {node: ^12.20.0 || ^14.15.0 || >=16.10.0}
     dependencies:
       tslib: 2.4.0
+    dev: true
 
   /@angular/compiler/9.0.0_tslib@1.14.1:
     resolution: {integrity: sha512-ctjwuntPfZZT2mNj2NDIVu51t9cvbhl/16epc5xEwyzyDt76pX9UgwvY+MbXrf/C/FWwdtmNtfP698BKI+9leQ==}
@@ -13551,6 +13554,10 @@ packages:
       unbox-primitive: 1.0.1
     dev: true
 
+  /es-module-lexer/0.10.5:
+    resolution: {integrity: sha512-+7IwY/kiGAacQfY+YBhKMvEmyAJnw5grTUgjG85Pe7vcUI/6b7pZjZG8nQ7+48YhzEAEqrEgD2dCz/JIK+AYvw==}
+    dev: false
+
   /es-module-lexer/0.9.3:
     resolution: {integrity: sha512-1HQ2M2sPtxwnvOvT1ZClHyQDiggdNjURWpY2we6aMKCQiUVxTmVs2UYPLIrD84sS+kMdUwfBSylbJPwNnBrnHQ==}
 
@@ -14122,6 +14129,7 @@ packages:
       esbuild-windows-64: 0.14.22
       esbuild-windows-arm64: 0.14.22
     dev: true
+    optional: true
 
   /esbuild/0.14.38:
     resolution: {integrity: sha512-12fzJ0fsm7gVZX1YQ1InkOE5f9Tl7cgf6JPYXRJtPIoE0zkWAbHdPHVPPaLi9tYAcEBqheGzqLn/3RdTOyBfcA==}
@@ -24189,6 +24197,7 @@ packages:
       neo-async: 2.6.2
       schema-utils: 3.1.1
       semver: 7.3.7
+    dev: false
 
   /sass-loader/12.4.0_sass@1.49.0+webpack@5.67.0:
     resolution: {integrity: sha512-7xN+8khDIzym1oL9XyS6zP6Ges+Bo2B2xbPrjdMHEYyV3AQYhd/wXeru++3ODHF0zMjYmVadblSKrPrjEkL8mg==}
