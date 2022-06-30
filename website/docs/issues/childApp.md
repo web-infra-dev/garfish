@@ -121,7 +121,7 @@ export const provider = ({ dom , basename}) => ({
   	ReactDOM.render(<App basename={basename} />, dom); // 作为 js entry 时，没有自己的文档流，只有提供的渲染节点
   },
 
-  destroy({ dom }}) {
+  destroy({ dom }) {
     ReactDOM.unmountComponentAtNode(dom); // 没有自己的文档流，直接销毁
   },
 });
