@@ -14,11 +14,11 @@ const mountElementMethods = [
 const removeChildElementMethods = ['removeChild'];
 
 const ignoreElementTimingTags = makeMap([
-  'style',
-  'script',
-  'link',
-  'meta',
-  'title',
+  'STYLE',
+  'SCRIPTS',
+  'LINK',
+  'META',
+  'TITLE',
 ]);
 
 function injector(current: Function, methodName: string) {
@@ -44,14 +44,18 @@ function injector(current: Function, methodName: string) {
     // https://web.dev/custom-metrics/#element-timing-api
     safeWrapper(() => {
       if (ignoreElementTimingTags(el.tagName)) return;
-      el?.setAttribute &&
+      if (
+        el?.setAttribute &&
         typeof el?.setAttribute === 'function' &&
+        !el?.getAttribute('elementtiming')
+      ) {
         el?.setAttribute(
           'elementtiming',
           sandbox
             ? `${sandbox.options.namespace}-element-timing`
             : 'element-timing',
         );
+      }
     });
 
     if (sandbox) {
