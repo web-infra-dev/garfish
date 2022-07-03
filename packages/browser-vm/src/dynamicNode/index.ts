@@ -1,4 +1,4 @@
-import { warn } from '@garfish/utils';
+import { makeMap, safeWrapper, warn } from '@garfish/utils';
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
 import { sandboxMap, isStyledComponentsLike } from '../utils';
@@ -12,6 +12,14 @@ const mountElementMethods = [
   'insertAdjacentElement',
 ];
 const removeChildElementMethods = ['removeChild'];
+
+const ignoreElementTimingTags = makeMap([
+  'style',
+  'script',
+  'link',
+  'meta',
+  'title',
+]);
 
 function injector(current: Function, methodName: string) {
   return function (this: Element) {
@@ -31,6 +39,20 @@ function injector(current: Function, methodName: string) {
         return originProcess();
       }
     }
+
+    // custom performance Element Timing API
+    // https://web.dev/custom-metrics/#element-timing-api
+    safeWrapper(() => {
+      if (ignoreElementTimingTags(el.tagName)) return;
+      el?.setAttribute &&
+        typeof el?.setAttribute === 'function' &&
+        el?.setAttribute(
+          'elementtiming',
+          sandbox
+            ? `${sandbox.options.namespace}-element-timing`
+            : 'element-timing',
+        );
+    });
 
     if (sandbox) {
       const processor = new DynamicNodeProcessor(el, sandbox, methodName);
