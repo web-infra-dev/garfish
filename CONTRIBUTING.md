@@ -86,3 +86,8 @@ $ pnpm test
 # Release a latest package (beta, alpha in the same way)
 $ pnpm release
 ```
+
+## workflow
+
+![image](https://user-images.githubusercontent.com/27547179/177082344-d62f783e-4e72-44a6-80b2-24c1d0e93dde.png)
+
