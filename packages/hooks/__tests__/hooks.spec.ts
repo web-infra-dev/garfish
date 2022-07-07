@@ -53,7 +53,7 @@ describe('hooks', () => {
 
   it('AsyncHook', async () => {
     let i = 0;
-    const hook = new AsyncHook<[string]>('test');
+    const hook = new AsyncHook<[string], unknown>('test');
     expect(hook.type).toBe('test');
 
     hook.on(async (a) => {

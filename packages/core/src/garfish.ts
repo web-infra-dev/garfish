@@ -95,6 +95,15 @@ export class Garfish extends EventEmitter2 {
     return this;
   }
 
+  useLoaderPlugin() {
+    if (this.options.loader) {
+      this.loader.hooks.usePlugin({
+        name: 'garfish-logger',
+        ...this.options.loader,
+      });
+    }
+  }
+
   run(options: interfaces.Options = {}) {
     if (this.running) {
       if (__DEV__) {
@@ -108,6 +117,8 @@ export class Garfish extends EventEmitter2 {
     options.plugins?.forEach((plugin) => this.usePlugin(plugin));
     // Put the lifecycle plugin at the end, so that you can get the changes of other plugins
     this.usePlugin(GarfishOptionsLife(this.options, 'global-lifecycle'));
+    // Register loader plugins
+    this.useLoaderPlugin();
 
     // Emit hooks and register apps
     this.hooks.lifecycle.beforeBootstrap.emit(this.options);
