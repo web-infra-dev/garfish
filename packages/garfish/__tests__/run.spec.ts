@@ -91,6 +91,22 @@ describe('Core: run methods', () => {
       afterMount: mockAfterMount,
       beforeUnmount: mockBeforeUnmount,
       afterUnmount: mockAfterUnmount,
+      loader: {
+        fetch: async (name, url) => {
+          if (url === 'http://localhost/resources/vueApp.html') {
+            const result = await fetch(url);
+            const code = await result.text();
+            const type = result.headers.get('content-type') || '';
+            const size = Number(result.headers.get('content-size'));
+
+            return {
+              code,
+              type,
+              size,
+            };
+          }
+        },
+      },
     });
   });
 

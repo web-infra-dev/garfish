@@ -57,7 +57,7 @@ interface RequestReturnType extends CustomFetchReturnType {
   result: Response;
 }
 export interface LoaderLifecycle {
-  fetch(name: string, url: string): void | false | Promise<void | false> | Promise<CustomFetchReturnType>;
+  fetch(name: string, url: string): void | false | Promise<CustomFetchReturnType | void | false>;
 }
 
 export class Loader {
@@ -82,7 +82,7 @@ export class Loader {
     }>('beforeLoad'),
     fetch: new AsyncHook<
       [string, string],
-      Promise<CustomFetchReturnType>
+      Promise<CustomFetchReturnType | void | false>
     >('fetch'),
   });
 
