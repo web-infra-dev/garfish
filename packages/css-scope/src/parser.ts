@@ -29,13 +29,12 @@ interface Point {
 }
 
 export interface CssParserOptions {
-  source?: string;
   silent?: boolean;
+  source?: string | null;
 }
 
 // 1M text takes about 150ms
-export function parse(css: string, options?: CssParserOptions) {
-  options = options || {};
+export function parse(css: string, options: CssParserOptions = {}) {
   let line = 1;
   let column = 1;
 
@@ -69,7 +68,7 @@ export function parse(css: string, options?: CssParserOptions) {
     };
   }
 
-  const errorsList = [];
+  const errorsList: Array<Error> = [];
   function error(msg: string) {
     const source = options.source ? options.source + ':' : '';
     const err: any = new Error(source + line + ':' + column + ': ' + msg);
@@ -97,7 +96,7 @@ export function parse(css: string, options?: CssParserOptions) {
         source: options.source,
         parsingErrors: errorsList,
       },
-    } as StylesheetNode;
+    } as unknown as StylesheetNode;
   }
 
   // Opening brace.
@@ -147,10 +146,10 @@ export function parse(css: string, options?: CssParserOptions) {
     rules = rules || ([] as any);
     while ((c = comment())) {
       if (c !== false) {
-        rules.push(c);
+        rules!.push(c);
       }
     }
-    return rules;
+    return rules as T;
   }
 
   // Parse comment.
@@ -243,8 +242,8 @@ export function parse(css: string, options?: CssParserOptions) {
 
   // Parse keyframe.
   function keyframe() {
-    let m;
-    const vals = [];
+    let m: any;
+    const vals: Array<string> = [];
     const pos = position();
 
     while ((m = match(/^((\d+\.\d+|\.\d+|\d+)%?|[a-z]+)\s*/))) {
@@ -257,7 +256,7 @@ export function parse(css: string, options?: CssParserOptions) {
       type: 'keyframe',
       values: vals,
       declarations: declarations() || [],
-    }) as KeyframeNode;
+    }) as unknown as KeyframeNode;
   }
 
   // Parse keyframes.

@@ -5,11 +5,12 @@ import {
   transformUrl,
   idleCallback,
   callTestCallback,
+  safeWrapper,
 } from '@garfish/utils';
 import { Loader, Manager, TemplateManager } from '@garfish/loader';
 import { interfaces } from '../interface';
 
-const storageKey = '__garfishPreloadApp__';
+export const storageKey = '__garfishPreloadApp__';
 
 const isMobile =
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -58,7 +59,7 @@ function safeLoad(
         if (isModule) {
           loader.loadModule(url).then(success, throwWarn);
         } else {
-          loader.load(appName, url).then(success, throwWarn);
+          loader.load({ scope: appName, url }).then(success, throwWarn);
         }
       } catch (e) {
         throwWarn(e);
@@ -83,7 +84,12 @@ export function loadAppResource(loader: Loader, info: interfaces.AppInfo) {
           jsNodes.forEach((node) => {
             const src = manager.findAttributeValue(node, 'src');
             src &&
-              safeLoad(loader, info.name, transformUrl(baseUrl, src), false);
+              safeLoad(
+                loader,
+                info.name,
+                baseUrl ? transformUrl(baseUrl, src) : src,
+                false,
+              );
           });
         }
         if (linkNodes) {
@@ -91,7 +97,12 @@ export function loadAppResource(loader: Loader, info: interfaces.AppInfo) {
             if (manager.DOMApis.isCssLinkNode(node)) {
               const href = manager.findAttributeValue(node, 'href');
               href &&
-                safeLoad(loader, info.name, transformUrl(baseUrl, href), false);
+                safeLoad(
+                  loader,
+                  info.name,
+                  baseUrl ? transformUrl(baseUrl, href) : href,
+                  false,
+                );
             }
           });
         }
@@ -99,7 +110,7 @@ export function loadAppResource(loader: Loader, info: interfaces.AppInfo) {
           metaNodes.forEach((node) => {
             if (manager.DOMApis.isRemoteModule(node)) {
               const src = manager.findAttributeValue(node, 'src');
-              if (isAbsolute(src)) {
+              if (src && isAbsolute(src)) {
                 safeLoad(loader, info.name, src, true);
               } else {
                 warn(
@@ -128,12 +139,14 @@ export function setRanking(appName: string) {
   const newCurrent = { appName, count: 1 };
 
   if (!str) {
-    localStorage.setItem(storageKey, JSON.stringify([newCurrent]));
+    safeWrapper(() =>
+      localStorage.setItem(storageKey, JSON.stringify([newCurrent])),
+    );
   } else {
     const data = JSON.parse(str);
     const current = data.find((app) => app.appName === appName);
     current ? current.count++ : data.push(newCurrent);
-    localStorage.setItem(storageKey, JSON.stringify(data));
+    safeWrapper(() => localStorage.setItem(storageKey, JSON.stringify(data)));
   }
 }
 
@@ -146,6 +159,9 @@ export function GarfishPreloadPlugin() {
       version: __VERSION__,
 
       beforeLoad(appInfo) {
+        if (Garfish.options.disablePreloadApp) {
+          return;
+        }
         setRanking(appInfo.name);
       },
 

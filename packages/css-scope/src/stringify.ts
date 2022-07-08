@@ -53,7 +53,7 @@ class Compiler {
     return buf;
   }
 
-  addScope(selectors?: Array<string>) {
+  addScope(selectors: Array<string>) {
     if (!this.prefix) return selectors;
 
     return selectors.map((s) => {

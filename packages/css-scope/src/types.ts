@@ -1,6 +1,6 @@
 interface Position {
   content: string;
-  source?: string;
+  source?: string | null;
   end: {
     line: number;
     column: number;
@@ -87,7 +87,6 @@ export interface KeyframesNode extends BaseNode<'keyframes'> {
 }
 
 export interface StylesheetNode extends BaseNode<'stylesheet'> {
-  position: undefined;
   stylesheet: {
     source?: string;
     rules: Array<Node>;

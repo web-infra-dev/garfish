@@ -48,9 +48,9 @@ body:
       label: Validations
       description: Before submitting the issue, please make sure you do the following
       options:
-        - label: Read the [docs](https://garfish.top/quick-start).
+        - label: Read the [docs](https://garfishjs.org/quick-start).
           required: true
-        - label: Read the [common issues list](https://garfish.top/issues).
+        - label: Read the [common issues list](https://garfishjs.org/issues).
           required: true
         - label: Check that there isn't [already an issue](https://github.com/modern-js-dev/garfish/issues) that reports the same bug to avoid creating a duplicate.
           required: true

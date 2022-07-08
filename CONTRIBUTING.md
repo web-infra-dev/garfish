@@ -4,7 +4,7 @@
 
 ## Requirement
 
-`Node.js >= 16.10`
+`Node.js >=16.14.0`
 
 ## Setup (locally)
 
@@ -17,7 +17,7 @@ npm i -g pnpm
 Clone this repo to your local machine and install the dependencies.
 
 ```bash
-pnpm install
+pnpm install --filter=\!garfish-docs
 ```
 
 ## Development
@@ -60,10 +60,12 @@ packages
   browser-snapshot/          - snapshot sandbox
   browser-vm/                - vm sandbox
   core/                      - core module with sandbox、loader、hooks、router
-  garfish/
+  garfish/                   - main entry
   hooks/                     - hooks
   loader/                    - loader
-  remote-module/
+  remote-module/             - cjs loader
+  es-module/                 - esm loader and compiler
+  css-scope/                 - css scope compiler
   router/                    - router
   utils/                     - common utils
 ```
@@ -86,3 +88,8 @@ $ pnpm test
 # Release a latest package (beta, alpha in the same way)
 $ pnpm release
 ```
+
+## workflow
+
+![image](https://user-images.githubusercontent.com/27547179/177082344-d62f783e-4e72-44a6-80b2-24c1d0e93dde.png)
+

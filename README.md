@@ -4,7 +4,7 @@
 
 <div align="center">
 
-[![NPM version](https://img.shields.io/npm/v/garfish.svg?style=flat-square)](https://www.npmjs.com/package/garfish) [![build status](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml)
+[![NPM version](https://img.shields.io/npm/v/garfish.svg?style=flat-square)](https://www.npmjs.com/package/garfish) [![build status](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/modern-js-dev/garfish/actions/workflows/ci.yml)
 
 </div>
 
@@ -34,11 +34,11 @@ yarn add garfish
 
 ## Documentation
 
-> The doc site ([Garfish](https://garfish.top/)) is only available in Chinese for now, we are planning to add English versions soon.
+> The doc site ([Garfish](https://garfishjs.org/)) is only available in Chinese for now, we are planning to add English versions soon.
 
-- [About Garfish](https://garfish.top/guide)
-- [Quick Start](https://garfish.top/quickStart)
-- [API References](https://garfish.top/api)
+- [About Garfish](https://garfishjs.org/guide)
+- [Quick Start](https://www.garfishjs.org/guide/start)
+- [API References](https://garfishjs.org/api)
 
 ## Functionality
 
@@ -65,7 +65,7 @@ yarn add garfish
 
 ## Contributing
 
-- [Contributing Guide](https://github.com/modern-js-dev/garfish/blob/master/CONTRIBUTING.md)
+- [Contributing Guide](https://github.com/modern-js-dev/garfish/blob/main/CONTRIBUTING.md)
 
 ## Credit
 

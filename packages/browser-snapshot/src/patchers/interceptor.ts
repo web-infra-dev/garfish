@@ -82,7 +82,7 @@ export class Interceptor {
           for (let i = 0; i < cssRules.length; i++) {
             const cssRule = cssRules[i];
             // re-insert rules for styled-components element
-            val.sheet.insertRule(cssRule.cssText, val.sheet.cssRules.length);
+            val.sheet?.insertRule(cssRule.cssText, val.sheet?.cssRules.length);
           }
         }
       }
@@ -106,7 +106,11 @@ export class Interceptor {
       created = createdOrSnapshot;
     }
     created.arrDoms.reduce((prev, val) => {
-      if (val instanceof HTMLStyleElement && isStyledComponentsLike(val)) {
+      if (
+        val instanceof HTMLStyleElement &&
+        isStyledComponentsLike(val) &&
+        val?.sheet?.cssRules
+      ) {
         this.styledComponentCSSRulesMap.set(val, val.sheet.cssRules);
       }
       prev.removeChild(val);

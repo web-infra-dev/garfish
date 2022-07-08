@@ -12,6 +12,7 @@ temp/
 /docs
 # .npmrc
 **/.angular
+.wireit
 
 # test result
 cypress/screenshots
@@ -42,3 +43,4 @@ package-lock.json
 yarn.lock
 **/package-lock.json
 **/yarn.lock
+.wireit

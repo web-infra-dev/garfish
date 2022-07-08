@@ -1,5 +1,5 @@
-import { interfaces } from '@garfish/core';
-import { createKey } from '@garfish/utils';
+import type { interfaces } from '@garfish/core';
+import { createKey, routerLog } from '@garfish/utils';
 import { RouterConfig } from './config';
 import router, {
   initRedirect,
@@ -29,7 +29,7 @@ declare module '@garfish/core' {
   }
 }
 
-export { RouterInterface } from './context';
+export type { RouterInterface } from './context';
 
 interface Options {
   autoRefreshApp?: boolean;
@@ -46,13 +46,22 @@ export function GarfishRouter(_args?: Options) {
       version: __VERSION__,
 
       bootstrap(options: interfaces.Options) {
-        let activeApp = null;
+        let activeApp: null | string = null;
         const unmounts: Record<string, Function> = {};
         const { basename } = options;
         const { autoRefreshApp = true, onNotMatchRouter = () => null } =
           Garfish.options;
 
-        async function active(appInfo: interfaces.AppInfo, rootPath: string) {
+        async function active(
+          appInfo: interfaces.AppInfo,
+          rootPath: string = '/',
+        ) {
+          routerLog(`${appInfo.name} active`, {
+            appInfo,
+            rootPath,
+            listening: RouterConfig.listening,
+          });
+
           // In the listening state, trigger the rendering of the application
           if (!RouterConfig.listening) return;
 
@@ -82,7 +91,13 @@ export function GarfishRouter(_args?: Options) {
             };
 
             Garfish.apps[name] = app;
-            unmounts[name] = () => call(app, false);
+            unmounts[name] = () => {
+              // Destroy the application during rendering and discard the application instance
+              if (app.mounting) {
+                delete Garfish.cacheApps[name];
+              }
+              call(app, false);
+            };
 
             if (currentApp === activeApp) {
               await call(app, true);
@@ -91,6 +106,11 @@ export function GarfishRouter(_args?: Options) {
         }
 
         async function deactive(appInfo: interfaces.AppInfo, rootPath: string) {
+          routerLog(`${appInfo.name} deactive`, {
+            appInfo,
+            rootPath,
+          });
+
           activeApp = null;
           const { name, deactive } = appInfo;
           if (deactive) return deactive(appInfo, rootPath);
@@ -135,6 +155,7 @@ export function GarfishRouter(_args?: Options) {
           apps: appList,
           listening: true,
         };
+        routerLog('listenRouterAndReDirect', listenOptions);
         listenRouterAndReDirect(listenOptions);
       },
 
@@ -145,6 +166,7 @@ export function GarfishRouter(_args?: Options) {
         // After completion of the registration application, trigger application mount
         // Has been running after adding routing to trigger the redirection
         if (!Garfish.running) return;
+        routerLog('registerApp initRedirect', appInfos);
         initRedirect();
       },
     };

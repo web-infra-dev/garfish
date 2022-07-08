@@ -50,7 +50,7 @@ describe('Router: test index', () => {
   });
 
   it('Router: native navigation appA and autoRefresh is false', async () => {
-    window.history.pushState(null, null, '/a');
+    window.history.pushState(null, '', '/a');
     await waitSwitchReady();
     expect(activeInfo.name).toBe('appA');
   });

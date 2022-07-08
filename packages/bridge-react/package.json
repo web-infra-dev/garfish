@@ -1,0 +1,53 @@
+{
+  "name": "@garfish/bridge-react",
+  "version": "1.8.2",
+  "description": "garfish module.",
+  "keywords": [
+    "garfish",
+    "micro frontend"
+  ],
+  "files": [
+    "dist"
+  ],
+  "author": "danpeen <dapeen.feng@gmail.com",
+  "homepage": "https://github.com/bytedance/garfish",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build": "rimraf dist && tsup src/index.ts",
+    "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
+  "dependencies": {
+    "@garfish/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "peerDependencies": {
+    "react": ">=16",
+    "react-dom": ">=16"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public",
+    "types": "./dist/index.d.ts"
+  },
+  "gitHead": "da33dd16bb9e99588f34079f8b961d0cf9f059fc"
+}

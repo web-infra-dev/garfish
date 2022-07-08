@@ -17,8 +17,14 @@ export function generateCustomerElement(
       entry: '',
       basename: '',
     };
-    options = {
-      loading: null,
+    options: {
+      loading?: (loadingParams: {
+        isLoading: boolean;
+        error: Error;
+        pastDelay: boolean;
+      }) => Element;
+      delay: number;
+    } = {
       delay: 200,
     };
     placeholder: Element;
@@ -29,7 +35,7 @@ export function generateCustomerElement(
       loaded: null,
       pastDelay: false,
     });
-    _delay: NodeJS.Timeout;
+    _delay: ReturnType<typeof setTimeout>;
 
     constructor() {
       super();
@@ -46,11 +52,13 @@ export function generateCustomerElement(
             if (this.placeholder && this.contains(this.placeholder)) {
               this.removeChild(this.placeholder);
             }
-            const placeholder = this.options.loading({
-              isLoading: this.state.isLoading,
-              error: this.state.error,
-              pastDelay: this.state.pastDelay,
-            });
+            const placeholder =
+              this.options.loading &&
+              this.options.loading({
+                isLoading: this.state.isLoading,
+                error: this.state.error,
+                pastDelay: this.state.pastDelay,
+              });
             placeholder && this.appendChild(placeholder);
             return placeholder;
           };
@@ -60,11 +68,14 @@ export function generateCustomerElement(
           // Loading end closed loading placeholder
           // Loading end placeholder closed if there is no mistake
           if (p === 'error' && value) {
-            this.placeholder = getPlaceHolderAndAppend();
+            const placeholder = getPlaceHolderAndAppend();
+            if (placeholder) this.placeholder = placeholder;
           } else if (p === 'pastDelay' && value === true) {
-            this.placeholder = getPlaceHolderAndAppend();
+            const placeholder = getPlaceHolderAndAppend();
+            if (placeholder) this.placeholder = placeholder;
           } else if (p === 'isLoading' && value === true) {
-            this.placeholder = getPlaceHolderAndAppend();
+            const placeholder = getPlaceHolderAndAppend();
+            if (placeholder) this.placeholder = placeholder;
           } else if (p === 'isLoading' && value === false) {
             if (!this.state.error && this.contains(this.placeholder)) {
               this.removeChild(this.placeholder);
@@ -108,8 +119,8 @@ export function generateCustomerElement(
 
     async connectedCallback() {
       this.appInfo = {
-        name: this.getAttribute('name'),
-        entry: this.getAttribute('entry'),
+        name: this.getAttribute('name') || '',
+        entry: this.getAttribute('entry') || '',
         basename: this.getAttribute('basename') || '/',
       };
       try {

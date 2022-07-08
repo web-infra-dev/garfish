@@ -56,7 +56,7 @@ export namespace interfaces {
       appName: string;
       dom: Element | ShadowRoot | Document;
       appRenderInfo: AppRenderInfo;
-      props: Record<string, any>;
+      props?: Record<string, any>;
     }) => void;
     render: ({
       appName,
@@ -67,9 +67,9 @@ export namespace interfaces {
     }: {
       appName: String;
       dom: Element | ShadowRoot | Document;
-      basename: string;
+      basename?: string;
       appRenderInfo: AppRenderInfo;
-      props: Record<string, any>;
+      props?: Record<string, any>;
     }) => void;
   }
 
@@ -99,7 +99,6 @@ export namespace interfaces {
   }
 
   export interface GlobalLifecycle extends Partial<PluginLifecycle> {
-    /** @deprecated */
     customLoader?: CustomerLoader;
   }
 
@@ -107,14 +106,14 @@ export namespace interfaces {
     GlobalLifecycle,
     keyof AppHooks['lifecycle']
   > & {
-    /** @deprecated */
     customLoader?: CustomerLoader;
   };
 
   export type AppConfig = Partial<AppGlobalConfig> & {
     name: string;
-    entry?: string;
+    entry: string;
     cache?: boolean;
+    activeWhen?: string | ((path: string) => boolean);
     nested?: any;
     noCheckProvider?: boolean;
   };

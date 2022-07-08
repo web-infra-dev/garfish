@@ -120,7 +120,7 @@ export class Scope {
         break;
       }
       previousNode = scope.node;
-    } while ((scope = scope.parent));
+    } while (scope.parent && (scope = scope.parent));
   }
 
   registerBinding(kind: BindingKind, name: string, node: Node) {
@@ -150,7 +150,7 @@ export class Scope {
     if (isLabeledStatement(node)) {
       this.registerLabel(node);
     } else if (isFunctionDeclaration(node)) {
-      this.registerBinding('hoisted', node.id.name, node);
+      node.id && this.registerBinding('hoisted', node.id.name, node);
     } else if (isVariableDeclaration(node)) {
       const { declarations } = node;
       for (const decl of declarations) {
@@ -161,7 +161,7 @@ export class Scope {
         }
       }
     } else if (isClassDeclaration(node)) {
-      this.registerBinding('let', node.id.name, node);
+      node.id && this.registerBinding('let', node.id.name, node);
     } else if (isImportDeclaration(node)) {
       const specifiers = node.specifiers;
       for (const specifier of specifiers) {

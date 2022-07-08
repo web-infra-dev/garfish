@@ -11,6 +11,10 @@
     "pkgName": "@garfish-dev/react16",
     "port": 8092
    },
+   "dev/react18": {
+    "pkgName": "@garfish-dev/react18",
+    "port": 8098
+   },
   "dev/vue3": {
     "pkgName": "@garfish-dev/vue3",
     "port": 8093
@@ -19,16 +23,20 @@
     "pkgName": "@garfish-dev/vue2",
     "port": 8094
    },
-  "dev/vite": {
+   "dev/vite": {
     "pkgName": "@garfish-dev/vite",
     "port": 8095
   },
   "dev/vue-sub": {
     "pkgName": "@garfish-dev/vue-sub",
     "port": 8096
-   },
+  },
   "dev/angular": {
     "pkgName": "@garfish-dev/angular",
     "port": 8097
+  },
+  "dev/esm": {
+    "pkgName": "@garfish-dev/esm",
+    "port": 8099
   }
 }

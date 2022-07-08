@@ -4,7 +4,7 @@ export class JavaScriptManager {
   public async: boolean;
   public mimeType: string;
   public scriptCode: string;
-  public url: string | null;
+  public url?: string;
 
   // Need to remove duplication, so use "set"
   private depsStack = new Set();
@@ -12,7 +12,7 @@ export class JavaScriptManager {
   constructor(scriptCode: string, url?: string) {
     this.mimeType = '';
     this.async = false;
-    this.url = url || null;
+    this.url = url;
     this.scriptCode = scriptCode;
   }
 

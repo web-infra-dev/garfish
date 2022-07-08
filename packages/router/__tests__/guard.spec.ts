@@ -67,7 +67,7 @@ describe('Router: test guard', () => {
   });
 
   it('Router: native navigation appA judge to and from path', async () => {
-    history.pushState(null, null, `${basename}/a`);
+    history.pushState(null, '', `${basename}/a`);
     await waitSwitchReady();
     expect(afterGuardToInfo.path).toBe('/a');
     expect(afterGuardToInfo.fullPath).toBe(`${basename}/a`);

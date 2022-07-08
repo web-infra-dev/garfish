@@ -4,10 +4,22 @@ slug: /issues
 order: 1
 ---
 
+import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
 
 ## "provider" is "null".
 
-通过环境变量导出，将会更准确的让 Garfish 框架获取到导出内容
+出现这个问题是因为 garfish 无法从子应用中正确获取到 `provider` 导出函数，可以先按照以下步骤自查：
+
+1. 检查子应用是否正确 export 了 provider 函数。[参考](/guide/start#2导出-provider-函数)
+2. 检查子应用是否正确配置了 webpack 的 output 配置：
+
+<WebpackConfig />
+
+3. 确认子应用 `entry` 地址设置正确：若为 html 的入口类型 `entry` 配置为 html 入口地址，若为 js 类型，子应用 `entry` 配置为 js 入口地址；
+
+4. 若子应用为 js 入口，需要保证子应用的资源被打包成了单 bundle，若有部分依赖未被打包成 bundle 会导致子应用无法正常加载。例如子应用使用了 webpack splitChunk 进行拆包且为 js 入口时，会导致上述报错；
+
+5. 如以上途径都无法解决，请试图通过环境变量导出，这将会让 Garfish 框架更准确的获取到导出内容：
 
 ```js
 if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
@@ -15,6 +27,15 @@ if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
   __GARFISH_EXPORTS__.provider = provider;
 }
 ```
+
+## Uncaught (in promise) TypeError: [Garfish warning]: Cannot read properties of undefined (reading 'call')
+
+- 错误原因
+
+  - 这个问题出现在子应用构建为 umd 格式后存在脚本出现了 `type="module"` 的标识，这将导致该 script 逃逸出沙箱执行，而其余脚本在沙箱内执行，找不到 chunk 导致报错。
+
+- 解决方案
+  - 请确保子应用构建为 umd 格式后 script 不会带上 `type="module"` 标识，保证子应用的正常解析和渲染。
 
 ## Invalid domGetter "xxx"
 
@@ -25,30 +46,105 @@ if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
 1. 将挂载点设置为常驻挂载点，不要跟随路由变化使子应用挂载点销毁和出现
 2. 保证 Garfish 在渲染时挂载点存在
 
-## 推荐配置
+## 如何获取主应用的 localStorage
 
-如果在接入子应用的时候，出现了拿不到子应用导出的问题的时候。可以先按照以下步骤自查：
+可按照如下配置获取主应用的 localStorage：
 
-1. 检查子应用是否正确 `export` 了 `provider`。
-2. 检查子应用是否配置了 `webpack` 的 `output` 配置。
-3. 若为 `js` 入口，需要保证子应用的资源被打包成了但 `bundle`，若有部分依赖未被打包成 `bundle` 会导致无法正常加载
+```ts
+import Garfish from 'garfish';
 
-```js
-// webpack.config.js
-{
-  output: {
-    // 需要配置成 umd 规范
-    libraryTarget: 'umd',
-    // 修改不规范的代码格式，避免逃逸沙箱
-    globalObject: 'window',
-    // 请求确保每个子应用该值都不相同，否则可能出现 webpack chunk 互相影响的可能
-    // webpack 5 使用 chunkLoadingGlobal 代替，若不填 webpack 5 将会直接使用 package.json name 作为唯一值，请确保应用间的 name 各不相同
-    jsonpFunction: 'vue-app-jsonpFunction',
-    // 保证子应用的资源路径变为绝对路径，避免子应用的相对资源在变为主应用上的相对资源，因为子应用和主应用在同一个文档流，相对路径是相对于主应用而言的
-    publicPath: 'http://localhost:8000',
-  },
+Garfish.run({
+  ...,
+  sandbox: {
+    modules: [
+      () => ({
+        override: {
+          localStorage: window.localStorage,
+        },
+      }),
+    ],
+  }
+});
+```
+
+类似 localStorage，子应用若需要获取被沙箱隔离机制隔离的全局变量上的变量，均可通过上述方式获取。
+
+## 如何判断子应用是否微前端应用中
+
+可通过环境变量 `window.__GARFISH__` 判断。
+
+## 如何手动挂载子应用
+
+可通过 [Garfish.loadApp](/api/loadApp) 动态加载子应用。
+
+## HTML entry 和 JS entry 差异
+
+* HTML entry
+  * 指的是子应用配置的资源地址是 HTML 的地址
+  * 指定子应用的 entry 地址为 HTML 地址，支持像 iframe 一样的能力，将对应的子应用渲染至当前应用中
+  * HTML entry 模式的作用设计的初衷，解决子应用：**独立开发**、**独立测试** 的能力
+
+* JS entry
+  * 指的是子应用配置的资源地址就是一个 JS 地址
+
+* 二者在使用层面上的差异
+  * 在作为 `html entry` 时，子应用的挂载点需要基于传入的 `dom` 节点进行选中挂载点
+  * 因为在 `html entry` 时，其实类似于 `iframe` 的模式，子应用在独立运行时的所有 `dom` 结构都会被挂到主应用的文档流上（整个文档流会挂载在当前 html 上）
+  * 所以子应用在渲染时需要根据子应用的 `dom` 结构去找他的挂载点。
+
+- HTML entry 正确渲染销毁写法
+
+```js {6}
+export const provider = () => {
+  return {
+    render({ dom }) {
+      ReactDOM.render(
+        React.createElement(HotApp),
+        dom.querySelector('#root'), // 基于 dom 去选中文档流中的 #root，就和在独立运行时使用 document.querySelector('#root') 一样
+      );
+    },
+    destroy({ dom }) { // 此外，destroy 应该正确的执行
+      const root = dom && dom.querySelector('#root');
+      if (root) {
+        ReactDOM.unmountComponentAtNode(root);
+      }
+    },
+  }
 }
 ```
+
+- JS entry 正确渲染销毁写法
+
+```js
+export const provider = ({ dom , basename}) => ({
+  render(){
+  	ReactDOM.render(<App basename={basename} />, dom); // 作为 js entry 时，没有自己的文档流，只有提供的渲染节点
+  },
+
+  destroy({ dom }) {
+    ReactDOM.unmountComponentAtNode(dom); // 没有自己的文档流，直接销毁
+  },
+});
+```
+## garfish 支持多实例吗
+
+支持。
+
+目前 garfish 支持多实例场景，业务使用场景可分为 「非嵌套场景」 和 「嵌套场景」：
+
+- 非嵌套场景下
++ 非嵌套场景下，子应用请勿在安装引入 Garfish 包，并导入使用。
++ 子应用如果想要在微前端场景下使用 Garfish 包的相关能力，可判断在微前端环境内时，通过 `window.Garfish` 使用相关接口。
+
+```js
+if (window.__GARFISH__) {
+  window.Garfish.xx
+}
+```
+
+- 嵌套场景
++ Garfish 目前内部的设计都支持嵌套场景，如果业务对这一块有诉求可以使用，协助我们一起推进在嵌套场景下的能力。
+
 
 ## 子应用销毁后重定向逻辑影响其他子应用
 
@@ -79,6 +175,17 @@ export const provider = () => {
   };
 };
 ```
+
+## You are attempting to use a basename on a page whose URL path does not begin with the basename.
+
+> 问题原因
+
+- 出现这个错误的原因一般是因为子应用没有正确的设置子应用的 basename 所导致的。
+- 子应用的 `basename` = 主应用的 `basename` + 子应用设置的激活路径 `activeWhen`，这个值会在生命周期函数中由 garfish 默认通过通过参数传递过来，直接使用即可。
+
+> 解决方案
+
+- 将生命周期函数中主应用传递过来的 `basename` 设置为子应用的 `basename`。[参考](/guide/demo/react#3-根组件设置路由的-basename)
 
 ## 刷新直接返回子应用内容
 
@@ -142,8 +249,6 @@ export const provider = () => {
 
 解决方案在使用 `style-component` 的子应用添加环境变量：`REACT_APP_SC_DISABLE_SPEEDY=true`
 
-## 主子应用样式冲突
-
 ### arco-design 多版本样式冲突
 
 1. [Arco-design 全局配置 ConfigProvider](https://arco.design/react/components/config-provider)
@@ -189,6 +294,97 @@ export default () => (
   </ConfigProvider>
 );
 ```
+## 子应用热更新问题
+garfish 子应用热更新问题请参考 [博客](/blog/hmr)
+
+## 如何独立运行子应用
+
+通过 `window.__GARFISH__` 可判断当前子应用是否处于微前端下，通过此变量判断何时独立运行子应用：
+
+```js
+// src/index.tsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './components/App';
+
+// 这能够让子应用独立运行起来，以保证后续子应用能脱离主应用独立运行，方便调试、开发
+if (!window.__GARFISH__) {
+  ReactDOM.render(<App />, document.querySelector('#root'));
+}
+```
+## 已有 `SPA` 应用如何改造为 garfish 子应用
+### 场景描述
++ 很多需要改造成微前端的 `SPA` 应用，都是已经存在的旧应用。
++ 可能需要逐步拆解应用内的部分路由，变为子应用。
++ 主应用现有路由如何与微前端路由驱动共存，是迁移过程中常遇到的。
+
+### 如何逐步改造（以 `react` 为例）
+1. 增加 `id` 为 `micro-app` 的挂载点，预留给子应用挂载，`Router` 部分的内容为主应用其他路由。
+2. 主应用增加匹配到子应用路由前缀时，`Router` 内容为空。
+3. 配置子应用列表时以 `Router` 内容为空时的前缀作为子应用激活条件前缀。
+
+
+主应用的根组件：
+```jsx
+<BrowserRouter getUserConfirmation={ getConfirmation }>
+  <RootContext.Provider value={ provider }>
+    <Header />
+    <div className="container">
+      <Router routes={ routes } />
+      <div id="micro-app" />
+    </div>
+  </RootContext.Provider>
+</BrowserRouter>
+```
+
+routes：
+```js
+export default [
+  {
+    path: '/platform/search',
+    component: Search,
+  },
+  {
+    // 以 /platform/micro-app 开头的应用Router都不展示内容
+    path: '/platform/micro-app',
+    component: function () {
+      return null;
+    },
+  },
+  {
+    component: Home,
+  },
+];
+```
+
+主入口处：
+```js
+Garfish.run({
+  domGetter: '#micro-app',
+  basename: '/platform/micro-app',
+  apps: [
+    ...
+  ],
+});
+```
+## 子应用动态插入到 body 上的节点逃逸？
+
+- 首先 garfish 会对每一个子应用创建一个 app container 用于包裹子应用，会创建 `__garfishmockhtml__`、 `__garfishmockbody__` 等 mock 节点。
+- 对于在子应用运行过程中动态添加到 body 上的节点（如 drawer 组件），garfish 并未
+  将此类节点移动到 mock 的 `__garfishmockbody__` 中，原因是有些组件库会计算在 dom 层级中的位置，所以目前 garfish 会主动让其逃逸到上层。
+- 在子应用运行过程中动态添加到 body 上的节点在子应用卸载时，garfish 并不会默认回收其 DOM 副作用，需要用户主动在组件的销毁回调里触发 dom 的回收，防止 DOM 副作用未销毁带来的影响。
+
+## 子应用 addEventListener 注册的事件监听在子应用卸载后并未销毁
+
+- 若子应用默认开启了缓存模式，在子应用卸载时会保留应用的上下文，不会默认清除 addEventListener 注册的事件监听，这是因为再次渲染该子应用时 garfish 只会执行 render 函数，因此子应用的副作用不会随意被清除。
+
+- 这种情况建议用户在组件的销毁函数里面手动释放组件的副作用，若有些逻辑确实需要清除，并且需要保证应用可用性可以将 cache 设置成 false。
+
+## garfish 缓存模式
+
+1. garfish 目前默认启用了缓存模式，在缓存模式下 garfish 会保留应用的上下文，且不会重新执行所有代码，只会执行 render 的 destory 函数，因此应用的性能将得到很大的提升。
+
+2. 在缓存模式下 garfish 只会隔离环境变量和样式，子应用卸载时会保留应用的上下文，不会默认清除子应用的副作用。若业务存在需要销毁的副作用，一般来说建议用户在组件的销毁函数里面手动释放组件的副作用，如果有些逻辑确实需要清除，并且需要保证应用可用性可以把 cache 设置成 false。
 
 ## JS 错误上报 Script error 0
 
@@ -201,6 +397,10 @@ export default () => (
 
 由于浏览器跨域的限制，非同域下的脚本执行抛错，捕获异常的时候，不能拿到详细的异常信息，只能拿到类似 Script error 0. 这类信息。通常跨域的异常信息会被忽略，不会上报。解决方案： 所有 `<script>` 加载的资源加上 `crossorigin="anonymous"`
 
+## 子应用热更新问题
+
+garfish 子应用热更新问题请参考 [博客](/blog/hmr)
+
 ## cdn 第三方包未正确挂在在 window 上
 
 > 问题概述
@@ -211,55 +411,6 @@ export default () => (
 > 解决方案
 
 - 将对应的 cdn script 增加 no-entry 属性：`<script no-entry="true" src="xxx"></script>`，设置该属性后对应的 script 内容将不会运行在 commonjs 环境，对应的环境变量也会正常的插入到子应用的 window 上
-
-## 为什么需要子应用提供一个 Provider 函数
-
-- 这里的 `provider` 主要指在每个子应用入口处导出的 `provider` 函数 其中包括 `render` 和 `destroy` 函数
-- 为什么 Garfish 不像 `iframe` 并不需要提供额外的内容，子应用独立时如何运行，在微前端环境就如何运行呢
-
-> 原因
-
-- Garfish 的初衷并不是为了取代 `iframe`，而是为了将一个单体应用拆分成多个子应用后也能保证应用一体化的使用体验
-- 通过提供 `provider` 生命周期，我们可以在微前端应用中做到以下优化
-  - 在应用销毁时触发对应框架应用的销毁函数，已达到对框架类型的销毁操作，应用中得一些销毁 hook 也可以正常触发
-  - 在第二次应用加载时可以启动缓存模式
-    - 在应用第一次渲染时的路径为，html 下载=> html 拆分=> 渲染 dom => 渲染 style=> 执行 JS => 执行 provider 中的函数
-    - 在第二次渲染时可以将整个渲染流程简化为，还原子应用的 html 内容=> 执行 provider 中得渲染函数，因为子应用的真实执行环境并未被销毁，而是通过 render 和 destroy 控制对应应用的渲染和销毁
-  - 避免内存泄漏
-    - 由于目前 Garfish 框架的沙箱依赖于浏览器的 API，无法做到物理级别的隔离，由于 JavaScript 语法的灵活性和闭包的特性，第二次重复执行子应用代码可能会导致逃逸内容重复执行
-    - 采用缓存模式时，将不会执行所有代码，仅执行 render ，将会避免逃逸代码造成的内存问题
-
-> 弊端
-
-启动缓存模式后也存在一定弊端，第二遍执行时 render 中的逻辑获取的还是上一次的执行环境并不是一个全新的执行环境.
-
-下面代码中在缓存模式时和非缓存模式不同的表现
-
-- 在缓存模式中，多次渲染子应用会导致 list 数组的值持续增长，并导致影响业务逻辑
-- 在非缓存模式中，多次渲染子应用 list 数组的长度始终为 1
-
-```js
-const list = [];
-
-export const provider = () => {
-  return {
-    render: ({ dom, basename }) => {
-      list.push(1);
-      ReactDOM.render(
-        <React.StrictMode>
-          <App basename={basename} />
-        </React.StrictMode>,
-        dom.querySelector('#root'),
-      );
-    },
-
-    destroy: ({ dom, basename }) => {
-      ReactDOM.unmountComponentAtNode(dom.querySelector('#root'));
-    },
-  };
-};
-```
-
 ## ESModule
 
 Garfish 核心库默认支持 esModule，但是需要关掉 vm 沙箱或者为快照沙箱时，才能够使用。
@@ -297,3 +448,30 @@ Garfish.run({
 ```
 
 > 提示：当子项目使用 `vite` 开发时，你可以在开发模式下使用 esModule 模式，生产环境可以打包为原始的无 esModule 的模式。
+
+## garfish 支持多实例吗
+
+支持
+
+## 子应用堆栈信息丢失、sourcemap 行列信息错误
+
+> 问题背景
+
+微前端场景下，存在沙盒机制，基于 eval 和 new Function 的形式去实现沙箱机制，在手动执行代码的情况下，会产生堆栈丢失、sourcemap 还原错行等问题。
+
+> 解决方案
+
+可通过增加如下 webpack 配置解决：
+
+```js
+// webpack.config.js
+const webpack = require('webpack');
+
+config.plugins = [
+  new webpack.BannerPlugin({
+      banner: 'Micro front-end',
+  });
+]
+```
+
+具体原因可参考 [博客](/blog/sourcemap)

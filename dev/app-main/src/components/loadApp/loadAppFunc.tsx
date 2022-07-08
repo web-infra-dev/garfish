@@ -1,16 +1,15 @@
 import Garfish from 'garfish';
 import { store } from '../../store';
 
-export const loadAppFunc = async ({ id, appName, basename, domID }) => {
+export const loadAppFunc = async ({ appName, basename, domID }) => {
   let app;
   const loadPromise = () => {
-    const _app = store.apps.find((v: any) => v.name === appName);
-
+    const _app: any = store.apps.find((v: any) => v.name === appName);
     // 模拟异步请求
     return new Promise<any>(async (resolve, reject) => {
       setTimeout(async () => {
-        const app = await Garfish.loadApp(id, {
-          entry: _app ? _app.entry : '',
+        const app = await Garfish.loadApp(appName, {
+          entry: _app?.entry,
           basename,
           domGetter: () => document.getElementById(domID),
           // 缓存设置，建议开启缓存避免重复的编译代码造成的性能浪费

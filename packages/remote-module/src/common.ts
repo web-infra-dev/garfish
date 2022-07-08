@@ -8,19 +8,26 @@ import {
 } from '@garfish/utils';
 import { loadModule } from './apis/loadModule';
 
-export type ModuleConfig = Required<
-  Omit<ModuleInfo, 'version'> & { alias: Record<string, string> }
+type PartialPart<T, K extends keyof T> = {
+  [P in Exclude<keyof T, K>]-?: T[P];
+} & {
+  [P in K]?: T[P];
+};
+
+export type ModuleConfig = PartialPart<
+  Required<Omit<ModuleInfo, 'version'> & { alias: Record<string, string> }>,
+  'externals'
 >;
 
 export interface ModuleInfo {
-  cache?: boolean;
-  version?: string;
-  externals?: Record<string, any>;
-  error?: (err: Error, info: ModuleInfo, alias: string) => any;
-  adapter?: (cjsModule: Record<string, any>) => Record<string, any>;
+  cache: boolean;
+  version: string;
+  externals: Record<string, any>;
+  error: null | ((err: Error, info: ModuleInfo, alias: string) => any);
+  adapter: null | ((cjsModule: Record<string, any>) => Record<string, any>);
 }
 
-export let currentApp = null;
+export let currentApp: any;
 export let resourcesStore: Array<ModuleManager> = [];
 export const cacheModules = Object.create(null);
 export const fetchLoading = Object.create(null);
@@ -79,7 +86,7 @@ export const getModuleManager = (url: string) => {
   }
 };
 
-export const purifyOptions = (urlOrAlias: string, options?: ModuleInfo) => {
+export const purifyOptions = (urlOrAlias: string, options?: ModuleConfig) => {
   let config;
   const globalExternals = moduleConfig.externals;
   delete moduleConfig.externals;

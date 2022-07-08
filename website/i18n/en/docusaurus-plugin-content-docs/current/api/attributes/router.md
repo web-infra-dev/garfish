@@ -15,9 +15,9 @@ Provides routing-related capabilities in micro front-end scenarios.
 2. When both the main application and the sub-application have routes, please convert the main application to `history` mode (since Garfish does not currently isolate the sub-application routes from the main application routes)
 
    - Since the main application routing and sub-application are in the same routing execution environment, if the main application is `hash` routing and the sub-application is `history` routing, the routing will not comply with the specification
-   - After the main application enters the detail page, the address is `http://gar.byted.com#/gar-example/detail`, after loading the sub-application as history, the route becomes `http://gar.byted.com/app1#/gar-example/detail`. 3.
+   - After the main application enters the detail page, the address is `http://garfish.bytedance.com#/gar-example/detail`, after loading the sub-application as history, the route becomes `http://garfish.bytedance.com/app1#/gar-example/detail`. 3.
 
-3. Currently Garfish isolates the routing between applications by `basePath` to avoid routing conflicts like the above between the main application and the child application. `http://gar.byted.com/gar-example`, the child application activation path is `/app1`, the child application will receive `http://gar.byted.com/gar-example/app1` in the `provider`, the child application will use it as its base path, change the path
+3. Currently Garfish isolates the routing between applications by `basePath` to avoid routing conflicts like the above between the main application and the child application. `http://garfish.bytedance.com/gar-example`, the child application activation path is `/app1`, the child application will receive `http://garfish.bytedance.com/gar-example/app1` in the `provider`, the child application will use it as its base path, change the path
    :::
 
 ## router.push

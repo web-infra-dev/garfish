@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Menu } from '@arco-design/web-react';
-import './index.less';
-import { Layout, Grid, Modal, Message, Input } from '@arco-design/web-react';
-import { SubAppContext } from '../root';
+import { Layout, Grid, Modal, Menu } from '@arco-design/web-react';
 import CardItem from '../CardItem';
+import { SubAppContext } from '../root';
 import {
   backToMainStr,
   channelWithMainStr,
   increaseStr,
-  hmrStr,
   toVue3Str,
 } from '../../constant';
+import './index.less';
 
 const Row = Grid.Row;
 const Col = Grid.Col;
@@ -23,20 +21,12 @@ export interface IProps {
 }
 
 const MenuItem = Menu.Item;
+
 const App = () => {
   const [visible, setVisible] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState<Array<string>>(['1']);
-  const handleMsg = (msg) => Message.info(msg);
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    window?.Garfish?.channel.on('sayHello', handleMsg);
-
-    return () => {
-      window?.Garfish.channel.removeListener('sayHello', handleMsg);
-    };
-  }, []);
 
   useEffect(() => {
     setSelectedKeys([location.pathname.replace('/', '')]);
@@ -44,7 +34,7 @@ const App = () => {
 
   return (
     <SubAppContext.Consumer>
-      {({ basename, store }: any) => {
+      {(appInfo) => {
         return (
           <Content>
             <Row
@@ -61,7 +51,7 @@ const App = () => {
                     // window.history.replaceState(null, '', '/examples/main/index')
                     window.Garfish.router.push({ path: '/main/index' })
                   }
-                  href="https://garfish.top/api/router"
+                  href="https://garfishjs.org/api/router"
                   markdownStr={backToMainStr}
                 />
 
@@ -75,14 +65,14 @@ const App = () => {
                     // );
                     window.Garfish.router.push({ path: '/vue3/home' });
                   }}
-                  href="https://garfish.top/api/router"
+                  href="https://garfishjs.org/api/router"
                   markdownStr={toVue3Str}
                 />
 
                 <CardItem
                   title="Modal 弹窗"
                   onClick={() => setVisible(true)}
-                  href="https://garfish.top/api/channel"
+                  href="https://garfishjs.org/api/channel"
                 />
                 <CardItem
                   title="和主应用通信"
@@ -92,13 +82,15 @@ const App = () => {
                       'hello, 我是 react17 子应用',
                     );
                   }}
-                  href="https://garfish.top/api/channel"
+                  href="https://garfishjs.org/api/channel"
                   markdownStr={channelWithMainStr}
                 />
 
                 <CardItem
                   title="increase global counter"
-                  onClick={() => store && store.increment()}
+                  onClick={() =>
+                    appInfo.props.store && appInfo.props.store.increment()
+                  }
                   markdownStr={increaseStr}
                 />
 
@@ -107,7 +99,7 @@ const App = () => {
                   onClick={() => {
                     console.log(' window.testName');
                   }}
-                  href="https://garfish.top/api/channel"
+                  href="https://garfishjs.org/api/channel"
                   markdownStr={hmrStr}
                 /> */}
               </Col>

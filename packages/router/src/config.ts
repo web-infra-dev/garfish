@@ -35,8 +35,14 @@ export interface Options {
   beforeEach?: RouterHook;
   afterEach?: RouterHook;
   routerChange?: (url: string) => void;
-  active: (appInfo: interfaces.AppInfo, rootPath: string) => Promise<void>;
-  deactive: (appInfo: interfaces.AppInfo, rootPath: string) => Promise<void>;
+  active: (
+    appInfo: interfaces.AppInfo,
+    rootPath: string | undefined,
+  ) => Promise<void>;
+  deactive: (
+    appInfo: interfaces.AppInfo,
+    rootPath: string | undefined,
+  ) => Promise<void>;
   notMatch?: (path: string) => void;
 }
 

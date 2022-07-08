@@ -136,7 +136,7 @@ function tokenizer(input: string) {
 
 function parse(tokens: Array<string>): Array<Props> {
   let mode = 1; // 1 | 2 | 3
-  let scope = [];
+  let scope: Array<any> = [];
   let stash = false;
   const parent = [];
   scope[0] = parent;
@@ -147,7 +147,7 @@ function parse(tokens: Array<string>): Array<Props> {
   };
 
   const down = () => {
-    const ns = [];
+    const ns: Array<any> = [];
     ns[0] = scope;
     scope = ns;
   };
@@ -260,7 +260,7 @@ export function processAnimation(input: string, prefix: string) {
   if (!input || !prefix) return input;
   const etag = `${prefix}-${input}`;
   if (codeCache.has(etag)) {
-    return codeCache.get(etag);
+    return codeCache.get(etag)!;
   }
 
   let tree = treeCache.get(input);

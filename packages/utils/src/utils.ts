@@ -15,7 +15,7 @@ export function isObject(val: any) {
   return val && typeof val === 'object';
 }
 
-export function isPlainObject(val: any) {
+export function isPlainObject(val: any): val is Object {
   return objectToString.call(val) === '[object Object]';
 }
 
@@ -47,12 +47,22 @@ export function def(obj: Object, key: string, value: any) {
 }
 
 // Array to Object `['a'] => { a: true }`
-export function makeMap(list: Array<PropertyKey>) {
-  const map = Object.create(null);
+export function makeMap<T extends Array<PropertyKey>>(list: T) {
+  const map: { [k in T[number]]: true } = Object.create(null);
   for (let i = 0; i < list.length; i++) {
     map[list[i]] = true;
   }
-  return (val) => !!map[val] as boolean;
+  return (val: PropertyKey) => !!map[val];
+}
+
+// Array to Object `['a'] => { a: true }`
+export function makeMapObject<T extends Array<string>>(list: T) {
+  const map: { [k in T[number]]: true } = Object.create(null);
+  for (let i = 0; i < list.length; i++) {
+    map[list[i]] = true;
+  }
+
+  return map as { [k in T[number]]: true };
 }
 
 export function inBrowser() {
@@ -166,7 +176,10 @@ export function nextTick(cb: () => void): void {
   Promise.resolve().then(cb);
 }
 
-export function assert(condition: any, msg?: string | Error) {
+export function assert(
+  condition: any,
+  msg?: string | Error,
+): asserts condition {
   if (!condition) {
     error(msg || 'unknow reason');
   }
@@ -231,6 +244,15 @@ export function isPrimitive(val: any) {
   );
 }
 
+export function filterUndefinedVal<T extends Object>(ob: T) {
+  return Object.keys(ob).reduce((res: T, key: any) => {
+    if (res[key] === undefined) {
+      delete res[key];
+    }
+    return res;
+  }, ob);
+}
+
 // Deeply merge two objects, can handle circular references, the latter overwrite the previous
 export function deepMerge<K, T>(
   o: K,
@@ -262,7 +284,7 @@ export function deepMerge<K, T>(
       return rightRecord.get(v);
     } else if (isArray(v)) {
       if (dp) v = unique(v);
-      const arr = [];
+      const arr: Array<any> = [];
       valueRecord.set(v, arr);
       for (let i = 0, len = v.length; i < len; i++) {
         arr[i] = clone(v[i]);
@@ -307,7 +329,7 @@ export function deepMerge<K, T>(
 
       if (hasOwn(r, key)) {
         if (isArray(lv) && isArray(rv)) {
-          const item = clone([].concat(lv, rv));
+          const item = clone([...lv, ...rv]);
           res[key] = dp ? unique(item) : item;
         } else if (isPlainObject(lv) && isPlainObject(rv)) {
           res[key] = isAllRefs(lv, rv)

@@ -1,4 +1,4 @@
-import { interfaces } from '@garfish/core';
+import type { interfaces } from '@garfish/core';
 import { dispatchEvents } from './dispatchEvents';
 import { __MockHtml__ } from './garfish';
 import { assert, createKey } from './utils';
@@ -84,7 +84,7 @@ function waitElement(selector, timeout = 3000) {
   return Promise.race([delay(timeout), waitPromise]);
 }
 
-export async function getRenderNode(domGetter: interfaces.DomGetter) {
+export async function getRenderNode(domGetter?: interfaces.DomGetter) {
   assert(domGetter, `Invalid domGetter:\n ${domGetter}.`);
   let appWrapperNode;
 

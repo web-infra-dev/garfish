@@ -17,7 +17,7 @@ let defaultConfig: RunInfo = {
   basename,
 
   // 子应用的挂载点，提供 string 类型时需要其值是 selector，Garfish 内部会使用 document.querySelector(domGetter) 去选中子应用的挂载点。
-  //  当提供函数时，子应用在路由驱动挂载和手动挂载时将会执行该函数并且期望返回一个 dom 元素。设置后该值为所有子应用的默认值，若子应用 AppInfo 中也提供了该值会替换全局的 domGetter
+  // 当提供函数时，子应用在路由驱动挂载和手动挂载时将会执行该函数并且期望返回一个 dom 元素。设置后该值为所有子应用的默认值，若子应用 AppInfo 中也提供了该值会替换全局的 domGetter
   domGetter: '#submodule',
 
   // 是否禁用子应用的资源预加载，默认值为 false，开启子应用的预加载能力，预加载能力在弱网情况和手机端将不会开启。
@@ -71,7 +71,7 @@ let defaultConfig: RunInfo = {
   // 当返回 false 时表示中断子应用的加载以及后续流程，所有子应用加载都会触发该函数的调用
   beforeLoad(appInfo) {
     store.setIsMounted(false);
-    console.log('子应用开始加载', appInfo.name);
+    console.log('子应用开始加载', appInfo);
     // return false;
   },
 

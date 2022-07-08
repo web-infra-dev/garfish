@@ -135,7 +135,7 @@ new Vue({
 ### 安装依赖
 
 ```bash npm2yarn
-npm install @garfish/bridge --save
+npm install @garfish/bridge-react --save
 ```
 
 ### 通过 Bridge 函数包装子应用
@@ -144,10 +144,8 @@ npm install @garfish/bridge --save
   <TabItem value="React" label="React" default>
 
 ```jsx
-import React from 'react';
-import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
-import { reactBridge } from '@garfish/bridge';
+import { reactBridge } from '@garfish/bridge-react';
 
 function App({ basename }) {
   return (
@@ -164,8 +162,6 @@ function App({ basename }) {
 }
 
 export const provider = reactBridge({
-  React,
-  ReactDOM,
   rootComponent: App,
   domElementGetter: '#root', // 应用的挂载点，如果子应用打包为 JS 入口，可不填写
 });
@@ -174,10 +170,9 @@ export const provider = reactBridge({
   </TabItem>
   <TabItem value="Vue" label="Vue">
 
-```jsx
-import Vue from 'vue';
+```js
 import App from './App.vue';
-import { vueBridge } from '@garfish/bridge';
+import { vueBridge } from '@garfish/bridge-vue-v2';
 
 function newRouter(basename) {
   const router = new VueRouter({
@@ -190,7 +185,6 @@ function newRouter(basename) {
 }
 
 export const provider = vueBridge({
-  Vue,
   rootComponent: App,
   appOptions: ({ basename }) => {
     const router = newRouter(basename);
@@ -212,6 +206,9 @@ export const provider = vueBridge({
   <TabItem value="Webpack" label="Webpack" default>
 
 ```js
+// webpack.config.js
+const webpack = require('webpack');
+
 module.exports = {
   output: {
     // 需要配置成 umd 规范
@@ -223,7 +220,12 @@ module.exports = {
     // 保证子应用的资源路径变为绝对路径，避免子应用的相对资源在变为主应用上的相对资源，因为子应用和主应用在同一个文档流，相对路径是相对于主应用而言的
     publicPath: 'http://localhost:8000',
   },
-
+  plugin: [
+    // 保证错误堆栈信息及 sourcemap 行列信息正确
+    new webpack.BannerPlugin({
+      banner: 'Micro front-end',
+    })
+  ],
   devServer: {
     // 保证在开发模式下应用端口不一样
     port: '8000',

@@ -8,7 +8,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './index.module.css';
 import SwiperCore, { Pagination, Autoplay } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper-bundle.min.css';
+import 'swiper/css';
 
 const notice = '';
 
@@ -207,7 +207,7 @@ function Home() {
                     styles.linkButton,
                     styles.getGuide
                   )}
-                  to={useBaseUrl('guide/')}>
+                  to={useBaseUrl('guide/start/')}>
                   快速开始
                 </Link>
               </div>

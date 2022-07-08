@@ -11,7 +11,6 @@ import { localApps } from './constant';
 export const GarfishInit = async () => {
   const apps = localApps;
   console.log('Garfish.run apps', apps);
-
   store.setApps(apps);
   Garfish.setExternal({
     react: React,

@@ -7,7 +7,8 @@ import {
   hasOwn,
   remove,
   Queue,
-  isJs,
+  coreLog,
+  isJsType,
   isObject,
   isPromise,
   toBoolean,
@@ -18,7 +19,6 @@ import {
   __MockHead__,
   getRenderNode,
   sourceListTags,
-  parseContentType,
   createAppContainer,
   setDocCurrentScript,
 } from '@garfish/utils';
@@ -28,11 +28,10 @@ import { appLifecycle } from '../lifecycle';
 import { ESModuleLoader } from './esModule';
 import { SubAppObserver } from '../plugins/performance/subAppObserver';
 
-/** @deprecated */
 export type CustomerLoader = (
   provider: interfaces.Provider,
   appInfo: interfaces.AppInfo,
-  path: string,
+  path?: string,
 ) => Promise<interfaces.LoaderResult | void> | interfaces.LoaderResult | void;
 
 export type AppInfo = interfaces.AppInfo & {
@@ -77,14 +76,13 @@ export class App {
   public appInfo: AppInfo;
   public context: Garfish;
   public hooks: interfaces.AppHooks;
-  public provider: interfaces.Provider;
+  public provider?: interfaces.Provider;
   public entryManager: TemplateManager;
   public appPerformance: SubAppObserver;
-  /** @deprecated */
-  public customLoader: CustomerLoader;
+  public customLoader?: CustomerLoader;
 
   private active = false;
-  private mounting = false;
+  public mounting = false;
   private unmounting = false;
   private resources: interfaces.ResourceModules;
   // Environment variables injected by garfish for linkage with child applications
@@ -96,7 +94,7 @@ export class App {
     entryManager: TemplateManager,
     resources: interfaces.ResourceModules,
     isHtmlMode: boolean,
-    customLoader: CustomerLoader,
+    customLoader?: CustomerLoader,
   ) {
     this.context = context;
     this.appInfo = appInfo;
@@ -146,12 +144,13 @@ export class App {
         if (url) {
           this.sourceList.push({
             tagName: node.tagName,
-            url: transformUrl(entryManager.url, url),
+            url: entryManager.url ? transformUrl(entryManager.url, url) : url,
           });
         }
       });
     }
-    this.sourceList.push({ tagName: 'html', url: this.appInfo.entry });
+    this.appInfo.entry &&
+      this.sourceList.push({ tagName: 'html', url: this.appInfo.entry });
   }
 
   get rootElement() {
@@ -177,7 +176,16 @@ export class App {
 
     this.scriptCount++;
 
-    this.runCode(code, env, url, options);
+    const args = [this.appInfo, code, env, url, options] as const;
+    this.hooks.lifecycle.beforeEval.emit(...args);
+    try {
+      this.runCode(code, env, url, options);
+    } catch (err) {
+      this.hooks.lifecycle.errorExecCode.emit(err, ...args);
+      throw err;
+    }
+
+    this.hooks.lifecycle.afterEval.emit(...args);
   }
 
   // `vm sandbox` can override this method
@@ -187,38 +195,30 @@ export class App {
     url?: string,
     options?: interfaces.ExecScriptOptions,
   ) {
-    const args = [this.appInfo, code, env, url, options] as const;
-    this.hooks.lifecycle.beforeEval.emit(...args);
-    try {
-      // If the node is an es module, use native esmModule
-      if (options.isModule) {
-        this.esmQueue.add(async (next) => {
-          await this.esModuleLoader.load(code, env, url, options);
-          next();
-        });
-      } else {
-        const revertCurrentScript = setDocCurrentScript(
-          this.global.document,
-          code,
-          true,
-          url,
-          options?.async,
-        );
-        code += url ? `\n//# sourceURL=${url}\n` : '';
-        if (!hasOwn(env, 'window')) {
-          env = {
-            ...env,
-            window: this.global,
-          };
-        }
-        evalWithEnv(`;${code}`, env, this.global);
-        revertCurrentScript();
+    // If the node is an es module, use native esmModule
+    if (options && options.isModule) {
+      this.esmQueue.add(async (next) => {
+        await this.esModuleLoader.load(code, env, url, options);
+        next();
+      });
+    } else {
+      const revertCurrentScript = setDocCurrentScript(
+        this.global.document,
+        code,
+        true,
+        url,
+        options?.async,
+      );
+      code += url ? `\n//# sourceURL=${url}\n` : '';
+      if (!hasOwn(env, 'window')) {
+        env = {
+          ...env,
+          window: this.global,
+        };
       }
-    } catch (e) {
-      this.hooks.lifecycle.errorExecCode.emit(e, ...args);
-      throw e;
+      evalWithEnv(`;${code}`, env, this.global);
+      revertCurrentScript();
     }
-    this.hooks.lifecycle.afterEval.emit(...args);
   }
 
   async show() {
@@ -230,17 +230,18 @@ export class App {
       return false;
     }
     this.hooks.lifecycle.beforeMount.emit(this.appInfo, this, true);
+    this.context.activeApps.push(this);
 
     await this.addContainer();
     this.callRender(provider, false);
     this.display = true;
-    this.context.activeApps.push(this);
     this.hooks.lifecycle.afterMount.emit(this.appInfo, this, true);
     return true;
   }
 
   hide() {
     this.active = false;
+    this.mounting = false;
     const { display, mounted, provider } = this;
     if (!display) return false;
     if (!mounted) {
@@ -263,8 +264,10 @@ export class App {
     this.active = true;
     this.mounting = true;
     try {
+      this.context.activeApps.push(this);
       // add container and compile js with cjs
       const { asyncScripts } = await this.compileAndRenderContainer();
+      if (!this.stopMountAndClearEffect()) return false;
 
       // Good provider is set at compile time
       const provider = await this.getProvider();
@@ -274,7 +277,6 @@ export class App {
       this.callRender(provider, true);
       this.display = true;
       this.mounted = true;
-      this.context.activeApps.push(this);
       this.hooks.lifecycle.afterMount.emit(this.appInfo, this, false);
 
       await asyncScripts;
@@ -291,6 +293,7 @@ export class App {
 
   unmount() {
     this.active = false;
+    this.mounting = false;
     if (!this.mounted || !this.appContainer) {
       return false;
     }
@@ -306,7 +309,7 @@ export class App {
       this.callDestroy(this.provider, true);
       this.display = false;
       this.mounted = false;
-      this.provider = null;
+      this.provider = undefined;
       this.customExports = {};
       this.cjsModules.exports = {};
       this.esModuleLoader.destroy();
@@ -323,7 +326,7 @@ export class App {
     return true;
   }
 
-  getExecScriptEnv(noEntry: boolean) {
+  getExecScriptEnv(noEntry?: boolean) {
     // The legacy of commonJS function support
     const envs = {
       [__GARFISH_EXPORTS__]: this.customExports,
@@ -415,13 +418,17 @@ export class App {
       if (this.appContainer) {
         this.entryManager.DOMApis.removeElement(this.appContainer);
       }
+      coreLog(
+        `${this.appInfo.name} id:${this.appId} stopMountAndClearEffect`,
+        this.appContainer,
+      );
       return false;
     }
     return true;
   }
 
   // Calls to render do compatible with two different sandbox
-  private callRender(provider: interfaces.Provider, isMount: boolean) {
+  private callRender(provider?: interfaces.Provider, isMount?: boolean) {
     if (provider && provider.render) {
       provider.render({
         appName: this.appInfo.name,
@@ -434,7 +441,7 @@ export class App {
   }
 
   // Call to destroy do compatible with two different sandbox
-  private callDestroy(provider: interfaces.Provider, isUnmount: boolean) {
+  private callDestroy(provider?: interfaces.Provider, isUnmount?: boolean) {
     const { rootElement, appContainer } = this;
     if (provider && provider.destroy) {
       provider.destroy({
@@ -473,17 +480,17 @@ export class App {
       meta: () => null,
 
       img: (node) => {
-        entryManager.toResolveUrl(node, 'src', baseUrl);
+        baseUrl && entryManager.toResolveUrl(node, 'src', baseUrl);
         return DOMApis.createElement(node);
       },
 
       video: (node) => {
-        entryManager.toResolveUrl(node, 'src', baseUrl);
+        baseUrl && entryManager.toResolveUrl(node, 'src', baseUrl);
         return DOMApis.createElement(node);
       },
 
       audio: (node) => {
-        entryManager.toResolveUrl(node, 'src', baseUrl);
+        baseUrl && entryManager.toResolveUrl(node, 'src', baseUrl);
         return DOMApis.createElement(node);
       },
 
@@ -518,7 +525,7 @@ export class App {
 
         if (mimeType) {
           // Other script template
-          if (!isModule && !isJs(parseContentType(mimeType))) {
+          if (!isModule && !isJsType({ type: mimeType })) {
             return DOMApis.createElement(node);
           }
         }
@@ -556,6 +563,7 @@ export class App {
             appName: this.name,
             rootElId: this.appContainer.id,
           });
+          baseUrl && styleManager.correctPath(baseUrl);
           return entryManager.ignoreChildNodesCreation(
             styleManager.renderAsStyleElement(),
           );
@@ -596,7 +604,8 @@ export class App {
     const { name, props, basename } = appInfo;
     let provider:
       | ((...args: any[]) => interfaces.Provider)
-      | interfaces.Provider = null;
+      | interfaces.Provider
+      | undefined = undefined;
 
     // esModule export
     await this.esmQueue.awaitCompletion();
@@ -641,8 +650,6 @@ export class App {
     if (hookRes) {
       const { mount, unmount } = hookRes || ({} as any);
       if (typeof mount === 'function' && typeof unmount === 'function') {
-        mount._custom = true;
-        unmount._custom = true;
         (provider as interfaces.Provider).render = mount;
         (provider as interfaces.Provider).destroy = unmount;
       }

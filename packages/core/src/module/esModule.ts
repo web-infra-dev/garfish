@@ -55,10 +55,10 @@ export class ESModuleLoader {
     requestUrl: string,
   ) {
     const { resourceManager } =
-      await this.app.context.loader.load<JavaScriptManager>(
-        this.app.name,
-        requestUrl,
-      );
+      await this.app.context.loader.load<JavaScriptManager>({
+        scope: this.app.name,
+        url: requestUrl,
+      });
     // Maybe other resource
     if (resourceManager) {
       let sourcemap = '';
@@ -92,8 +92,8 @@ export class ESModuleLoader {
   private async analysisModule(
     code: string,
     envVarStr,
-    baseUrl: string,
-    realUrl: string,
+    baseUrl?: string,
+    realUrl?: string | null,
   ) {
     let matchRes;
     const analysisCode = this.removeExtraCode(code);
@@ -108,7 +108,7 @@ export class ESModuleLoader {
         let saveUrl = moduleId;
         let requestUrl = moduleId;
 
-        if (!isAbsolute(moduleId)) {
+        if (!isAbsolute(moduleId) && baseUrl && realUrl) {
           saveUrl = transformUrl(baseUrl, moduleId);
           requestUrl = transformUrl(realUrl, moduleId);
         }
@@ -120,7 +120,7 @@ export class ESModuleLoader {
 
     // Static import
     code = code.replace(IMPORT_REG, (k1, k2, k3, k4, k5) => {
-      if (!isAbsolute(k5)) {
+      if (!isAbsolute(k5) && baseUrl) {
         k5 = transformUrl(baseUrl, k5);
       }
       const blobUrl = this.moduleCache[k5];
@@ -147,11 +147,11 @@ export class ESModuleLoader {
   load(
     code: string,
     env: Record<string, any>,
-    url: string,
-    options: interfaces.ExecScriptOptions,
+    url?: string,
+    options?: interfaces.ExecScriptOptions,
   ) {
     return new Promise<void>(async (resolve) => {
-      if (this.moduleCache[url]) {
+      if (url && this.moduleCache[url]) {
         return resolve();
       }
 
@@ -181,10 +181,10 @@ export class ESModuleLoader {
       }, '');
 
       let sourcemap = '';
-      if (!haveSourcemap(code)) {
+      if (!haveSourcemap(code) && url) {
         sourcemap = await createSourcemap(
           code,
-          options.isInline
+          options && options.isInline
             ? `index.html(inline.${this.app.scriptCount}.js)`
             : url,
         );
@@ -195,7 +195,7 @@ export class ESModuleLoader {
 
       this.app.global[this.globalVarKey] = env;
       const blobUrl = await this.createBlobUrl(code);
-      if (!options.isInline) {
+      if (options && !options.isInline && url) {
         this.setBlobUrl(url, blobUrl);
       }
       this.execModuleCode(blobUrl);

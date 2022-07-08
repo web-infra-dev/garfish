@@ -14,6 +14,10 @@ import {
   sourceListTags,
   parseContentType,
   __REMOVE_NODE__,
+  isJsType,
+  isCssType,
+  error,
+  safeWrapper,
 } from '@garfish/utils';
 import { rootElm } from '../utils';
 import { Sandbox } from '../sandbox';
@@ -55,7 +59,7 @@ export class DynamicNodeProcessor {
       const url = this.el.src || this.el.href;
 
       if (url) {
-        this.sandbox.options?.sourceList.push({
+        this.sandbox.options.sourceList?.push({
           tagName: this.el.tagName,
           url,
         });
@@ -69,7 +73,7 @@ export class DynamicNodeProcessor {
       const isError = type === 'error';
       let event: Event & { __byGarfish__?: boolean };
 
-      if (isError) {
+      if (isError && errInfo) {
         event = new ErrorEvent(type, {
           ...errInfo,
           message: errInfo.error.message,
@@ -88,21 +92,31 @@ export class DynamicNodeProcessor {
   private addDynamicLinkNode(callback: (styleNode: HTMLStyleElement) => void) {
     const { href, type } = this.el;
 
-    if (!type || isCss(parseContentType(type))) {
+    if (!type || isCssType({ src: href, type })) {
       if (href) {
         const { baseUrl, namespace, styleScopeId } = this.sandbox.options;
         const fetchUrl = baseUrl ? transformUrl(baseUrl, href) : href;
 
         this.sandbox.loader
-          .load<StyleManager>(namespace, fetchUrl)
+          .load<StyleManager>({
+            scope: namespace,
+            url: fetchUrl,
+            defaultContentType: type,
+          })
           .then(({ resourceManager: styleManager }) => {
+            if (styleManager) {
+              styleManager.correctPath();
+              styleManager.setScope({
+                appName: namespace,
+                rootElId: styleScopeId!(),
+              });
+              callback(styleManager.renderAsStyleElement());
+            } else {
+              warn(
+                `Invalid resource type "${type}", "${href}" can't generate styleManager`,
+              );
+            }
             this.dispatchEvent('load');
-            styleManager.correctPath();
-            styleManager.setScope({
-              appName: namespace,
-              rootElId: styleScopeId(),
-            });
-            callback(styleManager.renderAsStyleElement());
           })
           .catch((e) => {
             __DEV__ && warn(e);
@@ -128,23 +142,36 @@ export class DynamicNodeProcessor {
   private addDynamicScriptNode() {
     const { src, type, crossOrigin } = this.el;
     const isModule = type === 'module';
-    const mimeType = parseContentType(type);
     const code = this.el.textContent || this.el.text || '';
 
-    if (!type || isJs(mimeType) || isModule || isJsonp(mimeType, src)) {
+    if (!type || isJsType({ src, type })) {
       // The "src" higher priority
       const { baseUrl, namespace } = this.sandbox.options;
       if (src) {
         const fetchUrl = baseUrl ? transformUrl(baseUrl, src) : src;
         this.sandbox.loader
-          .load<JavaScriptManager>(namespace, fetchUrl, false, crossOrigin)
+          .load<JavaScriptManager>({
+            scope: namespace,
+            url: fetchUrl,
+            crossOrigin,
+            defaultContentType: type,
+          })
           .then(
-            ({ resourceManager: { url, scriptCode } }) => {
-              // It is necessary to ensure that the code execution error cannot trigger the `el.onerror` event
-              this.sandbox.execScript(scriptCode, {}, url, {
-                isModule,
-                noEntry: true,
-              });
+            (manager) => {
+              if (manager.resourceManager) {
+                const {
+                  resourceManager: { url, scriptCode },
+                } = manager;
+                // It is necessary to ensure that the code execution error cannot trigger the `el.onerror` event
+                this.sandbox.execScript(scriptCode, {}, url, {
+                  isModule,
+                  noEntry: true,
+                });
+              } else {
+                warn(
+                  `Invalid resource type "${type}", "${src}" can't generate scriptManager`,
+                );
+              }
               this.dispatchEvent('load');
             },
             (e) => {
@@ -253,7 +280,7 @@ export class DynamicNodeProcessor {
       manager.correctPath(baseUrl);
       manager.setScope({
         appName: namespace,
-        rootElId: styleScopeId(),
+        rootElId: styleScopeId!(),
       });
       this.el.textContent = manager.transformCode(manager.styleCode);
       convertedNode = this.el;
@@ -273,10 +300,14 @@ export class DynamicNodeProcessor {
     }
 
     // Collect nodes that escape the container node
-    if (!this.rootElement.contains(parentNode)) {
+    if (
+      !this.rootElement.contains(parentNode) &&
+      document.contains(parentNode)
+    ) {
       if (parentNode !== this.rootElement) {
         this.sandbox.deferClearEffects.add(() => {
           this.DOMApis.removeElement(this.el);
+          return this.el;
         });
       }
     }
@@ -286,7 +317,7 @@ export class DynamicNodeProcessor {
       const { el, sandbox } = this;
       const originOnload = el.onload;
       el.onload = function () {
-        def(el.contentWindow, 'parent', sandbox.global);
+        safeWrapper(() => def(el.contentWindow, 'parent', sandbox.global));
         return originOnload.apply(this, arguments);
       };
     }

@@ -1,0 +1,48 @@
+{
+  "name": "@garfish/bridge-vue-v3",
+  "version": "1.8.2",
+  "description": "garfish vue bridge for v3.",
+  "keywords": [
+    "garfish",
+    "micro frontend",
+    "vueBridge"
+  ],
+  "files": [
+    "dist"
+  ],
+  "author": "danpeen <dapeen.feng@gmail.com",
+  "homepage": "https://github.com/bytedance/garfish",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsup src/index.ts",
+    "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
+  "devDependencies": {
+    "vue": "3.2.31"
+  },
+  "peerDependencies": {
+    "vue": "=3"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "gitHead": "da33dd16bb9e99588f34079f8b961d0cf9f059fc"
+}

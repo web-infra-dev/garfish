@@ -1,4 +1,4 @@
-import { mockStaticServer } from '@garfish/utils';
+import { mockStaticServer } from '@garfish/test-suite';
 import { Runtime } from '../src/runtime';
 
 describe('es module', () => {
@@ -8,7 +8,10 @@ describe('es module', () => {
     return runtime.importByUrl(entry);
   };
 
-  mockStaticServer(__dirname, ['lodash']);
+  mockStaticServer({
+    baseDir: __dirname,
+    filterKeywords: ['lodash'],
+  });
 
   beforeEach(() => {
     globalThis.orderIndex = 0;

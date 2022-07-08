@@ -8,14 +8,15 @@ export async function request(url: string, config: RequestInit) {
     error(`"${url}" load failed with status "${result.status}"`);
   }
   const code = await result.text();
-  const type = result.headers.get('content-type');
+  const type = result.headers.get('content-type') || '';
   const size = Number(result.headers.get('content-size'));
-  const mimeType = parseContentType(type);
+  const mimeType = parseContentType(type || '');
 
   return {
     code,
     result,
     mimeType,
+    type,
     size: Number.isNaN(size) ? null : size,
   };
 }

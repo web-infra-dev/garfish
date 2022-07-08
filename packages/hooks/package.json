@@ -1,6 +1,6 @@
 {
   "name": "@garfish/hooks",
-  "version": "1.4.1",
+  "version": "1.8.2",
   "description": "hooks module.",
   "keywords": [
     "garfish",
@@ -18,10 +18,13 @@
   },
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
-  "types": "dist/index.d.ts",
+  "types": "./src/index.ts",
   "scripts": {
     "build": "rimraf dist && tsup src/index.ts",
     "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
+  "dependencies": {
+    "@garfish/utils": "workspace:*"
   },
   "repository": {
     "type": "git",
@@ -32,6 +35,7 @@
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
-    "access": "public"
+    "access": "public",
+    "types": "./dist/index.d.ts"
   }
 }

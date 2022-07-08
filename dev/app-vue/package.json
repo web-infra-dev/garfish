@@ -1,13 +1,8 @@
 {
   "name": "@garfish-dev/vue-sub",
   "private": true,
-  "scripts": {
-    "start": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
-  },
   "dependencies": {
-    "@garfish/bridge": "workspace:*",
+    "@garfish/bridge-vue-v2": "workspace:*",
     "@garfish/remote-module": "workspace:*",
     "garfish": "workspace:*",
     "mobx-vue": "^2.1.0",
@@ -52,5 +47,10 @@
     "last 2 versions",
     "not dead",
     "not ie 11"
-  ]
+  ],
+  "scripts": {
+    "start": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  }
 }

@@ -18,7 +18,7 @@ export function GarfishCssScope(options: Options = {}) {
   const protoCache = new Set<StyleManager>();
   const astCache = new Map<string, StylesheetNode>();
 
-  const disable = (appName: string) => {
+  const disable = (appName?: string) => {
     const { excludes } = options;
     if (!appName) return true;
     if (Array.isArray(excludes)) return excludes.includes(appName);
@@ -89,9 +89,8 @@ export function GarfishCssScope(options: Options = {}) {
           const { name, sandbox } = appInfo;
           if (!disable(name)) {
             if (
-              sandbox === false ||
-              sandbox.open === false ||
-              sandbox.snapshot
+              sandbox &&
+              (sandbox === false || sandbox.open === false || sandbox.snapshot)
             ) {
               warn(
                 `Child app "${name}" does not open the vm sandbox, ` +

@@ -9,18 +9,23 @@ on:
       branch:
         description: 'Release Branch(confirm release branch)'
         required: true
-        default: 'master'
+        default: 'main'
 
 jobs:
   release:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [16.10.0]
+        node-version: [16.14.0]
     steps:
     - uses: actions/checkout@v2
       with:
         ref: ${{ github.event.inputs.branch }}
+    - name: Pushing to the protected branch 'protected'
+      uses: CasperWA/push-protected@v2
+      with:
+        token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
+        branch: main
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:

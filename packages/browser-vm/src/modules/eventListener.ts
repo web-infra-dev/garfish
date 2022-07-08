@@ -63,7 +63,7 @@ export function listenerModule(_sandbox: Sandbox) {
       removeEventListener: removeListener.bind(window),
     },
     created(global: Sandbox['global']) {
-      const fakeDocument = global.document;
+      const fakeDocument = global?.document;
       if (fakeDocument) {
         fakeDocument.addEventListener = addListener.bind(document);
         fakeDocument.removeEventListener = removeListener.bind(document);

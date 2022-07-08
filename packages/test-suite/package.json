@@ -1,0 +1,44 @@
+{
+  "name": "@garfish/test-suite",
+  "version": "1.8.2",
+  "description": "garfish test suite.",
+  "keywords": [
+    "garfish",
+    "utils"
+  ],
+  "author": "zhouxiao <codingzx@gmail.com>",
+  "homepage": "https://github.com/bytedance/garfish",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build": "rimraf dist && tsup src/index.ts",
+    "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public",
+    "types": "./dist/index.d.ts"
+  },
+  "gitHead": "e8bf48ea8ca8db408a4a0a1cdab8ce4a50ab279b",
+  "dependencies": {
+    "@garfish/utils": "workspace:*",
+    "isomorphic-fetch": "^3.0.0",
+    "jest-fetch-mock": "^3.0.3"
+  }
+}

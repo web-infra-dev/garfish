@@ -127,13 +127,13 @@ export class Sandbox {
     const { createdList, overrideList } = this.replaceGlobalVariables;
     this.global = this.createProxyWindow(Object.keys(overrideList));
 
-    if (overrideList) {
+    if (overrideList && this.global) {
       for (const key in overrideList) {
         this.global[key] = overrideList[key];
       }
     }
     if (createdList) {
-      createdList.forEach((fn) => fn(this.global));
+      createdList.forEach((fn) => fn && fn(this.global));
     }
     if (!this.options.disableWith) {
       this.optimizeCode = this.optimizeGlobalMethod();
@@ -146,7 +146,7 @@ export class Sandbox {
     if (this.closed) return;
     this.clearEffects();
     this.closed = true;
-    this.global = null;
+    this.global = undefined;
     this.optimizeCode = '';
     this.initComplete = false;
     this.deferClearEffects.clear();
@@ -208,11 +208,11 @@ export class Sandbox {
   }
 
   getModuleData() {
-    const recoverList = [];
-    const createdList = [];
-    const prepareList = [];
+    const recoverList: Array<() => void> = [];
+    const createdList: Array<(context: Window | undefined) => void> = [];
+    const prepareList: Array<() => void> = [];
     const overrideList = {};
-    const allModules = defaultModules.concat(this.options.modules);
+    const allModules = defaultModules.concat(this.options.modules ?? []);
 
     for (const module of allModules) {
       if (typeof module === 'function') {
@@ -242,7 +242,7 @@ export class Sandbox {
     this.hooks.lifecycle.afterClearEffect.emit();
   }
 
-  optimizeGlobalMethod(tempEnvKeys = []) {
+  optimizeGlobalMethod(tempEnvKeys: Array<string> = []) {
     let code = '';
     const methods = optimizeMethods.filter((p) => {
       return (
@@ -262,8 +262,10 @@ export class Sandbox {
         return `${prevCode} let ${name} = window.${name};`;
       }, code);
 
-      this.global[`${GARFISH_OPTIMIZE_NAME}Methods`] = methods;
-      this.global[`${GARFISH_OPTIMIZE_NAME}UpdateStack`] = [];
+      if (this.global) {
+        this.global[`${GARFISH_OPTIMIZE_NAME}Methods`] = methods;
+        this.global[`${GARFISH_OPTIMIZE_NAME}UpdateStack`] = [];
+      }
       code += `window.${GARFISH_OPTIMIZE_NAME}UpdateStack.push(function(k,v){eval(k+"=v")});`;
     }
 
@@ -306,17 +308,17 @@ export class Sandbox {
 
   processExecError(
     e: any,
-    url: string,
-    env: Record<string, any>,
+    url?: string,
+    env?: Record<string, any>,
     options?: interfaces.ExecScriptOptions,
   ) {
     this.hooks.lifecycle.invokeError.emit(e, url, env, options);
     // dispatch `window.onerror`
-    if (typeof this.global.onerror === 'function') {
+    if (this.global && typeof this.global.onerror === 'function') {
       const source = url || this.options.baseUrl;
       const message = e instanceof Error ? e.message : String(e);
       safeWrapper(() => {
-        this.global.onerror.call(this.global, message, source, null, null, e);
+        this.global?.onerror?.call(this.global, message, source, null, null, e);
       });
     }
     throw e;
@@ -334,7 +336,7 @@ export class Sandbox {
     this.hooks.lifecycle.beforeInvoke.emit(codeRef, url, env, options);
 
     const revertCurrentScript = setDocCurrentScript(
-      this.global.document,
+      this.global?.document,
       codeRef.code,
       false,
       url,

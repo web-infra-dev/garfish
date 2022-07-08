@@ -1,11 +1,10 @@
 import { SyncHook, SyncWaterfallHook, PluginSystem } from '@garfish/hooks';
 import {
   error,
-  isJs,
-  isCss,
-  isHtml,
-  isJsonp,
   __LOADER_FLAG__,
+  isJsType,
+  isCssType,
+  isHtmlType,
 } from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
@@ -72,7 +71,7 @@ export class Loader {
   });
 
   private options: LoaderOptions; // The unit is "b"
-  private loadingList: Record<string, Promise<any>>;
+  private loadingList: Record<string, null | Promise<CacheValue<any>>>;
   private cacheStore: { [name: string]: AppCacheContainer };
 
   constructor(options?: LoaderOptions) {
@@ -96,20 +95,32 @@ export class Loader {
   }
 
   loadModule(url: string) {
-    return this.load<ModuleManager>('modules', url, true);
+    return this.load<ModuleManager>({
+      scope: 'modules',
+      url,
+      isRemoteModule: true,
+    });
   }
 
   // Unable to know the final data type, so through "generics"
-  load<T extends Manager>(
-    scope: string,
-    url: string,
+  load<T extends Manager>({
+    scope,
+    url,
     isRemoteModule = false,
-    crossOrigin: HTMLScriptElement['crossOrigin'] = 'anonymous',
-  ): Promise<LoadedHookArgs<T>['value']> {
+    crossOrigin = 'anonymous',
+    defaultContentType = '',
+  }: {
+    scope: string;
+    url: string;
+    isRemoteModule?: boolean;
+    crossOrigin?: NonNullable<HTMLScriptElement['crossOrigin']>;
+    defaultContentType?: string;
+  }): Promise<LoadedHookArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
 
-    if (loadingList[url]) {
-      return loadingList[url] as any;
+    const res = loadingList[url];
+    if (res) {
+      return res;
     }
 
     let appCacheContainer = cacheStore[scope];
@@ -144,24 +155,34 @@ export class Loader {
       requestConfig,
     });
 
-    loadingList[url] = request(resOpts.url, resOpts.requestConfig)
-      .then(({ code, size, mimeType, result }) => {
-        let managerCtor, fileType: FileTypes;
+    const loadRes = request(resOpts.url, resOpts.requestConfig)
+      .then(({ code, size, result, type }) => {
+        let managerCtor,
+          fileType: FileTypes | '' = '';
 
         if (isRemoteModule) {
           fileType = FileTypes.module;
           managerCtor = ModuleManager;
-        } else if (isHtml(mimeType) || /\.html$/.test(result.url)) {
+        } else if (
+          isHtmlType({ type, src: result.url }) ||
+          isHtmlType({
+            type: defaultContentType,
+          })
+        ) {
           fileType = FileTypes.template;
           managerCtor = TemplateManager;
         } else if (
-          isJs(mimeType) ||
-          /\.js$/.test(result.url) ||
-          isJsonp(mimeType, result.url)
+          isJsType({ type: defaultContentType }) ||
+          isJsType({ type, src: result.url })
         ) {
           fileType = FileTypes.js;
           managerCtor = JavaScriptManager;
-        } else if (isCss(mimeType) || /\.css$/.test(result.url)) {
+        } else if (
+          isCssType({ src: result.url, type }) ||
+          isCssType({
+            type: defaultContentType,
+          })
+        ) {
           fileType = FileTypes.css;
           managerCtor = StyleManager;
         }
@@ -186,7 +207,7 @@ export class Loader {
           },
         });
 
-        appCacheContainer.set(url, data.value, fileType);
+        fileType && appCacheContainer.set(url, data.value, fileType);
         return copyResult(data.value as any);
       })
       .catch((e) => {
@@ -197,6 +218,8 @@ export class Loader {
       .finally(() => {
         loadingList[url] = null;
       });
-    return loadingList[url] as any;
+
+    loadingList[url] = loadRes;
+    return loadRes;
   }
 }

@@ -30,9 +30,11 @@ export function networkModule(sandbox: Sandbox) {
         xhrSet.delete(this);
       }
       if (needFix(arguments[1])) {
-        arguments[1] = transformUrl(baseUrl, arguments[1]);
+        arguments[1] = baseUrl
+          ? transformUrl(baseUrl, arguments[1])
+          : arguments[1];
       }
-      sandbox.options.sourceList.push({
+      sandbox.options.sourceList?.push({
         tagName: 'xmlhttprequest',
         url: arguments[1],
       });
@@ -47,7 +49,7 @@ export function networkModule(sandbox: Sandbox) {
 
   class fakeWebSocket extends WebSocket {
     constructor(url, protocols?: string | string[]) {
-      if (needFix(url)) {
+      if (needFix(url) && baseUrl) {
         const baseWsUrl = toWsProtocol(baseUrl);
         url = transformUrl(baseWsUrl, arguments[1]);
       }
@@ -63,10 +65,10 @@ export function networkModule(sandbox: Sandbox) {
 
   // `fetch` is not constructor
   const fakeFetch = (input, options: RequestInit = {}) => {
-    if (needFix(input)) {
+    if (needFix(input) && baseUrl) {
       input = transformUrl(baseUrl, input);
     }
-    sandbox.options.sourceList.push({ tagName: 'fetch', url: input });
+    sandbox.options.sourceList?.push({ tagName: 'fetch', url: input });
     let controller;
     if (!hasOwn(options, 'signal') && window.AbortController) {
       controller = new window.AbortController();
@@ -83,7 +85,7 @@ export function networkModule(sandbox: Sandbox) {
     override: {
       WebSocket: fakeWebSocket as any,
       XMLHttpRequest: fakeXMLHttpRequest as any,
-      fetch: window.fetch ? fakeFetch : undefined,
+      fetch: fakeFetch,
     },
 
     recover() {

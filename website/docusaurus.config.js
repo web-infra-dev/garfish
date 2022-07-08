@@ -1,7 +1,7 @@
 module.exports = {
   title: 'Garfish',
   tagline: '微前端解决方案',
-  url: 'https://garfish.top',
+  url: 'https://garfishjs.org',
   baseUrl: '/',
   organizationName: 'bytedance',
   projectName: 'garfish',
@@ -18,10 +18,14 @@ module.exports = {
   },
   themeConfig: {
     // sidebarCollapsible: true,
-    hideableSidebar: true,
+    docs: {
+      sidebar: {
+        hideable: true,
+      },
+    },
     colorMode: {
-      // defaultMode: 'dark',
-      disableSwitch: true,
+      defaultMode: 'dark',
+      disableSwitch: false,
     },
     navbar: {
       logo: {
@@ -34,19 +38,30 @@ module.exports = {
         // left
         {
           to: 'guide/',
-          label: '文档',
-          position: 'left',
+          label: '指南',
+          position: 'right',
         },
-        // {
-        //   to: 'api/',
-        //   label: 'API',
-        //   position: 'left',
-        // },
+        {
+          to: 'api/',
+          label: 'API',
+          position: 'right',
+        },
+        {
+          to: 'blog/',
+          label: '博客',
+          position: 'right',
+        },
+        {
+          href: 'https://github.com/modern-js-dev/garfish/tree/main/dev',
+          label: 'examples',
+          position: 'right',
+        },
         {
           to: 'issues/',
           label: '常见问题',
-          position: 'left',
+          position: 'right',
         },
+
         // {
         //   href:
         //     'https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=601jeae5-250c-48b4-a3bd-7e6211cd4471',
@@ -66,6 +81,7 @@ module.exports = {
     },
   },
   plugins: [
+    './plugin/slardar',
     [
       require.resolve('@easyops-cn/docusaurus-search-local'),
       {
@@ -74,7 +90,7 @@ module.exports = {
         // For Docs using Chinese, The `language` is recommended to set to:
         // ```
         language: ['en', 'zh'],
-        docsRouteBasePath: ['/guide', '/issues', '/quickStart', '/api'],
+        docsRouteBasePath: ['/guide', 'demo', '/issues', '/quickStart', '/api'],
         docsDir: ['docs'],
         // ```
         // When applying `zh` in language, please install `nodejieba` in your project.
@@ -97,7 +113,7 @@ module.exports = {
         docs: {
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/bytedance/garfish/tree/master/website',
+          editUrl: 'https://github.com/bytedance/garfish/tree/main/website',
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
           remarkPlugins: [

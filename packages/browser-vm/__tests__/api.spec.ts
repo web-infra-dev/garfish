@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { Sandbox } from '../src/sandbox';
 
 // 测试所有公开的 api
@@ -29,7 +30,7 @@ describe('Apis', () => {
     expect(sandbox.close.length).toBe(0);
     expect(sandbox.close()).toBe(undefined);
     expect(sandbox.closed).toBe(true);
-    expect(sandbox.global).toBe(null);
+    expect(sandbox.global).toBe(undefined);
     // close 应该调用 clearEffects
     expect(spy).toHaveBeenCalled();
   });
@@ -64,6 +65,7 @@ describe('Apis', () => {
     const m = Sandbox.getNativeWindow();
     expect(m).toBe(window);
     expect(Sandbox.getNativeWindow.length).toBe(0);
+    assert(sandbox.global);
     expect(sandbox.global[Symbol.for('garfish.globalObject') as any]).toBe(m);
   });
 

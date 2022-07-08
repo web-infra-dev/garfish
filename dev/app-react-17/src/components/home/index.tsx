@@ -1,35 +1,31 @@
 import { SubAppContext } from '../root';
-import { IProps } from '../App';
 import logo from './logo.svg';
 import './index.less';
 import { Button } from '@arco-design/web-react';
+import { PropsInfo } from '@garfish/bridge-react';
 
 const Home = () => (
   <SubAppContext.Consumer>
-    {({ basename, store }: IProps) => {
+    {(appInfo: PropsInfo) => {
       return (
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h3
-            data-test="title"
-            style={{ marginTop: '30px', marginBottom: '30px' }}
-          >
+          <h3 data-test="title" className="title">
             Thank you for the React applications use garfish.
-            <span style={{ color: 'aqua' }}>This is React17. </span>
+            <span>This is React17. </span>
           </h3>
 
           <p>
             Edit <code>src/App.js</code> and save to reload.
           </p>
 
-          <div style={{ color: 'springgreen' }}>
-            【store.counter】: {store?.counter}
+          <div className="counter">
+            【store.counter】: {appInfo?.props?.store?.counter}
             {window.Garfish && (
               <Button
                 size="mini"
-                style={{ marginLeft: '20px' }}
                 type="primary"
-                onClick={() => store && store.increment()}
+                onClick={() => appInfo?.props?.store?.increment()}
               >
                 increase counter
               </Button>

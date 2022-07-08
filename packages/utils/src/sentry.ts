@@ -47,7 +47,7 @@ export function computeStackTraceFromStackProp(ex: any): StackTrace | null {
     return null;
   }
 
-  const stack = [];
+  const stack: Array<any> = [];
   const lines = ex.stack.split('\n');
   let isEval;
   let submatch;

@@ -2,65 +2,85 @@ name: 'CI'
 on:
   push:
     branches:
-      - master
+      - main
 
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
-  test:
+  unit-test:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [16.10.0]
+        node-version: [16.14.0]
     steps:
     - uses: actions/checkout@v2
-    - uses: pnpm/action-setup@v2.0.1
-      with:
-        version: 6.32.1
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'pnpm'
-    - name: Install pnpm
-      run: curl -f https://get.pnpm.io/v6.14.js | node - add --global pnpm@6
+    - uses: pnpm/action-setup@v2.0.1
+      name: Install pnpm
+      id: pnpm-install
+      with:
+        version: 6.32.17
+        run_install: false
+
+    - name: Get pnpm store directory
+      id: pnpm-cache
+      run: |
+        echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+
+    - uses: actions/cache@v3
+      name: Setup pnpm cache
+      with:
+        path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+    # Set up GitHub Actions caching for Wireit.
+    - uses: google/wireit@setup-github-actions-caching/v1
     - name: install dependency
       run: pnpm install --filter=\!garfish-docs --filter=\!@garfish-dev/\*
     - name: Run unit tests
-      run: pnpm test
-    - name: codecov
-      run: npx codecov -f coverage/*.json
-
+      run: pnpm run test:coverage
+    - name: Collect coverage
+      uses: codecov/codecov-action@v2
+      with:
+        directory: ./coverage
   e2e-test:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [16.10.0]
+        node-version: [16.14.0]
     steps:
     - uses: actions/checkout@v2
-    - uses: pnpm/action-setup@v2.0.1
-      with:
-        version: 6.32.1
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'pnpm'
-    - name: Install pnpm
-      run: curl -f https://get.pnpm.io/v6.14.js | node - add --global pnpm@6
+    - uses: pnpm/action-setup@v2.0.1
+      name: Install pnpm
+      id: pnpm-install
+      with:
+        version: 6.32.17
+        run_install: false
+    # Set up GitHub Actions caching for Wireit.
+    - uses: google/wireit@setup-github-actions-caching/v1
     - name: install dependency
       run: pnpm install --filter=\!garfish-docs
     - name: build
       run:  pnpm build
+    - name: update hard link
+      run: pnpm install --filter=\!garfish-docs
     - name: Run cypress test
       uses: cypress-io/github-action@v2
       with:
         install: false
         start: node scripts/devCypress.js
         wait-on: 'http://localhost:8090,http://localhost:8091,http://localhost:8092,http://localhost:8093,http://localhost:8094,http://localhost:8095,http://localhost:8096,http://localhost:8097'
-        wait-on-timeout: 120
+        wait-on-timeout: 600
         parallel: true
         record: true
         spec: cypress/integration/**
@@ -69,3 +89,24 @@ jobs:
         # Recommended: pass the GitHub token lets this action correctly
         # determine the unique run id necessary to re-run the checks
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  type-check:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [16.14.0]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - uses: pnpm/action-setup@v2.0.1
+      name: Install pnpm
+      id: pnpm-install
+      with:
+        version: 6.32.17
+        run_install: false
+    - name: install dependency
+      run: pnpm install --filter=\!garfish-docs
+    - name: check type
+      run:  pnpm type:check
