@@ -37,7 +37,7 @@ function injector(current: Function, methodName: string) {
         manager.correctPath(baseUrl);
         manager.setScope({
           appName: namespace,
-          rootElId: styleScopeId(),
+          rootElId: styleScopeId!(),
         });
         el.textContent = manager.transformCode(manager.styleCode);
         return originProcess();
