@@ -1,3 +1,4 @@
+import type { interfaces } from '@garfish/core';
 import { SyncHook, SyncWaterfallHook, PluginSystem, AsyncHook } from '@garfish/hooks';
 import {
   error,
@@ -56,6 +57,12 @@ interface CustomFetchReturnType {
 interface RequestReturnType extends CustomFetchReturnType {
   result: Response;
 }
+
+interface Options {
+  autoRefreshApp?: boolean;
+  onNotMatchRouter?: (path: string) => Promise<void> | void;
+}
+
 export interface LoaderLifecycle {
   fetch(name: string, url: string): void | false | Promise<CustomFetchReturnType | void | false>;
 }
@@ -82,7 +89,7 @@ export class Loader {
     }>('beforeLoad'),
     fetch: new AsyncHook<
       [string, string],
-      Promise<CustomFetchReturnType | void | false>
+      CustomFetchReturnType | void | false
     >('fetch'),
   });
 
@@ -107,6 +114,15 @@ export class Loader {
   clearAll(fileType?: FileTypes) {
     for (const scope in this.cacheStore) {
       this.clear(scope, fileType);
+    }
+  }
+
+  usePlugin(options?: LoaderLifecycle) {
+    if (options) {
+      this.hooks.usePlugin({
+        name: 'garfish-logger',
+        ...options,
+      });
     }
   }
 
@@ -261,4 +277,17 @@ export class Loader {
     loadingList[url] = loadRes;
     return loadRes;
   }
+}
+
+export function GarfishLoader(_args?: Options) {
+  return function (Garfish: interfaces.Garfish): interfaces.Plugin {
+    return {
+      name: 'loader',
+      version: __VERSION__,
+
+      bootstrap(options: interfaces.Options = {}) {
+        Garfish.loader.usePlugin(options.loader);
+      },
+    };
+  };
 }

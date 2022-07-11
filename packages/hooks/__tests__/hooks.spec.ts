@@ -53,7 +53,7 @@ describe('hooks', () => {
 
   it('AsyncHook', async () => {
     let i = 0;
-    const hook = new AsyncHook<[string], unknown>('test');
+    const hook = new AsyncHook<[string]>('test');
     expect(hook.type).toBe('test');
 
     hook.on(async (a) => {
@@ -112,7 +112,7 @@ describe('hooks', () => {
     // AsyncHook emit返回内容
     const hook2 = new AsyncHook<unknown, number>();
 
-    hook2.on(() => 1)
+    hook2.on(() => Promise.resolve(1));
 
     const returnValue = await hook2.emit();
     expect(returnValue).toBe(1);
