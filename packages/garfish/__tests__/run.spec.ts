@@ -1,6 +1,7 @@
 import Garfish from '@garfish/core';
 import { GarfishRouter } from '@garfish/router';
 import { GarfishBrowserVm } from '@garfish/browser-vm';
+import { GarfishLoader } from '@garfish/loader';
 import { mockStaticServer } from '@garfish/test-suite';
 import {
   __MockBody__,
@@ -57,6 +58,12 @@ const mockAfterUnmount = jest.fn();
 const mockBeforeEval = jest.fn();
 const mockAfterEval = jest.fn();
 
+const loaderFetchReturn = {
+  code: 'function() {}',
+  type: 'aplication/javascript',
+  size: 13,
+}
+
 describe('Core: run methods', () => {
   let GarfishInstance: Garfish;
 
@@ -70,7 +77,7 @@ describe('Core: run methods', () => {
     GarfishInstance.run({
       basename: '/',
       domGetter: '#container',
-      plugins: [GarfishRouter(), GarfishBrowserVm()],
+      plugins: [GarfishRouter(), GarfishBrowserVm(), GarfishLoader()],
       apps: [
         {
           name: 'vue-app',
@@ -92,18 +99,9 @@ describe('Core: run methods', () => {
       beforeUnmount: mockBeforeUnmount,
       afterUnmount: mockAfterUnmount,
       loader: {
-        fetch: async (name, url) => {
-          if (url === 'http://localhost/resources/vueApp.html') {
-            const result = await fetch(url);
-            const code = await result.text();
-            const type = result.headers.get('content-type') || '';
-            const size = Number(result.headers.get('content-size'));
-
-            return {
-              code,
-              type,
-              size,
-            };
+        fetch: async name => {
+          if (name === 'jest-loader-fetch') {
+            return loaderFetchReturn;
           }
         },
       },
@@ -167,5 +165,14 @@ describe('Core: run methods', () => {
     GarfishInstance.router.setRouterConfig({ listening: true });
     GarfishInstance.router.push({ path: '/vue-app' });
     await vueAppInDocument(container);
+  });
+
+  it('custom fetch', async () => {
+    const fetchResult = await GarfishInstance.loader.load({
+      scope: 'jest-loader-fetch',
+      url: 'http://jest',
+    });
+
+    expect(fetchResult.code).toBe(loaderFetchReturn.code);
   });
 });
