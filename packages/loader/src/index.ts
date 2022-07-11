@@ -1,4 +1,3 @@
-import type { interfaces } from '@garfish/core';
 import { SyncHook, SyncWaterfallHook, PluginSystem, AsyncHook } from '@garfish/hooks';
 import {
   error,
@@ -6,13 +5,12 @@ import {
   isJsType,
   isCssType,
   isHtmlType,
-  parseContentType,
 } from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
 import { TemplateManager } from './managers/template';
 import { JavaScriptManager } from './managers/javascript';
-import { request, copyResult, mergeConfig } from './utils';
+import { getRequest, copyResult, mergeConfig } from './utils';
 import { FileTypes, cachedDataSet, AppCacheContainer } from './appCache';
 
 // Export types and manager constructor
@@ -49,22 +47,15 @@ export enum CrossOriginCredentials {
   'use-credentials' = 'include',
 }
 
-interface CustomFetchReturnType {
-  code: string;
-  size: number | null;
-  type: string;
-}
-interface RequestReturnType extends CustomFetchReturnType {
-  result: Response;
-}
+type CustomFetchReturnType = Response | void | false;
 
-interface Options {
-  autoRefreshApp?: boolean;
-  onNotMatchRouter?: (path: string) => Promise<void> | void;
-}
+export type CustomFetchType = AsyncHook<
+  [string, RequestInit],
+  CustomFetchReturnType
+>;
 
 export interface LoaderLifecycle {
-  fetch(name: string, url: string): void | false | Promise<CustomFetchReturnType | void | false>;
+  fetch(name: string, config: RequestInit): void | false | Promise<CustomFetchReturnType>;
 }
 
 export class Loader {
@@ -87,10 +78,7 @@ export class Loader {
       url: string;
       requestConfig: ResponseInit;
     }>('beforeLoad'),
-    fetch: new AsyncHook<
-      [string, string],
-      CustomFetchReturnType | void | false
-    >('fetch'),
+    fetch: new AsyncHook('fetch') as CustomFetchType,
   });
 
   private options: LoaderOptions; // The unit is "b"
@@ -120,7 +108,7 @@ export class Loader {
   usePlugin(options?: LoaderLifecycle) {
     if (options) {
       this.hooks.usePlugin({
-        name: 'garfish-logger',
+        name: 'garfish-loader',
         ...options,
       });
     }
@@ -135,7 +123,7 @@ export class Loader {
   }
 
   // Unable to know the final data type, so through "generics"
-  async load<T extends Manager>({
+  load<T extends Manager>({
     scope,
     url,
     isRemoteModule = false,
@@ -187,31 +175,8 @@ export class Loader {
       requestConfig,
     });
 
-    let requestTask: Promise<RequestReturnType> | null = null;
-    // Run custom fetch
-    const customFetchRes = await this.hooks.lifecycle.fetch.emit(scope, resOpts.url);
-    // Determine whether the data returned by custom fetch is as expected
-    if (
-      customFetchRes &&
-      customFetchRes.code &&
-      customFetchRes.code.length &&
-      customFetchRes.type
-    ) {
-      const resolveData = Object.assign(
-        customFetchRes,
-        {
-          result: { url: resOpts.url } as any,
-          mimeType: parseContentType(customFetchRes.type || ''),
-        },
-      );
-
-      requestTask = Promise.resolve(resolveData);
-    }
-    if (!requestTask) {
-      requestTask = request(resOpts.url, resOpts.requestConfig)
-    }
-
-    const loadRes = requestTask
+    const request = getRequest(this.hooks.lifecycle.fetch);
+    const loadRes = request(resOpts.url, resOpts.requestConfig)
       .then(({ code, size, result, type }) => {
         let managerCtor,
           fileType: FileTypes | '' = '';
@@ -277,17 +242,4 @@ export class Loader {
     loadingList[url] = loadRes;
     return loadRes;
   }
-}
-
-export function GarfishLoader(_args?: Options) {
-  return function (Garfish: interfaces.Garfish): interfaces.Plugin {
-    return {
-      name: 'loader',
-      version: __VERSION__,
-
-      bootstrap(options: interfaces.Options = {}) {
-        Garfish.loader.usePlugin(options.loader);
-      },
-    };
-  };
 }

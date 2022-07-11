@@ -1,7 +1,6 @@
-import Garfish from '@garfish/core';
+import Garfish, { interfaces } from '@garfish/core';
 import { GarfishRouter } from '@garfish/router';
 import { GarfishBrowserVm } from '@garfish/browser-vm';
-import { GarfishLoader } from '@garfish/loader';
 import { mockStaticServer } from '@garfish/test-suite';
 import {
   __MockBody__,
@@ -49,6 +48,18 @@ async function noRenderApp(container: Element) {
   expect(appContainer).toHaveLength(0);
 }
 
+// 业务自定义garfish loader
+export function GarfishLoader() {
+  return function (Garfish: interfaces.Garfish): interfaces.Plugin {
+    return {
+      name: 'garfish-loader',
+      bootstrap(options: interfaces.Options = {}) {
+        Garfish.loader.usePlugin(options.loader);
+      },
+    };
+  };
+}
+
 const mockBeforeLoad = jest.fn();
 const mockAfterLoad = jest.fn();
 const mockBeforeMount = jest.fn();
@@ -61,7 +72,6 @@ const mockAfterEval = jest.fn();
 const loaderFetchReturn = {
   code: 'function() {}',
   type: 'aplication/javascript',
-  size: 13,
 }
 
 describe('Core: run methods', () => {
@@ -99,9 +109,14 @@ describe('Core: run methods', () => {
       beforeUnmount: mockBeforeUnmount,
       afterUnmount: mockAfterUnmount,
       loader: {
-        fetch: async name => {
-          if (name === 'jest-loader-fetch') {
-            return loaderFetchReturn;
+        fetch: async url => {
+          if (url === 'http://jest') {
+            return new Response(loaderFetchReturn.code, {
+              status: 200,
+              headers: {
+                'Content-Type': loaderFetchReturn.type,
+              },
+            })
           }
         },
       },

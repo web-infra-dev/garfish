@@ -21,7 +21,6 @@ import DomGetter from '@site/src/components/config/_domGetter.mdx';
 import BaseNameConfig from '@site/src/components/config/_basename.mdx';
 import ProtectVariable from '@site/src/components/config/_protectVariable.mdx';
 import InsulationVariable from '@site/src/components/config/_insulationVariable.mdx';
-import CustomFetch from '@site/src/components/lifeCycle/_customFetch.mdx';
 
 
 用于初始化全局配置、注册子应用信息，并启动基于路由匹配的子应用自动渲染流程。
@@ -253,6 +252,3 @@ Garfish.run({
 
 ### onNotMatchRouter
 <OnNotMatchRouter />
-
-### loader.fetch
-<CustomFetch />
