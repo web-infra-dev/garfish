@@ -27,6 +27,7 @@ const filterAppConfigKeys: Record<
   plugins: true,
   autoRefreshApp: true,
   onNotMatchRouter: true,
+  loader: true,
 };
 
 // `props` may be responsive data
