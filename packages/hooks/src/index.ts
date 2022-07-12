@@ -1,4 +1,4 @@
-export { PluginSystem, Plugin } from './pluginSystem';
+export { PluginSystem } from './pluginSystem';
 export { SyncHook } from './syncHook';
 export { AsyncHook } from './asyncHook';
 export { SyncWaterfallHook } from './syncWaterfallHook';
