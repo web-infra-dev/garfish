@@ -1,4 +1,4 @@
-import GarfishInstance from 'garfish';
+import GarfishInstance, { interfaces } from 'garfish';
 import { GarfishEsModule } from '@garfish/es-module';
 import { store } from './store';
 import { basename, localApps } from './constant';
@@ -7,6 +7,21 @@ declare const Cypress: any;
 type RunInfo = NonNullable<Parameters<typeof GarfishInstance.run>[0]>;
 
 (window as any).__GARFISH_PARENT__ = true;
+
+// 业务自定义garfish loader
+export function GarfishLoader() {
+  return function (Garfish: interfaces.Garfish): interfaces.Plugin {
+    return {
+      name: 'garfish-loader',
+      bootstrap(options: interfaces.Options = {}) {
+        Garfish.loader.usePlugin(Object.assign(
+          {name: 'garfish-loader' },
+          options.loader
+        ));
+      },
+    };
+  };
+}
 
 let defaultConfig: RunInfo = {
   // 子应用的基础路径，默认值为 /，整个微前端应用的 basename。
@@ -57,7 +72,7 @@ let defaultConfig: RunInfo = {
   },
 
   // 插件列表
-  plugins: [GarfishEsModule()],
+  plugins: [GarfishEsModule(), GarfishLoader()],
 
   // 开始加载子应用前触发该函数，支持异步函数，可以在该函数中执行异步操作，
   // 当返回 false 时表示中断子应用的加载以及后续流程，所有子应用加载都会触发该函数的调用
@@ -117,6 +132,13 @@ let defaultConfig: RunInfo = {
   // 在路由发生变化时并且未匹配到任何子应用时触发
   onNotMatchRouter(path) {
     // console.log('子应用路由未匹配', path);
+  },
+
+  // 业务自定义fetch
+  loader: {
+    async fetch(url) {
+      // return Response
+    }
   },
 };
 
