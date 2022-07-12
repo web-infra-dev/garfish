@@ -449,10 +449,6 @@ Garfish.run({
 
 > 提示：当子项目使用 `vite` 开发时，你可以在开发模式下使用 esModule 模式，生产环境可以打包为原始的无 esModule 的模式。
 
-## garfish 支持多实例吗
-
-支持
-
 ## 子应用堆栈信息丢失、sourcemap 行列信息错误
 
 > 问题背景
