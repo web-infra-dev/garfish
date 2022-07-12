@@ -4,9 +4,9 @@
   "scripts": {
     "dev": "pnpm run start --parallel --filter @garfish-dev/*",
     "dev:docs": "pnpm run start --filter garfish-docs",
-    "build": "pnpm run build --parallel --filter @garfish/* --filter garfish",
+    "build": "cross-env DEBUG=true pnpm run build --parallel --filter @garfish/* --filter garfish",
     "build:docs": "pnpm run build --filter garfish-docs",
-    "build:watch": "cross-env WATCH=true pnpm build",
+    "build:watch": "cross-env WATCH=true DEBUG=true pnpm build",
     "test:e2e": "zx scripts/e2e.js",
     "test:e2e:prod": "cross-env CI=true zx scripts/e2e.js",
     "test:e2e:open": "cross-env TEST_ENV_OPEN=true zx scripts/e2e.js",

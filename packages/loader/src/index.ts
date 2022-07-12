@@ -1,4 +1,9 @@
-import { SyncHook, SyncWaterfallHook, PluginSystem, AsyncHook } from '@garfish/hooks';
+import {
+  SyncHook,
+  SyncWaterfallHook,
+  PluginSystem,
+  AsyncHook,
+} from '@garfish/hooks';
 import {
   error,
   __LOADER_FLAG__,
@@ -47,10 +52,15 @@ export enum CrossOriginCredentials {
   'use-credentials' = 'include',
 }
 
-type CustomFetchReturnType = Response | void | false;
+type LifeCycle = Loader['hooks']['lifecycle'];
 
-export interface LoaderLifecycle {
-  fetch(name: string, config: RequestInit): void | false | Promise<CustomFetchReturnType>;
+export type LoaderLifecycle = {
+  [k in keyof LifeCycle]: Parameters<LifeCycle[k]['on']>[0];
+};
+
+export interface LoaderPlugin extends Partial<LoaderLifecycle> {
+  name: string;
+  version?: string;
 }
 
 export class Loader {
@@ -73,10 +83,9 @@ export class Loader {
       url: string;
       requestConfig: ResponseInit;
     }>('beforeLoad'),
-    fetch: new AsyncHook<
-      [string, RequestInit],
-      CustomFetchReturnType
-    >('fetch'),
+    fetch: new AsyncHook<[string, RequestInit], Response | void | false>(
+      'fetch',
+    ),
   });
 
   private options: LoaderOptions; // The unit is "b"
@@ -103,10 +112,15 @@ export class Loader {
     }
   }
 
-  usePlugin(options?: LoaderLifecycle & { name: string; }) {
-    if (options) {
-      this.hooks.usePlugin(options);
-    }
+  usePlugin(options: LoaderPlugin) {
+    this.hooks.usePlugin(options);
+  }
+
+  setLifeCycle(lifeCycle: Partial<LoaderLifecycle>) {
+    this.hooks.usePlugin({
+      name: 'loader-lifecycle',
+      ...lifeCycle,
+    });
   }
 
   loadModule(url: string) {

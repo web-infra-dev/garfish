@@ -16,7 +16,7 @@ export function getRequest(customFetch: Loader['hooks']['lifecycle']['fetch']) {
     const type = result.headers.get('content-type') || '';
     const size = Number(result.headers.get('content-size'));
     const mimeType = parseContentType(type || '');
-  
+
     return {
       code,
       result,
@@ -24,7 +24,7 @@ export function getRequest(customFetch: Loader['hooks']['lifecycle']['fetch']) {
       type,
       size: Number.isNaN(size) ? null : size,
     };
-  }
+  };
 }
 
 export function copyResult(result) {

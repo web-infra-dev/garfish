@@ -14,14 +14,19 @@ export function GarfishLoader() {
     return {
       name: 'garfish-loader',
       bootstrap(options: interfaces.Options = {}) {
-        Garfish.loader.usePlugin(Object.assign(
-          {name: 'garfish-loader' },
-          options.loader
-        ));
+        Garfish.loader.usePlugin(
+          Object.assign({ name: 'garfish-loader' }, options.loader),
+        );
       },
     };
   };
 }
+
+GarfishInstance.loader.setLifeCycle({
+  fetch(url, config) {
+    console.log(url, config);
+  },
+});
 
 let defaultConfig: RunInfo = {
   // 子应用的基础路径，默认值为 /，整个微前端应用的 basename。
@@ -135,11 +140,11 @@ let defaultConfig: RunInfo = {
   },
 
   // 业务自定义fetch
-  loader: {
-    async fetch(url) {
-      // return Response
-    }
-  },
+  // loader: {
+  //   async fetch(url) {
+  //     // return Response
+  //   }
+  // },
 };
 
 // The test environment into

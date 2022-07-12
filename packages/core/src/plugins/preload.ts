@@ -39,6 +39,7 @@ function safeLoad(
   appName: string,
   url: string,
   isModule: boolean,
+  immediately: boolean,
   callback?: (m: Manager) => any,
 ) {
   requestQueue.add((next) => {
@@ -55,8 +56,7 @@ function safeLoad(
       setTimeout(next, 500);
     };
 
-    // edge
-    requestIdleCallback(() => {
+    const loadResource = () => {
       try {
         if (isModule) {
           loader.loadModule(url).then(success, throwWarn);
@@ -66,16 +66,23 @@ function safeLoad(
       } catch (e) {
         throwWarn(e);
       }
-    });
+    };
+
+    // edge
+    immediately ? loadResource() : requestIdleCallback(loadResource);
   });
 }
 
-export function loadAppResource(loader: Loader, info: interfaces.AppInfo) {
+export function loadAppResource(
+  loader: Loader,
+  info: interfaces.AppInfo,
+  immediately = false,
+) {
   __TEST__ && callTestCallback(loadAppResource, info);
   const fetchUrl = transformUrl(location.href, info.entry);
 
-  safeLoad(loader, info.name, fetchUrl, false, (manager) => {
-    requestIdleCallback(() => {
+  safeLoad(loader, info.name, fetchUrl, false, immediately, (manager) => {
+    const loadStaticResource = () => {
       if (manager instanceof TemplateManager) {
         const baseUrl = manager.url;
         const jsNodes = manager.findAllJsNodes();
@@ -91,6 +98,7 @@ export function loadAppResource(loader: Loader, info: interfaces.AppInfo) {
                 info.name,
                 baseUrl ? transformUrl(baseUrl, src) : src,
                 false,
+                immediately,
               );
           });
         }
@@ -104,6 +112,7 @@ export function loadAppResource(loader: Loader, info: interfaces.AppInfo) {
                   info.name,
                   baseUrl ? transformUrl(baseUrl, href) : href,
                   false,
+                  immediately,
                 );
             }
           });
@@ -113,7 +122,7 @@ export function loadAppResource(loader: Loader, info: interfaces.AppInfo) {
             if (manager.DOMApis.isRemoteModule(node)) {
               const src = manager.findAttributeValue(node, 'src');
               if (src && isAbsolute(src)) {
-                safeLoad(loader, info.name, src, true);
+                safeLoad(loader, info.name, src, true, immediately);
               } else {
                 warn(
                   `The loading of the remote module must be an absolute path. "${src}"`,
@@ -123,7 +132,12 @@ export function loadAppResource(loader: Loader, info: interfaces.AppInfo) {
           });
         }
       }
-    });
+    };
+    if (immediately) {
+      loadStaticResource();
+    } else {
+      requestIdleCallback(loadStaticResource);
+    }
   });
 }
 
@@ -154,8 +168,18 @@ export function setRanking(appName: string) {
 
 const loadedMap = Object.create(null); // Global cache, only load again is enough
 
+declare module '@garfish/core' {
+  export default interface Garfish {
+    preload: (appName: string) => void;
+  }
+}
+
 export function GarfishPreloadPlugin() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
+    Garfish.preload = (appName) => {
+      loadAppResource(Garfish.loader, Garfish.appInfos[appName], true);
+    };
+
     return {
       name: 'preload',
       version: __VERSION__,
