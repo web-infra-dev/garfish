@@ -1,9 +1,9 @@
 import { error, parseContentType } from '@garfish/utils';
-import { Manager, Loader, CustomFetchType } from './index';
+import { Manager, Loader } from './index';
 
-export function getRequest(customFetch: CustomFetchType) {
+export function getRequest(customFetch: Loader['hooks']['lifecycle']['fetch']) {
   return async function request(url: string, config: RequestInit) {
-    let result = await customFetch.emit(url, config);
+    let result = await customFetch.emit(url, config || {});
     if (!result || !(result instanceof Response)) {
       result = await fetch(url, config || {});
     }

@@ -14,7 +14,10 @@ export function GarfishLoader() {
     return {
       name: 'garfish-loader',
       bootstrap(options: interfaces.Options = {}) {
-        Garfish.loader.usePlugin(options.loader);
+        Garfish.loader.usePlugin(Object.assign(
+          {name: 'garfish-loader' },
+          options.loader
+        ));
       },
     };
   };

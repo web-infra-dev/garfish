@@ -49,11 +49,6 @@ export enum CrossOriginCredentials {
 
 type CustomFetchReturnType = Response | void | false;
 
-export type CustomFetchType = AsyncHook<
-  [string, RequestInit],
-  CustomFetchReturnType
->;
-
 export interface LoaderLifecycle {
   fetch(name: string, config: RequestInit): void | false | Promise<CustomFetchReturnType>;
 }
@@ -78,7 +73,10 @@ export class Loader {
       url: string;
       requestConfig: ResponseInit;
     }>('beforeLoad'),
-    fetch: new AsyncHook('fetch') as CustomFetchType,
+    fetch: new AsyncHook<
+      [string, RequestInit],
+      CustomFetchReturnType
+    >('fetch'),
   });
 
   private options: LoaderOptions; // The unit is "b"
@@ -105,12 +103,9 @@ export class Loader {
     }
   }
 
-  usePlugin(options?: LoaderLifecycle) {
+  usePlugin(options?: LoaderLifecycle & { name: string; }) {
     if (options) {
-      this.hooks.usePlugin({
-        name: 'garfish-loader',
-        ...options,
-      });
+      this.hooks.usePlugin(options);
     }
   }
 
