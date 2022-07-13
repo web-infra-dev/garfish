@@ -140,6 +140,7 @@ describe('whole process app render', () => {
 
     cy.window().then((win) => {
       win.Garfish.router.push({ path: '/vite' });
+      cy.wait(1000);
       cy.contains('[data-test=title]', HomeTitle)
         .then(() => {
           cy.get('[data-test=vite-count-btn]').dblclick();
