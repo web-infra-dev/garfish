@@ -8,61 +8,6 @@ type RunInfo = NonNullable<Parameters<typeof GarfishInstance.run>[0]>;
 
 (window as any).__GARFISH_PARENT__ = true;
 
-// 业务自定义garfish loader
-export function GarfishLoader() {
-  return function (Garfish: interfaces.Garfish): interfaces.Plugin {
-    return {
-      name: 'garfish-loader',
-      bootstrap(options: interfaces.Options = {}) {
-        Garfish.loader.usePlugin(
-          Object.assign({ name: 'garfish-loader' }, options.loader),
-        );
-      },
-    };
-  };
-}
-
-GarfishInstance.loader.setLifeCycle({
-  fetch(url, config) {
-    if (url === 'http://localhost:8091/') {
-      const res = new Response(
-        `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="UTF-8">
-            <title>app react v17</title>
-          </head>
-          <body>
-            <div id="root">
-              hello world
-            </div>
-            <script>
-              __GARFISH_EXPORTS__.provider = ()=> {
-                return {
-                  render: ()=>{
-                    console.log('触发应用渲染了哦~');
-                  },
-                  destroy: ()=>{},
-                };
-              };
-            </script>
-          </body>
-        </html>
-        `,
-        {
-          status: 200,
-          headers: {
-            'content-type': 'text/html',
-          },
-        },
-      );
-      return Promise.resolve(res);
-    }
-    return undefined;
-  },
-});
-
 let defaultConfig: RunInfo = {
   // 子应用的基础路径，默认值为 /，整个微前端应用的 basename。
   // 设置后该值为所有子应用的默认值，若子应用 AppInfo 中也提供了该值会替换全局的 basename 值
@@ -112,7 +57,7 @@ let defaultConfig: RunInfo = {
   },
 
   // 插件列表
-  plugins: [GarfishEsModule(), GarfishLoader()],
+  plugins: [GarfishEsModule()],
 
   // 开始加载子应用前触发该函数，支持异步函数，可以在该函数中执行异步操作，
   // 当返回 false 时表示中断子应用的加载以及后续流程，所有子应用加载都会触发该函数的调用
