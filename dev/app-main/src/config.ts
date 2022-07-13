@@ -24,7 +24,42 @@ export function GarfishLoader() {
 
 GarfishInstance.loader.setLifeCycle({
   fetch(url, config) {
-    console.log(url, config);
+    if (url === 'http://localhost:8091/') {
+      const res = new Response(
+        `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="UTF-8">
+            <title>app react v17</title>
+          </head>
+          <body>
+            <div id="root">
+              hello world
+            </div>
+            <script>
+              __GARFISH_EXPORTS__.provider = ()=> {
+                return {
+                  render: ()=>{
+                    console.log('触发应用渲染了哦~');
+                  },
+                  destroy: ()=>{},
+                };
+              };
+            </script>
+          </body>
+        </html>
+        `,
+        {
+          status: 200,
+          headers: {
+            'content-type': 'text/html',
+          },
+        },
+      );
+      return Promise.resolve(res);
+    }
+    return undefined;
   },
 });
 
@@ -38,7 +73,7 @@ let defaultConfig: RunInfo = {
 
   // 是否禁用子应用的资源预加载，默认值为 false，开启子应用的预加载能力，预加载能力在弱网情况和手机端将不会开启。
   // 预加载加载权重会根据子应用的加载次数，预加载会在用户端计算子应用打开的次数，会优先加载打开次数多的子应用
-  disablePreloadApp: false,
+  disablePreloadApp: true,
 
   apps: localApps,
 

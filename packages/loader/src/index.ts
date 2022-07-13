@@ -54,11 +54,11 @@ export enum CrossOriginCredentials {
 
 type LifeCycle = Loader['hooks']['lifecycle'];
 
-export type LoaderLifecycle = {
+export type LoaderLifecycle = Partial<{
   [k in keyof LifeCycle]: Parameters<LifeCycle[k]['on']>[0];
-};
+}>;
 
-export interface LoaderPlugin extends Partial<LoaderLifecycle> {
+export interface LoaderPlugin extends LoaderLifecycle {
   name: string;
   version?: string;
 }

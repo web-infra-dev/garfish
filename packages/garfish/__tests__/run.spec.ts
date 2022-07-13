@@ -48,16 +48,23 @@ async function noRenderApp(container: Element) {
   expect(appContainer).toHaveLength(0);
 }
 
+declare module '@garfish/core' {
+  export namespace interfaces {
+    export interface Config {
+      loader?: any;
+    }
+  }
+}
+
 // 业务自定义garfish loader
 export function GarfishLoader() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     return {
       name: 'garfish-loader',
       bootstrap(options: interfaces.Options = {}) {
-        Garfish.loader.usePlugin(Object.assign(
-          {name: 'garfish-loader' },
-          options.loader
-        ));
+        Garfish.loader.usePlugin(
+          Object.assign({ name: 'garfish-loader' }, options.loader),
+        );
       },
     };
   };
@@ -75,7 +82,7 @@ const mockAfterEval = jest.fn();
 const loaderFetchReturn = {
   code: 'function() {}',
   type: 'aplication/javascript',
-}
+};
 
 describe('Core: run methods', () => {
   let GarfishInstance: Garfish;
@@ -112,14 +119,14 @@ describe('Core: run methods', () => {
       beforeUnmount: mockBeforeUnmount,
       afterUnmount: mockAfterUnmount,
       loader: {
-        fetch: async url => {
+        fetch: async (url) => {
           if (url === 'http://jest') {
             return new Response(loaderFetchReturn.code, {
               status: 200,
               headers: {
                 'Content-Type': loaderFetchReturn.type,
               },
-            })
+            });
           }
         },
       },

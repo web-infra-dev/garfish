@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Core: preload plugin preload caches file success 1`] = `
+<div
+  __garfishmockhtml__=""
+>
+  <div
+    __garfishmockhead__=""
+  >
+    
+    
+    <title>
+      vue sub app
+    </title>
+    
+  
+  </div>
+  <div
+    __garfishmockbody__=""
+  >
+    
+    
+    <div
+      id="app"
+    >
+      <div>
+        Hello World preload app
+      </div>
+    </div>
+    
+    
+    <!--&lt;script src="./scripts/render.js"  execute by garfish&gt;&lt;/script&gt;-->
+    
+  
+
+
+  </div>
+</div>
+`;

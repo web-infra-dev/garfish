@@ -34,43 +34,60 @@ export const requestIdleCallback =
     : idleCallback;
 
 // Test size, catch mistakes, avoid preload first screen white during parsing error
-function safeLoad(
-  loader: Loader,
-  appName: string,
-  url: string,
-  isModule: boolean,
-  immediately: boolean,
-  callback?: (m: Manager) => any,
-) {
-  requestQueue.add((next) => {
-    const throwWarn = (e) => {
-      next();
-      if (__DEV__) {
-        warn(e);
-        warn(`Preload failed. "${url}"`);
-      }
-    };
-
-    const success = ({ resourceManager }) => {
+function safeLoad({
+  loader,
+  appName,
+  url,
+  isModule,
+  immediately,
+  callback,
+}: {
+  loader: Loader;
+  appName: string;
+  url: string;
+  isModule: boolean;
+  immediately: boolean;
+  callback?: (m: Manager) => any;
+}) {
+  const generateSuccess =
+    (next: () => void = () => {}) =>
+    ({ resourceManager }) => {
       callback && callback(resourceManager);
       setTimeout(next, 500);
     };
 
-    const loadResource = () => {
-      try {
-        if (isModule) {
-          loader.loadModule(url).then(success, throwWarn);
-        } else {
-          loader.load({ scope: appName, url }).then(success, throwWarn);
-        }
-      } catch (e) {
-        throwWarn(e);
+  const generateThrowWarn =
+    (next: () => void = () => {}) =>
+    (e) => {
+      if (__DEV__) {
+        warn(e);
+        warn(`Preload failed. "${url}"`);
       }
+      next();
     };
 
-    // edge
-    immediately ? loadResource() : requestIdleCallback(loadResource);
-  });
+  const loadResource = (next: () => void = () => {}) => {
+    const throwWarn = generateThrowWarn(next);
+    const success = generateSuccess(next);
+    try {
+      if (isModule) {
+        loader.loadModule(url).then(success, throwWarn);
+      } else {
+        loader.load({ scope: appName, url }).then(success, throwWarn);
+      }
+    } catch (e) {
+      throwWarn(e);
+      next();
+    }
+  };
+
+  if (immediately) {
+    loadResource();
+  } else {
+    requestQueue.add((next) => {
+      requestIdleCallback(() => loadResource(next));
+    });
+  }
 }
 
 export function loadAppResource(
@@ -81,63 +98,76 @@ export function loadAppResource(
   __TEST__ && callTestCallback(loadAppResource, info);
   const fetchUrl = transformUrl(location.href, info.entry);
 
-  safeLoad(loader, info.name, fetchUrl, false, immediately, (manager) => {
-    const loadStaticResource = () => {
-      if (manager instanceof TemplateManager) {
-        const baseUrl = manager.url;
-        const jsNodes = manager.findAllJsNodes();
-        const linkNodes = manager.findAllLinkNodes();
-        const metaNodes = manager.findAllMetaNodes();
+  safeLoad({
+    loader,
+    appName: info.name,
+    url: fetchUrl,
+    isModule: false,
+    immediately,
+    callback: (manager) => {
+      const loadStaticResource = () => {
+        if (manager instanceof TemplateManager) {
+          const baseUrl = manager.url;
+          const jsNodes = manager.findAllJsNodes();
+          const linkNodes = manager.findAllLinkNodes();
+          const metaNodes = manager.findAllMetaNodes();
 
-        if (jsNodes) {
-          jsNodes.forEach((node) => {
-            const src = manager.findAttributeValue(node, 'src');
-            src &&
-              safeLoad(
-                loader,
-                info.name,
-                baseUrl ? transformUrl(baseUrl, src) : src,
-                false,
-                immediately,
-              );
-          });
-        }
-        if (linkNodes) {
-          linkNodes.forEach((node) => {
-            if (manager.DOMApis.isCssLinkNode(node)) {
-              const href = manager.findAttributeValue(node, 'href');
-              href &&
-                safeLoad(
-                  loader,
-                  info.name,
-                  baseUrl ? transformUrl(baseUrl, href) : href,
-                  false,
-                  immediately,
-                );
-            }
-          });
-        }
-        if (metaNodes) {
-          metaNodes.forEach((node) => {
-            if (manager.DOMApis.isRemoteModule(node)) {
+          if (jsNodes) {
+            jsNodes.forEach((node) => {
               const src = manager.findAttributeValue(node, 'src');
-              if (src && isAbsolute(src)) {
-                safeLoad(loader, info.name, src, true, immediately);
-              } else {
-                warn(
-                  `The loading of the remote module must be an absolute path. "${src}"`,
-                );
+              src &&
+                safeLoad({
+                  loader,
+                  appName: info.name,
+                  url: baseUrl ? transformUrl(baseUrl, src) : src,
+                  isModule: false,
+                  immediately,
+                });
+            });
+          }
+          if (linkNodes) {
+            linkNodes.forEach((node) => {
+              if (manager.DOMApis.isCssLinkNode(node)) {
+                const href = manager.findAttributeValue(node, 'href');
+                href &&
+                  safeLoad({
+                    loader,
+                    appName: info.name,
+                    url: baseUrl ? transformUrl(baseUrl, href) : href,
+                    isModule: false,
+                    immediately,
+                  });
               }
-            }
-          });
+            });
+          }
+          if (metaNodes) {
+            metaNodes.forEach((node) => {
+              if (manager.DOMApis.isRemoteModule(node)) {
+                const src = manager.findAttributeValue(node, 'src');
+                if (src && isAbsolute(src)) {
+                  safeLoad({
+                    loader,
+                    appName: info.name,
+                    url: src,
+                    isModule: true,
+                    immediately,
+                  });
+                } else {
+                  warn(
+                    `The loading of the remote module must be an absolute path. "${src}"`,
+                  );
+                }
+              }
+            });
+          }
         }
+      };
+      if (immediately) {
+        loadStaticResource();
+      } else {
+        requestIdleCallback(loadStaticResource);
       }
-    };
-    if (immediately) {
-      loadStaticResource();
-    } else {
-      requestIdleCallback(loadStaticResource);
-    }
+    },
   });
 }
 
@@ -170,13 +200,13 @@ const loadedMap = Object.create(null); // Global cache, only load again is enoug
 
 declare module '@garfish/core' {
   export default interface Garfish {
-    preload: (appName: string) => void;
+    preloadApp: (appName: string) => void;
   }
 }
 
 export function GarfishPreloadPlugin() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
-    Garfish.preload = (appName) => {
+    Garfish.preloadApp = (appName) => {
       loadAppResource(Garfish.loader, Garfish.appInfos[appName], true);
     };
 
