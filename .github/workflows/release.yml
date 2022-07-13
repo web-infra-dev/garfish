@@ -25,7 +25,7 @@ jobs:
       uses: CasperWA/push-protected@v2
       with:
         token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
-        branch: main
+        branch: ${{ github.ref }}
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
