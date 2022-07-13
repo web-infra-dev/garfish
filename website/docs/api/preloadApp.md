@@ -21,9 +21,11 @@ interface Garfish {
 type PreLoadAppType = (appName: string)=> void
 ```
 
-#### 参数
-- <Highlight>appName</Highlight>
+### 参数
+#### appName
+  - Type: <Highlight> string </Highlight>
 - 要加载的子应用名称，在调用 `preloadApp` 时，必须保证子应用信息已注册
+
 
 #### 示例
 
