@@ -77,6 +77,6 @@ Garfish.loader.setLifeCycle({
 #### 说明
 
 1. `fetch` 可以在失败重试、资源自定义缓存读取等场景中使用
-2. 使用自定义 `fetch` 可以针对特定的资源进行自定义内容返回，当返回的内容为 `Promise&lt;Response&gt;` 实例时， Garfish 内部将不再发起 `fetch`，若返回的内容为其他类型的值将继续通过原生 `fetch` 请求资源
+2. 使用自定义 `fetch` 可以针对特定的资源进行自定义内容返回，当返回的内容为 `Promise<Response>` 实例时， Garfish 内部将不再发起 `fetch`，若返回的内容为其他类型的值将继续通过原生 `fetch` 请求资源
 3. 返回的 `Response` 实例，需要携带 `status` 和 `content-type` 若未正确携带资源类型，`Garfish` 可能无法正确识别出资源的类型
 
