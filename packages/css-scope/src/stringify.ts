@@ -57,6 +57,8 @@ class Compiler {
     if (!this.prefix) return selectors;
 
     return selectors.map((s) => {
+      // remove duplication
+      if (s.startsWith(this.prefix)) return s;
       // prettier-ignore
       s =
         s === 'html' || s === ':root'
