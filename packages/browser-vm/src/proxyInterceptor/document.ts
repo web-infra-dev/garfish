@@ -36,6 +36,19 @@ export function createGetter(sandbox: Sandbox) {
       ? Reflect.get(target, p, receiver)
       : Reflect.get(document, p);
 
+    // Provide hooks for users to return specific values themselves
+    const hooksRes = sandbox.hooks.lifecycle.documentGetter.emit({
+      value,
+      rootNode,
+      propName: p,
+      proxyDocument: target,
+      customValue: null,
+    });
+
+    if (hooksRes.customValue) {
+      return hooksRes.customValue;
+    }
+
     const setSandboxRef = (el) => {
       if (isObject(el)) {
         sandboxMap.setElementTag(el, sandbox);
