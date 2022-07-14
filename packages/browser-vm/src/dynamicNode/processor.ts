@@ -246,7 +246,7 @@ export class DynamicNodeProcessor {
             const originAddRule = el.sheet.insertRule;
             el.sheet.insertRule = function () {
               arguments[0] = modifyStyleCode(arguments[0]);
-              return originAddRule.apply(el.sheet, arguments);
+              return originAddRule.apply(this, arguments);
             };
           } else {
             if (addedNodes[0]) {
