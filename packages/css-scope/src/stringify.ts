@@ -1,3 +1,4 @@
+import { __MockHtml__, __MockHead__, __MockBody__ } from '@garfish/utils';
 import {
   Node,
   DeclNode,
@@ -62,11 +63,11 @@ class Compiler {
       // prettier-ignore
       s =
         s === 'html' || s === ':root'
-          ? '[__GarfishMockHtml__]'
+          ? `[${__MockHtml__}]`
           : s === 'body'
-            ? '[__GarfishMockBody__]'
+            ? `[${__MockBody__}]`
             : s === 'head'
-              ? '[__GarfishMockHead__]'
+              ? `[${__MockHead__}]`
               : s;
       return `${this.prefix} ${s}`;
     });
