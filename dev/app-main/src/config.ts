@@ -1,4 +1,4 @@
-import GarfishInstance from 'garfish';
+import GarfishInstance, { interfaces } from 'garfish';
 import { GarfishEsModule } from '@garfish/es-module';
 import { GarfishCssScope } from '@garfish/css-scope';
 import { store } from './store';
@@ -8,6 +8,20 @@ declare const Cypress: any;
 type RunInfo = NonNullable<Parameters<typeof GarfishInstance.run>[0]>;
 
 (window as any).__GARFISH_PARENT__ = true;
+
+// 业务自定义garfish loader
+export function GarfishLoader() {
+  return function (Garfish: interfaces.Garfish): interfaces.Plugin {
+    return {
+      name: 'garfish-loader',
+      bootstrap(options: interfaces.Options = {}) {
+        Garfish.loader.usePlugin(
+          Object.assign({ name: 'garfish-loader' }, options.loader),
+        );
+      },
+    };
+  };
+}
 
 let defaultConfig: RunInfo = {
   apps: localApps,
@@ -125,6 +139,13 @@ let defaultConfig: RunInfo = {
   // 在路由发生变化时并且未匹配到任何子应用时触发
   onNotMatchRouter(path) {
     // console.log('子应用路由未匹配', path);
+  },
+
+  // 业务自定义fetch
+  loader: {
+    async fetch(url) {
+      // return Response
+    },
   },
 };
 

@@ -1,4 +1,9 @@
-import { SyncHook, SyncWaterfallHook, PluginSystem } from '@garfish/hooks';
+import {
+  SyncHook,
+  SyncWaterfallHook,
+  PluginSystem,
+  AsyncHook,
+} from '@garfish/hooks';
 import {
   error,
   __LOADER_FLAG__,
@@ -10,7 +15,7 @@ import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
 import { TemplateManager } from './managers/template';
 import { JavaScriptManager } from './managers/javascript';
-import { request, copyResult, mergeConfig } from './utils';
+import { getRequest, copyResult, mergeConfig } from './utils';
 import { FileTypes, cachedDataSet, AppCacheContainer } from './appCache';
 
 // Export types and manager constructor
@@ -48,6 +53,15 @@ export enum CrossOriginCredentials {
   'use-credentials' = 'include',
 }
 
+type CustomFetchReturnType = Response | void | false;
+
+export interface LoaderLifecycle {
+  fetch(
+    name: string,
+    config: RequestInit,
+  ): void | false | Promise<CustomFetchReturnType>;
+}
+
 export class Loader {
   public personalId = __LOADER_FLAG__;
   public StyleManager = StyleManager;
@@ -68,6 +82,7 @@ export class Loader {
       url: string;
       requestConfig: ResponseInit;
     }>('beforeLoad'),
+    fetch: new AsyncHook<[string, RequestInit], CustomFetchReturnType>('fetch'),
   });
 
   private options: LoaderOptions; // The unit is "b"
@@ -91,6 +106,12 @@ export class Loader {
   clearAll(fileType?: FileTypes) {
     for (const scope in this.cacheStore) {
       this.clear(scope, fileType);
+    }
+  }
+
+  usePlugin(options?: LoaderLifecycle & { name: string }) {
+    if (options) {
+      this.hooks.usePlugin(options);
     }
   }
 
@@ -155,6 +176,7 @@ export class Loader {
       requestConfig,
     });
 
+    const request = getRequest(this.hooks.lifecycle.fetch);
     const loadRes = request(resOpts.url, resOpts.requestConfig)
       .then(({ code, size, result, type }) => {
         let managerCtor,
