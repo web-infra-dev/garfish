@@ -45,7 +45,7 @@ describe('Core: preload plugin', () => {
       ],
     });
     GarfishInstance.preloadApp('preload-app');
-    await sleep(410);
+    await sleep(450);
     GarfishInstance.loadApp('preload-app').then((res) => {
       app = res;
     });
@@ -53,8 +53,8 @@ describe('Core: preload plugin', () => {
     assert(app, 'app should be loaded');
     expect(app).toBeDefined();
     await (app as any).mount();
-    expect(
-      document.body.querySelector('div[__garfishmockhtml__]'),
-    ).toMatchSnapshot();
+    expect(document.querySelector('#container #app')?.innerHTML).toBe(
+      '<div>Hello World preload app</div>',
+    );
   });
 });
