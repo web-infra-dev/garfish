@@ -100,7 +100,6 @@ export namespace interfaces {
 
   export interface GlobalLifecycle extends Partial<PluginLifecycle> {
     customLoader?: CustomerLoader;
-    loader?: LoaderInterface.LoaderLifecycle;
   }
 
   export type AppLifecycle = Pick<
