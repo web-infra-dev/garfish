@@ -1,13 +1,13 @@
 {
-  "name": "@garfish/browser-snapshot",
+  "name": "@garfish/css-scope",
   "version": "1.9.0-beta.1",
-  "description": "browser-snapshot module.",
+  "description": "css scope",
   "keywords": [
     "garfish",
-    "browser-snapshot"
+    "css scope"
   ],
-  "author": "zhouxiao <codingzx@gmail.com>",
-  "homepage": "http://garfish.bytedance.com",
+  "author": "chentao.arthur <chentao.arthur@bytedance.com>",
+  "homepage": "https://github.com/bytedance/garfish",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -30,14 +30,13 @@
     "build": "rimraf dist && tsup src/index.ts",
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
-  "dependencies": {
-    "@garfish/core": "workspace:*",
-    "@garfish/utils": "workspace:*"
-  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public",
     "types": "./dist/index.d.ts"
   },
-  "gitHead": "da33dd16bb9e99588f34079f8b961d0cf9f059fc"
+  "dependencies": {
+    "@garfish/utils": "workspace:*",
+    "super-fast-md5": "0.0.7"
+  }
 }

@@ -38,6 +38,7 @@ export interface CacheValue<T extends Manager> {
   url: string;
   code: string;
   size: number;
+  scope: string;
   fileType: FileTypes | '';
   resourceManager: T | null;
 }
@@ -228,6 +229,7 @@ export class Loader {
           result,
           value: {
             url,
+            scope,
             resourceManager,
             fileType: fileType || '',
             // For performance reasons, take an approximation

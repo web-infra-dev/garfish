@@ -4,7 +4,7 @@
 
 ## Requirement
 
-`Node.js >= 16.10`
+`Node.js >=16.14.0`
 
 ## Setup (locally)
 
@@ -60,10 +60,12 @@ packages
   browser-snapshot/          - snapshot sandbox
   browser-vm/                - vm sandbox
   core/                      - core module with sandbox、loader、hooks、router
-  garfish/
+  garfish/                   - main entry
   hooks/                     - hooks
   loader/                    - loader
-  remote-module/
+  remote-module/             - cjs loader
+  es-module/                 - esm loader and compiler
+  css-scope/                 - css scope compiler
   router/                    - router
   utils/                     - common utils
 ```

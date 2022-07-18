@@ -3,6 +3,7 @@ import {
   Queue,
   isAbsolute,
   transformUrl,
+  idleCallback,
   callTestCallback,
   safeWrapper,
 } from '@garfish/utils';
@@ -24,9 +25,6 @@ const isSlowNetwork = () =>
     ? (navigator as any).connection.saveData ||
       /(2|3)g/.test((navigator as any).connection.effectiveType)
     : false;
-
-const idleCallback =
-  (window as any).requestIdleCallback || window.requestAnimationFrame;
 
 export const requestIdleCallback =
   __TEST__ || typeof idleCallback !== 'function'

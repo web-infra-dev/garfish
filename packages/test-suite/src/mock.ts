@@ -1,8 +1,8 @@
-import { isAbsolute } from '@garfish/utils';
 import fs from 'fs';
 import path from 'path';
 import 'isomorphic-fetch';
 import fetchMock from 'jest-fetch-mock';
+import { isAbsolute } from '@garfish/utils';
 
 // Unit test server
 export function mockStaticServer({
@@ -32,21 +32,22 @@ export function mockStaticServer({
     }
     const fullDir = path.resolve(baseDir, `./${pathname}`);
     const { ext } = path.parse(fullDir);
-    const miniType =
+    // prettier-ignore
+    const mimeType =
       ext === '.html'
         ? 'text/html'
         : ext === '.js'
-        ? 'text/javascript'
-        : ext === '.css'
-        ? 'text/css'
-        : 'text/plain';
+          ? 'text/javascript'
+          : ext === '.css'
+            ? 'text/css'
+            : 'text/plain';
 
     return new Promise((resolve) => {
       const res = {
         url: req.url,
         body: fs.readFileSync(fullDir, 'utf-8'),
         headers: {
-          'Content-Type': miniType,
+          'Content-Type': mimeType,
           ...(customerHeaders[pathname] || {}),
         },
       };

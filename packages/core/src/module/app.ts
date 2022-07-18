@@ -7,7 +7,8 @@ import {
   hasOwn,
   remove,
   Queue,
-  isJs,
+  coreLog,
+  isJsType,
   isObject,
   isPromise,
   toBoolean,
@@ -18,11 +19,8 @@ import {
   __MockHead__,
   getRenderNode,
   sourceListTags,
-  parseContentType,
   createAppContainer,
   setDocCurrentScript,
-  coreLog,
-  isJsType,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
@@ -560,7 +558,11 @@ export class App {
       style: (node) => {
         const text = node.children[0] as Text;
         if (text) {
-          const styleManager = new StyleManager(text.content);
+          const styleManager = new StyleManager(text.content, baseUrl);
+          styleManager.setScope({
+            appName: this.name,
+            rootElId: this.appContainer.id,
+          });
           baseUrl && styleManager.correctPath(baseUrl);
           return entryManager.ignoreChildNodesCreation(
             styleManager.renderAsStyleElement(),
@@ -575,6 +577,10 @@ export class App {
             manager.isSameOrigin(node),
           );
           if (styleManager) {
+            styleManager.setScope({
+              appName: this.name,
+              rootElId: this.appContainer.id,
+            });
             return styleManager.renderAsStyleElement(
               __DEV__ ? `\n/*${DOMApis.createLinkCommentNode(node)}*/\n` : '',
             );
