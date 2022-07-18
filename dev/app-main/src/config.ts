@@ -118,6 +118,14 @@ let defaultConfig: RunInfo = {
   onNotMatchRouter(path) {
     // console.log('子应用路由未匹配', path);
   },
+
+  // 业务自定义fetch
+  loader: {
+    fetch(name, url) {
+      // do something
+      // return void | false | Promise<void | false> | Promise<CustomFetchReturnType>;
+    },
+  },
 };
 
 // The test environment into
