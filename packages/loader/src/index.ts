@@ -1,4 +1,9 @@
-import { SyncHook, SyncWaterfallHook, PluginSystem } from '@garfish/hooks';
+import {
+  SyncHook,
+  SyncWaterfallHook,
+  PluginSystem,
+  AsyncHook,
+} from '@garfish/hooks';
 import {
   error,
   __LOADER_FLAG__,
@@ -10,7 +15,7 @@ import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
 import { TemplateManager } from './managers/template';
 import { JavaScriptManager } from './managers/javascript';
-import { request, copyResult, mergeConfig } from './utils';
+import { getRequest, copyResult, mergeConfig } from './utils';
 import { FileTypes, cachedDataSet, AppCacheContainer } from './appCache';
 
 // Export types and manager constructor
@@ -33,6 +38,7 @@ export interface CacheValue<T extends Manager> {
   url: string;
   code: string;
   size: number;
+  scope: string;
   fileType: FileTypes | '';
   resourceManager: T | null;
 }
@@ -45,6 +51,17 @@ export interface LoadedHookArgs<T extends Manager> {
 export enum CrossOriginCredentials {
   anonymous = 'same-origin',
   'use-credentials' = 'include',
+}
+
+type LifeCycle = Loader['hooks']['lifecycle'];
+
+export type LoaderLifecycle = Partial<{
+  [k in keyof LifeCycle]: Parameters<LifeCycle[k]['on']>[0];
+}>;
+
+export interface LoaderPlugin extends LoaderLifecycle {
+  name: string;
+  version?: string;
 }
 
 export class Loader {
@@ -67,6 +84,9 @@ export class Loader {
       url: string;
       requestConfig: ResponseInit;
     }>('beforeLoad'),
+    fetch: new AsyncHook<[string, RequestInit], Response | void | false>(
+      'fetch',
+    ),
   });
 
   private options: LoaderOptions; // The unit is "b"
@@ -91,6 +111,17 @@ export class Loader {
     for (const scope in this.cacheStore) {
       this.clear(scope, fileType);
     }
+  }
+
+  usePlugin(options: LoaderPlugin) {
+    this.hooks.usePlugin(options);
+  }
+
+  setLifeCycle(lifeCycle: Partial<LoaderLifecycle>) {
+    this.hooks.usePlugin({
+      name: 'loader-lifecycle',
+      ...lifeCycle,
+    });
   }
 
   loadModule(url: string) {
@@ -154,6 +185,7 @@ export class Loader {
       requestConfig,
     });
 
+    const request = getRequest(this.hooks.lifecycle.fetch);
     const loadRes = request(resOpts.url, resOpts.requestConfig)
       .then(({ code, size, result, type }) => {
         let managerCtor,
@@ -197,6 +229,7 @@ export class Loader {
           result,
           value: {
             url,
+            scope,
             resourceManager,
             fileType: fileType || '',
             // For performance reasons, take an approximation

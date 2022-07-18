@@ -27,6 +27,7 @@ export interface SandboxOptions {
   modules?: Array<Module>;
   sourceList?: Array<{ tagName: string; url: string }>;
   loaderOptions?: LoaderOptions;
+  styleScopeId?: () => string;
   el?: () => Element | ShadowRoot | null;
   protectVariable?: () => Array<PropertyKey>;
   insulationVariable?: () => Array<PropertyKey>;

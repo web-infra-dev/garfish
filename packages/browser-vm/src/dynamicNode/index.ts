@@ -1,9 +1,9 @@
 import { makeMap, safeWrapper, warn } from '@garfish/utils';
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
-import { sandboxMap, isStyledComponentsLike } from '../utils';
 import { injectHandlerParams } from './processParams';
 import { DynamicNodeProcessor, rawElementMethods } from './processor';
+import { isInIframe, sandboxMap, isStyledComponentsLike } from '../utils';
 
 const mountElementMethods = [
   'append',
@@ -27,16 +27,23 @@ function injector(current: Function, methodName: string) {
     const el = methodName === 'insertAdjacentElement'
       ? arguments[1]
       : arguments[0];
-    const sandbox = el && sandboxMap.get(el);
+    const sandbox = sandboxMap.get(el);
     const originProcess = () => current.apply(this, arguments);
 
-    if (this?.tagName?.toLowerCase() === 'style') {
-      const baseUrl = sandbox && sandbox.options.baseUrl;
-      if (baseUrl) {
+    if (sandbox) {
+      if (el && this?.tagName?.toLowerCase() === 'style') {
         const manager = new StyleManager(el.textContent);
+        const { baseUrl, namespace, styleScopeId } = sandbox.options;
         manager.correctPath(baseUrl);
-        el.textContent = manager.styleCode;
+        manager.setScope({
+          appName: namespace,
+          rootElId: styleScopeId!(),
+        });
+        el.textContent = manager.transformCode(manager.styleCode);
         return originProcess();
+      } else {
+        const processor = new DynamicNodeProcessor(el, sandbox, methodName);
+        return processor.append(this, arguments, originProcess);
       }
     }
 
@@ -52,7 +59,7 @@ function injector(current: Function, methodName: string) {
         el?.setAttribute(
           'elementtiming',
           sandbox
-            ? `${sandbox.options.namespace}-element-timing`
+            ? `${(sandbox as any).options.namespace}-element-timing`
             : 'element-timing',
         );
       }
@@ -76,12 +83,12 @@ function injectorRemoveChild(current: Function, methodName: string) {
       // by removeChild deleted by the tag determine whether have been removed
       return current.apply(this, arguments);
     };
+
     if (sandbox) {
       const processor = new DynamicNodeProcessor(el, sandbox, methodName);
       return processor.removeChild(this, originProcess);
-    } else {
-      return originProcess();
     }
+    return originProcess();
   };
 }
 

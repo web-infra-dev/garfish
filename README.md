@@ -59,7 +59,7 @@ yarn add garfish
 - Sandbox module provides runtime isolation for the application's Runtime, which can effectively isolate the side effects of JS and Style on the application
 - Store provides a simple mechanism for exchanging communication data
 
-🎯 Highly scalable plugin mechanism 
+🎯 Highly scalable plugin mechanism
 
 - Provide business plugins to meet various customization needs of business parties
 

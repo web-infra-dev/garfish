@@ -1,4 +1,4 @@
-import Garfish from '@garfish/core';
+import Garfish, { interfaces } from '@garfish/core';
 import { GarfishRouter } from '@garfish/router';
 import { GarfishBrowserVm } from '@garfish/browser-vm';
 import { mockStaticServer } from '@garfish/test-suite';
@@ -48,6 +48,28 @@ async function noRenderApp(container: Element) {
   expect(appContainer).toHaveLength(0);
 }
 
+declare module '@garfish/core' {
+  export namespace interfaces {
+    export interface Config {
+      loader?: any;
+    }
+  }
+}
+
+// 业务自定义garfish loader
+export function GarfishLoader() {
+  return function (Garfish: interfaces.Garfish): interfaces.Plugin {
+    return {
+      name: 'garfish-loader',
+      bootstrap(options: interfaces.Options = {}) {
+        Garfish.loader.usePlugin(
+          Object.assign({ name: 'garfish-loader' }, options.loader),
+        );
+      },
+    };
+  };
+}
+
 const mockBeforeLoad = jest.fn();
 const mockAfterLoad = jest.fn();
 const mockBeforeMount = jest.fn();
@@ -56,6 +78,11 @@ const mockBeforeUnmount = jest.fn();
 const mockAfterUnmount = jest.fn();
 const mockBeforeEval = jest.fn();
 const mockAfterEval = jest.fn();
+
+const loaderFetchReturn = {
+  code: 'function() {}',
+  type: 'aplication/javascript',
+};
 
 describe('Core: run methods', () => {
   let GarfishInstance: Garfish;
@@ -70,7 +97,7 @@ describe('Core: run methods', () => {
     GarfishInstance.run({
       basename: '/',
       domGetter: '#container',
-      plugins: [GarfishRouter(), GarfishBrowserVm()],
+      plugins: [GarfishRouter(), GarfishBrowserVm(), GarfishLoader()],
       apps: [
         {
           name: 'vue-app',
@@ -91,6 +118,18 @@ describe('Core: run methods', () => {
       afterMount: mockAfterMount,
       beforeUnmount: mockBeforeUnmount,
       afterUnmount: mockAfterUnmount,
+      loader: {
+        fetch: async (url) => {
+          if (url === 'http://jest') {
+            return new Response(loaderFetchReturn.code, {
+              status: 200,
+              headers: {
+                'Content-Type': loaderFetchReturn.type,
+              },
+            });
+          }
+        },
+      },
     });
   });
 
@@ -151,5 +190,14 @@ describe('Core: run methods', () => {
     GarfishInstance.router.setRouterConfig({ listening: true });
     GarfishInstance.router.push({ path: '/vue-app' });
     await vueAppInDocument(container);
+  });
+
+  it('custom fetch', async () => {
+    const fetchResult = await GarfishInstance.loader.load({
+      scope: 'jest-loader-fetch',
+      url: 'http://jest',
+    });
+
+    expect(fetchResult.code).toBe(loaderFetchReturn.code);
   });
 });

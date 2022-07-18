@@ -1,6 +1,11 @@
+export const noop = () => {};
+
 export const objectToString = Object.prototype.toString;
 
-export const noop = () => {};
+export const supportWasm = typeof WebAssembly === 'object';
+
+export const idleCallback =
+  window.requestIdleCallback || window.requestAnimationFrame;
 
 export function createKey() {
   return Math.random().toString(36).substr(2, 8);

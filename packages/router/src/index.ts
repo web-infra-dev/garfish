@@ -65,15 +65,15 @@ export function GarfishRouter(_args?: Options) {
           // In the listening state, trigger the rendering of the application
           if (!RouterConfig.listening) return;
 
-          const { name, cache = true, active } = appInfo;
+          const { name, active, cache = true } = appInfo;
           if (active) return active(appInfo, rootPath);
           appInfo.rootPath = rootPath;
 
           const currentApp = (activeApp = createKey());
           const app = await Garfish.loadApp(appInfo.name, {
+            cache,
             basename: rootPath,
             entry: appInfo.entry,
-            cache: true,
             domGetter: appInfo.domGetter,
           });
 

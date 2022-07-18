@@ -108,6 +108,14 @@ describe('hooks', () => {
     expect(i).toBe(3);
     await hook1.emit();
     expect(i).toBe(5);
+
+    // AsyncHook emit返回内容
+    const hook2 = new AsyncHook<unknown, number>();
+
+    hook2.on(() => Promise.resolve(1));
+
+    const returnValue = await hook2.emit();
+    expect(returnValue).toBe(1);
   });
 
   it('SyncWaterfallHook', () => {
