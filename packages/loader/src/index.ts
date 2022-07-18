@@ -1,3 +1,4 @@
+import type { interfaces } from '@garfish/core';
 import {
   SyncHook,
   SyncWaterfallHook,
@@ -10,6 +11,7 @@ import {
   isJsType,
   isCssType,
   isHtmlType,
+  parseContentType,
 } from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
@@ -133,7 +135,7 @@ export class Loader {
   }
 
   // Unable to know the final data type, so through "generics"
-  load<T extends Manager>({
+  async load<T extends Manager>({
     scope,
     url,
     isRemoteModule = false,

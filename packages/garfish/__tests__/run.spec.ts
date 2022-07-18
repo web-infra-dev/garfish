@@ -82,6 +82,7 @@ const mockAfterEval = jest.fn();
 const loaderFetchReturn = {
   code: 'function() {}',
   type: 'aplication/javascript',
+  size: 13,
 };
 
 describe('Core: run methods', () => {
