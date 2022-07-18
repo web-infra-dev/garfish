@@ -253,6 +253,3 @@ Garfish.run({
 
 ### onNotMatchRouter
 <OnNotMatchRouter />
-
-### loader.fetch
-<CustomFetch />

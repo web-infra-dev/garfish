@@ -4,7 +4,6 @@ import {
   StyleManager,
   TemplateManager,
   JavaScriptManager,
-  ModuleManager,
 } from '@garfish/loader';
 import { AppInfo } from './app';
 

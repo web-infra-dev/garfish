@@ -2,25 +2,20 @@ import { StyleManager, JavaScriptManager } from '@garfish/loader';
 import {
   def,
   warn,
-  isJs,
-  isCss,
-  isJsonp,
   DOMApis,
   makeMap,
+  isJsType,
+  isCssType,
+  safeWrapper,
   findTarget,
   __MockBody__,
   __MockHead__,
   transformUrl,
   sourceListTags,
-  parseContentType,
   __REMOVE_NODE__,
-  isJsType,
-  isCssType,
-  error,
-  safeWrapper,
 } from '@garfish/utils';
-import { rootElm } from '../utils';
 import { Sandbox } from '../sandbox';
+import { rootElm, isStyledComponentsLike } from '../utils';
 
 const isInsertMethod = makeMap(['insertBefore', 'insertAdjacentElement']);
 
@@ -94,7 +89,7 @@ export class DynamicNodeProcessor {
 
     if (!type || isCssType({ src: href, type })) {
       if (href) {
-        const { baseUrl, namespace = '' } = this.sandbox.options;
+        const { baseUrl, namespace, styleScopeId } = this.sandbox.options;
         const fetchUrl = baseUrl ? transformUrl(baseUrl, href) : href;
 
         this.sandbox.loader
@@ -106,6 +101,12 @@ export class DynamicNodeProcessor {
           .then(({ resourceManager: styleManager }) => {
             if (styleManager) {
               styleManager.correctPath();
+              if (styleScopeId) {
+                styleManager.setScope({
+                  appName: namespace,
+                  rootElId: styleScopeId(),
+                });
+              }
               callback(styleManager.renderAsStyleElement());
             } else {
               warn(
@@ -138,12 +139,11 @@ export class DynamicNodeProcessor {
   private addDynamicScriptNode() {
     const { src, type, crossOrigin } = this.el;
     const isModule = type === 'module';
-    const mimeType = parseContentType(type);
     const code = this.el.textContent || this.el.text || '';
 
     if (!type || isJsType({ src, type })) {
       // The "src" higher priority
-      const { baseUrl, namespace = '' } = this.sandbox.options;
+      const { baseUrl, namespace } = this.sandbox.options;
       if (src) {
         const fetchUrl = baseUrl ? transformUrl(baseUrl, src) : src;
         this.sandbox.loader
@@ -219,6 +219,48 @@ export class DynamicNodeProcessor {
     mutator.observe(this.el, { attributes: true });
   }
 
+  private monitorChangesOfStyle() {
+    const { baseUrl, namespace, styleScopeId } = this.sandbox.options;
+    const rootElId = styleScopeId?.();
+
+    const modifyStyleCode = (styleCode: string | null) => {
+      if (styleCode) {
+        const manager = new StyleManager(styleCode);
+        manager.correctPath(baseUrl);
+        if (rootElId) {
+          manager.setScope({
+            rootElId,
+            appName: namespace,
+          });
+        }
+        styleCode = manager.transformCode(styleCode);
+      }
+      return styleCode;
+    };
+
+    const mutator = new MutationObserver((mutations) => {
+      for (const { type, target, addedNodes } of mutations) {
+        if (type === 'childList') {
+          const el = target as HTMLStyleElement;
+          if (isStyledComponentsLike(el) && el.sheet) {
+            const originAddRule = el.sheet.insertRule;
+            el.sheet.insertRule = function () {
+              arguments[0] = modifyStyleCode(arguments[0]);
+              return originAddRule.apply(this, arguments);
+            };
+          } else {
+            if (addedNodes[0]) {
+              addedNodes[0].textContent = modifyStyleCode(
+                addedNodes[0].textContent,
+              );
+            }
+          }
+        }
+      }
+    });
+    mutator.observe(this.el, { childList: true });
+  }
+
   private findParentNodeInApp(parentNode: Element, defaultInsert?: string) {
     if (parentNode === document.body) {
       return findTarget(this.rootElement, [
@@ -258,7 +300,7 @@ export class DynamicNodeProcessor {
   append(context: Element, args: IArguments, originProcess: Function) {
     let convertedNode;
     let parentNode = context;
-    const { baseUrl } = this.sandbox.options;
+    const { baseUrl, namespace, styleScopeId } = this.sandbox.options;
 
     // Deal with some static resource nodes
     if (sourceListTags.includes(this.tagName)) {
@@ -273,13 +315,18 @@ export class DynamicNodeProcessor {
     // The style node needs to be placed in the sandbox root container
     else if (this.is('style')) {
       parentNode = this.findParentNodeInApp(context, 'head');
-      if (baseUrl) {
-        const manager = new StyleManager(this.el.textContent);
-        manager.correctPath(baseUrl);
-        this.el.textContent = manager.styleCode;
+      const manager = new StyleManager(this.el.textContent);
+      manager.correctPath(baseUrl);
+      if (styleScopeId) {
+        manager.setScope({
+          appName: namespace,
+          rootElId: styleScopeId(),
+        });
       }
+      this.el.textContent = manager.transformCode(manager.styleCode);
       convertedNode = this.el;
       this.sandbox.dynamicStyleSheetElementSet.add(this.el);
+      this.monitorChangesOfStyle();
     }
     // The link node of the request css needs to be changed to style node
     else if (this.is('link')) {

@@ -26,7 +26,7 @@ export function networkModule(sandbox: Sandbox) {
 
     open() {
       // Async request
-      if (arguments[3] === false) {
+      if (arguments[2] === false) {
         xhrSet.delete(this);
       }
       if (needFix(arguments[1])) {

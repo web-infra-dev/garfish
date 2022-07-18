@@ -17,7 +17,7 @@ import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
 import { TemplateManager } from './managers/template';
 import { JavaScriptManager } from './managers/javascript';
-import { request, copyResult, mergeConfig } from './utils';
+import { getRequest, copyResult, mergeConfig } from './utils';
 import { FileTypes, cachedDataSet, AppCacheContainer } from './appCache';
 
 // Export types and manager constructor
@@ -40,6 +40,7 @@ export interface CacheValue<T extends Manager> {
   url: string;
   code: string;
   size: number;
+  scope: string;
   fileType: FileTypes | '';
   resourceManager: T | null;
 }
@@ -54,25 +55,15 @@ export enum CrossOriginCredentials {
   'use-credentials' = 'include',
 }
 
-interface CustomFetchReturnType {
-  code: string;
-  size: number | null;
-  type: string;
-}
-interface RequestReturnType extends CustomFetchReturnType {
-  result: Response;
-}
+type LifeCycle = Loader['hooks']['lifecycle'];
 
-interface Options {
-  autoRefreshApp?: boolean;
-  onNotMatchRouter?: (path: string) => Promise<void> | void;
-}
+export type LoaderLifecycle = Partial<{
+  [k in keyof LifeCycle]: Parameters<LifeCycle[k]['on']>[0];
+}>;
 
-export interface LoaderLifecycle {
-  fetch(
-    name: string,
-    url: string,
-  ): void | false | Promise<CustomFetchReturnType | void | false>;
+export interface LoaderPlugin extends LoaderLifecycle {
+  name: string;
+  version?: string;
 }
 
 export class Loader {
@@ -95,10 +86,9 @@ export class Loader {
       url: string;
       requestConfig: ResponseInit;
     }>('beforeLoad'),
-    fetch: new AsyncHook<
-      [string, string],
-      CustomFetchReturnType | void | false
-    >('fetch'),
+    fetch: new AsyncHook<[string, RequestInit], Response | void | false>(
+      'fetch',
+    ),
   });
 
   private options: LoaderOptions; // The unit is "b"
@@ -125,13 +115,15 @@ export class Loader {
     }
   }
 
-  usePlugin(options?: LoaderLifecycle) {
-    if (options) {
-      this.hooks.usePlugin({
-        name: 'garfish-logger',
-        ...options,
-      });
-    }
+  usePlugin(options: LoaderPlugin) {
+    this.hooks.usePlugin(options);
+  }
+
+  setLifeCycle(lifeCycle: Partial<LoaderLifecycle>) {
+    this.hooks.usePlugin({
+      name: 'loader-lifecycle',
+      ...lifeCycle,
+    });
   }
 
   loadModule(url: string) {
@@ -195,31 +187,8 @@ export class Loader {
       requestConfig,
     });
 
-    let requestTask: Promise<RequestReturnType> | null = null;
-    // Run custom fetch
-    const customFetchRes = await this.hooks.lifecycle.fetch.emit(
-      scope,
-      resOpts.url,
-    );
-    // Determine whether the data returned by custom fetch is as expected
-    if (
-      customFetchRes &&
-      customFetchRes.code &&
-      customFetchRes.code.length &&
-      customFetchRes.type
-    ) {
-      const resolveData = Object.assign(customFetchRes, {
-        result: { url: resOpts.url } as any,
-        mimeType: parseContentType(customFetchRes.type || ''),
-      });
-
-      requestTask = Promise.resolve(resolveData);
-    }
-    if (!requestTask) {
-      requestTask = request(resOpts.url, resOpts.requestConfig);
-    }
-
-    const loadRes = requestTask
+    const request = getRequest(this.hooks.lifecycle.fetch);
+    const loadRes = request(resOpts.url, resOpts.requestConfig)
       .then(({ code, size, result, type }) => {
         let managerCtor,
           fileType: FileTypes | '' = '';
@@ -262,6 +231,7 @@ export class Loader {
           result,
           value: {
             url,
+            scope,
             resourceManager,
             fileType: fileType || '',
             // For performance reasons, take an approximation
@@ -285,17 +255,4 @@ export class Loader {
     loadingList[url] = loadRes;
     return loadRes;
   }
-}
-
-export function GarfishLoader(_args?: Options) {
-  return function (Garfish: interfaces.Garfish): interfaces.Plugin {
-    return {
-      name: 'loader',
-      version: __VERSION__,
-
-      bootstrap(options: interfaces.Options = {}) {
-        Garfish.loader.usePlugin(options.loader);
-      },
-    };
-  };
 }
