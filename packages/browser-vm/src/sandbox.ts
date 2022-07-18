@@ -64,7 +64,7 @@ export class Sandbox {
   public closed = true;
   public initComplete = false;
   public version = __VERSION__;
-  public global?: Window;
+  public global?: Window & typeof globalThis;
   public loader: Loader;
   public options: SandboxOptions;
   public hooks = sandboxLifecycle();

@@ -1,5 +1,4 @@
 import { Sandbox } from './sandbox';
-import type { Node } from '@garfish/utils';
 import type { LoaderOptions } from '@garfish/loader';
 
 export type FakeWindow = Window & Record<PropertyKey, any>;
@@ -11,6 +10,7 @@ export interface OverridesData {
   created?: (context: Sandbox['global']) => void;
   override?: Record<PropertyKey, any>;
 }
+
 export interface ReplaceGlobalVariables {
   recoverList: Array<OverridesData['recover']>;
   prepareList: Array<OverridesData['prepare']>;
