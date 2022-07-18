@@ -1,7 +1,13 @@
 import { md5 } from 'super-fast-md5';
 import type { interfaces } from '@garfish/core';
-import { warn, supportWasm, idleCallback } from '@garfish/utils';
 import type { Loader, StyleManager } from '@garfish/loader';
+import {
+  warn,
+  supportWasm,
+  idleCallback,
+  findTarget,
+  __MockBody__,
+} from '@garfish/utils';
 import { parse } from './parser';
 import { stringify } from './stringify';
 import type { StylesheetNode } from './types';
@@ -10,6 +16,7 @@ export { parse } from './parser';
 export { stringify } from './stringify';
 
 export interface Options {
+  fixBodyGetter?: boolean;
   excludes?: Array<string> | ((name: string) => boolean);
 }
 
@@ -80,24 +87,40 @@ export function GarfishCssScope(options: Options = {}) {
         };
       },
 
-      async beforeLoad(appInfo) {
-        if (__DEV__) {
-          if (!supportWasm) {
-            warn('"css-scope" plugin requires webAssembly support');
-            return;
+      beforeLoad(appInfo) {
+        if (!supportWasm) {
+          warn('"css-scope" plugin requires webAssembly support');
+          return;
+        }
+        const { name, sandbox } = appInfo;
+        if (!disable(name)) {
+          if (
+            sandbox &&
+            (sandbox === false || sandbox.open === false || sandbox.snapshot)
+          ) {
+            warn(
+              `Child app "${name}" does not open the vm sandbox, ` +
+                'cannot use "css-scope" plugin',
+            );
           }
-          const { name, sandbox } = appInfo;
-          if (!disable(name)) {
-            if (
-              sandbox &&
-              (sandbox === false || sandbox.open === false || sandbox.snapshot)
-            ) {
-              warn(
-                `Child app "${name}" does not open the vm sandbox, ` +
-                  'cannot use "css-scope" plugin',
-              );
-            }
-          }
+        }
+      },
+
+      afterLoad(appInfo, app) {
+        if (options.fixBodyGetter && !disable(appInfo.name) && app?.vmSandbox) {
+          app.vmSandbox.hooks.usePlugin({
+            name: pluginName,
+            version: __VERSION__,
+            documentGetter(data) {
+              if (data.propName === 'body' && data.rootNode) {
+                data.customValue = findTarget(data.rootNode, [
+                  'body',
+                  `div[${__MockBody__}]`,
+                ]);
+              }
+              return data;
+            },
+          });
         }
       },
     };
