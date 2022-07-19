@@ -107,7 +107,9 @@ export function GarfishCssScope(options: Options = {}) {
       },
 
       afterLoad(appInfo, app) {
+        // @ts-ignore
         if (options.fixBodyGetter && !disable(appInfo.name) && app?.vmSandbox) {
+          // @ts-ignore
           app.vmSandbox.hooks.usePlugin({
             name: pluginName,
             version: __VERSION__,
