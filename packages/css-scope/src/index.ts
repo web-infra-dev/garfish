@@ -3,9 +3,9 @@ import type { interfaces } from '@garfish/core';
 import type { Loader, StyleManager } from '@garfish/loader';
 import {
   warn,
+  findTarget,
   supportWasm,
   idleCallback,
-  findTarget,
   __MockBody__,
 } from '@garfish/utils';
 import { parse } from './parser';

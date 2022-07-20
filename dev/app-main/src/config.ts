@@ -36,7 +36,7 @@ let defaultConfig: RunInfo = {
 
   // 是否禁用子应用的资源预加载，默认值为 false，开启子应用的预加载能力，预加载能力在弱网情况和手机端将不会开启。
   // 预加载加载权重会根据子应用的加载次数，预加载会在用户端计算子应用打开的次数，会优先加载打开次数多的子应用
-  disablePreloadApp: false,
+  disablePreloadApp: true,
 
   // sandbox用于配置子应用沙箱的运行参数，当配置 sandbox 为 false 时表示关闭沙箱
   sandbox: {
@@ -142,11 +142,11 @@ let defaultConfig: RunInfo = {
   },
 
   // 业务自定义fetch
-  loader: {
-    async fetch(url) {
-      // return Response
-    },
-  },
+  // loader: {
+  //   async fetch(url) {
+  //     // return Response
+  //   }
+  // },
 };
 
 // The test environment into

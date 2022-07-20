@@ -1,3 +1,4 @@
+import assert from 'assert';
 import Garfish, { interfaces } from '@garfish/core';
 import { GarfishRouter } from '@garfish/router';
 import { GarfishBrowserVm } from '@garfish/browser-vm';
@@ -8,7 +9,6 @@ import {
   __MockHtml__,
   appContainerId,
 } from '@garfish/utils';
-import assert from 'assert';
 
 const vueAppRootNode = 'vue-app';
 const vueAppRootText = 'vue app init page';
@@ -48,6 +48,14 @@ async function noRenderApp(container: Element) {
   expect(appContainer).toHaveLength(0);
 }
 
+declare module '@garfish/core' {
+  export namespace interfaces {
+    export interface Config {
+      loader?: any;
+    }
+  }
+}
+
 // 业务自定义garfish loader
 export function GarfishLoader() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
@@ -74,6 +82,7 @@ const mockAfterEval = jest.fn();
 const loaderFetchReturn = {
   code: 'function() {}',
   type: 'aplication/javascript',
+  size: 13,
 };
 
 describe('Core: run methods', () => {

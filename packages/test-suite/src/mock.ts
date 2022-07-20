@@ -9,8 +9,10 @@ export function mockStaticServer({
   baseDir,
   filterKeywords,
   customerHeaders = {},
+  timeConsuming,
 }: {
   baseDir: string;
+  timeConsuming?: number;
   filterKeywords?: Array<string>;
   customerHeaders?: Record<string, Record<string, any>>;
 }) {
@@ -40,13 +42,20 @@ export function mockStaticServer({
             ? 'text/css'
             : 'text/plain';
 
-    return Promise.resolve({
-      url: req.url,
-      body: fs.readFileSync(fullDir, 'utf-8'),
-      headers: {
-        'Content-Type': mimeType,
-        ...(customerHeaders[pathname] || {}),
-      },
+    return new Promise((resolve) => {
+      const res = {
+        url: req.url,
+        body: fs.readFileSync(fullDir, 'utf-8'),
+        headers: {
+          'Content-Type': mimeType,
+          ...(customerHeaders[pathname] || {}),
+        },
+      };
+      if (timeConsuming) {
+        setTimeout(() => resolve(res), timeConsuming);
+      } else {
+        resolve(res);
+      }
     });
   });
 }

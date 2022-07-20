@@ -10,6 +10,7 @@ import {
   isJsType,
   isCssType,
   isHtmlType,
+  parseContentType,
 } from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
@@ -31,6 +32,9 @@ export type Manager =
   | JavaScriptManager;
 
 export interface LoaderOptions {
+  /**
+   * The unit is byte
+   */
   maxSize?: number;
 }
 
@@ -53,13 +57,15 @@ export enum CrossOriginCredentials {
   'use-credentials' = 'include',
 }
 
-type CustomFetchReturnType = Response | void | false;
+type LifeCycle = Loader['hooks']['lifecycle'];
 
-export interface LoaderLifecycle {
-  fetch(
-    name: string,
-    config: RequestInit,
-  ): void | false | Promise<CustomFetchReturnType>;
+export type LoaderLifecycle = Partial<{
+  [k in keyof LifeCycle]: Parameters<LifeCycle[k]['on']>[0];
+}>;
+
+export interface LoaderPlugin extends LoaderLifecycle {
+  name: string;
+  version?: string;
 }
 
 export class Loader {
@@ -82,10 +88,12 @@ export class Loader {
       url: string;
       requestConfig: ResponseInit;
     }>('beforeLoad'),
-    fetch: new AsyncHook<[string, RequestInit], CustomFetchReturnType>('fetch'),
+    fetch: new AsyncHook<[string, RequestInit], Response | void | false>(
+      'fetch',
+    ),
   });
 
-  private options: LoaderOptions; // The unit is "b"
+  private options: LoaderOptions;
   private loadingList: Record<string, null | Promise<CacheValue<any>>>;
   private cacheStore: { [name: string]: AppCacheContainer };
 
@@ -93,6 +101,10 @@ export class Loader {
     this.options = options || {};
     this.loadingList = Object.create(null);
     this.cacheStore = Object.create(null);
+  }
+
+  setOptions(options: Partial<LoaderOptions>) {
+    this.options = { ...this.options, ...options };
   }
 
   clear(scope: string, fileType?: FileTypes) {
@@ -109,10 +121,15 @@ export class Loader {
     }
   }
 
-  usePlugin(options?: LoaderLifecycle & { name: string }) {
-    if (options) {
-      this.hooks.usePlugin(options);
-    }
+  usePlugin(options: LoaderPlugin) {
+    this.hooks.usePlugin(options);
+  }
+
+  setLifeCycle(lifeCycle: Partial<LoaderLifecycle>) {
+    this.hooks.usePlugin({
+      name: 'loader-lifecycle',
+      ...lifeCycle,
+    });
   }
 
   loadModule(url: string) {
@@ -124,7 +141,7 @@ export class Loader {
   }
 
   // Unable to know the final data type, so through "generics"
-  load<T extends Manager>({
+  async load<T extends Manager>({
     scope,
     url,
     isRemoteModule = false,
