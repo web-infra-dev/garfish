@@ -9,7 +9,7 @@ export enum FileTypes {
   template = 'template',
 }
 
-const MAX_SIZE = 1024 * 1024 * 15;
+const MAX_SIZE = 1024 * 1024 * 50;
 const DEFAULT_POLL = Symbol('__defaultBufferPoll__');
 const FILE_TYPES = [
   FileTypes.js,

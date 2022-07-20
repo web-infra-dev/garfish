@@ -35,6 +35,7 @@
     "@garfish/hooks": "workspace:*",
     "@garfish/loader": "workspace:*",
     "@garfish/utils": "workspace:*",
+    "es-module-lexer": "^0.10.5",
     "eventemitter2": "^6.4.5"
   },
   "devDependencies": {
