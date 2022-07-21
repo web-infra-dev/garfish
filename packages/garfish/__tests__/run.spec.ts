@@ -48,14 +48,6 @@ async function noRenderApp(container: Element) {
   expect(appContainer).toHaveLength(0);
 }
 
-declare module '@garfish/core' {
-  export namespace interfaces {
-    export interface Config {
-      loader?: any;
-    }
-  }
-}
-
 // 业务自定义garfish loader
 export function GarfishLoader() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
