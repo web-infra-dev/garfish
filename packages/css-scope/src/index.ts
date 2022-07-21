@@ -54,6 +54,8 @@ export function GarfishCssScope(options: Options = {}) {
   };
 
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
+    const compiledCache = new Set<string>();
+
     return {
       name: pluginName,
       version: __VERSION__,
@@ -71,7 +73,12 @@ export function GarfishCssScope(options: Options = {}) {
 
         proto.transformCode = function (code: string) {
           const { appName, rootElId } = this.scopeData || {};
-          if (!code || !rootElId || disable(appName)) {
+          if (
+            !code ||
+            !rootElId ||
+            disable(appName) ||
+            compiledCache.has(code)
+          ) {
             return originTransform.call(this, code);
           }
 
@@ -82,7 +89,8 @@ export function GarfishCssScope(options: Options = {}) {
             astCache.set(hash, astNode);
           }
           // The `rootElId` is random, it makes no sense to cache the compiled code
-          const newCode = stringify(astNode, `#${rootElId}`);
+          const newCode = stringify(astNode, rootElId);
+          compiledCache.add(newCode);
           return originTransform.call(this, newCode);
         };
       },
