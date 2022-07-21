@@ -19,7 +19,7 @@ import { parse, stringify } from '@garfish/css-scope';
 
 const code = 'a { color: #fff; }';
 const ast = parse(code);
-const scopedCode = stringify(ast, '#App'); // #App a { color: #fff; }
+const scopedCode = stringify(ast, 'App'); // #App a { color: #fff; }
 ```
 
 ## Use in Garfish
@@ -32,6 +32,7 @@ Garfish.run({
   plugins: [
     ...
     GarfishCssScope({
+      fixBodyGetter: true,
       excludes: ['appName'],
     }),
   ],

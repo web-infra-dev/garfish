@@ -4,6 +4,7 @@ type Plugin<T extends Record<string, any>> = {
   [k in keyof T]?: Parameters<T[k]['on']>[0];
 } & {
   name: string;
+  version?: string;
 };
 
 export class PluginSystem<T extends Record<string, any>> {

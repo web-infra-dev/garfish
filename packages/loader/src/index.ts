@@ -1,4 +1,3 @@
-import type { interfaces } from '@garfish/core';
 import {
   SyncHook,
   SyncWaterfallHook,

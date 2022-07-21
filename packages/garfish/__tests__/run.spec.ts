@@ -1,3 +1,4 @@
+import assert from 'assert';
 import Garfish, { interfaces } from '@garfish/core';
 import { GarfishRouter } from '@garfish/router';
 import { GarfishBrowserVm } from '@garfish/browser-vm';
@@ -8,7 +9,6 @@ import {
   __MockHtml__,
   appContainerId,
 } from '@garfish/utils';
-import assert from 'assert';
 
 const vueAppRootNode = 'vue-app';
 const vueAppRootText = 'vue app init page';
@@ -46,14 +46,6 @@ async function noRenderApp(container: Element) {
   await waitFor();
   const appContainer = container.querySelectorAll(`[id^=${appContainerId}]`);
   expect(appContainer).toHaveLength(0);
-}
-
-declare module '@garfish/core' {
-  export namespace interfaces {
-    export interface Config {
-      loader?: any;
-    }
-  }
 }
 
 // 业务自定义garfish loader
