@@ -20,7 +20,7 @@ importers:
       chalk: 4.1.2
       codecov: ^3.8.3
       cross-env: 7.0.3
-      cypress: ^9.7.0
+      cypress: ^10.3.0
       dayjs: ^1.11.2
       esbuild-plugin-replace: 1.0.7
       eslint: 7.32.0
@@ -66,7 +66,7 @@ importers:
       chalk: 4.1.2
       codecov: 3.8.3
       cross-env: 7.0.3
-      cypress: 9.7.0
+      cypress: 10.3.1
       dayjs: 1.11.2
       esbuild-plugin-replace: 1.0.7
       eslint: 7.32.0
@@ -10230,7 +10230,7 @@ packages:
     dev: true
 
   /big.js/3.2.0:
-    resolution: {integrity: sha512-+hN/Zh2D08Mx65pZ/4g5bsmNiZUuChDiQfTUQ7qJr4/kuopCr88xZsAXv6mBoZEsUI4OuGHlX59qE94K2mMW8Q==, registry: https://registry.yarnpkg.com/}
+    resolution: {integrity: sha512-+hN/Zh2D08Mx65pZ/4g5bsmNiZUuChDiQfTUQ7qJr4/kuopCr88xZsAXv6mBoZEsUI4OuGHlX59qE94K2mMW8Q==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/big.js/-/big.js-3.2.0.tgz}
     dev: true
 
   /big.js/5.2.2:
@@ -11326,7 +11326,7 @@ packages:
     dev: true
 
   /color-convert/1.9.3:
-    resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==, registry: https://registry.yarnpkg.com/}
+    resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.3.tgz}
     dependencies:
       color-name: 1.1.3
 
@@ -11337,7 +11337,7 @@ packages:
       color-name: 1.1.4
 
   /color-name/1.1.3:
-    resolution: {integrity: sha512-72fSenhMw2HZMTVHeCA9KCmpEIbzWiQsjN+BHcBbS9vr1mtt+vJjPdksIBNUmKAW8TFUDPJK5SUU3QhE9NEXDw==, registry: https://registry.yarnpkg.com/}
+    resolution: {integrity: sha512-72fSenhMw2HZMTVHeCA9KCmpEIbzWiQsjN+BHcBbS9vr1mtt+vJjPdksIBNUmKAW8TFUDPJK5SUU3QhE9NEXDw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/color-name/-/color-name-1.1.3.tgz}
 
   /color-name/1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
@@ -12515,8 +12515,8 @@ packages:
     resolution: {integrity: sha512-NJGVKPS81XejHcLhaLJS7plab0fK3slPh11mESeeDq2W4ZI5kUKK/LRRdVDvjJseojbPB7ZwjnyOybg3Igea/A==}
     dev: true
 
-  /cypress/9.7.0:
-    resolution: {integrity: sha512-+1EE1nuuuwIt/N1KXRR2iWHU+OiIt7H28jJDyyI4tiUftId/DrXYEwoDa5+kH2pki1zxnA0r6HrUGHV5eLbF5Q==}
+  /cypress/10.3.1:
+    resolution: {integrity: sha512-As9HrExjAgpgjCnbiQCuPdw5sWKx5HUJcK2EOKziu642akwufr/GUeqL5UnCPYXTyyibvEdWT/pSC2qnGW/e5w==}
     engines: {node: '>=12.0.0'}
     hasBin: true
     requiresBuild: true
@@ -13352,7 +13352,7 @@ packages:
     dev: false
 
   /emojis-list/2.1.0:
-    resolution: {integrity: sha512-knHEZMgs8BB+MInokmNTg/OyPlAddghe1YBgNwJBc5zsJi/uyIcXoSDsL/W9ymOsBoBGdPIHXYJ9+qKFwRwDng==, registry: https://registry.yarnpkg.com/}
+    resolution: {integrity: sha512-knHEZMgs8BB+MInokmNTg/OyPlAddghe1YBgNwJBc5zsJi/uyIcXoSDsL/W9ymOsBoBGdPIHXYJ9+qKFwRwDng==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz}
     engines: {node: '>= 0.10'}
     dev: true
 
@@ -14975,7 +14975,7 @@ packages:
     dev: true
 
   /figures/2.0.0:
-    resolution: {integrity: sha1-OrGi0qYsi/tDGgyUy3l6L84nyWI=}
+    resolution: {integrity: sha512-Oa2M9atig69ZkfwiApY8F2Yy+tzMbazyvqv21R0NsSC8floSOC09BbT1ITWAdoMGQvJ/aZnR1KMwdx9tvHnTNA==}
     engines: {node: '>=4'}
     dependencies:
       escape-string-regexp: 1.0.5
@@ -15918,7 +15918,7 @@ packages:
     dev: true
 
   /has-flag/3.0.0:
-    resolution: {integrity: sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw==, registry: https://registry.yarnpkg.com/}
+    resolution: {integrity: sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/has-flag/-/has-flag-3.0.0.tgz}
     engines: {node: '>=4'}
 
   /has-flag/4.0.0:
@@ -20720,7 +20720,7 @@ packages:
       os-tmpdir: 1.0.2
 
   /ospath/1.2.2:
-    resolution: {integrity: sha1-EnZjl3Sj+O8lcvf+QoDg6kVQwHs=}
+    resolution: {integrity: sha512-o6E5qJV5zkAbIDNhGSIlyOhScKXgQrSRMilfph0clDfM0nEnBOlKlH4sWDmG95BW/CvwNz0vmm7dJVtU2KlMiA==}
     dev: true
 
   /p-cancelable/1.1.0:
@@ -21104,7 +21104,7 @@ packages:
     dev: true
 
   /pend/1.2.0:
-    resolution: {integrity: sha1-elfrVQpng/kRUzH89GY9XI4AelA=}
+    resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
     dev: true
 
   /performance-now/2.1.0:
@@ -22668,7 +22668,7 @@ packages:
       ipaddr.js: 1.9.1
 
   /proxy-from-env/1.0.0:
-    resolution: {integrity: sha1-M8UDmPcOp+uW0h97gXYwpVeRx+4=}
+    resolution: {integrity: sha512-F2JHgJQ1iqwnHDcQjVBsq3n/uoaFL+iPW/eAeL7kVxy/2RrWaN4WroKjjvbsoRtv0ftelNyC01bjRhn/bhcf4A==}
     dev: true
 
   /prr/1.0.1:
@@ -23863,7 +23863,7 @@ packages:
     dev: true
 
   /request-progress/3.0.0:
-    resolution: {integrity: sha1-TKdUCBx/7GP1BeT6qCWqBs1mnb4=}
+    resolution: {integrity: sha512-MnWzEHHaxHO2iWiQuHrUPBi/1WeBf5PkxQqNyNvLl9VAYSdXkP8tQ3pBSeCPD+yw0v0Aq1zosWLz0BdeXpWwZg==}
     dependencies:
       throttleit: 1.0.0
     dev: true
@@ -25406,7 +25406,7 @@ packages:
     dev: true
 
   /super-fast-md5/0.0.7:
-    resolution: {integrity: sha512-E0ltOzNvj/coUqXoHhbk39O846512snFK8UF4gv/aVoZ1U6A/XR9Ok/rsG4Vbg4w2P1/QKvWgU4CngA1o/VLZQ==, registry: https://registry.yarnpkg.com/}
+    resolution: {integrity: sha512-E0ltOzNvj/coUqXoHhbk39O846512snFK8UF4gv/aVoZ1U6A/XR9Ok/rsG4Vbg4w2P1/QKvWgU4CngA1o/VLZQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/super-fast-md5/-/super-fast-md5-0.0.7.tgz}
     dev: false
 
   /supports-color/2.0.0:
@@ -25786,7 +25786,7 @@ packages:
     dev: true
 
   /throttleit/1.0.0:
-    resolution: {integrity: sha1-nnhYNtr0Z0MUWlmEtiaNgoUorGw=}
+    resolution: {integrity: sha512-rkTVqu6IjfQ/6+uNuuc3sZek4CEYxTJom3IktzgdSxcZqdARuebbA/f4QmAxMQIxqq9ZLEUkSYqvuk1I6VKq4g==}
     dev: true
 
   /through/2.3.8:
@@ -28626,7 +28626,7 @@ packages:
     dev: true
 
   /yauzl/2.10.0:
-    resolution: {integrity: sha1-x+sXyT4RLLEIb6bY5R+wZnt5pfk=}
+    resolution: {integrity: sha512-p4a9I6X6nu6IhoGmBqAcbJy1mlC4j27vEPZX9F4L4/vZT3Lyq1VkFHw/V/PUcB9Buo+DG3iHkT0x3Qya58zc3g==}
     dependencies:
       buffer-crc32: 0.2.13
       fd-slicer: 1.1.0
@@ -28690,7 +28690,7 @@ packages:
     resolution: {directory: packages/bridge-react, type: directory}
     id: file:packages/bridge-react
     name: '@garfish/bridge-react'
-    version: 1.9.0-beta.1
+    version: 1.9.0
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
@@ -28704,7 +28704,7 @@ packages:
     resolution: {directory: packages/bridge-react, type: directory}
     id: file:packages/bridge-react
     name: '@garfish/bridge-react'
-    version: 1.9.0-beta.1
+    version: 1.9.0
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
