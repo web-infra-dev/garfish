@@ -16,20 +16,20 @@
     "clear": "docusaurus clear"
   },
   "dependencies": {
-    "@docusaurus/core": "2.0.0-beta.21",
-    "@docusaurus/plugin-ideal-image": "2.0.0-beta.21",
-    "@docusaurus/preset-classic": "2.0.0-beta.21",
-    "@docusaurus/remark-plugin-npm2yarn": "2.0.0-beta.21",
+    "@docusaurus/core": "2.0.0-rc.1",
+    "@docusaurus/plugin-ideal-image": "2.0.0-rc.1",
+    "@docusaurus/preset-classic": "2.0.0-rc.1",
+    "@docusaurus/remark-plugin-npm2yarn": "2.0.0-rc.1",
     "@easyops-cn/docusaurus-search-local": "0.27.0",
     "@mdx-js/react": "1.6.22",
+    "@types/react": "^17.0.47",
+    "@types/react-dom": "^17.0.17",
     "cld": "2.7.1",
     "clsx": "1.1.1",
     "front-matter": "4.0.2",
     "nodejieba": "2.5.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "@types/react": "^17",
-    "@types/react-dom": "^17",
     "swiper": "8.1.6"
   },
   "eslintIgnore": [
@@ -40,7 +40,6 @@
   "resolutions": {
     "terser": "5.10.0"
   },
-
   "browserslist": {
     "production": [
       ">0.5%",

@@ -37,21 +37,25 @@ describe('whole process popstate event', () => {
 
       const TodoListPage = () => {
         win.history.pushState({}, 'vue', `${basename}/vue2/todoList`);
+        cy.wait(2000);
         cy.contains('[data-test=title]', VueTodoTitle);
       };
 
       const ReactHomePage = () => {
         win.history.pushState({}, 'react', `${basename}/react17/home`);
+        cy.wait(2000);
         cy.contains('[data-test=title]', ReactHomeTitle);
       };
 
       const ReactLazyComponent = () => {
         // lazy component
         win.Garfish.router.push({ path: '/react17/lazy-component' });
+        cy.wait(2000);
         cy.contains('[data-test=title]', 'React sub App lazyComponent');
       };
 
       win.history.pushState({}, 'vue', `${basename}/vue2/home`);
+      cy.wait(2000);
       cy.contains('[data-test=title]', VueHomeTitle)
         .then(() => expect(win.Garfish.options.autoRefreshApp).to.equal(true))
         .then(() => expect(popstateTriggerTime).to.equal(1))

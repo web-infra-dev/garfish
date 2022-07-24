@@ -2,14 +2,14 @@
   "private": true,
   "description": "A powerful micro front-end framework",
   "scripts": {
-    "bootstrap": "pnpm install --prefer-offline",
-    "build": "pnpm run build --parallel --filter @garfish/* --filter garfish",
+    "bootstrap": "pnpm install",
+    "build": "pnpm --parallel --filter @garfish/* --filter garfish run build",
     "rebuild": "npm run clean-dist && npm run build",
     "clean-dist": "pnpm -r exec -- rm -rf dist && rm -rf dist",
     "prune": "pnpm -r exec -- rm -rf node_modules && rm -rf node_modules",
-    "dev": "pnpm run start --parallel --filter @garfish-dev/*",
-    "dev:docs": "pnpm run start --filter garfish-docs",
-    "build:docs": "pnpm run build --filter garfish-docs",
+    "dev": "pnpm --parallel --filter @garfish-dev/* run start",
+    "dev:docs": "pnpm --filter garfish-docs run start",
+    "build:docs": "pnpm --filter garfish-docs run build",
     "build:watch": "cross-env WATCH=true pnpm build",
     "test:e2e": "zx scripts/e2e.js",
     "test:e2e:prod": "cross-env CI=true zx scripts/e2e.js",
@@ -79,7 +79,7 @@
     "lint-staged": "11.2.6",
     "lodash": "4.17.21",
     "minimist": "1.2.5",
-    "pnpm": "^6.32.17",
+    "pnpm": "7.6.0",
     "prettier": "2.4.1",
     "prettier-eslint-cli": "5.0.1",
     "rimraf": "3.0.2",
@@ -94,7 +94,7 @@
     "zx": "4.2.0"
   },
   "version": "1.9.0-beta.1",
-  "packageManager": "pnpm@7.3.0",
+  "packageManager": "pnpm@7.6.0",
   "engines": {
     "node": ">=16.14.0"
   }

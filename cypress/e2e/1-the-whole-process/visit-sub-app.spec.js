@@ -100,6 +100,7 @@ describe('whole process app render', () => {
         expect(popstateTriggerTime).to.equal(6);
         // lazy component
         win.Garfish.router.push({ path: '/react17/lazy-component' });
+        cy.wait(4000);
         cy.contains('[data-test=title]', LazyTitle);
         expect(popstateTriggerTime).to.equal(6);
       };
@@ -111,6 +112,7 @@ describe('whole process app render', () => {
       // };
 
       win.Garfish.router.push({ path: '/react17/home' });
+      cy.wait(4000);
       cy.contains('[data-test=title]', HomeTitle)
         .then(lazyComponent)
         .then(() => expect(popstateTriggerTime).to.equal(7));
