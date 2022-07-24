@@ -1,4 +1,3 @@
-import type { interfaces } from '@garfish/core';
 import {
   SyncHook,
   SyncWaterfallHook,
@@ -33,6 +32,9 @@ export type Manager =
   | JavaScriptManager;
 
 export interface LoaderOptions {
+  /**
+   * The unit is byte
+   */
   maxSize?: number;
 }
 
@@ -91,7 +93,7 @@ export class Loader {
     ),
   });
 
-  private options: LoaderOptions; // The unit is "b"
+  private options: LoaderOptions;
   private loadingList: Record<string, null | Promise<CacheValue<any>>>;
   private cacheStore: { [name: string]: AppCacheContainer };
 
@@ -99,6 +101,10 @@ export class Loader {
     this.options = options || {};
     this.loadingList = Object.create(null);
     this.cacheStore = Object.create(null);
+  }
+
+  setOptions(options: Partial<LoaderOptions>) {
+    this.options = { ...this.options, ...options };
   }
 
   clear(scope: string, fileType?: FileTypes) {

@@ -25,10 +25,10 @@ const animationNameRE = /^(-\w+-)?animation-name$/;
 
 class Compiler {
   public level = 1;
-  public prefix: string;
+  public id: string;
 
-  constructor(prefix: string) {
-    this.prefix = prefix || '';
+  constructor(id: string) {
+    this.id = id || '';
   }
 
   // 可以重写覆盖 emit
@@ -55,11 +55,9 @@ class Compiler {
   }
 
   addScope(selectors: Array<string>) {
-    if (!this.prefix) return selectors;
+    if (!this.id) return selectors;
 
     return selectors.map((s) => {
-      // remove duplication
-      if (s.startsWith(this.prefix)) return s;
       // prettier-ignore
       s =
         s === 'html' || s === ':root'
@@ -69,7 +67,7 @@ class Compiler {
             : s === 'head'
               ? `[${__MockHead__}]`
               : s;
-      return `${this.prefix} ${s}`;
+      return `#${this.id} ${s}`;
     });
   }
 
@@ -134,7 +132,7 @@ class Compiler {
   }
 
   keyframes(node: KeyframesNode) {
-    const name = this.prefix ? `${node.name}-${this.prefix}` : node.name;
+    const name = this.id ? `${this.id}-${node.name}` : node.name;
     return (
       this.emit(`@${node.vendor || ''}keyframes ${name}`, node.position) +
       this.emit(` {\n${this.indent(1)}`) +
@@ -203,13 +201,13 @@ class Compiler {
     // eslint-disable-next-line prefer-const
     let { value, property, position } = node;
 
-    if (this.prefix) {
+    if (this.id) {
       if (animationRE.test(property)) {
-        value = processAnimation(value, this.prefix);
+        value = processAnimation(value, this.id);
       } else if (animationNameRE.test(property)) {
         value = value
           .split(',')
-          .map((v) => (v === 'none' ? v : `${v.trim()}-${this.prefix}`))
+          .map((v) => (v === 'none' ? v : `${v.trim()}-${this.id}`))
           .join(',');
       }
     }
@@ -239,7 +237,7 @@ class Compiler {
   }
 }
 
-export function stringify(node: StylesheetNode, prefix: string) {
-  const compiler = new Compiler(prefix);
+export function stringify(node: StylesheetNode, id: string) {
+  const compiler = new Compiler(id);
   return compiler.compile(node);
 }
