@@ -2,9 +2,13 @@
   "private": true,
   "description": "A powerful micro front-end framework",
   "scripts": {
+    "bootstrap": "pnpm install --prefer-offline",
+    "build": "pnpm run build --parallel --filter @garfish/* --filter garfish",
+    "rebuild": "npm run clean-dist && npm run build",
+    "clean-dist": "pnpm -r exec -- rm -rf dist && rm -rf dist",
+    "prune": "pnpm -r exec -- rm -rf node_modules && rm -rf node_modules",
     "dev": "pnpm run start --parallel --filter @garfish-dev/*",
     "dev:docs": "pnpm run start --filter garfish-docs",
-    "build": "pnpm run build --parallel --filter @garfish/* --filter garfish",
     "build:docs": "pnpm run build --filter garfish-docs",
     "build:watch": "cross-env WATCH=true pnpm build",
     "test:e2e": "zx scripts/e2e.js",
@@ -13,7 +17,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --collect-coverage",
-    "cy:open": "cypress open",
+    "cy:open": "cypress open --config-file=cypress.config.ts",
     "cy:run": "cypress run",
     "type:check": "tsc -noEmit",
     "changeset": "npx changeset",
@@ -59,7 +63,7 @@
     "chalk": "4.1.2",
     "codecov": "^3.8.3",
     "cross-env": "7.0.3",
-    "cypress": "^9.7.0",
+    "cypress": "^10.3.0",
     "dayjs": "^1.11.2",
     "esbuild-plugin-replace": "1.0.7",
     "eslint": "7.32.0",
@@ -90,6 +94,7 @@
     "zx": "4.2.0"
   },
   "version": "1.9.0-beta.1",
+  "packageManager": "pnpm@7.3.0",
   "engines": {
     "node": ">=16.14.0"
   }
