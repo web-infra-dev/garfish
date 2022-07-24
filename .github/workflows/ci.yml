@@ -75,7 +75,7 @@ jobs:
     - name: update hard link
       run: pnpm install --filter=\!garfish-docs
     - name: Run cypress test
-      uses: cypress-io/github-action@v2
+      uses: cypress-io/github-action@v4
       with:
         install: false
         start: node scripts/devCypress.js
@@ -83,7 +83,6 @@ jobs:
         wait-on-timeout: 600
         parallel: true
         record: true
-        spec: cypress/integration/**
       env:
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
         # Recommended: pass the GitHub token lets this action correctly
