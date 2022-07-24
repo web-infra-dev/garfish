@@ -17,7 +17,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --collect-coverage",
-    "cy:open": "cypress open",
+    "cy:open": "cypress open --config-file=cypress.config.ts",
     "cy:run": "cypress run",
     "type:check": "tsc -noEmit",
     "changeset": "npx changeset",
