@@ -6,6 +6,8 @@ export type PropsInfo = {
   props: Record<string, any>;
 };
 
+export type AppInfo = PropsInfo;
+
 export type LoadRootComponent<T> = (opts: PropsInfo) => Promise<T>;
 
 export type TypeComponent<T> =
