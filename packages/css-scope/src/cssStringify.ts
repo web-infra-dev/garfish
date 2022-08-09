@@ -17,8 +17,8 @@ import {
   NamespaceNode,
   StylesheetNode,
   CustomMediaNode,
-} from './types';
-import { processAnimation } from './animation';
+} from './globalTypes';
+import { processAnimation } from './animationParser';
 
 const animationRE = /^(-\w+-)?animation$/;
 const animationNameRE = /^(-\w+-)?animation-name$/;
