@@ -78,7 +78,7 @@ export class Loader {
   public requestConfig: RequestInit | ((url: string) => RequestInit);
 
   public hooks = new PluginSystem({
-    error: new SyncHook<[Error, string], void>(),
+    error: new SyncHook<[Error, { scope: string }], void>(),
     loaded: new SyncWaterfallHook<LoadedHookArgs<Manager>>('loaded'),
     clear: new SyncWaterfallHook<{
       scope: string;
@@ -253,7 +253,7 @@ export class Loader {
       })
       .catch((e) => {
         __DEV__ && error(e);
-        this.hooks.lifecycle.error.emit(e, scope);
+        this.hooks.lifecycle.error.emit(e, { scope });
         throw e; // Let the upper application catch the error
       })
       .finally(() => {
