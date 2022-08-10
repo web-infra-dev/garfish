@@ -32,7 +32,7 @@ export const baseTsup = (pkg, deleteGlobalName = false): Options => {
   };
 
   // Can be directly by chrome plugins debugging injected garfish page
-  if (debug) {
+  if (deleteGlobalName) {
     delete options.globalName;
   }
   return options;
