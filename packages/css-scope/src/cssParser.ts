@@ -19,7 +19,7 @@ import {
   KeyframesNode,
   StylesheetNode,
   CustomMediaNode,
-} from './types';
+} from './globalTypes';
 
 const commentre = /\/\*[^*]*\*+([^/*][^*]*\*+)*\//g;
 

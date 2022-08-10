@@ -1,6 +1,6 @@
 import { warn, assert, isPlainObject } from '@garfish/utils';
 
-type Plugin<T extends Record<string, any>> = {
+export type Plugin<T extends Record<string, any>> = {
   [k in keyof T]?: Parameters<T[k]['on']>[0];
 } & {
   name: string;
@@ -10,7 +10,7 @@ type Plugin<T extends Record<string, any>> = {
 export class PluginSystem<T extends Record<string, any>> {
   lifecycle: T;
   lifecycleKeys: Array<keyof T>;
-  private registerPlugins: Record<string, Plugin<T>> = {};
+  registerPlugins: Record<string, Plugin<T>> = {};
 
   constructor(lifecycle: T) {
     this.lifecycle = lifecycle;
@@ -33,7 +33,7 @@ export class PluginSystem<T extends Record<string, any>> {
           this.lifecycle[key].on(pluginLife);
         }
       }
-    } else if (__DEV__) {
+    } else {
       warn(`Repeat to register plugin hooks "${pluginName}".`);
     }
   }
@@ -47,5 +47,24 @@ export class PluginSystem<T extends Record<string, any>> {
       if (key === 'name') continue;
       this.lifecycle[key].remove(plugin[key as string]);
     }
+  }
+
+  inherit<T extends PluginSystem<any>>({ lifecycle, registerPlugins }: T) {
+    for (const hookName in lifecycle) {
+      assert(
+        !this.lifecycle[hookName],
+        `"${hookName as string}" hook has conflict and cannot be inherited.`,
+      );
+      (this.lifecycle as any)[hookName] = lifecycle[hookName];
+    }
+
+    for (const pluginName in registerPlugins) {
+      assert(
+        !this.registerPlugins[pluginName],
+        `"${pluginName}" plugin has conflict and cannot be inherited.`,
+      );
+      this.usePlugin(registerPlugins[pluginName]);
+    }
+    return this as typeof this & T;
   }
 }

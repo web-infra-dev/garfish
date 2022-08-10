@@ -6,10 +6,6 @@ Inspired by [reworkcss/css](https://github.com/reworkcss/css).
 
 > [TJ](https://github.com/tj) is my idol.
 
-There are two implementations of this scheme, one depends on the browser platform, uses some dom APIs, and the other uses a pure parser process, which is suitable for scenarios such as ssr.
-
-We temporarily use the second option.
-
 ## Usage
 
 > Need webAssembly support
@@ -30,7 +26,6 @@ import { GarfishCssScope } from '@garfish/css-scope';
 Garfish.run({
   ...
   plugins: [
-    ...
     GarfishCssScope({
       fixBodyGetter: true,
       excludes: ['appName'],
