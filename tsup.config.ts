@@ -6,7 +6,7 @@ const debug = process.env.DEBUG;
 const sourcemap = Boolean(process.env.SOURCEMAP);
 const dts = process.env.DTS === 'false' ? false : true;
 
-export const baseTsup = (pkg): Options => {
+export const baseTsup = (pkg, deleteGlobalName = false): Options => {
   const options: Options = {
     dts,
     sourcemap,
@@ -32,7 +32,7 @@ export const baseTsup = (pkg): Options => {
   };
 
   // Can be directly by chrome plugins debugging injected garfish page
-  if (debug) {
+  if (deleteGlobalName) {
     delete options.globalName;
   }
   return options;
