@@ -138,5 +138,6 @@ export namespace interfaces {
     noEntry?: boolean;
     isInline?: boolean;
     isModule?: boolean;
+    originScript?: HTMLScriptElement
   }
 }
