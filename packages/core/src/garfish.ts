@@ -173,7 +173,7 @@ export class Garfish extends EventEmitter2 {
       }
 
       //merge configs again after beforeLoad for the reason of app may be re-registered during beforeLoad resulting in an incorrect information
-      appInfo = generateAppOptions(appName, this, options);
+      appInfo = generateAppOptions(appName, this, appInfo);
 
       assert(
         appInfo.entry,
