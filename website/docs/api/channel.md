@@ -36,7 +36,7 @@ const App = () => {
 };
 
 // 主应用触发监听事件
-api.getLoginInfo.then((res) => {
+api.getLoginInfo().then((res) => {
   if (res.code === 0) {
     window.Garfish.channel.emit('login', res.data);
   }
