@@ -161,11 +161,8 @@ describe('Core: load process', () => {
   });
 
   it('config provided by options in loadApp will have the highest priority after config merged', async () => {
-    const mockBeforeLoad = jest.fn(() => {
-      GarfishInstance.appInfos['vue-app'] = {
-        name: 'vue-app',
-        entry: vue3SubAppEntry,
-      };
+    const mockBeforeLoad = jest.fn((appInfo) => {
+      appInfo.entry = vue3SubAppEntry;
     });
 
     GarfishInstance.run({
@@ -182,10 +179,16 @@ describe('Core: load process', () => {
     await expect(
       GarfishInstance.loadApp('vue-app', {
         domGetter: '#container',
+        props: {
+          aaa: '123'
+        }
       }),
     ).resolves.toMatchObject({
       appInfo: {
         entry: vue3SubAppEntry,
+        props: {
+          aaa: '123'
+        }
       },
     });
 
