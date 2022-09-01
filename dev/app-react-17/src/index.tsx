@@ -53,3 +53,5 @@ if (!window.__GARFISH__) {
     document.querySelector('#root'),
   );
 }
+
+console.log('react 17 -- main document.currentScript', document.currentScript);

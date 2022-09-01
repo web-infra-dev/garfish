@@ -163,6 +163,7 @@ export class DynamicNodeProcessor {
                 this.sandbox.execScript(scriptCode, {}, url, {
                   isModule,
                   noEntry: true,
+                  originScript: this.el,
                 });
               } else {
                 warn(
@@ -180,7 +181,7 @@ export class DynamicNodeProcessor {
             },
           );
       } else if (code) {
-        this.sandbox.execScript(code, {}, baseUrl, { noEntry: true });
+        this.sandbox.execScript(code, {}, baseUrl, { noEntry: true, originScript: this.el, });
       }
       // To ensure the processing node to normal has been removed
       const scriptCommentNode = this.DOMApis.createScriptCommentNode({

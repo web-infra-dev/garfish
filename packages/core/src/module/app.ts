@@ -208,6 +208,7 @@ export class App {
         true,
         url,
         options?.async,
+        options?.originScript,
       );
       code += url ? `\n//# sourceURL=${url}\n` : '';
       if (!hasOwn(env, 'window')) {
@@ -217,7 +218,7 @@ export class App {
         };
       }
       evalWithEnv(`;${code}`, env, this.global);
-      revertCurrentScript();
+      setTimeout(revertCurrentScript,0);
     }
   }
 
@@ -535,6 +536,13 @@ export class App {
 
         if (jsManager) {
           const { url, scriptCode } = jsManager;
+          const mockOriginScript = document.createElement('script');
+          node.attributes.forEach((attribute)=>{
+            if (attribute.key) {
+              mockOriginScript.setAttribute(attribute.key, attribute.value || '');
+            }
+          });
+
           this.execScript(scriptCode, {}, url || this.appInfo.entry, {
             isModule,
             async: false,
@@ -542,6 +550,7 @@ export class App {
             noEntry: toBoolean(
               entryManager.findAttributeValue(node, 'no-entry'),
             ),
+            originScript: mockOriginScript,
           });
         } else if (__DEV__) {
           const async = entryManager.findAttributeValue(node, 'async');

@@ -398,17 +398,21 @@ export function setDocCurrentScript(
   define?: boolean,
   url?: string,
   async?: boolean,
+  originScript?: HTMLScriptElement,
 ) {
   if (!target) return noop;
   const el = document.createElement('script');
-  if (async) {
-    el.setAttribute('async', 'true');
+  
+  if (!url && code) {
+    el.textContent = code;
   }
 
-  if (url) {
-    el.setAttribute('src', url);
-  } else if (code) {
-    el.textContent = code;
+  originScript && originScript.getAttributeNames().forEach((attribute) => {
+    el.setAttribute(attribute, originScript.getAttribute(attribute) || '');
+  });
+
+  if (async) {
+    el.setAttribute('async', 'true');
   }
 
   const set = (val) => {
