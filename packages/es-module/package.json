@@ -1,6 +1,6 @@
 {
   "name": "@garfish/es-module",
-  "version": "1.10.2",
+  "version": "1.11.0",
   "description": "es module polyfill",
   "keywords": [
     "garfish",
