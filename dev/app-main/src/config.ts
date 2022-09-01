@@ -57,9 +57,7 @@ let defaultConfig: RunInfo = {
     // 默认值为 false. snapshot 表明是否开启快照沙箱，默认情况下关闭快照沙箱，使用 VM 沙箱（VM 沙箱支持多实例）
     // 当使用 loadApp 手动挂载子应用时，请确保 snapshot 设置为 false
     snapshot: false,
-
-    // 默认值为 false，是否自动修复前缀
-    fixBaseUrl: true,
+    
   },
 
   // autoRefreshApp: 主应用在已经打开子应用页面的前提下，跳转子应用的子路由触发子应用的视图更新，默认值为 true
