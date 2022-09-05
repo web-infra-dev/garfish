@@ -112,6 +112,7 @@ describe('Core: esm loader', () => {
       },
     },
     globalVarKey: 'globalVarKey',
+    isNoEntryScript: () => false,
   } as any);
   // @ts-ignore
   loader.execModuleCode = () =>

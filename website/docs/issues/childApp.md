@@ -411,6 +411,39 @@ garfish 子应用热更新问题请参考 [博客](/blog/hmr)
 > 解决方案
 
 - 将对应的 cdn script 增加 no-entry 属性：`<script no-entry="true" src="xxx"></script>`，设置该属性后对应的 script 内容将不会运行在 commonjs 环境，对应的环境变量也会正常的插入到子应用的 window 上
+
+## SyntaxError: Identifier 'exports' has already been declared
+
+> 问题概述
+
+这个问题其实和上面那个cdn的问题，原因是一样的，由于garfish会注入一个exports变量，而子应用某个脚本（比如vite自己的热更引入的`react-refresh-runtime.development.js`）的代码也写了类似`const exports = {}`的代码，导致出现重复声明而报错。
+
+> 解决方案
+
+解决办法还是和上面加`no-entry`一样，不会注入commonjs相关的环境变量，但是，考虑到某些脚本可能是构建工具默认注入的，无法修改script标签，所以可以在html入口处加入以下配置代码来达到同样的效果（以vite的`react-refresh`为例）：
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>vue sub app</title>
+    <!-- 必须是合法的JSON字符串，匹配规则很简单，就是实际加载的url字符串indexOf你的规则 -->
+    <script type="garfish-config">
+      {
+        "sandbox": {
+          "noEntryScripts": ["@react-refresh"]
+        }
+      }
+    </script>
+    <!-- 省略其它多余的代码 -->
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- 省略其它多余的代码 -->
+  </body>
+</html>
+```
+
 ## ESModule
 
 Garfish 核心库默认支持 esModule，但是需要关掉 vm 沙箱或者为快照沙箱时，才能够使用。
