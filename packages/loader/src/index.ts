@@ -34,6 +34,7 @@ export interface CacheValue<T extends Manager> {
   url: string;
   code: string;
   size: number;
+  scope: string;
   fileType: FileTypes | '';
   resourceManager: T | null;
 }
@@ -58,7 +59,7 @@ export class Loader {
   public requestConfig: RequestInit | ((url: string) => RequestInit);
 
   public hooks = new PluginSystem({
-    error: new SyncHook<[Error], void>(),
+    error: new SyncHook<[Error, { scope: string }], void>(),
     loaded: new SyncWaterfallHook<LoadedHookArgs<Manager>>('loaded'),
     clear: new SyncWaterfallHook<{
       scope: string;
@@ -66,6 +67,7 @@ export class Loader {
     }>('clear'),
     beforeLoad: new SyncWaterfallHook<{
       url: string;
+      scope: string;
       requestConfig: ResponseInit;
     }>('beforeLoad'),
   });
@@ -140,6 +142,7 @@ export class Loader {
     requestConfig.credentials = CrossOriginCredentials[crossOrigin];
     const resOpts = this.hooks.lifecycle.beforeLoad.emit({
       url,
+      scope,
       requestConfig,
     });
 
@@ -176,6 +179,7 @@ export class Loader {
           result,
           value: {
             url,
+            scope,
             resourceManager,
             fileType: fileType || '',
             // For performance reasons, take an approximation
@@ -189,7 +193,7 @@ export class Loader {
       })
       .catch((e) => {
         __DEV__ && error(e);
-        this.hooks.lifecycle.error.emit(e);
+        this.hooks.lifecycle.error.emit(e, { scope })
         throw e; // Let the upper application catch the error
       })
       .finally(() => {

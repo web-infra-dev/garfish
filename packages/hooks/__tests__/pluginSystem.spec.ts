@@ -84,4 +84,68 @@ describe('hooks plugin', () => {
     spy.mockReset();
     spy.mockRestore();
   });
+
+  it('Plugin inherit check(1)', () => {
+    const plugin1 = new PluginSystem({
+      a: new SyncHook<[string], void>(),
+    });
+    const plugin2 = new PluginSystem({
+      a: new SyncHook<[string], void>(),
+    });
+    expect(() => plugin2.inherit(plugin1)).toThrowError();
+  });
+
+  it('Plugin inherit check(2)', () => {
+    const plugin1 = new PluginSystem({
+      a: new SyncHook<[string], void>(),
+    });
+
+    plugin1.usePlugin({
+      name: 'test',
+      a() {},
+    });
+
+    const plugin2 = new PluginSystem({
+      b: new SyncHook<[string], void>(),
+    });
+
+    plugin2.usePlugin({
+      name: 'test',
+      b() {},
+    });
+
+    expect(() => plugin2.inherit(plugin1)).toThrowError();
+  });
+
+  it('Plugin inherit', () => {
+    let i = 0;
+    const plugin1 = new PluginSystem({
+      a: new SyncHook<[string], void>(),
+    });
+
+    plugin1.usePlugin({
+      name: 'test1',
+      a(data) {
+        i++;
+        expect(data).toBe('chen');
+      },
+    });
+
+    const plugin2 = new PluginSystem({
+      b: new SyncHook<[string], void>(),
+    });
+
+    const plugin3 = plugin2.inherit(plugin1);
+
+    plugin3.usePlugin({
+      name: 'test3',
+      a(data) {
+        i++;
+        expect(data).toBe('chen');
+      },
+    });
+
+    plugin3.lifecycle.a.emit('chen');
+    expect(i).toBe(2);
+  });
 });
