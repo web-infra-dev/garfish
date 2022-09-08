@@ -64,6 +64,6 @@ export class PluginSystem<T extends Record<string, any>> {
       );
       this.usePlugin(registerPlugins[pluginName]);
     }
-    return this as typeof this & T;
+    return this as this & T
   }
 }
