@@ -114,6 +114,7 @@ export namespace interfaces {
   export type AppConfig = Partial<AppGlobalConfig> & {
     name: string;
     entry?: string;
+    type?: string;
     cache?: boolean;
     nested?: any;
     noCheckProvider?: boolean;

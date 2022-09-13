@@ -16,6 +16,7 @@ const appConfigKeysMap: {
 } = {
   // subApp info return keys
   name: true,
+  type: true,
   entry: true,
   activeWhen: true,
   basename: true,
