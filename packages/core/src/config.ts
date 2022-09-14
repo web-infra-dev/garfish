@@ -1,4 +1,4 @@
-import { error, isObject, deepMerge } from '@garfish/utils';
+import { error, isObject, deepMerge, filterUndefinedVal } from '@garfish/utils';
 import { AppInfo } from './module/app';
 import { interfaces } from './interface';
 
@@ -24,23 +24,23 @@ const filterAppConfigKeys: Record<
 };
 
 // `props` may be responsive data
-export const deepMergeConfig = <T extends Partial<AppInfo>>(
+export const deepMergeConfig = <
+  T extends { props?: Record<string, any> },
+  U extends { props?: Record<string, any> },
+>(
   globalConfig: T,
-  localConfig: T,
+  localConfig: U,
 ) => {
-  const globalProps = globalConfig.props;
-  const localProps = localConfig.props;
+  const props = {
+    ...(globalConfig.props || {}),
+    ...(localConfig.props || {}),
+  };
 
-  if (globalProps || localProps) {
-    globalConfig = { ...globalConfig };
-    localConfig = { ...localConfig };
-    delete globalConfig.props;
-    delete localConfig.props;
-  }
-
-  const result = deepMerge(globalConfig, localConfig);
-  if (globalProps) result.props = { ...globalProps };
-  if (localProps) result.props = { ...(result.props || {}), ...localProps };
+  const result = deepMerge(
+    filterUndefinedVal(globalConfig),
+    filterUndefinedVal(localConfig),
+  );
+  result.props = props;
   return result;
 };
 
