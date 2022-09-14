@@ -14,6 +14,7 @@ export async function request(url: string, config: RequestInit) {
 
   return {
     code,
+    type,
     result,
     mimeType,
     size: Number.isNaN(size) ? null : size,
