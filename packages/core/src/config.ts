@@ -1,50 +1,26 @@
-import {
-  warn,
-  error,
-  assert,
-  hasOwn,
-  isObject,
-  deepMerge,
-  isPlainObject,
-} from '@garfish/utils';
+import { error, isObject, deepMerge } from '@garfish/utils';
 import { AppInfo } from './module/app';
 import { interfaces } from './interface';
-import { appLifecycle } from './lifecycle';
 
-const appConfigKeysMap: {
-  [k in keyof interfaces.AppInfo | 'activeWhen']: boolean;
-} = {
-  // subApp info return keys
-  name: true,
-  type: true,
-  entry: true,
-  activeWhen: true,
-  basename: true,
-  domGetter: true,
-  props: true,
-  sandbox: true,
-  cache: true,
-  noCheckProvider: true,
-  protectVariable: true,
-  customLoader: true,
-
-  // appLifecycle keys
-  beforeEval: true,
-  afterEval: true,
-  beforeMount: true,
-  afterMount: true,
-  errorMountApp: true,
-  beforeUnmount: true,
-  afterUnmount: true,
-  errorUnmountApp: true,
-  errorExecCode: true,
-
-  // filter keys
-  nested: false,
-  insulationVariable: false,
-  active: false,
-  deactive: false,
-  rootPath: false,
+// filter unless global config
+const filterAppConfigKeys: Record<
+  Exclude<keyof interfaces.Options, keyof AppInfo>,
+  true
+> = {
+  beforeBootstrap: true,
+  bootstrap: true,
+  beforeRegisterApp: true,
+  registerApp: true,
+  beforeLoad: true,
+  afterLoad: true,
+  errorLoadApp: true,
+  appID: true,
+  apps: true,
+  disableStatistics: true,
+  disablePreloadApp: true,
+  plugins: true,
+  autoRefreshApp: true,
+  onNotMatchRouter: true,
 };
 
 // `props` may be responsive data
@@ -72,15 +48,15 @@ export const getAppConfig = <T extends Partial<AppInfo>>(
   globalConfig: T,
   localConfig: T,
 ): T => {
-  const mergeConfig = deepMergeConfig(globalConfig, localConfig);
+  const mergeResult = deepMergeConfig(globalConfig, localConfig);
 
-  Object.keys(mergeConfig).forEach((key) => {
-    if (!appConfigKeysMap[key] || typeof mergeConfig[key] === 'undefined') {
-      delete mergeConfig[key];
+  Object.keys(mergeResult).forEach((key: keyof interfaces.Config) => {
+    if (filterAppConfigKeys[key]) {
+      delete mergeResult[key];
     }
   });
 
-  return mergeConfig;
+  return mergeResult;
 };
 export const generateAppOptions = (
   appName: string,
