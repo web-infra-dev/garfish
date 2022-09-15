@@ -211,4 +211,4 @@ export interface OverridesData {
 ### noCheckProvider
 
 - Type: <Highlight> boolean </Highlight>
-- 是够检查 `provider` 函数，可选，默认为 true；
+- 是否检查 `provider` 函数，可选，默认为 true；
