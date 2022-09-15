@@ -139,3 +139,11 @@ export function isHtmlType({
 
   return false;
 }
+
+export function isGarfishConfigType({
+  type = '',
+}: {
+  type?: string;
+}) {
+  return /garfish-config/i.test(type);
+}

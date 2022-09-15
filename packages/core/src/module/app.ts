@@ -11,6 +11,7 @@ import {
   isJsType,
   isObject,
   isPromise,
+  isGarfishConfigType,
   toBoolean,
   findTarget,
   evalWithEnv,
@@ -80,7 +81,7 @@ export class App {
   public entryManager: TemplateManager;
   public appPerformance: SubAppObserver;
   public customLoader?: CustomerLoader;
-
+  public childGarfishConfig: interfaces.ChildGarfishConfig = {};
   private active = false;
   public mounting = false;
   private unmounting = false;
@@ -147,6 +148,11 @@ export class App {
             url: entryManager.url ? transformUrl(entryManager.url, url) : url,
           });
         }
+        if (isGarfishConfigType({ type: entryManager.findAttributeValue(node, 'type') })) {
+          // garfish config script founded
+          // parse it
+          this.childGarfishConfig = JSON.parse((node.children?.[0] as Text)?.content);
+        }
       });
     }
     this.appInfo.entry &&
@@ -161,6 +167,10 @@ export class App {
     return this.provider
       ? Promise.resolve(this.provider)
       : this.checkAndGetProvider();
+  }
+
+  isNoEntryScript(url = '') {
+    return this.childGarfishConfig.sandbox?.noEntryScripts?.some(item => url.indexOf(item) > -1);
   }
 
   execScript(
@@ -198,7 +208,12 @@ export class App {
     // If the node is an es module, use native esmModule
     if (options && options.isModule) {
       this.esmQueue.add(async (next) => {
-        await this.esModuleLoader.load(code, env, url, options);
+        await this.esModuleLoader.load(code, {
+          // rebuild full env
+          ...this.getExecScriptEnv(),
+          // this 'env' may lost commonjs data
+          ...env,
+        }, url, options);
         next();
       });
     } else {
@@ -543,12 +558,14 @@ export class App {
             }
           });
 
-          this.execScript(scriptCode, {}, url || this.appInfo.entry, {
+          const targetUrl = url || this.appInfo.entry;
+          this.execScript(scriptCode, {}, targetUrl, {
             isModule,
             async: false,
             isInline: jsManager.isInlineScript(),
             noEntry: toBoolean(
-              entryManager.findAttributeValue(node, 'no-entry'),
+              entryManager.findAttributeValue(node, 'no-entry')
+                || this.isNoEntryScript(targetUrl),
             ),
             originScript: mockOriginScript,
           });

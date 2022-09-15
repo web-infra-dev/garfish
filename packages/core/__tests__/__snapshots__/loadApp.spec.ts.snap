@@ -13,6 +13,22 @@ exports[`Core: load process domGetter cssSelector 1`] = `
       vue sub app
     </title>
     
+    
+    <script
+      type="garfish-config"
+    >
+      
+      {
+        "sandbox": {
+          "noEntryScripts": ["scripts/no-entry.js"]
+        }
+      }
+    
+    </script>
+    
+    
+    <!--&lt;script src="./scripts/no-entry.js"  execute by garfish&gt;&lt;/script&gt;-->
+    
   
   </div>
   <div
@@ -67,6 +83,22 @@ exports[`Core: load process domGetter cssSelector delay 2000ms can work normally
       vue sub app
     </title>
     
+    
+    <script
+      type="garfish-config"
+    >
+      
+      {
+        "sandbox": {
+          "noEntryScripts": ["scripts/no-entry.js"]
+        }
+      }
+    
+    </script>
+    
+    
+    <!--&lt;script src="./scripts/no-entry.js"  execute by garfish&gt;&lt;/script&gt;-->
+    
   
   </div>
   <div
@@ -120,6 +152,22 @@ exports[`Core: load process domGetter is function 1`] = `
     <title>
       vue sub app
     </title>
+    
+    
+    <script
+      type="garfish-config"
+    >
+      
+      {
+        "sandbox": {
+          "noEntryScripts": ["scripts/no-entry.js"]
+        }
+      }
+    
+    </script>
+    
+    
+    <!--&lt;script src="./scripts/no-entry.js"  execute by garfish&gt;&lt;/script&gt;-->
     
   
   </div>

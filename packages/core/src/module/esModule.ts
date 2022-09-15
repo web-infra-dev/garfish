@@ -93,6 +93,7 @@ export class ESModuleLoader {
 
   private async fetchModuleResource(
     envVarStr: string,
+    noEntryEnvVarStr: string,
     saveUrl: string,
     requestUrl: string,
   ) {
@@ -113,11 +114,12 @@ export class ESModuleLoader {
       scriptCode = await this.analysisModule(
         scriptCode,
         envVarStr,
+        noEntryEnvVarStr,
         saveUrl,
         url,
       );
       const blobUrl = await this.createBlobUrl(
-        `import.meta.url='${url}';${envVarStr}${scriptCode}\n${sourcemap}`,
+        `import.meta.url='${url}';${this.app.isNoEntryScript(url) ? noEntryEnvVarStr : envVarStr}${scriptCode}\n${sourcemap}`,
       );
       this.setBlobUrl(saveUrl, blobUrl);
     }
@@ -151,7 +153,8 @@ export class ESModuleLoader {
 
   private async analysisModule(
     code: string,
-    envVarStr,
+    envVarStr: string,
+    noEntryEnvVarStr: string,
     baseUrl?: string,
     realUrl?: string | null,
   ) {
@@ -219,6 +222,7 @@ export class ESModuleLoader {
               // fetch and analyze wildcard export module
               await this.fetchModuleResource(
                 envVarStr,
+                noEntryEnvVarStr,
                 wildcardExportSaveUrl,
                 this.getUrl(realUrl, wildcardExportUrl),
               );
@@ -250,7 +254,7 @@ export class ESModuleLoader {
           }
           newModuleName = currentModule.shellUrl;
         } else if (!currentModule) {
-          await this.fetchModuleResource(envVarStr, saveUrl, requestUrl);
+          await this.fetchModuleResource(envVarStr, noEntryEnvVarStr, saveUrl, requestUrl);
           currentModule = this.moduleCache[saveUrl];
           const { blobUrl, shellUrl, shellExecuted } = currentModule;
           newModuleName = blobUrl!;
@@ -327,7 +331,7 @@ export class ESModuleLoader {
           }
           let targetModule = this.moduleCache[saveUrl];
           if (!targetModule?.blobUrl) {
-            await this.fetchModuleResource(envVarStr, saveUrl, requestUrl);
+            await this.fetchModuleResource(envVarStr, noEntryEnvVarStr, saveUrl, requestUrl);
             targetModule = this.moduleCache[saveUrl];
           }
           if (
@@ -350,11 +354,19 @@ export class ESModuleLoader {
           return this.execModuleCode(targetModule.blobUrl!);
         },
       };
-
-      const envVarStr = Object.keys(env).reduce((prevCode, name) => {
-        if (name === 'resolve' || name === 'import') return prevCode;
-        return `${prevCode} var ${name} = window.${this.globalVarKey}.${name};`;
-      }, '');
+      const genEnvVarStr = (targetEnv: Record<string, any>, noEntry?: boolean) => {
+        const newEnv = { ...targetEnv };
+        if (noEntry) {
+          delete newEnv.exports;
+          delete newEnv.module;
+        }
+        return Object.keys(newEnv).reduce((prevCode, name) => {
+          if (name === 'resolve' || name === 'import') return prevCode;
+          return `${prevCode} var ${name} = window.${this.globalVarKey}.${name};`;
+        }, '');
+      };
+      const envVarStr = genEnvVarStr(env);
+      const noEntryEnvVarStr = genEnvVarStr(env, true);
 
       let sourcemap = '';
       if (!haveSourcemap(code) && url) {
@@ -366,8 +378,8 @@ export class ESModuleLoader {
         );
       }
 
-      code = await this.analysisModule(code, envVarStr, url, url);
-      code = `import.meta.url='${url}';${envVarStr}${code}\n;window.${this.globalVarKey}.resolve();\n${sourcemap}`;
+      code = await this.analysisModule(code, envVarStr, noEntryEnvVarStr, url, url);
+      code = `import.meta.url='${url}';${options?.noEntry ? noEntryEnvVarStr : envVarStr}${code}\n;window.${this.globalVarKey}.resolve();\n${sourcemap}`;
 
       this.app.global[this.globalVarKey] = env;
 

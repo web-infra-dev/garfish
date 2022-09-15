@@ -140,4 +140,10 @@ export namespace interfaces {
     isModule?: boolean;
     originScript?: HTMLScriptElement
   }
+
+  export interface ChildGarfishConfig {
+    sandbox?: {
+      noEntryScripts?: string[];
+    }
+  }
 }
