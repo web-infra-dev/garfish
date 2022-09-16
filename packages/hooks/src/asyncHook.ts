@@ -16,6 +16,8 @@ export class AsyncHook<
           return false; // Abort process
         } else if (i < ls.length) {
           return Promise.resolve(ls[i++].apply(null, data)).then(call);
+        } else {
+          return prev;
         }
       };
       result = call();
