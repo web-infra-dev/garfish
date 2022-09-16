@@ -144,6 +144,7 @@ export namespace interfaces {
   export interface ChildGarfishConfig {
     sandbox?: {
       noEntryScripts?: string[];
+      asyncProviderTimeout?: number;
     }
   }
 }
