@@ -56,7 +56,7 @@ export function getPath(basename: string = '/', pathname?: string) {
 
 export function getAppRootPath(appInfo: interfaces.AppInfo) {
   const path = getPath(appInfo.basename, location.pathname);
-  let appRootPath = appInfo.basename === '/' ? '' : appInfo.basename;
+  let appRootPath = appInfo.basename === '/' ? '' : (appInfo.basename || '');
   if (typeof appInfo.activeWhen === 'string') {
     appRootPath += appInfo.activeWhen;
   } else {
