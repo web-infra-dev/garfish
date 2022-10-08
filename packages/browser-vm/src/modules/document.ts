@@ -39,7 +39,7 @@ export const documentModule = (sandbox: Sandbox) => {
       set: createSetter(sandbox),
       defineProperty: createDefineProperty(),
       getPrototypeOf () {
-        return Document.prototype;
+        return HTMLDocument.prototype || Document.prototype;
       },
     },
   );
