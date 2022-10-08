@@ -1,9 +1,10 @@
-import { warn } from '@garfish/utils';
+import { safeWrapper, warn } from '@garfish/utils';
 import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
-import { sandboxMap, isStyledComponentsLike } from '../utils';
+import { isInIframe, sandboxMap, isStyledComponentsLike } from '../utils';
 import { injectHandlerParams } from './processParams';
 import { DynamicNodeProcessor, rawElementMethods } from './processor';
+import { SandboxOptions } from '../types';
 
 const mountElementMethods = [
   'append',
@@ -77,13 +78,13 @@ function handleOwnerDocument() {
   });
 }
 
-export function makeElInjector() {
+export function makeElInjector(sandboxConfig: SandboxOptions) {
   if ((makeElInjector as any).hasInject) return;
   (makeElInjector as any).hasInject = true;
 
   if (typeof window.Element === 'function') {
     // iframe can read html container this can't point to proxyDocument has Illegal invocation error
-    // if (!isInIframe()) handleOwnerDocument();
+    if (sandboxConfig.fixBaseUrl) safeWrapper(()=> handleOwnerDocument());
     const rewrite = (
       methods: Array<string>,
       builder: typeof injector | typeof injectorRemoveChild,

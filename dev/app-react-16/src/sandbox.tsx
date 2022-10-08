@@ -83,6 +83,14 @@ export default function () {
       >
         add script test onerror
       </Button>
+      <div className={'instanceof'}>
+        <div data-test={"document-instanceof"}>document instanceof Document: {String(document instanceof Document)}</div>
+        <div data-test={'document-parentNode'}>document.body.parentNode?.parentNode: {String(document === document.body.parentNode?.parentNode)}</div>
+      </div>
+      <div className='pre-fix'>
+        <iframe data-test={'iframe-pre-fix'} src="/iframe" style={{display: 'none'}} />
+        <img data-test={'img-pre-fix'} src="/img"  style={{display: 'none'}} />
+      </div>
     </div>
   );
 }

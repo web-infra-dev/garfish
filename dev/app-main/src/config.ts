@@ -27,6 +27,7 @@ let defaultConfig: RunInfo = {
     //  strictIsolation 表明是否开启开启严格隔离，开启严格隔离后，子应用的渲染节点将会开启 Shadow DOM close 模式，
     // 并且子应用的查询和添加行为仅会在 DOM 作用域内进行
     strictIsolation: false,
+    fixBaseUrl: true,
 
     // 覆盖子应用的执行上下文，使用自定义的执行上下文，例如子应用 localStorage 使用当前主应用 localStorage
     // 仅在 snapshot: false 时有效

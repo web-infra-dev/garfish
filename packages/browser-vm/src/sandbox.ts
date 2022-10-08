@@ -114,7 +114,7 @@ export class Sandbox {
       overrideList: {},
     };
     // Inject Global capture
-    makeElInjector();
+    makeElInjector(this.options);
     // The default startup sandbox
     this.start();
     sandboxMap.set(this);
