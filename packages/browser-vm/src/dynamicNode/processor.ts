@@ -44,18 +44,19 @@ export class DynamicNodeProcessor {
     return this.tagName === tag;
   }
 
-  private fixResourceNodeUrl() {
+  private fixResourceNodeUrl(el: any) {
     const baseUrl = this.sandbox.options.baseUrl;
     if (baseUrl) {
-      const src = this.el.getAttribute('src');
-      const href = this.el.getAttribute('href');
-      src && (this.el.src = transformUrl(baseUrl, src));
-      href && (this.el.href = transformUrl(baseUrl, href));
-      const url = this.el.src || this.el.href;
+      const src = el.getAttribute('src');
+      const href = el.getAttribute('href');
+      src && (el.src = transformUrl(baseUrl, src));
+      href && (el.href = transformUrl(baseUrl, href));
+      const url = el.src || el.href;
 
-      if (url) {
+      const includeUrl = this.sandbox.options.sourceList?.find((source)=> source.url === url);
+      if (url && !includeUrl) {
         this.sandbox.options.sourceList?.push({
-          tagName: this.el.tagName,
+          tagName: el.tagName,
           url,
         });
       }
@@ -305,7 +306,7 @@ export class DynamicNodeProcessor {
 
     // Deal with some static resource nodes
     if (sourceListTags.includes(this.tagName)) {
-      this.fixResourceNodeUrl();
+      this.fixResourceNodeUrl(this.el);
     }
 
     // Add dynamic script node by loader
@@ -353,6 +354,14 @@ export class DynamicNodeProcessor {
           return this.el;
         });
       }
+    }
+
+    // fix innerHTML dom iframe、img src
+    let needFixDom = context.querySelectorAll('iframe,img,video,link,script,audio,style');
+    if (needFixDom.length > 0) {
+      needFixDom.forEach((dom)=>{
+        safeWrapper(()=> this.fixResourceNodeUrl(dom));
+      });
     }
 
     // Fix the bug of react hmr
