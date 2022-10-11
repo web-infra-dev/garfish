@@ -403,7 +403,7 @@ export function setDocCurrentScript(
   };
 
   set(el);
-  return () => set(null);
+  return () => safeWrapper(()=> delete target.currentScript);
 }
 
 export function _extends(d, b) {

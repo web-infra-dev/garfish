@@ -218,7 +218,7 @@ export class App {
         };
       }
       evalWithEnv(`;${code}`, env, this.global);
-      revertCurrentScript();
+      Promise.resolve().then(revertCurrentScript);
     }
   }
 
