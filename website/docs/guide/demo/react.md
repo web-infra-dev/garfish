@@ -57,7 +57,7 @@ export const provider = reactBridge({
  export const provider = () => {
    return {
      // 和子应用独立运行时一样，将子应用渲染至对应的容器节点，根据不同的框架使用不同的渲染方式
-     render({ dom, basename, props})) {
+     render({ dom, basename, props}) {
        ReactDOM.render(<RootComponent {...props} />, root);
      },
      destroy({ dom, basename}) {
