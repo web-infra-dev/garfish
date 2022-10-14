@@ -357,11 +357,13 @@ export class DynamicNodeProcessor {
     }
 
     // fix innerHTML dom iframe、img src
-    let needFixDom = this.el.querySelectorAll('iframe,img,video,link,script,audio,style');
-    if (needFixDom.length > 0) {
-      needFixDom.forEach((dom)=>{
-        safeWrapper(()=> this.fixResourceNodeUrl(dom));
-      });
+    if (this.el && this.el.querySelectorAll) {
+      let needFixDom = this.el.querySelectorAll('iframe,img,video,link,script,audio,style');
+      if (needFixDom.length > 0) {
+        needFixDom.forEach((dom)=>{
+          safeWrapper(()=> this.fixResourceNodeUrl(dom));
+        });
+      }
     }
 
     // Fix the bug of react hmr
