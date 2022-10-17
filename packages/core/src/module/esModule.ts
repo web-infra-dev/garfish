@@ -64,6 +64,7 @@ interface ModuleCacheItem {
   blobUrl?: string;
   shellUrl?: string;
   shellExecuted?: boolean;
+  shellReferCount?: number;
   analysis?: ReturnType<typeof parse>;
   source: string;
 }
@@ -252,23 +253,28 @@ export class ESModuleLoader {
               }\n//# sourceURL=${saveUrl}?cycle`,
             );
           }
+          // For concurrent case, multiple loading file may use the same circular dependency
+          // just count it
+          currentModule.shellReferCount = (currentModule.shellReferCount ?? 0) + 1;
           newModuleName = currentModule.shellUrl;
         } else if (!currentModule) {
           await this.fetchModuleResource(envVarStr, noEntryEnvVarStr, saveUrl, requestUrl);
           currentModule = this.moduleCache[saveUrl];
-          const { blobUrl, shellUrl, shellExecuted } = currentModule;
-          newModuleName = blobUrl!;
-          if (shellUrl && !shellExecuted) {
-            // find circular shell, just execute it
-            shellExecutionCode += genShellExecutionCode(
-              i,
-              newModuleName,
-              shellUrl,
-            );
-            currentModule.shellExecuted = true;
-          }
+          newModuleName = currentModule.blobUrl!;
         } else {
           newModuleName = currentModule.blobUrl!;
+        }
+        const { shellUrl, shellExecuted, shellReferCount } = currentModule;
+        if (shellUrl && !shellExecuted && shellReferCount) {
+          // find circular shell, just execute it
+          shellExecutionCode += genShellExecutionCode(
+            i,
+            newModuleName,
+            shellUrl,
+          );
+          currentModule.shellReferCount = shellReferCount - 1;
+          // set true while the 'shellReferCount' value is zero
+          currentModule.shellExecuted = currentModule.shellReferCount <= 0;
         }
       }
       result = processImportModule(importAnalysis, newModuleName || moduleName);
