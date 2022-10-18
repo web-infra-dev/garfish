@@ -351,7 +351,7 @@ export class Sandbox {
     } catch (e) {
       this.processExecError(e, url, env, options);
     } finally {
-      setTimeout(revertCurrentScript,0);
+      Promise.resolve().then(revertCurrentScript);
     }
 
     this.hooks.lifecycle.afterInvoke.emit(codeRef, url, env, options);

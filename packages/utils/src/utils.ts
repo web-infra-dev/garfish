@@ -414,7 +414,7 @@ export function setDocCurrentScript(
   if (async) {
     el.setAttribute('async', 'true');
   }
-
+ 
   const set = (val) => {
     try {
       if (define) {
@@ -434,7 +434,7 @@ export function setDocCurrentScript(
   };
 
   set(el);
-  return () => set(null);
+  return () => safeWrapper(()=> delete target.currentScript);
 }
 
 export function _extends(d, b) {
