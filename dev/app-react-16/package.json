@@ -39,6 +39,7 @@
     "babel-loader": "^8.1.0",
     "babel-register": "^6.26.0",
     "cross-env": "^7.0.3",
+    "react-svg": "15.1.9",
     "css-loader": "^5.2.7",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.1",
