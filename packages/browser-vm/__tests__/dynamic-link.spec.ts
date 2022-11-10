@@ -13,6 +13,8 @@ describe('Sandbox: dynamic link', () => {
   const withSuffix = '/resources/links/suffix.css';
   const withoutSuffix = '/resources/links/no-suffix';
   const withoutSuffixAndContentType = '/resources/links/no-content-type-suffix';
+  const linkOrder1 = '/resources/links/link-order-1.css';
+  const linkOrder2 = '/resources/links/link-order-2.css';
   const styleType = 'text/css';
   const jsonType = 'application/json';
   mockStaticServer({
@@ -27,6 +29,14 @@ describe('Sandbox: dynamic link', () => {
       [withoutSuffixAndContentType]: {
         'Content-Type': jsonType,
       },
+      [linkOrder1]: {
+        'Content-Type': styleType,
+        timeConsuming: 500,
+      },
+      [linkOrder2]: {
+        'Content-Type': styleType,
+        timeConsuming: 100,
+      }
     },
   });
 
@@ -112,6 +122,31 @@ describe('Sandbox: dynamic link', () => {
           jestDone();
         }
         document.head.appendChild(dynamicLink);
+      `),
+      { jestDone: done },
+    );
+  });
+
+  it('dynamic inject link by order', (done) => {
+    sandbox.execScript(
+      go(`
+        let a = document.createElement("link");
+        a.setAttribute("rel", "stylesheet");
+        a.setAttribute("href", "${linkOrder1}");
+        a.setAttribute("test-id", "order1");
+        document.head.appendChild(a);
+
+        let b = document.createElement("link");
+        b.setAttribute("rel", "stylesheet");
+        b.setAttribute("href", "${linkOrder2}");
+        b.setAttribute("test-id", "order2");
+        b.onload = function () {
+          let links = document.querySelectorAll("style");
+          expect(links[0].innerHTML).toContain("red");
+          expect(links[1].innerHTML).toContain("blue");
+          jestDone();
+        };
+        document.head.appendChild(b);
       `),
       { jestDone: done },
     );

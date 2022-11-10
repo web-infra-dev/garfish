@@ -15,7 +15,7 @@ import {
   __REMOVE_NODE__,
 } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
-import { rootElm, isStyledComponentsLike } from '../utils';
+import { rootElm, isStyledComponentsLike, LockQueue } from '../utils';
 
 const isInsertMethod = makeMap(['insertBefore', 'insertAdjacentElement']);
 
@@ -27,6 +27,7 @@ export class DynamicNodeProcessor {
   private sandbox: Sandbox;
   private DOMApis: DOMApis;
   private methodName: string;
+  static linkLock: LockQueue = new LockQueue();
   private rootElement: Element | ShadowRoot | Document;
   private nativeAppend = rawElementMethods['appendChild'];
   private nativeRemove = rawElementMethods['removeChild'];
@@ -92,14 +93,16 @@ export class DynamicNodeProcessor {
       if (href) {
         const { baseUrl, namespace, styleScopeId } = this.sandbox.options;
         const fetchUrl = baseUrl ? transformUrl(baseUrl, href) : href;
-
+        // add lock to make sure render link node in order
+        const lockId = DynamicNodeProcessor.linkLock.genId();
         this.sandbox.loader
           .load<StyleManager>({
             scope: namespace,
             url: fetchUrl,
             defaultContentType: type,
           })
-          .then(({ resourceManager: styleManager }) => {
+          .then(async ({ resourceManager: styleManager }) => {
+            await DynamicNodeProcessor.linkLock.wait(lockId);
             if (styleManager) {
               styleManager.correctPath();
               if (styleScopeId) {
@@ -108,6 +111,7 @@ export class DynamicNodeProcessor {
                   rootElId: styleScopeId(),
                 });
               }
+              DynamicNodeProcessor.linkLock.release();
               callback(styleManager.renderAsStyleElement());
             } else {
               warn(
@@ -117,6 +121,7 @@ export class DynamicNodeProcessor {
             this.dispatchEvent('load');
           })
           .catch((e) => {
+            DynamicNodeProcessor.linkLock.release(lockId);
             __DEV__ && warn(e);
             this.dispatchEvent('error', {
               error: e,
