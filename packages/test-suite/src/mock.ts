@@ -40,19 +40,25 @@ export function mockStaticServer({
             ? 'text/css'
             : 'text/plain';
     const { timeConsuming = 0, ...headers} = (customerHeaders[pathname] || ({timeConsuming: 0})) ;
-    return new Promise((resolve) => {
-      const res = {
-        url: req.url,
-        body: fs.readFileSync(fullDir, 'utf-8'),
-        headers: {
-          'Content-Type': mimeType,
-          ...(headers || {}),
-        },
-      };
-      if (timeConsuming) {
-        setTimeout(() => resolve(res), timeConsuming);
-      } else {
-        resolve(res);
+    
+    return new Promise((resolve,reject) => {
+      try {
+        const body = fs.readFileSync(fullDir, 'utf-8');
+        const res = {
+          url: req.url,
+          body,
+          headers: {
+            'Content-Type': mimeType,
+            ...(headers || {}),
+          },
+        };
+        if (timeConsuming) {
+          setTimeout(() => resolve(res), timeConsuming);
+        } else {
+          resolve(res);
+        }
+      } catch(err){
+        return reject(err);
       }
     });
   });

@@ -182,7 +182,7 @@ interface LockItem {
 
 export class LockQueue {
   private id = 0;
-  public lockQueue: LockItem[] = [];
+  private lockQueue: LockItem[] = [];
 
   genId() {
     const lockId = this.id;
@@ -229,12 +229,12 @@ export class LockQueue {
     const { lockQueue } = this;
     if (id) {
       const findIndex = lockQueue.findIndex(item => item.id === id);
-      lockQueue.splice(findIndex, 1)[0].resolve();
+      const lockItem = lockQueue.splice(findIndex, 1);
+      lockItem[0].resolve();
     } else {
       const firstLock = lockQueue.shift();
-      if (!firstLock) return;
       // resolve the promise of current lock
-      firstLock.resolve();
+      firstLock && firstLock.resolve();
     }
   }
 

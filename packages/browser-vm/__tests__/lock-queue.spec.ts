@@ -8,7 +8,6 @@ describe("lock queue",()=>{
         const lockId2 = lockQueue.genId();
         setTimeout(async ()=>{
             await lockQueue.wait(lockId1);
-            expect(1).toBe(1);
             lockQueue.release();
         }, 1000);
         setTimeout(async ()=>{
