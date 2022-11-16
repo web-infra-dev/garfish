@@ -73,7 +73,7 @@ export class DynamicNodeProcessor {
       if (isError && errInfo) {
         event = new ErrorEvent(type, {
           ...errInfo,
-          message: errInfo.error.message,
+          message: errInfo.error?.message,
         });
       } else {
         event = new Event(type);
@@ -111,7 +111,6 @@ export class DynamicNodeProcessor {
                   rootElId: styleScopeId(),
                 });
               }
-              DynamicNodeProcessor.linkLock.release();
               callback(styleManager.renderAsStyleElement());
             } else {
               warn(
@@ -119,6 +118,7 @@ export class DynamicNodeProcessor {
               );
             }
             this.dispatchEvent('load');
+            DynamicNodeProcessor.linkLock.release();
           })
           .catch((e) => {
             DynamicNodeProcessor.linkLock.release(lockId);

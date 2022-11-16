@@ -15,6 +15,8 @@ describe('Sandbox: dynamic link', () => {
   const withoutSuffixAndContentType = '/resources/links/no-content-type-suffix';
   const linkOrder1 = '/resources/links/link-order-1.css';
   const linkOrder2 = '/resources/links/link-order-2.css';
+  const linkOrder3 = '/resources/links/link-order-3.css';
+  const linkOrder404 = '/resources/links/404.css';
   const styleType = 'text/css';
   const jsonType = 'application/json';
   mockStaticServer({
@@ -36,6 +38,10 @@ describe('Sandbox: dynamic link', () => {
       [linkOrder2]: {
         'Content-Type': styleType,
         timeConsuming: 100,
+      },
+      [linkOrder3]: {
+        'Content-Type': styleType,
+        timeConsuming: 300,
       }
     },
   });
@@ -140,13 +146,24 @@ describe('Sandbox: dynamic link', () => {
         b.setAttribute("rel", "stylesheet");
         b.setAttribute("href", "${linkOrder2}");
         b.setAttribute("test-id", "order2");
-        b.onload = function () {
+        document.head.appendChild(b);
+
+        let c = document.createElement("link");
+        c.setAttribute("rel", "stylesheet");
+        c.setAttribute("href", "${linkOrder3}");
+        c.setAttribute("test-id", "order3");
+        c.onload = function () {
           let links = document.querySelectorAll("style");
+          expect(links[0].innerHTML).toContain("link-order-1.css");
           expect(links[0].innerHTML).toContain("red");
+          expect(links[1].innerHTML).toContain("link-order-2.css");
           expect(links[1].innerHTML).toContain("blue");
+          expect(links[2].innerHTML).toContain("link-order-3.css");
+          expect(links[2].innerHTML).toContain("yellow");
           jestDone();
         };
-        document.head.appendChild(b);
+        document.head.appendChild(c);
+
       `),
       { jestDone: done },
     );
