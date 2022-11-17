@@ -1,6 +1,7 @@
 **/node_modules/
 dist/
 lib/
+!packages/es-module-lexer/lib
 es/
 .DS_Store
 .idea

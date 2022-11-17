@@ -1,0 +1,205 @@
+version = 0.1
+default-task = 'build'
+
+extensions = ['chomp@0.1:npm', 'chomp@0.1:footprint', 'chomp@0.1:terser']
+
+[env-default]
+WASI_PATH = '../wasi-sdk-12.0'
+EMSDK_PATH = '../emsdk'
+WABT_PATH = '../wabt'
+
+[[task]]
+name = 'build'
+deps = ['dist/lexer.js', 'dist/lexer.cjs', 'dist/lexer.asm.js', 'types/lexer.d.ts']
+
+[[task]]
+name = 'bench'
+serial = true
+deps = ['bench:js', 'bench:wasm']
+
+[[task]]
+name = 'bench:js'
+deps = ['dist/lexer.asm.js']
+env = { BENCH = 'js' }
+run = 'node --expose-gc bench/index.js'
+
+[[task]]
+name = 'bench:wasm'
+deps = ['dist/lexer.js']
+env = { BENCH = 'wasm' }
+run = 'node --expose-gc bench/index.js'
+
+[[task]]
+target = 'dist/lexer.asm.js'
+dep = 'lib/lexer.asm.js'
+template = 'terser'
+[task.template-options]
+module = true
+compress = { ecma = 6, unsafe = true }
+output = { preamble = '/* es-module-lexer #PJSON_VERSION */' }
+
+[[task]]
+target = 'dist/lexer.cjs'
+deps = ['dist/lexer.js']
+run = 'babel dist/lexer.js | terser -c -m -o dist/lexer.cjs'
+
+[[task]]
+name = 'build:swc'
+target = 'src/lexer.js'
+dep = 'src/lexer.ts'
+# Note we should use the chomp swc template, but
+# https://github.com/swc-project/cli/issues/113 means we always get a sourcemap
+# even when we set "source-maps = false", so for now we have ejected the
+# template to its raw "run" command, and added an "rm" step.
+run = '''
+node ./node_modules/@swc/cli/bin/swc.js $DEP -o $TARGET --no-swcrc -C jsc.parser.syntax=typescript -C jsc.parser.importAssertions=true -C jsc.parser.topLevelAwait=true -C jsc.parser.importMeta=true -C jsc.parser.privateMethod=true -C jsc.parser.dynamicImport=true -C jsc.target=es2016 -C jsc.experimental.keepImportAssertions=true
+rm src/lexer.js.map
+'''
+
+[[task]]
+# Note swc does not support emitting typings
+# (https://github.com/swc-project/swc/issues/657), so while swc is used to
+# generate the .js file, tsc is still needed to generate the d.ts file.
+name = 'build:types'
+target = 'types/lexer.d.ts'
+dep = 'src/lexer.ts'
+run = '''
+  tsc --skipLibCheck --strict --declaration --emitDeclarationOnly --outdir types src/lexer.ts
+'''
+
+[[task]]
+target = 'dist/lexer.js'
+deps = ['src/lexer.js', 'lib/lexer.wasm', 'package.json']
+engine = 'node'
+run = '''
+	import { readFileSync, writeFileSync } from 'fs';
+	import { minify } from 'terser';
+
+	const wasmBuffer = readFileSync('lib/lexer.wasm');
+	const jsSource = readFileSync('src/lexer.js', 'utf8');
+	const pjson = JSON.parse(readFileSync('package.json', 'utf8'));
+
+	const jsSourceProcessed = jsSource.replace('WASM_BINARY', wasmBuffer.toString('base64'));
+
+	const { code: minified } = await minify(jsSourceProcessed, {
+		module: true,
+		output: {
+			preamble: `/* es-module-lexer ${pjson.version} */`
+		}
+	});
+
+	writeFileSync('dist/lexer.js', minified ? minified : jsSourceProcessed);
+'''
+
+[[task]]
+target = 'lib/lexer.wasm'
+deps = ['src/lexer.h', 'src/lexer.c']
+run = """
+	${{ WASI_PATH }}/bin/clang src/lexer.c --sysroot=${{ WASI_PATH }}/share/wasi-sysroot -o lib/lexer.wasm -nostartfiles \
+	"-Wl,-z,stack-size=13312,--no-entry,--compress-relocations,--strip-all,\
+	--export=parse,--export=sa,--export=e,--export=ri,--export=re,--export=is,--export=ie,--export=ss,--export=ip,--export=se,--export=ai,--export=id,--export=es,--export=ee,--export=els,--export=ele,--export=f,--export=__heap_base" \
+	-Wno-logical-op-parentheses -Wno-parentheses \
+	-Oz
+"""
+
+[[task]]
+target = 'lib/lexer.emcc.asm.js'
+deps = ['src/lexer.h', 'src/lexer.c']
+env = { PYTHONHOME = '' }
+run = """
+	${{ EMSDK_PATH }}/emsdk install 1.40.1-fastcomp
+	${{ EMSDK_PATH }}/emsdk activate 1.40.1-fastcomp
+
+	${{ EMSDK_PATH }}/fastcomp/emscripten/emcc ./src/lexer.c -o lib/lexer.emcc.js -s WASM=0 -Oz --closure 1 \
+	-s EXPORTED_FUNCTIONS="['_parse','_sa','_e','_ri','_re','_is','_ie','_ss','_ip','_se','_ai','_id','_es','_ee','_els','_ele','_f','_setSource']" \
+	-s ERROR_ON_UNDEFINED_SYMBOLS=0 -s SINGLE_FILE=1 -s TOTAL_STACK=4997968 -s --separate-asm -Wno-logical-op-parentheses -Wno-parentheses
+
+	# rm lib/lexer.emcc.js
+"""
+
+[[task]]
+target = 'lib/lexer.asm.js'
+deps = ['lib/lexer.emcc.asm.js', 'src/lexer.asm.js']
+engine = 'node'
+run = '''
+	import { readFileSync, writeFileSync } from 'fs';
+
+	const wrapper_start = readFileSync('src/lexer.asm.js', 'utf8');
+	let source = readFileSync('lib/lexer.emcc.asm.js', 'utf8').trim();
+
+	const endFuncs = 'EMSCRIPTEN_END_FUNCS';
+	const removeFunc = name => [new RegExp(`function ${name}\\([^]+?}\\s*(function|return\\s?{[^{}]+};?\\s*}\\s*$)`), '$1'];
+
+	const replacements = [
+		[/Module\["asm"\]=\s?\(\/\*\* @suppress {uselessCode} \*\/ function\(/, 'function asmInit('],
+		[/\)$/, ''],
+		[/,\s?_(\w+):/g, ',$1:', null, endFuncs],
+		['setSource:', 'ses:', null, endFuncs],
+		['parse:', 'p:', null, endFuncs],
+		[/___errno_location:\s?(\w+),/, '', removeFunc, endFuncs],
+		[/_apply_relocations:\s?(\w+),/, '', removeFunc, endFuncs],
+		[/,\s?free:\s?(\w+)/, '', removeFunc, endFuncs],
+		[/,\s?malloc:\s?(\w+)/, '', removeFunc, endFuncs],
+		[/,\s?memcpy:\s?(\w+)/, '', removeFunc, endFuncs],
+		[/,\s?memset:\s?(\w+)/, '', removeFunc, endFuncs],
+		[/,\s?stackAlloc:\s?(\w+)/, '', removeFunc, endFuncs],
+		[/,\s?emscripten_get_sbrk_ptr:\s?(\w+)/, '', removeFunc, endFuncs],
+		[/,\s?stackRestore:\s?(\w+)/, '', removeFunc, endFuncs],
+		[/,\s?stackSave:\s?(\w+)/, '', removeFunc, endFuncs],
+		[/,\s*\w+\s?=\s?env\.\w+\|0,\s*\w+\s?=\s?env\.\w+\|0,\s*\w+\s?=\s?0,\s*\w+\s?=\s?0,\s*\w+\s?=\s?0,\s*\w+\s?=\s?0,\s*\w+\s?=\s?0,\s*\w+\s?=\s?0,\s*\w+\s?=\s?0,\s*\w+\s?=\s?0\.0,\s*\w+\s?=\s?env\.\w+,\s*\w+\s?=\s?env\.\w+,\s*\w+\s?=\s?env\.\w+,\s*\w+\s?=\s?env\.\w+,\s*\w+\s?=\s?env\.\w+,\s*\w+\s?=\s?env\.\w+/, ''],
+		[/,\s*\w+\s?=\s?\d+,\s*\w+\s?=\s?0.0;/, ';'],
+		[/function \w+\(\w+\)\s?{[^{}]+{[^{}s]+s\(\)[^{}]+}[^{}]+}/, ''],
+		[/\s*\/\/ EMSCRIPTEN_END_FUNCS\s*return\{/, `  function su(a) {
+		a = a | 0;
+		v = a + 992 + 15 & -16;
+		return 992;
+	}
+	return {
+		su,`],
+		[/\s*\/\/ EMSCRIPTEN_START_FUNCS\s*/, ''],
+	];
+
+	for (const [from, to, add, after] of replacements) {
+		const [matched, match] = source.match(from) || [];
+		if (!matched) {
+			console.log(source.slice(0, 1000));
+			throw new Error(`Match not found for ${from} -> ${to}${after ? `, after ${after}` : ''}`);
+		}
+		const afterIndex = after ? source.indexOf(after) : 0;
+		const replaced = source.slice(0, afterIndex) + source.slice(afterIndex).replace(from, to);
+		if (add) replacements.push(add(match));
+		source = replaced;
+	}
+
+	writeFileSync(process.env.TARGET, wrapper_start + source);
+'''
+
+[[task]]
+name = 'test'
+deps = ['test:wasm', 'test:asm']
+
+[[task]]
+name = 'test:js'
+run = 'mocha -b -u tdd test/*.cjs'
+
+[[task]]
+name = 'test:asm'
+deps = ['dist/lexer.asm.js']
+env = { ASM = '1' }
+run = 'mocha -b -u tdd test/*.cjs'
+
+[[task]]
+name = 'test:wasm'
+deps = ['dist/lexer.js']
+env = { WASM = '1' }
+run = 'mocha -b -u tdd test/*.cjs'
+
+[[task]]
+target = 'lib/lexer.wat'
+dep = 'lib/lexer.wasm'
+run = '${{ WABT_PATH }}/bin/wasm2wat lib/lexer.wasm -o lib/lexer.wat'
+
+[[task]]
+name = 'footprint'
+deps = ['dist/lexer.js', 'dist/lexer.asm.js']
+template = 'footprint'
