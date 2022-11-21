@@ -223,7 +223,6 @@ export class LockQueue {
       // start waiting
       await lockItem.waiting;
     }
-    this.release(id);
   }
 
   release(id?:number) {
