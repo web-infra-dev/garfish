@@ -96,6 +96,7 @@ export namespace interfaces {
     domGetter?: DomGetter;
     props?: Record<string, any>;
     sandbox?: false | SandboxConfig;
+    disableSourceListCollect?: boolean;
   }
 
   export interface GlobalLifecycle extends Partial<PluginLifecycle> {

@@ -53,9 +53,8 @@ export class DynamicNodeProcessor {
       href && (el.href = transformUrl(baseUrl, href));
       const url = el.src || el.href;
 
-      const includeUrl = this.sandbox.options.sourceList?.find((source)=> source.url === url);
-      if (url && !includeUrl) {
-        this.sandbox.options.sourceList?.push({
+      if (url && this.sandbox.options.addSourceList) {
+        this.sandbox.options.addSourceList({
           tagName: el.tagName,
           url,
         });
