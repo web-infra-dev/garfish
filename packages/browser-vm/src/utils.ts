@@ -219,10 +219,8 @@ export class LockQueue {
     if (!lockItem) {
       throw new Error(`lockItem ${id} is not exist`);
     }
-    if (lockItem) {
-      // start waiting
-      await lockItem.waiting;
-    }
+    // start waiting
+    await lockItem.waiting;
   }
 
   release(id?:number) {
