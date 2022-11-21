@@ -88,7 +88,6 @@ export class Sandbox {
       baseUrl: '',
       namespace: '',
       modules: [],
-      sourceList: [],
       fixBaseUrl: false,
       disableWith: false,
       strictIsolation: false,
@@ -100,8 +99,6 @@ export class Sandbox {
     this.options = isPlainObject(options)
       ? deepMerge(defaultOptions, options)
       : defaultOptions;
-    // SourceUrl Using a reference type, make its can be changed
-    options.sourceList && (this.options.sourceList = options.sourceList);
 
     const { loaderOptions, protectVariable, insulationVariable } = this.options;
     this.loader = new Loader(loaderOptions);
