@@ -6,13 +6,16 @@ describe("lock queue",()=>{
     it('setimeout to clear lock', (done) => {
         const lockId1 = lockQueue.genId();
         const lockId2 = lockQueue.genId();
+        let num = 0;
         setTimeout(async ()=>{
             await lockQueue.wait(lockId1);
-            lockQueue.release();
+            num++;
+            expect(num).toBe(1);
         }, 1000);
         setTimeout(async ()=>{
             await lockQueue.wait(lockId2);
-            lockQueue.release();
+            num++;
+            expect(num).toBe(2);
             done();
         }, 500);
     });

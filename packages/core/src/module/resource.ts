@@ -83,7 +83,7 @@ function fetchStaticResources(
             .then(({ resourceManager: styleManager }) => {
               if (styleManager) {
                 styleManager.setDep(node);
-                styleManager.correctPath();
+                styleManager?.correctPath();
                 return styleManager;
               } else {
                 warn(`${appName} Failed to load link: ${fetchUrl}`);

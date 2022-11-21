@@ -223,6 +223,7 @@ export class LockQueue {
       // start waiting
       await lockItem.waiting;
     }
+    this.release(id);
   }
 
   release(id?:number) {
@@ -230,7 +231,7 @@ export class LockQueue {
     if (id) {
       const findIndex = lockQueue.findIndex(item => item.id === id);
       const lockItem = lockQueue.splice(findIndex, 1);
-      lockItem[0].resolve();
+      lockItem[0] && lockItem[0].resolve();
     } else {
       const firstLock = lockQueue.shift();
       // resolve the promise of current lock
