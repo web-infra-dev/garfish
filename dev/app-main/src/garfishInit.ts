@@ -31,6 +31,10 @@ export const GarfishInit = async () => {
     next();
   });
 
+  Garfish.router.routerChange((path) => {
+    console.log('[router change]:', path)
+  });
+
   try {
     Garfish.run(Config);
   } catch (error) {

@@ -228,11 +228,41 @@ Garfish.router.afterEach((to, from, next) => {
 Garfish.run({...})
 ```
 
+### Garfish.router.routerChange
+
+#### 触发时机
+
+- 全局路由守卫，在**路由发生变化**，**子应跳转前**触发。
+
+#### Type
+
+```ts
+afterEach: (path: string) => void;
+```
+
+#### 参数
+
+- <Highlight>path</Highlight>
+  ：跳转到的<code>location.pathname</code>。
+
+#### 示例
+
+```ts
+import Garfish from 'garfish';
+Garfish.router.routerChange(path => {
+  console.log(path);
+});
+
+Garfish.run({...})
+```
+
 :::tip
 请注意：
-1. `Garfish.router.beforeEach` 和 `Garfish.router.afterEach` 均属于 Garfish 提供的路由守卫钩子，将在每次在路由变化后触发。
-2. 请将路由守卫注册放在 `Garfish.run` 前执行，否则将无法接收到首次加载时的路由钩子；
-3. 若跳转新的子应用，则 `Garfish.router.beforeEach` 将在子应用加载前触发，`Garfish.router.afterEach` 将在子应用加载后触发。此时路由均已发生变化；
-4. `next` 函数可为异步函数，微前端渲染流程将被阻塞直至 `next` 函数被 resolve。
-5. 在子应用间跳转时，若使用了路由守卫钩子，请确保 `next` 函数被执行，否则将导致 Garfish 内部子应用渲染逻辑被阻塞；
-6. 子应用内路由跳转不受 `next` 函数调用的影响；
+
+1. `Garfish.router.beforeEach`、`Garfish.router.afterEach` 和 `Garfish.router.routerChange` 均属于 Garfish 提供的路由守卫钩子，将在每次在路由变化后触发。
+2. `Garfish.router.beforeEach`、`Garfish.router.afterEach` 和 `Garfish.router.routerChange` 是**全局唯一的**，如果设置多次，那么只有最后执行的是有效的。对它们的使用应该需要一定的约定，避免多次注册导致互相覆盖。
+3. 请将路由守卫注册放在 `Garfish.run` 前执行，否则将无法接收到首次加载时的路由钩子；
+4. 若跳转新的子应用，则 `Garfish.router.beforeEach` 将在子应用加载前触发，`Garfish.router.afterEach` 将在子应用加载后触发。此时路由均已发生变化；
+5. `next` 函数可为异步函数，微前端渲染流程将被阻塞直至 `next` 函数被 resolve。
+6. 在子应用间跳转时，若使用了路由守卫钩子，请确保 `next` 函数被执行，否则将导致 Garfish 内部子应用渲染逻辑被阻塞；
+7. 子应用内路由跳转不受 `next` 函数调用的影响；
