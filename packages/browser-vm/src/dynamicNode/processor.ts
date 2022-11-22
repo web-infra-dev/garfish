@@ -118,7 +118,6 @@ export class DynamicNodeProcessor {
               );
             }
             this.dispatchEvent('load');
-            DynamicNodeProcessor.linkLock.release();
           })
           .catch((e) => {
             DynamicNodeProcessor.linkLock.release(lockId);

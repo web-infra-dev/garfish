@@ -180,6 +180,10 @@ interface LockItem {
   resolve: (value?: any) => void;
 }
 
+/**
+ * 1. generate lock queue by order
+ * 2. lock queue will be released by order
+ */
 export class LockQueue {
   private id = 0;
   private lockQueue: LockItem[] = [];
@@ -193,7 +197,14 @@ export class LockQueue {
       promiseResolve = resolve;
     });
     // create a new lock
-    const lockItem = { id: lockId, waiting, resolve: promiseResolve };
+    const lockItem = { 
+      id: lockId, 
+      waiting, 
+      resolve: ()=>{
+        promiseResolve();
+        this.next();
+      } 
+    };
     this.lockQueue.push(lockItem);
     this.id += 1;
     return lockId;
@@ -209,31 +220,34 @@ export class LockQueue {
 
     // This lock is processing, just return and remove immediately
     if (firstLock?.id === id) {
-      this.release();
+      this.lockQueue.shift();
+      this.next();
       return;
     };
 
     // This lock should wait for the other lock
     let lockItem = lockQueue.find(item => item.id === id);
 
-    if (!lockItem) {
-      throw new Error(`lockItem ${id} is not exist`);
+    if (lockItem) {
+      // start waiting
+      await lockItem.waiting;
     }
-    // start waiting
-    await lockItem.waiting;
   }
 
-  release(id?:number) {
+  release(id:number) {
     const { lockQueue } = this;
-    if (id) {
-      const findIndex = lockQueue.findIndex(item => item.id === id);
-      const lockItem = lockQueue.splice(findIndex, 1);
-      lockItem[0] && lockItem[0].resolve();
-    } else {
-      const firstLock = lockQueue.shift();
-      // resolve the promise of current lock
-      firstLock && firstLock.resolve();
+
+    const findIndex = lockQueue.findIndex(item => item.id === id);
+    lockQueue.splice(findIndex, 1);
+    if (findIndex===0){
+      this.next();
     }
+  }
+
+  next(){
+    // exec the first lock
+    const firstLock = this.lockQueue.shift();
+    firstLock && firstLock.resolve();
   }
 
   clear() {
