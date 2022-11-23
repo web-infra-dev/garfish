@@ -81,9 +81,20 @@ export function createGetter(sandbox: Sandbox) {
           // it needs to be placed globally, so it is not placed outside by default.
           return findTarget(rootNode, ['body', `div[${__MockBody__}]`]);
         } else if (queryFunctions(p)) {
-          return p === 'getElementById'
-            ? (id) => rootNode.querySelector(`#${id}`)
-            : rootNode[p].bind(rootNode);
+          if (p === 'getElementById') {
+            return (id) => rootNode.querySelector(`#${id}`);
+          } else if(p === 'getElementsByTagName') {
+            return (tagName) => {
+              if (tagName === 'body') {
+                return findTarget(rootNode, ['body', `div[${__MockBody__}]`]);
+              } else if(tagName === 'head') {
+                return findTarget(rootNode, ['head', `div[${__MockHead__}]`]);
+              }
+              return rootNode['getElementsByTagName'](tagName);
+            };
+          } else {
+            return rootNode[p].bind(rootNode);
+          }
         }
       }
     }
