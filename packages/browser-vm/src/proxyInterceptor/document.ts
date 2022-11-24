@@ -86,9 +86,9 @@ export function createGetter(sandbox: Sandbox) {
           } else if(p === 'getElementsByTagName') {
             return (tagName) => {
               if (tagName === 'body') {
-                return findTarget(rootNode, ['body', `div[${__MockBody__}]`]);
+                return [findTarget(rootNode, ['body', `div[${__MockBody__}]`])];
               } else if(tagName === 'head') {
-                return findTarget(rootNode, ['head', `div[${__MockHead__}]`]);
+                return [findTarget(rootNode, ['head', `div[${__MockHead__}]`])];
               }
               return rootNode['getElementsByTagName'](tagName);
             };
