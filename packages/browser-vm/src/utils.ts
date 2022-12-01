@@ -170,3 +170,87 @@ export function isStyledComponentsLike(element: HTMLStyleElement) {
     element.sheet?.cssRules.length
   );
 }
+
+
+
+
+interface LockItem {
+  id: number;
+  waiting: Promise<void>;
+  resolve: (value?: any) => void;
+}
+
+/**
+ * 1. generate lock queue by order
+ * 2. lock queue will be released by order
+ */
+export class LockQueue {
+  private id = 0;
+  private lockQueue: LockItem[] = [];
+
+  genId() {
+    const lockId = this.id;
+
+    // This lock should wait for the other lock
+    let promiseResolve: LockItem['resolve'] = () => {};
+    const waiting = new Promise<void>(resolve => {
+      promiseResolve = resolve;
+    });
+    // create a new lock
+    const lockItem = { 
+      id: lockId, 
+      waiting, 
+      resolve: ()=>{
+        promiseResolve();
+        this.next();
+      } 
+    };
+    this.lockQueue.push(lockItem);
+    this.id += 1;
+    return lockId;
+  }
+
+  getId() {
+    return this.id;
+  }
+
+  async wait(id: number) {
+    const { lockQueue } = this;
+    const firstLock = lockQueue[0];
+
+    // This lock is processing, just return and remove immediately
+    if (firstLock?.id === id) {
+      this.lockQueue.shift();
+      this.next();
+      return;
+    };
+
+    // This lock should wait for the other lock
+    let lockItem = lockQueue.find(item => item.id === id);
+
+    if (lockItem) {
+      // start waiting
+      await lockItem.waiting;
+    }
+  }
+
+  release(id:number) {
+    const { lockQueue } = this;
+
+    const findIndex = lockQueue.findIndex(item => item.id === id);
+    lockQueue.splice(findIndex, 1);
+    if (findIndex===0){
+      this.next();
+    }
+  }
+
+  next(){
+    // exec the first lock
+    const firstLock = this.lockQueue.shift();
+    firstLock && firstLock.resolve();
+  }
+
+  clear() {
+    this.lockQueue = [];
+  }
+}

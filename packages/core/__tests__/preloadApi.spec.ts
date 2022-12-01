@@ -17,7 +17,11 @@ describe('Core: preload plugin', () => {
 
   mockStaticServer({
     baseDir: __dirname,
-    timeConsuming: 200,
+    customerHeaders: {
+      [preloadSubAppEntry]: {
+        timeConsuming: 200,
+      },
+    }
   });
 
   beforeEach(() => {
