@@ -93,7 +93,7 @@
     "workspace-tools": "0.16.2",
     "zx": "4.2.0"
   },
-  "version": "1.12.0",
+  "version": "1.12.1",
   "packageManager": "pnpm@7.6.0",
   "engines": {
     "node": ">=16.14.0"
