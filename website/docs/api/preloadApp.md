@@ -32,7 +32,7 @@ type PreLoadAppType = (appName: string)=> void
 ```ts
 import Garfish from 'garfish';
 
-Garfish.register({
+Garfish.registerApp({
   name: 'react',
   entry: 'http://localhost:3000'
 });
@@ -43,6 +43,6 @@ Garfish.preloadApp('react');
 ```
 #### 说明
 
-1. 该 `API` 可以用于在未真正加载子应用时进行子应用的资源预加载，当资源加载成功时，真正加载子应用时将不会再发起资源请求，将直接独立内存中存储的静态资源
+1. 该 `API` 可以用于在未真正加载子应用时进行子应用的资源预加载，当资源加载成功时，真正加载子应用时将不会再发起资源请求，将直接使用独立内存中存储的静态资源
 2. 通常可以将 `preloadApp` 的资源加载提升到主应用的 `html` 阶段，可以保证首屏使用到的子应用资源能够最大程度的提前完成资源的请求处理
 
