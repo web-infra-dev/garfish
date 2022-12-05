@@ -13,6 +13,7 @@ export interface RouterInfo {
   path: string;
   query: Object;
   state: Object;
+  href: string;
 }
 
 export interface CurrentRouterInfo extends RouterInfo {
