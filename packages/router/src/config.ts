@@ -55,6 +55,7 @@ export const RouterConfig: Options = {
     matched: [],
     query: {},
     state: {},
+    href: '',
   },
   apps: [],
   beforeEach: (to, from, next) => next(),
