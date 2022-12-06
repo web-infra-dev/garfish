@@ -15,7 +15,7 @@ import {
   __REMOVE_NODE__,
 } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
-import { rootElm, isStyledComponentsLike } from '../utils';
+import { rootElm, isStyledComponentsLike, LockQueue } from '../utils';
 
 const isInsertMethod = makeMap(['insertBefore', 'insertAdjacentElement']);
 
@@ -27,6 +27,7 @@ export class DynamicNodeProcessor {
   private sandbox: Sandbox;
   private DOMApis: DOMApis;
   private methodName: string;
+  static linkLock: LockQueue = new LockQueue();
   private rootElement: Element | ShadowRoot | Document;
   private nativeAppend = rawElementMethods['appendChild'];
   private nativeRemove = rawElementMethods['removeChild'];
@@ -44,18 +45,18 @@ export class DynamicNodeProcessor {
     return this.tagName === tag;
   }
 
-  private fixResourceNodeUrl() {
+  private fixResourceNodeUrl(el: any) {
     const baseUrl = this.sandbox.options.baseUrl;
     if (baseUrl) {
-      const src = this.el.getAttribute('src');
-      const href = this.el.getAttribute('href');
-      src && (this.el.src = transformUrl(baseUrl, src));
-      href && (this.el.href = transformUrl(baseUrl, href));
-      const url = this.el.src || this.el.href;
+      const src = el.getAttribute('src');
+      const href = el.getAttribute('href');
+      src && (el.src = transformUrl(baseUrl, src));
+      href && (el.href = transformUrl(baseUrl, href));
+      const url = el.src || el.href;
 
-      if (url) {
-        this.sandbox.options.sourceList?.push({
-          tagName: this.el.tagName,
+      if (url && this.sandbox.options.addSourceList) {
+        this.sandbox.options.addSourceList({
+          tagName: el.tagName,
           url,
         });
       }
@@ -71,7 +72,7 @@ export class DynamicNodeProcessor {
       if (isError && errInfo) {
         event = new ErrorEvent(type, {
           ...errInfo,
-          message: errInfo.error.message,
+          message: errInfo.error?.message,
         });
       } else {
         event = new Event(type);
@@ -91,14 +92,16 @@ export class DynamicNodeProcessor {
       if (href) {
         const { baseUrl, namespace, styleScopeId } = this.sandbox.options;
         const fetchUrl = baseUrl ? transformUrl(baseUrl, href) : href;
-
+        // add lock to make sure render link node in order
+        const lockId = DynamicNodeProcessor.linkLock.genId();
         this.sandbox.loader
           .load<StyleManager>({
             scope: namespace,
             url: fetchUrl,
             defaultContentType: type,
           })
-          .then(({ resourceManager: styleManager }) => {
+          .then(async ({ resourceManager: styleManager }) => {
+            await DynamicNodeProcessor.linkLock.wait(lockId);
             if (styleManager) {
               styleManager.correctPath();
               if (styleScopeId) {
@@ -116,6 +119,7 @@ export class DynamicNodeProcessor {
             this.dispatchEvent('load');
           })
           .catch((e) => {
+            DynamicNodeProcessor.linkLock.release(lockId);
             __DEV__ && warn(e);
             this.dispatchEvent('error', {
               error: e,
@@ -305,7 +309,7 @@ export class DynamicNodeProcessor {
 
     // Deal with some static resource nodes
     if (sourceListTags.includes(this.tagName)) {
-      this.fixResourceNodeUrl();
+      this.fixResourceNodeUrl(this.el);
     }
 
     // Add dynamic script node by loader
@@ -351,6 +355,16 @@ export class DynamicNodeProcessor {
         this.sandbox.deferClearEffects.add(() => {
           this.DOMApis.removeElement(this.el);
           return this.el;
+        });
+      }
+    }
+
+    // fix innerHTML dom iframe、img src
+    if (this.el && this.el.querySelectorAll) {
+      let needFixDom = this.el.querySelectorAll('iframe,img,video,link,script,audio,style');
+      if (needFixDom.length > 0) {
+        needFixDom.forEach((dom)=>{
+          safeWrapper(()=> this.fixResourceNodeUrl(dom));
         });
       }
     }

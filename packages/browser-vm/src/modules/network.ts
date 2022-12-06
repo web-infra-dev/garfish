@@ -34,10 +34,15 @@ export function networkModule(sandbox: Sandbox) {
           ? transformUrl(baseUrl, arguments[1])
           : arguments[1];
       }
-      sandbox.options.sourceList?.push({
-        tagName: 'xmlhttprequest',
-        url: arguments[1],
-      });
+
+      const url = arguments[1];
+
+      if(sandbox.options.addSourceList){
+        sandbox.options.addSourceList({
+          tagName: 'xmlhttprequest',
+          url,
+        });
+      }
       return super.open.apply(this, arguments);
     }
 
@@ -68,7 +73,9 @@ export function networkModule(sandbox: Sandbox) {
     if (needFix(input) && baseUrl) {
       input = transformUrl(baseUrl, input);
     }
-    sandbox.options.sourceList?.push({ tagName: 'fetch', url: input });
+    if(sandbox.options.addSourceList){
+      sandbox.options.addSourceList({ tagName: 'fetch', url: input });
+    }
     let controller;
     if (!hasOwn(options, 'signal') && window.AbortController) {
       controller = new window.AbortController();

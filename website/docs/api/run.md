@@ -100,6 +100,11 @@ Garfish.run({ config });
 - Garfish 会在用户端计算子应用打开的次数，应用的打开次数越多，预加载权重越大；
 - 预加载能力在弱网情况和手机端将不会开启；
 
+### disableSourceListCollect?
+
+- Type: <Highlight> boolean </Highlight>
+- 是否禁用收集子应用资源列表，可选，默认值为 `false`。默认情况下 Garfish 会自动收集子应用的资源，用于进行监控分析；
+
 ### sandbox?
 
 <SandboxConfig />

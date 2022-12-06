@@ -14,6 +14,9 @@ describe('whole process app render', () => {
           console.log('start load app', appInfo);
           return true;
         },
+        sandbox: {
+          snapshot: false,
+        }
       },
     });
 

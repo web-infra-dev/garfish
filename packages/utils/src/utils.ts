@@ -164,11 +164,11 @@ export function evalWithEnv(
   }
 }
 
-export function safeWrapper(callback: (...args: Array<any>) => any) {
+export function safeWrapper(callback: (...args: Array<any>) => any, disableWarn?: boolean) {
   try {
     callback();
   } catch (e) {
-    __DEV__ && warn(e);
+    !disableWarn && __DEV__ && warn(e);
   }
 }
 
@@ -414,7 +414,7 @@ export function setDocCurrentScript(
   if (async) {
     el.setAttribute('async', 'true');
   }
-
+ 
   const set = (val) => {
     try {
       if (define) {
@@ -434,7 +434,7 @@ export function setDocCurrentScript(
   };
 
   set(el);
-  return () => set(null);
+  return () => safeWrapper(()=> delete target.currentScript, true);
 }
 
 export function _extends(d, b) {

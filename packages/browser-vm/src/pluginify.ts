@@ -123,7 +123,7 @@ function createOptions(Garfish: interfaces.Garfish) {
         appInstance,
         new Sandbox({
           namespace: appInfo.name,
-          sourceList: appInstance.sourceList,
+          addSourceList: appInstance.addSourceList.bind(appInstance),
           baseUrl: appInstance.entryManager.url,
           modules: compatibleOldModule(appInfo.sandbox?.modules || []),
           fixBaseUrl: Boolean(appInfo.sandbox?.fixBaseUrl),

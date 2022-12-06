@@ -74,6 +74,7 @@ export class App {
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
   public sourceList: Array<{ tagName: string; url: string }> = [];
+  public sourceListMap: Map<string, { tagName: string; url: string }> = new Map();
   public appInfo: AppInfo;
   public context: Garfish;
   public hooks: interfaces.AppHooks;
@@ -146,7 +147,7 @@ export class App {
           entryManager.findAttributeValue(node, 'href') ||
           entryManager.findAttributeValue(node, 'src');
         if (url) {
-          this.sourceList.push({
+          this.addSourceList({
             tagName: node.tagName,
             url: entryManager.url ? transformUrl(entryManager.url, url) : url,
           });
@@ -158,13 +159,35 @@ export class App {
         }
       });
     }
-    this.appInfo.entry &&
-      this.sourceList.push({ tagName: 'html', url: this.appInfo.entry });
+    this.appInfo.entry && this.addSourceList({ tagName: 'html', url: this.appInfo.entry })
     this.asyncProviderTimeout = this.childGarfishConfig?.sandbox?.asyncProviderTimeout ?? 0;
   }
 
   get rootElement() {
     return findTarget(this.htmlNode, [`div[${__MockBody__}]`, 'body']);
+  }
+
+  get getSourceList () {
+    return this.sourceList;
+  }
+
+  addSourceList(sourceInfo: Array<{ tagName: string; url: string }> | { tagName: string; url: string }){
+    if (this.appInfo.disableSourceListCollect) return;
+    if (Array.isArray(sourceInfo)){
+      let nSourceList = sourceInfo.filter(item => {
+        if (!this.sourceListMap.has(item.url) && item.url.startsWith('http')) {
+          this.sourceListMap.set(item.url, item);
+          return true;
+        }
+        return false;
+      });
+      this.sourceList = this.sourceList.concat(nSourceList);
+    } else {
+      if (!this.sourceListMap.get(sourceInfo.url) && sourceInfo.url.startsWith('http')){
+        this.sourceList.push(sourceInfo);
+        this.sourceListMap.set(sourceInfo.url, sourceInfo);
+      }
+    }
   }
 
   private initAsyncProviderRegistration() {
@@ -259,7 +282,7 @@ export class App {
         };
       }
       evalWithEnv(`;${code}`, env, this.global);
-      setTimeout(revertCurrentScript,0);
+      Promise.resolve().then(revertCurrentScript);
     }
   }
 

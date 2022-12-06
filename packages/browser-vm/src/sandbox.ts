@@ -88,7 +88,6 @@ export class Sandbox {
       baseUrl: '',
       namespace: '',
       modules: [],
-      sourceList: [],
       fixBaseUrl: false,
       disableWith: false,
       strictIsolation: false,
@@ -100,8 +99,6 @@ export class Sandbox {
     this.options = isPlainObject(options)
       ? deepMerge(defaultOptions, options)
       : defaultOptions;
-    // SourceUrl Using a reference type, make its can be changed
-    options.sourceList && (this.options.sourceList = options.sourceList);
 
     const { loaderOptions, protectVariable, insulationVariable } = this.options;
     this.loader = new Loader(loaderOptions);
@@ -115,7 +112,7 @@ export class Sandbox {
       overrideList: {},
     };
     // Inject Global capture
-    makeElInjector();
+    makeElInjector(this.options);
     // The default startup sandbox
     this.start();
     sandboxMap.set(this);
@@ -351,7 +348,7 @@ export class Sandbox {
     } catch (e) {
       this.processExecError(e, url, env, options);
     } finally {
-      setTimeout(revertCurrentScript,0);
+      Promise.resolve().then(revertCurrentScript);
     }
 
     this.hooks.lifecycle.afterInvoke.emit(codeRef, url, env, options);

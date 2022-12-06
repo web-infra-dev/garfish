@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync as fsReadFileSync } from 'fs';
 import { init, parse } from 'es-module-lexer';
 import {
   ESModuleLoader,
@@ -66,6 +66,8 @@ describe('Core: esm loader', () => {
     `);
   });
 
+  const readFileSync = (fileName: string) =>
+    fsReadFileSync(`${__dirname}/resources/scripts/${fileName}`, { encoding: 'utf-8' });
   const baseUrl = 'http://www.test.com';
   const esmFileMap = {
     simpleEntry: `${baseUrl}/simpleEntry.js`,
@@ -75,39 +77,60 @@ describe('Core: esm loader', () => {
     circularEntry: `${baseUrl}/circularEntry.js`,
     circularEsmA: `${baseUrl}/circularEsmA.js`,
     circularEsmB: `${baseUrl}/circularEsmB.js`,
+    dynamicEsmA: `${baseUrl}/dynamicEsmA.js`,
+    dynamicEsmA1: `${baseUrl}/dynamicEsmA1.js`,
+    dynamicEsmA2: `${baseUrl}/dynamicEsmA2.js`,
+    dynamicEsmB: `${baseUrl}/dynamicEsmB.js`,
+    dynamicEsmB1: `${baseUrl}/dynamicEsmB1.js`,
   };
   const mockCache = {
-    [esmFileMap.esmA]: readFileSync(`${__dirname}/resources/js/esmA.js`, {
-      encoding: 'utf-8',
-    }),
-    [esmFileMap.esmB]: readFileSync(`${__dirname}/resources/js/esmB.js`, {
-      encoding: 'utf-8',
-    }),
-    [esmFileMap.esmC]: readFileSync(`${__dirname}/resources/js/esmC.js`, {
-      encoding: 'utf-8',
-    }),
-    [esmFileMap.circularEsmA]: readFileSync(
-      `${__dirname}/resources/js/circularEsmA.js`,
-      { encoding: 'utf-8' },
-    ),
-    [esmFileMap.circularEsmB]: readFileSync(
-      `${__dirname}/resources/js/circularEsmB.js`,
-      { encoding: 'utf-8' },
-    ),
+    [esmFileMap.esmA]: readFileSync('esmA.js'),
+    [esmFileMap.esmB]: readFileSync('esmB.js'),
+    [esmFileMap.esmC]: readFileSync('esmC.js'),
+    [esmFileMap.circularEsmA]: readFileSync('circularEsmA.js'),
+    [esmFileMap.circularEsmB]: readFileSync('circularEsmB.js'),
+    [esmFileMap.dynamicEsmA]: readFileSync('dynamicEsmA.js'),
+    [esmFileMap.dynamicEsmA1]: readFileSync('dynamicEsmA1.js'),
+    [esmFileMap.dynamicEsmA2]: readFileSync('dynamicEsmA2.js'),
+    [esmFileMap.dynamicEsmB]: readFileSync('dynamicEsmB.js'),
+    [esmFileMap.dynamicEsmB1]: readFileSync('dynamicEsmB1.js'),
   };
+  const delay = (time: number) => {
+    return new Promise<void>(resolve => {
+      if (time === -1) {
+        resolve();
+      } else {
+        setTimeout(resolve, time);
+      }
+    });
+  };
+  const loadCache: Record<string, any> = {};
   const loader = new ESModuleLoader({
     appId: 0,
     name: 'unit test for esm module loader',
     global: {},
     context: {
       loader: {
-        load({ url }) {
-          return {
-            resourceManager: {
-              url,
-              scriptCode: mockCache[url],
-            },
-          };
+        async load({ url }) {
+          if (!loadCache[url]) {
+            loadCache[url] = new Promise(resolve => {
+              (async () => {
+                // mock load time
+                await delay(
+                  [esmFileMap.dynamicEsmA1, esmFileMap.dynamicEsmA2].includes(url)
+                    ? 500
+                    : 10
+                );
+                resolve({
+                  resourceManager: {
+                    url,
+                    scriptCode: mockCache[url],
+                  },
+                });
+              })();
+            });
+          }
+          return await loadCache[url];
         },
       },
     },
@@ -115,9 +138,12 @@ describe('Core: esm loader', () => {
     isNoEntryScript: () => false,
   } as any);
   // @ts-ignore
-  loader.execModuleCode = () =>
+  loader.execModuleCode = () => {
     // @ts-ignore
     loader.app.global[loader.globalVarKey].resolve();
+    // @ts-ignore
+    loader.lock.release();
+  };
   global.URL.revokeObjectURL = jest.fn();
 
   it('load simple es module successfully', async () => {
@@ -171,6 +197,47 @@ describe('Core: esm loader', () => {
     expect(blobCodeList[1])
       .toBe(`export function u$$_(m){sayA=m.sayA,execSayB=m.execSayB}export let sayA;export let execSayB;export * from 'blob:1'
 //# sourceURL=http://www.test.com/circularEsmA.js?cycle`);
+
+    loader.destroy();
+    // @ts-ignore
+    expect(Object.keys(loader.moduleCache).length).toBe(0);
+  });
+
+  it('concurrent dynamic import analysis should be blocked by static import', async () => {
+    let blobIndex = 0;
+    // @ts-ignore
+    loader.createBlobUrl = () => `${++blobIndex}`;
+
+    // mock concurrent dynamic import
+    // just like 'import("./virtualDynamicEsmA");import("./virtualDynamicEsmB");'
+    // @ts-ignore
+    loader.load('import "./dynamicEsmA.js";', {}, `${baseUrl}/virtualDynamicEsmA.js`, {});
+    // @ts-ignore
+    loader.load('import "./dynamicEsmB.js";', {}, `${baseUrl}/virtualDynamicEsmB.js`, {});
+
+    await delay(2000);
+
+    // @ts-ignore
+    const moduleCache = loader.moduleCache;
+    const orderList = Object.keys(moduleCache)
+      .map(cacheKey => {
+        return {
+          ...moduleCache[cacheKey],
+          cacheKey,
+        };
+      })
+      .sort((a, b) => parseInt(a.blobUrl || '', 10) - parseInt(b.blobUrl || '', 10))
+      .map(item => item.cacheKey);
+
+    expect(orderList).toEqual([
+      esmFileMap.dynamicEsmA1,
+      esmFileMap.dynamicEsmA2,
+      esmFileMap.dynamicEsmA,
+      `${baseUrl}/virtualDynamicEsmA.js`,
+      esmFileMap.dynamicEsmB1,
+      esmFileMap.dynamicEsmB,
+      `${baseUrl}/virtualDynamicEsmB.js`,
+    ]);
 
     loader.destroy();
     // @ts-ignore

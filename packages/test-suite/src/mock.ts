@@ -9,10 +9,8 @@ export function mockStaticServer({
   baseDir,
   filterKeywords,
   customerHeaders = {},
-  timeConsuming,
 }: {
   baseDir: string;
-  timeConsuming?: number;
   filterKeywords?: Array<string>;
   customerHeaders?: Record<string, Record<string, any>>;
 }) {
@@ -41,20 +39,26 @@ export function mockStaticServer({
           : ext === '.css'
             ? 'text/css'
             : 'text/plain';
-
-    return new Promise((resolve) => {
-      const res = {
-        url: req.url,
-        body: fs.readFileSync(fullDir, 'utf-8'),
-        headers: {
-          'Content-Type': mimeType,
-          ...(customerHeaders[pathname] || {}),
-        },
-      };
-      if (timeConsuming) {
-        setTimeout(() => resolve(res), timeConsuming);
-      } else {
-        resolve(res);
+    const { timeConsuming = 0, ...headers} = (customerHeaders[pathname] || ({timeConsuming: 0})) ;
+    
+    return new Promise((resolve,reject) => {
+      try {
+        const body = fs.readFileSync(fullDir, 'utf-8');
+        const res = {
+          url: req.url,
+          body,
+          headers: {
+            'Content-Type': mimeType,
+            ...(headers || {}),
+          },
+        };
+        if (timeConsuming) {
+          setTimeout(() => resolve(res), timeConsuming);
+        } else {
+          resolve(res);
+        }
+      } catch(err){
+        return reject(err);
       }
     });
   });
