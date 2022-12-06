@@ -85,6 +85,7 @@ export class App {
   public childGarfishConfig: interfaces.ChildGarfishConfig = {};
   public asyncProviderTimeout: number;
   private asyncProvider?: interfaces.Provider | ((...args: any[]) => interfaces.Provider);
+  private resolveAsyncProvider: () => void | undefined;
   // private
   private active = false;
   public mounting = false;
@@ -196,6 +197,8 @@ export class App {
       // just inject 'registerProvider' function for async provider registration
       customExports.registerProvider = (provider: typeof this.asyncProvider) => {
         this.asyncProvider = provider;
+        // resolve it immediately
+        this.resolveAsyncProvider?.();
       };
     }
   }
@@ -206,9 +209,16 @@ export class App {
         resolve(this.asyncProvider);
         return;
       }
-      setTimeout(() => {
+
+      const timeoutId = setTimeout(() => {
+        // timeout
         resolve(this.asyncProvider);
       }, this.asyncProviderTimeout);
+
+      this.resolveAsyncProvider = () => {
+        clearTimeout(timeoutId);
+        resolve(this.asyncProvider);
+      };
     });
   }
 
