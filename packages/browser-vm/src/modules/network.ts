@@ -37,7 +37,7 @@ export function networkModule(sandbox: Sandbox) {
 
       const url = arguments[1];
 
-      if(sandbox.options.addSourceList){
+      if (sandbox.options.addSourceList) {
         sandbox.options.addSourceList({
           tagName: 'xmlhttprequest',
           url,
@@ -73,8 +73,11 @@ export function networkModule(sandbox: Sandbox) {
     if (needFix(input) && baseUrl) {
       input = transformUrl(baseUrl, input);
     }
-    if(sandbox.options.addSourceList){
-      sandbox.options.addSourceList({ tagName: 'fetch', url: input });
+    if (sandbox.options.addSourceList) {
+      sandbox.options.addSourceList({
+        tagName: 'fetch',
+        url: input instanceof Request ? input.url : input,
+      });
     }
     let controller;
     if (!hasOwn(options, 'signal') && window.AbortController) {
