@@ -1,4 +1,4 @@
-import { ImportSpecifier, init, parse } from 'es-module-lexer';
+import { ImportSpecifier, init, parse } from '@alioth-org/es-module-lexer';
 import type { JavaScriptManager } from '@garfish/loader';
 import { Lock } from '@garfish/utils';
 import {
@@ -166,7 +166,7 @@ export class ESModuleLoader {
     await this.lock.wait(lockId);
 
     // this is necessary for the Web Assembly boot
-    await init;
+    await init();
 
     const analysis = parse(code, realUrl || '');
     const thisModule: ModuleCacheItem = {
@@ -241,14 +241,14 @@ export class ESModuleLoader {
             // create a shell code for delay assignment
             currentModule.shellUrl = this.createBlobUrl(
               `export function u$$_(m){${currentModuleExports
-                .map((name) =>
-                  name === 'default' ? 'd$$_=m.default' : `${name}=m.${name}`,
+                .map((exportSpecifier) =>
+                exportSpecifier.n === 'default' ? 'd$$_=m.default' : `${exportSpecifier.n}=m.${exportSpecifier.n}`,
                 )
                 .join(',')}}${currentModuleExports
-                .map((name) =>
-                  name === 'default'
+                .map((exportSpecifier) =>
+                exportSpecifier.n === 'default'
                     ? 'let d$$_;export{d$$_ as default}'
-                    : `export let ${name}`,
+                    : `export let ${exportSpecifier.n}`,
                 )
                 .join(';')}${
                 wildcardExportStatements.length

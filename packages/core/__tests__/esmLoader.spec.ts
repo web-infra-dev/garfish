@@ -1,5 +1,5 @@
 import { readFileSync as fsReadFileSync } from 'fs';
-import { init, parse } from 'es-module-lexer';
+import { init, parse } from '@alioth-org/es-module-lexer';
 import {
   ESModuleLoader,
   getModuleImportProcessor,
@@ -7,7 +7,7 @@ import {
 
 describe('Core: esm loader', () => {
   it('replace static import module name', async () => {
-    await init;
+    await init();
 
     const code = `
       import React from 'react';
@@ -37,7 +37,7 @@ describe('Core: esm loader', () => {
   });
 
   it('replace dynamic import keyword with "_import_"', async () => {
-    await init;
+    await init();
 
     const code = `
       import React from 'react';
