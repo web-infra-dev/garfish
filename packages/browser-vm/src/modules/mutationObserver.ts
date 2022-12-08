@@ -4,9 +4,14 @@ export function observerModule(_sandbox: Sandbox) {
   const observerSet = new Set<MutationObserver>();
 
   class ProxyMutationObserver extends MutationObserver {
-    constructor(cb: MutationCallback) {
-      super(cb);
+    observe(target: Node, options?: MutationObserverInit | undefined): void {
       observerSet.add(this);
+      return super.observe(target, options);
+    }
+
+    disconnect(): void {
+      observerSet.delete(this);
+      return super.disconnect();
     }
   }
 
