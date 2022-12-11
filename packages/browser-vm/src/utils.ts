@@ -116,7 +116,7 @@ export function createFakeObject(
       if (canWritable) {
         if (descriptor.writable === false) {
           descriptor.writable = true;
-        } else if (hasGetter) {
+        } else if (hasSetter) {
           descriptor.set = (val) => {
             storageBox[p] = val;
             return true;
