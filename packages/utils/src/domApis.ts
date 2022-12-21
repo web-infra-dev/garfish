@@ -21,6 +21,8 @@ const ns = 'http://www.w3.org/2000/svg';
 const xlinkNS = 'http://www.w3.org/1999/xlink'; // xmlns:xlink
 const xmlNS = 'http://www.w3.org/XML/1998/namespace'; // xmlns
 
+const xlinkPrefix = 'xlink';
+
 // https://developer.mozilla.org/en-US/docs/Web/SVG/Element
 const SVG_TAGS =
   'svg,animate,animateMotion,animateTransform,circle,clipPath,color-profile,' +
@@ -35,6 +37,10 @@ const SVG_TAGS =
   'text,textPath,title,tspan,unknown,use,view';
 
 const isSVG = makeMap(SVG_TAGS.split(','));
+
+export function changeTagNameToLowerCase(tagName: string) {
+ return isSVG(tagName) ? tagName : tagName.toLowerCase();
+}
 
 function attributesString(attributes: Node['attributes']) {
   if (!attributes || attributes.length === 0) return '';
@@ -184,7 +190,7 @@ export class DOMApis {
             el.setAttribute(key, value);
           } else if (key.charCodeAt(3) === colonChar) {
             el.setAttributeNS(xmlNS, key, value);
-          } else if (key.charCodeAt(5) === colonChar) {
+          } else if (key.charCodeAt(5) === colonChar && key.slice(0, 5) === xlinkPrefix) {
             el.setAttributeNS(xlinkNS, key, value);
           } else {
             el.setAttribute(key, value);
