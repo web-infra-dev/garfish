@@ -24,32 +24,58 @@ describe('Core: preload plugin', () => {
         },
       ],
     });
-    let app = await GarfishInstance.loadApp('vue-app');
+    const app = await GarfishInstance.loadApp('vue-app');
     await app?.mount();
-    app?.addSourceList({tagName: 'fetch', url: "http://localhost/resources/scripts/fetch.js"});
-    app?.addSourceList({tagName: 'fetch', url: "http://localhost/resources/scripts/no-entry.js"});
-    app?.addSourceList({tagName: 'style', url: "http://localhost/resources/scripts/style.js"});
+    app?.addSourceList({
+      tagName: 'fetch',
+      url: 'http://localhost/resources/scripts/fetch.js',
+    });
+    app?.addSourceList({
+      tagName: 'fetch',
+      url: 'http://localhost/resources/scripts/no-entry.js',
+    });
+    app?.addSourceList({
+      tagName: 'fetch',
+      url: new URL('http://localhost/resources/reactApp.html'),
+    });
+    app?.addSourceList({
+      tagName: 'fetch',
+      url: new Request('http://localhost/resources/vue3App.html'),
+    });
+    app?.addSourceList({
+      tagName: 'style',
+      url: 'http://localhost/resources/scripts/style.js',
+    });
     app?.addSourceList([
-      {tagName: 'fetch', url: "http://localhost/resources/scripts/fetch.js"},
-      {tagName: 'script', url: "http://localhost/resources/index.js"},
+      { tagName: 'fetch', url: 'http://localhost/resources/scripts/fetch.js' },
+      { tagName: 'script', url: 'http://localhost/resources/index.js' },
     ]);
 
-    expect(app!.sourceList.length).toBe(4);
+    expect(app!.sourceList.length).toBe(6);
     expect(app!.sourceList[0]).toMatchObject({
       tagName: 'script',
-      url: 'http://localhost/resources/scripts/no-entry.js'
+      url: 'http://localhost/resources/scripts/no-entry.js',
     });
     expect(app!.sourceList[1]).toMatchObject({
       tagName: 'fetch',
-      url: 'http://localhost/resources/scripts/fetch.js'
+      url: 'http://localhost/resources/scripts/fetch.js',
     });
     expect(app!.sourceList[2]).toMatchObject({
-      tagName: 'style',
-      url: 'http://localhost/resources/scripts/style.js'
+      tagName: 'fetch',
+      url: new URL('http://localhost/resources/reactApp.html'),
     });
     expect(app!.sourceList[3]).toMatchObject({
+      tagName: 'fetch',
+      url: new Request('http://localhost/resources/vue3App.html'),
+    });
+
+    expect(app!.sourceList[4]).toMatchObject({
+      tagName: 'style',
+      url: 'http://localhost/resources/scripts/style.js',
+    });
+    expect(app!.sourceList[5]).toMatchObject({
       tagName: 'script',
-      url: 'http://localhost/resources/index.js'
+      url: 'http://localhost/resources/index.js',
     });
   });
 });
