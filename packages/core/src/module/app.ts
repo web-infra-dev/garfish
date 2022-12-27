@@ -171,21 +171,31 @@ export class App {
     if (this.appInfo.disableSourceListCollect) return;
     if (Array.isArray(sourceInfo)){
       let nSourceList = sourceInfo.filter(item => {
-        if (!this.sourceListMap.has(item.url) && item.url.startsWith('http')) {
-          this.sourceListMap.set(item.url, item);
+        const dup = Object.assign({}, item);
+        dup.url = dup.url.startsWith('/') ?
+          `${location.origin}${dup.url}` :
+          dup.url;
+
+        if (!this.sourceListMap.has(dup.url) && dup.url.startsWith('http')) {
+          this.sourceListMap.set(dup.url, dup);
           return true;
         }
         return false;
       });
       this.sourceList = this.sourceList.concat(nSourceList);
     } else {
-      if (!this.sourceListMap.get(sourceInfo.url) && sourceInfo.url.startsWith('http')){
-        this.sourceList.push(sourceInfo);
-        this.sourceListMap.set(sourceInfo.url, sourceInfo);
+      const dup = Object.assign({}, sourceInfo);
+      dup.url = dup.url.startsWith('/') ?
+        `${location.origin}${dup.url}` :
+        dup.url;
+
+      if (!this.sourceListMap.get(dup.url) && dup.url.startsWith('http')){
+        this.sourceList.push(dup);
+        this.sourceListMap.set(dup.url, dup);
       }
     }
   }
-  
+
   getProvider() {
     return this.provider
       ? Promise.resolve(this.provider)
