@@ -1,3 +1,4 @@
+import type { Node } from '@garfish/utils';
 import { SyncHook, AsyncHook, PluginSystem } from '@garfish/hooks';
 import { interfaces } from './interface';
 
@@ -53,5 +54,6 @@ export function appLifecycle() {
       ],
       void
     >(),
+    customRender: new SyncHook<[Node, Element], void | null | Element | Comment>(),
   });
 }

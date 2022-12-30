@@ -8,6 +8,10 @@ import {
 } from '@garfish/utils';
 
 type Renderer = Record<string, (node: Node) => null | Element | Comment>;
+type CommonRender = (
+  node: Node,
+  parent: Element,
+) => void | null | Element | Comment;
 
 export class TemplateManager {
   public url: string | undefined;
@@ -60,7 +64,11 @@ export class TemplateManager {
   }
 
   // Render dom tree
-  createElements(renderer: Renderer, parent: Element) {
+  createElements(
+    renderer: Renderer,
+    parent: Element,
+    commonRender?: CommonRender,
+  ) {
     const elements: Array<Element> = [];
     const traverse = (node: Node | Text, parentEl?: Element) => {
       let el: any;
@@ -71,10 +79,16 @@ export class TemplateManager {
         parentEl && parentEl.appendChild(el);
       } else if (this.DOMApis.isNode(node)) {
         const { tagName, children } = node as Node;
-        if (renderer[tagName]) {
-          el = renderer[tagName](node as Node);
-        } else {
-          el = this.DOMApis.createElement(node as Node);
+        if (typeof commonRender === 'function') {
+          el = commonRender(node, parent);
+        }
+        // If the general renderer does not return a result, need to use the internal renderer
+        if (!el) {
+          if (renderer[tagName]) {
+            el = renderer[tagName](node as Node);
+          } else {
+            el = this.DOMApis.createElement(node as Node);
+          }
         }
         if (parentEl && el) parentEl.appendChild(el);
 
