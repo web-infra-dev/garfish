@@ -113,7 +113,7 @@ describe('Core: load process', () => {
     document.body.removeChild(container);
   });
 
-  it("throw error when provide an 'name' opts in options", async () => {
+  it('throw error when provide an \'name\' opts in options', async () => {
     await expect(GarfishInstance.loadApp('vue-app')).rejects.toThrow();
   });
 
@@ -250,7 +250,7 @@ describe('Core: load process', () => {
     );
   });
 
-  it('load the same app while return the cache instance if cache is true', async () => {
+  it('load the same app will return the cache appInstance if the config cache is true', async () => {
     await GarfishInstance.run({
       domGetter: '#container',
       apps: [
@@ -270,31 +270,10 @@ describe('Core: load process', () => {
 
     expect(app1.mounted).toBe(true);
     expect(app2.mounted).toEqual(app1.mounted);
+    expect(app1).toBe(app2);
   });
 
-  it('load the same app while return the cache instance if cache is set true', async () => {
-    await GarfishInstance.run({
-      domGetter: '#container',
-      apps: [
-        {
-          name: 'vue-app',
-          entry: vueSubAppEntry,
-          cache: false,
-        },
-      ],
-    });
-
-    const app1 = await GarfishInstance.loadApp('vue-app');
-    assert(app1, 'app2 should be loaded');
-    await app1.mount();
-    const app2 = await GarfishInstance.loadApp('vue-app');
-    assert(app2, 'app2 should be loaded');
-
-    expect(app1.mounted).toBe(true);
-    expect(app2.mounted).not.toEqual(app1.mounted);
-  });
-
-  it('load the same app while return the cache instance if cache is set false', async () => {
+  it('load the same app will not return the cached appInstance if the config cache is false', async () => {
     GarfishInstance.run({
       domGetter: '#container',
       apps: [
@@ -318,7 +297,36 @@ describe('Core: load process', () => {
 
     expect(app1.mounted).toBe(true);
     expect(app2.mounted).toBe(false);
+    expect(app2.mounted).not.toEqual(app1.mounted);
     expect(app2.appInfo.entry).toEqual(vue3SubAppEntry);
+  });
+
+  it('load the same app will return the cached appInstance if the config cache is true and the app configs will not updates', async () => {
+    GarfishInstance.run({
+      domGetter: '#container',
+      apps: [
+        {
+          name: 'vue-app',
+          entry: vueSubAppEntry,
+          cache: true,
+        },
+      ],
+    });
+
+    const app1 = await GarfishInstance.loadApp('vue-app');
+    assert(app1, 'app2 should be loaded');
+    await app1.mount();
+
+    const app2 = await GarfishInstance.loadApp('vue-app', {
+      entry: vue3SubAppEntry,
+      cache: true,
+    });
+    assert(app2, 'app2 should be loaded');
+
+    expect(app1.mounted).toBe(true);
+    expect(app2.mounted).toEqual(app1.mounted);
+    expect(app1).toBe(app2);
+    expect(app1.appInfo.entry).toEqual(vueSubAppEntry);
   });
 
   it('destroy the app during rendering and then render again', async () => {
@@ -373,7 +381,7 @@ describe('Core: load process', () => {
     expect(mockBeforeLoad.mock.calls[0][0].entry).toBe(reactSubAppEntry);
   });
 
-  it("loadApp before registered and `entry` don't be provided will toorw Error", async () => {
+  it('loadApp before registered and `entry` don\'t be provided will throw Error', async () => {
     GarfishInstance.run({
       domGetter: '#container',
       apps: [
