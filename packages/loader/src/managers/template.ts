@@ -11,7 +11,7 @@ type Renderer = Record<string, (node: Node) => null | Element | Comment>;
 type CommonRender = (
   node: Node,
   parent: Element,
-) => void | null | Element | Comment;
+) => { customElement?: Element | null };
 
 export class TemplateManager {
   public url: string | undefined;
@@ -78,19 +78,22 @@ export class TemplateManager {
         el = this.DOMApis.createTextNode(node);
         parentEl && parentEl.appendChild(el);
       } else if (this.DOMApis.isNode(node)) {
-        const { tagName, children } = node as Node;
+        const { tagName, children } = node;
         if (typeof commonRender === 'function') {
-          el = commonRender(node, parent);
+          el = commonRender(node, parent)?.customElement;
         }
         // If the general renderer does not return a result, need to use the internal renderer
         if (!el) {
           if (renderer[tagName]) {
-            el = renderer[tagName](node as Node);
+            el = renderer[tagName](node);
           } else {
-            el = this.DOMApis.createElement(node as Node);
+            el = this.DOMApis.createElement(node);
           }
         }
-        if (parentEl && el) parentEl.appendChild(el);
+
+        if (parentEl && el) {
+          parentEl.appendChild(el);
+        }
 
         if (el) {
           const { nodeType, _ignoreChildNodes } = el;

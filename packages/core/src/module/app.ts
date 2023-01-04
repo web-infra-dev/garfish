@@ -684,7 +684,12 @@ export class App {
     // Render dom tree and append to document
     entryManager.createElements(customRenderer, htmlNode, (node, parent) => {
       // Trigger a custom render hook
-      return this.hooks.lifecycle.customRender.emit(node, parent);
+      return this.hooks.lifecycle.customRender.emit({
+        node,
+        parent,
+        app: this,
+        customElement: null,
+      });
     });
   }
 
