@@ -42,9 +42,7 @@ export class AsyncWaterfallHook<T extends Record<string, any>> extends SyncHook<
             }
           }
         } else {
-          this.onerror(
-            `The "${this.type}" type has a plugin return value error.`,
-          );
+          this.onerror(`The return value of hook "${this.type}" is incorrect.`);
         }
         return data;
       };
