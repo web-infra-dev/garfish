@@ -562,6 +562,11 @@ export class App {
         return DOMApis.createElement(node);
       },
 
+      iframe: (node) => {
+        baseUrl && entryManager.toResolveUrl(node, 'src', baseUrl);
+        return DOMApis.createElement(node);
+      },
+
       // The body and head this kind of treatment is to compatible with the old version
       body: (node) => {
         if (!this.strictIsolation) {
