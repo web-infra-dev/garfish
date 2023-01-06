@@ -74,12 +74,8 @@ export class App {
   public cjsModules: Record<string, any>;
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
-  public sourceList: Array<{ tagName: string; url: string | URL | Request }> =
-    [];
-  public sourceListMap: Map<
-    string,
-    { tagName: string; url: string | URL | Request }
-  > = new Map();
+  public sourceList: Array<{ tagName: string; url: string | URL | Request }> = [];
+  public sourceListMap: Map<string, { tagName: string; url: string | URL | Request }> = new Map();
   public appInfo: AppInfo;
   public context: Garfish;
   public hooks: interfaces.AppHooks;
@@ -559,6 +555,11 @@ export class App {
         return DOMApis.createElement(node);
       },
 
+      iframe: (node) => {
+        baseUrl && entryManager.toResolveUrl(node, 'src', baseUrl);
+        return DOMApis.createElement(node);
+      },
+
       // The body and head this kind of treatment is to compatible with the old version
       body: (node) => {
         if (!this.strictIsolation) {
@@ -617,7 +618,7 @@ export class App {
             isInline: jsManager.isInlineScript(),
             noEntry: toBoolean(
               entryManager.findAttributeValue(node, 'no-entry') ||
-                this.isNoEntryScript(targetUrl),
+              this.isNoEntryScript(targetUrl),
             ),
             originScript: mockOriginScript,
           });
@@ -673,8 +674,16 @@ export class App {
       },
     };
 
-    // Render dom tree and append to document.
-    entryManager.createElements(customRenderer, htmlNode);
+    // Render dom tree and append to document
+    entryManager.createElements(customRenderer, htmlNode, (node, parent) => {
+      // Trigger a custom render hook
+      return this.hooks.lifecycle.customRender.emit({
+        node,
+        parent,
+        app: this,
+        customElement: null,
+      });
+    });
   }
 
   private async checkAndGetProvider() {

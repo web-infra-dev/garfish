@@ -1,4 +1,10 @@
-import { SyncHook, AsyncHook, PluginSystem } from '@garfish/hooks';
+import type { Node } from '@garfish/utils';
+import {
+  SyncHook,
+  SyncWaterfallHook,
+  AsyncHook,
+  PluginSystem,
+} from '@garfish/hooks';
 import { interfaces } from './interface';
 
 // prettier-ignore
@@ -53,5 +59,11 @@ export function appLifecycle() {
       ],
       void
     >(),
+    customRender: new SyncWaterfallHook<{
+      node: Node,
+      parent: Element,
+      app: interfaces.App,
+      customElement: Element | null,
+    }>('customRender'),
   });
 }

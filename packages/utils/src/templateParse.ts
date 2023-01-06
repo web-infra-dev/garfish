@@ -1,5 +1,5 @@
 import { error } from './utils';
-import { Node as VNode } from './domApis';
+import { changeTagNameToLowerCase, Node as VNode } from './domApis';
 
 enum ElementType {
   TEXT = 3,
@@ -48,7 +48,7 @@ const createElement = (el: Element, filter: (el: VNode) => VNode) => {
     case ElementType.ELEMENT:
       return filter({
         type: 'element',
-        tagName: el.tagName.toLowerCase(),
+        tagName: changeTagNameToLowerCase(el.tagName),
         attributes: generateAttributes(el),
         children: Array.from(el.childNodes).map((node) => {
           return createElement(node as Element, filter);
