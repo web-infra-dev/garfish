@@ -54,6 +54,10 @@ describe('Core: preload plugin', () => {
       tagName: 'fetch',
       url: '/resources/scripts/render.js',
     });
+    app?.addSourceList({
+      tagName: 'script',
+      url: '/resources/scripts/render.js',
+    });
 
     expect(app!.sourceList.length).toBe(7);
     expect(app!.sourceList[0]).toMatchObject({
