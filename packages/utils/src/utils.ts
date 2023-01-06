@@ -164,10 +164,7 @@ export function evalWithEnv(
   }
 }
 
-export function safeWrapper(
-  callback: (...args: Array<any>) => any,
-  disableWarn?: boolean,
-) {
+export function safeWrapper(callback: (...args: Array<any>) => any, disableWarn?: boolean) {
   try {
     callback();
   } catch (e) {
@@ -410,10 +407,9 @@ export function setDocCurrentScript(
     el.textContent = code;
   }
 
-  originScript &&
-    originScript.getAttributeNames().forEach((attribute) => {
-      el.setAttribute(attribute, originScript.getAttribute(attribute) || '');
-    });
+  originScript && originScript.getAttributeNames().forEach((attribute) => {
+    el.setAttribute(attribute, originScript.getAttribute(attribute) || '');
+  });
 
   if (async) {
     el.setAttribute('async', 'true');
