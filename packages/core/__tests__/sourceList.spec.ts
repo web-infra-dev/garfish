@@ -4,6 +4,8 @@ import Garfish from '../src/index';
 describe('Core: preload plugin', () => {
   const vueSubAppEntry = './resources/vueApp.html';
   const reactSubAppEntry = './resources/reactApp.html';
+  const preloadAppEntry = './resources/preloadApp.html';
+
 
   mockStaticServer({
     baseDir: __dirname,
@@ -89,4 +91,66 @@ describe('Core: preload plugin', () => {
       url: '/resources/scripts/render.js',
     });
   });
+
+  it('set disableSourceListCollect true will not collect sourceList', async () => {
+    const GarfishInstance = new Garfish({});
+    GarfishInstance.run({
+      disablePreloadApp: false,
+      apps: [
+        {
+          name: 'vue-app',
+          entry: vueSubAppEntry,
+          cache: true,
+          disableSourceListCollect: true,
+        },
+      ],
+    });
+    const app = await GarfishInstance.loadApp('vue-app');
+    await app?.mount();
+
+    app?.addSourceList({
+      tagName: 'fetch',
+      url: 'http://localhost/resources/scripts/fetch.js',
+    });
+    expect(app!.sourceList.length).toBe(0);
+
+    await GarfishInstance.loadApp('vue-app', {
+      disableSourceListCollect: false,
+    });
+
+    app?.addSourceList({
+      tagName: 'fetch',
+      url: 'http://localhost/resources/scripts/fetch.js',
+    });
+
+    expect(app!.appInfo.disableSourceListCollect).toBe(true);
+    expect(app!.sourceList.length).toBe(0);
+
+    const app2 = await GarfishInstance.loadApp('vue-app', {
+      cache: false,
+      disableSourceListCollect: false,
+    });
+
+    expect(app2).not.toBe(app);
+    expect(app!.appInfo.disableSourceListCollect).toBe(true);
+    expect(app2!.appInfo.disableSourceListCollect).toBe(false);
+    expect(app2!.sourceList.length).toBe(1);
+
+    expect(app2!.sourceList[0]).toMatchObject({
+      tagName: 'script',
+      url: 'http://localhost/resources/scripts/no-entry.js',
+    });
+
+    app2?.addSourceList({
+      tagName: 'fetch',
+      url: 'http://localhost/resources/scripts/fetch.js',
+    });
+
+    expect(app2!.sourceList.length).toBe(2);
+    expect(app2!.sourceList[1]).toMatchObject({
+      tagName: 'fetch',
+      url: 'http://localhost/resources/scripts/fetch.js',
+    });
+  });
+
 });
