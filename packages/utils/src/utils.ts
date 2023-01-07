@@ -1,4 +1,4 @@
-export const noop = () => {};
+export const noop = () => { };
 
 export const objectToString = Object.prototype.toString;
 
@@ -113,11 +113,11 @@ export function error(error: string | Error) {
 export function validURL(str) {
   const pattern = new RegExp(
     '^(https?:\\/\\/)?' + // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-      '(\\#[-a-z\\d_]*)?$',
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+    '(\\#[-a-z\\d_]*)?$',
     'i',
   ); // fragment locator
   return !!pattern.test(str);
@@ -402,7 +402,7 @@ export function setDocCurrentScript(
 ) {
   if (!target) return noop;
   const el = document.createElement('script');
-  
+
   if (!url && code) {
     el.textContent = code;
   }
@@ -414,7 +414,7 @@ export function setDocCurrentScript(
   if (async) {
     el.setAttribute('async', 'true');
   }
- 
+
   const set = (val) => {
     try {
       if (define) {
@@ -434,7 +434,7 @@ export function setDocCurrentScript(
   };
 
   set(el);
-  return () => safeWrapper(()=> delete target.currentScript, true);
+  return () => safeWrapper(() => delete target.currentScript, true);
 }
 
 export function _extends(d, b) {
@@ -573,4 +573,13 @@ export async function createSourcemap(code: string, filename: string) {
     }),
   );
   return `//@ sourceMappingURL=${content}`;
+}
+
+// await fetch(new URL('http://www.example.com/démonstration.html'));
+// await fetch(new Request('http://www.example.com/démonstration.html'));
+// await fetch('http://www.example.com/démonstration.html');
+export function getSourceURL(url: string | URL | Request): string {
+  if (url instanceof URL) return url.href;
+  if (url instanceof Request) return url.url;
+  return url.startsWith('/') ? `${location.origin}${url}` : url;
 }

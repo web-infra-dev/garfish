@@ -22,6 +22,7 @@ import {
   sourceListTags,
   createAppContainer,
   setDocCurrentScript,
+  getSourceURL,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
@@ -73,9 +74,8 @@ export class App {
   public cjsModules: Record<string, any>;
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
-  public sourceList: Array<{ tagName: string; url: string }> = [];
-  public sourceListMap: Map<string, { tagName: string; url: string }> =
-    new Map();
+  public sourceList: Array<{ tagName: string; url: string | URL | Request }> = [];
+  public sourceListMap: Map<string, { tagName: string; url: string | URL | Request }> = new Map();
   public appInfo: AppInfo;
   public context: Garfish;
   public hooks: interfaces.AppHooks;
@@ -144,6 +144,7 @@ export class App {
         const url =
           entryManager.findAttributeValue(node, 'href') ||
           entryManager.findAttributeValue(node, 'src');
+
         if (url) {
           this.addSourceList({
             tagName: node.tagName,
@@ -177,33 +178,25 @@ export class App {
 
   addSourceList(
     sourceInfo:
-      | Array<{ tagName: string; url: string }>
-      | { tagName: string; url: string },
+      | Array<{ tagName: string; url: string | URL | Request }>
+      | { tagName: string; url: string | URL | Request },
   ) {
     if (this.appInfo.disableSourceListCollect) return;
     if (Array.isArray(sourceInfo)) {
       const nSourceList = sourceInfo.filter((item) => {
-        const dup = Object.assign({}, item);
-        dup.url = dup.url.startsWith('/')
-          ? `${location.origin}${dup.url}`
-          : dup.url;
-
-        if (!this.sourceListMap.has(dup.url) && dup.url.startsWith('http')) {
-          this.sourceListMap.set(dup.url, dup);
+        const url = getSourceURL(item.url);
+        if (!this.sourceListMap.has(url) && url.startsWith('http')) {
+          this.sourceListMap.set(url, item);
           return true;
         }
         return false;
       });
       this.sourceList = this.sourceList.concat(nSourceList);
     } else {
-      const dup = Object.assign({}, sourceInfo);
-      dup.url = dup.url.startsWith('/')
-        ? `${location.origin}${dup.url}`
-        : dup.url;
-
-      if (!this.sourceListMap.get(dup.url) && dup.url.startsWith('http')) {
-        this.sourceList.push(dup);
-        this.sourceListMap.set(dup.url, dup);
+      const url = getSourceURL(sourceInfo.url);
+      if (!this.sourceListMap.get(url) && url.startsWith('http')) {
+        this.sourceList.push(sourceInfo);
+        this.sourceListMap.set(url, sourceInfo);
       }
     }
   }
@@ -625,7 +618,7 @@ export class App {
             isInline: jsManager.isInlineScript(),
             noEntry: toBoolean(
               entryManager.findAttributeValue(node, 'no-entry') ||
-                this.isNoEntryScript(targetUrl),
+              this.isNoEntryScript(targetUrl),
             ),
             originScript: mockOriginScript,
           });

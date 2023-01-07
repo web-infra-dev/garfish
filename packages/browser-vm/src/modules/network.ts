@@ -76,7 +76,7 @@ export function networkModule(sandbox: Sandbox) {
     if (sandbox.options.addSourceList) {
       sandbox.options.addSourceList({
         tagName: 'fetch',
-        url: input instanceof Request ? input.url : input,
+        url: input,
       });
     }
     let controller;
