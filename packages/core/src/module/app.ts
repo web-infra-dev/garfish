@@ -22,7 +22,7 @@ import {
   sourceListTags,
   createAppContainer,
   setDocCurrentScript,
-  getSourceURL
+  getSourceURL,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
