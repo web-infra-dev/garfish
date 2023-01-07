@@ -164,8 +164,8 @@ export class App {
         }
       });
     }
-    this.appInfo.entry &&
-      this.addSourceList({ tagName: 'html', url: this.appInfo.entry });
+    // this.appInfo.entry &&
+    //   this.addSourceList({ tagName: 'html', url: this.appInfo.entry });
   }
 
   get rootElement() {
