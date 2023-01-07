@@ -175,27 +175,59 @@ export class App {
     return this.sourceList;
   }
 
+  // addSourceList(
+  //   sourceInfo:
+  //     | Array<{ tagName: string; url: string | URL | Request }>
+  //     | { tagName: string; url: string | URL | Request },
+  // ) {
+  //   if (this.appInfo.disableSourceListCollect) return;
+  //   if (Array.isArray(sourceInfo)) {
+  //     const nSourceList = sourceInfo.filter((item) => {
+  //       const url = getSourceURL(item.url);
+  //       if (!this.sourceListMap.has(url) && url.startsWith('http')) {
+  //         this.sourceListMap.set(url, item);
+  //         return true;
+  //       }
+  //       return false;
+  //     });
+  //     this.sourceList = this.sourceList.concat(nSourceList);
+  //   } else {
+  //     const url = getSourceURL(sourceInfo.url);
+  //     if (!this.sourceListMap.get(url) && url.startsWith('http')) {
+  //       this.sourceList.push(sourceInfo);
+  //       this.sourceListMap.set(url, sourceInfo);
+  //     }
+  //   }
+  // }
   addSourceList(
     sourceInfo:
-      | Array<{ tagName: string; url: string | URL | Request }>
-      | { tagName: string; url: string | URL | Request },
+      | Array<{ tagName: string; url: string }>
+      | { tagName: string; url: string },
   ) {
     if (this.appInfo.disableSourceListCollect) return;
     if (Array.isArray(sourceInfo)) {
       const nSourceList = sourceInfo.filter((item) => {
-        const url = getSourceURL(item.url);
-        if (!this.sourceListMap.has(url) && url.startsWith('http')) {
-          this.sourceListMap.set(url, item);
+        const dup = Object.assign({}, item);
+        dup.url = dup.url.startsWith('/')
+          ? `${location.origin}${dup.url}`
+          : dup.url;
+
+        if (!this.sourceListMap.has(dup.url) && dup.url.startsWith('http')) {
+          this.sourceListMap.set(dup.url, dup);
           return true;
         }
         return false;
       });
       this.sourceList = this.sourceList.concat(nSourceList);
     } else {
-      const url = getSourceURL(sourceInfo.url);
-      if (!this.sourceListMap.get(url) && url.startsWith('http')) {
-        this.sourceList.push(sourceInfo);
-        this.sourceListMap.set(url, sourceInfo);
+      const dup = Object.assign({}, sourceInfo);
+      dup.url = dup.url.startsWith('/')
+        ? `${location.origin}${dup.url}`
+        : dup.url;
+
+      if (!this.sourceListMap.get(dup.url) && dup.url.startsWith('http')) {
+        this.sourceList.push(dup);
+        this.sourceListMap.set(dup.url, dup);
       }
     }
   }
