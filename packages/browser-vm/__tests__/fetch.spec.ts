@@ -7,7 +7,7 @@ describe('Init', () => {
 
   // Fetch methods auto fix base url
   const sourceList: Array<any> = [];
-  const addSourceList = (n) => sourceList.push(n);
+  const addSourceList = (n)=> sourceList.push(n);
   it('fetch methods', (next) => {
     const sandbox = new Sandbox({
       namespace: 'vue',
@@ -35,7 +35,7 @@ describe('Init', () => {
   // xhr methods auto fix base url
   it('xhr methods', () => {
     const sourceList: Array<any> = [];
-    const addSourceList = (n) => sourceList.push(n);
+    const addSourceList = (n)=> sourceList.push(n);
     const sandbox = new Sandbox({
       namespace: 'react',
       addSourceList: addSourceList,
