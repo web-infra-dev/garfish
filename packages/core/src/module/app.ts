@@ -74,10 +74,10 @@ export class App {
   public cjsModules: Record<string, any>;
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
-  // public sourceList: Array<{ tagName: string; url: string | URL | Request }> = [];
-  // public sourceListMap: Map<string, { tagName: string; url: string | URL | Request }> = new Map();
-  public sourceList: Array<{ tagName: string; url: string }> = [];
-  public sourceListMap: Map<string, { tagName: string; url: string }> = new Map();
+  public sourceList: Array<{ tagName: string; url: string | URL | Request }> = [];
+  public sourceListMap: Map<string, { tagName: string; url: string | URL | Request }> = new Map();
+  // public sourceList: Array<{ tagName: string; url: string }> = [];
+  // public sourceListMap: Map<string, { tagName: string; url: string }> = new Map();
   public appInfo: AppInfo;
   public context: Garfish;
   public hooks: interfaces.AppHooks;
@@ -177,15 +177,10 @@ export class App {
     return this.sourceList;
   }
 
-  // addSourceList(
-  //   sourceInfo:
-  //     | Array<{ tagName: string; url: string | URL | Request }>
-  //     | { tagName: string; url: string | URL | Request },
-  // ) {
   addSourceList(
     sourceInfo:
-      | Array<{ tagName: string; url: string }>
-      | { tagName: string; url: string },
+      | Array<{ tagName: string; url: string | URL | Request }>
+      | { tagName: string; url: string | URL | Request },
   ) {
     if (this.appInfo.disableSourceListCollect) return;
     if (Array.isArray(sourceInfo)) {
