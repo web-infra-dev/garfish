@@ -4,8 +4,6 @@ import Garfish from '../src/index';
 describe('Core: preload plugin', () => {
   const vueSubAppEntry = './resources/vueApp.html';
   const reactSubAppEntry = './resources/reactApp.html';
-  const preloadAppEntry = './resources/preloadApp.html';
-
 
   mockStaticServer({
     baseDir: __dirname,
