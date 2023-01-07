@@ -185,7 +185,7 @@ export class App {
     if (Array.isArray(sourceInfo)) {
       const nSourceList = sourceInfo.filter((item) => {
         const url = getSourceURL(item.url);
-        if (url && !this.sourceListMap.has(url)) {
+        if (!this.sourceListMap.has(url) && url.startsWith('http')) {
           this.sourceListMap.set(url, item);
           return true;
         }
@@ -194,7 +194,7 @@ export class App {
       this.sourceList = this.sourceList.concat(nSourceList);
     } else {
       const url = getSourceURL(sourceInfo.url);
-      if (url && !this.sourceListMap.get(url)) {
+      if (!this.sourceListMap.get(url) && url.startsWith('http')) {
         this.sourceList.push(sourceInfo);
         this.sourceListMap.set(url, sourceInfo);
       }

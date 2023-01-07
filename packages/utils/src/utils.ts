@@ -581,5 +581,5 @@ export async function createSourcemap(code: string, filename: string) {
 export function getSourceURL(url: string | URL | Request): string {
   if (url instanceof URL) return url.href;
   if (url instanceof Request) return url.url;
-  return url.startsWith('/') ? `${location.origin}${url}` : url.startsWith('http') || url.startsWith('https') ? url : '';
+  return url.startsWith('/') ? `${location.origin}${url}` : url;
 }
