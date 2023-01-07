@@ -477,10 +477,10 @@ export const hookObjectProperty = <
   T extends {},
   K extends keyof T,
   P extends any[],
-  >(
-    obj: T,
-    key: K,
-    hookFunc: (origin: T[K], ...params: P) => T[K],
+>(
+  obj: T,
+  key: K,
+  hookFunc: (origin: T[K], ...params: P) => T[K],
 ) => {
   return (...params: P) => {
     if (!obj) {
