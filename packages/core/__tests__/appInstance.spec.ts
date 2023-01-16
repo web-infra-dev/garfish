@@ -13,6 +13,7 @@ describe('Core: appInstance', () => {
   let container;
 
   const vueSubAppEntry = './resources/vueApp.html';
+  const viteAppEntry = './resources/viteApp.html';
   const reactSubAppEntry = './resources/reactApp.html';
   const vue3AppRenderNode = 'hello-world-vue3';
   const vue3SubAppEntry = './resources/vue3App.html';
@@ -52,4 +53,25 @@ describe('Core: appInstance', () => {
     await app.unmount();
     expect(GarfishInstance.activeApps[0]).toBeUndefined();
   });
+
+  it('mount apps with inline script code using script dom', async () => {
+    const app = await GarfishInstance.loadApp('vite-app', {
+      entry: viteAppEntry,
+      domGetter: '#container',
+    });
+
+    assert(app, 'app should be defined');
+    await app.mount();
+    expect(GarfishInstance.activeApps[0]).toBe(app);
+
+    app.hide();
+    expect(GarfishInstance.activeApps[0]).toBeUndefined();
+
+    await app.show();
+    expect(GarfishInstance.activeApps[0]).toBe(app);
+
+    await app.unmount();
+    expect(GarfishInstance.activeApps[0]).toBeUndefined();
+  });
+
 });

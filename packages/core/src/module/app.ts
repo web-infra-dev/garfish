@@ -611,6 +611,16 @@ export class App {
             }
           });
 
+          // if the script node has an id attribute, create a script node before executing the script
+          const hasIdKey = node.attributes.find((attribute) => attribute.key === 'id');
+          if (hasIdKey) {
+            const _node = entryManager.cloneNode(node)
+            _node.tagName = 'div';
+            _node.type = 'element'
+            const _domEl = DOMApis.createElement(_node);
+            htmlNode.appendChild(_domEl);
+          }
+
           const targetUrl = url || this.appInfo.entry;
           this.execScript(scriptCode, {}, targetUrl, {
             isModule,

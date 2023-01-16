@@ -156,19 +156,15 @@ export class Loader {
     defaultContentType?: string;
   }): Promise<LoadedHookArgs<T>['value']> {
     const { options, loadingList, cacheStore } = this;
-
     const res = loadingList[url];
-    // 增加 scope 作为缓存区分，相同 scope 的 loader 才做缓存
-    // 否则可能出现，url 相同，不同子应用实例的共享同一 entryManager，在多个子应用同时 mount 时，在 vm sandbox 中会对 entryManager 的 document 进行赋值(app.entryManager.DOMApis.document = sandbox.global.document)
-    // 这样当最后一个子应用实例对 entryManager.DOMApis.document 赋值时，其余子应用的 entryManager.DOMApis.document 将会指向最后一次实例化的子应用的 sandbox.global.document 变量，
-    // dom 元素被创建时挂载的 sandbox id 为最后一个子应用的 sandbox id
-    // 子应用通过 createElement 方法创建的 dom 元素将会被当做最后一个子应用的 deferClearEffects 副作用收集。
-    // 当最后一个子应用被卸载时，其它子应用也将一起被卸载
 
+    // add scope as a cache distinction, only loaders with the same scope are cached
+    // otherwise, it may happen that the url is the same, and different sub-application instances share the same entryManager,
+    // and the side effects are collected incorrectly, resulting in some unexpected problems
     if (res && Object.keys(res).includes(scope)) {
       return res[scope]
     }
-
+    
     let appCacheContainer = cacheStore[scope];
     if (!appCacheContainer) {
       appCacheContainer = cacheStore[scope] = new AppCacheContainer(
@@ -263,10 +259,7 @@ export class Loader {
         this.hooks.lifecycle.error.emit(e, { scope });
         throw e; // Let the upper application catch the error
       })
-      .finally(() => {
-        // 有 scope 区分之后无需置空
-        // loadingList[url][scope] = null
-      });
+      .finally(() => {});
 
     loadingList[url] ? loadingList[url][scope] = loadRes : loadingList[url] = { [scope]: loadRes };
     return loadRes;
