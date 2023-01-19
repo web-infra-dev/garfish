@@ -63,7 +63,6 @@ export class Garfish extends EventEmitter2 {
   }
 
   setOptions(options: Partial<interfaces.Options>) {
-    assert(!this.running, 'Garfish is running, can`t set options');
     if (isPlainObject(options)) {
       this.options = deepMergeConfig(this.options, options);
     }
