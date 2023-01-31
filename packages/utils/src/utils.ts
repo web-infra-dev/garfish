@@ -1,4 +1,4 @@
-export const noop = () => { };
+export const noop = () => {};
 
 export const objectToString = Object.prototype.toString;
 
@@ -113,11 +113,11 @@ export function error(error: string | Error) {
 export function validURL(str) {
   const pattern = new RegExp(
     '^(https?:\\/\\/)?' + // protocol
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-    '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-    '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-    '(\\#[-a-z\\d_]*)?$',
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d_]*)?$',
     'i',
   ); // fragment locator
   return !!pattern.test(str);
@@ -164,7 +164,10 @@ export function evalWithEnv(
   }
 }
 
-export function safeWrapper(callback: (...args: Array<any>) => any, disableWarn?: boolean) {
+export function safeWrapper(
+  callback: (...args: Array<any>) => any,
+  disableWarn?: boolean,
+) {
   try {
     callback();
   } catch (e) {
@@ -407,9 +410,10 @@ export function setDocCurrentScript(
     el.textContent = code;
   }
 
-  originScript && originScript.getAttributeNames().forEach((attribute) => {
-    el.setAttribute(attribute, originScript.getAttribute(attribute) || '');
-  });
+  originScript &&
+    originScript.getAttributeNames().forEach((attribute) => {
+      el.setAttribute(attribute, originScript.getAttribute(attribute) || '');
+    });
 
   if (async) {
     el.setAttribute('async', 'true');
@@ -582,4 +586,10 @@ export function getSourceURL(url: string | URL | Request): string {
   if (url instanceof URL) return url.href;
   if (url instanceof Request) return url.url;
   return url.startsWith('/') ? `${location.origin}${url}` : url;
+}
+
+export function macroTask<T extends any>(value: T) {
+  return new Promise<T>((resolve) => {
+    setTimeout(() => resolve(value));
+  });
 }
