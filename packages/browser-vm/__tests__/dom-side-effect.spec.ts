@@ -88,7 +88,7 @@ describe('Sandbox:Dom & Bom', () => {
     const testNode = document.getElementById(testId);
     const test2Node = document.getElementById(testId);
 
-    expect(sandbox.deferClearEffects.size).toBe(1);
+    expect(sandbox.effectsCollector.size).toBe(1);
 
     assert(testNode, 'root node should exist');
     assert(rootNode, 'rootNode node should exist');
