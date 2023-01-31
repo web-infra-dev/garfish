@@ -6,11 +6,11 @@ import {
 } from '@garfish/hooks';
 import {
   error,
+  macroTask,
   __LOADER_FLAG__,
   isJsType,
   isCssType,
   isHtmlType,
-  parseContentType,
 } from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
@@ -166,7 +166,7 @@ export class Loader {
     // 当最后一个子应用被卸载时，其它子应用也将一起被卸载
 
     if (res && Object.keys(res).includes(scope)) {
-      return res[scope]
+      return res[scope];
     }
 
     let appCacheContainer = cacheStore[scope];
@@ -177,7 +177,7 @@ export class Loader {
     }
 
     if (appCacheContainer.has(url)) {
-      return Promise.resolve(copyResult(appCacheContainer.get(url)));
+      return macroTask(copyResult(appCacheContainer.get(url)));
     } else {
       // If other containers have cache
       for (const key in cacheStore) {
@@ -187,7 +187,7 @@ export class Loader {
             const result = container.get(url);
             cachedDataSet.add(result);
             appCacheContainer.set(url, result, result.fileType);
-            return Promise.resolve(copyResult(result));
+            return macroTask(copyResult(result));
           }
         }
       }
@@ -268,7 +268,9 @@ export class Loader {
         // loadingList[url][scope] = null
       });
 
-    loadingList[url] ? loadingList[url][scope] = loadRes : loadingList[url] = { [scope]: loadRes };
+    loadingList[url]
+      ? (loadingList[url][scope] = loadRes)
+      : (loadingList[url] = { [scope]: loadRes });
     return loadRes;
   }
 }
