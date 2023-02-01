@@ -2,6 +2,7 @@ import { Node } from '@garfish/utils';
 
 export class JavaScriptManager {
   public async: boolean;
+  public defer: boolean;
   public mimeType: string;
   public scriptCode: string;
   public url?: string;
@@ -12,6 +13,7 @@ export class JavaScriptManager {
   constructor(scriptCode: string, url?: string) {
     this.mimeType = '';
     this.async = false;
+    this.defer = false;
     this.url = url;
     this.scriptCode = scriptCode;
   }
@@ -30,6 +32,10 @@ export class JavaScriptManager {
 
   setAsyncAttribute(val: boolean) {
     this.async = Boolean(val);
+  }
+
+  setDefferAttribute(val: boolean) {
+    this.defer = Boolean(val);
   }
 
   setDep(node: Node) {
