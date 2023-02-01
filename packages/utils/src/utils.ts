@@ -401,6 +401,7 @@ export function setDocCurrentScript(
   define?: boolean,
   url?: string,
   async?: boolean,
+  defer?: boolean,
   originScript?: HTMLScriptElement,
 ) {
   if (!target) return noop;
@@ -417,6 +418,9 @@ export function setDocCurrentScript(
 
   if (async) {
     el.setAttribute('async', 'true');
+  }
+  if (defer) {
+    el.setAttribute('defer', 'true');
   }
 
   const set = (val) => {

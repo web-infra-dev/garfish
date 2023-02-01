@@ -272,6 +272,7 @@ export class App {
         true,
         url,
         options?.async,
+        options?.defer,
         options?.originScript,
       );
       code += url ? `\n//# sourceURL=${url}\n` : '';
@@ -335,6 +336,9 @@ export class App {
         await this.compileAndRenderContainer();
       if (!this.stopMountAndClearEffect()) return false;
 
+      // The defer script is still a synchronous code and needs to be placed before `getProvider`
+      deferScripts();
+
       // Good provider is set at compile time
       const provider = await this.getProvider();
       // Existing asynchronous functions need to decide whether the application has been unloaded
@@ -345,8 +349,7 @@ export class App {
       this.mounted = true;
       this.hooks.lifecycle.afterMount.emit(this.appInfo, this, false);
 
-      // Run defer and async scripts
-      deferScripts();
+      // Run async scripts
       await asyncScripts;
       if (!this.stopMountAndClearEffect()) return false;
     } catch (e) {
@@ -429,8 +432,9 @@ export class App {
               {},
               jsManager.url || this.appInfo.entry,
               {
-                async: false,
                 noEntry: true,
+                defer: type === 'defer',
+                async: type === 'async',
               },
             );
           } catch (e) {
@@ -630,6 +634,7 @@ export class App {
           this.execScript(scriptCode, {}, targetUrl, {
             isModule,
             async: false,
+            defer: false,
             isInline: jsManager.isInlineScript(),
             noEntry: toBoolean(
               entryManager.findAttributeValue(node, 'no-entry') ||

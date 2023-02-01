@@ -136,15 +136,16 @@ export namespace interfaces {
   export interface ExecScriptOptions {
     node?: Node;
     async?: boolean;
+    defer?: boolean;
     noEntry?: boolean;
     isInline?: boolean;
     isModule?: boolean;
-    originScript?: HTMLScriptElement
+    originScript?: HTMLScriptElement;
   }
 
   export interface ChildGarfishConfig {
     sandbox?: {
       noEntryScripts?: string[];
-    }
+    };
   }
 }
