@@ -177,7 +177,9 @@ export class Loader {
     }
 
     if (appCacheContainer.has(url)) {
-      return macroTask(copyResult(appCacheContainer.get(url)));
+      // When there is a real network request, some network io is consumed,
+      // so we need to simulate the network io here to ensure that the timing of the request is correct when the cache timing is hit.
+      return macroTask(copyResult(appCacheContainer.get(url)), 4);
     } else {
       // If other containers have cache
       for (const key in cacheStore) {
@@ -187,7 +189,7 @@ export class Loader {
             const result = container.get(url);
             cachedDataSet.add(result);
             appCacheContainer.set(url, result, result.fileType);
-            return macroTask(copyResult(result));
+            return macroTask(copyResult(result), 4);
           }
         }
       }
