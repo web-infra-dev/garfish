@@ -170,7 +170,7 @@ export class App {
     }
     this.appInfo.entry &&
       this.addSourceList({ tagName: 'html', url: this.appInfo.entry });
-    this.asyncProviderTimeout = this.childGarfishConfig?.sandbox?.asyncProviderTimeout ?? this.appInfo.asyncProviderTimeout ?? 0;
+    this.asyncProviderTimeout = this.childGarfishConfig?.asyncProviderTimeout ?? this.appInfo.asyncProviderTimeout ?? 0;
   }
 
   get rootElement() {
