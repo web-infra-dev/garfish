@@ -170,7 +170,7 @@ export class App {
     }
     this.appInfo.entry &&
       this.addSourceList({ tagName: 'html', url: this.appInfo.entry });
-    this.asyncProviderTimeout = this.childGarfishConfig?.asyncProviderTimeout ?? this.appInfo.asyncProviderTimeout ?? 0;
+    this.asyncProviderTimeout = this.appInfo.asyncProviderTimeout ?? 0;
   }
 
   get rootElement() {
@@ -208,6 +208,7 @@ export class App {
 
   private initAsyncProviderRegistration() {
     const { asyncProviderTimeout, customExports } = this;
+
     if (asyncProviderTimeout) {
       // just inject 'registerProvider' function for async provider registration
       customExports.registerProvider = (provider: typeof this.asyncProvider) => {

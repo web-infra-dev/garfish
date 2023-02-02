@@ -118,6 +118,7 @@ describe('config', () => {
         a: new Proxy({}, {}),
       },
       customLoader: () => {},
+      asyncProviderTimeout: 5000,
     });
     const app = await GarfishInstance.loadApp('app1');
     assert(app);
@@ -130,6 +131,7 @@ describe('config', () => {
         a: GarfishInstance.options.props.a,
       },
       customLoader: GarfishInstance.options.customLoader,
+      asyncProviderTimeout: 5000,
     });
   });
 
@@ -142,6 +144,7 @@ describe('config', () => {
         hello: new Proxy({ hello: 'msg' }, {}),
       },
       customLoader: () => {},
+      asyncProviderTimeout: 5000,
     };
     const app = await GarfishInstance.loadApp('app1', appInfo);
     assert(app);
