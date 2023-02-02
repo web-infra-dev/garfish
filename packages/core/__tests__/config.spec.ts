@@ -23,6 +23,7 @@ describe('config', () => {
       disableStatistics: false,
       disablePreloadApp: false,
       basename: '/',
+      asyncProviderTimeout: 2000,
       sandbox: {
         snapshot: false,
         fixBaseUrl: false,
@@ -84,6 +85,7 @@ describe('config', () => {
       props: {
         s: new Proxy({}, {}),
       },
+      asyncProviderTimeout: 3,
     };
 
     GarfishInstance.setOptions(setConfig);
@@ -97,6 +99,7 @@ describe('config', () => {
       sandbox: setConfig.sandbox,
       basename: globalConfig.basename,
       domGetter: globalConfig.domGetter,
+      asyncProviderTimeout: 3,
     });
     expect(GarfishInstance.options.apps).toEqual(
       expect.arrayContaining([...globalConfig.apps, ...setConfig.apps]),

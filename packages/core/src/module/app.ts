@@ -161,7 +161,7 @@ export class App {
       });
     }
     this.appInfo.entry && this.addSourceList({ tagName: 'html', url: this.appInfo.entry })
-    this.asyncProviderTimeout = this.childGarfishConfig?.sandbox?.asyncProviderTimeout ?? 0;
+    this.asyncProviderTimeout = this.childGarfishConfig?.sandbox?.asyncProviderTimeout ?? this.appInfo.asyncProviderTimeout ?? 0;
   }
 
   get rootElement() {
@@ -712,7 +712,7 @@ export class App {
     }
 
     // async provider
-    if (this.asyncProviderTimeout) {
+    if (this.asyncProviderTimeout && !provider) {
       // this child app needs async provider registration
       provider = await this.awaitAsyncProviderRegistration();
     }
