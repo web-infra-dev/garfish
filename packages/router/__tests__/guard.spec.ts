@@ -71,13 +71,17 @@ describe('Router: test guard', () => {
     await waitSwitchReady();
     expect(afterGuardToInfo.path).toBe('/a');
     expect(afterGuardToInfo.fullPath).toBe(`${basename}/a`);
+    expect(afterGuardToInfo.href).toBe(`http://localhost${basename}/a`);
     expect(afterGuardFromInfo.path).toBe('/');
     expect(afterGuardFromInfo.fullPath).toBe('/');
+    expect(afterGuardFromInfo.href).toBe(`http://localhost/`);
 
     expect(beforeGuardToInfo.path).toBe('/a');
     expect(beforeGuardToInfo.fullPath).toBe(`${basename}/a`);
+    expect(afterGuardToInfo.href).toBe(`http://localhost${basename}/a`);
     expect(beforeGuardFromInfo.path).toBe('/');
     expect(beforeGuardFromInfo.fullPath).toBe('/');
+    expect(beforeGuardFromInfo.href).toBe(`http://localhost/`);
   });
 
   it('Router: router push judge to and from path', async () => {
@@ -85,13 +89,17 @@ describe('Router: test guard', () => {
     await waitSwitchReady();
     expect(afterGuardToInfo.path).toBe('/a/b');
     expect(afterGuardToInfo.fullPath).toBe(`${basename}/a/b`);
+    expect(afterGuardToInfo.href).toBe(`http://localhost${basename}/a/b`);
     expect(afterGuardFromInfo.path).toBe('/a');
     expect(afterGuardFromInfo.fullPath).toBe(`${basename}/a`);
+    expect(afterGuardFromInfo.href).toBe(`http://localhost${basename}/a`);
 
     expect(beforeGuardToInfo.path).toBe('/a/b');
     expect(beforeGuardToInfo.fullPath).toBe(`${basename}/a/b`);
+    expect(beforeGuardToInfo.href).toBe(`http://localhost${basename}/a/b`);
     expect(beforeGuardFromInfo.path).toBe('/a');
     expect(beforeGuardFromInfo.fullPath).toBe(`${basename}/a`);
+    expect(beforeGuardFromInfo.href).toBe(`http://localhost${basename}/a`);
   });
 
   it('Router: native navigation appB judge to and from path', async () => {
@@ -99,12 +107,16 @@ describe('Router: test guard', () => {
     await waitSwitchReady();
     expect(afterGuardToInfo.path).toBe('/a/c');
     expect(afterGuardToInfo.fullPath).toBe(`${basename}/a/c`);
+    expect(afterGuardToInfo.href).toBe(`http://localhost${basename}/a/c`);
     expect(afterGuardFromInfo.path).toBe('/a/b');
     expect(afterGuardFromInfo.fullPath).toBe(`${basename}/a/b`);
+    expect(afterGuardFromInfo.href).toBe(`http://localhost${basename}/a/b`);
 
     expect(beforeGuardToInfo.path).toBe('/a/c');
     expect(beforeGuardToInfo.fullPath).toBe(`${basename}/a/c`);
+    expect(beforeGuardToInfo.href).toBe(`http://localhost${basename}/a/c`);
     expect(beforeGuardFromInfo.path).toBe('/a/b');
     expect(beforeGuardFromInfo.fullPath).toBe(`${basename}/a/b`);
+    expect(beforeGuardFromInfo.href).toBe(`http://localhost${basename}/a/b`);
   });
 });

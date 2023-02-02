@@ -22,6 +22,7 @@ import {
   sourceListTags,
   createAppContainer,
   setDocCurrentScript,
+  getSourceURL,
 } from '@garfish/utils';
 import { Garfish } from '../garfish';
 import { interfaces } from '../interface';
@@ -73,8 +74,8 @@ export class App {
   public cjsModules: Record<string, any>;
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
-  public sourceList: Array<{ tagName: string; url: string }> = [];
-  public sourceListMap: Map<string, { tagName: string; url: string }> = new Map();
+  public sourceList: Array<{ tagName: string; url: string | URL | Request }> = [];
+  public sourceListMap: Map<string, { tagName: string; url: string | URL | Request }> = new Map();
   public appInfo: AppInfo;
   public context: Garfish;
   public hooks: interfaces.AppHooks;
@@ -147,20 +148,28 @@ export class App {
         const url =
           entryManager.findAttributeValue(node, 'href') ||
           entryManager.findAttributeValue(node, 'src');
+
         if (url) {
           this.addSourceList({
             tagName: node.tagName,
             url: entryManager.url ? transformUrl(entryManager.url, url) : url,
           });
         }
-        if (isGarfishConfigType({ type: entryManager.findAttributeValue(node, 'type') })) {
+        if (
+          isGarfishConfigType({
+            type: entryManager.findAttributeValue(node, 'type'),
+          })
+        ) {
           // garfish config script founded
           // parse it
-          this.childGarfishConfig = JSON.parse((node.children?.[0] as Text)?.content);
+          this.childGarfishConfig = JSON.parse(
+            (node.children?.[0] as Text)?.content,
+          );
         }
       });
     }
-    this.appInfo.entry && this.addSourceList({ tagName: 'html', url: this.appInfo.entry })
+    this.appInfo.entry &&
+      this.addSourceList({ tagName: 'html', url: this.appInfo.entry });
     this.asyncProviderTimeout = this.childGarfishConfig?.sandbox?.asyncProviderTimeout ?? this.appInfo.asyncProviderTimeout ?? 0;
   }
 
@@ -168,25 +177,31 @@ export class App {
     return findTarget(this.htmlNode, [`div[${__MockBody__}]`, 'body']);
   }
 
-  get getSourceList () {
+  get getSourceList() {
     return this.sourceList;
   }
 
-  addSourceList(sourceInfo: Array<{ tagName: string; url: string }> | { tagName: string; url: string }){
+  addSourceList(
+    sourceInfo:
+      | Array<{ tagName: string; url: string | URL | Request }>
+      | { tagName: string; url: string | URL | Request },
+  ) {
     if (this.appInfo.disableSourceListCollect) return;
-    if (Array.isArray(sourceInfo)){
-      let nSourceList = sourceInfo.filter(item => {
-        if (!this.sourceListMap.has(item.url) && item.url.startsWith('http')) {
-          this.sourceListMap.set(item.url, item);
+    if (Array.isArray(sourceInfo)) {
+      const nSourceList = sourceInfo.filter((item) => {
+        const url = getSourceURL(item.url);
+        if (!this.sourceListMap.has(url) && url.startsWith('http')) {
+          this.sourceListMap.set(url, item);
           return true;
         }
         return false;
       });
       this.sourceList = this.sourceList.concat(nSourceList);
     } else {
-      if (!this.sourceListMap.get(sourceInfo.url) && sourceInfo.url.startsWith('http')){
+      const url = getSourceURL(sourceInfo.url);
+      if (!this.sourceListMap.get(url) && url.startsWith('http')) {
         this.sourceList.push(sourceInfo);
-        this.sourceListMap.set(sourceInfo.url, sourceInfo);
+        this.sourceListMap.set(url, sourceInfo);
       }
     }
   }
@@ -229,7 +244,9 @@ export class App {
   }
 
   isNoEntryScript(url = '') {
-    return this.childGarfishConfig.sandbox?.noEntryScripts?.some(item => url.indexOf(item) > -1);
+    return this.childGarfishConfig.sandbox?.noEntryScripts?.some(
+      (item) => url.indexOf(item) > -1,
+    );
   }
 
   execScript(
@@ -267,12 +284,17 @@ export class App {
     // If the node is an es module, use native esmModule
     if (options && options.isModule) {
       this.esmQueue.add(async (next) => {
-        await this.esModuleLoader.load(code, {
-          // rebuild full env
-          ...this.getExecScriptEnv(),
-          // this 'env' may lost commonjs data
-          ...env,
-        }, url, options);
+        await this.esModuleLoader.load(
+          code,
+          {
+            // rebuild full env
+            ...this.getExecScriptEnv(),
+            // this 'env' may lost commonjs data
+            ...env,
+          },
+          url,
+          options,
+        );
         next();
       });
     } else {
@@ -572,6 +594,11 @@ export class App {
         return DOMApis.createElement(node);
       },
 
+      iframe: (node) => {
+        baseUrl && entryManager.toResolveUrl(node, 'src', baseUrl);
+        return DOMApis.createElement(node);
+      },
+
       // The body and head this kind of treatment is to compatible with the old version
       body: (node) => {
         if (!this.strictIsolation) {
@@ -614,9 +641,12 @@ export class App {
         if (jsManager) {
           const { url, scriptCode } = jsManager;
           const mockOriginScript = document.createElement('script');
-          node.attributes.forEach((attribute)=>{
+          node.attributes.forEach((attribute) => {
             if (attribute.key) {
-              mockOriginScript.setAttribute(attribute.key, attribute.value || '');
+              mockOriginScript.setAttribute(
+                attribute.key,
+                attribute.value || '',
+              );
             }
           });
 
@@ -626,8 +656,8 @@ export class App {
             async: false,
             isInline: jsManager.isInlineScript(),
             noEntry: toBoolean(
-              entryManager.findAttributeValue(node, 'no-entry')
-                || this.isNoEntryScript(targetUrl),
+              entryManager.findAttributeValue(node, 'no-entry') ||
+              this.isNoEntryScript(targetUrl),
             ),
             originScript: mockOriginScript,
           });
@@ -683,8 +713,16 @@ export class App {
       },
     };
 
-    // Render dom tree and append to document.
-    entryManager.createElements(customRenderer, htmlNode);
+    // Render dom tree and append to document
+    entryManager.createElements(customRenderer, htmlNode, (node, parent) => {
+      // Trigger a custom render hook
+      return this.hooks.lifecycle.customRender.emit({
+        node,
+        parent,
+        app: this,
+        customElement: null,
+      });
+    });
   }
 
   private async checkAndGetProvider() {

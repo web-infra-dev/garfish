@@ -148,6 +148,7 @@ export const sourceListTags = [
   'img',
   'video',
   'audio',
+  'iframe',
 ];
 export const sourceNode = makeMap(sourceListTags);
 

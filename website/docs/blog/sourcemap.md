@@ -54,7 +54,7 @@ eval(str);
 ## 解决方法
 
 对于此问题，浏览器是提供了相关解决方案来解决的，那就是 sourceURL。
-（MDN：https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Debug_eval_sources）
+（ MDN：https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Debug_eval_sources ）
 
 我们还是拿上面的例子，增加了 sourceURL
 

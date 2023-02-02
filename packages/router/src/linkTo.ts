@@ -104,6 +104,7 @@ export const linkTo = async ({
     current: {
       path: getPath(RouterConfig.basename!),
       fullPath: location.pathname,
+      href: location.href,
       matched: activeApps,
       state: history.state,
       query: parseQuery(location.search),

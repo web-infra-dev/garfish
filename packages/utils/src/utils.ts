@@ -164,7 +164,10 @@ export function evalWithEnv(
   }
 }
 
-export function safeWrapper(callback: (...args: Array<any>) => any, disableWarn?: boolean) {
+export function safeWrapper(
+  callback: (...args: Array<any>) => any,
+  disableWarn?: boolean,
+) {
   try {
     callback();
   } catch (e) {
@@ -402,19 +405,20 @@ export function setDocCurrentScript(
 ) {
   if (!target) return noop;
   const el = document.createElement('script');
-  
+
   if (!url && code) {
     el.textContent = code;
   }
 
-  originScript && originScript.getAttributeNames().forEach((attribute) => {
-    el.setAttribute(attribute, originScript.getAttribute(attribute) || '');
-  });
+  originScript &&
+    originScript.getAttributeNames().forEach((attribute) => {
+      el.setAttribute(attribute, originScript.getAttribute(attribute) || '');
+    });
 
   if (async) {
     el.setAttribute('async', 'true');
   }
- 
+
   const set = (val) => {
     try {
       if (define) {
@@ -434,7 +438,7 @@ export function setDocCurrentScript(
   };
 
   set(el);
-  return () => safeWrapper(()=> delete target.currentScript, true);
+  return () => safeWrapper(() => delete target.currentScript, true);
 }
 
 export function _extends(d, b) {
@@ -573,4 +577,19 @@ export async function createSourcemap(code: string, filename: string) {
     }),
   );
   return `//@ sourceMappingURL=${content}`;
+}
+
+// await fetch(new URL('http://www.example.com/démonstration.html'));
+// await fetch(new Request('http://www.example.com/démonstration.html'));
+// await fetch('http://www.example.com/démonstration.html');
+export function getSourceURL(url: string | URL | Request): string {
+  if (url instanceof URL) return url.href;
+  if (url instanceof Request) return url.url;
+  return url.startsWith('/') ? `${location.origin}${url}` : url;
+}
+
+export function macroTask<T extends any>(value: T, time = 0) {
+  return new Promise<T>((resolve) => {
+    setTimeout(() => resolve(value), time);
+  });
 }

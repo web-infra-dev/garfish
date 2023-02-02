@@ -25,7 +25,11 @@ export interface SandboxOptions {
   disableWith?: boolean;
   strictIsolation?: boolean;
   modules?: Array<Module>;
-  addSourceList?: (sourceInfo: Array<{ tagName: string; url: string }> | { tagName: string; url: string }) => void;
+  addSourceList?: (
+    sourceInfo:
+      | Array<{ tagName: string; url: string | URL | Request }>
+      | { tagName: string; url: string | URL | Request },
+  ) => void;
   loaderOptions?: LoaderOptions;
   styleScopeId?: () => string;
   el?: () => Element | ShadowRoot | null;

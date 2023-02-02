@@ -254,7 +254,7 @@ export class DynamicNodeProcessor {
               return originAddRule.apply(this, arguments);
             };
           } else {
-            if (addedNodes[0]) {
+            if (addedNodes[0]?.textContent) {
               addedNodes[0].textContent = modifyStyleCode(
                 addedNodes[0].textContent,
               );
