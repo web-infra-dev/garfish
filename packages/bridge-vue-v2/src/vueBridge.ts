@@ -20,6 +20,7 @@ const defaultOpts = {
 
 declare const __GARFISH_EXPORTS__: {
   provider: Object;
+  registerProvider?: (provider: any) => void;
 };
 
 declare global {
@@ -74,7 +75,11 @@ export function vueBridge(this: any, userOpts: Options) {
     typeof __GARFISH_EXPORTS__ === 'object' &&
     __GARFISH_EXPORTS__
   ) {
-    __GARFISH_EXPORTS__.provider = provider;
+    if (__GARFISH_EXPORTS__.registerProvider) {
+      __GARFISH_EXPORTS__.registerProvider(provider);
+    } else {
+      __GARFISH_EXPORTS__.provider = provider;
+    }
   }
   return provider;
 }

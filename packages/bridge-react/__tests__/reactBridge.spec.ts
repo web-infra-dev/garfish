@@ -173,6 +173,7 @@ describe('react-bridge', () => {
     expect(ReactDOM.unmountComponentAtNode).toHaveBeenCalled();
   });
 
+  // eslint-disable-next-line quotes
   it("mounts and unmounts a React component with a 'renderType' of 'hydrate'", async () => {
     const provider = reactBridge({
       React,
@@ -262,6 +263,7 @@ describe('react-bridge', () => {
   });
 
   describe('opts.el', () => {
+    // eslint-disable-next-line quotes
     it("mounts into the div you provided in the opts.el if you provide an 'el' in opts", async () => {
       const opts = {
         React,
@@ -298,6 +300,45 @@ describe('react-bridge', () => {
       expect(React.createElement).toHaveBeenCalled();
       expect(document.getElementById('app')).not.toBeNull;
       expect(document.getElementById('app')?.children).not.toBeNull;
+    });
+
+    it('register sync provider', async () => {
+      const opts = {
+        React,
+        ReactDOM,
+        rootComponent,
+      };
+
+      window.__GARFISH__ = true;
+      window.__GARFISH_EXPORTS__ = {
+        provider: null,
+      } as any;
+
+      reactBridge(opts);
+
+      expect(window.__GARFISH_EXPORTS__.provider).toBeTruthy();
+    });
+
+    it('register async provider', async () => {
+      const opts = {
+        React,
+        ReactDOM,
+        rootComponent,
+      };
+      let asyncProvider: any;
+
+      window.__GARFISH__ = true;
+      window.__GARFISH_EXPORTS__ = {
+        provider: null,
+        registerProvider(fn: any) {
+          asyncProvider = fn;
+        },
+      } as any;
+
+      reactBridge(opts);
+
+      expect(asyncProvider).toBeTruthy();
+      expect(window.__GARFISH_EXPORTS__.provider).toBe(null);
     });
   });
 });

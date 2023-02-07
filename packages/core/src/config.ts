@@ -98,6 +98,7 @@ export const createDefaultOptions = () => {
     // app config
     basename: '/',
     props: {},
+    asyncProviderTimeout: 2000,
     // Use an empty div by default
     domGetter: () => document.createElement('div'),
     sandbox: {
