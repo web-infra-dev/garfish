@@ -166,6 +166,8 @@ export class DynamicNodeProcessor {
                 // It is necessary to ensure that the code execution error cannot trigger the `el.onerror` event
                 this.sandbox.execScript(scriptCode, {}, url, {
                   isModule,
+                  defer: false,
+                  async: false,
                   noEntry: true,
                   originScript: this.el,
                 });
@@ -185,7 +187,10 @@ export class DynamicNodeProcessor {
             },
           );
       } else if (code) {
-        this.sandbox.execScript(code, {}, baseUrl, { noEntry: true, originScript: this.el, });
+        this.sandbox.execScript(code, {}, baseUrl, {
+          noEntry: true,
+          originScript: this.el,
+        });
       }
       // To ensure the processing node to normal has been removed
       const scriptCommentNode = this.DOMApis.createScriptCommentNode({
@@ -361,10 +366,12 @@ export class DynamicNodeProcessor {
 
     // fix innerHTML dom iframe、img src
     if (this.el && this.el.querySelectorAll) {
-      let needFixDom = this.el.querySelectorAll('iframe,img,video,link,script,audio,style');
+      const needFixDom = this.el.querySelectorAll(
+        'iframe,img,video,link,script,audio,style',
+      );
       if (needFixDom.length > 0) {
-        needFixDom.forEach((dom)=>{
-          safeWrapper(()=> this.fixResourceNodeUrl(dom));
+        needFixDom.forEach((dom) => {
+          safeWrapper(() => this.fixResourceNodeUrl(dom));
         });
       }
     }

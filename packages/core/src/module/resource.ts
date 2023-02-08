@@ -13,7 +13,7 @@ function fetchStaticResources(
   loader: Loader,
   entryManager: TemplateManager,
 ) {
-  const isAsync = (val) => typeof val !== 'undefined' && val !== 'false';
+  const toBoolean = (val) => typeof val !== 'undefined' && val !== 'false';
 
   // Get all script elements
   const jsNodes = Promise.all(
@@ -33,6 +33,7 @@ function fetchStaticResources(
             ? transformUrl(entryManager.url, src)
             : src;
           const async = entryManager.findAttributeValue(node, 'async');
+          const defer = entryManager.findAttributeValue(node, 'defer');
 
           // Scripts with "async" attribute will make the rendering process very complicated,
           // we have a preload mechanism, so we don’t need to deal with it.
@@ -47,7 +48,8 @@ function fetchStaticResources(
               if (jsManager) {
                 jsManager.setDep(node);
                 type && jsManager.setMimeType(type);
-                jsManager.setAsyncAttribute(isAsync(async));
+                jsManager.setAsyncAttribute(toBoolean(async));
+                jsManager.setDefferAttribute(toBoolean(defer));
                 return jsManager;
               } else {
                 warn(`[${appName}] Failed to load script: ${fetchUrl}`);
@@ -103,7 +105,7 @@ function fetchStaticResources(
         if (!entryManager.DOMApis.isRemoteModule(node)) return;
         const async = entryManager.findAttributeValue(node, 'async');
         const alias = entryManager.findAttributeValue(node, 'alias');
-        if (!isAsync(async)) {
+        if (!toBoolean(async)) {
           const src = entryManager.findAttributeValue(node, 'src');
           if (src) {
             return loader

@@ -74,8 +74,12 @@ export class App {
   public cjsModules: Record<string, any>;
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
-  public sourceList: Array<{ tagName: string; url: string | URL | Request }> = [];
-  public sourceListMap: Map<string, { tagName: string; url: string | URL | Request }> = new Map();
+  public sourceList: Array<{ tagName: string; url: string | URL | Request }> =
+    [];
+  public sourceListMap: Map<
+    string,
+    { tagName: string; url: string | URL | Request }
+  > = new Map();
   public appInfo: AppInfo;
   public context: Garfish;
   public hooks: interfaces.AppHooks;
@@ -305,6 +309,7 @@ export class App {
         true,
         url,
         options?.async,
+        options?.defer,
         options?.originScript,
       );
       code += url ? `\n//# sourceURL=${url}\n` : '';
@@ -367,8 +372,12 @@ export class App {
       // so we should initialize async registration while mounting
       this.initAsyncProviderRegistration();
       // add container and compile js with cjs
-      const { asyncScripts } = await this.compileAndRenderContainer();
+      const { asyncScripts, deferScripts } =
+        await this.compileAndRenderContainer();
       if (!this.stopMountAndClearEffect()) return false;
+
+      // The defer script is still a synchronous code and needs to be placed before `getProvider`
+      deferScripts();
 
       // Good provider is set at compile time
       const provider = await this.getProvider();
@@ -380,6 +389,7 @@ export class App {
       this.mounted = true;
       this.hooks.lifecycle.afterMount.emit(this.appInfo, this, false);
 
+      // Run async scripts
       await asyncScripts;
       if (!this.stopMountAndClearEffect()) return false;
     } catch (e) {
@@ -453,29 +463,36 @@ export class App {
     // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
     await this.renderTemplate();
 
-    // Execute asynchronous script
+    const execScript = (type: 'async' | 'defer') => {
+      for (const jsManager of this.resources.js) {
+        if (jsManager[type]) {
+          try {
+            this.execScript(
+              jsManager.scriptCode,
+              {},
+              jsManager.url || this.appInfo.entry,
+              {
+                noEntry: true,
+                defer: type === 'defer',
+                async: type === 'async',
+              },
+            );
+          } catch (e) {
+            this.hooks.lifecycle.errorMountApp.emit(e, this.appInfo);
+          }
+        }
+      }
+    };
+
+    // Execute asynchronous script and defer script
     return {
+      deferScripts: () => execScript('defer'),
+
       asyncScripts: new Promise<void>((resolve) => {
         // Asynchronous script does not block the rendering process
         setTimeout(() => {
           if (this.stopMountAndClearEffect()) {
-            for (const jsManager of this.resources.js) {
-              if (jsManager.async) {
-                try {
-                  this.execScript(
-                    jsManager.scriptCode,
-                    {},
-                    jsManager.url || this.appInfo.entry,
-                    {
-                      async: false,
-                      noEntry: true,
-                    },
-                  );
-                } catch (e) {
-                  this.hooks.lifecycle.errorMountApp.emit(e, this.appInfo);
-                }
-              }
-            }
+            execScript('async');
           }
           resolve();
         });
@@ -636,7 +653,9 @@ export class App {
           }
         }
         const jsManager = resources.js.find((manager) => {
-          return !manager.async ? manager.isSameOrigin(node) : false;
+          return !manager.async && !manager.defer
+            ? manager.isSameOrigin(node)
+            : false;
         });
 
         if (jsManager) {
@@ -655,10 +674,11 @@ export class App {
           this.execScript(scriptCode, {}, targetUrl, {
             isModule,
             async: false,
+            defer: false,
             isInline: jsManager.isInlineScript(),
             noEntry: toBoolean(
               entryManager.findAttributeValue(node, 'no-entry') ||
-              this.isNoEntryScript(targetUrl),
+                this.isNoEntryScript(targetUrl),
             ),
             originScript: mockOriginScript,
           });
