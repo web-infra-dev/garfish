@@ -212,7 +212,7 @@ export class Loader {
 
         if (isRemoteModule) {
           fileType = FileTypes.module;
-          managerCtor = ModuleManager;
+          managerCtor = this.ModuleManager;
         } else if (
           isHtmlType({ type, src: result.url }) ||
           isHtmlType({
@@ -220,13 +220,13 @@ export class Loader {
           })
         ) {
           fileType = FileTypes.template;
-          managerCtor = TemplateManager;
+          managerCtor = this.TemplateManager;
         } else if (
           isJsType({ type: defaultContentType }) ||
           isJsType({ type, src: result.url })
         ) {
           fileType = FileTypes.js;
-          managerCtor = JavaScriptManager;
+          managerCtor = this.JavaScriptManager;
         } else if (
           isCssType({ src: result.url, type }) ||
           isCssType({
@@ -234,7 +234,7 @@ export class Loader {
           })
         ) {
           fileType = FileTypes.css;
-          managerCtor = StyleManager;
+          managerCtor = this.StyleManager;
         }
 
         // Use result.url, resources may be redirected
