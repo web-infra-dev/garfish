@@ -1,4 +1,4 @@
-import { StyleManager, JavaScriptManager } from '@garfish/loader';
+import type { StyleManager, JavaScriptManager } from '@garfish/loader';
 import {
   def,
   warn,
@@ -235,7 +235,7 @@ export class DynamicNodeProcessor {
 
     const modifyStyleCode = (styleCode: string | null) => {
       if (styleCode) {
-        const manager = new StyleManager(styleCode);
+        const manager = new this.sandbox.loader.StyleManager(styleCode);
         manager.correctPath(baseUrl);
         if (rootElId) {
           manager.setScope({
@@ -325,7 +325,8 @@ export class DynamicNodeProcessor {
     // The style node needs to be placed in the sandbox root container
     else if (this.is('style')) {
       parentNode = this.findParentNodeInApp(context, 'head');
-      const manager = new StyleManager(this.el.textContent);
+      // We take it from the loader, avoid having multiple manager constructors
+      const manager = new this.sandbox.loader.StyleManager(this.el.textContent);
       manager.correctPath(baseUrl);
       if (styleScopeId) {
         manager.setScope({
