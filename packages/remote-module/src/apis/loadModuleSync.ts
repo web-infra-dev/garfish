@@ -1,6 +1,5 @@
 import { error, assert, isPromise, isAbsolute } from '@garfish/utils';
 import {
-  ModuleInfo,
   cacheModules,
   purifyOptions,
   prettifyError,

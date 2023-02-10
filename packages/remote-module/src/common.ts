@@ -55,7 +55,7 @@ safeWrapper(() => {
       currentApp = app;
     }
     if (isObject(externals)) {
-      Object.assign(moduleConfig.externals, externals);
+      Object.assign(moduleConfig.externals!, externals);
     }
     if (Array.isArray(remoteModulesCode)) {
       resourcesStore = resourcesStore.concat(remoteModulesCode);

@@ -1,4 +1,4 @@
-import { StyleManager, TemplateManager } from '@garfish/loader';
+import type { TemplateManager } from '@garfish/loader';
 import {
   Text,
   Node,
@@ -89,7 +89,9 @@ export class App {
   public customLoader?: CustomerLoader;
   public childGarfishConfig: interfaces.ChildGarfishConfig = {};
   public asyncProviderTimeout: number;
-  private asyncProvider?: interfaces.Provider | ((...args: any[]) => interfaces.Provider);
+  private asyncProvider?:
+    | interfaces.Provider
+    | ((...args: any[]) => interfaces.Provider);
   private resolveAsyncProvider: () => void | undefined;
   // private
   private active = false;
@@ -215,7 +217,9 @@ export class App {
 
     if (asyncProviderTimeout) {
       // just inject 'registerProvider' function for async provider registration
-      customExports.registerProvider = (provider: typeof this.asyncProvider) => {
+      customExports.registerProvider = (
+        provider: typeof this.asyncProvider,
+      ) => {
         this.asyncProvider = provider;
         // resolve it immediately
         this.resolveAsyncProvider?.();
@@ -224,7 +228,7 @@ export class App {
   }
 
   awaitAsyncProviderRegistration() {
-    return new Promise<typeof this.asyncProvider>(resolve => {
+    return new Promise<typeof this.asyncProvider>((resolve) => {
       if (this.asyncProvider) {
         resolve(this.asyncProvider);
         return;
@@ -697,7 +701,10 @@ export class App {
       style: (node) => {
         const text = node.children[0] as Text;
         if (text) {
-          const styleManager = new StyleManager(text.content, baseUrl);
+          const styleManager = new this.context.loader.StyleManager(
+            text.content,
+            baseUrl,
+          );
           styleManager.setScope({
             appName: this.name,
             rootElId: this.appContainer.id,
