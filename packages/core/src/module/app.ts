@@ -88,6 +88,10 @@ export class App {
   public appPerformance: SubAppObserver;
   public customLoader?: CustomerLoader;
   public childGarfishConfig: interfaces.ChildGarfishConfig = {};
+  public asyncProviderTimeout: number;
+  private asyncProvider?: interfaces.Provider | ((...args: any[]) => interfaces.Provider);
+  private resolveAsyncProvider: () => void | undefined;
+  // private
   private active = false;
   public mounting = false;
   private unmounting = false;
@@ -170,6 +174,7 @@ export class App {
     }
     this.appInfo.entry &&
       this.addSourceList({ tagName: 'html', url: this.appInfo.entry });
+    this.asyncProviderTimeout = this.appInfo.asyncProviderTimeout ?? 0;
   }
 
   get rootElement() {
@@ -203,6 +208,38 @@ export class App {
         this.sourceListMap.set(url, sourceInfo);
       }
     }
+  }
+
+  private initAsyncProviderRegistration() {
+    const { asyncProviderTimeout, customExports } = this;
+
+    if (asyncProviderTimeout) {
+      // just inject 'registerProvider' function for async provider registration
+      customExports.registerProvider = (provider: typeof this.asyncProvider) => {
+        this.asyncProvider = provider;
+        // resolve it immediately
+        this.resolveAsyncProvider?.();
+      };
+    }
+  }
+
+  awaitAsyncProviderRegistration() {
+    return new Promise<typeof this.asyncProvider>(resolve => {
+      if (this.asyncProvider) {
+        resolve(this.asyncProvider);
+        return;
+      }
+
+      const timeoutId = setTimeout(() => {
+        // timeout
+        resolve(this.asyncProvider);
+      }, this.asyncProviderTimeout);
+
+      this.resolveAsyncProvider = () => {
+        clearTimeout(timeoutId);
+        resolve(this.asyncProvider);
+      };
+    });
   }
 
   getProvider() {
@@ -331,6 +368,9 @@ export class App {
     this.mounting = true;
     try {
       this.context.activeApps.push(this);
+      // Because the 'unmount' lifecycle will reset 'customExports'
+      // so we should initialize async registration while mounting
+      this.initAsyncProviderRegistration();
       // add container and compile js with cjs
       const { asyncScripts, deferScripts } =
         await this.compileAndRenderContainer();
@@ -728,6 +768,12 @@ export class App {
     // Custom export prior to export by default
     if (customExports.provider) {
       provider = customExports.provider;
+    }
+
+    // async provider
+    if (this.asyncProviderTimeout && !provider) {
+      // this child app needs async provider registration
+      provider = await this.awaitAsyncProviderRegistration();
     }
 
     if (typeof provider === 'function') {

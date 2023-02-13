@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>async provider registration</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      if (
+        typeof __GARFISH_EXPORTS__ === 'object' &&
+        __GARFISH_EXPORTS__ &&
+        __GARFISH_EXPORTS__.registerProvider
+      ) {
+        setTimeout(() => {
+          __GARFISH_EXPORTS__.registerProvider(() => {
+            return {
+              render({ dom }) {
+                let newContent = document.createElement('div');
+                newContent.setAttribute('id', 'async-provider-registration');
+                dom.querySelector('#app').appendChild(newContent);
+              },
+              destroy({ dom }) {
+                dom.querySelector('#app').removeChild(dom.querySelector('#async-provider-registration'));
+              }
+            };
+          });
+        }, 1000);
+      }
+    </script>
+  </body>
+</html>

@@ -592,8 +592,8 @@ export function getSourceURL(url: string | URL | Request): string {
   return url.startsWith('/') ? `${location.origin}${url}` : url;
 }
 
-export function macroTask<T extends any>(value: T) {
+export function macroTask<T extends any>(value: T, time = 0) {
   return new Promise<T>((resolve) => {
-    setTimeout(() => resolve(value));
+    setTimeout(() => resolve(value), time);
   });
 }

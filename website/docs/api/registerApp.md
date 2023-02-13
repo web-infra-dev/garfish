@@ -174,3 +174,9 @@ Garfish 处理 app 参数的原则是：
 
 - Type: <Highlight> boolean </Highlight>
 - 是否检查 `provider` 函数，可选，默认为 true；
+
+### asyncProviderTimeout
+
+- Type: <Highlight> number </Highlight>
+- 全局异步provider超时时间，默认是2000ms，设置为0的话，只允许同步provider；
+- 此项特性适用于那些不太方便处理成同步暴露provider的子应用，比如某些脚手架新建的项目，项目里看到的entry文件，实际上会被包裹一层并且动态import进来；

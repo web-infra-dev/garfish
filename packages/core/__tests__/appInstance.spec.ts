@@ -17,6 +17,8 @@ describe('Core: appInstance', () => {
   const vue3AppRenderNode = 'hello-world-vue3';
   const vue3SubAppEntry = './resources/vue3App.html';
   const asyncProviderApp = './resources/asyncProviderApp.html';
+  const asyncProviderRegistrationApp =
+    './resources/asyncProviderRegistration.html';
 
   mockStaticServer({
     baseDir: __dirname,
@@ -36,6 +38,26 @@ describe('Core: appInstance', () => {
   it('mount activeApps', async () => {
     const app = await GarfishInstance.loadApp('vue-app', {
       entry: vueSubAppEntry,
+      domGetter: '#container',
+    });
+
+    assert(app, 'app should be defined');
+    await app.mount();
+    expect(GarfishInstance.activeApps[0]).toBe(app);
+
+    app.hide();
+    expect(GarfishInstance.activeApps[0]).toBeUndefined();
+
+    await app.show();
+    expect(GarfishInstance.activeApps[0]).toBe(app);
+
+    await app.unmount();
+    expect(GarfishInstance.activeApps[0]).toBeUndefined();
+  });
+
+  it('mount asyncProviderRegistrationApp', async () => {
+    const app = await GarfishInstance.loadApp('async-provider-registration', {
+      entry: asyncProviderRegistrationApp,
       domGetter: '#container',
     });
 

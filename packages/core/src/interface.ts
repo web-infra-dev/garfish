@@ -97,6 +97,7 @@ export namespace interfaces {
     props?: Record<string, any>;
     sandbox?: false | SandboxConfig;
     disableSourceListCollect?: boolean;
+    asyncProviderTimeout?: number;
   }
 
   export interface GlobalLifecycle extends Partial<PluginLifecycle> {
