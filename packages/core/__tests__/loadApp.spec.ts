@@ -126,7 +126,7 @@ describe('Core: load process', () => {
     document.body.removeChild(container);
   });
 
-  it('throw error when provide an \'name\' opts in options', async () => {
+  it("throw error when provide an 'name' opts in options", async () => {
     await expect(GarfishInstance.loadApp('vue-app')).rejects.toThrow();
   });
 
@@ -174,11 +174,8 @@ describe('Core: load process', () => {
   });
 
   it('config provided by options in loadApp will have the highest priority after config merged', async () => {
-    const mockBeforeLoad = jest.fn(() => {
-      GarfishInstance.appInfos['vue-app'] = {
-        name: 'vue-app',
-        entry: vue3SubAppEntry,
-      };
+    const mockBeforeLoad = jest.fn((appInfo) => {
+      appInfo.entry = vue3SubAppEntry;
     });
 
     GarfishInstance.run({
@@ -195,10 +192,16 @@ describe('Core: load process', () => {
     await expect(
       GarfishInstance.loadApp('vue-app', {
         domGetter: '#container',
+        props: {
+          aaa: '123',
+        },
       }),
     ).resolves.toMatchObject({
       appInfo: {
         entry: vue3SubAppEntry,
+        props: {
+          aaa: '123',
+        },
       },
     });
 
@@ -394,7 +397,6 @@ describe('Core: load process', () => {
     expect(mockBeforeLoad.mock.calls[0][0].entry).toBe(reactSubAppEntry);
   });
 
-
   it('multiple applications with the same entry are serially mounted, entryManager is not the same instance', async () => {
     const createApp = jest.fn(async (appName, dom, entry) => {
       GarfishInstance.registerApp({
@@ -403,7 +405,7 @@ describe('Core: load process', () => {
       });
 
       const app = await GarfishInstance.loadApp(appName, { domGetter: dom });
-      app && await app.mount();
+      app && (await app.mount());
       return app;
     });
 
@@ -414,7 +416,6 @@ describe('Core: load process', () => {
     assert(app1, 'app should be loaded');
     assert(app2, 'app should be loaded');
     assert(app3, 'app should be loaded');
-
 
     expect(app1).toHaveProperty('entryManager');
     expect(app2).toHaveProperty('entryManager');
@@ -433,7 +434,7 @@ describe('Core: load process', () => {
       });
 
       const app = await GarfishInstance.loadApp(appName, { domGetter: dom });
-      app && await app.mount();
+      app && (await app.mount());
       return app;
     });
 
@@ -458,12 +459,18 @@ describe('Core: load process', () => {
     expect(GarfishInstance.activeApps[2]).not.toBe(null);
     expect(GarfishInstance.activeApps[2]).toHaveProperty('entryManager');
 
-    expect(GarfishInstance.activeApps[0].entryManager).not.toBe(GarfishInstance.activeApps[1].entryManager)
-    expect(GarfishInstance.activeApps[1].entryManager).not.toBe(GarfishInstance.activeApps[2].entryManager)
-    expect(GarfishInstance.activeApps[0].entryManager).not.toBe(GarfishInstance.activeApps[2].entryManager)
+    expect(GarfishInstance.activeApps[0].entryManager).not.toBe(
+      GarfishInstance.activeApps[1].entryManager,
+    );
+    expect(GarfishInstance.activeApps[1].entryManager).not.toBe(
+      GarfishInstance.activeApps[2].entryManager,
+    );
+    expect(GarfishInstance.activeApps[0].entryManager).not.toBe(
+      GarfishInstance.activeApps[2].entryManager,
+    );
   });
 
-  it('loadApp before registered and `entry` don\'t be provided will throw Error', async () => {
+  it("loadApp before registered and `entry` don't be provided will throw Error", async () => {
     GarfishInstance.run({
       domGetter: '#container',
       apps: [

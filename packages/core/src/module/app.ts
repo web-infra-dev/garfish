@@ -1,4 +1,4 @@
-import { StyleManager, TemplateManager } from '@garfish/loader';
+import type { TemplateManager } from '@garfish/loader';
 import {
   Text,
   Node,
@@ -95,13 +95,13 @@ export class App {
   private active = false;
   private unmounting = false;
   private resources: interfaces.ResourceModules;
+  // Environment variables injected by garfish for linkage with child applications
   private globalEnvVariables: Record<string, any>;
   private deferNodeMap = new Map();
   private resolveAsyncProvider: () => void | undefined;
   private asyncProvider?:
     | interfaces.Provider
     | ((...args: any[]) => interfaces.Provider);
-  // Environment variables injected by garfish for linkage with child applications
 
   constructor(
     context: Garfish,
@@ -720,7 +720,10 @@ export class App {
       style: (node) => {
         const text = node.children[0] as Text;
         if (text) {
-          const styleManager = new StyleManager(text.content, baseUrl);
+          const styleManager = new this.context.loader.StyleManager(
+            text.content,
+            baseUrl,
+          );
           styleManager.setScope({
             appName: this.name,
             rootElId: this.appContainer.id,

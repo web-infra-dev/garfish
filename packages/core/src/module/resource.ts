@@ -1,5 +1,5 @@
 import { warn, error, Text, transformUrl, assert } from '@garfish/utils';
-import {
+import type {
   Loader,
   StyleManager,
   TemplateManager,
@@ -59,7 +59,7 @@ function fetchStaticResources(
         } else if (node.children.length > 0) {
           const code = (node.children[0] as Text).content;
           if (code) {
-            const jsManager = new JavaScriptManager(code, '');
+            const jsManager = new loader.JavaScriptManager(code, '');
             jsManager.setDep(node);
             type && jsManager.setMimeType(type);
             return jsManager;
@@ -141,7 +141,7 @@ export async function processAppResources(loader: Loader, appInfo: AppInfo) {
   });
 
   // Html entry
-  if (entryManager instanceof TemplateManager) {
+  if (entryManager instanceof loader.TemplateManager) {
     isHtmlMode = true;
     const [js, link, modules] = await fetchStaticResources(
       appInfo.name,
@@ -151,11 +151,14 @@ export async function processAppResources(loader: Loader, appInfo: AppInfo) {
     resources.js = js;
     resources.link = link;
     resources.modules = modules;
-  } else if (entryManager instanceof JavaScriptManager) {
+  } else if (entryManager instanceof loader.JavaScriptManager) {
     // Js entry
     isHtmlMode = false;
     const mockTemplateCode = `<script src="${entryManager.url}"></script>`;
-    fakeEntryManager = new TemplateManager(mockTemplateCode, entryManager.url);
+    fakeEntryManager = new loader.TemplateManager(
+      mockTemplateCode,
+      entryManager.url,
+    );
     entryManager.setDep(fakeEntryManager.findAllJsNodes()[0]);
     resources.js = [entryManager];
   } else {
