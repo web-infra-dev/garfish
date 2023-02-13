@@ -64,6 +64,7 @@ export class App {
   public scriptCount = 0;
   public display = false;
   public mounted = false;
+  public mounting = false;
   public strictIsolation = false;
   public esmQueue = new Queue();
   public esModuleLoader = new ESModuleLoader(this);
@@ -89,15 +90,18 @@ export class App {
   public customLoader?: CustomerLoader;
   public childGarfishConfig: interfaces.ChildGarfishConfig = {};
   public asyncProviderTimeout: number;
-  private asyncProvider?: interfaces.Provider | ((...args: any[]) => interfaces.Provider);
-  private resolveAsyncProvider: () => void | undefined;
+
   // private
   private active = false;
-  public mounting = false;
   private unmounting = false;
   private resources: interfaces.ResourceModules;
-  // Environment variables injected by garfish for linkage with child applications
   private globalEnvVariables: Record<string, any>;
+  private deferNodeMap = new Map();
+  private resolveAsyncProvider: () => void | undefined;
+  private asyncProvider?:
+    | interfaces.Provider
+    | ((...args: any[]) => interfaces.Provider);
+  // Environment variables injected by garfish for linkage with child applications
 
   constructor(
     context: Garfish,
@@ -215,7 +219,9 @@ export class App {
 
     if (asyncProviderTimeout) {
       // just inject 'registerProvider' function for async provider registration
-      customExports.registerProvider = (provider: typeof this.asyncProvider) => {
+      customExports.registerProvider = (
+        provider: typeof this.asyncProvider,
+      ) => {
         this.asyncProvider = provider;
         // resolve it immediately
         this.resolveAsyncProvider?.();
@@ -224,7 +230,7 @@ export class App {
   }
 
   awaitAsyncProviderRegistration() {
-    return new Promise<typeof this.asyncProvider>(resolve => {
+    return new Promise<typeof this.asyncProvider>((resolve) => {
       if (this.asyncProvider) {
         resolve(this.asyncProvider);
         return;
@@ -467,18 +473,33 @@ export class App {
       for (const jsManager of this.resources.js) {
         if (jsManager[type]) {
           try {
-            this.execScript(
-              jsManager.scriptCode,
-              {},
-              jsManager.url || this.appInfo.entry,
-              {
-                noEntry: true,
-                defer: type === 'defer',
-                async: type === 'async',
-              },
-            );
+            let noEntry = false;
+            const targetUrl = jsManager.url || this.appInfo.entry;
+
+            if (type === 'defer') {
+              const node = this.deferNodeMap.get(jsManager);
+              if (node) {
+                noEntry = toBoolean(
+                  this.entryManager.findAttributeValue(node, 'no-entry'),
+                );
+              }
+              // Try to read the childApp global configuration
+              if (!noEntry) {
+                noEntry = toBoolean(this.isNoEntryScript(targetUrl));
+              }
+            }
+            this.execScript(jsManager.scriptCode, {}, targetUrl, {
+              noEntry,
+              defer: type === 'defer',
+              async: type === 'async',
+              isModule: jsManager.isModule(),
+              isInline: jsManager.isInlineScript(),
+            });
           } catch (e) {
-            this.hooks.lifecycle.errorMountApp.emit(e, this.appInfo);
+            // The defer script already handles errors in the `mount` method
+            if (type !== 'defer') {
+              this.hooks.lifecycle.errorMountApp.emit(e, this.appInfo);
+            }
           }
         }
       }
@@ -653,35 +674,37 @@ export class App {
           }
         }
         const jsManager = resources.js.find((manager) => {
-          return !manager.async && !manager.defer
-            ? manager.isSameOrigin(node)
-            : false;
+          return !manager.async ? manager.isSameOrigin(node) : false;
         });
 
         if (jsManager) {
-          const { url, scriptCode } = jsManager;
-          const mockOriginScript = document.createElement('script');
-          node.attributes.forEach((attribute) => {
-            if (attribute.key) {
-              mockOriginScript.setAttribute(
-                attribute.key,
-                attribute.value || '',
-              );
-            }
-          });
+          if (jsManager.defer) {
+            this.deferNodeMap.set(jsManager, node);
+          } else {
+            const { url, scriptCode } = jsManager;
+            const mockOriginScript = document.createElement('script');
+            node.attributes.forEach((attribute) => {
+              if (attribute.key) {
+                mockOriginScript.setAttribute(
+                  attribute.key,
+                  attribute.value || '',
+                );
+              }
+            });
 
-          const targetUrl = url || this.appInfo.entry;
-          this.execScript(scriptCode, {}, targetUrl, {
-            isModule,
-            async: false,
-            defer: false,
-            isInline: jsManager.isInlineScript(),
-            noEntry: toBoolean(
-              entryManager.findAttributeValue(node, 'no-entry') ||
-                this.isNoEntryScript(targetUrl),
-            ),
-            originScript: mockOriginScript,
-          });
+            const targetUrl = url || this.appInfo.entry;
+            this.execScript(scriptCode, {}, targetUrl, {
+              isModule,
+              async: false,
+              defer: false,
+              isInline: jsManager.isInlineScript(),
+              noEntry: toBoolean(
+                entryManager.findAttributeValue(node, 'no-entry') ||
+                  this.isNoEntryScript(targetUrl),
+              ),
+              originScript: mockOriginScript,
+            });
+          }
         } else if (__DEV__) {
           const async = entryManager.findAttributeValue(node, 'async');
           if (typeof async === 'undefined' || async === 'false') {
