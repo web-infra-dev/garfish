@@ -83,7 +83,7 @@ function waitElement(selector, timeout = 3000) {
       function (elem: Element) {
         return resolve(elem);
       },
-      timeout
+      timeout,
     );
   });
   return Promise.race([delay(timeout), waitPromise]);
