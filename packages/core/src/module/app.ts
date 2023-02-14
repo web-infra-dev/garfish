@@ -499,6 +499,9 @@ export class App {
             // The defer script already handles errors in the `mount` method
             if (type !== 'defer') {
               this.hooks.lifecycle.errorMountApp.emit(e, this.appInfo);
+            } else {
+              // Let the upper catch capture
+              throw e;
             }
           }
         }
