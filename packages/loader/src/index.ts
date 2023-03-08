@@ -166,7 +166,7 @@ export class Loader {
     // 当最后一个子应用被卸载时，其它子应用也将一起被卸载
 
     if (res && Object.keys(res).includes(scope)) {
-      return res[scope];
+      return macroTask(res[scope], 4);
     }
 
     let appCacheContainer = cacheStore[scope];
