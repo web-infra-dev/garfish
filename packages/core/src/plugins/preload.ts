@@ -205,6 +205,11 @@ declare module '@garfish/core' {
 export function GarfishPreloadPlugin() {
   return function (Garfish: interfaces.Garfish): interfaces.Plugin {
     Garfish.preloadApp = (appName) => {
+      if (loadedMap[appName]) {
+        return;
+      }
+
+      loadedMap[appName] = true;
       loadAppResource(Garfish.loader, Garfish.appInfos[appName], true);
     };
 
