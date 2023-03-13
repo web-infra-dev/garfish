@@ -69,8 +69,7 @@ export class Sandbox {
   public options: SandboxOptions;
   public hooks = sandboxLifecycle();
   public replaceGlobalVariables: ReplaceGlobalVariables;
-  public deferClearEffects: WeakMap<Element | Comment, () => void> = new WeakMap();
-  public effectsCollector: Set<Element | Comment> = new Set();
+  public deferClearEffects: Set<() => void> = new Set();
   public isExternalGlobalVariable: Set<PropertyKey> = new Set();
   public isProtectVariable: (p: PropertyKey) => boolean;
   public isInsulationVariable: (P: PropertyKey) => boolean;
@@ -147,7 +146,7 @@ export class Sandbox {
     this.global = undefined;
     this.optimizeCode = '';
     this.initComplete = false;
-    this.deferClearEffects = new WeakMap<HTMLElement, () => void>();
+    this.deferClearEffects.clear();
     this.isExternalGlobalVariable.clear();
     this.dynamicStyleSheetElementSet.clear();
     this.replaceGlobalVariables.createdList = [];
@@ -236,7 +235,7 @@ export class Sandbox {
     this.hooks.lifecycle.beforeClearEffect.emit();
     this.replaceGlobalVariables.recoverList.forEach((fn) => fn && fn());
     // `deferClearEffects` needs to be put at the end
-    this.effectsCollector.forEach((effect) => this.deferClearEffects.get(effect)?.());
+    this.deferClearEffects.forEach((fn) => fn && fn());
     this.hooks.lifecycle.afterClearEffect.emit();
   }
 

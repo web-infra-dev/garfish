@@ -358,14 +358,10 @@ export class DynamicNodeProcessor {
       document.contains(parentNode)
     ) {
       if (parentNode !== this.rootElement) {
-        this.sandbox.deferClearEffects.set(
-          this.el,
-          () => {
-            this.DOMApis.removeElement(this.el);
-            return this.el;
-          }
-        );
-        this.sandbox.effectsCollector.add(this.el);
+        this.sandbox.deferClearEffects.add(() => {
+          this.DOMApis.removeElement(this.el);
+          return this.el;
+        });
       }
     }
 
@@ -432,11 +428,6 @@ export class DynamicNodeProcessor {
         }
         return this.nativeRemove.call(parentNode, this.el);
       }
-    }
-
-    // delete element instance to avoid memory leak
-    if (this.sandbox.effectsCollector.has(this.el)) {
-      this.sandbox.effectsCollector.delete(this.el);
     }
 
     return originProcess();
