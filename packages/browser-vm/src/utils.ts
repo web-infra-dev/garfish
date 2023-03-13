@@ -197,13 +197,13 @@ export class LockQueue {
       promiseResolve = resolve;
     });
     // create a new lock
-    const lockItem = { 
-      id: lockId, 
-      waiting, 
+    const lockItem = {
+      id: lockId,
+      waiting,
       resolve: ()=>{
         promiseResolve();
         this.next();
-      } 
+      },
     };
     this.lockQueue.push(lockItem);
     this.id += 1;

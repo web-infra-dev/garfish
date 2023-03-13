@@ -178,6 +178,7 @@ describe('Garfish shared runtimeUtils', () => {
       e: (_: any) => {},
       f: s1,
       g: 5,
+      h: /garfish/,
     };
     const two = {
       a: 2,
@@ -207,6 +208,7 @@ describe('Garfish shared runtimeUtils', () => {
       d: 4,
       f: s2,
       g: 5,
+      h: /garfish/,
     });
 
     const res1 = deepMerge(one, two);
@@ -214,6 +216,7 @@ describe('Garfish shared runtimeUtils', () => {
     expect(res1).not.toEqual(one);
     expect(res1).not.toEqual(two);
     expect(res1).toMatchObject(destObject());
+    expect(Object.prototype.toString.call(res1.h)).toBe('[object RegExp]');
 
     one.g = 6;
     one.b.dd.push(3);
