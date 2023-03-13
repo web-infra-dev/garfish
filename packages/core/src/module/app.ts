@@ -1,4 +1,4 @@
-import { StyleManager, TemplateManager } from '@garfish/loader';
+import type { TemplateManager } from '@garfish/loader';
 import {
   Text,
   Node,
@@ -64,6 +64,7 @@ export class App {
   public scriptCount = 0;
   public display = false;
   public mounted = false;
+  public mounting = false;
   public strictIsolation = false;
   public esmQueue = new Queue();
   public esModuleLoader = new ESModuleLoader(this);
@@ -74,8 +75,12 @@ export class App {
   public cjsModules: Record<string, any>;
   public htmlNode: HTMLElement | ShadowRoot;
   public customExports: Record<string, any> = {}; // If you don't want to use the CJS export, can use this
-  public sourceList: Array<{ tagName: string; url: string | URL | Request }> = [];
-  public sourceListMap: Map<string, { tagName: string; url: string | URL | Request }> = new Map();
+  public sourceList: Array<{ tagName: string; url: string | URL | Request }> =
+    [];
+  public sourceListMap: Map<
+    string,
+    { tagName: string; url: string | URL | Request }
+  > = new Map();
   public appInfo: AppInfo;
   public context: Garfish;
   public hooks: interfaces.AppHooks;
@@ -84,12 +89,19 @@ export class App {
   public appPerformance: SubAppObserver;
   public customLoader?: CustomerLoader;
   public childGarfishConfig: interfaces.ChildGarfishConfig = {};
+  public asyncProviderTimeout: number;
+
+  // private
   private active = false;
-  public mounting = false;
   private unmounting = false;
   private resources: interfaces.ResourceModules;
   // Environment variables injected by garfish for linkage with child applications
   private globalEnvVariables: Record<string, any>;
+  private deferNodeMap = new Map();
+  private resolveAsyncProvider: () => void | undefined;
+  private asyncProvider?:
+    | interfaces.Provider
+    | ((...args: any[]) => interfaces.Provider);
 
   constructor(
     context: Garfish,
@@ -166,6 +178,7 @@ export class App {
     }
     this.appInfo.entry &&
       this.addSourceList({ tagName: 'html', url: this.appInfo.entry });
+    this.asyncProviderTimeout = this.appInfo.asyncProviderTimeout ?? 0;
   }
 
   get rootElement() {
@@ -199,6 +212,40 @@ export class App {
         this.sourceListMap.set(url, sourceInfo);
       }
     }
+  }
+
+  private initAsyncProviderRegistration() {
+    const { asyncProviderTimeout, customExports } = this;
+
+    if (asyncProviderTimeout) {
+      // just inject 'registerProvider' function for async provider registration
+      customExports.registerProvider = (
+        provider: typeof this.asyncProvider,
+      ) => {
+        this.asyncProvider = provider;
+        // resolve it immediately
+        this.resolveAsyncProvider?.();
+      };
+    }
+  }
+
+  awaitAsyncProviderRegistration() {
+    return new Promise<typeof this.asyncProvider>((resolve) => {
+      if (this.asyncProvider) {
+        resolve(this.asyncProvider);
+        return;
+      }
+
+      const timeoutId = setTimeout(() => {
+        // timeout
+        resolve(this.asyncProvider);
+      }, this.asyncProviderTimeout);
+
+      this.resolveAsyncProvider = () => {
+        clearTimeout(timeoutId);
+        resolve(this.asyncProvider);
+      };
+    });
   }
 
   getProvider() {
@@ -268,6 +315,7 @@ export class App {
         true,
         url,
         options?.async,
+        options?.defer,
         options?.originScript,
       );
       code += url ? `\n//# sourceURL=${url}\n` : '';
@@ -326,9 +374,16 @@ export class App {
     this.mounting = true;
     try {
       this.context.activeApps.push(this);
+      // Because the 'unmount' lifecycle will reset 'customExports'
+      // so we should initialize async registration while mounting
+      this.initAsyncProviderRegistration();
       // add container and compile js with cjs
-      const { asyncScripts } = await this.compileAndRenderContainer();
+      const { asyncScripts, deferScripts } =
+        await this.compileAndRenderContainer();
       if (!this.stopMountAndClearEffect()) return false;
+
+      // The defer script is still a synchronous code and needs to be placed before `getProvider`
+      deferScripts();
 
       // Good provider is set at compile time
       const provider = await this.getProvider();
@@ -340,6 +395,7 @@ export class App {
       this.mounted = true;
       this.hooks.lifecycle.afterMount.emit(this.appInfo, this, false);
 
+      // Run async scripts
       await asyncScripts;
       if (!this.stopMountAndClearEffect()) return false;
     } catch (e) {
@@ -413,29 +469,54 @@ export class App {
     // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
     await this.renderTemplate();
 
-    // Execute asynchronous script
+    const execScript = (type: 'async' | 'defer') => {
+      for (const jsManager of this.resources.js) {
+        if (jsManager[type]) {
+          try {
+            let noEntry = false;
+            const targetUrl = jsManager.url || this.appInfo.entry;
+
+            if (type === 'defer') {
+              const node = this.deferNodeMap.get(jsManager);
+              if (node) {
+                noEntry = toBoolean(
+                  this.entryManager.findAttributeValue(node, 'no-entry'),
+                );
+              }
+              // Try to read the childApp global configuration
+              if (!noEntry) {
+                noEntry = toBoolean(this.isNoEntryScript(targetUrl));
+              }
+            }
+            this.execScript(jsManager.scriptCode, {}, targetUrl, {
+              noEntry,
+              defer: type === 'defer',
+              async: type === 'async',
+              isModule: jsManager.isModule(),
+              isInline: jsManager.isInlineScript(),
+            });
+          } catch (e) {
+            // The defer script already handles errors in the `mount` method
+            if (type !== 'defer') {
+              this.hooks.lifecycle.errorMountApp.emit(e, this.appInfo);
+            } else {
+              // Let the upper catch capture
+              throw e;
+            }
+          }
+        }
+      }
+    };
+
+    // Execute asynchronous script and defer script
     return {
+      deferScripts: () => execScript('defer'),
+
       asyncScripts: new Promise<void>((resolve) => {
         // Asynchronous script does not block the rendering process
         setTimeout(() => {
           if (this.stopMountAndClearEffect()) {
-            for (const jsManager of this.resources.js) {
-              if (jsManager.async) {
-                try {
-                  this.execScript(
-                    jsManager.scriptCode,
-                    {},
-                    jsManager.url || this.appInfo.entry,
-                    {
-                      async: false,
-                      noEntry: true,
-                    },
-                  );
-                } catch (e) {
-                  this.hooks.lifecycle.errorMountApp.emit(e, this.appInfo);
-                }
-              }
-            }
+            execScript('async');
           }
           resolve();
         });
@@ -600,28 +681,33 @@ export class App {
         });
 
         if (jsManager) {
-          const { url, scriptCode } = jsManager;
-          const mockOriginScript = document.createElement('script');
-          node.attributes.forEach((attribute) => {
-            if (attribute.key) {
-              mockOriginScript.setAttribute(
-                attribute.key,
-                attribute.value || '',
-              );
-            }
-          });
+          if (jsManager.defer) {
+            this.deferNodeMap.set(jsManager, node);
+          } else {
+            const { url, scriptCode } = jsManager;
+            const mockOriginScript = document.createElement('script');
+            node.attributes.forEach((attribute) => {
+              if (attribute.key) {
+                mockOriginScript.setAttribute(
+                  attribute.key,
+                  attribute.value || '',
+                );
+              }
+            });
 
-          const targetUrl = url || this.appInfo.entry;
-          this.execScript(scriptCode, {}, targetUrl, {
-            isModule,
-            async: false,
-            isInline: jsManager.isInlineScript(),
-            noEntry: toBoolean(
-              entryManager.findAttributeValue(node, 'no-entry') ||
-              this.isNoEntryScript(targetUrl),
-            ),
-            originScript: mockOriginScript,
-          });
+            const targetUrl = url || this.appInfo.entry;
+            this.execScript(scriptCode, {}, targetUrl, {
+              isModule,
+              async: false,
+              defer: false,
+              isInline: jsManager.isInlineScript(),
+              noEntry: toBoolean(
+                entryManager.findAttributeValue(node, 'no-entry') ||
+                  this.isNoEntryScript(targetUrl),
+              ),
+              originScript: mockOriginScript,
+            });
+          }
         } else if (__DEV__) {
           const async = entryManager.findAttributeValue(node, 'async');
           if (typeof async === 'undefined' || async === 'false') {
@@ -637,7 +723,10 @@ export class App {
       style: (node) => {
         const text = node.children[0] as Text;
         if (text) {
-          const styleManager = new StyleManager(text.content, baseUrl);
+          const styleManager = new this.context.loader.StyleManager(
+            text.content,
+            baseUrl,
+          );
           styleManager.setScope({
             appName: this.name,
             rootElId: this.appContainer.id,
@@ -708,6 +797,12 @@ export class App {
     // Custom export prior to export by default
     if (customExports.provider) {
       provider = customExports.provider;
+    }
+
+    // async provider
+    if (this.asyncProviderTimeout && !provider) {
+      // this child app needs async provider registration
+      provider = await this.awaitAsyncProviderRegistration();
     }
 
     if (typeof provider === 'function') {

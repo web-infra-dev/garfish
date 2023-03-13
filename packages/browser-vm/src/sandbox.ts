@@ -329,7 +329,7 @@ export class Sandbox {
     options?: interfaces.ExecScriptOptions,
   ) {
     const codeRef = { code };
-    const { async } = options || {};
+    const { async, defer } = options || {};
 
     this.hooks.lifecycle.beforeInvoke.emit(codeRef, url, env, options);
 
@@ -339,6 +339,7 @@ export class Sandbox {
       false,
       url,
       async,
+      defer,
       options?.originScript,
     );
 

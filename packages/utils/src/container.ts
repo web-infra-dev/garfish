@@ -56,17 +56,18 @@ export function createAppContainer(appInfo: interfaces.AppInfo) {
 /**
  *  Wait for the specified dom ready tool method
  */
-function waitElementReady(selector, callback) {
+function waitElementReady(selector, callback, leftTime) {
+  const timeInterval = 50;
   const elem = document.querySelector(selector);
 
-  if (elem !== null) {
+  if (elem !== null || leftTime <= 0) {
     callback(elem);
     return;
   }
 
   setTimeout(function () {
-    waitElementReady(selector, callback);
-  }, 50);
+    waitElementReady(selector, callback, leftTime - timeInterval);
+  }, timeInterval);
 }
 
 function delay(duration) {
@@ -77,9 +78,13 @@ function delay(duration) {
 
 function waitElement(selector, timeout = 3000) {
   const waitPromise = new Promise(function (resolve) {
-    waitElementReady(selector, function (elem: Element) {
-      return resolve(elem);
-    });
+    waitElementReady(
+      selector,
+      function (elem: Element) {
+        return resolve(elem);
+      },
+      timeout,
+    );
   });
   return Promise.race([delay(timeout), waitPromise]);
 }

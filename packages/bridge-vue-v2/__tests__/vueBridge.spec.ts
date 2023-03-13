@@ -216,4 +216,40 @@ describe('vue-v2-bridge', () => {
     expect(container.contains($el)).toEqual(true);
     lifeCycles.destroy({ ...appInfo, props });
   });
+
+  it('register sync provider', async () => {
+    window.__GARFISH__ = true;
+    window.__GARFISH_EXPORTS__ = {
+      provider: null,
+    } as any;
+
+    vueBridge({
+      Vue: vue,
+      appOptions: {} as any,
+      rootComponent: {},
+    });
+
+    expect(window.__GARFISH_EXPORTS__.provider).toBeTruthy();
+  });
+
+  it('register async provider', async () => {
+    let asyncProvider: any;
+
+    window.__GARFISH__ = true;
+    window.__GARFISH_EXPORTS__ = {
+      provider: null,
+      registerProvider(fn: any) {
+        asyncProvider = fn;
+      },
+    } as any;
+
+    vueBridge({
+      Vue: vue,
+      appOptions: {} as any,
+      rootComponent: {},
+    });
+
+    expect(asyncProvider).toBeTruthy();
+    expect(window.__GARFISH_EXPORTS__.provider).toBe(null);
+  });
 });

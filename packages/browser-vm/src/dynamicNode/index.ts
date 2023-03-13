@@ -1,5 +1,4 @@
 import { makeMap, safeWrapper, warn } from '@garfish/utils';
-import { StyleManager } from '@garfish/loader';
 import { __domWrapper__ } from '../symbolTypes';
 import { injectHandlerParams } from './processParams';
 import { DynamicNodeProcessor, rawElementMethods } from './processor';
@@ -48,10 +47,11 @@ function injector(current: Function, methodName: string) {
         );
       }
     });
-	
+
     if (sandbox) {
       if (el && this?.tagName?.toLowerCase() === 'style') {
-        const manager = new StyleManager(el.textContent);
+        // We take it from the loader, avoid having multiple manager constructors
+        const manager = new sandbox.loader.StyleManager(el.textContent);
         const { baseUrl, namespace, styleScopeId } = sandbox.options;
         manager.correctPath(baseUrl);
         manager.setScope({
@@ -65,8 +65,8 @@ function injector(current: Function, methodName: string) {
         return processor.append(this, arguments, originProcess);
       }
     } else {
-	  return originProcess();
-	}
+      return originProcess();
+    }
   };
 }
 
@@ -112,7 +112,7 @@ export function makeElInjector(sandboxConfig: SandboxOptions) {
 
   if (typeof window.Element === 'function') {
     // iframe can read html container this can't point to proxyDocument has Illegal invocation error
-    if (sandboxConfig.fixBaseUrl) safeWrapper(()=> handleOwnerDocument());
+    if (sandboxConfig.fixBaseUrl) safeWrapper(() => handleOwnerDocument());
     const rewrite = (
       methods: Array<string>,
       builder: typeof injector | typeof injectorRemoveChild,

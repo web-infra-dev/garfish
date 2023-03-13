@@ -97,6 +97,7 @@ export namespace interfaces {
     props?: Record<string, any>;
     sandbox?: false | SandboxConfig;
     disableSourceListCollect?: boolean;
+    asyncProviderTimeout?: number;
   }
 
   export interface GlobalLifecycle extends Partial<PluginLifecycle> {
@@ -136,15 +137,16 @@ export namespace interfaces {
   export interface ExecScriptOptions {
     node?: Node;
     async?: boolean;
+    defer?: boolean;
     noEntry?: boolean;
     isInline?: boolean;
     isModule?: boolean;
-    originScript?: HTMLScriptElement
+    originScript?: HTMLScriptElement;
   }
 
   export interface ChildGarfishConfig {
     sandbox?: {
       noEntryScripts?: string[];
-    }
+    };
   }
 }

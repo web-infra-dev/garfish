@@ -6,11 +6,11 @@ import {
 } from '@garfish/hooks';
 import {
   error,
+  macroTask,
   __LOADER_FLAG__,
   isJsType,
   isCssType,
   isHtmlType,
-  parseContentType,
 } from '@garfish/utils';
 import { StyleManager } from './managers/style';
 import { ModuleManager } from './managers/module';
@@ -166,7 +166,7 @@ export class Loader {
     // 当最后一个子应用被卸载时，其它子应用也将一起被卸载
 
     if (res && Object.keys(res).includes(scope)) {
-      return res[scope]
+      return macroTask(res[scope], 4);
     }
 
     let appCacheContainer = cacheStore[scope];
@@ -177,7 +177,9 @@ export class Loader {
     }
 
     if (appCacheContainer.has(url)) {
-      return Promise.resolve(copyResult(appCacheContainer.get(url)));
+      // When there is a real network request, some network io is consumed,
+      // so we need to simulate the network io here to ensure that the timing of the request is correct when the cache timing is hit.
+      return macroTask(copyResult(appCacheContainer.get(url)), 4);
     } else {
       // If other containers have cache
       for (const key in cacheStore) {
@@ -187,7 +189,7 @@ export class Loader {
             const result = container.get(url);
             cachedDataSet.add(result);
             appCacheContainer.set(url, result, result.fileType);
-            return Promise.resolve(copyResult(result));
+            return macroTask(copyResult(result), 4);
           }
         }
       }
@@ -210,7 +212,7 @@ export class Loader {
 
         if (isRemoteModule) {
           fileType = FileTypes.module;
-          managerCtor = ModuleManager;
+          managerCtor = this.ModuleManager;
         } else if (
           isHtmlType({ type, src: result.url }) ||
           isHtmlType({
@@ -218,13 +220,13 @@ export class Loader {
           })
         ) {
           fileType = FileTypes.template;
-          managerCtor = TemplateManager;
+          managerCtor = this.TemplateManager;
         } else if (
           isJsType({ type: defaultContentType }) ||
           isJsType({ type, src: result.url })
         ) {
           fileType = FileTypes.js;
-          managerCtor = JavaScriptManager;
+          managerCtor = this.JavaScriptManager;
         } else if (
           isCssType({ src: result.url, type }) ||
           isCssType({
@@ -232,7 +234,7 @@ export class Loader {
           })
         ) {
           fileType = FileTypes.css;
-          managerCtor = StyleManager;
+          managerCtor = this.StyleManager;
         }
 
         // Use result.url, resources may be redirected
@@ -268,7 +270,9 @@ export class Loader {
         // loadingList[url][scope] = null
       });
 
-    loadingList[url] ? loadingList[url][scope] = loadRes : loadingList[url] = { [scope]: loadRes };
+    loadingList[url]
+      ? (loadingList[url][scope] = loadRes)
+      : (loadingList[url] = { [scope]: loadRes });
     return loadRes;
   }
 }

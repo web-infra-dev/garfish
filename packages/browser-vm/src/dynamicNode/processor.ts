@@ -1,4 +1,4 @@
-import { StyleManager, JavaScriptManager } from '@garfish/loader';
+import type { StyleManager, JavaScriptManager } from '@garfish/loader';
 import {
   def,
   warn,
@@ -166,6 +166,8 @@ export class DynamicNodeProcessor {
                 // It is necessary to ensure that the code execution error cannot trigger the `el.onerror` event
                 this.sandbox.execScript(scriptCode, {}, url, {
                   isModule,
+                  defer: false,
+                  async: false,
                   noEntry: true,
                   originScript: this.el,
                 });
@@ -185,7 +187,10 @@ export class DynamicNodeProcessor {
             },
           );
       } else if (code) {
-        this.sandbox.execScript(code, {}, baseUrl, { noEntry: true, originScript: this.el, });
+        this.sandbox.execScript(code, {}, baseUrl, {
+          noEntry: true,
+          originScript: this.el,
+        });
       }
       // To ensure the processing node to normal has been removed
       const scriptCommentNode = this.DOMApis.createScriptCommentNode({
@@ -230,7 +235,7 @@ export class DynamicNodeProcessor {
 
     const modifyStyleCode = (styleCode: string | null) => {
       if (styleCode) {
-        const manager = new StyleManager(styleCode);
+        const manager = new this.sandbox.loader.StyleManager(styleCode);
         manager.correctPath(baseUrl);
         if (rootElId) {
           manager.setScope({
@@ -320,7 +325,8 @@ export class DynamicNodeProcessor {
     // The style node needs to be placed in the sandbox root container
     else if (this.is('style')) {
       parentNode = this.findParentNodeInApp(context, 'head');
-      const manager = new StyleManager(this.el.textContent);
+      // We take it from the loader, avoid having multiple manager constructors
+      const manager = new this.sandbox.loader.StyleManager(this.el.textContent);
       manager.correctPath(baseUrl);
       if (styleScopeId) {
         manager.setScope({
@@ -365,10 +371,12 @@ export class DynamicNodeProcessor {
 
     // fix innerHTML dom iframe、img src
     if (this.el && this.el.querySelectorAll) {
-      let needFixDom = this.el.querySelectorAll('iframe,img,video,link,script,audio,style');
+      const needFixDom = this.el.querySelectorAll(
+        'iframe,img,video,link,script,audio,style',
+      );
       if (needFixDom.length > 0) {
-        needFixDom.forEach((dom)=>{
-          safeWrapper(()=> this.fixResourceNodeUrl(dom));
+        needFixDom.forEach((dom) => {
+          safeWrapper(() => this.fixResourceNodeUrl(dom));
         });
       }
     }

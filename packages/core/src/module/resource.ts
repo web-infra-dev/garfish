@@ -1,5 +1,5 @@
 import { warn, error, Text, transformUrl, assert } from '@garfish/utils';
-import {
+import type {
   Loader,
   StyleManager,
   TemplateManager,
@@ -13,7 +13,7 @@ function fetchStaticResources(
   loader: Loader,
   entryManager: TemplateManager,
 ) {
-  const isAsync = (val) => typeof val !== 'undefined' && val !== 'false';
+  const toBoolean = (val) => typeof val !== 'undefined' && val !== 'false';
 
   // Get all script elements
   const jsNodes = Promise.all(
@@ -33,6 +33,7 @@ function fetchStaticResources(
             ? transformUrl(entryManager.url, src)
             : src;
           const async = entryManager.findAttributeValue(node, 'async');
+          const defer = entryManager.findAttributeValue(node, 'defer');
 
           // Scripts with "async" attribute will make the rendering process very complicated,
           // we have a preload mechanism, so we don’t need to deal with it.
@@ -47,7 +48,8 @@ function fetchStaticResources(
               if (jsManager) {
                 jsManager.setDep(node);
                 type && jsManager.setMimeType(type);
-                jsManager.setAsyncAttribute(isAsync(async));
+                jsManager.setAsyncAttribute(toBoolean(async));
+                jsManager.setDefferAttribute(toBoolean(defer));
                 return jsManager;
               } else {
                 warn(`[${appName}] Failed to load script: ${fetchUrl}`);
@@ -57,7 +59,7 @@ function fetchStaticResources(
         } else if (node.children.length > 0) {
           const code = (node.children[0] as Text).content;
           if (code) {
-            const jsManager = new JavaScriptManager(code, '');
+            const jsManager = new loader.JavaScriptManager(code, '');
             jsManager.setDep(node);
             type && jsManager.setMimeType(type);
             return jsManager;
@@ -103,7 +105,7 @@ function fetchStaticResources(
         if (!entryManager.DOMApis.isRemoteModule(node)) return;
         const async = entryManager.findAttributeValue(node, 'async');
         const alias = entryManager.findAttributeValue(node, 'alias');
-        if (!isAsync(async)) {
+        if (!toBoolean(async)) {
           const src = entryManager.findAttributeValue(node, 'src');
           if (src) {
             return loader
@@ -139,7 +141,7 @@ export async function processAppResources(loader: Loader, appInfo: AppInfo) {
   });
 
   // Html entry
-  if (entryManager instanceof TemplateManager) {
+  if (entryManager instanceof loader.TemplateManager) {
     isHtmlMode = true;
     const [js, link, modules] = await fetchStaticResources(
       appInfo.name,
@@ -149,11 +151,14 @@ export async function processAppResources(loader: Loader, appInfo: AppInfo) {
     resources.js = js;
     resources.link = link;
     resources.modules = modules;
-  } else if (entryManager instanceof JavaScriptManager) {
+  } else if (entryManager instanceof loader.JavaScriptManager) {
     // Js entry
     isHtmlMode = false;
     const mockTemplateCode = `<script src="${entryManager.url}"></script>`;
-    fakeEntryManager = new TemplateManager(mockTemplateCode, entryManager.url);
+    fakeEntryManager = new loader.TemplateManager(
+      mockTemplateCode,
+      entryManager.url,
+    );
     entryManager.setDep(fakeEntryManager.findAllJsNodes()[0]);
     resources.js = [entryManager];
   } else {

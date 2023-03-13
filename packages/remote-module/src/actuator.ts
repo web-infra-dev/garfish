@@ -1,5 +1,5 @@
 import { evalWithEnv } from '@garfish/utils';
-import { ModuleManager } from '@garfish/loader';
+import type { ModuleManager } from '@garfish/loader';
 import { hooks } from './hooks';
 import { currentApp, moduleConfig } from './common';
 
