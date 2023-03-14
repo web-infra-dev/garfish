@@ -243,7 +243,8 @@ export function isPrimitive(val: any) {
     typeof val === 'bigint' ||
     typeof val === 'symbol' ||
     typeof val === 'boolean' ||
-    typeof val === 'undefined'
+    typeof val === 'undefined' || 
+    objectToString.call(val) === '[object RegExp]'
   );
 }
 
@@ -277,11 +278,7 @@ export function deepMerge<K, T>(
 
   const clone = (v) => {
     // Deep clone
-    if (
-      isPrimitive(v)
-      || typeof v === 'function'
-      || Object.prototype.toString.call(v) === '[object RegExp]'
-    ) {
+    if (isPrimitive(v) || typeof v === 'function') {
       return v;
     } else if (valueRecord.has(v)) {
       return valueRecord.get(v);
@@ -315,11 +312,7 @@ export function deepMerge<K, T>(
         return k;
       }
       const val = clone(k);
-      if (
-        !isPrimitive(val)
-        && typeof val !== 'function'
-        && Object.prototype.toString.call(val) === '[object RegExp]'
-      ) {
+      if (!isPrimitive(val) && typeof val !== 'function') {
         r.set(k, val);
       }
       return val;
