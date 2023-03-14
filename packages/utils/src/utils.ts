@@ -243,7 +243,8 @@ export function isPrimitive(val: any) {
     typeof val === 'bigint' ||
     typeof val === 'symbol' ||
     typeof val === 'boolean' ||
-    typeof val === 'undefined'
+    typeof val === 'undefined' || 
+    objectToString.call(val) === '[object RegExp]'
   );
 }
 

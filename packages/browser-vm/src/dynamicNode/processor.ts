@@ -429,6 +429,7 @@ export class DynamicNodeProcessor {
         return this.nativeRemove.call(parentNode, this.el);
       }
     }
+
     return originProcess();
   }
 }
