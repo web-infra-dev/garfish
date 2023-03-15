@@ -71,3 +71,5 @@ yarn add garfish
 
 - [Qiankun](https://github.com/umijs/qiankun) 是一款非常优秀的微前端框架，Garfish 的沙箱设计从中吸收了很多优秀的想法
 - [single-spa](https://github.com/single-spa/single-spa) 为社区掀起了微前端解决方案的热潮，Garfish 路由系统设计从中吸取了很多令人惊叹的想法。在 Garfish Bridge 的设计中，我们参考了 [single-spa](https://github.com/single-spa/single-spa)  bridge 部分的设计实现，并且我们认为这是一个好的设计，所以我们 fork 了 [single-spa](https://github.com/single-spa/single-spa) bridge 部分的实现代码，且针对 Garfish 的生命周期函数做出了一些调整。
+- Garfish 的 css-scope 插件灵感来自于[reworkcss](https://github.com/reworkcss/css)的实现，并且为了适用于不同的场景我们 fork 了一些  reworkcss 的实现代码
+- Garfish 的 es-module 插件的设计灵感来自于[@babel/traverse](https://github.com/babel/babel)和[es-module-shims](https://github.com/guybedford/es-module-shims)库，一些实现部分的代码fork 自 @babel/traverse
