@@ -70,4 +70,6 @@ yarn add garfish
 ## Credit
 
 - [Qiankun](https://github.com/umijs/qiankun) is a very good micro front-end framework, Garfish sandbox design learned a lot of good ideas
-- [single-spa](https://github.com/single-spa/single-spa) for community raised a hot wave of micro front-end solutions, learned a lot of amazing Garfish routing system design ideas
+- [single-spa](https://github.com/single-spa/single-spa) for community raised a hot wave of micro front-end solutions, learned a lot of amazing Garfish routing system design. And for the Garfish bridge design, we have refered the implementation of the bridge part in [single-spa](https://github.com/single-spa/single-spa) and we think it is a good design, so we fork the code of the bridge implementation part and make some adjustments for the lifecycles in Garfish.
+- Garfish's css-scope plugin is inspired by the implementation of [reworkcss](https://github.com/reworkcss/css), and some some of the implementation code  is forked from [reworkcss](https://github.com/reworkcss/css) for different scenarios.
+- The design of garfish's es-module plugin was inspired by the [@babel/traverse](https://github.com/babel/babel) and [es-module-shims](https://github.com/guybedford/es-module-shims) libraries,  and some of the implementation code  is forked from  [@babel/traverse](https://github.com/babel/babel) 
