@@ -70,4 +70,4 @@ yarn add garfish
 ## Credit
 
 - [Qiankun](https://github.com/umijs/qiankun) is a very good micro front-end framework, Garfish sandbox design learned a lot of good ideas
-- [single-spa](https://github.com/single-spa/single-spa) for community raised a hot wave of micro front-end solutions, learned a lot of amazing Garfish routing system design ideas
+- [single-spa](https://github.com/single-spa/single-spa) for community raised a hot wave of micro front-end solutions, learned a lot of amazing Garfish routing system design and Garfish bridge system design ideas

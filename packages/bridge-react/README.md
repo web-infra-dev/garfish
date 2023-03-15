@@ -15,3 +15,11 @@ export const provider = reactBridge({
   rootComponent: App,
 });
 ```
+
+## Contributing
+
+- [Contributing Guide](https://github.com/modern-js-dev/garfish/blob/main/CONTRIBUTING.md)
+
+## Credit
+
+- [single-spa](https://github.com/single-spa/single-spa) for community raised a hot wave of micro front-end solutions, learned a lot of amazing Garfish bridge system design ideas.
