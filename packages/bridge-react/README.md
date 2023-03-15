@@ -22,4 +22,4 @@ export const provider = reactBridge({
 
 ## Credit
 
-- [single-spa](https://github.com/single-spa/single-spa) for community raised a hot wave of micro front-end solutions, learned a lot of amazing Garfish bridge system design ideas.
+- [single-spa](https://github.com/single-spa/single-spa) for community raised a hot wave of micro front-end solutions, and we refer to the implementation of the bridge part in [single-spa](https://github.com/single-spa/single-spa) and we think it is a good design, so we fork the code of the bridge implementation part and make some adjustments for the lifecycles in Garfish.
