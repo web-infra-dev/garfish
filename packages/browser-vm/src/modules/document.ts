@@ -21,11 +21,14 @@ export const documentModule = (sandbox: Sandbox) => {
     },
     has: createHas(),
   });
-  
 
   proxyDocument = new Proxy(
     Object.create(fakeDocumentProto, {
       currentScript: {
+        value: null,
+        writable: true,
+      },
+      documentElement: {
         value: null,
         writable: true,
       },
@@ -38,7 +41,7 @@ export const documentModule = (sandbox: Sandbox) => {
     {
       set: createSetter(sandbox),
       defineProperty: createDefineProperty(),
-      getPrototypeOf () {
+      getPrototypeOf() {
         return HTMLDocument.prototype || Document.prototype;
       },
     },

@@ -86,6 +86,9 @@ export function GarfishRouter(_args?: Options) {
               if (isRender) {
                 return await app[isDes ? 'show' : 'mount']();
               } else {
+                if (!isDes) {
+                  delete unmounts[name];
+                }
                 return app[isDes ? 'hide' : 'unmount']();
               }
             };

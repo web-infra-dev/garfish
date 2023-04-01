@@ -430,6 +430,7 @@ export class App {
       this.customExports = {};
       this.cjsModules.exports = {};
       this.esModuleLoader.destroy();
+      this.context.loader.clear(this.appInfo.name);
       remove(this.context.activeApps, this);
       this.hooks.lifecycle.afterUnmount.emit(this.appInfo, this, false);
     } catch (e) {

@@ -31,6 +31,8 @@ import {
   createDefineProperty,
   createDeleteProperty,
 } from './proxyInterceptor/global';
+import { messageChannel } from './modules/messageChannel';
+import { matchMediaModule } from './modules/matchMedia';
 
 let id = 0;
 const defaultModules: Array<Module> = [
@@ -43,6 +45,8 @@ const defaultModules: Array<Module> = [
   observerModule,
   UiEventOverride,
   localStorageModule,
+  messageChannel,
+  matchMediaModule,
 ];
 
 const isModule = (module: Window) => {
@@ -153,6 +157,7 @@ export class Sandbox {
     this.replaceGlobalVariables.prepareList = [];
     this.replaceGlobalVariables.recoverList = [];
     this.replaceGlobalVariables.overrideList = [];
+    sandboxMap.del(this);
     this.hooks.lifecycle.closed.emit();
   }
 

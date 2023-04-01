@@ -1,11 +1,19 @@
 // import { filterAndWrapEventListener } from '@garfish/utils';
+import { hasOwn } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 
 type Opts = boolean | AddEventListenerOptions;
 type Listener = EventListenerOrEventListenerObject;
 
 export function listenerModule(_sandbox: Sandbox) {
-  const listeners = new Map<string, Listener[]>();
+  const listeners = new Map<
+    string,
+    {
+      listener: Listener;
+      target: Window | Document;
+      options: undefined | Opts;
+    }[]
+  >();
   const rawAddEventListener = window.addEventListener;
   const rawRemoveEventListener = window.removeEventListener;
 
@@ -16,7 +24,14 @@ export function listenerModule(_sandbox: Sandbox) {
     options?: Opts,
   ) {
     const curListeners = listeners.get(type) || [];
-    listeners.set(type, [...curListeners, listener]);
+    listeners.set(type, [
+      ...curListeners,
+      {
+        listener,
+        target: this,
+        options,
+      },
+    ]);
 
     // This has been revised
     rawAddEventListener.call(
@@ -39,7 +54,7 @@ export function listenerModule(_sandbox: Sandbox) {
     options?: boolean | EventListenerOptions,
   ) {
     const curListeners = listeners.get(type) || [];
-    const idx = curListeners.indexOf(listener);
+    const idx = curListeners.findIndex((item) => item.listener === listener);
     if (idx !== -1) {
       curListeners.splice(idx, 1);
     }
@@ -47,10 +62,27 @@ export function listenerModule(_sandbox: Sandbox) {
     rawRemoveEventListener.call(this, type, listener, options);
   }
 
+  const proxyDocumentElmeent = new Proxy(document.documentElement, {
+    get(target, p, receiver) {
+      if (p === 'addEventListener') return addListener.bind(document);
+      return hasOwn(target, p)
+        ? Reflect.get(target, p, receiver)
+        : Reflect.get(target, p);
+    },
+    getPrototypeOf() {
+      return Object.getPrototypeOf(document.documentElement);
+    },
+  });
+
   const recover = () => {
     listeners.forEach((listener, key) => {
-      listener.forEach((fn) => {
-        rawRemoveEventListener.call(window, key, fn);
+      listener.forEach((item) => {
+        rawRemoveEventListener.call(
+          item.target,
+          key,
+          item.listener,
+          item.options,
+        );
       });
     });
     listeners.clear();
@@ -67,6 +99,7 @@ export function listenerModule(_sandbox: Sandbox) {
       if (fakeDocument) {
         fakeDocument.addEventListener = addListener.bind(document);
         fakeDocument.removeEventListener = removeListener.bind(document);
+        (fakeDocument as any).documentElement = proxyDocumentElmeent;
       }
     },
   };

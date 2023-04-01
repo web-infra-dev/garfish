@@ -156,7 +156,7 @@ function createOptions(Garfish: interfaces.Garfish) {
     afterUnmount(appInfo, appInstance, isCacheMode) {
       // The caching pattern to retain the same context
       if (appInstance.vmSandbox && !isCacheMode) {
-        appInstance.vmSandbox.reset();
+        appInstance.vmSandbox.close();
       }
     },
 

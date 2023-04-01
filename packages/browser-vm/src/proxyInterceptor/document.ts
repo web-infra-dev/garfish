@@ -29,6 +29,9 @@ export function createGetter(sandbox: Sandbox) {
     if (p === 'activeElement') {
       return Reflect.get(document, p);
     }
+    if (p === 'defaultView') {
+      return sandbox.global;
+    }
 
     const rootNode = rootElm(sandbox);
     const strictIsolation = sandbox.options.strictIsolation;

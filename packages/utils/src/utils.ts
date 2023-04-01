@@ -128,9 +128,10 @@ export function validURL(str) {
 export function internFunc(internalizeString) {
   // Don't consider "Hash-collision，https://en.wikipedia.org/wiki/Collision_(computer_science)"
   // v8 貌似在 16383 长度时会发生 hash-collision 经过测试后发现正常
-  const temporaryOb = {};
-  temporaryOb[internalizeString] = true;
-  return Object.keys(temporaryOb)[0];
+  // const temporaryOb = {};
+  // temporaryOb[internalizeString] = true;
+  // return Object.keys(temporaryOb)[0];
+  return internalizeString;
 }
 
 export function evalWithEnv(
@@ -243,7 +244,7 @@ export function isPrimitive(val: any) {
     typeof val === 'bigint' ||
     typeof val === 'symbol' ||
     typeof val === 'boolean' ||
-    typeof val === 'undefined' || 
+    typeof val === 'undefined' ||
     objectToString.call(val) === '[object RegExp]'
   );
 }

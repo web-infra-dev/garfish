@@ -60,6 +60,9 @@ export function networkModule(sandbox: Sandbox) {
       }
       super(url, protocols);
       wsSet.add(this);
+      if (sandbox.closed) {
+        this.close();
+      }
     }
 
     close() {

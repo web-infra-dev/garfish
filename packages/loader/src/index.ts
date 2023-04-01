@@ -267,7 +267,9 @@ export class Loader {
       })
       .finally(() => {
         // 有 scope 区分之后无需置空
-        // loadingList[url][scope] = null
+        if (loadingList[url] && !!loadingList[url][scope]) {
+          delete loadingList[url][scope];
+        }
       });
 
     loadingList[url]
