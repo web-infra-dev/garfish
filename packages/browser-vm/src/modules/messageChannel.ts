@@ -21,7 +21,7 @@ export function messageChannel(_sandbox: Sandbox) {
   return {
     recover,
     override: {
-      MessageChannel: ProxyMessageChannel,
+      MessageChannel: ProxyMessageChannel as any,
     },
   };
 }

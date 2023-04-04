@@ -33,6 +33,7 @@ import {
 } from './proxyInterceptor/global';
 import { messageChannel } from './modules/messageChannel';
 import { matchMediaModule } from './modules/matchMedia';
+import { intervalCallbackModule } from './modules/intervalCallback';
 
 let id = 0;
 const defaultModules: Array<Module> = [
@@ -47,6 +48,7 @@ const defaultModules: Array<Module> = [
   localStorageModule,
   messageChannel,
   matchMediaModule,
+  intervalCallbackModule,
 ];
 
 const isModule = (module: Window) => {
