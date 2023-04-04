@@ -70,10 +70,14 @@ export function GarfishRouter(_args?: Options) {
           appInfo.rootPath = rootPath;
 
           const currentApp = (activeApp = createKey());
+          let { entry } = appInfo;
+          if(typeof entry === 'function'){
+            entry = entry();
+          }
           const app = await Garfish.loadApp(appInfo.name, {
             cache,
             basename: rootPath,
-            entry: appInfo.entry,
+            entry,
             domGetter: appInfo.domGetter,
           });
 

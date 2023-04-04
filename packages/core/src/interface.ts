@@ -114,7 +114,7 @@ export namespace interfaces {
 
   export type AppConfig = Partial<AppGlobalConfig> & {
     name: string;
-    entry: string;
+    entry: string | (() => string);
     cache?: boolean;
     activeWhen?: string | ((path: string) => boolean);
     nested?: any;

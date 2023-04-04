@@ -94,7 +94,11 @@ export function loadAppResource(
   immediately = false,
 ) {
   __TEST__ && callTestCallback(loadAppResource, info);
-  const fetchUrl = transformUrl(location.href, info.entry);
+  let { entry } = info;
+  if(typeof entry === 'function'){
+    entry = entry();
+  }
+  const fetchUrl = transformUrl(location.href, entry);
 
   safeLoad({
     loader,

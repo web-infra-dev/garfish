@@ -29,7 +29,7 @@ describe('Router: test guard', () => {
       {
         name: 'appB',
         activeWhen: '/b',
-        entry: 'https://google.com',
+        entry: () => 'https://google.com',
         basename: '/',
       },
     ],

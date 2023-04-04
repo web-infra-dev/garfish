@@ -26,7 +26,7 @@ You can fill in the node to get the mount point or the characters that `querySel
 
 - `AppInfo: { name, entry, activeWhen, active, deactive }`
   - `name` The name of the template, please make sure that the name is unique.
-  - `entry` Sub-application entry
+  - `entry` Sub-application entry, string or function returning string
   - `activeWhen` path name, the path to activate the sub-application, fill in the root route, use as a function please do not use asynchronous logic
   - `active` Trigger when the application is activated, used instead of the default rendering logic inside Garfish. This hook can be used to render `iframe` if the app is not accessible quickly, [details](https://site.bytedance.com/docs/4545/6924/ifame)
   - `deactive` triggered when the application is destroyed, used instead of `Garfish` internal default destruction logic, with or without `active` configuration

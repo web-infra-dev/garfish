@@ -176,8 +176,13 @@ export class App {
         }
       });
     }
-    this.appInfo.entry &&
-      this.addSourceList({ tagName: 'html', url: this.appInfo.entry });
+    if(this.appInfo.entry) {
+      let { entry } = this.appInfo;
+      if(typeof entry === 'function'){
+        entry = entry();
+      }
+      this.addSourceList({ tagName: 'html', url: entry });
+    }
     this.asyncProviderTimeout = this.appInfo.asyncProviderTimeout ?? 0;
   }
 
@@ -474,8 +479,10 @@ export class App {
         if (jsManager[type]) {
           try {
             let noEntry = false;
-            const targetUrl = jsManager.url || this.appInfo.entry;
-
+            let targetUrl = jsManager.url || this.appInfo.entry;
+            if( typeof targetUrl === 'function'){
+              targetUrl = targetUrl();
+            }
             if (type === 'defer') {
               const node = this.deferNodeMap.get(jsManager);
               if (node) {
@@ -695,7 +702,10 @@ export class App {
               }
             });
 
-            const targetUrl = url || this.appInfo.entry;
+            let targetUrl = url || this.appInfo.entry;
+            if(typeof targetUrl === 'function'){
+              targetUrl = targetUrl();
+            }
             this.execScript(scriptCode, {}, targetUrl, {
               isModule,
               async: false,
