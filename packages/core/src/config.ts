@@ -126,6 +126,8 @@ export const createDefaultOptions = () => {
     errorMountApp: (e) => error(e),
     errorUnmountApp: (e) => error(e),
     customLoader: undefined, // deprecated
+    protectVariable: ['GarfishBridge'],
+    insulationVariable: ['Slardar', 'Garfish'],
   };
 
   return config;

@@ -34,6 +34,7 @@ import {
 import { messageChannel } from './modules/messageChannel';
 import { matchMediaModule } from './modules/matchMedia';
 import { intervalCallbackModule } from './modules/intervalCallback';
+// import { functionModule } from './modules/function';
 
 let id = 0;
 const defaultModules: Array<Module> = [
@@ -49,6 +50,7 @@ const defaultModules: Array<Module> = [
   messageChannel,
   matchMediaModule,
   intervalCallbackModule,
+  // functionModule,
 ];
 
 const isModule = (module: Window) => {
