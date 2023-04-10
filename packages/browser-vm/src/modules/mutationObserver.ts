@@ -1,6 +1,9 @@
 import { Sandbox } from '../sandbox';
 
-export function observerModule(_sandbox: Sandbox) {
+export function observerModule(_sandbox: Sandbox): {
+  recover: () => void;
+  override: Record<string, any>;
+} {
   const observerSet = new Set<MutationObserver>();
   const performanceObserverSet = new Set<PerformanceObserver>();
 
