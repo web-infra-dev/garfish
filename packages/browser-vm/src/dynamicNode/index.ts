@@ -106,13 +106,13 @@ function handleOwnerDocument() {
   });
 }
 
-export function makeElInjector(sandboxConfig: SandboxOptions) {
+export function makeElInjector() {
   if ((makeElInjector as any).hasInject) return;
   (makeElInjector as any).hasInject = true;
 
   if (typeof window.Element === 'function') {
     // iframe can read html container this can't point to proxyDocument has Illegal invocation error
-    if (sandboxConfig.fixBaseUrl) safeWrapper(() => handleOwnerDocument());
+    safeWrapper(() => handleOwnerDocument());
     const rewrite = (
       methods: Array<string>,
       builder: typeof injector | typeof injectorRemoveChild,
