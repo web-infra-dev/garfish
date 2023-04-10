@@ -156,7 +156,8 @@ export function evalWithEnv(
     ];
     const internalizeString = internFunc(evalInfo[0] + code + evalInfo[1]);
     // (0, eval) This expression makes the eval under the global scope
-    (0, eval)(internalizeString);
+    // (0, eval)(internalizeString);
+    new Function(internalizeString)();
   } catch (e) {
     throw e;
   } finally {

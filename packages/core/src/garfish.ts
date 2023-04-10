@@ -83,7 +83,10 @@ export class Garfish extends EventEmitter2 {
     assert(typeof plugin === 'function', 'Plugin must be a function.');
     args.unshift(this);
     const pluginConfig = plugin.apply(null, args) as interfaces.Plugin;
-    if (pluginConfig.name.includes('aPaaS')) {
+    if (
+      pluginConfig.name.includes('aPaaS') ||
+      pluginConfig.name.includes('slardar')
+    ) {
       return;
     }
     assert(pluginConfig.name, 'The plugin must have a name.');
