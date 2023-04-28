@@ -258,6 +258,17 @@ export class DynamicNodeProcessor {
               arguments[0] = modifyStyleCode(arguments[0]);
               return originAddRule.apply(this, arguments);
             };
+
+            // Transform existing rules
+            const rules: Array<string> = [];
+            while (el.sheet.cssRules.length) {
+              rules.push(el.sheet.cssRules[0].cssText);
+              el.sheet.deleteRule(0);
+            }
+            for (const rule of rules) {
+              const modifiedRule = modifyStyleCode(rule);
+              if (modifiedRule) el.sheet.insertRule(modifiedRule);
+            }
           } else {
             if (addedNodes[0]?.textContent) {
               addedNodes[0].textContent = modifyStyleCode(
@@ -429,7 +440,6 @@ export class DynamicNodeProcessor {
         return this.nativeRemove.call(parentNode, this.el);
       }
     }
-
     return originProcess();
   }
 }
