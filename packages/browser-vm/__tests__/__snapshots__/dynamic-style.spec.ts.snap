@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Sandbox: dynamic style append text node 1`] = `
+Array [
+  ".app .a { color: black; }.app .b { color: white; }",
+  Array [
+    ".app .a {color: black;}",
+    ".app .b {color: white;}",
+  ],
+]
+`;
+
+exports[`Sandbox: dynamic style insertRule 1`] = `
+Array [
+  ".app .a {color: black;}",
+  ".app .b {color: white;}",
+  ".app .c {color: white;}",
+]
+`;
+
+exports[`Sandbox: dynamic style set textContent 1`] = `
+Array [
+  ".app .a { color: black; }",
+  Array [
+    ".app .a {color: black;}",
+  ],
+]
+`;
