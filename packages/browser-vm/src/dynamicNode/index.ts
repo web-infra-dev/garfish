@@ -135,17 +135,6 @@ export function makeElInjector(sandboxConfig: SandboxOptions) {
   injectHandlerParams();
 }
 
-export function recordStyledComponentCSSRules(
-  dynamicStyleSheetElementSet: Set<HTMLStyleElement>,
-  styledComponentCSSRulesMap: WeakMap<HTMLStyleElement, CSSRuleList>,
-) {
-  dynamicStyleSheetElementSet.forEach((styleElement) => {
-    if (isStyledComponentsLike(styleElement) && styleElement.sheet) {
-      styledComponentCSSRulesMap.set(styleElement, styleElement.sheet.cssRules);
-    }
-  });
-}
-
 export function rebuildCSSRules(
   dynamicStyleSheetElementSet: Set<HTMLStyleElement>,
   styledComponentCSSRulesMap: WeakMap<HTMLStyleElement, CSSRuleList>,

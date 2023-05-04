@@ -261,11 +261,18 @@ export class DynamicNodeProcessor {
     });
     mutator.observe(this.el, { childList: true });
 
-    // Handle `sheet.insertRule` (styled-components)
+    // Handle `sheet.cssRules` (styled-components)
     Reflect.defineProperty(this.el, 'sheet', {
       get: () => {
         const sheet = Reflect.get(HTMLStyleElement.prototype, 'sheet', this.el);
         if (sheet) {
+          // Record the cssRules instance, so we can restore it on app remount.
+          // Not doing this on unmount, because the user may detach the app DOM
+          // before trigger the unmount hooks and we can't get the cssRules
+          // after detaching.
+          this.sandbox.styledComponentCSSRulesMap.set(this.el, sheet.cssRules);
+
+          // Transform style for insertRule() calls
           const originAddRule = sheet.insertRule;
           sheet.insertRule = function () {
             arguments[0] = modifyStyleCode(arguments[0]);
