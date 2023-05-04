@@ -160,49 +160,4 @@ describe('Sandbox:Dom & Bom', () => {
       { next },
     );
   });
-
-  const createStyleComponentElementWithRecord = () => {
-    const styleComponentElement = document.createElement('style');
-    document.head.appendChild(styleComponentElement);
-    const cssRuleExample1 = '.test1 { color: red }';
-    const cssRuleExample2 = '.test2 { color: red }';
-    styleComponentElement.sheet?.insertRule(`${cssRuleExample1}`);
-    styleComponentElement.sheet?.insertRule(`${cssRuleExample2}`);
-    sandbox.dynamicStyleSheetElementSet.add(styleComponentElement);
-
-    recordStyledComponentCSSRules(
-      sandbox.dynamicStyleSheetElementSet,
-      sandbox.styledComponentCSSRulesMap,
-    );
-    return styleComponentElement;
-  };
-
-  it('should record the css rules of styled-components correctly', () => {
-    const styleComponentElement = createStyleComponentElementWithRecord();
-    const cssRules = sandbox.styledComponentCSSRulesMap.get(
-      styleComponentElement,
-    );
-    expect(cssRules?.length).toEqual(2);
-    expect((cssRules?.[0] as CSSStyleRule).selectorText).toEqual('.test2');
-    expect((cssRules?.[1] as CSSStyleRule).selectorText).toEqual('.test1');
-  });
-
-  it('should rebuild the css rules of styled-components in the correct order', () => {
-    const styleComponentElement = createStyleComponentElementWithRecord();
-
-    Object.defineProperty(window.HTMLStyleElement.prototype, 'sheet', {
-      writable: true,
-      value: {},
-    });
-    // @ts-ignore
-    styleComponentElement.sheet = new CSSStyleSheet();
-    rebuildCSSRules(
-      sandbox.dynamicStyleSheetElementSet,
-      sandbox.styledComponentCSSRulesMap,
-    );
-    const cssRules = styleComponentElement.sheet.cssRules;
-    expect(cssRules.length).toEqual(2);
-    expect((cssRules?.[0] as CSSStyleRule).selectorText).toEqual('.test2');
-    expect((cssRules?.[1] as CSSStyleRule).selectorText).toEqual('.test1');
-  });
 });

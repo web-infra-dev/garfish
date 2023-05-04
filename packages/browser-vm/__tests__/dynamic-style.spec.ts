@@ -1,6 +1,7 @@
 import { __MockHead__ } from '@garfish/utils';
 import { Sandbox } from '../src/sandbox';
 import { StyleManager } from '@garfish/loader';
+import { rebuildCSSRules } from '../src/dynamicNode';
 
 describe('Sandbox: dynamic style', () => {
   let sandbox: Sandbox;
@@ -87,5 +88,51 @@ describe('Sandbox: dynamic style', () => {
       }),
       { done },
     );
+  });
+
+  const createStyleComponentElementWithRecord = () => {
+    sandbox.execScript(
+      go(() => {
+        const styleComponentElement = document.createElement('style');
+        document.head.appendChild(styleComponentElement);
+        const cssRuleExample1 = '.test1 { color: red }';
+        const cssRuleExample2 = '.test2 { color: red }';
+        styleComponentElement.sheet!.insertRule(cssRuleExample1);
+        styleComponentElement.sheet!.insertRule(cssRuleExample2);
+        window._styleElement = styleComponentElement;
+      }),
+    );
+
+    const style = sandbox.global!._styleElement as HTMLStyleElement;
+    sandbox.dynamicStyleSheetElementSet.add(style);
+    return style;
+  };
+
+  it('should record the css rules of styled-components correctly', () => {
+    const styleComponentElement = createStyleComponentElementWithRecord();
+    const cssRules = sandbox.styledComponentCSSRulesMap.get(
+      styleComponentElement,
+    );
+    expect(cssRules!.length).toEqual(2);
+    expect((cssRules![0] as CSSStyleRule).selectorText).toEqual('.app .test2');
+    expect((cssRules![1] as CSSStyleRule).selectorText).toEqual('.app .test1');
+  });
+
+  it('should rebuild the css rules of styled-components in the correct order', () => {
+    const styleComponentElement = createStyleComponentElementWithRecord();
+
+    Object.defineProperty(styleComponentElement, 'sheet', {
+      writable: true,
+      value: new CSSStyleSheet(),
+    });
+    const cssRules = styleComponentElement.sheet!.cssRules;
+    expect(cssRules.length).toEqual(0);
+    rebuildCSSRules(
+      sandbox.dynamicStyleSheetElementSet,
+      sandbox.styledComponentCSSRulesMap,
+    );
+    expect(cssRules.length).toEqual(2);
+    expect((cssRules![0] as CSSStyleRule).selectorText).toEqual('.app .test2');
+    expect((cssRules![1] as CSSStyleRule).selectorText).toEqual('.app .test1');
   });
 });
