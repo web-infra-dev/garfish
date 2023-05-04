@@ -153,13 +153,17 @@ export function rebuildCSSRules(
   dynamicStyleSheetElementSet.forEach((styleElement) => {
     const cssRules = styledComponentCSSRulesMap.get(styleElement);
     if (cssRules && (isStyledComponentsLike(styleElement) || cssRules.length)) {
-      for (let i = 0; i < cssRules.length; i++) {
-        const cssRule = cssRules[i];
-        // re-insert rules for styled-components element
-        styleElement.sheet?.insertRule(
-          cssRule.cssText,
-          styleElement.sheet?.cssRules.length,
-        );
+      if (styleElement.sheet) {
+        for (let i = 0; i < cssRules.length; i++) {
+          const cssRule = cssRules[i];
+          // re-insert rules for styled-components element
+          // call on prototype to skip transforming in insertRule
+          CSSStyleSheet.prototype.insertRule.call(
+            styleElement.sheet,
+            cssRule.cssText,
+            styleElement.sheet.cssRules.length,
+          );
+        }
       }
     }
   });

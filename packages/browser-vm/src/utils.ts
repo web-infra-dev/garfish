@@ -166,8 +166,7 @@ export function isStyledComponentsLike(element: HTMLStyleElement) {
   // A styled-components liked element has no textContent but keep the rules in its sheet.cssRules.
   return (
     element instanceof HTMLStyleElement &&
-    !element.textContent &&
-    element.sheet?.cssRules.length
+    !element.textContent
   );
 }
 
