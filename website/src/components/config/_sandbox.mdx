@@ -14,6 +14,8 @@ interface SandboxConfig {
   strictIsolation?: boolean;
   // modules 仅在 vm 沙箱时有效，用于覆盖子应用执行上下文的环境变量，使用自定义的执行上下文，默认值为[]
   modules?: Array<Module> | Record<string, Module>;
+  // disableElementtiming 1.14.4 版本提供，默认值为 false，将会给子应用元素注入 elementtiming 属性，可以通过此属性获取子应用元素的加载时间
+  disableElementtiming?: boolean;
 }
 
 type Module = (sandbox: Sandbox) => OverridesData | void;

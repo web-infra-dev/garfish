@@ -24,6 +24,7 @@ export interface SandboxOptions {
   fixBaseUrl?: boolean;
   disableWith?: boolean;
   strictIsolation?: boolean;
+  disableElementtiming?: boolean;
   modules?: Array<Module>;
   addSourceList?: (
     sourceInfo:

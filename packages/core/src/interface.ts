@@ -79,6 +79,7 @@ export namespace interfaces {
     fixBaseUrl?: boolean;
     disableWith?: boolean;
     strictIsolation?: boolean;
+    disableElementtiming?: boolean;
   }
 
   export interface Config {

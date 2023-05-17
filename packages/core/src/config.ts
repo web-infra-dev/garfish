@@ -112,6 +112,7 @@ export const createDefaultOptions = () => {
       fixBaseUrl: false,
       disableWith: false,
       strictIsolation: false,
+      disableElementtiming: false,
     },
     // global hooks
     beforeLoad: () => {},
