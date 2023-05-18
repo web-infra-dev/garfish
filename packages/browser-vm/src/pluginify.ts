@@ -128,6 +128,7 @@ function createOptions(Garfish: interfaces.Garfish) {
           modules: compatibleOldModule(appInfo.sandbox?.modules || []),
           fixBaseUrl: Boolean(appInfo.sandbox?.fixBaseUrl),
           disableWith: Boolean(appInfo.sandbox?.disableWith),
+          disableElementtiming: Boolean(appInfo.sandbox?.disableElementtiming),
           strictIsolation: Boolean(appInfo.sandbox?.strictIsolation),
 
           el: () => appInstance.htmlNode,

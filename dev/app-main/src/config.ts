@@ -40,6 +40,7 @@ let defaultConfig: RunInfo = {
 
   // sandbox用于配置子应用沙箱的运行参数，当配置 sandbox 为 false 时表示关闭沙箱
   sandbox: {
+    // disableElementtiming: true,
     //  strictIsolation 表明是否开启开启严格隔离，开启严格隔离后，子应用的渲染节点将会开启 Shadow DOM close 模式，
     // 并且子应用的查询和添加行为仅会在 DOM 作用域内进行
     strictIsolation: false,

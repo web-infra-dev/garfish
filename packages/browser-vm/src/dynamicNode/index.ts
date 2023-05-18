@@ -37,7 +37,9 @@ function injector(current: Function, methodName: string) {
       if (
         el?.setAttribute &&
         typeof el?.setAttribute === 'function' &&
-        !el?.getAttribute('elementtiming')
+        !el?.getAttribute('elementtiming') &&
+        sandbox &&
+        sandbox.options.disableElementtiming !== true
       ) {
         el?.setAttribute(
           'elementtiming',

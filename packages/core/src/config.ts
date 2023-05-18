@@ -38,17 +38,23 @@ export const deepMergeConfig = <
   globalConfig: T,
   localConfig: U,
 ) => {
+  const { props: globalProps, ...newGlobalConfig } = globalConfig;
+  const { props: localProps, ...newLocalConfig } = localConfig;
+
   const props = {
-    ...(globalConfig.props || {}),
-    ...(localConfig.props || {}),
+    ...(globalProps || {}),
+    ...(localProps || {}),
   };
 
   const result = deepMerge(
-    filterUndefinedVal(globalConfig),
-    filterUndefinedVal(localConfig),
+    filterUndefinedVal(newGlobalConfig),
+    filterUndefinedVal(newLocalConfig),
   );
-  result.props = props;
-  return result;
+
+  return {
+    ...result,
+    props,
+  };
 };
 
 export const getAppConfig = (
@@ -106,6 +112,7 @@ export const createDefaultOptions = () => {
       fixBaseUrl: false,
       disableWith: false,
       strictIsolation: false,
+      disableElementtiming: false,
     },
     // global hooks
     beforeLoad: () => {},
