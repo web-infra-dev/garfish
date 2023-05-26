@@ -8,8 +8,10 @@ import Highlight from '@site/src/components/Highlight';
 interface SandboxConfig {
   // 是否开启快照沙箱，默认值为 false：关闭快照沙箱，开启 vm 沙箱
   snapshot?: boolean;
-  // 是否修复子应用请求的 baseUrl（请求为相对路径时才生效）,默认值为 false
+  // 是否自动以子应用入口的域名前缀对子应用 fetch 请求的进行补齐，默认值为 false
   fixBaseUrl?: boolean;
+  // 是否自动以子应用入口的域名前缀对相对路径资源进行前缀修正，默认值为 true，v1.15.0 版本提供
+  fixStaticResourceBaseUrl?: boolean;
   // 是否开启开启严格隔离，默认值为 false。开启严格隔离后，子应用的渲染节点将会开启 Shadow DOM close 模式，并且子应用的查询和添加行为仅会在 DOM 作用域内进行
   strictIsolation?: boolean;
   // modules 仅在 vm 沙箱时有效，用于覆盖子应用执行上下文的环境变量，使用自定义的执行上下文，默认值为[]
