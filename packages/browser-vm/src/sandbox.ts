@@ -89,6 +89,7 @@ export class Sandbox {
       namespace: '',
       modules: [],
       fixBaseUrl: false,
+      fixStaticResourceBaseUrl: true,
       disableWith: false,
       strictIsolation: false,
       el: () => null,

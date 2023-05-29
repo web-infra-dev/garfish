@@ -610,6 +610,11 @@ export class App {
     const { appInfo, entryManager, resources } = this;
     const { url: baseUrl, DOMApis } = entryManager;
     const { htmlNode, appContainer } = createAppContainer(appInfo);
+    // The base url is fixed by default, so it is set when the sandbox is closed or the fix base url is not false
+    const fixStaticResourceBaseUrl =
+      !this.appInfo.sandbox ||
+      (this.appInfo.sandbox &&
+        this.appInfo.sandbox.fixStaticResourceBaseUrl === true);
 
     // Transformation relative path
     this.htmlNode = htmlNode;
@@ -622,22 +627,30 @@ export class App {
       meta: () => null,
 
       img: (node) => {
-        baseUrl && entryManager.toResolveUrl(node, 'src', baseUrl);
+        fixStaticResourceBaseUrl &&
+          baseUrl &&
+          entryManager.toResolveUrl(node, 'src', baseUrl);
         return DOMApis.createElement(node);
       },
 
       video: (node) => {
-        baseUrl && entryManager.toResolveUrl(node, 'src', baseUrl);
+        fixStaticResourceBaseUrl &&
+          baseUrl &&
+          entryManager.toResolveUrl(node, 'src', baseUrl);
         return DOMApis.createElement(node);
       },
 
       audio: (node) => {
-        baseUrl && entryManager.toResolveUrl(node, 'src', baseUrl);
+        fixStaticResourceBaseUrl &&
+          baseUrl &&
+          entryManager.toResolveUrl(node, 'src', baseUrl);
         return DOMApis.createElement(node);
       },
 
       iframe: (node) => {
-        baseUrl && entryManager.toResolveUrl(node, 'src', baseUrl);
+        fixStaticResourceBaseUrl &&
+          baseUrl &&
+          entryManager.toResolveUrl(node, 'src', baseUrl);
         return DOMApis.createElement(node);
       },
 

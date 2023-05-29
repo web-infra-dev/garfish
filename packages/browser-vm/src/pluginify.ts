@@ -127,6 +127,9 @@ function createOptions(Garfish: interfaces.Garfish) {
           baseUrl: appInstance.entryManager.url,
           modules: compatibleOldModule(appInfo.sandbox?.modules || []),
           fixBaseUrl: Boolean(appInfo.sandbox?.fixBaseUrl),
+          fixStaticResourceBaseUrl: Boolean(
+            appInfo.sandbox?.fixStaticResourceBaseUrl,
+          ),
           disableWith: Boolean(appInfo.sandbox?.disableWith),
           disableElementtiming: Boolean(appInfo.sandbox?.disableElementtiming),
           strictIsolation: Boolean(appInfo.sandbox?.strictIsolation),

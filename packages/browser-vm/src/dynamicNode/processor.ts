@@ -50,8 +50,11 @@ export class DynamicNodeProcessor {
     if (baseUrl) {
       const src = el.getAttribute('src');
       const href = el.getAttribute('href');
-      src && (el.src = transformUrl(baseUrl, src));
-      href && (el.href = transformUrl(baseUrl, href));
+      if (this.sandbox.options.fixStaticResourceBaseUrl) {
+        src && (el.src = transformUrl(baseUrl, src));
+        href && (el.href = transformUrl(baseUrl, href));
+      }
+
       const url = el.src || el.href;
 
       if (url && this.sandbox.options.addSourceList) {

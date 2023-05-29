@@ -110,6 +110,7 @@ export const createDefaultOptions = () => {
     sandbox: {
       snapshot: false,
       fixBaseUrl: false,
+      fixStaticResourceBaseUrl: true,
       disableWith: false,
       strictIsolation: false,
       disableElementtiming: false,

@@ -77,6 +77,7 @@ export namespace interfaces {
     open?: boolean;
     snapshot?: boolean;
     fixBaseUrl?: boolean;
+    fixStaticResourceBaseUrl?: boolean;
     disableWith?: boolean;
     strictIsolation?: boolean;
     disableElementtiming?: boolean;

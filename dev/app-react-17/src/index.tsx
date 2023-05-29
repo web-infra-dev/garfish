@@ -55,3 +55,8 @@ if (!window.__GARFISH__) {
 }
 
 console.log('react 17 -- main document.currentScript', document.currentScript);
+
+let iframe = document.createElement('iframe');
+iframe.src = '/iframe';
+iframe.setAttribute('data-test', 'iframe-pre-fix-app-17');
+document.body.appendChild(iframe);
