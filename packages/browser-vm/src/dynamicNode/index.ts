@@ -3,7 +3,7 @@ import { __domWrapper__ } from '../symbolTypes';
 import { injectHandlerParams } from './processParams';
 import { DynamicNodeProcessor, rawElementMethods } from './processor';
 import { isInIframe, sandboxMap, isStyledComponentsLike } from '../utils';
-import { SandboxOptions } from '../types';
+import { SandboxOptions, StyledComponentCSSRulesData } from '../types';
 
 const mountElementMethods = [
   'append',
@@ -137,21 +137,41 @@ export function makeElInjector(sandboxConfig: SandboxOptions) {
 
 export function rebuildCSSRules(
   dynamicStyleSheetElementSet: Set<HTMLStyleElement>,
-  styledComponentCSSRulesMap: WeakMap<HTMLStyleElement, CSSRuleList>,
+  styledComponentCSSRulesMap: WeakMap<
+    HTMLStyleElement,
+    StyledComponentCSSRulesData
+  >,
 ) {
   dynamicStyleSheetElementSet.forEach((styleElement) => {
-    const cssRules = styledComponentCSSRulesMap.get(styleElement);
-    if (cssRules && (isStyledComponentsLike(styleElement) || cssRules.length)) {
-      if (styleElement.sheet) {
-        for (let i = 0; i < cssRules.length; i++) {
-          const cssRule = cssRules[i];
+    const data = styledComponentCSSRulesMap.get(styleElement);
+    // cssRuleList will be overwritten when we access the new sheet, backup here
+    const { cssRuleList, addingRules } = data ?? {};
+
+    if (data && (isStyledComponentsLike(styleElement) || cssRuleList?.length)) {
+      const realSheet = Reflect.get(
+        HTMLStyleElement.prototype,
+        'sheet',
+        styleElement,
+      );
+      if (realSheet) {
+        for (let i = 0; i < cssRuleList!.length; i++) {
+          const cssRule = cssRuleList![i];
           // re-insert rules for styled-components element
-          // call on prototype to skip transforming in insertRule
-          CSSStyleSheet.prototype.insertRule.call(
-            styleElement.sheet,
-            cssRule.cssText,
-            styleElement.sheet.cssRules.length,
-          );
+          // use realSheet to skip transforming
+          realSheet.insertRule(cssRule.cssText, realSheet.cssRules.length);
+        }
+        if (addingRules) {
+          for (const rule of addingRules) {
+            // rules added when the app was hidden in cache mode.
+            // with transforming
+            styleElement.sheet!.insertRule(
+              rule,
+              styleElement.sheet!.cssRules.length,
+            );
+          }
+          while (addingRules.length) {
+            addingRules.pop();
+          }
         }
       }
     }

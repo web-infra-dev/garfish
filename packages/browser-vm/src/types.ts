@@ -36,3 +36,8 @@ export interface SandboxOptions {
   protectVariable?: () => Array<PropertyKey>;
   insulationVariable?: () => Array<PropertyKey>;
 }
+
+export interface StyledComponentCSSRulesData {
+  cssRuleList: CSSRuleList | undefined;
+  addingRules: string[];
+}

@@ -262,26 +262,31 @@ export class DynamicNodeProcessor {
     mutator.observe(this.el, { childList: true });
 
     // Handle `sheet.cssRules` (styled-components)
+    let sheetSaved: CSSStyleSheet | null = null;
+    let fakeSheet: any = null;
     Reflect.defineProperty(this.el, 'sheet', {
       get: () => {
         const sheet = Reflect.get(HTMLStyleElement.prototype, 'sheet', this.el);
-        if (sheet) {
+        if (sheet && sheetSaved !== sheet) {
+          // We haven't saved the sheet or the sheet is now another instance
+          sheetSaved = sheet;
+
           // Record the cssRules instance, so we can restore it on app remount.
           // Not doing this on unmount, because the user may detach the app DOM
           // before trigger the unmount hooks and we can't get the cssRules
           // after detaching.
-          this.sandbox.styledComponentCSSRulesMap.set(this.el, sheet.cssRules);
-
-          // Transform style for insertRule() calls
-          const originAddRule = sheet.insertRule;
-          sheet.insertRule = function () {
-            arguments[0] = modifyStyleCode(arguments[0]);
-            return originAddRule.apply(this, arguments);
-          };
-          // Delete this getter after we hooked insertRule
-          Reflect.deleteProperty(this.el, 'sheet');
+          this.getStyledComponentCSSRulesData().cssRuleList = sheet.cssRules;
         }
-        return sheet;
+
+        // styled-components only get the `sheet` once, and keep the first
+        // instance in their state. But the `sheet` will be actually replaced
+        // with another instance after remount.
+        // To make insertRule() after remount possible, we return a fake sheet
+        // here and passthrough operations to the latest real `sheet`.
+        if (!fakeSheet) {
+          fakeSheet = this.createFakeSheet(modifyStyleCode);
+        }
+        return fakeSheet;
       },
       configurable: true,
     });
@@ -446,5 +451,52 @@ export class DynamicNodeProcessor {
       }
     }
     return originProcess();
+  }
+
+  private getStyledComponentCSSRulesData() {
+    let rulesData = this.sandbox.styledComponentCSSRulesMap.get(this.el);
+    if (!rulesData) {
+      rulesData = {
+        cssRuleList: undefined,
+        addingRules: [],
+      };
+      this.sandbox.styledComponentCSSRulesMap.set(this.el, rulesData);
+    }
+    return rulesData;
+  }
+
+  private getRealSheet() {
+    return Reflect.get(HTMLStyleElement.prototype, 'sheet', this.el);
+  }
+
+  private createFakeSheet(
+    styleTransformer: (css: string | null) => string | null,
+  ) {
+    const rulesData = this.getStyledComponentCSSRulesData();
+    const processor = this;
+    const fakeSheet = {
+      get cssRules() {
+        const realSheet = processor.getRealSheet();
+        return realSheet?.cssRules ?? rulesData.addingRules;
+      },
+      insertRule(rule: string, index?: number) {
+        const realSheet = processor.getRealSheet();
+        if (realSheet) {
+          return realSheet.insertRule(styleTransformer(rule)!, index);
+        } else {
+          rulesData!.addingRules.splice(index || 0, 0, rule);
+          return index || 0;
+        }
+      },
+      deleteRule(index: number) {
+        const realSheet = processor.getRealSheet();
+        if (realSheet) {
+          realSheet.deleteRule(index);
+        } else {
+          rulesData!.addingRules.splice(index || 0, 1);
+        }
+      },
+    };
+    return fakeSheet;
   }
 }
