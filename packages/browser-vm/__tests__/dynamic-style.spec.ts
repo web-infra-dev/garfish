@@ -123,18 +123,37 @@ describe('Sandbox: dynamic style', () => {
   it('should rebuild the css rules of styled-components in the correct order', () => {
     const styleComponentElement = createStyleComponentElementWithRecord();
 
-    Object.defineProperty(styleComponentElement, 'sheet', {
-      writable: true,
-      value: new CSSStyleSheet(),
-    });
-    const cssRules = styleComponentElement.sheet!.cssRules;
-    expect(cssRules.length).toEqual(0);
+    const parent = styleComponentElement.parentElement;
+    styleComponentElement.remove();
+    parent!.appendChild(styleComponentElement);
+
     rebuildCSSRules(
       sandbox.dynamicStyleSheetElementSet,
       sandbox.styledComponentCSSRulesMap,
     );
+    const cssRules = styleComponentElement.sheet!.cssRules;
     expect(cssRules.length).toEqual(2);
     expect((cssRules![0] as CSSStyleRule).selectorText).toEqual('.app .test2');
     expect((cssRules![1] as CSSStyleRule).selectorText).toEqual('.app .test1');
+  });
+
+  it('should be able to insertRule on old sheet after remount', () => {
+    const styleComponentElement = createStyleComponentElementWithRecord();
+    const oldSheet = styleComponentElement.sheet;
+
+    const parent = styleComponentElement.parentElement;
+    styleComponentElement.remove();
+    parent!.appendChild(styleComponentElement);
+
+    rebuildCSSRules(
+      sandbox.dynamicStyleSheetElementSet,
+      sandbox.styledComponentCSSRulesMap,
+    );
+    const cssRules = styleComponentElement.sheet!.cssRules;
+    expect(cssRules.length).toEqual(2);
+    expect((cssRules![0] as CSSStyleRule).selectorText).toEqual('.app .test2');
+    expect((cssRules![1] as CSSStyleRule).selectorText).toEqual('.app .test1');
+    oldSheet!.insertRule('.test3 {}', 2);
+    expect((cssRules![2] as CSSStyleRule).selectorText).toEqual('.app .test3');
   });
 });
