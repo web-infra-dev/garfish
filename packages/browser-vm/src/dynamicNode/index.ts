@@ -143,35 +143,20 @@ export function rebuildCSSRules(
   >,
 ) {
   dynamicStyleSheetElementSet.forEach((styleElement) => {
-    const data = styledComponentCSSRulesMap.get(styleElement);
-    // cssRuleList will be overwritten when we access the new sheet, backup here
-    const { cssRuleList, addingRules } = data ?? {};
+    const rules = styledComponentCSSRulesMap.get(styleElement);
 
-    if (data && (isStyledComponentsLike(styleElement) || cssRuleList?.length)) {
+    if (rules && (isStyledComponentsLike(styleElement) || rules.length)) {
       const realSheet = Reflect.get(
         HTMLStyleElement.prototype,
         'sheet',
         styleElement,
       );
       if (realSheet) {
-        for (let i = 0; i < cssRuleList!.length; i++) {
-          const cssRule = cssRuleList![i];
+        for (let i = 0; i < rules.length; i++) {
+          const cssRule = rules[i];
           // re-insert rules for styled-components element
           // use realSheet to skip transforming
-          realSheet.insertRule(cssRule.cssText, realSheet.cssRules.length);
-        }
-        if (addingRules) {
-          for (const rule of addingRules) {
-            // rules added when the app was hidden in cache mode.
-            // with transforming
-            styleElement.sheet!.insertRule(
-              rule,
-              styleElement.sheet!.cssRules.length,
-            );
-          }
-          while (addingRules.length) {
-            addingRules.pop();
-          }
+          realSheet.insertRule(cssRule, i);
         }
       }
     }

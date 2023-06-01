@@ -111,13 +111,9 @@ describe('Sandbox: dynamic style', () => {
   it('should record the css rules of styled-components correctly', () => {
     const styleComponentElement = createStyleComponentElementWithRecord();
     const data = sandbox.styledComponentCSSRulesMap.get(styleComponentElement);
-    expect(data!.cssRuleList!.length).toEqual(2);
-    expect((data!.cssRuleList![0] as CSSStyleRule).selectorText).toEqual(
-      '.app .test2',
-    );
-    expect((data!.cssRuleList![1] as CSSStyleRule).selectorText).toEqual(
-      '.app .test1',
-    );
+    expect(data!.length).toEqual(2);
+    expect(data![0].split(' {')[0]).toEqual('.app .test2');
+    expect(data![1].split(' {')[0]).toEqual('.app .test1');
   });
 
   it('should rebuild the css rules of styled-components in the correct order', () => {

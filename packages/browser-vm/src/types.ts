@@ -37,7 +37,4 @@ export interface SandboxOptions {
   insulationVariable?: () => Array<PropertyKey>;
 }
 
-export interface StyledComponentCSSRulesData {
-  cssRuleList: CSSRuleList | undefined;
-  addingRules: string[];
-}
+export type StyledComponentCSSRulesData = Array<string>;

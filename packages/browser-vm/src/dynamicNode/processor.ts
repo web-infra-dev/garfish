@@ -16,6 +16,7 @@ import {
 } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
 import { rootElm, LockQueue } from '../utils';
+import { StyledComponentCSSRulesData } from '../types';
 
 const isInsertMethod = makeMap(['insertBefore', 'insertAdjacentElement']);
 
@@ -262,22 +263,9 @@ export class DynamicNodeProcessor {
     mutator.observe(this.el, { childList: true });
 
     // Handle `sheet.cssRules` (styled-components)
-    let sheetSaved: CSSStyleSheet | null = null;
     let fakeSheet: any = null;
     Reflect.defineProperty(this.el, 'sheet', {
       get: () => {
-        const sheet = Reflect.get(HTMLStyleElement.prototype, 'sheet', this.el);
-        if (sheet && sheetSaved !== sheet) {
-          // We haven't saved the sheet or the sheet is now another instance
-          sheetSaved = sheet;
-
-          // Record the cssRules instance, so we can restore it on app remount.
-          // Not doing this on unmount, because the user may detach the app DOM
-          // before trigger the unmount hooks and we can't get the cssRules
-          // after detaching.
-          this.getStyledComponentCSSRulesData().cssRuleList = sheet.cssRules;
-        }
-
         // styled-components only get the `sheet` once, and keep the first
         // instance in their state. But the `sheet` will be actually replaced
         // with another instance after remount.
@@ -453,18 +441,6 @@ export class DynamicNodeProcessor {
     return originProcess();
   }
 
-  private getStyledComponentCSSRulesData() {
-    let rulesData = this.sandbox.styledComponentCSSRulesMap.get(this.el);
-    if (!rulesData) {
-      rulesData = {
-        cssRuleList: undefined,
-        addingRules: [],
-      };
-      this.sandbox.styledComponentCSSRulesMap.set(this.el, rulesData);
-    }
-    return rulesData;
-  }
-
   private getRealSheet() {
     return Reflect.get(HTMLStyleElement.prototype, 'sheet', this.el);
   }
@@ -472,29 +448,30 @@ export class DynamicNodeProcessor {
   private createFakeSheet(
     styleTransformer: (css: string | null) => string | null,
   ) {
-    const rulesData = this.getStyledComponentCSSRulesData();
     const processor = this;
+    const rulesData: StyledComponentCSSRulesData = [];
+    this.sandbox.styledComponentCSSRulesMap.set(this.el, rulesData);
+
     const fakeSheet = {
       get cssRules() {
         const realSheet = processor.getRealSheet();
-        return realSheet?.cssRules ?? rulesData.addingRules;
+        return realSheet?.cssRules ?? [];
       },
       insertRule(rule: string, index?: number) {
         const realSheet = processor.getRealSheet();
+        const transformed = styleTransformer(rule)!;
         if (realSheet) {
-          return realSheet.insertRule(styleTransformer(rule)!, index);
-        } else {
-          rulesData!.addingRules.splice(index || 0, 0, rule);
-          return index || 0;
+          realSheet.insertRule(transformed, index);
         }
+        rulesData.splice(index || 0, 0, transformed);
+        return index || 0;
       },
       deleteRule(index: number) {
         const realSheet = processor.getRealSheet();
         if (realSheet) {
           realSheet.deleteRule(index);
-        } else {
-          rulesData!.addingRules.splice(index || 0, 1);
         }
+        rulesData.splice(index, 1);
       },
     };
     return fakeSheet;
