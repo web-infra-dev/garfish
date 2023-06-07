@@ -3,7 +3,7 @@ import { __domWrapper__ } from '../symbolTypes';
 import { injectHandlerParams } from './processParams';
 import { DynamicNodeProcessor, rawElementMethods } from './processor';
 import { isInIframe, sandboxMap, isStyledComponentsLike } from '../utils';
-import { SandboxOptions } from '../types';
+import { SandboxOptions, StyledComponentCSSRulesData } from '../types';
 
 const mountElementMethods = [
   'append',
@@ -137,31 +137,29 @@ export function makeElInjector(sandboxConfig: SandboxOptions) {
   injectHandlerParams();
 }
 
-export function recordStyledComponentCSSRules(
-  dynamicStyleSheetElementSet: Set<HTMLStyleElement>,
-  styledComponentCSSRulesMap: WeakMap<HTMLStyleElement, CSSRuleList>,
-) {
-  dynamicStyleSheetElementSet.forEach((styleElement) => {
-    if (isStyledComponentsLike(styleElement) && styleElement.sheet) {
-      styledComponentCSSRulesMap.set(styleElement, styleElement.sheet.cssRules);
-    }
-  });
-}
-
 export function rebuildCSSRules(
   dynamicStyleSheetElementSet: Set<HTMLStyleElement>,
-  styledComponentCSSRulesMap: WeakMap<HTMLStyleElement, CSSRuleList>,
+  styledComponentCSSRulesMap: WeakMap<
+    HTMLStyleElement,
+    StyledComponentCSSRulesData
+  >,
 ) {
   dynamicStyleSheetElementSet.forEach((styleElement) => {
-    const cssRules = styledComponentCSSRulesMap.get(styleElement);
-    if (cssRules && (isStyledComponentsLike(styleElement) || cssRules.length)) {
-      for (let i = 0; i < cssRules.length; i++) {
-        const cssRule = cssRules[i];
-        // re-insert rules for styled-components element
-        styleElement.sheet?.insertRule(
-          cssRule.cssText,
-          styleElement.sheet?.cssRules.length,
-        );
+    const rules = styledComponentCSSRulesMap.get(styleElement);
+
+    if (rules && (isStyledComponentsLike(styleElement) || rules.length)) {
+      const realSheet = Reflect.get(
+        HTMLStyleElement.prototype,
+        'sheet',
+        styleElement,
+      );
+      if (realSheet) {
+        for (let i = 0; i < rules.length; i++) {
+          const cssRule = rules[i];
+          // re-insert rules for styled-components element
+          // use realSheet to skip transforming
+          realSheet.insertRule(cssRule, i);
+        }
       }
     }
   });

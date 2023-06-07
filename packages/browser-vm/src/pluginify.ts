@@ -2,7 +2,7 @@ import { interfaces } from '@garfish/core';
 import { warn, isPlainObject } from '@garfish/utils';
 import { Module } from './types';
 import { Sandbox } from './sandbox';
-import { recordStyledComponentCSSRules, rebuildCSSRules } from './dynamicNode';
+import { rebuildCSSRules } from './dynamicNode';
 
 declare module '@garfish/core' {
   export default interface Garfish {
@@ -145,15 +145,6 @@ function createOptions(Garfish: interfaces.Garfish) {
           },
         }),
       );
-    },
-
-    beforeUnmount(appInfo, appInstance) {
-      if (appInstance.vmSandbox) {
-        recordStyledComponentCSSRules(
-          appInstance.vmSandbox.dynamicStyleSheetElementSet,
-          appInstance.vmSandbox.styledComponentCSSRulesMap,
-        );
-      }
     },
 
     // If the app is uninstalled, the sandbox needs to clear all effects and then reset

@@ -15,7 +15,8 @@ import {
   __REMOVE_NODE__,
 } from '@garfish/utils';
 import { Sandbox } from '../sandbox';
-import { rootElm, isStyledComponentsLike, LockQueue } from '../utils';
+import { rootElm, LockQueue } from '../utils';
+import { StyledComponentCSSRulesData } from '../types';
 
 const isInsertMethod = makeMap(['insertBefore', 'insertAdjacentElement']);
 
@@ -252,26 +253,34 @@ export class DynamicNodeProcessor {
     };
 
     const mutator = new MutationObserver((mutations) => {
-      for (const { type, target, addedNodes } of mutations) {
+      for (const { type, addedNodes } of mutations) {
         if (type === 'childList') {
-          const el = target as HTMLStyleElement;
-          if (isStyledComponentsLike(el) && el.sheet) {
-            const originAddRule = el.sheet.insertRule;
-            el.sheet.insertRule = function () {
-              arguments[0] = modifyStyleCode(arguments[0]);
-              return originAddRule.apply(this, arguments);
-            };
-          } else {
-            if (addedNodes[0]?.textContent) {
-              addedNodes[0].textContent = modifyStyleCode(
-                addedNodes[0].textContent,
-              );
-            }
+          if (addedNodes[0]?.textContent) {
+            addedNodes[0].textContent = modifyStyleCode(
+              addedNodes[0].textContent,
+            );
           }
         }
       }
     });
     mutator.observe(this.el, { childList: true });
+
+    // Handle `sheet.cssRules` (styled-components)
+    let fakeSheet: any = null;
+    Reflect.defineProperty(this.el, 'sheet', {
+      get: () => {
+        // styled-components only get the `sheet` once, and keep the first
+        // instance in their state. But the `sheet` will be actually replaced
+        // with another instance after remount.
+        // To make insertRule() after remount possible, we return a fake sheet
+        // here and passthrough operations to the latest real `sheet`.
+        if (!fakeSheet) {
+          fakeSheet = this.createFakeSheet(modifyStyleCode);
+        }
+        return fakeSheet;
+      },
+      configurable: true,
+    });
   }
 
   private findParentNodeInApp(parentNode: Element, defaultInsert?: string) {
@@ -432,7 +441,42 @@ export class DynamicNodeProcessor {
         return this.nativeRemove.call(parentNode, this.el);
       }
     }
-
     return originProcess();
+  }
+
+  private getRealSheet() {
+    return Reflect.get(HTMLStyleElement.prototype, 'sheet', this.el);
+  }
+
+  private createFakeSheet(
+    styleTransformer: (css: string | null) => string | null,
+  ) {
+    const processor = this;
+    const rulesData: StyledComponentCSSRulesData = [];
+    this.sandbox.styledComponentCSSRulesMap.set(this.el, rulesData);
+
+    const fakeSheet = {
+      get cssRules() {
+        const realSheet = processor.getRealSheet();
+        return realSheet?.cssRules ?? [];
+      },
+      insertRule(rule: string, index?: number) {
+        const realSheet = processor.getRealSheet();
+        const transformed = styleTransformer(rule)!;
+        if (realSheet) {
+          realSheet.insertRule(transformed, index);
+        }
+        rulesData.splice(index || 0, 0, transformed);
+        return index || 0;
+      },
+      deleteRule(index: number) {
+        const realSheet = processor.getRealSheet();
+        if (realSheet) {
+          realSheet.deleteRule(index);
+        }
+        rulesData.splice(index, 1);
+      },
+    };
+    return fakeSheet;
   }
 }

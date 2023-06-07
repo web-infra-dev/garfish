@@ -38,3 +38,5 @@ export interface SandboxOptions {
   protectVariable?: () => Array<PropertyKey>;
   insulationVariable?: () => Array<PropertyKey>;
 }
+
+export type StyledComponentCSSRulesData = Array<string>;

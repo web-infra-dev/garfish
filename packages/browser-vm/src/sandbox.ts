@@ -23,7 +23,12 @@ import { makeElInjector } from './dynamicNode';
 import { sandboxLifecycle } from './lifecycle';
 import { optimizeMethods, createFakeObject, sandboxMap } from './utils';
 import { __garfishGlobal__, GARFISH_OPTIMIZE_NAME } from './symbolTypes';
-import { Module, SandboxOptions, ReplaceGlobalVariables } from './types';
+import {
+  Module,
+  SandboxOptions,
+  ReplaceGlobalVariables,
+  StyledComponentCSSRulesData,
+} from './types';
 import {
   createHas,
   createGetter,
@@ -76,7 +81,7 @@ export class Sandbox {
   public dynamicStyleSheetElementSet = new Set<HTMLStyleElement>();
   public styledComponentCSSRulesMap = new WeakMap<
     HTMLStyleElement,
-    CSSRuleList
+    StyledComponentCSSRulesData
   >();
 
   private optimizeCode = ''; // To optimize the with statement
