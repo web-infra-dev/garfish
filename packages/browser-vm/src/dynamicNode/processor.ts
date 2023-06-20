@@ -97,7 +97,6 @@ export class DynamicNodeProcessor {
         const fetchUrl = baseUrl ? transformUrl(baseUrl, href) : href;
         // add lock to make sure render link node in order
         const lockId = DynamicNodeProcessor.linkLock.genId();
-        console.log('addDynamicLinkNode', href, lockId);
         this.sandbox.loader
           .load<StyleManager>({
             scope: namespace,
@@ -105,10 +104,8 @@ export class DynamicNodeProcessor {
             defaultContentType: type,
           })
           .then(async ({ resourceManager: styleManager }) => {
-            console.log('res', href, lockId);
             await DynamicNodeProcessor.linkLock.wait(lockId);
 
-            console.log('result', href, lockId);
             if (styleManager) {
               styleManager.correctPath();
               if (styleScopeId) {
