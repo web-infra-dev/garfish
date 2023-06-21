@@ -97,7 +97,6 @@ export class DynamicNodeProcessor {
         const fetchUrl = baseUrl ? transformUrl(baseUrl, href) : href;
         // add lock to make sure render link node in order
         const lockId = DynamicNodeProcessor.linkLock.genId();
-        console.log('addDynamicLinkNode', href, lockId);
         this.sandbox.loader
           .load<StyleManager>({
             scope: namespace,
@@ -105,7 +104,6 @@ export class DynamicNodeProcessor {
             defaultContentType: type,
           })
           .then(async ({ resourceManager: styleManager }) => {
-            console.log('res', href, lockId);
             await DynamicNodeProcessor.linkLock.wait(lockId);
 
             if (styleManager) {
@@ -123,7 +121,6 @@ export class DynamicNodeProcessor {
               );
             }
             this.dispatchEvent('load');
-            console.log('result', href, lockId);
             DynamicNodeProcessor.linkLock.release(lockId);
           })
           .catch((e) => {
@@ -360,7 +357,6 @@ export class DynamicNodeProcessor {
       parentNode = this.findParentNodeInApp(context, 'head');
       if (this.el.rel === 'stylesheet' && this.el.href) {
         convertedNode = this.addDynamicLinkNode((styleNode) => {
-          console.log('apendChild', this.el.href);
           this.nativeAppend.call(parentNode, styleNode);
         });
       } else {
