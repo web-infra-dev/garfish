@@ -164,14 +164,8 @@ export function microTaskHtmlProxyDocument(proxyDocument) {
 
 export function isStyledComponentsLike(element: HTMLStyleElement) {
   // A styled-components liked element has no textContent but keep the rules in its sheet.cssRules.
-  return (
-    element instanceof HTMLStyleElement &&
-    !element.textContent
-  );
+  return element instanceof HTMLStyleElement && !element.textContent;
 }
-
-
-
 
 interface LockItem {
   id: number;
@@ -186,22 +180,23 @@ interface LockItem {
 export class LockQueue {
   private id = 0;
   private lockQueue: LockItem[] = [];
+  private currentId = 0;
 
   genId() {
     const lockId = this.id;
 
     // This lock should wait for the other lock
     let promiseResolve: LockItem['resolve'] = () => {};
-    const waiting = new Promise<void>(resolve => {
+    const waiting = new Promise<void>((resolve) => {
       promiseResolve = resolve;
+      this.currentId++;
     });
     // create a new lock
     const lockItem = {
       id: lockId,
       waiting,
-      resolve: ()=>{
+      resolve: () => {
         promiseResolve();
-        this.next();
       },
     };
     this.lockQueue.push(lockItem);
@@ -218,35 +213,34 @@ export class LockQueue {
     const firstLock = lockQueue[0];
 
     // This lock is processing, just return and remove immediately
-    if (firstLock?.id === id) {
-      this.lockQueue.shift();
-      this.next();
-      return;
-    };
 
     // This lock should wait for the other lock
-    let lockItem = lockQueue.find(item => item.id === id);
+    const lockItem = lockQueue.find((item) => item.id === id);
+    const lockIndex = lockQueue.findIndex((item) => item.id === id);
+
+    if (firstLock.id === id) {
+      lockItem?.resolve();
+      return;
+    }
 
     if (lockItem) {
       // start waiting
-      await lockItem.waiting;
+      await Promise.all(
+        lockQueue.slice(0, lockIndex).map((item) => item.waiting),
+      );
+      const lastLock = lockQueue[lockQueue.length - 1];
+      // 最后一个结束后清除列表
+      if (lastLock.id === id) {
+        this.clear();
+      }
     }
   }
 
-  release(id:number) {
+  release(id: number) {
     const { lockQueue } = this;
 
-    const findIndex = lockQueue.findIndex(item => item.id === id);
-    lockQueue.splice(findIndex, 1);
-    if (findIndex===0){
-      this.next();
-    }
-  }
-
-  next(){
-    // exec the first lock
-    const firstLock = this.lockQueue.shift();
-    firstLock && firstLock.resolve();
+    const lockItem = lockQueue.find((item) => item.id === id);
+    lockItem?.resolve();
   }
 
   clear() {

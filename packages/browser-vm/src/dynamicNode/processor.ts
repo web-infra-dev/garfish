@@ -91,7 +91,6 @@ export class DynamicNodeProcessor {
   // Load dynamic link node
   private addDynamicLinkNode(callback: (styleNode: HTMLStyleElement) => void) {
     const { href, type } = this.el;
-
     if (!type || isCssType({ src: href, type })) {
       if (href) {
         const { baseUrl, namespace, styleScopeId } = this.sandbox.options;
@@ -106,6 +105,7 @@ export class DynamicNodeProcessor {
           })
           .then(async ({ resourceManager: styleManager }) => {
             await DynamicNodeProcessor.linkLock.wait(lockId);
+
             if (styleManager) {
               styleManager.correctPath();
               if (styleScopeId) {
@@ -121,6 +121,7 @@ export class DynamicNodeProcessor {
               );
             }
             this.dispatchEvent('load');
+            DynamicNodeProcessor.linkLock.release(lockId);
           })
           .catch((e) => {
             DynamicNodeProcessor.linkLock.release(lockId);
@@ -355,9 +356,9 @@ export class DynamicNodeProcessor {
     else if (this.is('link')) {
       parentNode = this.findParentNodeInApp(context, 'head');
       if (this.el.rel === 'stylesheet' && this.el.href) {
-        convertedNode = this.addDynamicLinkNode((styleNode) =>
-          this.nativeAppend.call(parentNode, styleNode),
-        );
+        convertedNode = this.addDynamicLinkNode((styleNode) => {
+          this.nativeAppend.call(parentNode, styleNode);
+        });
       } else {
         convertedNode = this.el;
         this.monitorChangesOfLinkNode();
