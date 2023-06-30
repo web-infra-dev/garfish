@@ -243,7 +243,7 @@ export function isPrimitive(val: any) {
     typeof val === 'bigint' ||
     typeof val === 'symbol' ||
     typeof val === 'boolean' ||
-    typeof val === 'undefined' || 
+    typeof val === 'undefined' ||
     objectToString.call(val) === '[object RegExp]'
   );
 }
@@ -410,6 +410,10 @@ export function setDocCurrentScript(
 
   if (!url && code) {
     el.textContent = code;
+  }
+
+  if (url) {
+    el.src = url;
   }
 
   originScript &&
