@@ -130,6 +130,7 @@ function createOptions(Garfish: interfaces.Garfish) {
           fixStaticResourceBaseUrl: Boolean(
             appInfo.sandbox?.fixStaticResourceBaseUrl,
           ),
+          fixOwnerDocument: Boolean(appInfo.sandbox?.fixOwnerDocument),
           disableWith: Boolean(appInfo.sandbox?.disableWith),
           disableElementtiming: Boolean(appInfo.sandbox?.disableElementtiming),
           strictIsolation: Boolean(appInfo.sandbox?.strictIsolation),
