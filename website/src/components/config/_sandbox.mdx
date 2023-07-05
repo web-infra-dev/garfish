@@ -18,6 +18,8 @@ interface SandboxConfig {
   modules?: Array<Module> | Record<string, Module>;
   // disableElementtiming 1.14.4 版本提供，默认值为 false，将会给子应用元素注入 elementtiming 属性，可以通过此属性获取子应用元素的加载时间
   disableElementtiming?: boolean;
+  // fixOwnerDocument 1.17.0 版本提供，默认值为 false，sandbox 在针对 Element 的 ownerDocument 会发生逃逸，fixOwnerDocument 设置为 true 会避免逃逸
+  fixOwnerDocument?: boolean;
 }
 
 type Module = (sandbox: Sandbox) => OverridesData | void;
