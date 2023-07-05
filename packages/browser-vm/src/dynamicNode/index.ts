@@ -114,7 +114,8 @@ export function makeElInjector(sandboxConfig: SandboxOptions) {
 
   if (typeof window.Element === 'function') {
     // iframe can read html container this can't point to proxyDocument has Illegal invocation error
-    if (sandboxConfig.fixBaseUrl) safeWrapper(() => handleOwnerDocument());
+    if (sandboxConfig.fixOwnerDocument)
+      safeWrapper(() => handleOwnerDocument());
     const rewrite = (
       methods: Array<string>,
       builder: typeof injector | typeof injectorRemoveChild,

@@ -81,6 +81,7 @@ export namespace interfaces {
     disableWith?: boolean;
     strictIsolation?: boolean;
     disableElementtiming?: boolean;
+    fixOwnerDocument?: boolean;
   }
 
   export interface Config {

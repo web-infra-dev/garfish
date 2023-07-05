@@ -23,6 +23,7 @@ export interface SandboxOptions {
   baseUrl?: string;
   fixBaseUrl?: boolean;
   fixStaticResourceBaseUrl?: boolean;
+  fixOwnerDocument?: boolean;
   disableWith?: boolean;
   strictIsolation?: boolean;
   disableElementtiming?: boolean;
