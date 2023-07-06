@@ -21,6 +21,7 @@ describe('whole process vm sandbox set variable', () => {
         sandbox: {
           snapshot: false,
           fixBaseUrl: true,
+          fixOwnerDocument: true,
         },
       },
     });
@@ -70,12 +71,12 @@ describe('whole process vm sandbox set variable', () => {
       cy.contains('[data-test=title]', ProxyVariableTitle).then(() => {
         expect(
           win.document
-            .querySelector('[data-test=iframe-pre-fix]')
+            .querySelector('[data-test=iframe-pre-fix-16]')
             .getAttribute('src'),
         ).to.equal(`http:${getPublicPath('dev/react16')}iframe`);
         expect(
           win.document
-            .querySelector('[data-test=img-pre-fix]')
+            .querySelector('[data-test=img-pre-fix-16]')
             .getAttribute('src'),
         ).to.equal(`http:${getPublicPath('dev/react16')}img`);
       });
