@@ -18,6 +18,7 @@ describe('whole process vm sandbox set variable', () => {
         disablePreloadApp: true,
         sandbox: {
           snapshot: false,
+          fixStaticResourceBaseUrl: true,
         },
         protectVariable: ['dynamicScriptOnloadTag', 'dynamicScriptOnerrorTag'],
       },

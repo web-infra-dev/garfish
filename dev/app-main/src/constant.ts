@@ -15,9 +15,6 @@ export const localApps: AppInfo = [
     // 每个应用的 name 需要保持唯一
     name: 'react17',
     activeWhen: '/react17',
-    sandbox: {
-      fixStaticResourceBaseUrl: false,
-    },
     // 子应用的入口地址，可以为 HTML 地址和 JS 地址
     // 注意：entry 地址不可以与主应用+子应用激活地址相同，否则刷新时将会直接返回子应用内容
     entry: getProxyHost('dev/react17'),
