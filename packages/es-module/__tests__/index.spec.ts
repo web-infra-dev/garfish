@@ -34,6 +34,10 @@ describe('es module', () => {
     await _import_('./case/exportNamespace/m1.js');
   });
 
+  it('export all', async () => {
+    await _import_('./case/exportAll/m1.js');
+  });
+
   it('import meta', async () => {
     await _import_('./case/importMeta/m1.js');
   });
