@@ -604,9 +604,14 @@ export class Compiler {
     );
 
     return {
-      generateCode: () => this.generateCode(),
-      exports: this.exportInfos.map((v) => v.name),
       imports: this.importInfos.map((v) => v.data),
+      generateCode: async () => {
+        const output = await this.generateCode();
+        (output as ModuleResource).exports = this.exportInfos.map(
+          (v) => v.name,
+        );
+        return output;
+      },
     };
   }
 }
