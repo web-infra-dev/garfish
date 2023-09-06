@@ -38,5 +38,6 @@ export function copyResult(result) {
 export function mergeConfig(loader: Loader, url: string) {
   const extra = loader.requestConfig;
   const config = typeof extra === 'function' ? extra(url) : extra;
-  return { mode: 'cors', ...config } as RequestInit;
+  const mode: RequestMode = 'cors';
+  return { mode, ...config };
 }

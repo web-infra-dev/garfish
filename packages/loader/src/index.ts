@@ -87,7 +87,7 @@ export class Loader {
     beforeLoad: new SyncWaterfallHook<{
       url: string;
       scope: string;
-      requestConfig: ResponseInit;
+      requestConfig: RequestInit;
     }>('beforeLoad'),
     fetch: new AsyncHook<[string, RequestInit], Response | void | false>(
       'fetch',
