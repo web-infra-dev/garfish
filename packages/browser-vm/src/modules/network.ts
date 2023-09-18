@@ -22,33 +22,31 @@ export function networkModule(sandbox: Sandbox) {
     constructor() {
       super();
       xhrSet.add(this);
-    }
 
-    open() {
-      // Async request
-      if (arguments[2] === false) {
+      const open = this.open;
+      const abort = this.abort;
+      this.open = function () {
+        if (arguments[2] === false) {
+          xhrSet.delete(this);
+        }
+        if (needFix(arguments[1])) {
+          arguments[1] = baseUrl
+            ? transformUrl(baseUrl, arguments[1])
+            : arguments[1];
+        }
+        const url = arguments[1];
+        if (sandbox.options.addSourceList) {
+          sandbox.options.addSourceList({
+            tagName: 'xmlhttprequest',
+            url,
+          });
+        }
+        return open.apply(this, arguments);
+      };
+      this.abort = function () {
         xhrSet.delete(this);
-      }
-      if (needFix(arguments[1])) {
-        arguments[1] = baseUrl
-          ? transformUrl(baseUrl, arguments[1])
-          : arguments[1];
-      }
-
-      const url = arguments[1];
-
-      if (sandbox.options.addSourceList) {
-        sandbox.options.addSourceList({
-          tagName: 'xmlhttprequest',
-          url,
-        });
-      }
-      return super.open.apply(this, arguments);
-    }
-
-    abort() {
-      xhrSet.delete(this);
-      return super.abort.apply(this, arguments);
+        return abort.apply(this, arguments);
+      };
     }
   }
 
@@ -60,11 +58,11 @@ export function networkModule(sandbox: Sandbox) {
       }
       super(url, protocols);
       wsSet.add(this);
-    }
-
-    close() {
-      wsSet.delete(this);
-      return super.close.apply(this, arguments);
+      const close = this.close;
+      this.close = function () {
+        wsSet.delete(this);
+        return close.apply(this, arguments);
+      };
     }
   }
 
