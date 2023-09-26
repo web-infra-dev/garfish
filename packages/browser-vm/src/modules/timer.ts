@@ -1,14 +1,18 @@
+import { Sandbox } from '../sandbox';
 const rawSetTimeout = window.setTimeout;
 const rawClearTimeout = window.clearTimeout;
 const rawSetInterval = window.setInterval;
 const rawClearInterval = window.clearInterval;
 
-export const timeoutModule = () => {
+export const timeoutModule = (sandbox: Sandbox) => {
   const timeout = new Set<number>();
 
   const setTimeout = (handler: TimerHandler, ms?: number, ...args: any[]) => {
     const timeoutId = rawSetTimeout(handler, ms, ...args);
-    timeout.add(timeoutId);
+   
+    if (!sandbox.options.disableCollect) {
+      timeout.add(timeoutId);
+    }
     return timeoutId;
   };
 
@@ -32,7 +36,7 @@ export const timeoutModule = () => {
   };
 };
 
-export const intervalModule = () => {
+export const intervalModule = (sandbox: Sandbox) => {
   const timeout = new Set<number>();
 
   const setInterval = (
@@ -41,7 +45,10 @@ export const intervalModule = () => {
     ...args: any[]
   ) => {
     const intervalId = rawSetInterval(callback, ms, ...args);
-    timeout.add(intervalId);
+   
+    if (!sandbox.options.disableCollect) {
+      timeout.add(intervalId);
+    }
     return intervalId;
   };
 

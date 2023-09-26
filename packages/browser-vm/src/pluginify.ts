@@ -133,7 +133,8 @@ function createOptions(Garfish: interfaces.Garfish) {
           disableWith: Boolean(appInfo.sandbox?.disableWith),
           disableElementtiming: Boolean(appInfo.sandbox?.disableElementtiming),
           strictIsolation: Boolean(appInfo.sandbox?.strictIsolation),
-
+          // 缓存模式，不收集副作用
+          disableCollect: Boolean(appInfo.cache || true),
           el: () => appInstance.htmlNode,
           styleScopeId: () => appInstance.appContainer.id,
           protectVariable: () => appInfo.protectVariable || [],

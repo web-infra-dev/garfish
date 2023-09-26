@@ -97,6 +97,7 @@ export class Sandbox {
       fixStaticResourceBaseUrl: true,
       disableWith: false,
       strictIsolation: false,
+      disableCollect: false,
       el: () => null,
       styleScopeId: () => '',
       protectVariable: () => [],

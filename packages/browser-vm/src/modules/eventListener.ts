@@ -15,8 +15,11 @@ export function listenerModule(_sandbox: Sandbox) {
     listener: Listener,
     options?: Opts,
   ) {
+   
     const curListeners = listeners.get(type) || [];
-    listeners.set(type, [...curListeners, listener]);
+    if (!_sandbox.options.disableCollect) {
+      listeners.set(type, [...curListeners, listener]);
+    }
 
     // This has been revised
     rawAddEventListener.call(
@@ -43,7 +46,9 @@ export function listenerModule(_sandbox: Sandbox) {
     if (idx !== -1) {
       curListeners.splice(idx, 1);
     }
-    listeners.set(type, [...curListeners]);
+    if (!_sandbox.options.disableCollect) {
+      listeners.set(type, [...curListeners]);
+    }
     rawRemoveEventListener.call(this, type, listener, options);
   }
 

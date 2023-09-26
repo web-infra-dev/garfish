@@ -17,16 +17,19 @@ export function networkModule(sandbox: Sandbox) {
     baseUrl &&
     typeof url === 'string' &&
     !isAbsolute(url);
-
   class fakeXMLHttpRequest extends XMLHttpRequest {
     constructor() {
       super();
-      xhrSet.add(this);
+      if (!sandbox.options.disableCollect) {
+        xhrSet.add(this);
+      }
     }
 
     open() {
-      // Async request
-      xhrSet.delete(this);
+      // sync request 
+      if (arguments[2] === false) {
+        xhrSet.delete(this);
+      }
       if (needFix(arguments[1])) {
         arguments[1] = baseUrl
           ? transformUrl(baseUrl, arguments[1])
@@ -57,7 +60,9 @@ export function networkModule(sandbox: Sandbox) {
         url = transformUrl(baseWsUrl, arguments[1]);
       }
       super(url, protocols);
-      wsSet.add(this);
+      if (!sandbox.options.disableCollect) {
+        wsSet.add(this);
+      }
     }
 
     close() {
@@ -80,7 +85,9 @@ export function networkModule(sandbox: Sandbox) {
     let controller;
     if (!hasOwn(options, 'signal') && window.AbortController) {
       controller = new window.AbortController();
-      fetchSet.add(controller);
+      if (!sandbox.options.disableCollect) {
+        fetchSet.add(controller);
+      }
       options.signal = controller.signal;
     }
     const result = window.fetch(input, options);
