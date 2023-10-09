@@ -6,7 +6,9 @@ export function observerModule(_sandbox: Sandbox) {
   class ProxyMutationObserver extends MutationObserver {
     constructor(cb: MutationCallback) {
       super(cb);
-      observerSet.add(this);
+      if (!_sandbox.options.disableCollect) {
+        observerSet.add(this);
+      }
     }
   }
 
