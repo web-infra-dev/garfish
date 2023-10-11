@@ -4,7 +4,7 @@ slug: /issues
 order: 1
 ---
 
-import WebpackConfig from '@site/src/components/config/_webpackConfig.mdx';
+import WebpackConfig from '@site/src/components/config/\_webpackConfig.mdx';
 
 ## "provider" is "null".
 
@@ -79,20 +79,22 @@ Garfish.run({
 
 ## HTML entry 和 JS entry 差异
 
-* HTML entry
-  * 指的是子应用配置的资源地址是 HTML 的地址
-  * 指定子应用的 entry 地址为 HTML 地址，支持像 iframe 一样的能力，将对应的子应用渲染至当前应用中
-  * HTML entry 模式的作用设计的初衷，解决子应用：**独立开发**、**独立测试** 的能力
+- HTML entry
 
-* JS entry
-  * 指的是子应用配置的资源地址就是一个 JS 地址
+  - 指的是子应用配置的资源地址是 HTML 的地址
+  - 指定子应用的 entry 地址为 HTML 地址，支持像 iframe 一样的能力，将对应的子应用渲染至当前应用中
+  - HTML entry 模式的作用设计的初衷，解决子应用：**独立开发**、**独立测试** 的能力
 
-* 二者在使用层面上的差异
-  * 在作为 `html entry` 时，子应用的挂载点需要基于传入的 `dom` 节点进行选中挂载点
-  * 因为在 `html entry` 时，其实类似于 `iframe` 的模式，子应用在独立运行时的所有 `dom` 结构都会被挂到主应用的文档流上（整个文档流会挂载在当前 html 上）
-  * 所以子应用在渲染时需要根据子应用的 `dom` 结构去找他的挂载点。
+- JS entry
 
-- HTML entry 正确渲染销毁写法
+  - 指的是子应用配置的资源地址就是一个 JS 地址
+
+- 二者在使用层面上的差异
+  - 在作为 `html entry` 时，子应用的挂载点需要基于传入的 `dom` 节点进行选中挂载点
+  - 因为在 `html entry` 时，其实类似于 `iframe` 的模式，子应用在独立运行时的所有 `dom` 结构都会被挂到主应用的文档流上（整个文档流会挂载在当前 html 上）
+  - 所以子应用在渲染时需要根据子应用的 `dom` 结构去找他的挂载点。
+
+* HTML entry 正确渲染销毁写法
 
 ```js {6}
 export const provider = () => {
@@ -103,22 +105,23 @@ export const provider = () => {
         dom.querySelector('#root'), // 基于 dom 去选中文档流中的 #root，就和在独立运行时使用 document.querySelector('#root') 一样
       );
     },
-    destroy({ dom }) { // 此外，destroy 应该正确的执行
+    destroy({ dom }) {
+      // 此外，destroy 应该正确的执行
       const root = dom && dom.querySelector('#root');
       if (root) {
         ReactDOM.unmountComponentAtNode(root);
       }
     },
-  }
-}
+  };
+};
 ```
 
 - JS entry 正确渲染销毁写法
 
 ```js
-export const provider = ({ dom , basename}) => ({
-  render(){
-  	ReactDOM.render(<App basename={basename} />, dom); // 作为 js entry 时，没有自己的文档流，只有提供的渲染节点
+export const provider = ({ dom, basename }) => ({
+  render() {
+    ReactDOM.render(<App basename={basename} />, dom); // 作为 js entry 时，没有自己的文档流，只有提供的渲染节点
   },
 
   destroy({ dom }) {
@@ -126,6 +129,7 @@ export const provider = ({ dom , basename}) => ({
   },
 });
 ```
+
 ## garfish 支持多实例吗
 
 支持。
@@ -133,18 +137,19 @@ export const provider = ({ dom , basename}) => ({
 目前 garfish 支持多实例场景，业务使用场景可分为 「非嵌套场景」 和 「嵌套场景」：
 
 - 非嵌套场景下
-+ 非嵌套场景下，子应用请勿在安装引入 Garfish 包，并导入使用。
-+ 子应用如果想要在微前端场景下使用 Garfish 包的相关能力，可判断在微前端环境内时，通过 `window.Garfish` 使用相关接口。
+
+* 非嵌套场景下，子应用请勿在安装引入 Garfish 包，并导入使用。
+* 子应用如果想要在微前端场景下使用 Garfish 包的相关能力，可判断在微前端环境内时，通过 `window.Garfish` 使用相关接口。
 
 ```js
 if (window.__GARFISH__) {
-  window.Garfish.xx
+  window.Garfish.xx;
 }
 ```
 
 - 嵌套场景
-+ Garfish 目前内部的设计都支持嵌套场景，如果业务对这一块有诉求可以使用，协助我们一起推进在嵌套场景下的能力。
 
+* Garfish 目前内部的设计都支持嵌套场景，如果业务对这一块有诉求可以使用，协助我们一起推进在嵌套场景下的能力。
 
 ## 子应用销毁后重定向逻辑影响其他子应用
 
@@ -294,7 +299,9 @@ export default () => (
   </ConfigProvider>
 );
 ```
+
 ## 子应用热更新问题
+
 garfish 子应用热更新问题请参考 [博客](/blog/hmr)
 
 ## 如何独立运行子应用
@@ -312,25 +319,29 @@ if (!window.__GARFISH__) {
   ReactDOM.render(<App />, document.querySelector('#root'));
 }
 ```
+
 ## 已有 `SPA` 应用如何改造为 garfish 子应用
+
 ### 场景描述
-+ 很多需要改造成微前端的 `SPA` 应用，都是已经存在的旧应用。
-+ 可能需要逐步拆解应用内的部分路由，变为子应用。
-+ 主应用现有路由如何与微前端路由驱动共存，是迁移过程中常遇到的。
+
+- 很多需要改造成微前端的 `SPA` 应用，都是已经存在的旧应用。
+- 可能需要逐步拆解应用内的部分路由，变为子应用。
+- 主应用现有路由如何与微前端路由驱动共存，是迁移过程中常遇到的。
 
 ### 如何逐步改造（以 `react` 为例）
+
 1. 增加 `id` 为 `micro-app` 的挂载点，预留给子应用挂载，`Router` 部分的内容为主应用其他路由。
 2. 主应用增加匹配到子应用路由前缀时，`Router` 内容为空。
 3. 配置子应用列表时以 `Router` 内容为空时的前缀作为子应用激活条件前缀。
 
-
 主应用的根组件：
+
 ```jsx
-<BrowserRouter getUserConfirmation={ getConfirmation }>
-  <RootContext.Provider value={ provider }>
+<BrowserRouter getUserConfirmation={getConfirmation}>
+  <RootContext.Provider value={provider}>
     <Header />
     <div className="container">
-      <Router routes={ routes } />
+      <Router routes={routes} />
       <div id="micro-app" />
     </div>
   </RootContext.Provider>
@@ -338,6 +349,7 @@ if (!window.__GARFISH__) {
 ```
 
 routes：
+
 ```js
 export default [
   {
@@ -358,6 +370,7 @@ export default [
 ```
 
 主入口处：
+
 ```js
 Garfish.run({
   domGetter: '#micro-app',
@@ -367,6 +380,7 @@ Garfish.run({
   ],
 });
 ```
+
 ## 子应用动态插入到 body 上的节点逃逸？
 
 - 首先 garfish 会对每一个子应用创建一个 app container 用于包裹子应用，会创建 `__garfishmockhtml__`、 `__garfishmockbody__` 等 mock 节点。
@@ -382,7 +396,7 @@ Garfish.run({
 
 ## garfish 缓存模式
 
-- garfish 目前默认启用了缓存模式，在缓存模式下 garfish 会保留应用的上下文，且不会重新执行所有代码，只会执行 render 的 destory 函数，因此应用的性能将得到很大的提升。
+- garfish 目前默认启用了缓存模式，在缓存模式下 garfish 会保留应用的上下文，且不会重新执行所有代码，只会执行 render 和 destory 函数，因此应用的性能将得到很大的提升。
 
 - 在缓存模式下 garfish 只会隔离环境变量和样式，子应用卸载时会保留应用的上下文，不会默认清除子应用的副作用。若业务存在需要销毁的副作用，一般来说建议用户在组件的销毁函数里面手动释放组件的副作用，如果有些逻辑确实需要清除，并且需要保证应用可用性可以把 cache 设置成 false。
 
@@ -416,11 +430,11 @@ garfish 子应用热更新问题请参考 [博客](/blog/hmr)
 
 > 问题概述
 
-这个问题其实和上面那个cdn的问题，原因是一样的，由于garfish会注入一个exports变量，而子应用某个脚本（比如vite自己的热更引入的`react-refresh-runtime.development.js`）的代码也写了类似`const exports = {}`的代码，导致出现重复声明而报错。
+这个问题其实和上面那个 cdn 的问题，原因是一样的，由于 garfish 会注入一个 exports 变量，而子应用某个脚本（比如 vite 自己的热更引入的`react-refresh-runtime.development.js`）的代码也写了类似`const exports = {}`的代码，导致出现重复声明而报错。
 
 > 解决方案
 
-解决办法还是和上面加`no-entry`一样，不会注入commonjs相关的环境变量，但是，考虑到某些脚本可能是构建工具默认注入的，无法修改script标签，所以可以在html入口处加入以下配置代码来达到同样的效果（以vite的`react-refresh`为例）：
+解决办法还是和上面加`no-entry`一样，不会注入 commonjs 相关的环境变量，但是，考虑到某些脚本可能是构建工具默认注入的，无法修改 script 标签，所以可以在 html 入口处加入以下配置代码来达到同样的效果（以 vite 的`react-refresh`为例）：
 
 ```html
 <!DOCTYPE html>
