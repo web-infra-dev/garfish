@@ -65,6 +65,12 @@ export function createGetter(sandbox: Sandbox) {
           const el = value.call(document, tagName, options);
           return setSandboxRef(el);
         };
+      }
+      if (p === 'createElementNS') {
+        return function (...args) {
+          const el = value.call(document, ...args);
+          return setSandboxRef(el);
+        };
       } else if (p === 'createTextNode') {
         return function (data) {
           const el = value.call(document, data);

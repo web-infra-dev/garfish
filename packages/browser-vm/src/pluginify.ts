@@ -130,11 +130,13 @@ function createOptions(Garfish: interfaces.Garfish) {
           fixStaticResourceBaseUrl: Boolean(
             appInfo.sandbox?.fixStaticResourceBaseUrl,
           ),
+          fixOwnerDocument: Boolean(appInfo.sandbox?.fixOwnerDocument),
           disableWith: Boolean(appInfo.sandbox?.disableWith),
           disableElementtiming: Boolean(appInfo.sandbox?.disableElementtiming),
           strictIsolation: Boolean(appInfo.sandbox?.strictIsolation),
           // 缓存模式，不收集副作用
-          disableCollect: appInfo.cache === undefined ? true : Boolean(appInfo.cache),
+          disableCollect:
+            appInfo.cache === undefined ? true : Boolean(appInfo.cache),
           el: () => appInstance.htmlNode,
           styleScopeId: () => appInstance.appContainer.id,
           protectVariable: () => appInfo.protectVariable || [],
