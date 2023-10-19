@@ -114,6 +114,7 @@ export const createDefaultOptions = () => {
       disableWith: false,
       strictIsolation: false,
       disableElementtiming: false,
+      fixOwnerDocument: false,
     },
     // global hooks
     beforeLoad: () => {},

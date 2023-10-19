@@ -22,6 +22,7 @@ export interface SandboxOptions {
   namespace: string;
   baseUrl?: string;
   fixBaseUrl?: boolean;
+  fixOwnerDocument?: boolean;
   fixStaticResourceBaseUrl?: boolean;
   disableWith?: boolean;
   strictIsolation?: boolean;
