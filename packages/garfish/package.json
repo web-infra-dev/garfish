@@ -1,6 +1,6 @@
 {
   "name": "garfish",
-  "version": "1.17.1",
+  "version": "1.17.2",
   "description": "garfish module.",
   "keywords": [
     "garfish",
@@ -19,7 +19,8 @@
   "exports": {
     ".": {
       "import": "./dist/esm/index.js",
-      "require": "./dist/index.js"
+      "require": "./dist/index.js",
+      "types": "./index.d.ts"
     },
     "./*": "./*"
   },

@@ -335,7 +335,7 @@ if ($CONFIG.a) {
    最初的版本我们通过重写 HTMLElement.prototype.appendChild，把 append 到 body 的样式放到子应用渲染的根节点里。由于劫持的是原型，这个方案无法支持多实例，如果有多个子应用同时运行，没办法区分是由哪个子应用添加的。
 
 2. 劫持实例的 appendChild
-   所以我们想到的是去劫持所有的 dom 节点，通过重写获取 dom 节点的方法，如 `document.querySelector`、`ocument.getElementByID`, 把返回的 `dom` 节点通过 `proxy` 进行包装，这样就能劫持 dom 实例的 appendChild，就可以区分是来自于哪个子应用。但是这个方案经过实践，出现的两个比较棘手的问题：
+   所以我们想到的是去劫持所有的 dom 节点，通过重写获取 dom 节点的方法，如 `document.querySelector`、`document.getElementByID`, 把返回的 `dom` 节点通过 `proxy` 进行包装，这样就能劫持 dom 实例的 appendChild，就可以区分是来自于哪个子应用。但是这个方案经过实践，出现的两个比较棘手的问题：
 
 - 封装后的 dom 节点在传参的时候会报错，如
 
