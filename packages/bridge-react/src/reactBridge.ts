@@ -69,7 +69,7 @@ export function reactBridge(this: any, userOptions: Options) {
   }
   if (!checkReactVersion(opts.React)) {
     throw Error(
-      'Please make sure than the react version is higher than or equal to v16 and lower than v18.',
+      'Please make sure than the react version is between v16 and v18.',
     );
   }
 
@@ -185,7 +185,7 @@ function checkReactVersion(React: typeReact) {
     const majorVersionString = React.version.split('.')[0];
     try {
       return (
-        Number(majorVersionString) >= 16 && Number(majorVersionString) < 18
+        Number(majorVersionString) >= 16 && Number(majorVersionString) <= 18
       );
     } catch (err) {
       return false;

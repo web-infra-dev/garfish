@@ -94,7 +94,7 @@ describe('react-bridge', () => {
     ).toThrow();
   });
 
-  it('throws an error when react version is higher or equal than react v18', async () => {
+  it('will not throws the error when react version is higher or equal than react v18', async () => {
     expect(() =>
       reactBridge({
         React: {
@@ -104,7 +104,7 @@ describe('react-bridge', () => {
         ReactDOM,
         rootComponent,
       }),
-    ).toThrow();
+    ).not.toThrow();
   });
 
   it('do not throws an error when react version is v16 or v17', async () => {
