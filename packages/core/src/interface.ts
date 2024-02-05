@@ -80,6 +80,7 @@ export namespace interfaces {
     fixStaticResourceBaseUrl?: boolean;
     disableWith?: boolean;
     strictIsolation?: boolean;
+    strictDomSelector?: boolean;
     disableElementtiming?: boolean;
     fixOwnerDocument?: boolean;
   }

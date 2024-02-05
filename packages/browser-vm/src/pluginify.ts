@@ -127,6 +127,7 @@ function createOptions(Garfish: interfaces.Garfish) {
           baseUrl: appInstance.entryManager.url,
           modules: compatibleOldModule(appInfo.sandbox?.modules || []),
           fixBaseUrl: Boolean(appInfo.sandbox?.fixBaseUrl),
+          strictDomSelector: Boolean(appInfo.sandbox?.strictDomSelector),
           fixStaticResourceBaseUrl: Boolean(
             appInfo.sandbox?.fixStaticResourceBaseUrl,
           ),

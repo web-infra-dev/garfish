@@ -32,6 +32,7 @@ export function createGetter(sandbox: Sandbox) {
 
     const rootNode = rootElm(sandbox);
     const strictIsolation = sandbox.options.strictIsolation;
+    const strictDomSelector = sandbox.options.strictDomSelector;
     const value = hasOwn(target, p)
       ? Reflect.get(target, p, receiver)
       : Reflect.get(document, p);
@@ -81,15 +82,26 @@ export function createGetter(sandbox: Sandbox) {
       }
 
       // rootNode is a Shadow dom
-      if (strictIsolation) {
+      if (strictIsolation || strictDomSelector) {
         if (p === 'body') {
           // When the node is inserted, if it is a pop-up scene,
           // it needs to be placed globally, so it is not placed outside by default.
           return findTarget(rootNode, ['body', `div[${__MockBody__}]`]);
         } else if (queryFunctions(p)) {
-          return p === 'getElementById'
-            ? (id) => rootNode.querySelector(`#${id}`)
-            : rootNode[p].bind(rootNode);
+          if (p === 'querySelector') {
+            return (selector) => {
+              if (selector === 'body') {
+                return findTarget(rootNode, ['body', `div[${__MockBody__}]`]);
+              } else if (selector === 'head') {
+                return findTarget(rootNode, ['head', `div[${__MockHead__}]`]);
+              }
+              return rootNode.querySelector(selector);
+            };
+          }
+          if (p === 'getElementById') {
+            return (id) => rootNode.querySelector(`#${id}`);
+          }
+          return rootNode[p].bind(rootNode);
         }
       }
     }

@@ -113,6 +113,7 @@ export const createDefaultOptions = () => {
       fixStaticResourceBaseUrl: true,
       disableWith: false,
       strictIsolation: false,
+      strictDomSelector: true,
       disableElementtiming: false,
       fixOwnerDocument: false,
     },

@@ -27,6 +27,7 @@ export interface SandboxOptions {
   disableWith?: boolean;
   strictIsolation?: boolean;
   disableElementtiming?: boolean;
+  strictDomSelector?: boolean;
   disableCollect?: boolean;
   modules?: Array<Module>;
   addSourceList?: (
