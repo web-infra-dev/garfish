@@ -183,10 +183,6 @@ app = await Garfish.loadApp('vue-app', {
 
 是否开启严格隔离。`true` 表示已开启，`false` 表示未开启。
 
-- <Highlight> strictDomSelector: boolean </Highlight>
-
-是否将 dom 查询操作现在在子应用内。`true` 表示已开启，`false` 表示未开启。默认值为 false，当开启 strictIsolation 后将默认限制 dom 查询操作在子应用内
-
 - <Highlight> isHtmlMode: boolean </Highlight>
 
 是否是 `html` 入口模式。
