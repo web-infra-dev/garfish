@@ -144,7 +144,7 @@ export class TemplateManager {
   }
 
   findAttributeValue(node: Node, type: string) {
-    return node.attributes?.find(({ key }) => key === type)?.value || undefined;
+    return node.attributes?.find(({ key }) => key === type)?.value ?? undefined;
   }
 
   cloneNode(node: Node) {

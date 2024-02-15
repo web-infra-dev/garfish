@@ -22,10 +22,13 @@ function fetchStaticResources(
       .map((node) => {
         const src = entryManager.findAttributeValue(node, 'src');
         const type = entryManager.findAttributeValue(node, 'type');
-        const crossOrigin = entryManager.findAttributeValue(
+        let crossOrigin = entryManager.findAttributeValue(
           node,
           'crossorigin',
         );
+        if (crossOrigin === '') {
+          crossOrigin = 'anonymous';
+        }
 
         // There should be no embedded script in the script element tag with the src attribute specified
         if (src) {
