@@ -714,10 +714,9 @@ export class App {
               async: false,
               defer: false,
               isInline: jsManager.isInlineScript(),
-              noEntry: toBoolean(
-                entryManager.findAttributeValue(node, 'no-entry') ||
-                  this.isNoEntryScript(targetUrl),
-              ),
+              noEntry:
+                toBoolean(entryManager.findAttributeValue(node, 'no-entry')) ||
+                toBoolean(this.isNoEntryScript(targetUrl)),
               originScript: mockOriginScript,
             });
           }
