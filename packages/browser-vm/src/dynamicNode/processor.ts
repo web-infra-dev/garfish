@@ -331,7 +331,10 @@ export class DynamicNodeProcessor {
     }
 
     // Add dynamic script node by loader
-    if (this.is('script')) {
+    if (
+      this.is('script') &&
+      this.el?.getAttribute('type') !== 'application/json'
+    ) {
       parentNode = this.findParentNodeInApp(context, 'body');
       convertedNode = this.addDynamicScriptNode();
     }
