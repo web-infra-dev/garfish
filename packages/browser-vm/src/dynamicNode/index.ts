@@ -122,13 +122,17 @@ export function makeElInjector(sandboxConfig: SandboxOptions) {
     ) => {
       for (const name of methods) {
         const fn = window.Element.prototype[name];
-        if (typeof fn !== 'function' || fn[__domWrapper__]) {
+        const symbolProxyName = Symbol.for(name + '_proxy');
+        const proxyFlag = window.Element.prototype[symbolProxyName];
+        if (typeof fn !== 'function' || fn[__domWrapper__] || proxyFlag) {
           continue;
         }
         rawElementMethods[name] = fn;
         const wrapper = builder(fn, name);
         wrapper[__domWrapper__] = true;
         window.Element.prototype[name] = wrapper;
+        // Avoid being re-mediated by the function
+        window.Element.prototype[symbolProxyName] = true;
       }
     };
     rewrite(mountElementMethods, injector);
