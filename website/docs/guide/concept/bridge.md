@@ -24,7 +24,7 @@ Garfish bridge 是 `garfish` 提供的帮助用户降低接入成本的工具函
 
 ### @garfish/bridge-react-v18
 
-[@garfish/bridge-react-v18](https://www.npmjs.com/package/@garfish/bridge-react) 工具包是 garfish 为 react v18 应用 提供的 bridge 工具函数包，其导出的 [reactBridge](/guide/bridge#reactBridge) 可用于 react v18 子应用的接入，`@garfish/bridge-react-v18` 的使用见 [demo](/guide/demo/react#react-v18-导出)。
+[@garfish/bridge-react-v18](https://www.npmjs.com/package/@garfish/bridge-react-v18) 工具包是 garfish 为 react v18 应用 提供的 bridge 工具函数包，其导出的 [reactBridge](/guide/bridge#reactBridge) 可用于 react v18 子应用的接入，`@garfish/bridge-react-v18` 的使用见 [demo](/guide/demo/react#react-v18-导出)。
 
 ### @garfish/bridge-vue-v2
 
