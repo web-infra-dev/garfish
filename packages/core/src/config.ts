@@ -72,17 +72,28 @@ export const getAppConfig = (
   return mergeResult;
 };
 
+function getGlobalInsulationVariable() {
+  return window['__GARFISH_INSULATION_VARIABLE__'] || [];
+}
+
 export const generateAppOptions = (
   appName: string,
   garfish: interfaces.Garfish,
   options?: Partial<Omit<AppInfo, 'name'>>,
 ): AppInfo => {
   let appInfo: AppInfo = garfish.appInfos[appName] || { name: appName };
+  const insulationVariable = Array.from(
+    new Set([
+      ...getGlobalInsulationVariable(),
+      ...(appInfo?.insulationVariable || []),
+    ]),
+  );
 
   // Merge register appInfo config and loadApp config
   appInfo = getAppConfig(garfish.options, {
     ...appInfo,
     ...options,
+    insulationVariable,
     props: {
       ...(appInfo.props || {}),
       ...(options?.props || {}),
