@@ -85,7 +85,7 @@ export const generateAppOptions = (
   const insulationVariable = Array.from(
     new Set([
       ...getGlobalInsulationVariable(),
-      ...(options?.insulationVariable || []),
+      ...(appInfo?.insulationVariable || []),
     ]),
   );
 
