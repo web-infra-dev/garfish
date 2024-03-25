@@ -1,6 +1,6 @@
 import { ImportSpecifier, init, parse } from '@alioth-org/es-module-lexer';
 import type { JavaScriptManager } from '@garfish/loader';
-import { Lock } from '@garfish/utils';
+import { Lock, warn } from '@garfish/utils';
 import {
   isAbsolute,
   transformUrl,
@@ -223,15 +223,28 @@ export class ESModuleLoader {
                 baseUrl,
                 wildcardExportUrl,
               );
-              // fetch and analyze wildcard export module
-              await this.fetchModuleResource(
-                lockId,
-                envVarStr,
-                noEntryEnvVarStr,
-                wildcardExportSaveUrl,
-                this.getUrl(realUrl, wildcardExportUrl),
-              );
-              const wildcardModule = this.moduleCache[wildcardExportSaveUrl];
+              let wildcardModule = this.moduleCache[wildcardExportSaveUrl];
+
+              if (wildcardModule && !wildcardModule.blobUrl) {
+                // Attention!
+                // this wildcard export is need with circular reference
+                // we can not handle this case
+                __DEV__ && warn(`circular reference is found in wildcard export(file '${baseUrl}', statement "${currentModule.source.substring(wildcardExport.ss, wildcardExport.se)}").This may cause error while you import this file circularly.`);
+                continue;
+              }
+
+              if (!wildcardModule?.blobUrl) {
+                // fetch and analyze wildcard export module
+                await this.fetchModuleResource(
+                  lockId,
+                  envVarStr,
+                  noEntryEnvVarStr,
+                  wildcardExportSaveUrl,
+                  this.getUrl(realUrl, wildcardExportUrl),
+                );
+                wildcardModule = this.moduleCache[wildcardExportSaveUrl];
+              }
+
               if (wildcardModule?.blobUrl) {
                 wildcardExportStatements.push(
                   `export * from '${wildcardModule.blobUrl}'`,
