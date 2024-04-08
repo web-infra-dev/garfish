@@ -15,7 +15,8 @@ import Highlight from '@site/src/components/Highlight';
 
 1. 基于路由匹配的应用加载模式会通过子应用的 `activeWhen` 参数在在路由变化后自动判断当前应加载的子应用；
 2. 在手动加载模式下（Garfish.loadApp），Garfish 不会根据路径匹配而是完全由开发者控制应用加载和销毁，此时应用加载不会受到 `activeWhen` 参数的影响；
-   :::
+
+:::
 
 ## 类型
 
