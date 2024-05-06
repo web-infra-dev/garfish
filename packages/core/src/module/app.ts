@@ -752,6 +752,14 @@ export class App {
       },
 
       link: (node) => {
+        if (
+          this.appInfo.sandbox &&
+          typeof this.appInfo.sandbox === 'object' &&
+          this.appInfo.sandbox.disableLinkTransformToStyle
+        ) {
+          return DOMApis.createElement(node);
+        }
+
         if (DOMApis.isCssLinkNode(node)) {
           const styleManager = this.resources.link.find((manager) =>
             manager.isSameOrigin(node),

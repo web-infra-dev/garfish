@@ -3,6 +3,14 @@
   <head>
     <meta charset="UTF-8">
     <title>app react v17</title>
+    <link rel="stylesheet" href="http://localhost:8091/a.css" />
+    <script>
+      let link = document.createElement('link');
+      link.ref = 'stylesheet';
+      link.setAttribute('ref','stylesheet');
+      link.setAttribute('href','http://localhost:8091/b.css');
+      document.head.appendChild(link);
+    </script>
   </head>
   <body>
     <img data-test="img-pre-fix-app-17"  src="/img" />

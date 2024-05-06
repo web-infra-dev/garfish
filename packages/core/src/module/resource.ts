@@ -9,7 +9,7 @@ import { AppInfo } from './app';
 
 // Fetch `script`, `link` and `module meta` elements
 function fetchStaticResources(
-  appName: string,
+  appInfo: AppInfo,
   loader: Loader,
   entryManager: TemplateManager,
 ) {
@@ -22,10 +22,7 @@ function fetchStaticResources(
       .map((node) => {
         const src = entryManager.findAttributeValue(node, 'src');
         const type = entryManager.findAttributeValue(node, 'type');
-        let crossOrigin = entryManager.findAttributeValue(
-          node,
-          'crossorigin',
-        );
+        let crossOrigin = entryManager.findAttributeValue(node, 'crossorigin');
         if (crossOrigin === '') {
           crossOrigin = 'anonymous';
         }
@@ -42,7 +39,7 @@ function fetchStaticResources(
           // we have a preload mechanism, so we don’t need to deal with it.
           return loader
             .load<JavaScriptManager>({
-              scope: appName,
+              scope: appInfo.name,
               url: fetchUrl,
               crossOrigin,
               defaultContentType: type,
@@ -55,7 +52,7 @@ function fetchStaticResources(
                 jsManager.setDefferAttribute(toBoolean(defer));
                 return jsManager;
               } else {
-                warn(`[${appName}] Failed to load script: ${fetchUrl}`);
+                warn(`[${appInfo.name}] Failed to load script: ${fetchUrl}`);
               }
             })
             .catch(() => null);
@@ -78,20 +75,26 @@ function fetchStaticResources(
       .findAllLinkNodes()
       .map((node) => {
         if (!entryManager.DOMApis.isCssLinkNode(node)) return;
+        if (
+          appInfo.sandbox &&
+          typeof appInfo.sandbox === 'object' &&
+          appInfo.sandbox.disableLinkTransformToStyle
+        )
+          return;
         const href = entryManager.findAttributeValue(node, 'href');
         if (href) {
           const fetchUrl = entryManager.url
             ? transformUrl(entryManager.url, href)
             : href;
           return loader
-            .load<StyleManager>({ scope: appName, url: fetchUrl })
+            .load<StyleManager>({ scope: appInfo.name, url: fetchUrl })
             .then(({ resourceManager: styleManager }) => {
               if (styleManager) {
                 styleManager.setDep(node);
                 styleManager?.correctPath();
                 return styleManager;
               } else {
-                warn(`${appName} Failed to load link: ${fetchUrl}`);
+                warn(`${appInfo.name} Failed to load link: ${fetchUrl}`);
               }
             })
             .catch(() => null);
@@ -147,7 +150,7 @@ export async function processAppResources(loader: Loader, appInfo: AppInfo) {
   if (entryManager instanceof loader.TemplateManager) {
     isHtmlMode = true;
     const [js, link, modules] = await fetchStaticResources(
-      appInfo.name,
+      appInfo,
       loader,
       entryManager,
     );

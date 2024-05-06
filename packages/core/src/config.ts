@@ -125,6 +125,7 @@ export const createDefaultOptions = () => {
       disableWith: false,
       strictIsolation: false,
       disableElementtiming: false,
+      disableLinkTransformToStyle: false,
       fixOwnerDocument: false,
     },
     // global hooks
