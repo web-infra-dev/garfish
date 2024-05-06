@@ -42,7 +42,7 @@ describe('Sandbox: dynamic link', () => {
       [linkOrder3]: {
         'Content-Type': styleType,
         timeConsuming: 300,
-      }
+      },
     },
   });
 
@@ -90,7 +90,7 @@ describe('Sandbox: dynamic link', () => {
       go(`
         const dynamicLink = document.createElement('link');
         dynamicLink.href = "${withSuffix}";
-        dynamicLink.rel = 'stylesheet';
+        dynamicLink.setAttribute('rel', 'stylesheet');
         dynamicLink.onload = function () {
           expect(document.body).toMatchSnapshot();
           jestDone();
@@ -106,7 +106,7 @@ describe('Sandbox: dynamic link', () => {
       go(`
         const dynamicLink = document.createElement('link');
         dynamicLink.href = "${withoutSuffix}";
-        dynamicLink.rel = 'stylesheet';
+        dynamicLink.setAttribute('rel', 'stylesheet');
         dynamicLink.onload = function () {
           expect(document.body).toMatchSnapshot();
           jestDone();
@@ -122,7 +122,7 @@ describe('Sandbox: dynamic link', () => {
       go(`
         const dynamicLink = document.createElement('link');
         dynamicLink.href = "${withoutSuffixAndContentType}";
-        dynamicLink.rel = 'stylesheet';
+        dynamicLink.setAttribute('rel', 'stylesheet');
         dynamicLink.onload = function () {
           expect(document.body).toMatchSnapshot();
           jestDone();
