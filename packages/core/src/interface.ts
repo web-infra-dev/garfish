@@ -82,6 +82,7 @@ export namespace interfaces {
     strictIsolation?: boolean;
     disableElementtiming?: boolean;
     fixOwnerDocument?: boolean;
+    excludeAssetFilter?: (url: string) => boolean;
   }
 
   export interface Config {

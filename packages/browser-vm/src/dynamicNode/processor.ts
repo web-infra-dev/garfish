@@ -150,7 +150,11 @@ export class DynamicNodeProcessor {
     const isModule = type === 'module';
     const code = this.el.textContent || this.el.text || '';
 
-    if (!type || isJsType({ src, type })) {
+    // Returning true indicates that execution in the sandbox is not required
+    const excludeAssetFilter = this.sandbox.options.excludeAssetFilter;
+    const excludeUrl = excludeAssetFilter?.(src);
+
+    if ((!type || isJsType({ src, type })) && !excludeUrl) {
       // The "src" higher priority
       const { baseUrl, namespace } = this.sandbox.options;
       if (src) {

@@ -5,13 +5,15 @@ import type {
   TemplateManager,
   JavaScriptManager,
 } from '@garfish/loader';
-import { AppInfo } from './app';
+import type { AppInfo } from './app';
+import type { interfaces } from '../interface';
 
 // Fetch `script`, `link` and `module meta` elements
 function fetchStaticResources(
   appName: string,
   loader: Loader,
   entryManager: TemplateManager,
+  sandboxConfig: false | interfaces.SandboxConfig | undefined,
 ) {
   const toBoolean = (val) => typeof val !== 'undefined' && val !== 'false';
 
@@ -19,13 +21,19 @@ function fetchStaticResources(
   const jsNodes = Promise.all(
     entryManager
       .findAllJsNodes()
+      .filter((node) => {
+        if (sandboxConfig && sandboxConfig.excludeAssetFilter) {
+          const src = entryManager.findAttributeValue(node, 'src');
+          if (src && sandboxConfig.excludeAssetFilter(src)) {
+            return false;
+          }
+        }
+        return true;
+      })
       .map((node) => {
         const src = entryManager.findAttributeValue(node, 'src');
         const type = entryManager.findAttributeValue(node, 'type');
-        let crossOrigin = entryManager.findAttributeValue(
-          node,
-          'crossorigin',
-        );
+        let crossOrigin = entryManager.findAttributeValue(node, 'crossorigin');
         if (crossOrigin === '') {
           crossOrigin = 'anonymous';
         }
@@ -150,6 +158,7 @@ export async function processAppResources(loader: Loader, appInfo: AppInfo) {
       appInfo.name,
       loader,
       entryManager,
+      appInfo.sandbox,
     );
     resources.js = js;
     resources.link = link;
