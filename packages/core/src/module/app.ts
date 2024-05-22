@@ -689,6 +689,19 @@ export class App {
             return DOMApis.createElement(node);
           }
         }
+
+        // Filter out code that does not require sandboxed execution
+        if (this.appInfo.sandbox) {
+          const scriptUrl = entryManager.findAttributeValue(node, 'src');
+          if (
+            scriptUrl &&
+            this.appInfo.sandbox?.excludeAssetFilter &&
+            this.appInfo.sandbox?.excludeAssetFilter(scriptUrl)
+          ) {
+            return DOMApis.createElement(node);
+          }
+        }
+
         const jsManager = resources.js.find((manager) => {
           return !manager.async ? manager.isSameOrigin(node) : false;
         });

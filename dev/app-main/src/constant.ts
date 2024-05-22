@@ -26,6 +26,11 @@ export const localApps: AppInfo = [
     name: 'react16',
     activeWhen: '/react16',
     entry: getProxyHost('dev/react16'),
+    sandbox: {
+      excludeAssetFilter: (url: string) => {
+        return url.includes('exclude');
+      },
+    },
   },
   {
     name: 'react18',

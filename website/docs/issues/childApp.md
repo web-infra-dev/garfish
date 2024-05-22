@@ -28,6 +28,13 @@ if (window.__GARFISH__ && typeof __GARFISH_EXPORTS__ !== 'undefined') {
 }
 ```
 
+## 微应用 JSONP 跨域错误怎么处理？
+
+在使用 Garfish 时，微应用的动态脚本（如 JSONP）会被转化为 fetch 请求，这要求后端服务支持跨域请求，否则会产生错误。
+
+可以使用 [excludeAssetFilter](/api/registerApp#sandbox) 参数来放行这些资源请求，但请注意，被该参数放行的资源会逃逸出沙箱，可能导致副作用，需自行处理。
+
+
 ## Uncaught (in promise) TypeError: [Garfish warning]: Cannot read properties of undefined (reading 'call')
 
 - 错误原因
