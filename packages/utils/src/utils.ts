@@ -371,7 +371,11 @@ export function isAbsolute(url: string) {
 }
 
 export function transformUrl(resolvePath: string, curPath: string) {
-  if (curPath.startsWith('http') || curPath.startsWith('//')) {
+  if (
+    curPath.startsWith('http') ||
+    curPath.startsWith('//') ||
+    curPath.startsWith('blob:')
+  ) {
     return curPath;
   }
   const baseUrl = new URL(resolvePath, location.href);
