@@ -22,6 +22,7 @@ declare module '@garfish/core' {
     }
 
     export interface AppInfo {
+      excludeAssetFilter?: (url: string) => boolean;
       protectVariable?: PropertyKey[];
       insulationVariable?: PropertyKey[];
     }
@@ -137,6 +138,7 @@ function createOptions(Garfish: interfaces.Garfish) {
             appInfo.sandbox?.disableLinkTransformToStyle,
           ),
           strictIsolation: Boolean(appInfo.sandbox?.strictIsolation),
+          excludeAssetFilter: appInfo.sandbox?.excludeAssetFilter,
           // 缓存模式，不收集副作用
           disableCollect:
             appInfo.cache === undefined ? true : Boolean(appInfo.cache),

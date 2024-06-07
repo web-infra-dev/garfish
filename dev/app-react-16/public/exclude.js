@@ -1,0 +1,1 @@
+window.dynamic = 1;

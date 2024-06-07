@@ -83,6 +83,7 @@ export namespace interfaces {
     disableElementtiming?: boolean;
     disableLinkTransformToStyle?: boolean;
     fixOwnerDocument?: boolean;
+    excludeAssetFilter?: (url: string) => boolean;
   }
 
   export interface Config {

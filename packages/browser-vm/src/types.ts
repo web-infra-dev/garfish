@@ -30,6 +30,7 @@ export interface SandboxOptions {
   disableLinkTransformToStyle?: boolean;
   disableCollect?: boolean;
   modules?: Array<Module>;
+  excludeAssetFilter?: (url: string) => boolean;
   addSourceList?: (
     sourceInfo:
       | Array<{ tagName: string; url: string | URL | Request }>

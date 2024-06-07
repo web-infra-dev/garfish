@@ -22,6 +22,8 @@ interface SandboxConfig {
   fixOwnerDocument?: boolean;
   // disableLinkTransformToStyle  1.18.0 版本提供 ，默认值 false，禁用掉 link 自动 transform 成 style 的行为
   disableLinkTransformToStyle?: boolean;
+  // excludeAssetFilter 1.18.0 版本提供，默认值为 undefined，用于过滤不需要再子应用沙箱中执行的资源例如 jsonp，url 参数为对应 script 的地址，返回 true 则会过滤掉该资源
+  excludeAssetFilter?: (url: string) => boolean;
 }
 
 type Module = (sandbox: Sandbox) => OverridesData | void;

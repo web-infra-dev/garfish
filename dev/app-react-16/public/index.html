@@ -3,6 +3,12 @@
   <head>
     <meta charset="UTF-8">
     <title>app react v17</title>
+    <script src="/exclude.js" ></script>
+    <script>
+      const script = document.createElement('script');
+      script.src = "/exclude-dynamic.js";
+      document.body.appendChild(script);
+    </script>
   </head>
   <body>
     <div id="root"></div>
