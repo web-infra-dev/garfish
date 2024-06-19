@@ -134,6 +134,9 @@ function createOptions(Garfish: interfaces.Garfish) {
           fixOwnerDocument: Boolean(appInfo.sandbox?.fixOwnerDocument),
           disableWith: Boolean(appInfo.sandbox?.disableWith),
           disableElementtiming: Boolean(appInfo.sandbox?.disableElementtiming),
+          disableLinkTransformToStyle: Boolean(
+            appInfo.sandbox?.disableLinkTransformToStyle,
+          ),
           strictIsolation: Boolean(appInfo.sandbox?.strictIsolation),
           excludeAssetFilter: appInfo.sandbox?.excludeAssetFilter,
           // 缓存模式，不收集副作用

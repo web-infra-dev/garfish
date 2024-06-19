@@ -81,6 +81,7 @@ export namespace interfaces {
     disableWith?: boolean;
     strictIsolation?: boolean;
     disableElementtiming?: boolean;
+    disableLinkTransformToStyle?: boolean;
     fixOwnerDocument?: boolean;
     excludeAssetFilter?: (url: string) => boolean;
   }

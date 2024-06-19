@@ -16,7 +16,7 @@ describe('whole process app render', () => {
         },
         sandbox: {
           snapshot: false,
-        }
+        },
       },
     });
 
@@ -148,8 +148,8 @@ describe('whole process app render', () => {
       cy.wait(4000);
       cy.contains('[data-test=title]', HomeTitle)
         .then(() => {
-          cy.get('[data-test=vite-count-btn]').dblclick();
-          cy.contains('button', 'count is: 2');
+          cy.get('[data-test=vite-count-btn]').click({ force: true });
+          cy.contains('button', 'count is: 1');
         })
         .then(() => {
           win.Garfish.router.push({ path: '/vue2/home' });

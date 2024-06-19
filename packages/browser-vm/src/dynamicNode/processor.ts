@@ -368,9 +368,12 @@ export class DynamicNodeProcessor {
       this.monitorChangesOfStyle();
     }
     // The link node of the request css needs to be changed to style node
-    else if (this.is('link')) {
+    else if (
+      this.is('link') &&
+      this.sandbox.options.disableLinkTransformToStyle !== true
+    ) {
       parentNode = this.findParentNodeInApp(context, 'head');
-      if (this.el.rel === 'stylesheet' && this.el.href) {
+      if (this.el.getAttribute('rel') === 'stylesheet' && this.el.href) {
         convertedNode = this.addDynamicLinkNode((styleNode) => {
           this.nativeAppend.call(parentNode, styleNode);
         });

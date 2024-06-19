@@ -3975,7 +3975,7 @@ packages:
       css-minimizer-webpack-plugin: 4.2.2_z2fhrcdfcwgcfi7cwpl76xfc2y
       cssnano: 5.1.15_postcss@8.4.36
       del: 6.1.1
-      detect-port: 1.6.1
+      detect-port: 1.5.1
       escape-html: 1.0.3
       eta: 1.14.2
       file-loader: 6.2.0_webpack@5.90.3
@@ -4076,7 +4076,7 @@ packages:
       css-minimizer-webpack-plugin: 4.2.2_z2fhrcdfcwgcfi7cwpl76xfc2y
       cssnano: 5.1.15_postcss@8.4.36
       del: 6.1.1
-      detect-port: 1.6.1
+      detect-port: 1.5.1
       escape-html: 1.0.3
       eta: 1.14.2
       file-loader: 6.2.0_webpack@5.90.3
@@ -4177,7 +4177,7 @@ packages:
       css-minimizer-webpack-plugin: 4.2.2_z2fhrcdfcwgcfi7cwpl76xfc2y
       cssnano: 5.1.15_postcss@8.4.36
       del: 6.1.1
-      detect-port: 1.6.1
+      detect-port: 1.5.1
       escape-html: 1.0.3
       eta: 2.2.0
       file-loader: 6.2.0_webpack@5.90.3
@@ -4438,7 +4438,7 @@ packages:
       '@types/react-router-dom': 5.3.3
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      react-helmet-async: 2.0.5_react@17.0.2
+      react-helmet-async: 2.0.4_sfoxds7t5ydpegc3knd667wn6m
       react-loadable: /@docusaurus/react-loadable/5.5.2_react@17.0.2
     transitivePeerDependencies:
       - '@swc/core'
@@ -4461,7 +4461,7 @@ packages:
       '@types/react-router-dom': 5.3.3
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      react-helmet-async: 2.0.5_react@17.0.2
+      react-helmet-async: 2.0.4_sfoxds7t5ydpegc3knd667wn6m
       react-loadable: /@docusaurus/react-loadable/5.5.2_react@17.0.2
     transitivePeerDependencies:
       - '@swc/core'
@@ -4878,7 +4878,7 @@ packages:
       fs-extra: 10.1.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      sitemap: 7.1.2
+      sitemap: 7.1.1
       tslib: 2.6.2
     transitivePeerDependencies:
       - '@parcel/css'
@@ -5135,7 +5135,7 @@ packages:
       '@docusaurus/utils': 2.0.0-rc.1_fh5bds7ccduypwmpulad3xjppm
       '@docusaurus/utils-validation': 2.0.0-rc.1_fh5bds7ccduypwmpulad3xjppm
       algoliasearch: 4.23.3
-      algoliasearch-helper: 3.20.0_algoliasearch@4.23.3
+      algoliasearch-helper: 3.19.0_algoliasearch@4.23.3
       clsx: 1.2.1
       eta: 1.14.2
       fs-extra: 10.1.0
@@ -5534,25 +5534,16 @@ packages:
       - webpack-cli
     dev: false
 
-  /@emnapi/core/1.2.0:
-    resolution: {integrity: sha512-E7Vgw78I93we4ZWdYCb4DGAwRROGkMIXk7/y87UmANR+J6qsWusmC3gLt0H+O0KOt5e6O38U8oJamgbudrES/w==}
-    requiresBuild: true
-    dependencies:
-      '@emnapi/wasi-threads': 1.0.1
-      tslib: 2.6.2
-    dev: false
-    optional: true
-
-  /@emnapi/runtime/1.2.0:
-    resolution: {integrity: sha512-bV21/9LQmcQeCPEg3BDFtvwL6cwiTMksYNWQQ4KOxCZikEGalWtenoZ0wCiukJINlGCIi2KXx01g4FoH/LxpzQ==}
+  /@emnapi/core/1.1.1:
+    resolution: {integrity: sha512-eu4KjHfXg3I+UUR7vSuwZXpRo4c8h4Rtb5Lu2F7Z4JqJFl/eidquONEBiRs6viXKpWBC3BaJBy68xGJ2j56idw==}
     requiresBuild: true
     dependencies:
       tslib: 2.6.2
     dev: false
     optional: true
 
-  /@emnapi/wasi-threads/1.0.1:
-    resolution: {integrity: sha512-iIBu7mwkq4UQGeMEM8bLwNK962nXdhodeScX4slfQnRhEMMzvYivHhutCIk8uojvmASXXPC2WNEjwxFWk72Oqw==}
+  /@emnapi/runtime/1.1.1:
+    resolution: {integrity: sha512-3bfqkzuR1KLx57nZfjr2NLnFOobvyS0aTszaEGCGqmYMVDRaGvgIZbjGSV/MHSSmLgQ/b9JFHQ5xm5WRZYd+XQ==}
     requiresBuild: true
     dependencies:
       tslib: 2.6.2
@@ -6063,13 +6054,13 @@ packages:
       glob-to-regexp: 0.3.0
     dev: true
 
-  /@napi-rs/wasm-runtime/0.2.4:
-    resolution: {integrity: sha512-9zESzOO5aDByvhIAsOy9TbpZ0Ur2AJbUI7UT73kcUTS2mxAMHOBaa1st/jAymNoCtvrit99kkzT1FZuXVcgfIQ==}
+  /@napi-rs/wasm-runtime/0.2.3:
+    resolution: {integrity: sha512-e4qmGDzXu2MYjj/XiKSgJ7XS7Z83MYVRN1yYaYXeQNVEO56zmshqmzFaELfdb612sLq/GmiPfRIwSji+bIlyCw==}
     requiresBuild: true
     dependencies:
-      '@emnapi/core': 1.2.0
-      '@emnapi/runtime': 1.2.0
-      '@tybys/wasm-util': 0.9.0
+      '@emnapi/core': 1.1.1
+      '@emnapi/runtime': 1.1.1
+      '@tybys/wasm-util': 0.8.3
     dev: false
     optional: true
 
@@ -6189,7 +6180,7 @@ packages:
     cpu: [wasm32]
     requiresBuild: true
     dependencies:
-      '@napi-rs/wasm-runtime': 0.2.4
+      '@napi-rs/wasm-runtime': 0.2.3
     dev: false
     optional: true
 
@@ -6815,8 +6806,8 @@ packages:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
     dev: true
 
-  /@tybys/wasm-util/0.9.0:
-    resolution: {integrity: sha512-6+7nlbMVX/PVDCwaIQ8nTOPveOcFLSt8GcXdx8hD0bt39uWxYT88uXzqTd4fTvqta7oeUJqudepapKNt2DYJFw==}
+  /@tybys/wasm-util/0.8.3:
+    resolution: {integrity: sha512-Z96T/L6dUFFxgFJ+pQtkPpne9q7i6kIPYCFnQBHSgSPV9idTsKfIhCss0h5iM9irweZCatkrdeP8yi5uM1eX6Q==}
     requiresBuild: true
     dependencies:
       tslib: 2.6.2
@@ -9210,8 +9201,8 @@ packages:
       require-from-string: 2.0.2
       uri-js: 4.4.1
 
-  /algoliasearch-helper/3.20.0_algoliasearch@4.23.3:
-    resolution: {integrity: sha512-6EVhAmVug0+hdRHWbubF7hLHHhLoQ8NjLk6iS6d4k5chWawpS5EDexrF6Jx/hPZvUKIeNrzsbTpjAkcvrjNLHg==}
+  /algoliasearch-helper/3.19.0_algoliasearch@4.23.3:
+    resolution: {integrity: sha512-AaSb5DZDMZmDQyIy6lf4aL0OZGgyIdqvLIIvSuVQOIOqfhrYSY7TvotIFI2x0Q3cP3xUpTd7lI1astUC4aXBJw==}
     peerDependencies:
       algoliasearch: '>= 3.1 < 6'
     dependencies:
@@ -9384,7 +9375,6 @@ packages:
   /are-we-there-yet/2.0.0:
     resolution: {integrity: sha512-Ci/qENmwHnsYo9xKIcUJN5LeDKdJ6R1Z1j9V/J5wyq8nh/mYPEpIKJbBZXtZjG04HiK7zV/p6Vs9952MrMeUIw==}
     engines: {node: '>=10'}
-    deprecated: This package is no longer supported.
     dependencies:
       delegates: 1.0.0
       readable-stream: 3.6.2
@@ -12958,9 +12948,8 @@ packages:
       - supports-color
     dev: false
 
-  /detect-port/1.6.1:
-    resolution: {integrity: sha512-CmnVc+Hek2egPx1PeTFVta2W78xy2K/9Rkf6cC4T59S50tVnzKj+tnx5mmx5lwvCkujZ4uRrpRSuV+IVs3f90Q==}
-    engines: {node: '>= 4.0.0'}
+  /detect-port/1.5.1:
+    resolution: {integrity: sha512-aBzdj76lueB6uUst5iAs7+0H/oOjqI5D16XUWxlWMIMROhcM0rfsNVk93zTngq1dDNpoXRr++Sus7ETAExppAQ==}
     hasBin: true
     dependencies:
       address: 1.2.2
@@ -15174,7 +15163,6 @@ packages:
   /gauge/3.0.2:
     resolution: {integrity: sha512-+5J6MS/5XksCuXq++uFRsnUd7Ovu1XenbeuIuNRJxYWjgQbPuFhT14lAvsWfqfAmnwluf1OwMjz39HjfLPci0Q==}
     engines: {node: '>=10'}
-    deprecated: This package is no longer supported.
     dependencies:
       aproba: 2.0.0
       color-support: 1.1.3
@@ -20231,7 +20219,6 @@ packages:
 
   /npmlog/5.0.1:
     resolution: {integrity: sha512-AqZtDUWOMKs1G/8lwylVjrdYgqA4d9nu8hc+0gzRxlDb1I10+FHBGMXs6aiQHFdCUUlqH99MUMuLfzWDNDtfxw==}
-    deprecated: This package is no longer supported.
     dependencies:
       are-we-there-yet: 2.0.0
       console-control-strings: 1.1.0
@@ -22858,13 +22845,15 @@ packages:
       shallowequal: 1.1.0
     dev: false
 
-  /react-helmet-async/2.0.5_react@17.0.2:
-    resolution: {integrity: sha512-rYUYHeus+i27MvFE+Jaa4WsyBKGkL6qVgbJvSBoX8mbsWoABJXdEO0bZyi0F6i+4f0NuIb8AvqPMj3iXFHkMwg==}
+  /react-helmet-async/2.0.4_sfoxds7t5ydpegc3knd667wn6m:
+    resolution: {integrity: sha512-yxjQMWposw+akRfvpl5+8xejl4JtUlHnEBcji6u8/e6oc7ozT+P9PNTWMhCbz2y9tc5zPegw2BvKjQA+NwdEjQ==}
     peerDependencies:
       react: ^16.6.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.6.0 || ^17.0.0 || ^18.0.0
     dependencies:
       invariant: 2.2.4
       react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
       react-fast-compare: 3.2.2
       shallowequal: 1.1.0
     dev: false
@@ -24580,8 +24569,8 @@ packages:
   /sisteransi/1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
 
-  /sitemap/7.1.2:
-    resolution: {integrity: sha512-ARCqzHJ0p4gWt+j7NlU5eDlIO9+Rkr/JhPFZKKQ1l5GCus7rJH4UdrlVAh0xC/gDS/Qir2UMxqYNHtsKr2rpCw==}
+  /sitemap/7.1.1:
+    resolution: {integrity: sha512-mK3aFtjz4VdJN0igpIJrinf3EO8U8mxOPsTBzSsy06UtjZQJ3YY3o3Xa7zSc5nMqcMrRwlChHZ18Kxg0caiPBg==}
     engines: {node: '>=12.0.0', npm: '>=5.6.0'}
     hasBin: true
     dependencies:
