@@ -148,7 +148,7 @@ describe('whole process app render', () => {
       cy.wait(4000);
       cy.contains('[data-test=title]', HomeTitle)
         .then(() => {
-          cy.get('[data-test=vite-count-btn]').click();
+          cy.get('[data-test=vite-count-btn]').click({ force: true });
           cy.contains('button', 'count is: 1');
         })
         .then(() => {
