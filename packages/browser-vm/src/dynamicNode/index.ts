@@ -27,8 +27,9 @@ function injector(current: Function, methodName: string) {
     const el = methodName === 'insertAdjacentElement'
       ? arguments[1]
       : arguments[0];
+    const args = [...arguments];
     const sandbox = sandboxMap.get(el);
-    const originProcess = () => current.apply(this, arguments);
+    const originProcess = () => current.apply(this, args);
 
     // custom performance Element Timing API
     // https://web.dev/custom-metrics/#element-timing-api
