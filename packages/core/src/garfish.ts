@@ -95,6 +95,10 @@ export class Garfish extends EventEmitter2 {
     return this;
   }
 
+  removePlugin(pluginName: string) {
+    this.hooks.removePlugin(pluginName);
+  }
+
   run(options: interfaces.Options = {}) {
     if (this.running) {
       if (__DEV__) {
