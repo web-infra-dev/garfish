@@ -20,7 +20,7 @@
     "cy:open": "cypress open --config-file=cypress.config.ts",
     "cy:run": "cypress run",
     "type:check": "tsc -noEmit",
-    "changeset": "npx changeset",
+    "changeset": "changeset",
     "reset": "pnpm -r exec -- rm -rf node_modules && pnpm -r exec -- rm -rf dist && rm -rf node_modules",
     "setup": "cross-env DISABLE_GARFISH_CHECK_INTERNAL=true pnpm install",
     "ls-lint": "ls-lint",
@@ -91,7 +91,8 @@
     "wait-on": "6.0.1",
     "wireit": "^0.4.3",
     "workspace-tools": "0.16.2",
-    "zx": "4.2.0"
+    "zx": "4.2.0",
+    "@changesets/cli": "2.27.7"
   },
   "version": "1.19.1",
   "packageManager": "pnpm@7.6.0",
