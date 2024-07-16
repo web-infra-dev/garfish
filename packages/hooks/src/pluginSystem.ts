@@ -43,9 +43,11 @@ export class PluginSystem<T extends Record<string, any>> {
     const plugin = this.registerPlugins[pluginName];
     assert(plugin, `plugin "${pluginName}" is not registered.`);
 
-    for (const key in plugin) {
-      if (key === 'name') continue;
-      this.lifecycle[key].remove(plugin[key as string]);
+    for (const key in this.lifecycle) {
+      const pluginLife = plugin[key as string];
+      if (pluginLife) {
+        this.lifecycle[key].remove(pluginLife);
+      }
     }
   }
 

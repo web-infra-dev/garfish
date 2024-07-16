@@ -20,7 +20,6 @@
     "cy:open": "cypress open --config-file=cypress.config.ts",
     "cy:run": "cypress run",
     "type:check": "tsc -noEmit",
-    "changeset": "npx changeset",
     "reset": "pnpm -r exec -- rm -rf node_modules && pnpm -r exec -- rm -rf dist && rm -rf node_modules",
     "setup": "cross-env DISABLE_GARFISH_CHECK_INTERNAL=true pnpm install",
     "ls-lint": "ls-lint",
