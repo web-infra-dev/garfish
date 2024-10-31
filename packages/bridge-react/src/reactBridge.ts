@@ -226,7 +226,7 @@ function getElementToRender(opts: Options, appInfo: PropsInfo) {
         elementToRender,
       );
     }
-    return rootComponentElement;
+    return elementToRender;
   }
 }
 
