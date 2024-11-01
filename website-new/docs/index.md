@@ -2,16 +2,17 @@
 pageType: home
 
 hero:
-  name: Garfish
+  name: Garfish Framework
   text: 微前端框架
-  tagline: 可轻松将多个前端应用组合成内聚的单个产品
+  tagline: 包含构建微前端系统时所需要的基本能力，任意前端框架均可使用。接入简单，可轻松将多个前端应用组合成内聚的单个产品
+
   actions:
     - theme: brand
-      text: Quick Start
+      text: 入门教程
       link: /guide/quick-start/index.html
     - theme: alt
-      text: GitHub
-      link: https://github.com/web-infra-dev/rspress
+      text: 快速开始
+      link: /guide/quick-start/start.html
   image:
     src: https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/icons/icon.png
     alt: Garfish Logo

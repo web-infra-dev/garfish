@@ -1,6 +1,7 @@
 # react 子应用
 
 import WebpackConfig from '@components/config/_webpackConfig.mdx';
+import { Tab, Tabs } from 'rspress/theme';
 
 本节我们将详细介绍 react 框架的应用作为子应用的接入步骤。[v16/17 demo](https://github.com/modern-js-dev/garfish/tree/main/dev/app-react-17)、[v18 demo](https://github.com/modern-js-dev/garfish/blob/main/dev/app-react-18)
 
@@ -21,7 +22,6 @@ npm install @garfish/bridge-react --save
 
 更多 bridge 函数参数介绍请参考 [这里](/guide/bridge)
 ### react v16、v17 导出
-import { Tab, Tabs } from 'rspress/theme';
 
 <Tabs>
   <Tab value="bridge_provider" label="使用 @garfish/bridge-react" default>

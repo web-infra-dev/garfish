@@ -9,9 +9,8 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
-    "moduleResolution": "bundler",
-    "useDefineForClassFields": true,
-    "allowImportingTsExtensions": true
+    "moduleResolution": "node",
+    "useDefineForClassFields": true
   },
   "include": ["docs", "theme", "rspress.config.ts"],
   "mdx": {

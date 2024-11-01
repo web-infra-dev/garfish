@@ -1,0 +1,71 @@
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @format
+ */
+
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.userLogo {
+  max-width: 80px;
+}
+
+ .userDetailWrapper {
+  max-width: 60%;
+  margin: auto;
+  margin-top: 80px;
+ }
+
+.userDetailTitle {
+  text-align: center;
+  font-weight: bold
+}
+html[data-theme=dark] .userDetailTitle {
+  color: #999;
+}
+.userContent {
+  display: flex;
+  justify-content: space-between;
+}
+
+.features {
+  padding: 40px 0 100px;
+  display: flex;
+}
+
+.featureItem {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  margin: 50px 0;
+}
+
+.featureItem a {
+  color: #333
+}
+
+.featureItem a:hover {
+  text-decoration: none;
+}
+
+.featureImage {
+  margin-bottom: 16px;
+}
+
+.featureImage img {
+  width: 60px;
+}
+
+.featureDescription {
+  font-size: 14px;
+}
+
+html[data-theme=dark] .featureItem a {
+  color: #fff;
+}

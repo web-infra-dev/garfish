@@ -3,11 +3,13 @@
 import WebpackConfig from '@components/config/_webpackConfig.mdx';
 
 import ViteConfig from '@components/config/_viteConfig.mdx';
+import { Tab, Tabs } from 'rspress/theme';
 
 本节分别从主、子 应用视角出发，介绍如何通过 [Garfish API](/api) 来将应用接入 Garfish 框架
 
 :::tip 在线预览
 <a href="https://stackblitz.com/edit/garfish-demo?file=react-sub%2Fsrc%2FApp.js"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" width="150"/></a>
+
 :::
 
 ## 主应用
@@ -57,6 +59,7 @@ Garfish.run({
 
 1. 将挂载点设置为常驻挂载点，不要跟随路由变化使子应用挂载点销毁和出现
 2. 保证 Garfish 在渲染时挂载点存在
+
 :::
 
 如果你的业务需要手动控制应用加载，可以使用 [Garfish.loadApp](/api/loadApp.md) 手动加载 APP：
@@ -85,16 +88,16 @@ app.mounted ? app.show() : await app.mount();
 ### 1.调整子应用的构建配置
 
 <Tabs>
-  <TabItem value="Webpack" label="Webpack" default>
+  <Tab value="Webpack" label="Webpack" default>
 
 <WebpackConfig />
 
-   </TabItem>
-   <TabItem value="vite" label="Vite" default>
+   </Tab>
+   <Tab value="vite" label="Vite" default>
 
 <ViteConfig />
 
-  </TabItem>
+  </Tab>
 </Tabs>
 
 ### 2.导出 provider 函数
@@ -107,7 +110,7 @@ npm install @garfish/bridge-react --save
 ```
 
 <Tabs>
-  <TabItem value="Webpack" label="使用 @garfish/bridge-react 接入" default>
+  <Tab value="Webpack" label="使用 @garfish/bridge-react 接入" default>
 
 ```jsx
 import { reactBridge } from '@garfish/bridge-react';
@@ -119,8 +122,8 @@ export const provider = reactBridge({
 });
 ```
 
-  </TabItem>
-  <TabItem value="vite" label="自定义导出函数" default>
+  </Tab>
+  <Tab value="vite" label="自定义导出函数" default>
 
 ```tsx
 import React from 'react';
@@ -152,7 +155,7 @@ export const provider = () => ({
 });
 ```
 
-  </TabItem>
+  </Tab>
 </Tabs>
 
 ### 3. 设置应用路由 `basename`
