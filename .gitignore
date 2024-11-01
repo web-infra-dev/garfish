@@ -9,7 +9,7 @@ es/
 .rts2_cache/
 .yarn/
 temp/
-/docs
+/
 # .npmrc
 **/.angular
 .wireit
@@ -39,8 +39,6 @@ lerna-debug.log
 
 
 # use pnpm ignore lock files
-package-lock.json
 yarn.lock
-**/package-lock.json
 **/yarn.lock
 .wireit

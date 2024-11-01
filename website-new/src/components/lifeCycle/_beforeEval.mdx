@@ -1,0 +1,23 @@
+
+
+- Type: <Highlight> (appInfo: AppInfo, code: string, env: `Record<string, any>`, url: string, options) => void </Highlight>
+  - 该 `hook` 的参数分别为：`appInfo` 信息、`code` 执行的代码、`env` 要注入的环境变量，`url` 代码的资源地址、`options` 参数选项（例如 `async` 是否异步执行、`noEntry` 是否是 `noEntry` 模式）；
+- Kind: `sync`, `sequential`
+- Previous Hook: `beforeMount`
+- Trigger:
+
+  - 在子应用挂载过程中、实际执行代码前触发该 hook；
+  - 应用 html 内的 script 和动态创建的脚本执行时都会触发该 hook
+  - 此时 DOM 树已添加至文档流中，子应用代码准备执行；
+  - 若代码执行过程中抛出异常，则将触发 [errorMountApp](/api/run#errormountapp)，否则触发 [beforeEval](/api/run#afterEval)
+
+- 示例
+
+```ts
+Garfish.run({
+  ...,
+  beforeEval(appInfo) {
+    console.log('子应用代码开始执行', appInfo.name);
+  }
+})
+```

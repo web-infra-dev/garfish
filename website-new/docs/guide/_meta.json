@@ -1,0 +1,30 @@
+[
+  {
+    "type": "dir",
+    "name": "quick-start",
+    "label": "快速上手",
+    "collapsible": false,
+    "collapsed": false
+  },
+  {
+    "type": "dir",
+    "name": "demo",
+    "label": "接入指南",
+    "collapsible": false,
+    "collapsed": false
+  },
+  {
+    "type": "dir",
+    "name": "concept",
+    "label": "核心能力",
+    "collapsible": false,
+    "collapsed": false
+  },
+  {
+    "type": "dir",
+    "name": "advance",
+    "label": "进阶",
+    "collapsible": false,
+    "collapsed": false
+  }
+]

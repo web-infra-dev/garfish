@@ -1,0 +1,22 @@
+[
+  {
+    "text": "指南",
+    "link": "/guide/quick-start/",
+    "activeMatch": "/guide/"
+  },
+  {
+    "text": "API",
+    "link": "/api/index",
+    "activeMatch": "/api/"
+  },
+  {
+    "text": "博客",
+    "link": "/blog/architecture",
+    "activeMatch": "/blog/"
+  },
+  {
+    "text": "常见问题",
+    "link": "/issues/index",
+    "activeMatch": "/issues/"
+  }
+]
