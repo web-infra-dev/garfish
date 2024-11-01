@@ -40,6 +40,11 @@
   "resolutions": {
     "terser": "5.10.0"
   },
+  "pnpm": {
+    "overrides": {
+      "@docusaurus/theme-common": "2.1.0"
+    }
+  },
   "browserslist": {
     "production": [
       ">0.5%",
