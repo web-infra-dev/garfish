@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 overrides:
   '@docusaurus/theme-common': 2.1.0
+  nodejieba: 2.6.0
 
 importers:
 
@@ -18,7 +19,7 @@ importers:
       cld: 2.7.1
       clsx: 1.1.1
       front-matter: 4.0.2
-      nodejieba: 2.5.2
+      nodejieba: 2.6.0
       react: ^17.0.2
       react-dom: ^17.0.2
       swiper: 8.1.6
@@ -34,7 +35,7 @@ importers:
       cld: 2.7.1
       clsx: 1.1.1
       front-matter: 4.0.2
-      nodejieba: 2.5.2
+      nodejieba: 2.6.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       swiper: 8.1.6
@@ -9301,8 +9302,8 @@ packages:
     resolution: {integrity: sha512-d9VeXT4SJ7ZeOqGX6R5EM022wpL+eWPooLI+5UpWn2jCT1aosUQEhQP214x33Wkwx3JQMvIm+tIoVOdodFS40g==}
     dev: false
 
-  /nodejieba/2.5.2:
-    resolution: {integrity: sha512-ByskJvaBrQ2eV+5M0OeD80S5NKoGaHc9zi3Z/PTKl/95eac2YF8RmWduq9AknLpkQLrLAIcqurrtC6BzjpKwwg==}
+  /nodejieba/2.6.0:
+    resolution: {integrity: sha512-cyEOLRGLjDuxbTuv6nuMAK3NpML4ft9i7st98TFHvXtg+m3RFhIuf4INBHGp3VhUaqPsCTfAkhHB/ZNTFiwJjg==}
     engines: {node: '>= 10.20.0'}
     requiresBuild: true
     dependencies:
