@@ -42,8 +42,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@docusaurus/theme-common": "2.1.0",
-      "nodejieba": "3.4.3"
+      "@docusaurus/theme-common": "2.1.0"
     }
   },
   "browserslist": {
