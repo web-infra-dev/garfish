@@ -18,11 +18,11 @@ import AfterUnmount from '@site/src/components/lifeCycle/\_afterUnmount.mdx';
 import ErrorUnmountApp from '@site/src/components/lifeCycle/\_errorUnmountApp.mdx';
 import OnNotMatchRouter from '@site/src/components/lifeCycle/\_onNotMatchRouter.mdx';
 
-Garfish 框架引入了插件化机制，目的是为了让开发者能够通过编写插件的方式扩展更多功能，或为自身业务定制个性化功能；同时框架的基础能力也都是通过插件机制来实现，确保框架核心足够精简和稳定。
+Garfish 框架引入了插件化机制，目的是为了让开发者能够通过编写插件的方式来扩展更多功能，或为自身业务定制个性化功能；同时框架的基础能力也都是通过插件机制来实现，确保框架核心足够精简和稳定。
 
 ## 插件能做什么
 
-插件的功能范围没有严格的限制——一般有下面两种：
+插件的功能范围没有严格的限制，一般有下面两种：
 
 1. 添加全局方法或增加默认参数
 2. 在应用的生命周期中自定义功能（例如：`Garfish router`、`Garfish sandbox`）
