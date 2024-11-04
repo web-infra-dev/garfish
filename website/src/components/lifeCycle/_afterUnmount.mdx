@@ -1,8 +1,0 @@
-import Highlight from '@site/src/components/Highlight';
-
-- Type: <Highlight> ( appInfo: AppInfo, appInstance: interfaces.App) => void </Highlight>
-- Kind: `sync`, `sequential`
-- Trigger:
-  - 此时，应用在渲和运行过程中产生的副作用已清除，DOM 已卸载，沙箱副作用已清除，garfish 实例 `activeApps` 当前 app 已移除；
-  - 在应用销毁过程中会调用应用生命周期中的 [`destory` 函数](/guide/start#2导出-provider-函数)，用户可在销毁前定义相关操作；
-  - 若应用卸载过程中出现异常，会触发 [errorUnmountApp](/api/run#errorUnmountApp)

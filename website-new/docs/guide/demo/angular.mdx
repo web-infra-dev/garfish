@@ -35,7 +35,7 @@ npm install @angular-builders/custom-webpack:dev-server -D
 // angular.json
 "builder": "@angular-builders/custom-webpack:dev-server",
 ```
-:::caution
+:::danger
 1. 请注意，在 [packageName] > architect > build > options 的配置中，index 属性我们设置为空，这是因为在 angular 13 中编译产物默认会带上 esm 标识，即 type=module, 即使打包产物是 umd 格式，这会导致 garfish 加载子应用失败；
 2. index 置空后，编译产物会去除 es module 标识，子应用加载正常；
 
@@ -44,7 +44,8 @@ npm install @angular-builders/custom-webpack:dev-server -D
 
 ### 3. 添加 webpack 配置文件
 
-:::caution 【重要】注意：
+:::tip danger
+【重要】注意：
 1. libraryTarget 需要配置成 umd 规范；
 2. globalObject 需要设置为 'window'，以避免由于不规范的代码格式导致的逃逸沙箱；
 3. 如果你的 webpack 为 v4 版本，需要设置 jsonpFunction 并保证该值唯一（否则可能出现 webpack chunk 互相影响的可能）。若为 webpack5 将会直接使用 package.json name 作为唯一值，请确保应用间的 name 各不相同；
@@ -129,6 +130,7 @@ module.exports = {
 3. 目前主应用仅支持 history 模式的子应用路由，[why](../../issues/childApp.md#为什么主应用仅支持-history-模式)
 
 :::
+
 ```ts
 // app.module.ts
 import { NgModule } from '@angular/core';
