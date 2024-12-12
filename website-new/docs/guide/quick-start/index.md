@@ -43,7 +43,7 @@ Garfish 是一套 [微前端](https://micro-frontends.org/) 解决方案，主�
 
 ![image.png](https://p-vcloud.byteimg.com/tos-cn-i-em5hxbkur4/d456c7d2235c41daa298aba69ade435f~tplv-em5hxbkur4-noop.image?width=1126&height=454)
 
-具体可参考 [微前端架构设计](/blog) 这篇文章中的详细介绍
+具体可参考 [微前端架构设计](/blog/architecture) 这篇文章中的详细介绍
 
 ## 什么时候用
 
