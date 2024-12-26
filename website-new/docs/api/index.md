@@ -17,11 +17,11 @@ import Garfish from "garfish";
 
 ## Garfish 实例方法
 - [Garfish.run](/api/run) （用于初始化应用参数、启动路由监听，当路由发生变化时自动激活应用或销毁应用）
-- [Garfish.registerApp](/api/registerapp)（用于动态注册应用信息）
-- [Garfish.loadApp](/api/loadapp)（可以手动控制子应用加载和销毁）
+- [Garfish.registerApp](/api/registerApp)（用于动态注册应用信息）
+- [Garfish.loadApp](/api/loadApp)（可以手动控制子应用加载和销毁）
 - [Garfish.router](/api/router)（提供路由跳转和路由守卫能力）
 - [Garfish.channel](/api/channel)（提供应用间通信的能力）
-- [Garfish.setExternal](/api/setexternal)（支持应用间的依赖共享）
-- [Garfish.getGlobalObject](/api/getglobalobject)（用于获取真实 Window）
-- [Garfish.setGlobalObject](/api/getglobalobject)（用于设置真实 Window 的值）
-- [Garfish.clearEscapeEffect](/api/getglobalobject)（用于清除逃逸的副作用）
+- [Garfish.setExternal](/api/setExternal)（支持应用间的依赖共享）
+- [Garfish.getGlobalObject](/api/getGlobal)（用于获取真实 Window）
+- [Garfish.setGlobalObject](/api/setGlobal)（用于设置真实 Window 的值）
+- [Garfish.clearEscapeEffect](/api/clearEscapeEffect)（用于清除逃逸的副作用）
