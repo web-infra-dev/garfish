@@ -1,1 +1,15 @@
-["index", "run", "registerApp", "loadApp", "loader", "preloadApp", "channel", "router", "setOptioins", "setExternal", "setGlobal", "clearEscapeEffect"]
+[
+	"index",
+	"run",
+	"registerApp",
+	"loadApp",
+	"loader",
+	"preloadApp",
+	"channel",
+	"router",
+	"setOptioins",
+	"setExternal",
+	"setGlobal",
+	"getGlobal",
+	"clearEscapeEffect"
+]
