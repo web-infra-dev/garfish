@@ -90,6 +90,7 @@ export class App {
   public customLoader?: CustomerLoader;
   public childGarfishConfig: interfaces.ChildGarfishConfig = {};
   public asyncProviderTimeout: number;
+  public execScriptCache = new Map<string, boolean>();
 
   // private
   private active = false;
@@ -429,6 +430,7 @@ export class App {
       this.provider = undefined;
       this.customExports = {};
       this.cjsModules.exports = {};
+      this.execScriptCache.clear();
       this.esModuleLoader.destroy();
       remove(this.context.activeApps, this);
       this.hooks.lifecycle.afterUnmount.emit(this.appInfo, this, false);
@@ -464,12 +466,18 @@ export class App {
   }
 
   // Performs js resources provided by the module, finally get the content of the export
-  async compileAndRenderContainer() {
+  async compileAndRenderContainer(options?: { preExecScript: boolean }) {
     // Render the application node
     // If you don't want to use the CJS export, at the entrance is not can not pass the module, the require
-    await this.renderTemplate();
+    if (!options?.preExecScript) {
+      await this.renderTemplate();
+    }
 
     const execScript = (type: 'async' | 'defer') => {
+      if (this.execScriptCache.get(type)) {
+        return;
+      }
+
       for (const jsManager of this.resources.js) {
         if (jsManager[type]) {
           try {
@@ -506,6 +514,10 @@ export class App {
           }
         }
       }
+
+      if (options?.preExecScript) {
+        this.execScriptCache.set(type, true);
+      }
     };
 
     // Execute asynchronous script and defer script
@@ -522,6 +534,11 @@ export class App {
         });
       }),
     };
+  }
+
+  async preExecScript() {
+    const { deferScripts } = await this.compileAndRenderContainer({ preExecScript: true });
+    deferScripts();
   }
 
   private canMount() {

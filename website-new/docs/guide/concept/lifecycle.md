@@ -51,3 +51,9 @@ app.hide 做了哪些事件
 2. 将 `app` 的容器从文档流上移除
 3. 将 `app.display` 设置为 `false`
 4. 同上，可以根据返回值来判断是否隐藏成功。
+
+### preExecScript
+
+app.preExecScript 做了哪些事件
+
+1. 前置编译子应用的 `defer` 代码，后续的 `app.mount` 会复用编译的结果
