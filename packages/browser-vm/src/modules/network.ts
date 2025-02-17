@@ -26,7 +26,7 @@ export function networkModule(sandbox: Sandbox) {
     }
 
     open() {
-      // sync request 
+      // sync request
       if (arguments[2] === false) {
         xhrSet.delete(this);
       }
@@ -83,7 +83,7 @@ export function networkModule(sandbox: Sandbox) {
       });
     }
     let controller;
-    if (!hasOwn(options, 'signal') && window.AbortController) {
+    if (!(input instanceof Request) && !hasOwn(options, 'signal') && window.AbortController) {
       controller = new window.AbortController();
       if (!sandbox.options.disableCollect) {
         fetchSet.add(controller);
