@@ -51,6 +51,10 @@ export function networkModule(sandbox: Sandbox) {
       xhrSet.delete(this);
       return super.abort.apply(this, arguments);
     }
+
+    send() {
+      return super.send.apply(this, arguments);
+    }
   }
 
   class fakeWebSocket extends WebSocket {
