@@ -39,6 +39,7 @@ yarn add garfish
 - [关于 Garfish](https://garfishjs.org/guide)
 - [快速开始](https://www.garfishjs.org/guide/start)
 - [API](https://garfishjs.org/api)
+- [自助问答](https://deepwiki.com/web-infra-dev/garfish) - 通过这个链接进行自主问答。
 
 ## 功能
 
