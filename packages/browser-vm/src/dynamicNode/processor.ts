@@ -339,7 +339,7 @@ export class DynamicNodeProcessor {
 
     // Deal with some static resource nodes
     if (sourceListTags.includes(this.tagName)) {
-      this.fixResourceNodeUrl(this.el);
+      safeWrapper(() => this.fixResourceNodeUrl(this.el));
     }
 
     // Add dynamic script node by loader
