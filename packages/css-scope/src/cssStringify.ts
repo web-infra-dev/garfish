@@ -17,6 +17,7 @@ import {
   NamespaceNode,
   StylesheetNode,
   CustomMediaNode,
+  ContainerNode,
 } from './globalTypes';
 import { processAnimation } from './animationParser';
 
@@ -106,6 +107,15 @@ class Compiler {
   media(node: MediaNode) {
     return (
       this.emit(`@media ${node.media}`, node.position) +
+      this.emit(` {\n${this.indent(1)}`) +
+      this.mapVisit(node.rules, '\n\n') +
+      this.emit(`${this.indent(-1)}\n}`)
+    );
+  }
+
+  container(node: ContainerNode) {
+    return (
+      this.emit(`@container ${node.container}`, node.position) +
       this.emit(` {\n${this.indent(1)}`) +
       this.mapVisit(node.rules, '\n\n') +
       this.emit(`${this.indent(-1)}\n}`)

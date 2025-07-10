@@ -94,12 +94,18 @@ export interface StylesheetNode extends BaseNode<'stylesheet'> {
   };
 }
 
+export interface ContainerNode extends BaseNode<'container'> {
+  container: string;
+  rules: Array<Node>;
+}
+
 export type Node =
   | DeclNode
   | PageNode
   | HostNode
   | RuleNode
   | MediaNode
+  | ContainerNode
   | ImportNode
   | CharsetNode
   | CommentNode
