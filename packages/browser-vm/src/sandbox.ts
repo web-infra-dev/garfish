@@ -74,7 +74,7 @@ export class Sandbox {
   public options: SandboxOptions;
   public hooks = sandboxLifecycle();
   public replaceGlobalVariables: ReplaceGlobalVariables;
-  public deferClearEffects: Set<() => void> = new Set();
+  public deferClearEffects: Set<WeakRef<() => void>> = new Set();
   public isExternalGlobalVariable: Set<PropertyKey> = new Set();
   public isProtectVariable: (p: PropertyKey) => boolean;
   public isInsulationVariable: (P: PropertyKey) => boolean;
@@ -243,7 +243,7 @@ export class Sandbox {
     this.hooks.lifecycle.beforeClearEffect.emit();
     this.replaceGlobalVariables.recoverList.forEach((fn) => fn && fn());
     // `deferClearEffects` needs to be put at the end
-    this.deferClearEffects.forEach((fn) => fn && fn());
+    this.deferClearEffects.forEach((fn) => fn && fn.deref()?.());
     this.hooks.lifecycle.afterClearEffect.emit();
   }
 

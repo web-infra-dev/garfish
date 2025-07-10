@@ -1,3 +1,4 @@
+import './polyfill/weakRef';
 export { GarfishBrowserVm } from './pluginify';
 export { Sandbox as default } from './sandbox';
 export type {
