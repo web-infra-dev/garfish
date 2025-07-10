@@ -389,10 +389,11 @@ export class DynamicNodeProcessor {
       document.contains(parentNode)
     ) {
       if (parentNode !== this.rootElement) {
-        this.sandbox.deferClearEffects.add(() => {
+        const clearCallback = new WeakRef(() => {
           this.DOMApis.removeElement(this.el);
           return this.el;
         });
+        this.sandbox.deferClearEffects.add(clearCallback);
       }
     }
 
