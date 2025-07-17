@@ -18,9 +18,9 @@
   },
   "exports": {
     ".": {
+      "types": "./index.d.ts",
       "import": "./dist/esm/index.js",
-      "require": "./dist/index.js",
-      "types": "./index.d.ts"
+      "require": "./dist/index.js"
     },
     "./*": "./*"
   },
