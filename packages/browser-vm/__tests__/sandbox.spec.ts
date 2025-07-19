@@ -230,4 +230,16 @@ describe('Sandbox', () => {
     );
     env.a = 'changedEnvA';
   });
+
+  it('func in window bound test', (next) => {
+    const NOOP = () => {};
+    NOOP.n = 111;
+    (window as any).n = NOOP;
+    expect((window as any).n).toBe(NOOP);
+    expect((window as any).n.n).toBe(111);
+    sandbox.execScript(
+      go('expect(window.n.n).toBe(111);next();'),
+      { next }
+    );
+  });
 });
