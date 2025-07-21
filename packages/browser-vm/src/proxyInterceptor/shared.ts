@@ -114,12 +114,12 @@ const buildInProps = makeMap([
   Symbol.hasInstance,
 ]);
 
-function transferProps(o: Function, n: Function) {
-  for (const key of Reflect.ownKeys(o)) {
+function transferProps(source: Function, target: Function) {
+  for (const key of Reflect.ownKeys(source)) {
     if (buildInProps(key)) continue;
-    const desc = Object.getOwnPropertyDescriptor(n, key);
+    const desc = Object.getOwnPropertyDescriptor(source, key);
     if (desc && desc.writable) {
-      n[key] = o[key];
+      target[key] = source[key];
     }
   }
 }
