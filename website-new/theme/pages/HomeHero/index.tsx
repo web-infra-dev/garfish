@@ -33,14 +33,16 @@ export function HomeHero({ hero }: { hero: Hero }) {
           </h1>
           {hero.text?.length && (
             <p
-              className={"pb-2 mx-auto md:m-0 text-3xl sm:text-5xl md:text-6xl font-bold z-10  max-w-xs sm:max-w-xl"}
+              className={
+                'pb-2 mx-auto md:m-0 text-3xl sm:text-5xl md:text-6xl font-bold z-10  max-w-xs sm:max-w-xl'
+              }
               style={{ lineHeight: '1.15' }}
             >
               {hero.text}
             </p>
           )}
 
-          <p className="pt-2 m-auto md:m-0 text-sm sm:text-xl md:text-2xl text-text-2 font-medium z-10 whitespace-pre-wrap">
+          <p className="pt-2 m-auto md:m-0 text-sm text-gray-500 font-medium z-10 whitespace-pre-wrap">
             {hero.tagline}
           </p>
           <div className="justify-center gap-3 flex flex-wrap m--1.5 pt-4 z-10">
@@ -49,21 +51,27 @@ export function HomeHero({ hero }: { hero: Hero }) {
                 <Button
                   className="pl-2 pr-2"
                   type="a"
-                  text={action.text}
                   href={normalizeHrefInRuntime(action.link)}
                   theme={action.theme}
-                />
+                >
+                  {action.text}
+                </Button>
               </div>
             ))}
           </div>
         </div>
 
-        {hasImage ? (
+        {hasImage
+? (
           <div className="modern-doc-home-hero-image m-auto flex-center md:none lg:flex order-1 md:order-2">
             <div className={styles.imgMask} />
-            <img src="https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/icons/icon.png" alt={hero.image?.alt} />
+            <img
+              src="https://lf3-static.bytednsdoc.com/obj/eden-cn/dhozeh7vhpebvog/open-garfish/icons/icon.png"
+              alt={hero.image?.alt}
+            />
           </div>
-        ) : null}
+        )
+: null}
       </div>
     </div>
   );

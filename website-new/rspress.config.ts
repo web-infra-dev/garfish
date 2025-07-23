@@ -1,4 +1,5 @@
 import * as path from 'node:path';
+import { pluginSass } from '@rsbuild/plugin-sass';
 import { defineConfig } from 'rspress/config';
 
 export default defineConfig({
@@ -22,6 +23,7 @@ export default defineConfig({
     ],
   },
   builderConfig: {
+    plugins: [pluginSass()],
     source: {
       alias: {
         '@components': path.join(__dirname, 'src/components'),

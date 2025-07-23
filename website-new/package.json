@@ -8,11 +8,14 @@
     "preview": "rspress preview"
   },
   "dependencies": {
-    "rspress": "^1.32.0",
-    "swiper": "8.1.6",
-    "clsx": "1.1.1"
+    "@rspress/plugin-llms": "2.0.0-beta.21",
+    "clsx": "1.1.1",
+    "rspress": "2.0.0-beta.21",
+    "swiper": "8.1.6"
   },
   "devDependencies": {
-    "@types/node": "^16"
+    "@rsbuild/plugin-sass": "1.3.3",
+    "@types/node": "^16",
+    "tailwindcss": "^3"
   }
 }
