@@ -1,5 +1,7 @@
 
 
+import Highlight from '@components/Highlight';
+
 - Type: <Highlight> (error: Error, appInfo: AppInfo, appInstance: interfaces.App) => void </Highlight>
   - 该 `hook` 的参数分别为：`error` 实例、 `appInfo` 信息、`appInstance` 应用实例
   - 一旦设置该 hook，子应用加载错误不会 throw 到文档流中，全局错误监听将无法捕获到；

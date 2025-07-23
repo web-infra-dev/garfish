@@ -1,10 +1,7 @@
-import Theme, { Search, Link } from 'rspress/theme';
 import { HomeLayout } from './pages/index';
+import './global.css';
 
-
-
-export default {
-  ...Theme,
+export {
   HomeLayout,
 };
 

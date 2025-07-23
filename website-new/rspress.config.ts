@@ -1,5 +1,7 @@
 import * as path from 'node:path';
+import { pluginSass } from '@rsbuild/plugin-sass';
 import { defineConfig } from 'rspress/config';
+import { pluginLlms } from '@rspress/plugin-llms';
 
 export default defineConfig({
   root: path.join(__dirname, 'docs'),
@@ -22,10 +24,14 @@ export default defineConfig({
     ],
   },
   builderConfig: {
-    source: {
+    plugins: [pluginSass()],
+    resolve: {
       alias: {
         '@components': path.join(__dirname, 'src/components'),
       },
     },
   },
+  plugins: [
+    pluginLlms(),
+  ],
 });

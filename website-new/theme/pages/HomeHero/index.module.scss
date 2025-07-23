@@ -24,6 +24,8 @@
   z-index: 0;
 }
 
+
+
 :global(.dark) .mask {
   opacity: 0.25;
 }
@@ -36,6 +38,8 @@
   img {
     position: absolute;
     width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
     object-fit: cover;
   }
 }
