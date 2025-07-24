@@ -98,6 +98,7 @@ export class App {
   // Environment variables injected by garfish for linkage with child applications
   private globalEnvVariables: Record<string, any>;
   private deferNodeMap = new Map();
+  private asyncNodeMap = new Map();
   private resolveAsyncProvider: () => void | undefined;
   private asyncProvider?:
     | interfaces.Provider
@@ -476,18 +477,42 @@ export class App {
             let noEntry = false;
             const targetUrl = jsManager.url || this.appInfo.entry;
 
+            const mockOriginScript = document.createElement('script');
+
             if (type === 'defer') {
               const node = this.deferNodeMap.get(jsManager);
               if (node) {
                 noEntry = toBoolean(
                   this.entryManager.findAttributeValue(node, 'no-entry'),
                 );
+
+                node.attributes.forEach((attribute) => {
+                  if (attribute.key) {
+                    mockOriginScript.setAttribute(
+                      attribute.key,
+                      attribute.value || '',
+                    );
+                  }
+                });
               }
               // Try to read the childApp global configuration
               if (!noEntry) {
                 noEntry = toBoolean(this.isNoEntryScript(targetUrl));
               }
             }
+
+            const node = this.asyncNodeMap.get(jsManager);
+            if (node) {
+              node.attributes.forEach((attribute) => {
+                if (attribute.key) {
+                  mockOriginScript.setAttribute(
+                    attribute.key,
+                    attribute.value || '',
+                  );
+                }
+              });
+            }
+            
             this.execScript(jsManager.scriptCode, {}, targetUrl, {
               noEntry,
               defer: type === 'defer',
@@ -703,36 +728,40 @@ export class App {
         }
 
         const jsManager = resources.js.find((manager) => {
-          return !manager.async ? manager.isSameOrigin(node) : false;
+          if (manager.async) {
+            this.asyncNodeMap.set(manager, node);
+            return false;
+          }
+          if (manager.defer) {
+            this.deferNodeMap.set(manager, node);
+            return false;
+          }
+          return manager.isSameOrigin(node);
         });
 
         if (jsManager) {
-          if (jsManager.defer) {
-            this.deferNodeMap.set(jsManager, node);
-          } else {
-            const { url, scriptCode } = jsManager;
-            const mockOriginScript = document.createElement('script');
-            node.attributes.forEach((attribute) => {
-              if (attribute.key) {
-                mockOriginScript.setAttribute(
-                  attribute.key,
-                  attribute.value || '',
-                );
-              }
-            });
+          const { url, scriptCode } = jsManager;
+          const mockOriginScript = document.createElement('script');
+          node.attributes.forEach((attribute) => {
+            if (attribute.key) {
+              mockOriginScript.setAttribute(
+                attribute.key,
+                attribute.value || '',
+              );
+            }
+          });
 
-            const targetUrl = url || this.appInfo.entry;
-            this.execScript(scriptCode, {}, targetUrl, {
-              isModule,
-              async: false,
-              defer: false,
-              isInline: jsManager.isInlineScript(),
-              noEntry:
-                toBoolean(entryManager.findAttributeValue(node, 'no-entry')) ||
-                toBoolean(this.isNoEntryScript(targetUrl)),
-              originScript: mockOriginScript,
-            });
-          }
+          const targetUrl = url || this.appInfo.entry;
+          this.execScript(scriptCode, {}, targetUrl, {
+            isModule,
+            async: false,
+            defer: false,
+            isInline: jsManager.isInlineScript(),
+            noEntry:
+              toBoolean(entryManager.findAttributeValue(node, 'no-entry')) ||
+              toBoolean(this.isNoEntryScript(targetUrl)),
+            originScript: mockOriginScript,
+          });
         } else if (__DEV__) {
           const async = entryManager.findAttributeValue(node, 'async');
           if (typeof async === 'undefined' || async === 'false') {
