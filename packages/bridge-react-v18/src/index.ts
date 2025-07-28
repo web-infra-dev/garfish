@@ -1,2 +1,2 @@
 export { reactBridge } from './reactBridge';
-export type { PropsInfo } from './types';
+export type { PropsInfo, AppInfo } from './types';
