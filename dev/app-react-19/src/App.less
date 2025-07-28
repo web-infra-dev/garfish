@@ -1,0 +1,58 @@
+@import '../node_modules/@arco-design/web-react/dist/css/index.less';
+
+@prefix: sub-app-react16;
+
+.@{prefix}-layout-content {
+  .App {
+    text-align: center;
+    background-color: #282c34;
+    font-size: 18px;
+    overflow: hidden;
+    color: white;
+  }
+
+  .App-logo {
+    height: 200px;
+    pointer-events: none;
+  }
+
+  .App ul {
+    display: inline-block;
+    list-style: none;
+  }
+
+  .App li {
+    display: inline-block;
+    list-style: none;
+    padding: 10px;
+  }
+
+  .App a:visited {
+    color: #61dafb;
+  }
+
+  .App a.active {
+    color: #7fffd4;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+      animation: App-logo-spin infinite 20s linear;
+    }
+  }
+
+  .click-btn {
+    color: coral;
+    cursor: pointer;
+    margin-top: 6px;
+  }
+
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}

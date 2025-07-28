@@ -39,6 +39,11 @@ export const localApps: AppInfo = [
     entry: getProxyHost('dev/react18'),
   },
   {
+    name: 'react19',
+    activeWhen: '/react19',
+    entry: getProxyHost('dev/react19'),
+  },
+  {
     name: 'vue3',
     activeWhen: '/vue3',
     // 提供不同的挂载点，react 应用使用全局的 domGetter 挂载点
