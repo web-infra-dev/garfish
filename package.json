@@ -57,7 +57,7 @@
     "@types/node": "^12.20.52",
     "@typescript-eslint/eslint-plugin": "5.4.0",
     "@typescript-eslint/parser": "5.4.0",
-    "axios": "0.24.0",
+    "axios": "0.30.0",
     "babel-polyfill": "6.26.0",
     "chalk": "4.1.2",
     "codecov": "^3.8.3",
