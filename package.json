@@ -99,7 +99,7 @@
   },
   "pnpm": {
     "overrides": {
-      "esbuild": "0.14.22",
+      "esbuild": "0.25.0",
       "stylus": "github:stylus/stylus#0.56.0"
     }
   }
