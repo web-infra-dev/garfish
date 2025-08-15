@@ -79,7 +79,7 @@
     "lodash": "4.17.21",
     "minimist": "1.2.5",
     "pnpm": "7.6.0",
-    "prettier": "2.4.1",
+    "prettier": "2.8.8",
     "prettier-eslint-cli": "5.0.1",
     "rimraf": "3.0.2",
     "semver": "^7.3.7",
