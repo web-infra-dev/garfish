@@ -36,10 +36,10 @@
     "dev": "cross-env WATCH=true tsup src/index.ts"
   },
   "devDependencies": {
-    "vue": "2.6.13"
+    "vue": "3.0.0"
   },
   "peerDependencies": {
-    "vue": "=2"
+    "vue": "=3.0.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

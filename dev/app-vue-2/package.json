@@ -7,7 +7,7 @@
     "garfish": "workspace:*",
     "mobx-vue": "^2.1.0",
     "core-js": "^3.6.5",
-    "vue": "2.6.13",
+    "vue": "3.0.0",
     "vue-router": "^3.5.3",
     "vuex": "^3.6.2"
   },
