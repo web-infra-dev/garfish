@@ -78,7 +78,7 @@
     "lint-staged": "11.2.6",
     "lodash": "4.17.21",
     "minimist": "1.2.5",
-    "pnpm": "7.6.0",
+    "pnpm": "10.0.0",
     "prettier": "2.4.1",
     "prettier-eslint-cli": "5.0.1",
     "rimraf": "3.0.2",
@@ -93,7 +93,7 @@
     "zx": "4.2.0"
   },
   "version": "1.19.5",
-  "packageManager": "pnpm@7.6.0",
+  "packageManager": "pnpm@10.0.0",
   "engines": {
     "node": ">=16.14.0"
   },
