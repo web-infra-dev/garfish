@@ -119,6 +119,53 @@ export const provider = () => {
   </Tab>
 </Tabs>
 
+### react v19 导出
+
+<Tabs>
+  <Tab value="bridge_provider" label="使用 @garfish/bridge-react-v19" default>
+
+```tsx
+// src/index.tsx
+import { reactBridge } from '@garfish/bridge-react-v19';
+import RootComponent from './root';
+import ErrorBoundary from './ErrorBoundary';
+
+export const provider = reactBridge({
+  el: '#root',
+  rootComponent: RootComponent,
+  errorBoundary: (e: any) => <ErrorBoundary />,
+});
+
+```
+
+  </Tab>
+
+  <Tab value="customer_provider" label="自定义导出函数" default>
+
+```tsx
+// src/index.tsx
+import { createRoot } from 'react-dom/client';
+import RootComponent from './root';
+
+// 在首次加载和执行时会触发该函数
+export const provider = () => {
+  let root = null;
+  return {
+    render({ basename, dom, store, props }) {
+      const container = dom.querySelector('#root');
+      root = createRoot(container!);
+      (root as any).render(<RootComponent basename={basename} />);
+    },
+    destroy({ dom }) {
+      (root as any).unmount();
+    },
+  };
+};
+```
+
+  </Tab>
+</Tabs>
+
 ### 3. 根组件设置路由的 basename
 
 :::info

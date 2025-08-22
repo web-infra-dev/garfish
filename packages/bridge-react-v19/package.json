@@ -1,0 +1,53 @@
+{
+  "name": "@garfish/bridge-react-v19",
+  "version": "0.0.1",
+  "description": "garfish bridge for react v19",
+  "keywords": [
+    "garfish",
+    "micro frontend"
+  ],
+  "files": [
+    "dist"
+  ],
+  "author": "rain120 <1085131904@qq.com>",
+  "homepage": "https://github.com/bytedance/garfish",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytedance/garfish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bytedance/garfish/issues"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/index.js"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsup src/index.ts",
+    "dev": "cross-env WATCH=true tsup src/index.ts"
+  },
+  "dependencies": {
+    "@garfish/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "peerDependencies": {
+    "react": "=19",
+    "react-dom": "=19"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "gitHead": "da33dd16bb9e99588f34079f8b961d0cf9f059fc"
+}
