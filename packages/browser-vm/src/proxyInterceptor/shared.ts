@@ -117,7 +117,7 @@ const buildInProps = makeMap([
 function transferProps(source: Function, target: Function) {
   for (const key of Reflect.ownKeys(source)) {
     if (buildInProps(key)) continue;
-    const desc = Object.getOwnPropertyDescriptor(source, key);
+    const desc = Object.getOwnPropertyDescriptor(target, key);
     if (desc && desc.writable) {
       target[key] = source[key];
     }
