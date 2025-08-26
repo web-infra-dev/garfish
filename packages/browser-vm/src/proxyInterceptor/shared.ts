@@ -117,9 +117,36 @@ const buildInProps = makeMap([
 function transferProps(source: Function, target: Function) {
   for (const key of Reflect.ownKeys(source)) {
     if (buildInProps(key)) continue;
-    const desc = Object.getOwnPropertyDescriptor(target, key);
-    if (desc && desc.writable) {
-      target[key] = source[key];
+    
+    const sourceDesc = Object.getOwnPropertyDescriptor(source, key);
+    const targetDesc = Object.getOwnPropertyDescriptor(target, key);
+    
+    // Skip if target function already has this property and it's not configurable
+    if (targetDesc && !targetDesc.configurable) {
+      continue;
+    }
+    
+    // If source function has this property, try to copy it
+    if (sourceDesc) {
+      try {
+        // Try direct assignment first
+        target[key] = source[key];
+      } catch (e) {
+        // If direct assignment fails, try using defineProperty
+        try {
+          Object.defineProperty(target, key, {
+            value: source[key],
+            writable: sourceDesc.writable,
+            enumerable: sourceDesc.enumerable,
+            configurable: sourceDesc.configurable
+          });
+        } catch (defineError) {
+          // If still fails, skip this property
+          if (__DEV__) {
+            console.warn(`Failed to transfer property ${String(key)}:`, defineError);
+          }
+        }
+      }
     }
   }
 }

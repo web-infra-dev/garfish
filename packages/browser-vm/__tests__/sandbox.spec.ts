@@ -242,4 +242,36 @@ describe('Sandbox', () => {
       { next }
     );
   });
+
+  it('transferProps robustness test', (next) => {
+    // 测试不可配置属性
+    const testFunc = () => {};
+    Object.defineProperty(testFunc, 'readonly', {
+      value: 'cannot-change',
+      writable: false,
+      configurable: false
+    });
+    
+    // 测试可配置属性
+    Object.defineProperty(testFunc, 'configurable', {
+      value: 'can-change',
+      writable: true,
+      configurable: true
+    });
+    
+    // 测试普通属性
+    testFunc.normal = 'normal-value';
+    
+    (window as any).testFunc = testFunc;
+    
+    sandbox.execScript(
+      go(`
+        expect(window.testFunc.readonly).toBe('cannot-change');
+        expect(window.testFunc.configurable).toBe('can-change');
+        expect(window.testFunc.normal).toBe('normal-value');
+        next();
+      `),
+      { next }
+    );
+  });
 });
