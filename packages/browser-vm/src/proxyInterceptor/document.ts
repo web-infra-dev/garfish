@@ -88,7 +88,7 @@ export function createGetter(sandbox: Sandbox) {
           return findTarget(rootNode, ['body', `div[${__MockBody__}]`]);
         } else if (queryFunctions(p)) {
           return p === 'getElementById'
-            ? (id) => rootNode.querySelector(`#${id}`)
+            ? (id) => rootNode.querySelector(`#${CSS.escape(id)}`)
             : rootNode[p].bind(rootNode);
         }
       }
