@@ -1,6 +1,8 @@
 import { Sandbox } from '../src/sandbox';
 import { sandboxMap } from '../src/utils';
 
+require('css.escape');
+
 // Garfish 使用 Proxy 对 dom 进行了劫持, 同时对调用 dom 的函数做了劫持, 修正 dom 节点的类型
 // 对调用 dom 的相关方法进行测试
 describe('Sandbox:Dom & Bom', () => {
@@ -122,6 +124,49 @@ describe('Sandbox:Dom & Bom', () => {
       expect(documentCopy2 instanceof Document).toBe(true);
     `),
     );
+  });
+
+  function testGetElementById(sandbox: Sandbox) {
+    sandbox.execScript(
+      go(`
+        const ids = [
+          "1asfac",
+          "tool#tip",
+          "name[value]",
+          ":hover",
+          "42answer",
+          "hello-world"
+        ];
+        const root = document.body;
+        for (const id of ids) {
+          const div = document.createElement('div');
+          div.id = id;
+          expect(root.appendChild(div)).toBeTruthy();
+          const divSelect = document.getElementById(id);
+          expect(divSelect.id).toBe(id);
+        }
+      `),
+    );
+  }
+
+  it('The results of getElementById and querySelector should be same.', () => {
+    testGetElementById(sandbox);
+    document.body.innerHTML = '<div id="root"></div>';
+    testGetElementById(new Sandbox({
+      strictIsolation: true,
+      namespace: 'app',
+      el: () => document.getElementById('root'),
+      modules: [
+        () => ({
+          recover() {},
+          override: {
+            go,
+            jest,
+            expect,
+          },
+        }),
+      ],
+    }));
   });
 
   it('MutationObserver callbacks can be canceled.', (next) => {
