@@ -86,5 +86,10 @@ describe('Css scope', () => {
 
     // Verify that valid CSS rules are still processed correctly
     expect(scopedCss).toContain('#MyApp [__garfishmockbody__]');
+
+    console.log(ast.stylesheet.parsingErrors);
+    // Verify that parsing errors are captured
+    expect(ast.stylesheet.parsingErrors).toBeDefined();
+    expect(ast.stylesheet.parsingErrors.length).toBeGreaterThan(0);
   });
 });
