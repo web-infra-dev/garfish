@@ -45,4 +45,46 @@ describe('Css scope', () => {
       'MyApp-@1_0_0_2444__XXl2sOw3Pp3KVSQS9PFl_semi-icon-animation-rotate',
     );
   });
+
+  it('should parse incorrect syntax @dark-text with silent mode', () => {
+    const css = `
+    body {
+      --data-1: var(--arcoblue-5);
+    }
+    @keyframes arco-msg-fade {
+      0% {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    @keyframes arco-msg-scale {
+      0% {
+        transform: scale(0);
+      }
+      to {
+        transform: scale(1);
+      }
+    }
+    @keyframes force-loading-circle {
+      to {
+        transform: rotate(1turn);
+      }
+    }
+    @keyframes arco-loading-circle {
+      to {
+        transform: rotate(1turn);
+      }
+    }
+    @dark-text: arco-theme= 'dark';
+    `;
+
+    // Use silent mode to ignore syntax errors
+    const ast = parse(css, { silent: true });
+    const scopedCss = stringify(ast, 'MyApp');
+
+    // Verify that valid CSS rules are still processed correctly
+    expect(scopedCss).toContain('#MyApp [__garfishmockbody__]');
+  });
 });
