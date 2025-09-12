@@ -268,7 +268,9 @@ export function parse(css: string, options: CssParserOptions = {}) {
     const vendor = m[1];
 
     // identifier
-    m = match(/^([-\w]+)\s*/);
+    // m = match(/^([-\w]+)\s*/);
+    m = match(/^([-@\w\\]+)\s*/);
+
     if (!m) return error('@keyframes missing name');
     const name = m[1];
 
