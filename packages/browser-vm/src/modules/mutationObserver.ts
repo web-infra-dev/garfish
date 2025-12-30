@@ -10,11 +10,20 @@ export function observerModule(_sandbox: Sandbox) {
         observerSet.add(this);
       }
     }
+
+    disconnect() {
+      if (observerSet.has(this)) {
+        observerSet.delete(this);
+      }
+      super.disconnect();
+    }
   }
 
   const recover = () => {
     observerSet.forEach((observer) => {
-      if (typeof observer.disconnect === 'function') observer.disconnect();
+      if (observer && typeof observer.disconnect === 'function') {
+        observer.disconnect();
+      }
     });
     observerSet.clear();
   };
