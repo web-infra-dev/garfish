@@ -22,6 +22,9 @@ export function networkModule(sandbox: Sandbox) {
       super();
       if (!sandbox.options.disableCollect) {
         xhrSet.add(this);
+        this.addEventListener('loadend', () => {
+          xhrSet.delete(this);
+        }, { once: true });
       }
     }
 
