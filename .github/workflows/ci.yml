@@ -10,7 +10,7 @@ on:
 
 jobs:
   unit-test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         node-version: [16.14.0]
@@ -50,7 +50,7 @@ jobs:
       with:
         directory: ./coverage
   e2e-test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         node-version: [16.14.0]
@@ -89,7 +89,7 @@ jobs:
         # determine the unique run id necessary to re-run the checks
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   type-check:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         node-version: [16.14.0]
