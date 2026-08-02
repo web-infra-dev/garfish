@@ -66,8 +66,6 @@ jobs:
       with:
         version: 7.6.0
         run_install: false
-    # Set up GitHub Actions caching for Wireit.
-    - uses: google/wireit@4aad131006ea85c1e42af927534ebb13426dd730 # setup-github-actions-caching/v1
     - name: install dependency
       run: pnpm install --filter=\!garfish-docs
     - name: build
@@ -81,8 +79,8 @@ jobs:
         start: node scripts/devCypress.js
         wait-on: 'http://localhost:8090,http://localhost:8091,http://localhost:8092,http://localhost:8093,http://localhost:8094,http://localhost:8095,http://localhost:8096,http://localhost:8097'
         wait-on-timeout: 600
-        parallel: true
-        record: true
+        parallel: ${{ secrets.CYPRESS_RECORD_KEY != '' }}
+        record: ${{ secrets.CYPRESS_RECORD_KEY != '' }}
       env:
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
         # Recommended: pass the GitHub token lets this action correctly
