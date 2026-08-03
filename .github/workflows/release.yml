@@ -18,20 +18,20 @@ jobs:
       matrix:
         node-version: [16.14.0]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2
       with:
         ref: ${{ github.event.inputs.branch }}
     - name: Pushing to the protected branch 'protected'
-      uses: zhoushaw/push-protected@v2
+      uses: zhoushaw/push-protected@f36ef70ae5f2e6bbd4f7b04da4f1fa3c11bc5a01 # v2
       with:
         token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
         branch: ${{ github.event.inputs.branch }}
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@7c12f8017d5436eb855f1ed4399f037a36fbd9e8 # v2
       with:
         node-version: ${{ matrix.node-version }}
     - name: Cache .pnpm-store
-      uses: actions/cache@v3
+      uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3
       with:
         path: ~/.pnpm-store
         key: ${{ runner.os }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
