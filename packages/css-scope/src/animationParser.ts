@@ -208,7 +208,7 @@ function parse(tokens: Array<string>): Array<Props> {
 type Props = Array<string | Props>;
 function stringify(tree: Array<Props>, prefix: string) {
   let output = '';
-  const splice = (p) => (isName(p) ? `${p}-${prefix}` : p);
+  const splice = (p) => (isName(p) ? `${prefix}-${p}` : p);
 
   const child = (ps: Array<string>) => {
     let buf = '';

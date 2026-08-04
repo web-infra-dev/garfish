@@ -19,6 +19,7 @@ import {
   KeyframesNode,
   StylesheetNode,
   CustomMediaNode,
+  ContainerNode,
 } from './globalTypes';
 
 const commentre = /\/\*[^*]*\*+([^/*][^*]*\*+)*\//g;
@@ -267,7 +268,9 @@ export function parse(css: string, options: CssParserOptions = {}) {
     const vendor = m[1];
 
     // identifier
-    m = match(/^([-\w]+)\s*/);
+    // m = match(/^([-\w]+)\s*/);
+    m = match(/^([-@\w\\]+)\s*/);
+
     if (!m) return error('@keyframes missing name');
     const name = m[1];
 
@@ -340,6 +343,25 @@ export function parse(css: string, options: CssParserOptions = {}) {
       media: media,
       rules: style,
     }) as MediaNode;
+  }
+
+  // Parse container.
+  function atcontainer() {
+    const pos = position();
+    const m = match(/^@container *([^{]+)/);
+
+    if (!m) return;
+    const container = trim(m[1]);
+
+    if (!open()) return error("@container missing '{'");
+    const style = comments().concat(rules());
+    if (!close()) return error("@container missing '}'");
+
+    return pos({
+      type: 'container',
+      container: container,
+      rules: style,
+    }) as ContainerNode;
   }
 
   // Parse custom-media.
@@ -450,6 +472,7 @@ export function parse(css: string, options: CssParserOptions = {}) {
     return (
       atkeyframes() ||
       atmedia() ||
+      atcontainer() ||
       atcustommedia() ||
       atsupports() ||
       atimport() ||
