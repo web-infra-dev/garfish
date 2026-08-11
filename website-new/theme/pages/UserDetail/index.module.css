@@ -30,8 +30,8 @@ html[data-theme=dark] .userDetailTitle {
   color: #999;
 }
 .userContent {
-  display: flex;
-  justify-content: space-between;
+  display: grid; 
+  grid-template-columns: repeat(auto-fit,minmax(80px,1fr));
 }
 
 .features {
