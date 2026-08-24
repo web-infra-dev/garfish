@@ -9,7 +9,7 @@ import Garfish from "garfish";
 
 
 :::tip
-这里需要特殊说明的是，子应用不需要额外引入 Garfish 实例，子应用可通过 `window.Garfish` 获取全局 Garfish 实例信息，参考 [Garfish 环境变量](../guide/quickStart/env.md)。
+这里需要特殊说明的是，子应用不需要额外引入 Garfish 实例，子应用可通过 `window.Garfish` 获取全局 Garfish 实例信息，参考 [Garfish 环境变量](../guide/quick-start/env.md)。
 
 
 :::
