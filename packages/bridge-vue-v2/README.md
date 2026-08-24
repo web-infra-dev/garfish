@@ -2,7 +2,7 @@
 
 [![NPM version](https://img.shields.io/npm/v/@garfish/bridge-vue-v2.svg?style=flat-square)](https://www.npmjs.com/package/@garfish/bridge-vue-v2)
 
-Vue bridge for vue v2 subapp. For more details, [check here](https://www.garfishjs.org/guide/bridge)
+Vue bridge for vue v2 subapp. For more details, [check here](https://www.garfishjs.org/guide/concept/bridge.html)
 ## Usage
 
 ```js

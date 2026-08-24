@@ -102,7 +102,7 @@ app.mounted ? app.show() : await app.mount();
 
 ### 2.导出 provider 函数
 
-> 针对子应用需要导出生命周期函数，我们提供了桥接函数 [`@garfish/bridge-react`](/guide/bridge) 自动包装应用的生命周期，使用`@garfish/bridge-react` 可以降低接入成本与用户出错概率，也是 garfish 推荐的子应用接入方式。
+> 针对子应用需要导出生命周期函数，我们提供了桥接函数 [`@garfish/bridge-react`](/guide/concept/bridge) 自动包装应用的生命周期，使用`@garfish/bridge-react` 可以降低接入成本与用户出错概率，也是 garfish 推荐的子应用接入方式。
 
 ```bash npm2yarn
 // 安装 @garfish/bridge-react：
@@ -186,7 +186,7 @@ const RootComponent = ({ basename }) => {
 - vite (version 2)
 - angular (version 13)
 
-可移步 [接入指南](/guide/demo) 查看详细接入步骤。
+可移步 [接入指南](/guide/demo/demo) 查看详细接入步骤。
 
 ## 总结
 
