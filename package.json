@@ -91,7 +91,7 @@
     "wait-on": "6.0.1",
     "wireit": "^0.4.3",
     "workspace-tools": "0.16.2",
-    "zx": "4.2.0"
+    "zx": "8.8.5"
   },
   "version": "1.19.12",
   "packageManager": "pnpm@7.6.0",
