@@ -3,7 +3,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "13.2.4",
-    "@angular/common": "13.2.4",
+    "@angular/common": "19.2.16",
     "@angular/core": "13.2.4",
     "@angular/forms": "13.2.4",
     "@angular/platform-browser": "13.2.4",
