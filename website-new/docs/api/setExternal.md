@@ -4,7 +4,7 @@
 
 
 :::tip
-1. 主、子应用若开启进行依赖共享能力，需要构建成 'umd' 规范且保证 `jsonpFunction` 唯一；[参考](/guide/build-config)；
+1. 主、子应用若开启进行依赖共享能力，需要构建成 'umd' 规范且保证 `jsonpFunction` 唯一；[参考](/guide/concept/buildConfig)；
 2. 若子应用通过依赖共享主应用核心包，则子应用将不能独立运行；
 3. 主应用的若升级版本会可能会对子应用产生影响；
 4. external 的内容会逃逸 vm 沙箱；

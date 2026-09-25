@@ -276,7 +276,7 @@ app = await Garfish.loadApp('vue-app', {
 
   - 在子应用显示前将会触发 `beforeMount` 钩子函数，显示完成将触发 `afterMount` 钩子函数并将当前挂载的应用 push 进 `Garfish.activeApps`；
   - 在此过程中将执行 `provider` 提供的子应用 render 函数，若 `provider` 函数未找到将会抛出错误。[尝试解决](/issues/#provider-is-null)
-  - [show 过程中都做了哪些事情](/guide/lifecycle#show)
+  - [show 过程中都做了哪些事情](/guide/concept/lifecycle#show)
 
 
 :::info 请注意：
